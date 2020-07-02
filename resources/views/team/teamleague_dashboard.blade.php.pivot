@@ -1,0 +1,91 @@
+@extends('adminlte::page')
+
+@section('plugins.Select2', true)
+
+@section('content')
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Plan Team Leagues for {{ $club->shortname }} </div>
+                </div>
+                <div class="card-body">
+                    <form class="form-horizontal" id="teamLeaguePlanForm">
+
+                        @csrf
+                        <table class="table table-hover  table-sm" id="table">
+                            <thead class="thead-light">
+                                <tr class="d-flex">
+                                    <th class="text-center col-2"> </th>
+                                    @foreach ($teams as $team)
+                                    <th class="text-center col-2">{{ $team['league']->shortname }}</th>
+                                    @endforeach
+                                </tr>
+                                <tr class="d-flex">
+                                    <th class="text-center col-2">Game Date</th>
+                                    @foreach ($teams as $team)
+                                    <th class="text-center col-2">
+                                        <select class="js-single-size form-control" name="selSize:{{$team['league']->id}}" id='selSize'>
+                                            @for ( $i=1; $i <= $team['league']['schedule']->size; $i++ )
+                                                <option value="{{ $i }}">{{ $i }}</option>
+                                                @endfor
+                                        </select>
+                                    </th>
+                                    @endforeach
+                                </tr>
+                            </thead>
+                        </table>
+                        @include('team/teamleague_pivot')
+
+                        <button type="submit" class="btn btn-info">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@stop
+
+@section('footer')
+jochenk
+@stop
+
+
+@section('js')
+<script>
+    $(function() {
+        //Initialize Select2 Elements
+        $('.js-single-size').select2({
+            theme: 'bootstrap4',
+            multiple: false,
+            allowClear: false
+        });
+
+
+        $("#teamLeaguePlanForm").submit(function(e) {
+            e.preventDefault();
+            var url = 'pivot';
+            var data = $(this).serialize();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: data,
+                dataType: 'json',
+                success: function(data) {
+                    console.log('all good');
+
+                    $('#pivottable').html(data);
+                },
+            });
+        });
+
+
+    });
+</script>
+@stop
