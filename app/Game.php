@@ -1,0 +1,46 @@
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Game extends Model
+{
+  protected $fillable = [
+        'id','league_id','region','game_no','game_plandate','game_date','game_time',
+        'club_id_home','team_id_home','team_home','team_char_home',
+        'club_id_guest','team_id_guest','team_guest','team_char_guest',
+        'gym_no','referee_1','referee_2'
+  ];
+
+  public function region()
+  {
+      return $this->belongsTo('App\Region','region');
+  }
+
+  public function club_home()
+  {
+      return $this->belongsTo('App\Club','club_id_home');
+  }
+
+  public function club_guest()
+  {
+      return $this->belongsTo('App\Club','club_id_guest');
+  }
+
+  public function league()
+  {
+      return $this->belongsTo('App\League','league_id');
+  }
+
+  public function team_home()
+  {
+      return $this->belongsTo('App\Team','team_id_home');
+  }
+
+  public function team_guest()
+  {
+      return $this->belongsTo('App\Team','team_id_guest');
+  }
+
+}

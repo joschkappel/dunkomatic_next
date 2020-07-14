@@ -44,7 +44,7 @@
         <!-- card MEMBERS -->
         <div class="card card-outline card-info collapsed-card">
           <div class="card-header">
-            <h4 class="card-title"><i class="fas fa-user-tie"></i> Members  <span class="badge badge-pill badge-info">0</span></h4>
+            <h4 class="card-title"><i class="fas fa-user-tie"></i> Roles  <span class="badge badge-pill badge-info">{{ count($member_roles) }}</span></h4>
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
               </button>
@@ -53,12 +53,23 @@
           </div>
           <!-- /.card-header -->
           <div class="card-body">
+            @foreach ($member_roles as $mrole )
+            <p><button type="button" id="deleteMemberrole" class="btn btn-outline-danger btn-sm" data-member-id="{{ $mrole['member']->id }}"
+              data-role-id="{{ $mrole->id }}"
+              data-member-name="{{ $mrole['member']['firstname'] }} {{ $mrole['member']['lastname'] }}"
+              data-role-name="{{ $mrole['role']['name'] }}"
+              data-club-sname="{{ $club->shortname }}" data-toggle="modal" data-target="#modalDeleteMemberRole"><i class="fa fa-trash"></i></button>
+            <a href="{{ route('club.memberrole.edit',['memberrole' => $mrole, 'club' => $club ]) }}" class=" px-2">
+                {{ $mrole['role']['name'] }} {{ $mrole['function'] }} - {{ $mrole['member']['firstname'] }} {{ $mrole['member']['lastname'] }} <i class="fas fa-arrow-circle-right"></i>
+            </a></p>
+            @endforeach
 
           </div>
           <!-- /.card-body -->
           <div class="card-footer">
-            <i class="fas fa-plus-circle"></i>  New Member
-
+            <a href="{{ route('club.memberrole.create',['club' => $club ]) }}" class="btn btn-primary" >
+            <i class="fas fa-plus-circle"></i>  New Role
+            </a>
           </div>
           <!-- /.card-footer -->
         </div>
@@ -78,34 +89,35 @@
             <table class="table table-hover table-bordered table-sm" id="table">
                <thead class="thead-light">
                   <tr>
+                     <th></th>
+                     <th>Team</th>
                      <th>League</th>
                      <th>Assign or Deassign</th>
-                     <th>Team</th>
                   </tr>
                </thead>
                <tbody>
                @foreach ($teams as $team )
                  <tr>
+                   <td><button id="deleteTeam" data-league-sname="{{$team->league['shortname']}}" data-team-id="{{ $team->id }}" data-team-no="{{ $team->team_no }}" data-club-sname="{{ $club->shortname }}" type="button" class="btn btn-outline-danger btn-sm "> <i class="fas fa-trash"></i> </button></td>
+                   <td><a href="{{ route('team.edit', ['team' =>$team->id] ) }}">{{$club->shortname}}{{ $team->team_no }}<i class="fas fa-arrow-circle-right"></i></a>
                    @isset ( ($team->league['shortname']) )
                      <td><button type="button" class="btn btn-dark btn-sm " disabled>{{$team->league['shortname']}}</button></td>
-                     <td><button id="deassignLeague" data-league-id="{{$team->league['id']}}" data-team-id="{{ $team->id }}" data-club-id="{{ $club->id }}" type="button" class="btn btn-outline-danger btn-sm "> <i class="fa fa-trash"></i> </button></td>
+                     <td><button id="deassignLeague" data-league-id="{{$team->league['id']}}" data-team-id="{{ $team->id }}" data-club-id="{{ $club->id }}" type="button" class="btn btn-outline-secondary btn-sm "> <i class="fas fa-unlink"></i> </button></td>
                    @endisset
                    @empty ( ($team->league['shortname']) )
                      <td class="text-info">unassigned (was: {{ $team->league_prev }})</td>
-                     <td><button type="button" id="assignLeague" class="btn btn-outline-info btn-sm" data-team-id="{{ $team->id }}" data-club-id="{{ $club->id }}" data-toggle="modal" data-target="#modalAssignLeague"><i class="fa fa-plus"></i></button></td>
+                     <td><button type="button" id="assignLeague" class="btn btn-outline-info btn-sm" data-team-id="{{ $team->id }}" data-club-id="{{ $club->id }}" data-toggle="modal" data-target="#modalAssignLeague"><i class="fas fa-link"></i></button></td>
                    @endempty
-                     <td><span class="badge badge-md badge-dark">{{$club->shortname}}{{ $team->team_no }}</span></td>
               @endforeach
             </tbody>
          </table>
           </div>
           <!-- /.card-body -->
           <div class="card-footer">
-            <i class="fas fa-plus-circle"></i>  New Team
+            <a href="{{ route('club.team.create',['club' => $club ]) }}" class="btn btn-primary" >
+            <i class="fas fa-plus-circle"></i>  New Team</a>
             <a href="{{ route('team.plan-leagues',['club' => $club ]) }}" class="btn btn-primary" >
-            <i class="fas fa-map"></i>  Plan
-            </a>
-
+            <i class="fas fa-map"></i>  Plan Season</a>
           </div>
           <!-- /.card-footer -->
         </div>
@@ -126,15 +138,14 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-          {{-- <ul class="list-group list-group-flush text-left"> --}}
           @foreach ($gyms as $gym )
-          {{-- <li class="list-group-item text-left"> --}}
-          <p><a href="{{ route('gym.edit',['gym' => $gym ]) }}" class=" px-2">
+          <p><button type="button" id="deleteGym" class="btn btn-outline-danger btn-sm" data-gym-id="{{ $gym->id }}"
+            data-gym-name="{{ $gym->gym_no }} - {{ $gym->name }}"
+            data-club-sname="{{ $club->shortname }}" data-toggle="modal" data-target="#modalDeleteGym"><i class="fa fa-trash"></i></button>
+            <a href="{{ route('gym.edit',['gym' => $gym ]) }}" class=" px-2">
               {{ $gym->gym_no }} - {{ $gym->name }} <i class="fas fa-arrow-circle-right"></i>
           </a></p>
-          {{-- </li> --}}
           @endforeach
-          {{-- </ul> --}}
         </div>
         <!-- /.card-body -->
         <div class="card-footer">
@@ -149,7 +160,7 @@
       <!-- card GAMES -->
       <div class="card card-outline card-info collapsed-card">
         <div class="card-header">
-          <h4 class="card-title"><i class="fas fa-trophy"></i> Games    <span class="badge badge-pill badge-info">0</span></h4>
+          <h4 class="card-title"><i class="fas fa-trophy"></i> Home Games    <span class="badge badge-pill badge-info">{{ count($games_home)}}</span></h4>
           <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
             </button>
@@ -171,6 +182,9 @@
     <!-- ./deck -->
     <!-- all modals here -->
     @include('club/includes/assign_league')
+    @include('member/includes/memberroles_delete')
+    @include('team/includes/team_delete')
+    @include('club/gym/includes/gym_delete')
     <!-- all modals above -->
 </div>
 </div>
@@ -217,6 +231,29 @@ reserved.
              },
          });
        });
+    });
+    $("button#deleteMemberrole").click( function(){
+       $('#member_id').val($(this).data('member-id'));
+       $('#unit_shortname').html($(this).data('club-sname'));
+       $('#role_name').html($(this).data('role-name'));
+       $('#member_name').html($(this).data('member-name'));
+       $('#confirmDeleteMemberRole').attr('action', '/memberrole/'+$(this).data('role-id'));
+       $('#modalDeleteMember').modal('show');
+    });
+    $("button#deleteTeam").click( function(){
+       $('#team_id').val($(this).data('team-id'));
+       $('#club_shortname').html($(this).data('club-sname'));
+       $('#league_shortname').html($(this).data('league-sname'));
+       $('#team_name').html($(this).data('club-sname')+$(this).data('team-no'));
+       $('#confirmDeleteTeam').attr('action', '/team/'+$(this).data('team-id'));
+       $('#modalDeleteTeam').modal('show');
+    });
+    $("button#deleteGym").click( function(){
+       $('#gym_id').val($(this).data('gym-id'));
+       $('#club_shortname').html($(this).data('club-sname'));
+       $('#gym_name').html($(this).data('gym-name'));
+       $('#confirmDeleteGym').attr('action', '/gym/'+$(this).data('gym-id'));
+       $('#modalDeleteGym').modal('show');
     });
   });
 

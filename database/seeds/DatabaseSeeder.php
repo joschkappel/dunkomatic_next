@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(UserSeeder::class);
         $this->call([
           RegionsTableSeeder::class,
+          RolesTableSeeder::class,
           LeagueTeamSizesTableSeeder::class,
           LeagueTeamCharsTableSeeder::class,
           SchedulesTableSeeder::class,
@@ -33,7 +34,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-          TeamsTableSeeder::class
+          TeamsTableSeeder::class,
+          MembersTableSeeder::class,
         ]);
     }
 }

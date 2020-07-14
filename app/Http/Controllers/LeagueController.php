@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\League;
 use App\Team;
+use App\Club;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -94,6 +95,30 @@ class LeagueController extends Controller
     }
 
     /**
+     * Display a listing of the resource for selectboxes. leagues for club
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function list_select4club(Club $club)
+    {
+      Log::debug(print_r($club,true));
+
+      $leagues = League::whereHas('clubs', function($q) use ($club)
+                { $q->where('club_id', '=', $club->id);
+                })->get();
+
+      Log::debug('got leagues '.count($leagues));
+      $response = array();
+
+      foreach($leagues as $league){
+          $response[] = array(
+                "id"=>$league->id,
+                "text"=>$league->shortname
+              );
+      }
+      return Response::json($response);
+    }
+    /**
      * Display a dashboard
      *
      * @return \Illuminate\Http\Response
@@ -110,6 +135,7 @@ class LeagueController extends Controller
               // get assigned clubs
               $clubs = $league->clubs()->get();
               $data['clubs'] = $clubs;
+              $data['member_roles'] = $data['league']->member_roles()->with('role','member')->get();
 
               $assigned_club = array();
               foreach($clubs as $club){
@@ -144,7 +170,7 @@ class LeagueController extends Controller
                       );
               }
               $data['assigned_teams'] = $assigned_team;
-              Log::debug(print_r($assigned_team,true));
+              //Log::debug(print_r($assigned_team,true));
 
               return view('league/league_dashboard', $data);
             }
@@ -226,7 +252,9 @@ class LeagueController extends Controller
     public function edit(League $league)
     {
       Log::debug('editing league '.$league->id);
-      return view('league/league_edit', ['league' => $league]);
+      $member = $league->member_roles()->with('member')->get();
+//      Log::debug(print_r($member[0]['member'],true));
+      return view('league/league_edit', ['league' => $league, 'member' => $member[0]->member]);
     }
 
     /**

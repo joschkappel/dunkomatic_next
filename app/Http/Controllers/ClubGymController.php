@@ -73,10 +73,11 @@ class ClubGymController extends Controller
      * @param  \App\Gym  $gym
      * @return \Illuminate\Http\Response
      */
-    public function edit(Club $club, Gym $gym)
+    public function edit( Gym $gym)
     {
-      Log::debug('editing gym '.$gym->id.' for club '.$club->id);
-      return view('club/gym/gym_edit', ['gym' => $gym, 'club' => $club]);
+      Log::debug('editing gym '.$gym->id);
+      $gym->load('club');
+      return view('club/gym/gym_edit', ['gym' => $gym]);
     }
 
     /**

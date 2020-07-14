@@ -29,4 +29,15 @@ class League extends Model
   {
       return $this->hasMany('App\Team');
   }
+
+  public function member_roles()
+  {
+      return $this->morphMany(MemberRole::class, 'unit');
+  }
+
+  public function games()
+  {
+      return $this->hasMany('App\Game');
+  }
+
 }

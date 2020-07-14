@@ -13,6 +13,9 @@ class LeagueTeamSize extends Model
   * @var string
   */
   protected $table = 'league_team_sizes';
+  protected $primaryKey = 'size';
+  public $incrementing = false;
+  protected $keyType = 'string';
 
   protected $fillable = [
       'size', 'description'
