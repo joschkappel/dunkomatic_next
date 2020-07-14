@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Schedule;
 use App\Region;
+use App\LeagueTeamSize;
 
 
 use Illuminate\Http\Request;
@@ -51,6 +52,31 @@ class ScheduleController extends Controller
     }
 
     /**
+     * Display a listing of the resource for selecbboxes
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function list_size_select(LeagueTeamSize $size)
+    {
+      $user_region = array( Auth::user()->region );
+      Log::debug('SIZE :'.print_r($size,true));
+
+      $schedules = Schedule::has('events')->whereIn('region_id', $user_region)
+        ->where('size','=',$size->size)->orderBy('name','ASC')->get();
+
+      Log::debug('got schedules '.count($schedules));
+      $response = array();
+
+      foreach($schedules as $schedule){
+        $response[] = array(
+              "id"=>$schedule->id,
+              "text"=>$schedule->name
+            );
+      }
+
+      return Response::json($response);
+    }
+    /**
      * Display a listing of the resource .
      *
      * @return \Illuminate\Http\Response
@@ -77,14 +103,14 @@ class ScheduleController extends Controller
               return '<spawn style="background-color:'.$data->eventcolor.'">'.$data->eventcolor.'</div>';
           })
           ->addColumn('events', function($data){
-              return '<a href="' . route('schedule_event.list', $data) .'">'.$data->events_count.'</a>';
+              return '<a href="' . route('schedule_event.list', $data) .'">'.$data->events_count.' <i class="fas fa-arrow-circle-right"></i></a>';
           })
           ->rawColumns(['name','color','events'])
           ->editColumn('created_at', function ($user) {
                   return $user->created_at->format('d.m.Y H:i');
               })
           ->editColumn('name', function ($data) {
-              return '<a href="' . route('schedule.edit', $data->id) .'">'.$data->name.'</a>';
+              return '<a href="' . route('schedule.edit', $data->id) .'">'.$data->name.' <i class="fas fa-arrow-circle-right"></i></a>';
               })
           ->make(true);
     }

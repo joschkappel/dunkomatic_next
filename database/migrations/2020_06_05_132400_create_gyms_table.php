@@ -25,6 +25,7 @@ class CreateGymsTable extends Migration
             $table->string('directions', 64)->nullable();
             $table->boolean('active')->default(True);
             $table->timestamps();
+            $table->unique(['club_id','gym_no']);
         });
     }
 

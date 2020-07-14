@@ -18,7 +18,7 @@
                 <!-- /.card-header -->
                 <form class="form-horizontal" action="{{ route('schedule.update',['schedule' => $schedule]) }}" method="POST">
                 <div class="card-body">
-                  <input type="hidden" name="_method" value="PUT">
+                  @method('PUT')
                   @csrf
                         @if ($errors->any())
                         <div class="alert alert-danger" role="alert">

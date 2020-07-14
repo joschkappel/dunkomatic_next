@@ -40,14 +40,6 @@
 <script>
     $(function() {
 
-      //Initialize Select2 Elements
-      $('.select2').select2();
-
-      //Initialize Select2 Elements
-      $('.select2bs4').select2({
-        theme: 'bootstrap4',
-      });
-
       $(".js-example-placeholder-single").select2({
           placeholder: "Select schedules...",
           multiple: true,

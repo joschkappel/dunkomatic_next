@@ -33,6 +33,19 @@ class TeamsTableSeeder extends Seeder
         $upperArr = range('A', 'Q');
         $league_no = array_search( $team->league_char ,$upperArr, true)+1;
 
+        // old: dayof week:  1=sat, 2=sun, .....
+        // new: iso days of week: 1=mon, 2=tue,....7=sun
+        if ($team->training_day < 3){
+          $tday = $team->training_day + 5;
+        } else {
+          $tday = $team->training_day - 2;
+        };
+
+        if ($team->pref_game_day < 3){
+          $gday = $team->pref_game_day + 5;
+        } else {
+          $gday = $team->pref_game_day - 2;
+        }
 
         DB::connection('dunknxt')->table('teams')->insert([
           'team_no'       => $team->team_no,
@@ -41,9 +54,9 @@ class TeamsTableSeeder extends Seeder
           'league_char'   => $team->league_char,
           'league_no'     => $league_no,
           'league_prev'   => $team->league_prev,
-          'training_day'  => $team->training_day,
+          'training_day'  => $tday,
           'training_time' => $team->training_time,
-          'preferred_game_day' => $team->pref_game_day,
+          'preferred_game_day' => $gday,
           'preferred_game_time' => $team->pref_game_time,
           'shirt_color'   => $team->color,
           'coach_name'    => $team->lastname,

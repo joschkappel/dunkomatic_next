@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Club;
 use App\Gym;
+use App\Member;
+
 use Illuminate\Http\Request;
 use App\Rules\Uppercase;
 use Illuminate\Validation\Rule;
@@ -53,9 +55,10 @@ class ClubController extends Controller
             if ($data['club']){
               $data['gyms'] = $data['club']->gyms()->get();
               $data['teams'] = $data['club']->teams()->with('league')->get();
-
-              Log::debug(print_r($data['teams'],true));
-
+              $data['member_roles'] = $data['club']->member_roles()->with('role','member')->get();
+//              $data['members'] = Member::with('member_roles.unit')->where('member_roles.unit.id',$id)->get();
+  //            Log::debug(print_r($data['members'],true));
+              $data['games_home'] = $data['club']->games_home()->with('games_home')->get();
 
               return view('club/club_dashboard', $data);
             }

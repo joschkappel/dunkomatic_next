@@ -34,6 +34,8 @@ class CreateTeamsTable extends Migration
             $table->string('coach_email')->nullable();
             $table->boolean('changeable')->default(True);
             $table->timestamps();
+            //            $table->unique(['club_id','team_no']);
+            //$table->unique(['league_id','league_no']);
         });
     }
 

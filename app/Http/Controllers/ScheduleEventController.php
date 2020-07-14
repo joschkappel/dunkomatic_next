@@ -80,22 +80,46 @@ class ScheduleEventController extends Controller
      */
     public function list_dt( $id )
     {
-      $events = ScheduleEvent::query()->where('schedule_id', $id)->get();
+      // get duplicate dates or overlaps ?
+      $duplicates = DB::table('schedule_events')
+                     ->select(DB::raw("game_date"))
+                     ->where('schedule_id', $id)
+                     ->groupBy('game_date')
+                     ->havingRaw('COUNT(*) > ?', [1])
+                     ->pluck('game_date');
+
+      Log::debug(print_r($duplicates,true));
+
+      $events = ScheduleEvent::query()->where('schedule_id', $id)->orderBy('game_day','ASC')->get();
       $evlist = datatables::of($events);
 
       return $evlist
-        ->addIndexColumn()
+        ->rawColumns(['game_day','game_date'])
+        ->addColumn('game_day_sort', function($event){
+          return $event->game_day;
+        })
+        ->editColumn('game_day', function($event){
+            return '<a href="#" id="eventEditLink" data-id="'.$event->id.
+                    '" data-game-day="'.$event->game_day.'" data-weekend="'.$event->full_weekend.'" data-game-date="'.$event->game_date.
+                    '">'.$event->game_day.' <i class="fas fa-arrow-circle-right"></i></a>';
+        })
         ->editColumn('created_at', function ($event) {
                 return $event->created_at->format('d.m.Y H:i');
             })
-        ->editColumn('game_date', function ($event) {
+        ->editColumn('game_date', function ($event) use ($duplicates) {
+                $warning='';
+                if ($duplicates->contains(date_format($event->game_date, 'Y-m-d 00:00:00' ))){
+                  Log::info('found it');
+                  $warning = '  <spawn class="bg-danger">__<i class="fa fa-exclamation-triangle"></i> DUPLICATE <i class="fa fa-exclamation-triangle"></i>__</spawn>';
+                };
                 if ( $event->full_weekend){
                   $end = Carbon::parse($event->game_date);
                   $end = $end->addDays(1);
-                  return $event->game_date->format('D d.m.Y').' / '. $end->format('D d.m.Y');
+                  return $event->game_date->format('D d.m.Y').' / '. $end->format('D d.m.Y').$warning;
                 } else {
-                  return $event->game_date->format('D d.m.Y');
+                  return $event->game_date->format('D d.m.Y').$warning;
                 }
+
             })
         ->make(true);
 
@@ -183,6 +207,28 @@ class ScheduleEventController extends Controller
         return redirect()->action('ScheduleEventController@list', ['id' => $request->input('schedule_id')]);
     }
 
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function clone(Request $request)
+    {
+        Log::debug(print_r($request->all(),true));
+        $from_events = ScheduleEvent::where('schedule_id',$request['clone_from_schedule'])->get();
+
+        //Log::debug(print_r($from_events,true));
+        foreach ($from_events as $from_event){
+          $to_event = $from_event->replicate();
+          $to_event->schedule_id = $request['schedule_id'];
+          $to_event->save();
+        }
+        return redirect()->action('ScheduleEventController@list', ['id' => $request['schedule_id']]);
+
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -231,9 +277,31 @@ class ScheduleEventController extends Controller
      * @param  \App\Schedule  $schedule
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Schedule $schedule)
+    public function update(Request $request, ScheduleEvent $schedule_event)
     {
-        //
+        Log::debug(print_r($request->all(),true));
+
+        $data = $request->validate( [
+            'game_day' => 'required',
+            'full_weekend' => 'required|boolean',
+            'game_date' => 'required|date',
+        ]);
+
+        $schedule_id = $request['schedule_id'];
+        Log::debug(print_r($schedule_event->id,true));
+        // eliminate non model props
+        unset($data['old_role_id']);
+        $data['game_date'] = CarbonImmutable::parse($request->input('game_date'));
+        // if ($data['full_weekend'] == '1'){
+        //   $data['full_weekend'] = true;
+        // } else {
+        //   $data['full_weekend'] = false;
+        // }
+
+        Log::debug(print_r($data,true));
+        $check = ScheduleEvent::where('id', $schedule_event->id)->update($data);
+        return redirect()->back();
+
     }
 
     /**

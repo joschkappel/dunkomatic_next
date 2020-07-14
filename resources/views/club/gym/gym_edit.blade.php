@@ -8,7 +8,7 @@
             <!-- general form elements -->
             <div class="card card-info">
                 <div class="card-header">
-                    <h3 class="card-title">Modify gym {{ $gym->gym_no}} of club {{ $club->shortname}}</h3>
+                    <h3 class="card-title">Modify gym {{ $gym->gym_no}} of club {{ $gym->club['shortname'] }}</h3>
                 </div>
                 <!-- /.card-header -->
                 <form class="form-horizontal" action="{{ route('gym.update',['gym' => $gym]) }}" method="POST">
@@ -73,32 +73,6 @@
                             </div>
                         </div>
                     </div>
-                </form>
-            </div>
-        </div>
-        <!-- right column -->
-        <div class="col-md-6">
-            <!-- general form elements -->
-            <div class="card card-danger">
-                <div class="card-header">
-                    <h3 class="card-title">Delete gym {{ $gym->gym_no}} of club {{ $club->shortname}}</h3>
-                </div>
-                <!-- /.card-header -->
-                <form class="form-horizontal" action="{{ route('gym.destroy',['gym' => $gym]) }}" method="POST">
-                    <div class="card-body">
-                        <input type="hidden" name="_method" value="DELETE">
-                        @csrf
-                        @if ($errors->any())
-                        <div class="alert alert-danger" role="alert">
-                            Please fix the following errors
-                        </div>
-                        @endif
-                        <div class="card-footer">
-                            <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-                                <a class="btn btn-default btn-close" href="{{url()->previous()}}">Cancel</a>
-                                <button type="submit" class="btn btn-danger pull-right">Submit</button>
-                            </div>
-                        </div>
                 </form>
             </div>
         </div>

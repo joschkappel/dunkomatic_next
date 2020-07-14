@@ -21,4 +21,15 @@ class Team extends Model
   {
       return $this->belongsTo('App\League');
   }
+
+  public function games_home()
+  {
+      return $this->hasMany('App\Game','team_id_home');
+  }
+
+  public function games_guest()
+  {
+      return $this->hasMany('App\Game','team_id_guest');
+  }
+
 }
