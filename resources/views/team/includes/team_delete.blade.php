@@ -4,7 +4,7 @@
         <div class="modal-content">
             <!--Header-->
             <div class="modal-header bg-danger">
-                <p class="heading" id="dheader">Delete team for
+                <p class="heading" id="dheader">@lang('team.title.delete')
                 <span id="club_shortname"></span>
                 </p>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -23,17 +23,16 @@
 
 
                         <div class="card-body">
-                            <p class="text-left">Do your really want to delete</p>
+                            <p class="text-left">@lang('team.confirm.delete')</p>
                             <h4 class="text-left text-danger">
                             </span><span id="league_shortname"></span>
-                          </p><p>Team
+                          </p><p>{{trans_choice('team.team',1)}}
                             </span><span id="team_name"></span> </h4>
 
-                            Pls confirm to delete this team
                         </div>
                         <div class="card-footer">
                             <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-                                <button type="submit" class="btn btn-danger">Submit</button>
+                                <button type="submit" class="btn btn-danger">{{__('Submit')}}</button>
                             </div>
                         </div>
                     </form>

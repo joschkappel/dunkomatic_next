@@ -1,0 +1,28 @@
+<?php
+
+return [
+  'game' => 'Spiel|Spiele',
+  'home' => 'Heimspiele',
+  'guest' => 'Auswärtsspiele',
+  'action.create' => 'Spiele Erzeugen',
+  'action.delete' => 'Spiele Löschen',
+  'action.delete.noshow' => 'Spiele ohne Gegner Löschen',
+  'action.editdate' => 'Lege das Spieldatum und Startzeit fest',
+  'created.no' => 'Keine Spiele erzeugt',
+  'created.some' => ':total Spiele erzeugt',
+  'notstarted' => 'Spielrunde nocht nicht begonnen',
+  'game_date' => 'Datum Spieltag',
+  'game_day' => 'Spieltag Nr',
+  'game_no' => 'Spielnr',
+  'team_home' => 'Heim',
+  'team_guest' => 'Gast',
+  'gym_no' => 'Halle',
+  'game_wday' => 'Tag',
+  'game_time' => 'Spielbeginn',
+  'weekend' => 'Gesamtes Wochenende',
+  'overlap' => 'Überschneidung',
+  'homegame' => 'Heimspiel|Heimspiele',
+  'excel.export' => 'Excel Export',
+  'excel.import' => 'Import Exceldatei',   
+  'gametime_format' => 'H:i',
+];

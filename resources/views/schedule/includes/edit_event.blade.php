@@ -4,7 +4,7 @@
         <div class="modal-content">
             <!--Header-->
             <div class="modal-header bg-info">
-                <p class="heading">Edit this event</p>
+                <p class="heading">@lang('schedule.title.event.edit')</p>
 
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true" class="white-text">&times;</span>

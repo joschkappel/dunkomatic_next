@@ -27,7 +27,7 @@ class ClubGymController extends Controller
      * @param  \App\Club  $club
      * @return \Illuminate\Http\Response
      */
-    public function create(Club $club)
+    public function create($language, Club $club)
     {
       return view('club/gym/gym_new', ['club' => $club]);
     }
@@ -51,7 +51,7 @@ class ClubGymController extends Controller
       ]);
 
       $check = Gym::create($data);
-      return redirect()->route('club.dashboard', ['id' => $club->id ]);
+      return redirect()->route('club.dashboard', ['language'=>app()->getLocale(),'id' => $club->id ]);
     }
 
     /**
@@ -61,9 +61,23 @@ class ClubGymController extends Controller
      * @param  \App\Gym  $gym
      * @return \Illuminate\Http\Response
      */
-    public function show(Club $club, Gym $gym)
+    public function show(Club $club, $gym_no)
     {
-        //
+        $gyms = array();
+
+        if ($gym_no != 'all'){
+          $gym = $club->gyms()->where('gym_no',$gym_no)->get();
+        } else {
+          $gym = $club->gyms()->get();
+        }
+        foreach ($gym as $g){
+          $gyms[] = array(
+            "id"=> $g->id,
+            "text"=> $g->gym_no.' - '.$g->name
+          );
+        }
+        //Log::debug(print_r($gym,true));
+        return Response::json($gyms);
     }
 
     /**
@@ -73,7 +87,7 @@ class ClubGymController extends Controller
      * @param  \App\Gym  $gym
      * @return \Illuminate\Http\Response
      */
-    public function edit( Gym $gym)
+    public function edit( $language, Gym $gym)
     {
       Log::debug('editing gym '.$gym->id);
       $gym->load('club');
@@ -99,7 +113,7 @@ class ClubGymController extends Controller
       ]);
 
       $check = gym::where('id', $gym->id)->update($data);
-      return redirect()->route('club.dashboard', ['id' => $gym->club_id ]);
+      return redirect()->route('club.dashboard', ['language'=>app()->getLocale(), 'id' => $gym->club_id ]);
 
     }
 
@@ -110,11 +124,11 @@ class ClubGymController extends Controller
      * @param  \App\Gym  $gym
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Club $club, Gym $gym)
+    public function destroy(  Gym $gym)
     {
       Log::info('deleteing gym '.$gym->id);
       $check = Gym::where('id', $gym->id)->delete();
 
-      return redirect()->route('club.dashboard', ['id' => $gym->club_id ]);
+      return redirect()->route('club.dashboard', ['language'=>app()->getLocale(), 'id' => $gym->club_id ]);
     }
 }

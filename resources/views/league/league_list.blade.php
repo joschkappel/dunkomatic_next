@@ -17,12 +17,14 @@
               <div class="col-12">
                 <div class="card">
                   <div class="card-header">
-                    <h3 class="card-title">List of Leagues for region {{ Auth::user()->region }}</h3>
+                    <h3 class="card-title">@lang('league.title.list', ['region' => Auth::user()->region ])</h3>
                   </div>
                   <!-- /.card-header -->
 
                   <div class="card-tools p-2">
-                    <a href="{{ route('league.create') }}" class="text-center btn btn-success btn-sm mb-3">Create League</a>
+                    <a href="{{ route('league.create', app()->getLocale()) }}" class="text-center btn btn-success btn-sm mb-3">@lang('league.action.create')</a>
+                    <a href="{{ route('league.list_stats', app()->getLocale()) }}" class="text-center btn btn-success btn-sm mb-3">TESTING</a>
+
           </div>
           <div class="card-body">
 
@@ -30,12 +32,11 @@
             <thead class="thead-light">
                <tr>
                   <th>Id</th>
-                  <th>Shortname</th>
-                  <th>Name</th>
-                  <th>Region</th>
-                  <th>Schedule</th>
-                  <th>Created at</th>
-                  <th>Action</th>
+                  <th>@lang('league.shortname')</th>
+                  <th>@lang('league.name')</th>
+                  <th>@lang('club.region')</th>
+                  <th>{{trans_choice('schedule.schedule',1)}}</th>
+                  <th>{{__('Created at')}}</th>
                </tr>
             </thead>
          </table>
@@ -58,7 +59,7 @@ jochenk
                processing: true,
                serverSide: true,
                order: [[1,'asc']],
-               ajax: '{{ url('league/list') }}',
+               ajax: '{{ route('league.list') }}',
                columns: [
                         { data: 'id', name: 'id', visible: false },
                         { data: 'shortname', name: 'shortname' },
@@ -66,36 +67,10 @@ jochenk
                         { data: 'region', name: 'region' },
                         { data: 'schedule.name', name: 'name', defaultContent: ''},
                         { data: 'created_at', name: 'created_at'},
-                        { data: 'action', name: 'action', orderable: false, searchable: false}
                      ]
             });
          });
 
-         $('body').on('click', '.deleteLeague', function () {
-
-                 var league_id = $(this).data("id");
-
-                 if(confirm("Are You sure want to delete !"))
-                 {
-                   $.ajax({
-                       type: "POST",
-                       dataType: 'json',
-                       data: {
-                         id: league_id,
-                         _token: "{{ csrf_token() }}",
-                         _method: 'DELETE'
-                       },
-                       url: "league/"+league_id,
-                       success: function (data) {
-                       var oTable = $('#table').dataTable();
-                       oTable.fnDraw(false);
-                       },
-                       error: function (data) {
-                           console.log('Error:', data);
-                       }
-                   });
-                }
-          });
 
 </script>
 @stop

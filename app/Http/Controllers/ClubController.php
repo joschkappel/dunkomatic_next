@@ -14,9 +14,53 @@ use Datatables;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Database\Eloquent\Builder;
 
 class ClubController extends Controller
 {
+
+    public function index_stats()
+    {
+      return view('club/club_stats');
+    }
+    /**
+     * Display a listing of the resource .
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function list_stats()
+    {
+      //
+      $region = Auth::user()->region;
+      Log::debug('get clubs for region '.$region);
+
+      if ($region == ''){
+        $clubs = Club::query();
+      } else {
+        $clubs = Club::query()->where('region', '=', $region);
+      }
+
+      $clubs = $clubs->withCount(['leagues','teams','games_home',
+                                     'games_home_notime' => function (Builder $query) {
+                                          $query->whereNull('game_time');},
+                                     'games_home_noshow' => function (Builder $query) {
+                                          $query->whereNull('team_id_guest');},
+                          ])
+                        ->get();
+
+      //Log::debug(print_r($leagues,true));
+
+      $clublist = datatables::of($clubs);
+
+      return $clublist
+        ->addIndexColumn()
+        ->rawColumns(['shortname'])
+        ->editColumn('shortname', function ($data) {
+            return '<a href="' . route('club.dashboard', ['language'=>app()->getLocale(),'id'=>$data->id]) .'">'.$data->shortname.'</a>';
+            })
+        ->make(true);
+
+    }
     /**
      * Display a listing of the all resources.
      *
@@ -32,7 +76,7 @@ class ClubController extends Controller
 
           if (count($clublist)>1) {
             return redirect()->action(
-                'ClubController@dashboard', ['id' => $clublist[0]]
+                'ClubController@dashboard', ['language'=>app()->getLocale(),'id' => $clublist[0]]
             );
           } else {
             return back();
@@ -45,10 +89,10 @@ class ClubController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function dashboard( $id )
+    public function dashboard( $language, $id )
     {
         //
-
+          Log::debug('id is - '.$id);
           if ( $id ){
             $data['club'] =  Club::find(intval($id));
 
@@ -58,8 +102,8 @@ class ClubController extends Controller
               $data['member_roles'] = $data['club']->member_roles()->with('role','member')->get();
 //              $data['members'] = Member::with('member_roles.unit')->where('member_roles.unit.id',$id)->get();
   //            Log::debug(print_r($data['members'],true));
-              $data['games_home'] = $data['club']->games_home()->with('games_home')->get();
-
+              $data['games_home'] = $data['club']->games_home()->get();
+              //Log::debug(print_r($data['games_home'],true ));
               return view('club/club_dashboard', $data);
             }
           }
@@ -86,19 +130,19 @@ class ClubController extends Controller
 
         return $clublist
           ->addIndexColumn()
-          ->addColumn('action', function($data){
-                 $editUrl = url('club/'.$data->id.'/list');
-                  //                 $btn = '<a href="'.$editUrl.'"</a><button type="button" class="btn btn-secondary btn-sm"><i class="fa fa-edit"></i> Edit</button>';
-                 $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$data->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteClub"><i class="fa fa-fw fa-trash"></i>Delete</a>';
-
-                  return $btn;
-          })
-          ->rawColumns(['action','shortname'])
+          // ->addColumn('action', function($data){
+          //        $editUrl = url('club/'.$data->id.'/list');
+          //         //                 $btn = '<a href="'.$editUrl.'"</a><button type="button" class="btn btn-secondary btn-sm"><i class="fa fa-edit"></i> Edit</button>';
+          //        $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$data->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteClub"><i class="fa fa-fw fa-trash"></i>'.__('club.action.delete').'</a>';
+          //
+          //         return $btn;
+          // })
+          ->rawColumns(['shortname'])
           ->editColumn('created_at', function ($user) {
                   return $user->created_at->format('d.m.Y H:i');
               })
           ->editColumn('shortname', function ($data) {
-              return '<a href="' . route('club.dashboard', $data->id) .'">'.$data->shortname.'</a>';
+              return '<a href="' . route('club.dashboard', ['language'=>app()->getLocale(),'id'=>$data->id]) .'">'.$data->shortname.'</a>';
               })
           ->make(true);
     }
@@ -163,8 +207,7 @@ class ClubController extends Controller
         Log::info(print_r($data, true));
 
         $check = Club::create($data);
-        return redirect()->action(
-            'ClubController@index')->withSuccess('New Club saved  ');
+        return redirect()->route('club.index', ['language' => app()->getLocale()]);
 
     }
 
@@ -185,10 +228,22 @@ class ClubController extends Controller
      * @param  \App\Club  $club
      * @return \Illuminate\Http\Response
      */
-    public function edit(Club $club)
+    public function edit($language, Club $club)
     {
         Log::debug('editing club '.$club->id);
         return view('club/club_edit', ['club' => $club]);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Club  $club
+     * @return \Illuminate\Http\Response
+     */
+    public function edit_homegame($language, Club $club)
+    {
+        Log::debug('editing club '.$club->id);
+        return view('game/gamehome_edit', ['club' => $club]);
     }
 
     /**
@@ -198,7 +253,7 @@ class ClubController extends Controller
      * @param  \App\Club  $club
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Club $club)
+    public function update(Request $request,  Club $club)
     {
 
       $data = $request->validate( [
@@ -219,13 +274,11 @@ class ClubController extends Controller
       ]);
 
         if(!$club->id){
-           return redirect()->action(
-               'ClubController@index');
+           return redirect()->route('club.index', app()->getLocale() );
         }
 
         $check = club::where('id', $club->id)->update($data);
-        return redirect()->action(
-            'ClubController@index');
+        return redirect()->route('club.dashboard',['language'=>app()->getLocale(), 'id'=>$club]);
     }
 
     /**
@@ -234,15 +287,12 @@ class ClubController extends Controller
      * @param  \App\Club  $club
      * @return \Illuminate\Http\Response
      */
-    public function delete(Request $request, $id)
-    {
-        Log::info(print_r($id, true));
-        $check = Club::where('id', $id)->delete();
 
-        return Response::json($check);
-    }
     public function destroy(Club $club)
     {
-        //
+      Log::info(print_r($club->id, true));
+      $check = Club::where('id', $club->id)->delete();
+
+      return Response::json($check);
     }
 }

@@ -13,17 +13,17 @@
     <div class="col-md-10">
         <div class="card">
             <div class="card-header">
-                <div class="card-title">List of schedules </div>
+                <div class="card-title">@lang('schedule.title.compare', ['region' => Auth::user()->region ]) </div>
             </div>
             <div class="card-body">
                     <!-- For defining autocomplete -->
-                        <label class="col-sm-2 col-form-label" for='selSize'>pls select schedules</label>
+                        <label class="col-sm-2 col-form-label" for='selSize'>{{ trans_choice('schedule.schedule',2)}}</label>
                         <div class="col-sm-10">
                           <select class='js-example-placeholder-single js-states form-control select2' id='selSize'>
                           </select>
                         </div>
 
-              @include('schedule/scheduleevent_pivot')
+              @include('schedule/includes/scheduleevent_pivot')
 
 
         </div>
@@ -41,7 +41,7 @@
     $(function() {
 
       $(".js-example-placeholder-single").select2({
-          placeholder: "Select schedules...",
+          placeholder: "@lang('schedule.action.select')...",
           multiple: true,
           allowClear: false,
           minimumResultsForSearch: -1,

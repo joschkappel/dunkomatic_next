@@ -3,7 +3,7 @@
 
 @if (config('adminlte.use_route_url', false))
     @php( $profile_url = $profile_url ? route($profile_url) : '' )
-    @php( $logout_url = $logout_url ? route($logout_url) : '' )
+    @php( $logout_url = $logout_url ? route($logout_url, app()->getLocale()) : '' )
 @else
     @php( $profile_url = $profile_url ? url($profile_url) : '' )
     @php( $logout_url = $logout_url ? url($logout_url) : '' )

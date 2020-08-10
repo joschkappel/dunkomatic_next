@@ -24,10 +24,14 @@ class SchedulesTableSeeder extends Seeder
 
         $osize = DB::connection('dunkv1')->table('schedule')->where('group_id',$schedule->group_id)->max('game_day');
 
-        $size = ($osize / 2)+1;
+        if ($osize > 0 ){
+          $size = ($osize / 2)+1;
 
-        if ( $size % 2 != 0){
-          $size = "2*".(($osize / 4)+1);
+          if ( $size % 2 != 0){
+            $size = "2*".(($osize / 4)+1);
+          }
+        } else {
+          $size = 0;
         }
 
         DB::connection('dunknxt')->table('schedules')->insert([

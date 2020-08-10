@@ -1,36 +1,30 @@
 @extends('adminlte::page')
 
-@section('content_header')
-    @if(Session::has('success'))
-    <div class="alert alert-success">
-        {{Session::get('success')}}
-    </div>
-@endif
-@stop
 @section('css')
-<!-- Bootstrap Color Picker -->
-<link href="{{ URL::asset('vendor/daterangepicker/daterangepicker.css') }}" rel="stylesheet">
+  <link type="text/css" rel="stylesheet" href="{{ URL::asset('vendor/datatables/css/dataTables.bootstrap4.min.css') }}" />
+  <link type="text/css" rel="stylesheet" href="{{ URL::asset('vendor/datatables-plugins/responsive/css/responsive.bootstrap4.min.css') }}" />
+
+  <link href="{{ URL::asset('vendor/daterangepicker/daterangepicker.css') }}" rel="stylesheet">
 .red {
   background-color: red !important;
 }
 @endsection
 
-@section('plugins.Datatables', true)
 @section('content')
 
             <div class="row">
               <div class="col-12">
                 <div class="card">
                   <div class="card-header">
-                    <h3 class="card-title">List of events for  {{ $schedule->name }} /  {{ $eventcount }}</h3>
+                    <h3 class="card-title">@lang('schedule.title.event.list', [ 'schedule'=>$schedule->name, 'eventcount'=> $eventcount])</h3>
                   </div>
                   <!-- /.card-header -->
 
                   <div class="card-tools p-2">
-            <button type="button" class="btn btn-info btn-sm mb-3" data-toggle="modal" data-target="#modalCreateEvents"{{ ($eventcount > 0) ? 'disabled' : '' }}>Create Events</button>
-            <button type="button" class="btn btn-info btn-sm mb-3" data-toggle="modal" data-target="#modalCloneEvents"{{ ($eventcount > 0) ? 'disabled' : '' }}>Clone Events</button>
-            <button type="button" class="btn btn-info btn-sm mb-3" data-toggle="modal" data-target="#modalShiftEvents"{{ ($eventcount == 0) ? 'disabled' : '' }}>Shift Events</button>
-            <button type="button" class="btn btn-info btn-sm mb-3" data-toggle="modal" data-target="#modalDeleteEvents"{{ ($eventcount == 0) ? 'disabled' : '' }}>Delete All Events</button>
+            <button type="button" class="btn btn-info btn-sm mb-3" data-toggle="modal" data-target="#modalCreateEvents"{{ ($eventcount > 0) ? 'disabled' : '' }}>@lang('schedule.action.events.create')</button>
+            <button type="button" class="btn btn-info btn-sm mb-3" data-toggle="modal" data-target="#modalCloneEvents"{{ ($eventcount > 0) ? 'disabled' : '' }}>@lang('schedule.action.events.clone')</button>
+            <button type="button" class="btn btn-info btn-sm mb-3" data-toggle="modal" data-target="#modalShiftEvents"{{ ($eventcount == 0) ? 'disabled' : '' }}>@lang('schedule.action.events.shift')</button>
+            <button type="button" class="btn btn-info btn-sm mb-3" data-toggle="modal" data-target="#modalDeleteEvents"{{ ($eventcount == 0) ? 'disabled' : '' }}>@lang('schedule.action.events.delete')</button>
           </div>
           <div class="card-body">
             @csrf
@@ -40,10 +34,10 @@
                <tr>
                   <th>Id</th>
                   <th>Game Day Sort</th>
-                  <th>Game Day</th>
-                  <th>Game Date</th>
-                  <th>All Weekend</th>
-                  <th>created at</th>
+                  <th>@lang('game.game_day')</th>
+                  <th>@lang('game.game_date')</th>
+                  <th>@lang('game.weekend')</th>
+                  <th>{{__('Created at')}}</th>
                </tr>
             </thead>
          </table>
@@ -69,28 +63,35 @@ jochen
 @section('js')
 <script src="{{ URL::asset('vendor/moment/moment.min.js') }}"></script>
 <script src="{{ URL::asset('vendor/daterangepicker/daterangepicker.js') }}"></script>
+<script src="{{ URL::asset('vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ URL::asset('vendor/datatables/js/dataTables.bootstrap4.min.js') }}"></script>
+<script src="{{ URL::asset('vendor/datatables-plugins/responsive/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ URL::asset('vendor/datatables-plugins/responsive/js/responsive.bootstrap4.min.js') }}"></script>
+
+@if (app()->getLocale() == 'de')
+  <script src="{{ URL::asset('vendor/moment/locale/de.js') }}"></script>
+@endif
 
 <script>
-         $(function() {
-               $('#table').DataTable({
-               processing: true,
-               serverSide: true,
-               order: [[1,'asc']],
-               ajax: '{{ route('schedule_event.list-dt',$schedule->id) }}',
-               columns: [
-                        { data: 'id', name: 'id', visible: false },
-                        { data: 'game_day_sort', name: 'game_day_sort', visible: false },
-                        { data: 'game_day', name: 'game_day', sortable: false },
-                        { data: 'game_date', name: 'game_date', sortable: false },
-                        { data: 'full_weekend', name: 'all_weekend'  },
-                        { data: 'created_at', name: 'created_at'},
-                     ]
-              //   createdRow: function( row, data, dataIndex ) {
-              //      if ( data.game_date.indexOf('DUPLICATE') >= 0 ) {
-              //        $(row).addClass('bg-warning');
-              //     }}
-               });
-         });
+       $('#table').DataTable({
+       processing: true,
+       serverSide: true,
+       responsive: true,
+       @if (app()->getLocale() == 'de')
+       language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/German.json')}}" },
+       @endif       
+       order: [[1,'asc']],
+       ajax: '{{ route('schedule_event.list-dt',$schedule->id) }}',
+       columns: [
+                { data: 'id', name: 'id', visible: false },
+                { data: 'game_day_sort', name: 'game_day_sort', visible: false },
+                { data: 'game_day', name: 'game_day', sortable: false },
+                { data: 'game_date', name: 'game_date', sortable: false },
+                { data: 'full_weekend', name: 'all_weekend'  },
+                { data: 'created_at', name: 'created_at'},
+             ]
+       });
+
 
         var old_gamedate;
         let thisyear = new Date().getFullYear();

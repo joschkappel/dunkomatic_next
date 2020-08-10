@@ -4,8 +4,8 @@
         <div class="modal-content">
             <!--Header-->
             <div class="modal-header bg-danger">
-                <p class="heading" id="dheader">Delete role for
-                <span id="unit_shortname"></span>
+                <p class="heading" id="dheader">@lang('role.title.delete')
+                <span id="unit_type"></span> <span id="unit_shortname"></span>
                 </p>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true" class="white-text">&times;</span>
@@ -23,15 +23,13 @@
 
 
                         <div class="card-body">
-                            <p class="text-left">Do your really want to delete</p>
+                            <p class="text-left">@lang('role.confirm.delete')</p>
                             <h4 class="text-left text-danger">
                             <span class="text-danger" id="role_name"></span> <span id="member_name"></span> </h4>
-
-                            Pls confirm to delete this role
                         </div>
                         <div class="card-footer">
                             <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-                                <button type="submit" class="btn btn-danger">Submit</button>
+                                <button type="submit" class="btn btn-danger">{{__('Submit')}}</button>
                             </div>
                         </div>
                     </form>

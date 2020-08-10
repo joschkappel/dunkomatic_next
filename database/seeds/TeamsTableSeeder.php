@@ -11,7 +11,16 @@ class TeamsTableSeeder extends Seeder
      */
     public function run()
     {
-      $old_team = DB::connection('dunkv1')->table('team')->get();
+      $old_team = DB::connection('dunkv1')->table('team')
+                        ->whereExists(function ($query) {
+                            $query->select(DB::raw(1))
+                                  ->from('club')
+                                  ->whereRaw('team.club_id = club.club_id');})
+                        ->whereExists(function ($query) {
+                            $query->select(DB::raw(1))
+                                  ->from('league')
+                                  ->whereRaw('team.league_id = league.league_id AND league.active="1"');})
+                        ->get();
 
       foreach ($old_team as $team) {
         if ($team->changeable === 'Y'){

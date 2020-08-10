@@ -1,0 +1,33 @@
+<?php
+
+return [
+  'club' => 'Club|Clubs',
+  'club_no' => 'Club Number',
+  'action.create' => 'Create Club',
+  'action.delete' => 'Delete Club',
+  'action.edit' => 'Modify Club',
+  'action.assign' => 'Assign Club to League :LEAGUE',
+  'action.select' => 'Select a club',
+  'action.edit-homegame' => 'Edit Home Game Dates',
+  'action.import-homegame' => 'Import Home Game Dates',   
+  'confirm.delete' => 'Do you really want to delete club :CLUB and its :noteam teams, :nomember members and :nogym gyms ?',
+  'title.list' => 'Clublist for Region :REGION',
+  'title.stats' => 'Clubstatistics for Region :REGION',
+  'title.new' => 'Create a New Club for Region :REGION ',
+  'title.edit' => 'Modify Details for Club :CLUB',
+  'title.delete' => 'Delete a Club',
+  'title.gamehome.edit' => 'Edit Start Date and Time for Home Games',
+  'title.gamehome.import' => 'Upload Home Game File',
+  'menu.list' => 'Clublist',
+  'menu.stats' => 'Statistics',
+  'registered' => 'Registered Clubs',
+  'entitled' => 'Entitled Clubs',
+  'region' => 'Region',
+  'shortname' => 'Code',
+  'name' => 'Name',
+  'entitlement' => 'Entitlement',
+  'entitled.no' => 'No club assigned',
+  'entitled.all' => 'All clubs assigned',
+  'entitled.some' => ':entitled out of :total clubs assigned',
+
+];

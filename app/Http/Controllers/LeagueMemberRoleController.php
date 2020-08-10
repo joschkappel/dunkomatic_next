@@ -19,7 +19,7 @@ class LeagueMemberRoleController extends Controller
      * @param  \App\League  $league
      * @return \Illuminate\Http\Response
      */
-    public function index(League $league)
+    public function index($language, League $league)
     {
       Log::debug(print_r($league->region,true));
       $clublist = Club::where('region', $league->region)->with('member_roles')->get();
@@ -54,7 +54,7 @@ class LeagueMemberRoleController extends Controller
      * @param  \App\League  $league
      * @return \Illuminate\Http\Response
      */
-    public function create(League $league)
+    public function create($language, League $league)
     {
       return view('member/memberrole_league_new', ['league' => $league]);
     }
@@ -106,7 +106,7 @@ class LeagueMemberRoleController extends Controller
       }
 
       return redirect()->action(
-            'LeagueController@dashboard', ['id' => $league->id]
+            'LeagueController@dashboard', ['language'=>app()->getLocale(),'id' => $league->id]
       );
     }
 
@@ -129,7 +129,7 @@ class LeagueMemberRoleController extends Controller
      * @param  \App\MemberRole  $memberrole
      * @return \Illuminate\Http\Response
      */
-    public function edit(League $league, MemberRole $memberrole)
+    public function edit($language, League $league, MemberRole $memberrole)
     {
       $data = MemberRole::with('member')->find($memberrole->id);
       $member = $data['member'];
@@ -175,7 +175,7 @@ class LeagueMemberRoleController extends Controller
 
       $check = Member::where('id', $member->id)->update($data);
       return redirect()->action(
-            'LeagueController@dashboard', ['id' => $league->id]
+            'LeagueController@dashboard', ['language'=>app()->getLocale(), 'id' => $league->id]
       );
     }
 

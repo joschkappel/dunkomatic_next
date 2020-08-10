@@ -25,6 +25,7 @@ class CreateLeaguesTable extends Migration
             $table->unsignedInteger('schedule_id')->nullable();
             $table->foreign('schedule_id')->references('id')->on('schedules');
             $table->timestamps();
+            //$table->unique('region','shortname');
         });
     }
 

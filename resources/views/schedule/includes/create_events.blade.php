@@ -4,7 +4,7 @@
         <div class="modal-content">
             <!--Header-->
             <div class="modal-header bg-info">
-                <p class="heading">Create events for {{$schedule->name}}</p>
+                <p class="heading">@lang('schedule.title.event.create', ['schedule'=>$schedule->name])</p>
 
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true" class="white-text">&times;</span>
@@ -18,11 +18,6 @@
                     <form class="form-horizontal" action="{{ route('schedule_event.store') }}" method="POST">
                         @csrf
                         <div class="card-body">
-                            @if ($errors->any())
-                            <div class="alert alert-danger" role="alert">
-                                Please fix the following errors
-                            </div>
-                            @endif
                             <input type="hidden" name="schedule_id" value="{{ $schedule->id }}">
                             <input type="hidden" name="schedule_size" value="{{ $schedule->size }}">
                             <div class="form-group row ">

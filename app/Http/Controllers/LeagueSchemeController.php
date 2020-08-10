@@ -50,7 +50,7 @@ class LeagueSchemeController extends Controller
 
       //  Log::debug(print_r($test, true));
 
-        $returnhtml =  view("league/league_scheme_pivot", ["scheme" => $scheme])->render();
+        $returnhtml =  view("league/includes/league_scheme_pivot", ["scheme" => $scheme])->render();
         // Log::debug(print_r($returnhtml, true));
         return Response::json($returnhtml);
       }

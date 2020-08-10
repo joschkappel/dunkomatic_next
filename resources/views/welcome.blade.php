@@ -4,10 +4,11 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Dunkomatic Next</title>
+        <title>DunkOmatic Next</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+        <link rel="stylesheet" href="{{ asset('vendor/flag-icon-css/css/flag-icon.min.css') }}">
 
         <!-- Styles -->
         <style>
@@ -67,13 +68,16 @@
         <div class="flex-center position-ref full-height">
             @if (Route::has('login'))
                 <div class="top-right links">
+                      <a href="{{ route('welcome', 'en') }}" ><i class="flag-icon flag-icon-gb"></i></a>
+                      <a href="{{ route('welcome', 'de') }}" ><i class="flag-icon flag-icon-de"></i></a>
                     @auth
-                        <a href="{{ url('/home') }}">Home</a>
+                        <a href="{{ route('home', app()->getLocale()) }}">Home</a>
                     @else
-                        <a href="{{ route('login') }}">Login</a>
+
+                        <a href="{{ route('login', app()->getLocale()) }}">{{ __('adminlte::adminlte.sign_in') }}</a>
 
                         @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
+                            <a href="{{ route('register', app()->getLocale()) }}">{{ __('adminlte::adminlte.register') }}</a>
                         @endif
                     @endauth
                 </div>
@@ -81,7 +85,7 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Dunkomatic Next
+                    Dunk-O-matic Next
                 </div>
 
                 <div class="links">

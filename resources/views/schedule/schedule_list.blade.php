@@ -15,12 +15,12 @@
               <div class="col-12">
                 <div class="card">
                   <div class="card-header">
-                    <h3 class="card-title">List of Schedules for region {{ Auth::user()->region }}</h3>
+                    <h3 class="card-title">@lang('schedule.title.list', ['region'=>Auth::user()->region ])</h3>
                   </div>
                   <!-- /.card-header -->
 
                   <div class="card-tools p-2">
-            <a href="{{ route('schedule.create') }}" class="text-center btn btn-success btn-sm mb-3">Create New Schedule</a>
+            <a href="{{ route('schedule.create', app()->getLocale() ) }}" class="text-center btn btn-success btn-sm mb-3">@lang('schedule.action.create')</a>
           </div>
           <div class="card-body">
             @csrf
@@ -30,20 +30,24 @@
                <tr>
                   <th>Id</th>
                   <th>Name</th>
-                  <th>Region</th>
+                  <th>@lang('club.region')</th>
                   <th>Eventcolor</th>
-                  <th>Color</th>
-                  <th>Team Size</th>
-                  <th>Events</th>
-                  <th>Active</th>
-                  <th>created at</th>
+                  <th>@lang('schedule.color')</th>
+                  <th>@lang('schedule.size')</th>
+                  <th>@lang('schedule.events')</th>
+                  <th>{{__('Active')}}</th>
+                  <th>{{__('Created at')}}</th>
+                  <th>{{__('Action')}}</th>
                </tr>
             </thead>
          </table>
           </div>
-          <!-- /.card-body -->
 
         </div>
+        <!-- /.card-body -->
+        <!-- all modals here -->
+        @include('schedule/includes/schedule_delete')
+        <!-- all modals above -->
       </div>
     </div>
 @stop
@@ -58,46 +62,35 @@ jochenk
 <script>
          $(function() {
                $('#table').DataTable({
-               processing: true,
-               serverSide: true,
-               order: [[1,'asc']],
-               ajax: '{{ route('schedule.list') }}',
-               columns: [
-                        { data: 'id', name: 'id', visible: false },
-                        { data: 'name', name: 'name' },
-                        { data: 'region_id', name: 'region_id' },
-                        { data: 'eventcolor', name: 'eventcolor', visible: false  },
-                        { data: 'color', name: 'color', orderable: false, searchable: false },
-                        { data: 'size.description', name: 'description'},
-                        { data: 'events', name: 'events'},
-                        { data: 'active', name: 'active', searchable: false },
-                        { data: 'created_at', name: 'created_at'},
-                     ]
+                 processing: true,
+                 serverSide: true,
+                 order: [[1,'asc']],
+                 ajax: '{{ route('schedule.list') }}',
+                 columns: [
+                          { data: 'id', name: 'id', visible: false },
+                          { data: 'name', name: 'name' },
+                          { data: 'region_id', name: 'region_id' },
+                          { data: 'eventcolor', name: 'eventcolor', visible: false  },
+                          { data: 'color', name: 'color', orderable: false, searchable: false },
+                          { data: 'size.description', name: 'description'},
+                          { data: 'events', name: 'events'},
+                          { data: 'active', name: 'active', searchable: false },
+                          { data: 'created_at', name: 'created_at'},
+                          { data: 'action', name: 'action', orderable: false, searchable: false},
+                       ]
+              });
             });
-         });
 
-         $('body').on('click', '.deleteScheduleType', function () {
+          $(document).on('click', '#deleteSchedule', function () {
+              $('#schedule_id').val($(this).data('schedule-id'));
+              $('#events').html($(this).data('events'));
+              $('#schedule_name').html($(this).data('schedule-name'));
+              var url = "{{ route('schedule.destroy', ['schedule'=>':scheduleid:'])}}";
+              url = url.replace(':scheduleid:',$(this).data('schedule-id') );
+              $('#confirmDeleteSchedule').attr('action', url);
+              $('#modalDeleteSchedule').modal('show');
+           });
+       
 
-                 var st_id = $(this).data("id");
-                 if(confirm("Are You sure want to delete !"))
-                 {
-                   $.ajax({
-                       type: "post",
-                       url: "schedule/delete/"+st_id,
-                       dataType:"json",
-                       data: {
-                            "_token": "{{ csrf_token() }}",
-                            "_method": 'DELETE'
-                        },
-                       success: function (data) {
-                         var oTable = $('#table').dataTable();
-                         oTable.fnDraw(false);
-                       },
-                       error: function (data) {
-                           console.log('Error:', data);
-                       }
-                   });
-                }
-             });
 </script>
 @stop

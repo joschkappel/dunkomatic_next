@@ -10,8 +10,9 @@ class Game extends Model
         'id','league_id','region','game_no','game_plandate','game_date','game_time',
         'club_id_home','team_id_home','team_home','team_char_home',
         'club_id_guest','team_id_guest','team_guest','team_char_guest',
-        'gym_no','referee_1','referee_2'
+        'gym_no','gym_id','referee_1','referee_2'
   ];
+  protected $dates = ['game_date', 'game_plandate'];
 
   public function region()
   {
@@ -21,6 +22,10 @@ class Game extends Model
   public function club_home()
   {
       return $this->belongsTo('App\Club','club_id_home');
+  }
+  public function gym()
+  {
+      return $this->belongsTo('App\Gym','gym_id');
   }
 
   public function club_guest()
@@ -41,6 +46,11 @@ class Game extends Model
   public function team_guest()
   {
       return $this->belongsTo('App\Team','team_id_guest');
+  }
+
+  public function scopeNotime($query, $league)
+  {
+      return $query->where('league_id',$league)->whereNull('game_time');
   }
 
 }
