@@ -17,7 +17,7 @@ class MemberController extends Controller
      * @param  \App\Member  $member
      * @return \Illuminate\Http\Response
      */
-    public function show(Member $member)
+    public function show($language, Member $member)
     {
       //Log::debug(print_r($member,true));
       return Response::json($member);

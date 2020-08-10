@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'Dunkomatic Next',
+    'title' => 'DunkOmatic Next',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -31,7 +31,7 @@ return [
     */
 
     'use_ico_only' => false,
-    'use_full_favicon' => false,
+    'use_full_favicon' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -165,7 +165,7 @@ return [
     |
     */
 
-    'use_route_url' => false,
+    'use_route_url' => true,
 
     'dashboard_url' => 'home',
 
@@ -175,11 +175,11 @@ return [
 
     'register_url' => 'register',
 
-    'password_reset_url' => 'password/reset',
+    'password_reset_url' => 'password.reset',
 
-    'password_email_url' => 'password/email',
+    'password_email_url' => 'password.email',
 
-    'profile_url' => 'profile',
+    //'profile_url' => 'profile',
 
     /*
     |--------------------------------------------------------------------------
@@ -211,119 +211,82 @@ return [
         // [
         //     'text' => 'search',
         //     'search' => true,
-        //     'topnav' => true,
+        //     'topnav_right' => true,
         // ],
+
         [
-            'text' => 'clubs',
-            'route'  => 'club.index',
-            'icon_color' => 'orange',
-            'icon' => 'fas fa-basketball-ball'
-            //'can'  => 'manage-blog',
-        ],
-        [
-            'text' => 'leagues',
-            'route'  => 'league.index',
-            //'url'  => 'leagues/list',
-            'icon_color' => 'yellow',
-            'icon' => 'fa fa-trophy',
-            //'can'  => 'manage-blog',
-        ],
-        [
-            'text' => 'league schemes',
-            'url'  => 'scheme/index',
-            'icon' => 'fas fa-people-arrows',
-            //'can'  => 'manage-blog',
-        ],
-        [
-            'text' => 'schedules',
-            'icon' => 'fa fa-calendar',
-            'icon_color' => 'green',
-            'submenu' => [
-              [
-                'text' => 'manage',
-                'route'  => 'schedule.index',
-                'icon' => 'fas fa-calendar-plus',
-              ],[
-                'text' => 'calendar',
-                'route'  => 'schedule_event.cal',
-                'icon' => 'fas fa-calendar-alt',
-              ],[
-                'text' => 'compare',
-                'route'  => 'schedule.index_piv',
-                'icon' => 'fas fa-calendar-week',
-              ]
-            ]
-            //'can'  => 'manage-blog',
+            'text' => 'TESTING',
+            'icon' => 'fas fa-basketball-ball',
+            'topnav_user' => true,
         ],
         // [
-        //     'text'        => 'pages',
-        //     'url'         => 'admin/pages',
-        //     'icon'        => 'far fa-fw fa-file',
-        //     'label'       => 4,
-        //     'label_color' => 'success',
-        // ],
-        // ['header' => 'account_settings'],
-        // [
-        //     'text' => 'profile',
-        //     'url'  => 'admin.profile',
-        //     'icon' => 'fas fa-fw fa-user',
-        // ],
-        // [
-        //     'text' => 'change_password',
-        //     'url'  => 'admin/settings',
-        //     'icon' => 'fas fa-fw fa-lock',
-        // ],
-        // [
-        //     'text'    => 'multilevel',
-        //     'icon'    => 'fas fa-fw fa-share',
+        //     'text' => 'clubs',
+        //     'icon_color' => 'orange',
+        //     'icon' => 'fas fa-basketball-ball',
+        //     //'can'  => 'manage-blog',
         //     'submenu' => [
-        //         [
-        //             'text' => 'level_one',
-        //             'url'  => '#',
-        //         ],
-        //         [
-        //             'text'    => 'level_one',
-        //             'url'     => '#',
-        //             'submenu' => [
-        //                 [
-        //                     'text' => 'level_two',
-        //                     'url'  => '#',
-        //                 ],
-        //                 [
-        //                     'text'    => 'level_two',
-        //                     'url'     => '#',
-        //                     'submenu' => [
-        //                         [
-        //                             'text' => 'level_three',
-        //                             'url'  => '#',
-        //                         ],
-        //                         [
-        //                             'text' => 'level_three',
-        //                             'url'  => '#',
-        //                         ],
-        //                     ],
-        //                 ],
-        //             ],
-        //         ],
-        //         [
-        //             'text' => 'level_one',
-        //             'url'  => '#',
-        //         ],
-        //     ],
-        // ],
-        // ['header' => 'labels'],
-        // [
-        //     'text'       => 'important',
-        //     'icon_color' => 'red',
+        //       [
+        //         'text' => 'list',
+        //         'url'  => 'en/club',
+        //         'icon_color' => 'orange',
+        //         'icon' => 'fas fa-list',
+        //       ],
+        //       [
+        //         'text' => 'statistics',
+        //         'url'  => 'en/club/index_stats',
+        //         'icon_color' => 'orange',
+        //         'icon' => 'fas fa-chart-bar',
+        //       ]
+        //     ]
         // ],
         // [
-        //     'text'       => 'warning',
+        //     'text' => 'leagues',
         //     'icon_color' => 'yellow',
+        //     'icon' => 'fa fa-trophy',
+        //     //'can'  => 'manage-blog',
+        //     'submenu' => [
+        //       [
+        //         'text' => 'list',
+        //         'route'  => 'league.index',
+        //         'icon_color' => 'yellow',
+        //         'icon' => 'fas fa-list',
+        //       ],
+        //       [
+        //         'text' => 'statistics',
+        //         'route'  => 'league.index_stats',
+        //         'icon_color' => 'yellow',
+        //         'icon' => 'fas fa-chart-bar',
+        //       ]
+        //     ]
         // ],
         // [
-        //     'text'       => 'information',
-        //     'icon_color' => 'cyan',
+        //     'text' => 'league schemes',
+        //     'url'  => 'scheme/index',
+        //     'icon' => 'fas fa-people-arrows',
+        //     //'can'  => 'manage-blog',
         // ],
+        // [
+        //     'text' => 'schedules',
+        //     'icon' => 'fa fa-calendar',
+        //     'icon_color' => 'green',
+        //     'submenu' => [
+        //       [
+        //         'text' => 'manage',
+        //         'route'  => 'schedule.index',
+        //         'icon' => 'fas fa-calendar-plus',
+        //       ],[
+        //         'text' => 'calendar',
+        //         'route'  => 'schedule_event.cal',
+        //         'icon' => 'fas fa-calendar-alt',
+        //       ],[
+        //         'text' => 'compare',
+        //         'route'  => 'schedule.index_piv',
+        //         'icon' => 'fas fa-calendar-week',
+        //       ]
+        //     ]
+        //     //'can'  => 'manage-blog',
+        // ],
+
     ],
 
     /*

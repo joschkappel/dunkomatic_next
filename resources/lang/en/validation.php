@@ -14,10 +14,10 @@ return [
     */
 
     'accepted' => 'The :attribute must be accepted.',
-    'active_url' => 'The :attribute is not a valid URL.',
-    'after' => 'The :attribute must be a date after :date.',
+    'active_url' => ':attribute ist keine gültige URL.',
+    'after' => 'Das Datum :attribute muss nach dem :date liegen.',
     'after_or_equal' => 'The :attribute must be a date after or equal to :date.',
-    'alpha' => 'The :attribute may only contain letters.',
+    'alpha' => ':attribute kann nur Buchstaben enthalten.',
     'alpha_dash' => 'The :attribute may only contain letters, numbers, dashes and underscores.',
     'alpha_num' => 'The :attribute may only contain letters and numbers.',
     'array' => 'The :attribute must be an array.',
@@ -99,9 +99,9 @@ return [
     'required' => 'The :attribute field is required.',
     'required_if' => 'The :attribute field is required when :other is :value.',
     'required_unless' => 'The :attribute field is required unless :other is in :values.',
-    'required_with' => 'The :attribute field is required when :values is present.',
+    'required_with' => ':attribute muss erfasst werden wenn :values angebenen wird.',
     'required_with_all' => 'The :attribute field is required when :values are present.',
-    'required_without' => 'The :attribute field is required when :values is not present.',
+    'required_without' => ':attribute muss erfasst werden, wenn :values nicht angegeben wird.',
     'required_without_all' => 'The :attribute field is required when none of :values are present.',
     'same' => 'The :attribute and :other must match.',
     'size' => [
@@ -147,6 +147,21 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+      'shortname' => 'Code',
+      'name' => 'Name',
+      'club_no' => 'Club Number',
+      'region' => 'Region',
+      'firstname' => 'Firstname',
+      'lastname' => 'Lastname',
+      'phone1' => 'Phone no.',
+      'phone2' => 'Alternative Phone no.',
+      'mobile' => 'Mobile Phone no.',
+      'city'  => 'City',
+      'street' => 'Street',
+      'zipcode' => 'ZIPcode',
+      'zip' => 'ZIPcode',      
+      'gym_no' => 'Gym Number',
+    ],
 
 ];

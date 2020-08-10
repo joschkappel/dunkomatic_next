@@ -27,7 +27,7 @@ class ClubTeamController extends Controller
      * @param  \App\Club  $club
      * @return \Illuminate\Http\Response
      */
-    public function create(Club $club)
+    public function create($language, Club $club)
     {
       return view('team/team_new', ['club' => $club]);
     }
@@ -62,7 +62,7 @@ class ClubTeamController extends Controller
       $check = Team::create($data);
 
       return redirect()->action(
-              'ClubController@dashboard', ['id' => $club->id]
+              'ClubController@dashboard', ['language'=>app()->getLocale(), 'id' => $club->id]
       );
     }
 
@@ -85,7 +85,7 @@ class ClubTeamController extends Controller
      * @param  \App\Team  $team
      * @return \Illuminate\Http\Response
      */
-    public function edit(Club $club, Team $team)
+    public function edit($language, Club $club, Team $team)
     {
 
       //Log::debug(print_r($team,true));
@@ -126,7 +126,7 @@ class ClubTeamController extends Controller
         $check = Team::where('id', $team->id)->update($data);
 
         return redirect()->action(
-                'ClubController@dashboard', ['id' => $team->club_id]
+                'ClubController@dashboard', ['language'=>app()->getLocale(), 'id' => $team->club_id]
         );
     }
 
@@ -137,7 +137,7 @@ class ClubTeamController extends Controller
      * @param  \App\Team  $team
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Club $club, Team $team)
+    public function destroy( Club $club, Team $team)
     {
         // TBDnremove from league
 

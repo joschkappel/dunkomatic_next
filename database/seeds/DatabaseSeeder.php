@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
           TeamsTableSeeder::class,
           MembersTableSeeder::class,
+          GamesTableSeeder::class,
         ]);
     }
 }

@@ -46,7 +46,7 @@ class UsersTableSeeder extends Seeder
         {
 
           // only active users
-          $old_user = DB::connection('dunkv1')->table('system_manager')->where("active","=","1")->get();
+          $old_user = DB::connection('dunkv1')->table('system_manager')->distinct()->where("active", "1")->get();
 
 
           foreach ($old_user as $user) {
@@ -61,17 +61,20 @@ class UsersTableSeeder extends Seeder
               $regionuser = true;
             }
 
-            DB::connection('dunknxt')->table('users')->insert([
-              'name'          => $user->system_manager_name,
-              'user_old'      => $user->username,
-              'email'         => $user->email,
-              'email_verified_at'      => now(),
-              'region'        => 'HBV',
-              'password'     => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-              'superuser'     => $superuser,
-              'regionuser'    => $regionuser,
-              'created_at'    => now()
-            ]);
+            if (DB::connection('dunknxt')->table('users')->where('email',$user->email)->doesntExist()){
+
+              DB::connection('dunknxt')->table('users')->insert([
+                'name'          => $user->system_manager_name,
+                'user_old'      => $user->username,
+                'email'         => $user->email,
+                'email_verified_at'      => now(),
+                'region'        => 'HBV',
+                'password'     => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+                'superuser'     => $superuser,
+                'regionuser'    => $regionuser,
+                'created_at'    => now()
+              ]);
+            }
           }
         }
     }

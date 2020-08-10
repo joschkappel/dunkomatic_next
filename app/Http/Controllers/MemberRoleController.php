@@ -30,7 +30,7 @@ class MemberRoleController extends Controller
      * @param  \App\MemberRole  $memberRole
      * @return \Illuminate\Http\Response
      */
-    public function destroy(MemberRole $memberrole)
+    public function destroy( MemberRole $memberrole)
     {
         // Log::debug(print_r($memberrole,true));
         $member = Member::find($memberrole->member_id);

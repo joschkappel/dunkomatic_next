@@ -4,7 +4,7 @@
         <div class="modal-content">
             <!--Header-->
             <div class="modal-header bg-info">
-                <p class="heading">Assign or Deassign team to league</p>
+                <p class="heading">@lang('team.title.assign.league')</p>
 
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true" class="white-text">&times;</span>
@@ -19,16 +19,11 @@
                         @method('PUT')
                         @csrf
                         <div class="card-body">
-                            @if ($errors->any())
-                            <div class="alert alert-danger" role="alert">
-                                Please fix the following errors
-                            </div>
-                            @endif
                             <input type="hidden" name="team_id" id="team_id" value=""  />
                             <input type="hidden" name="club_id" id="club_id" value=""  />
-                            <div class="form-group">
-                                <label for="selLeague" class="col-sm-2 col-form-label">League</label>
-                                <div class="col-sm-10">
+                            <div class="form-group row">
+                                <label for="selLeague" class="col-sm-4 col-form-label">{{ trans_choice('league.league',1)}}</label>
+                                <div class="col-sm-6">
                                   <select class='js-example-placeholder-single js-states form-control select2' id='selLeague' name='league_id'></select>
                                 </div>
                             </div>
@@ -36,7 +31,7 @@
                         </div>
                         <div class="card-footer">
                             <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-                                <button type="submit" class="btn btn-info">Submit</button>
+                                <button type="submit" class="btn btn-info">{{ __('Submit')}}</button>
                             </div>
                         </div>
                     </form>
@@ -55,7 +50,7 @@
 
 
       $(".js-example-placeholder-single").select2({
-          placeholder: "Select a league...",
+          placeholder: "@lang('league.action.select')...",
           allowClear: false,
           minimumResultsForSearch: -1,
           ajax: {

@@ -15,6 +15,11 @@ class Club extends Model
       return $this->hasMany('App\Gym');
   }
 
+  public function leagues()
+  {
+      return $this->belongsToMany('App\League','league_clubs')->withPivot('league_char', 'league_no');;
+  }
+
   public function teams()
   {
       return $this->hasMany('App\Team');
@@ -32,11 +37,19 @@ class Club extends Model
 
   public function games_home()
   {
-      return $this->hasMany('App\Game','club_id_home', 'id');
+      return $this->hasMany('App\Game', 'club_id_home', 'id');
+  }
+  public function games_home_notime()
+  {
+      return $this->hasMany('App\Game', 'club_id_home', 'id');
+  }
+  public function games_home_noshow()
+  {
+      return $this->hasMany('App\Game', 'club_id_home', 'id');
   }
 
   public function games_guest()
   {
-      return $this->hasMany('App\Game','club_id_guest', 'id');
+      return $this->hasMany('App\Game', 'club_id_guest', 'id');
   }
 }

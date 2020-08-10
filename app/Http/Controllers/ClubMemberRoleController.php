@@ -17,7 +17,7 @@ class ClubMemberRoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index( Club $club)
+    public function index( $language, Club $club)
     {
       //Log::debug(print_r($club,true));
       $memberlist = $club->member_roles()->get('member_id');
@@ -44,7 +44,7 @@ class ClubMemberRoleController extends Controller
      * @param  \App\Club  $club
      * @return \Illuminate\Http\Response
      */
-    public function create(Club $club)
+    public function create($language, Club $club)
     {
       return view('member/memberrole_club_new', ['club' => $club]);
     }
@@ -99,7 +99,7 @@ class ClubMemberRoleController extends Controller
       }
 
       return redirect()->action(
-            'ClubController@dashboard', ['id' => $club->id]
+            'ClubController@dashboard', ['language' => app()->getLocale(), 'id' => $club->id]
       );
     }
 
@@ -111,7 +111,7 @@ class ClubMemberRoleController extends Controller
      * @param  \App\MemberRole  $memberrole
      * @return \Illuminate\Http\Response
      */
-    public function edit(Club $club, MemberRole $memberrole)
+    public function edit($language, Club $club, MemberRole $memberrole)
     {
       $data = MemberRole::with('member')->find($memberrole->id);
       $member = $data['member'];
@@ -171,7 +171,7 @@ class ClubMemberRoleController extends Controller
 
               $check = Member::where('id', $member->id)->update($data);
               return redirect()->action(
-                    'ClubController@dashboard', ['id' => $club->id]
+                    'ClubController@dashboard', ['language'=>app()->getLocale(),'id' => $club->id]
               );
     }
 

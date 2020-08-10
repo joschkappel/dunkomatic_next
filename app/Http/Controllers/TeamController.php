@@ -126,7 +126,7 @@ class TeamController extends Controller
      * @param  \App\League  $league
      * @return \Illuminate\Http\Response
      */
-     public function assign_league(Request $request  )
+     public function assign_league(Request $request )
      {
          Log::info(print_r($request->input(), true));
          // get data
@@ -136,7 +136,7 @@ class TeamController extends Controller
 
          Team::where('id', $team_id)->update(array('league_id' => $league_id));
 
-         return redirect()->route('club.dashboard', ['id' => $club_id ]);
+         return redirect()->route('club.dashboard', ['language'=>app()->getLocale(), 'id' => $club_id ]);
      }
 
      /**
@@ -164,7 +164,7 @@ class TeamController extends Controller
       *
       * @return \Illuminate\Http\Response
       */
-     public function plan_leagues( $club )
+     public function plan_leagues( $language, $club )
      {
         $data['club'] =  Club::find(intval($club));
         $data['teams'] = $data['club']->teams()->whereNotNull('league_id')->with('league.schedule')->get();

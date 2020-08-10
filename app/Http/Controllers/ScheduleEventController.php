@@ -36,7 +36,7 @@ class ScheduleEventController extends Controller
 
         $selSchedules = $request->input('selVals');
 
-        $select = "select date_format(game_date, '%a %d.%b.%Y') as 'Game Date' ";
+        $select = "select date_format(game_date, '%a %d.%b.%Y') as '".__('game.game_date')."' ";
         $where =  array();
         $cols = array();
 
@@ -54,7 +54,7 @@ class ScheduleEventController extends Controller
 
         Log::debug($select);
         $events = collect(DB::select($select));
-        $returnhtml =  view("schedule/scheduleevent_pivot", ["events" => $events])->render();
+        $returnhtml =  view("schedule/includes/scheduleevent_pivot", ["events" => $events])->render();
         //Log::debug(print_r($returnhtml, true));
         return Response::json($returnhtml);
 
@@ -123,7 +123,7 @@ class ScheduleEventController extends Controller
             })
         ->make(true);
 
-      return view('schedule/scheduleevent_list', $data);
+      //return view('schedule/scheduleevent_list', $data);
     }
 
     /**

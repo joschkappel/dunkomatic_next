@@ -1,0 +1,28 @@
+<?php
+
+return [
+  'role' => 'Funktion|Funktionen',
+  'member' => 'Mitarbeiter',
+  'function' => 'Detail zur Funktion',
+  'action.create' => 'Neue Funktion',
+  'action.edit' => 'Funktion Ändern',
+  'action.delete' => 'Funktion Löschen',
+  'action.select' => 'Wähle eine Funktion aus',
+  'member.action.select' => 'Wähle einen Mitarbeiter aus',
+  'title.new' => 'Lege eine neue Funktion für :unittype :unitname an',
+  'title.delete' => 'Lösche eine Funktion von ',
+  'title.edit' => 'Ändere die Daten für Funktion von :member',
+  'confirm.delete' => 'Willst Du diese Funktion wirklich löschen ?',
+  'firstname' => 'Vorname',
+  'lastname' => 'Nachname',
+  'street' => 'Straße/Hausnr.',
+  'zipcode' => 'PLZ',
+  'city' => 'Stadt',
+  'mobile' => 'Mobilnummer',
+  'phone1' => 'Telefonnr.',
+  'phone2' => 'Alternative Nr.',
+  'email1' => 'eMail Addresse',
+  'email2' => 'Alternative eMail',
+  'fax1' => 'Faxnummer',
+  'fax2' => 'Alternative Nr.',
+];

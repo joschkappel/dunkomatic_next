@@ -4,7 +4,7 @@
         <div class="modal-content">
             <!--Header-->
             <div class="modal-header bg-danger">
-                <p class="heading" id="dheader">Delete gym for
+                <p class="heading" id="dheader">@lang('gym.title.delete')
                 <span id="club_shortname"></span>
                 </p>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -21,16 +21,14 @@
                         <input type="hidden" name="_method" value="DELETE">
                         <input type="hidden" name="gym_id" id="gym_id" value="">
                         <div class="card-body">
-                            <p class="text-left">Do your really want to delete</p>
+                            <p class="text-left">@lang('gym.confirm.delete')</p>
                             <h4 class="text-left text-danger">
 
                           </span><span id="gym_name"></span> </h4>
-
-                            Pls confirm to delete this Gym
                         </div>
                         <div class="card-footer">
                             <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-                                <button type="submit" class="btn btn-danger">Submit</button>
+                                <button type="submit" class="btn btn-danger">{{ __('Submit')}}</button>
                             </div>
                         </div>
                     </form>

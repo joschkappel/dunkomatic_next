@@ -1,5 +1,9 @@
 @extends('adminlte::page')
 @section('plugins.Select2', true)
+@push('css')
+  <!-- iCheck for checkboxes and radio inputs -->
+<link href="{{ URL::asset('vendor/toastr/toastr.min.css') }}" rel="stylesheet">
+@endpush
 
 @section('content_header')
 <div class="container-fluid">
@@ -14,19 +18,21 @@
                     </div>
                       <div class="col-sm-4 pd-2">
                         <ul class="list-group">
-                          <li @if (count($assigned_clubs)==0 ) class="list-group-item list-group-item-danger py-0"> no clubs
-                          @elseif (count($assigned_clubs)==$league->schedule['size'] )  class="list-group-item list-group-item-success py-0"> all clubs
-                          @else  class="list-group-item list-group-item-warning py-0"> {{ count($assigned_clubs) }} of {{$league->schedule['size'] }} clubs
-                          @endif assigned
+                          <li @if (count($assigned_clubs) == 0 ) class="list-group-item list-group-item-danger py-0"> @lang('club.entitled.no')
+                          @elseif (count($assigned_clubs) == $league->schedule['size'] )  class="list-group-item list-group-item-success py-0"> @lang('club.entitled.all')
+                          @else  class="list-group-item list-group-item-warning py-0"> @lang('club.entitled.some', [ 'entitled' => count($assigned_clubs), 'total' => $league->schedule['size']] )
+                          @endif
                           </li>
-                          <li @if (count($assigned_teams)===0 ) class="list-group-item list-group-item-danger py-0"> no teams
-                          @elseif (count($assigned_teams)===$league->schedule['size'] ) class="list-group-item list-group-item-success py-0"> all teams
-                          @else class="list-group-item list-group-item-warning py-0"> {{ count($assigned_teams) }} of {{$league->schedule['size'] }} teams
-                          @endif registered
+                          <li @if (count($assigned_teams) == 0 ) class="list-group-item list-group-item-danger py-0"> @lang('team.registered.no')
+                          @elseif (count($assigned_teams) == $league->schedule['size'] ) class="list-group-item list-group-item-success py-0"> @lang('team.registered.all')
+                          @else class="list-group-item list-group-item-warning py-0"> @lang('team.registered.some', ['registered'=>count($assigned_teams), 'total'=>$league->schedule['size']])
+                          @endif
                           </li>
-                          <li class="list-group-item list-group-item-warning py-0">no games created
+                          <li @if (count($games) == 0 ) class="list-group-item list-group-item-danger py-0"> @lang('game.created.no')
+                          @else class="list-group-item list-group-item-success py-0"> @lang('game.created.some', ['total'=> count($games)])
+                          @endif
                           </li>
-                          <li class="list-group-item list-group-item-warning py-0">competition not started
+                          <li class="list-group-item list-group-item-warning py-0"> @lang('game.notstarted')
                           </li>
                         </ul>
                     </div>
@@ -35,8 +41,8 @@
                   <div class="icon">
                       <i class="fas fa-trophy"></i>
                   </div>
-                  <a href="{{ route('league.edit',['league' => $league ]) }}" class="small-box-footer">
-                      More info <i class="fas fa-arrow-circle-right"></i>
+                  <a href="{{ route('league.edit',['language'=>app()->getLocale(),'league' => $league ]) }}" class="small-box-footer">
+                      @lang('league.action.edit') <i class="fas fa-arrow-circle-right"></i>
                   </a>
               </div>
             </div>
@@ -53,7 +59,7 @@
         <!-- card CLS -->
         <div class="card card-outline card-info " id="clubsCard">
           <div class="card-header">
-            <h4 class="card-title"><i class="fas fa-basketball-ball"></i> Entitled Clubs / Registered Teams
+            <h4 class="card-title"><i class="fas fa-basketball-ball"></i> @lang('club.entitlement') / @lang('team.registration')
               <span class="badge badge-pill badge-info">{{ count($assigned_clubs) }}</span> /
               <span class="badge badge-pill badge-info">{{ count($assigned_teams) }}</span> /
               <span class="badge badge-pill badge-info">{{ $league->schedule['size'] }}</span>
@@ -70,9 +76,9 @@
                <thead class="thead-light">
                   <tr>
                      <th>No</th>
-                     <th>Entitled Club</th>
-                     <th>Assign or Deassign</th>
-                     <th>Registered Team</th>
+                     <th>@lang('club.entitled')</th>
+                     <th>@lang('team.action.de_assign')</th>
+                     <th>@lang('team.registered')</th>
                   </tr>
                </thead>
                <tbody>
@@ -80,16 +86,16 @@
                  <tr>
                    @isset ( $assigned_clubs[$i] )
                      <td><span class="badge badge-pill badge-dark">{{ $i }}</span></td>
-                     <td><button type="button" class="btn btn-dark btn-sm " disabled>{{ $assigned_clubs[$i]['shortname'] }} </button></td>
+                     <td class="text-dark">{{ $assigned_clubs[$i]['shortname'] }}</td>
                      <td><button id="deassignClub" data-id="{{ $assigned_clubs[$i]['club_id'] }}" type="button" class="btn btn-outline-danger btn-sm "> <i class="fas fa-unlink"></i> </button></td>
                    @endisset
                    @empty ( $assigned_clubs[$i] )
                      <td><span class="badge badge-pill badge-info">{{ $i }}</span></td>
-                     <td class="text-info">unassigned</td>
+                     <td class="text-info">@lang('team.unassigned')</td>
                      <td><button type="button" id="assignClub" class="btn btn-outline-info btn-sm" data-itemid="{{ $i }}" data-toggle="modal" data-target="#modalAssignClub"><i class="fas fa-link"></i></button></td>
                    @endempty
                    @isset ( $assigned_teams[$i] )
-                     <td><button type="button" class="btn btn-dark btn-sm pd-0" disabled>{{ $assigned_teams[$i]['shortname'] }} {{ $assigned_teams[$i]['team_no'] }}</button></td>
+                     <td class="text-dark">{{ $assigned_teams[$i]['shortname'] }} {{ $assigned_teams[$i]['team_no'] }}</td>
                    @endisset
                    @empty ( $assigned_teams[$i] )
                      <td></td>
@@ -114,9 +120,9 @@
 
     <div class="col-sm-6">
       <!-- card MEMBERS -->
-      <div class="card card-outline card-info collapsed-card">
-        <div class="card-header">
-          <h4 class="card-title"><i class="fas fa-user-tie"></i> Roles  <span class="badge badge-pill badge-info">{{ count($member_roles) }}</span></h4>
+      <div class="card card-outline card-secondary collapsed-card">
+        <div class="card-header ">
+          <h4 class="card-title"><i class="fas fa-user-tie"></i> {{trans_choice('role.role',2)}}  <span class="badge badge-pill badge-info">{{ count($member_roles) }}</span></h4>
           <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
             </button>
@@ -131,7 +137,7 @@
             data-member-name="{{ $mrole['member']['firstname'] }} {{ $mrole['member']['lastname'] }}"
             data-role-name="{{ $mrole['role']['name'] }}"
             data-league-sname="{{ $league->shortname }}" data-toggle="modal" data-target="#modalDeleteMemberRole"><i class="fa fa-trash"></i></button>
-          <a href="{{ route('league.memberrole.edit',['memberrole' => $mrole, 'league' => $league ]) }}" class=" px-2">
+          <a href="{{ route('league.memberrole.edit',['language'=>app()->getLocale(), 'memberrole' => $mrole, 'league' => $league ]) }}" class=" px-2">
               {{ $mrole['role']['name'] }} {{ $mrole['function'] }} - {{ $mrole['member']['firstname'] }} {{ $mrole['member']['lastname'] }} <i class="fas fa-arrow-circle-right"></i>
           </a></p>
           @endforeach
@@ -140,17 +146,17 @@
         </div>
         <!-- /.card-body -->
         <div class="card-footer">
-          <a href="{{ route('league.memberrole.create',['league' => $league ])}}" class="btn btn-primary" >
-          <i class="fas fa-plus-circle"></i>  New Role
+          <a href="{{ route('league.memberrole.create',['language'=>app()->getLocale(), 'league' => $league ])}}" class="btn btn-outline-secondary" >
+          <i class="fas fa-plus-circle"></i>  @lang('role.action.create')
           </a>
         </div>
         <!-- /.card-footer -->
       </div>
       <!-- /.card -->
       <!-- card GAMES -->
-      <div class="card card-outline card-info collapsed-card">
+      <div class="card card-outline card-secondary collapsed-card">
         <div class="card-header">
-          <h4 class="card-title"><i class="fas fa-trophy"></i> Games    <span class="badge badge-pill badge-info">0</span></h4>
+          <h4 class="card-title"><i class="fas fa-trophy"></i> {{trans_choice('game.game',2)}}    <span class="badge badge-pill badge-info">{{ count($games) }}</span></h4>
           <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
             </button>
@@ -163,10 +169,15 @@
         </div>
         <!-- /.card-body -->
         <div class="card-footer">
-          <button type="button" class="btn btn-primary" id="createGames"
-            @if ( count($assigned_teams) < 2) disabled @endif>
-          <i class="fas fa-plus-circle"></i>  Create Games
-        </button>
+          <button type="button" class="btn btn-outline-secondary" id="createGames"
+            @if ( count($assigned_teams) < 2) disabled @endif><i class="fas fa-plus-circle"></i>  @lang('game.action.create')
+          </button>
+          <button type="button" class="btn btn-outline-secondary" id="deleteGames"
+            ><i class="fa fa-trash"></i>  @lang('game.action.delete')
+          </button>
+          <button type="button" class="btn btn-outline-secondary" id="deleteNoshowGames"
+            ><i class="fa fa-trash"></i>  @lang('game.action.delete.noshow')
+          </button>
         </div>
         <!-- /.card-footer -->
       </div>
@@ -191,10 +202,21 @@ reserved.
 
 
 @section('js')
+<script src="{{ URL::asset('vendor/toastr/toastr.min.js') }}"></script>
+
 <script>
   $(function() {
+
+    toastr.options.closeButton = true;
+    toastr.options.closeMethod = 'fadeOut';
+    toastr.options.closeDuration = 300;
+    toastr.options.closeEasing = 'swing';
+    toastr.options.progressBar = true;
+
     $("button#deassignClub").click( function(){
             var club_id = $(this).data("id");
+            var url = "{{ route('league.deassign-club', ['league'=>$league, 'club'=>':club:'])}}"
+            url = url.replace(':club:', club_id);
 
             $.ajax({
                 type: "POST",
@@ -204,9 +226,16 @@ reserved.
                   _token: "{{ csrf_token() }}",
                   _method: 'DELETE'
                 },
-                url: "club/"+club_id,
+                url: url,
                 success: function (data) {
-                  location.reload()
+
+                  toastr.options.onHidden = function() {
+                    location.reload();
+                    console.log('reload');
+                  }
+
+                  toastr.info('club deassigned','success');
+
                 },
                 error: function (data) {
                     console.log('Error:', data);
@@ -222,10 +251,13 @@ reserved.
 
      $("button#deleteMemberrole").click( function(){
         $('#member_id').val($(this).data('member-id'));
+        $('#unit_type').html('{{ trans_choice('league.league',1)}}');
         $('#unit_shortname').html($(this).data('league-sname'));
         $('#role_name').html($(this).data('role-name'));
         $('#member_name').html($(this).data('member-name'));
-        $('#confirmDeleteMemberRole').attr('action', '/memberrole/'+$(this).data('role-id'));
+        var url = "{{ route('memberrole.destroy', ['language'=>app()->getLocale(), 'memberrole'=>':role:' ])}}";
+        url = url.replace(':role:', $(this).data('role-id'));
+        $('#confirmDeleteMemberRole').attr('action', url);
         $('#modalDeleteMember').modal('show');
      });
 
@@ -245,6 +277,40 @@ reserved.
                  }
              });
       });
+      $("button#deleteGames").click( function(){
+              $.ajax({
+                  type: "POST",
+                  dataType: "json",
+                  data: {
+                    _method: "DELETE",
+                    _token: "{{ csrf_token() }}"
+                  },
+                  url: "{{ route('league.game.destroy', ['league' => $league ]) }}",
+                  success: function (data) {
+                    location.reload()
+                  },
+                  error: function (data) {
+                      console.log('Error:', data);
+                  }
+              });
+       });
+       $("button#deleteNoshowGames").click( function(){
+               $.ajax({
+                   type: "POST",
+                   dataType: "json",
+                   data: {
+                     _method: "DELETE",
+                     _token: "{{ csrf_token() }}"
+                   },
+                   url: "{{ route('league.game.destroy_noshow', [ 'league' => $league ]) }}",
+                   success: function (data) {
+                     location.reload()
+                   },
+                   error: function (data) {
+                       console.log('Error:', data);
+                   }
+               });
+        });
   });
 </script>
 @stop

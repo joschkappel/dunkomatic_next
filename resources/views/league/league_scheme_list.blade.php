@@ -13,16 +13,16 @@
     <div class="col">
         <div class="card">
             <div class="card-header">
-                <div class="card-title">List of league schemes </h3>
+                <div class="card-title">@lang('schedule.title.scheme.list')</h3>
                     <!-- For defining autocomplete -->
                     <div>
-                        <label for='selSize'>pls select a size</label>
+                        <label for='selSize'>@lang('schedule.action.size.select')</label>
                         <select class='js-example-placeholder-single js-states form-control select2' id='selSize'>
                         </select>
                     </div>
                 </div>
               </div>
-                  @include('league/league_scheme_pivot')
+                  @include('league/includes/league_scheme_pivot')
 
             </div>
         </div>
@@ -41,11 +41,11 @@
 
 
       $(".js-example-placeholder-single").select2({
-          placeholder: "Select a size...",
+          placeholder: "@lang('schedule.action.size.select')...",
           allowClear: false,
           minimumResultsForSearch: -1,
           ajax: {
-                  url: "{{ url('size/index')}}",
+                  url: "{{ route('size.index')}}",
                   type: "get",
                   delay: 250,
                   processResults: function (response) {
@@ -59,7 +59,7 @@
 
       $('#selSize').on('select2:select', function(e) {
                 var data = e.params.data;
-                var url = '{{ url("scheme/:size:/list_piv") }}';
+                var url = '{{ route("scheme.list_piv", ['size'=>":size:"]) }}';
                 url = url.replace(':size:', data.id);
 
                 $.ajax({

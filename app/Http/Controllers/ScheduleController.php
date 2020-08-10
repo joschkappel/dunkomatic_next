@@ -99,18 +99,23 @@ class ScheduleController extends Controller
 
         return $stlist
           ->addIndexColumn()
+          ->addColumn('action', function($data){
+                 $btn = '<button type="button" id="deleteSchedule" name="deleteSchedule" class="btn btn-outline-danger btn-sm" data-schedule-id="'.$data->id.'"
+                    data-schedule-name="'.$data->name.'" data-events="'.count($data->events).'" data-toggle="modal" data-target="#modalDeleteSchedule"><i class="fa fa-trash"></i></button>';
+                  return $btn;
+          })
           ->addColumn('color', function($data){
               return '<spawn style="background-color:'.$data->eventcolor.'">'.$data->eventcolor.'</div>';
           })
           ->addColumn('events', function($data){
               return '<a href="' . route('schedule_event.list', $data) .'">'.$data->events_count.' <i class="fas fa-arrow-circle-right"></i></a>';
           })
-          ->rawColumns(['name','color','events'])
+          ->rawColumns(['name','color','events','action'])
           ->editColumn('created_at', function ($user) {
                   return $user->created_at->format('d.m.Y H:i');
               })
           ->editColumn('name', function ($data) {
-              return '<a href="' . route('schedule.edit', $data->id) .'">'.$data->name.' <i class="fas fa-arrow-circle-right"></i></a>';
+              return '<a href="' . route('schedule.edit', ['language'=>app()->getLocale(), 'schedule' =>$data->id]) .'">'.$data->name.' <i class="fas fa-arrow-circle-right"></i></a>';
               })
           ->make(true);
     }
@@ -120,7 +125,7 @@ class ScheduleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($language)
     {
       Log::info('create new schedule');
       return view('schedule/schedule_new', ['region' => Auth::user()->region]);
@@ -138,15 +143,19 @@ class ScheduleController extends Controller
           'name' => 'required',
           'region_id' => 'required|exists:regions,id',
           'eventcolor' => 'required',
-          'active' => 'boolean',
           'size' => 'required|exists:league_team_sizes,size'
       ]);
+      $active = $request->input('active');
+      if ( isset($active) and ( $active === 'on' )){
+        $data['active'] = True;
+      } else {
+        $data['active'] = False;
+      }
 
       Log::debug(print_r($data, true));
 
       $check = Schedule::create($data);
-      return redirect()->action(
-          'ScheduleController@index')->withSuccess('New Schedule saved  ');
+      return redirect()->route('schedule.index', app()->getLocale());
     }
 
     /**
@@ -166,7 +175,7 @@ class ScheduleController extends Controller
      * @param  \App\Schedule  $schedule
      * @return \Illuminate\Http\Response
      */
-    public function edit(Schedule $schedule)
+    public function edit($language, Schedule $schedule)
     {
         Log::info('editing schedule '.print_r($schedule->id,true));
 
@@ -188,12 +197,18 @@ class ScheduleController extends Controller
       $data = $request->validate( [
           'name' => 'required',
           'region_id' => 'required',
-          'eventcolor' => 'required',
-          'active' => 'boolean'
+          'eventcolor' => 'required'
       ]);
 
+      $active = $request->input('active');
+      if ( isset($active) and ( $active === 'on' )){
+        $data['active'] = True;
+      } else {
+        $data['active'] = False;
+      }
+
       $check = schedule::where('id', $schedule->id)->update($data);
-      return redirect()->route('schedule.index');
+      return redirect()->route('schedule.index', app()->getLocale());
     }
 
     /**
@@ -211,8 +226,6 @@ class ScheduleController extends Controller
         $schedule->events()->delete();
         $schedule->delete();
 
-        Session::flash('flash_message', 'Schedule deleted');
-        Session::flash('flash_type', 'alert-success');
-        return redirect()->route('schedule.index')->with('message', 'Schedule deleted.');
+        return redirect()->route('schedule.index', app()->getLocale());
     }
 }

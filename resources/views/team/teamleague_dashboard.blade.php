@@ -16,7 +16,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">Plan Team Leagues for {{ $club->shortname }} </div>
+                    <div class="card-title">@lang('team.title.plan', ['club'=> $club->shortname ])</div>
                 </div>
                 <div class="card-body">
                     <form class="form-horizontal" id="teamLeaguePlanForm">
@@ -24,20 +24,22 @@
                         @csrf
                         <input type="hidden" name="club_id" value="{{ $club->id }}">
                         @foreach ($teams as $team)
-                          <div class="form-group row ">
-                            <label for="league{{$team['league']->id}}" class="col-sm-8 col-form-label">{{ $team['league']->shortname }}</label>
-                            <div class="col-sm-4">
-                              <select class="js-single-size form-control" name="selSize:{{$team['league']->id}}:{{$team->id}}" id='selSize'>
-                                  @for ( $i=1; $i <= $team['league']['schedule']->size; $i++ )
-                                      <option @if ($team->league_no === $i) selected @endif value="{{ $i }}">{{ $i }}</option>
-                                  @endfor
-                              </select>
-                              </div>
-                          </div>
+                          @isset ($team['league']['schedule']->size)
+                            <div class="form-group row ">
+                              <label for="league{{$team['league']->id}}" class="col-sm-8 col-form-label">{{ $team['league']->shortname }}</label>
+                              <div class="col-sm-4">
+                                <select class="js-single-size form-control" name="selSize:{{$team['league']->id}}:{{$team->id}}" id='selSize'>
+                                    @for ( $i=1; $i <= $team['league']['schedule']->size; $i++ )
+                                        <option @if ($team->league_char == $i) selected @endif value="{{ $i }}">{{ $i }}</option>
+                                    @endfor
+                                </select>
+                                </div>
+                            </div>
+                          @endisset
                         @endforeach
                         <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-                            <button type="submit" name="refreshbtn" id="refreshbtn" class="btn btn-info">Refresh Chart</button>
-                            <button  name="savebtn" id="savebtn" class="btn btn-success">Save Combination</button>
+                            <button type="submit" name="refreshbtn" id="refreshbtn" class="btn btn-info">@lang('team.action.refresh-chart')</button>
+                            <button  name="savebtn" id="savebtn" class="btn btn-success">@lang('team.action.save-assignment')</button>
                         </div>
                     </form>
 
@@ -47,17 +49,17 @@
                 <div class="card-body">
                     <form class="form-horizontal" id="teamLeagueOptForm">
                           <div class="form-group row ">
-                            <label for="radios" class="col-sm-2 ">games per day</label>
+                            <label for="radios" class="col-sm-2 ">@lang('team.game.perday')</label>
 
                               <div class="col-sm-10">
                                   <label for="radio1" class="col-form-label radio-inline">
-                                      {{ Form::radio('optmode', 'min', true, ['id' => 'radio1']) }} min
+                                      {{ Form::radio('optmode', 'min', true, ['id' => 'radio1']) }} @lang('team.game.perday.min')
                                   </label>
                                   <label for="radio2" class="col-form-label radio-inline">
-                                      {{ Form::radio('optmode', 'max', false, ['id' => 'radio2']) }} max
+                                      {{ Form::radio('optmode', 'max', false, ['id' => 'radio2']) }} @lang('team.game.perday.max')
                                   </label>
                                   <label for="radio3" class="col-form-label radio-inline">
-                                      {{ Form::radio('optmode', 'day', false, ['id' => 'radio3']) }} day
+                                      {{ Form::radio('optmode', 'day', false, ['id' => 'radio3']) }} @lang('team.game.perday.num')
                                   </label>
                               </div>
                                 <div class="col-sm-10 slider-gray">
@@ -69,20 +71,20 @@
                           </div>
                           <div class="form-group row ">
                             <div class="col-sm-10 slider-gray">
-                                <label for="optRange">Combinations</label>
+                                <label for="optRange">@lang('team.game.combination')</label>
                                 <span class="text-info ml-2 mt-1 optRangeSpan"></span>
                                 <input  type="text" id="optRange" value="0" class="slider form-control"  data-slider-min="0" data-slider-max="0" data-slider-step="1">
                               </div>
                           </div>
                         <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-                            <button  type="submit" class="btn btn-info " id="proposebtn" name="proposebtn">Propose</button>
+                            <button  type="submit" class="btn btn-info " id="proposebtn" name="proposebtn">@lang('team.action.showon-chart')</button>
                         </div>
                     </form>
 
                 </div>
             </div>
         </div>
-        @include('team/teamleague_chart')
+        @include('team/includes/teamleague_chart')
     </div>
 </div>
 @stop
@@ -131,7 +133,7 @@ jochenk
                               },
                               scaleLabel: {
                                 display: true,
-                                labelString: '# Home Games'
+                                labelString: '@lang('team.game.perday.games')'
                               }
                           }],
                     xAxes: [{
@@ -154,7 +156,7 @@ jochenk
             var data = $(this).serialize();
             $.ajax({
                 type: 'POST',
-                url: 'chart',
+                url: '{{ route('team.list-chart', app()->getLocale()) }}',
                 data: data,
                 dataType: 'json',
                 success: function(response) {
@@ -228,7 +230,7 @@ jochenk
               if (!check){
                 $.ajax({
                     type: 'POST',
-                    url: 'propose',
+                    url: '{{ route('team.propose', app()->getLocale() )}}',
                     data: data,
                     dataType: 'json',
                     success: function(response) {
@@ -250,7 +252,7 @@ jochenk
           Pace.track(function () {
             $.ajax({
                 type: 'POST',
-                url: 'store',
+                url: '{{ route('team.store-plan', app()->getLocale())}}',
                 data: data,
                 dataType: 'json',
                 success: function(response) {

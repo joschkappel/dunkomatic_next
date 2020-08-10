@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\League;
+use App\LeagueClub;
 use App\Team;
 use App\Club;
+use App\Game;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -12,6 +14,7 @@ use Datatables;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Database\Eloquent\Builder;
 
 class LeagueController extends Controller
 {
@@ -38,6 +41,59 @@ class LeagueController extends Controller
       }
     }
 
+    public function index_stats()
+    {
+      return view('league/league_stats');
+    }
+    /**
+     * Display a listing of the resource .
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function list_stats()
+    {
+      //
+      $region = Auth::user()->region;
+      Log::debug('get leagues for region '.$region);
+
+      if ($region == ''){
+        $leagues = League::query()->with('schedule');
+      } else {
+        $leagues = League::query()->where('region', '=', $region)->with('schedule');
+      }
+
+      $leagues = $leagues->withCount(['clubs','teams','games',
+                                     'games_notime' => function (Builder $query) {
+                                          $query->whereNull('game_time');},
+                                     'games_noshow' => function (Builder $query) {
+                                          $query->whereNull('team_id_home')->orWhereNull('team_id_guest');},
+                          ])
+                        ->get();
+
+      //Log::debug(print_r($leagues,true));
+
+      $leaguelist = datatables::of($leagues);
+
+      return $leaguelist
+        ->addIndexColumn()
+        ->rawColumns(['shortname','reg_rel'])
+        ->editColumn('shortname', function ($data) {
+            return '<a href="' . route('league.dashboard', ['language'=>app()->getLocale(),'id'=>$data->id]) .'">'.$data->shortname.'</a>';
+            })
+        ->addColumn('reg_rel', function($data){
+              $reg_rel = round(($data->teams_count * 100)/$data->clubs_count);
+              if ($reg_rel >= 100){
+                return '<div class="bg-success text-center">'.$reg_rel.'</div>';
+              } else if ($reg_rel <= 50){
+                return '<div class="bg-danger text-center">'.$reg_rel.'</div>';
+              } else {
+                return '<div class="bg-warning text-center">'.$reg_rel.'</div>';
+              }
+        })
+        ->make(true);
+
+    }
+
     /**
      * Display a listing of the resource .
      *
@@ -57,41 +113,18 @@ class LeagueController extends Controller
 
         return $leaguelist
           ->addIndexColumn()
-          ->addColumn('action', function($data){
-                $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$data->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteLeague"><i class="fa fa-fw fa-trash"></i>Delete</a>';
-                return $btn;
-          })
-          ->rawColumns(['action','shortname'])
+          // ->addColumn('action', function($data){
+          //       $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$data->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteLeague"><i class="fa fa-fw fa-trash"></i>'.__('league.action.delete').'</a>';
+          //       return $btn;
+          // })
+          ->rawColumns(['shortname'])
           ->editColumn('created_at', function ($user) {
                   return $user->created_at->format('d.m.Y H:i');
               })
           ->editColumn('shortname', function ($data) {
-              return '<a href="' . route('league.dashboard', $data->id) .'">'.$data->shortname.'</a>';
+              return '<a href="' . route('league.dashboard', ['language'=>app()->getLocale(),'id'=>$data->id]) .'">'.$data->shortname.'</a>';
               })
           ->make(true);
-    }
-
-    /**
-     * Display a listing of the resource for selectboxes.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function list_select()
-    {
-      $user_region = array( Auth::user()->region );
-
-      $leagues = League::query()->whereIn('region', $user_region)->orderBy('shortname','ASC')->get();
-
-      Log::debug('got leagues '.count($leagues));
-      $response = array();
-
-      foreach($leagues as $league){
-          $response[] = array(
-                "id"=>$league->id,
-                "text"=>$league->shortname
-              );
-      }
-      return Response::json($response);
     }
 
     /**
@@ -123,7 +156,7 @@ class LeagueController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function dashboard( $id )
+    public function dashboard( $language, $id )
     {
         //
 
@@ -148,7 +181,7 @@ class LeagueController extends Controller
                       );
               }
               $data['assigned_clubs'] = $assigned_club;
-
+              $data['games'] = $data['league']->games()->get();
 
 
               //Log::debug(print_r($assigned_club, true));
@@ -161,7 +194,7 @@ class LeagueController extends Controller
               //Log::debug(print_r($teams,true));
               $assigned_team = array();
               foreach($teams as $team){
-                  $assigned_team[$team->league_no] = array(
+                  $assigned_team[$team->league_char] = array(
                         "team_id"=>$team->id,
                         "shortname"=>$team['club']->shortname,
                         "team_no"=>$team->team_no,
@@ -170,7 +203,7 @@ class LeagueController extends Controller
                       );
               }
               $data['assigned_teams'] = $assigned_team;
-              //Log::debug(print_r($assigned_team,true));
+              Log::debug(print_r($assigned_team,true));
 
               return view('league/league_dashboard', $data);
             }
@@ -228,8 +261,7 @@ class LeagueController extends Controller
       Log::info(print_r($data, true));
 
       $check = League::create($data);
-      return redirect()->action(
-          'LeagueController@index')->withSuccess('New League saved  ');
+      return redirect()->route('league.index', app()->getLocale() );
     }
 
     /**
@@ -249,7 +281,7 @@ class LeagueController extends Controller
      * @param  \App\League  $league
      * @return \Illuminate\Http\Response
      */
-    public function edit(League $league)
+    public function edit($language, League $league)
     {
       Log::debug('editing league '.$league->id);
       $member = $league->member_roles()->with('member')->get();
@@ -294,8 +326,7 @@ class LeagueController extends Controller
 
       Log::debug(print_r($data, true));
       $check = league::where('id', $league->id)->update($data);
-      return redirect()->action(
-          'LeagueController@index');
+      return redirect()->route('league.dashboard',['language'=>app()->getLocale(), 'id'=>$league]);
     }
 
     /**
@@ -365,7 +396,7 @@ class LeagueController extends Controller
                'league_char' => $league_char ]);
 
            }
-           return redirect()->route('league.dashboard', ['id' => $league ]);
+           return redirect()->route('league.dashboard', ['language'=>app()->getLocale(), 'id' => $league ]);
        }
 
 }

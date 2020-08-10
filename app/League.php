@@ -1,8 +1,9 @@
 <?php
 
 namespace App;
-
+use App\Game;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class League extends Model
 {
@@ -40,4 +41,17 @@ class League extends Model
       return $this->hasMany('App\Game');
   }
 
+  public function games_notime()
+  {
+      return $this->hasMany('App\Game');
+  }
+
+  public function games_noshow()
+  {
+      return $this->hasMany('App\Game');
+  }
+  public function games_overlap()
+  {
+      return $this->hasMany('App\Game');
+  }
 }
