@@ -1,6 +1,7 @@
 @push('css')
   <link href="{{ URL::asset('vendor/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}" rel="stylesheet">
 @endpush
+@section('plugins.Select2', true)
 
 <div class="modal fade right" id="modalEditGamedate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false">
     <div class="modal-dialog modal-side modal-bottom-right modal-notify modal-info" role="document">
@@ -22,6 +23,7 @@
                       <div class="card-body">
                             @csrf
                             @method('PUT')
+                            <input type="hidden"  name="club_id" id="club_id"/>
                             <div class="form-group row ">
                               <label for='gdate' class="col-sm-4 col-form-label">@lang('game.game_date')</label>
                               <div class="col-sm-5">
@@ -41,6 +43,17 @@
                                   <div class="input-group-append" data-target="#gtime" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="far fa-clock"></i></div>
                                   </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group row ">
+                              <label for='selGym' class="col-sm-4 col-form-label">{{ trans_choice('gym.gym',1)}}</label>
+                                  <div class="col-sm-6">
+                                    <select class='js-gym-single js-states form-control select2 @error('gym_id') /> is-invalid @enderror' id='selGym' name="gym_id">
+                                    </select>
+                                    @error('gymid')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                               </div>
                             </div>
@@ -81,6 +94,23 @@
           useCurrent: false,
       });
 
+      var url = "{{route('gym.list_sel4club',['club' => $club->id])}}";
+      $("#selGym").select2({
+          placeholder: "@lang('gym.action.select')...",
+          multiple: false,
+          allowClear: false,
+          ajax: {
+                  url: url,
+                  type: "get",
+                  delay: 250,
+                  processResults: function (response) {
+                    return {
+                      results: response
+                    };
+                  },
+                  cache: true
+                }
+      });
 
     });
 

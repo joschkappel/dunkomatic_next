@@ -73,6 +73,7 @@ Route::get('club/list_stats', 'ClubController@list_stats')->name('club.list_stat
 Route::resource('club', 'ClubController')->only('store','update','destroy');
 Route::get('club/{club}/game/chart_home', 'ClubGameController@chart_home')->name('club.game.chart_home');
 Route::get('club/{club}/gym/{gym_no}', 'ClubGymController@show')->name('club.gym.show');
+Route::get('club/{club}/gym/list', 'ClubGymController@list_select4club')->name('gym.list_sel4club');
 Route::resource('club.gym', 'ClubGymController')->shallow()->only('store','update','destroy');
 
 Route::get('league/list', 'LeagueController@list')->name('league.list');

@@ -1,6 +1,7 @@
 <?php
 
 use Monolog\Handler\NullHandler;
+use Monolog\Handler\GelfHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
 
@@ -37,8 +38,8 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['daily'],
-            'ignore_exceptions' => false,
+            'channels' => ['daily', 'slack','gelf'],
+            'ignore_exceptions' => true,
         ],
 
         'single' => [
@@ -59,7 +60,7 @@ return [
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
             'username' => 'Laravel Log',
             'emoji' => ':boom:',
-            'level' => 'critical',
+            'level' => 'error',
         ],
 
         'papertrail' => [
@@ -99,6 +100,27 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+        'graylog' => [
+            'driver' => 'monolog',
+            'level' => 'debug',
+            'handler' => SyslogUdpHandler::class,
+            'handler_with' => [
+                'host' => 'graylog',
+                'port' => 514,
+            ],
+       ],
+       'gelf' => [
+           'driver' => 'monolog',
+           'level' => 'error',
+           'handler' => GelfHandler::class,
+           'handler_with' => [
+               'publisher' =>  app(\App\Services\GraylogSetup::class)->getGelfPublisher(),
+            ],
+               'formatter' => \Monolog\Formatter\GelfMessageFormatter::class,
+#               'host' => 'graylog',
+#               'port' =>12201,
+
+      ],
     ],
 
 ];

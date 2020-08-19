@@ -20,7 +20,23 @@ class ClubGymController extends Controller
     {
         //
     }
+    public function list_select4club(Club $club)
+    {
+      Log::debug(print_r($club,true));
 
+      $gyms = Club::where('id', $club->id)->gyms()->get();
+
+      Log::debug('got gyms '.count($gyms));
+      $response = array();
+
+      foreach($gyms as $gym){
+          $response[] = array(
+                "id"=>$gym->id,
+                "text"=>$gym->gym_no.' - '.$gym->name
+              );
+      }
+      return Response::json($response);
+    }
     /**
      * Show the form for creating a new resource.
      *
