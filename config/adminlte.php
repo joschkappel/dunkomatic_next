@@ -69,6 +69,7 @@ return [
     'usermenu_header_class' => 'bg-primary',
     'usermenu_image' => false,
     'usermenu_desc' => false,
+    'usermenu_profile_url' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -90,7 +91,25 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Authentication Views Classes
     | Extra Classes
+    |--------------------------------------------------------------------------
+    |
+    | Here you can change the look and behavior of the authentication views.
+    |
+    | For more detailed instructions you can look here:
+    | https://github.com/jeroennoten/Laravel-AdminLTE/#661-authentication-views-classes
+    |
+    */
+    'classes_auth_card' => 'card-outline card-info',
+    'classes_auth_header' => '',
+    'classes_auth_body' => '',
+    'classes_auth_footer' => '',
+    'classes_auth_icon' => '',
+    'classes_auth_btn' => 'btn-flat btn-primary',
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Panel Classes
     |--------------------------------------------------------------------------
     |
     | Here you can change the look and behavior of the admin panel.
@@ -103,6 +122,7 @@ return [
     'classes_body' => '',
     'classes_brand' => '',
     'classes_brand_text' => '',
+    'classes_content_wrapper' => '',
     'classes_content_header' => '',
     'classes_content' => 'content-dark',
     'classes_sidebar' => 'sidebar-dark-primary elevation-4',
@@ -194,6 +214,9 @@ return [
     */
 
     'enabled_laravel_mix' => false,
+    'laravel_mix_css_path' => 'css/app.css',
+    'laravel_mix_js_path' => 'js/app.js',
+
 
     /*
     |--------------------------------------------------------------------------
@@ -305,7 +328,6 @@ return [
         JeroenNoten\LaravelAdminLte\Menu\Filters\HrefFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\SearchFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\ActiveFilter::class,
-        JeroenNoten\LaravelAdminLte\Menu\Filters\SubmenuFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\ClassesFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\GateFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\LangFilter::class,
@@ -325,7 +347,7 @@ return [
     */
 
     'plugins' => [
-        [
+       'Datatables' => [
             'name' => 'Datatables',
             'active' => false,
             'files' => [
@@ -346,7 +368,7 @@ return [
                 ],
             ],
         ],
-        [
+        'Select2' => [
             'name' => 'Select2',
             'active' => true,
             'files' => [
@@ -362,7 +384,7 @@ return [
                 ],
             ],
         ],
-        [
+        'Chartjs' => [
             'name' => 'Chartjs',
             'active' => false,
             'files' => [
@@ -373,7 +395,7 @@ return [
                 ],
             ],
         ],
-        [
+        'Sweetalert2' => [
             'name' => 'Sweetalert2',
             'active' => false,
             'files' => [
@@ -384,7 +406,7 @@ return [
                 ],
             ],
         ],
-        [
+        'Pace' => [
             'name' => 'Pace',
             'active' => false,
             'files' => [

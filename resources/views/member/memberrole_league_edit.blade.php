@@ -148,7 +148,7 @@
           allowClear: false,
           minimumResultsForSearch: -1,
           ajax: {
-                  url: "{{ route('role.index'}}",
+                  url: "{{ route('role.index')}}",
                   type: "POST",
                   dataType: "json",
                   data: {

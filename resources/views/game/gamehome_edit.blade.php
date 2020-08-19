@@ -128,6 +128,7 @@
         var gtime = moment($(this).data('game-time'),'HH:mm:ss').format('LT');
         $("#game_time").val(gtime);
         $("#game_date").val(gdate);
+        $("#club_id").val($(this).data('club-id-home'));
         var url = "{{route('game.update',['game'=>':game:'])}}";
         url = url.replace(':game:', $(this).data('id'));
         $('#formGamedate').attr('action', url);
