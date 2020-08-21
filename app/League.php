@@ -13,7 +13,7 @@ class League extends Model
 
   public function region()
   {
-      return $this->belongsTo('App\Region','region','id');
+      return $this->belongsTo('App\Region','region','code');
   }
 
   public function schedule()

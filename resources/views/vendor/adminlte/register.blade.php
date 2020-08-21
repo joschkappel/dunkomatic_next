@@ -1,6 +1,9 @@
 @extends('adminlte::master')
 
 @section('adminlte_css')
+  <!-- iCheck for checkboxes and radio inputs -->
+<link href="{{ URL::asset('vendor/icheck-bootstrap/icheck-bootstrap.min.css') }}" rel="stylesheet">
+
     @stack('css')
     @yield('css')
 @stop
@@ -89,6 +92,15 @@
                             </div>
                         @endif
                     </div>
+                    <div class="input-group mb-3">
+                        <select class='sel-region js-states form-control select2' id='selRegion' name='region'>
+                      </select>
+                      <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" data-select2-open="region">
+                          <span class="fas fa-globe-europe"></span>
+                        </button>
+                      </span>
+                    </div>
                     <button type="submit" class="btn btn-primary btn-block btn-flat">
                         {{ __('adminlte::adminlte.register') }}
                     </button>
@@ -104,7 +116,30 @@
 @stop
 
 @section('adminlte_js')
+
     <script src="{{ asset('vendor/adminlte/dist/js/adminlte.min.js') }}"></script>
     @stack('js')
+    <script>
+      $(document).ready(function(){
+
+          $("#selRegion").select2({
+              multiple: false,
+              allowClear: false,
+              minimumResultsForSearch: 10,
+              placeholder: "Region",
+              ajax: {
+                      url: "{{ route('region.list_sel')}}",
+                      type: "get",
+                      delay: 250,
+                      processResults: function (response) {
+                        return {
+                          results: response
+                        };
+                      },
+                      cache: true
+                    }
+          });
+        });
+    </script>
     @yield('js')
 @stop

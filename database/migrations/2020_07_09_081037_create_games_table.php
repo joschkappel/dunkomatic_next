@@ -18,7 +18,7 @@ class CreateGamesTable extends Migration
             $table->unsignedInteger('league_id');
             $table->foreign('league_id')->references('id')->on('leagues');
             $table->string('region',5);
-            $table->foreign('region')->references('id')->on('regions');
+            $table->foreign('region')->references('code')->on('regions');
             $table->smallInteger('game_no');
             $table->date('game_plandate');
             $table->date('game_date');

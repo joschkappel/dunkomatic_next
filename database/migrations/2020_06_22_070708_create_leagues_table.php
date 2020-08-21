@@ -16,7 +16,7 @@ class CreateLeaguesTable extends Migration
         Schema::create('leagues', function (Blueprint $table) {
             $table->increments('id');
             $table->string('region',5);
-            $table->foreign('region')->references('id')->on('regions');
+            $table->foreign('region')->references('code')->on('regions');
             $table->char('shortname', 10)->unique();
             $table->text('name');
             $table->boolean('active')->default(True);
@@ -24,6 +24,8 @@ class CreateLeaguesTable extends Migration
             $table->boolean('above_region')->default(False);
             $table->unsignedInteger('schedule_id')->nullable();
             $table->foreign('schedule_id')->references('id')->on('schedules');
+            $table->unsignedInteger('age_type')->nullable();
+            $table->unsignedInteger('gender_type')->nullable();
             $table->timestamps();
             //$table->unique('region','shortname');
         });

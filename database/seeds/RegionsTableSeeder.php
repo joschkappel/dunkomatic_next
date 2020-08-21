@@ -13,11 +13,11 @@ class RegionsTableSeeder extends Seeder
     public function run()
     {
         DB::table('regions')->insert([
-          ['id' => 'HBV', 'name' => 'Hessischer Basketball Verband', 'hq' => '', 'created_at' => Carbon::now()],
-          ['id' => 'HBVDA', 'name' => 'Bezirk Darmstadt','hq' => 'HBV', 'created_at' => Carbon::now()],
-          ['id' => 'HBVF', 'name' => 'Bezirk Frankfurt','hq' => 'HBV', 'created_at' => Carbon::now()],
-          ['id' => 'HBVKS', 'name' => 'Bezirk Kassel','hq' => 'HBV', 'created_at' => Carbon::now()],
-          ['id' => 'HBVGI', 'name' => 'Bezirk Giesen','hq' => 'HBV', 'created_at' => Carbon::now()]
+          ['code' => 'HBV', 'name' => 'Hessischer Basketball Verband', 'hq' => '', 'created_at' => Carbon::now()],
+          ['code' => 'HBVDA', 'name' => 'Bezirk Darmstadt','hq' => 'HBV', 'created_at' => Carbon::now()],
+          ['code' => 'HBVF', 'name' => 'Bezirk Frankfurt','hq' => 'HBV', 'created_at' => Carbon::now()],
+          ['code' => 'HBVKS', 'name' => 'Bezirk Kassel','hq' => 'HBV', 'created_at' => Carbon::now()],
+          ['code' => 'HBVGI', 'name' => 'Bezirk Giesen','hq' => 'HBV', 'created_at' => Carbon::now()]
         ]);
     }
 }

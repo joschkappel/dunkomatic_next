@@ -176,7 +176,7 @@
         </div>
         <!-- /.card-body -->
         <div class="card-footer">
-          <a href="{{ route('club.edit.homegame',['language'=>app()->getLocale(), 'club' => $club ]) }}" class="btn btn-primary" >
+          <a href="{{ route('club.list.homegame',['language'=>app()->getLocale(), 'club' => $club ]) }}" class="btn btn-primary" >
           <i class="far fa-edit"></i> @lang('club.action.edit-homegame')</a>
           <a href="{{ route('club.game.chart',['language'=>app()->getLocale(), 'club' => $club ]) }}" class="btn btn-secondary" >
           <i class="far fa-chart-bar"></i> @lang('club.action.chart-homegame')</a>

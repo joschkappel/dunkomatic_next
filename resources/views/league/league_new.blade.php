@@ -59,6 +59,32 @@
                                   <select class='js-example-placeholder-single js-states form-control select2' id='selSchedule' name='schedule_id'></select>
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <label for="selAgeType" class="col-sm-4 col-form-label">@lang('league.agetype')</label>
+                                <div class="col-sm-6">
+                                  <select class='js-placeholder-single js-states form-control select2 @error('age_type') is-invalid @enderror' id='selAgeType' name='age_type'>
+                                     @foreach ( $agetype as $at )
+                                       <option value="{{ $at->value }}" >{{ $at->description }}</option>
+                                     @endforeach
+                                  </select>
+                                  @error('age_type')
+                                  <div class="invalid-feedback">{{ $message }}</div>
+                                  @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="selGenderType" class="col-sm-4 col-form-label">@lang('league.gendertype')</label>
+                                <div class="col-sm-6">
+                                  <select class='js-placeholder-single js-states form-control select2 @error('gender_type') is-invalid @enderror' id='selGenderType' name='gender_type'>
+                                     @foreach ( $gendertype as $gt )
+                                       <option value="{{ $gt->value }}" >{{ $gt->description }}</option>
+                                     @endforeach
+                                  </select>
+                                  @error('gender_type')
+                                  <div class="invalid-feedback">{{ $message }}</div>
+                                  @enderror
+                                </div>
+                            </div>
                             <div class="form-group  clearfix">
                               <div class="icheck-info d-inline">
                                 <input type="checkbox" id="above_region" name="above_region" >
@@ -87,6 +113,17 @@
 @push('js')
 <script>
     $(function() {
+
+      $("#selAgeType").select2({
+          multiple: false,
+          allowClear: false,
+          minimumResultsForSearch: 10,
+      });
+      $("#selGenderType").select2({
+          multiple: false,
+          allowClear: false,
+          minimumResultsForSearch: 10,
+      });
 
 
       $(".js-example-placeholder-single").select2({

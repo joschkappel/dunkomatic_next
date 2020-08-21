@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Game;
 use App\League;
 use App\Team;
+use App\Gym;
 use App\ScheduleEvent;
 use App\LeagueTeamScheme;
 
@@ -140,7 +141,13 @@ class LeagueGameController extends Controller
         Log::debug(print_r($request->all(),true));
         $game->game_time = Carbon::parse($request->game_time)->format('H:i');
         $game->game_date = $request->game_date;
-        Log::debug(print_r($game,true));
+        if ($request->gym_id ){
+          $gym = Gym::where('id',$request->gym_id )->get();
+          //Log::debug(print_r($gym,true));
+          $game->gym_no = $gym[0]->gym_no;
+          $game->gym_id = $gym[0]->id;
+        }
+        //Log::debug(print_r($game,true));
         $game->save();
         return redirect()->back();
     }

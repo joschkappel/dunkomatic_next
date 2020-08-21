@@ -16,7 +16,7 @@ class CreateClubsTable extends Migration
         Schema::create('clubs', function (Blueprint $table) {
             $table->increments('id');
             $table->string('region',5);
-            $table->foreign('region')->references('id')->on('regions');
+            $table->foreign('region')->references('code')->on('regions');
             $table->char('shortname', 4);
             $table->text('name');
             $table->string('club_no');
