@@ -9,11 +9,11 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.5",
+        "bensampo/laravel-enum": "^2.1",
         "brian2694/laravel-toastr": "^5.54",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "graylog2/gelf-php": "1.5",
-        "mockery/mockery": "1.3.1",
         "guzzlehttp/guzzle": "^6.3",
         "itsjavi/bootstrap-colorpicker": "^3.2",
         "jeroennoten/laravel-adminlte": "^3.2",

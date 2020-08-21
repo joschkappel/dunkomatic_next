@@ -18,14 +18,14 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('user_old');
+            $table->string('user_old')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
             $table->string('region',5);
-            $table->foreign('region')->references('id')->on('regions');
+            $table->foreign('region')->references('code')->on('regions');
             $table->string('club_ids')->nullable();
             $table->string('league_ids')->nullable();
             $table->boolean('superuser')->default(false);

@@ -23,7 +23,7 @@ Route::group(['prefix' => '{language}'], function(){
       return view('welcome');
   })->name('welcome');
 
-  Auth::routes();
+Auth::routes(['verify' => true]);
 
   Route::get('home', function() {
       return view('home');
@@ -32,7 +32,7 @@ Route::group(['prefix' => '{language}'], function(){
   Route::get('club/index_stats', 'ClubController@index_stats')->name('club.index_stats');
   Route::get('club/{id}/list', 'ClubController@dashboard')->name('club.dashboard');
   Route::get('club/list', 'ClubController@list')->name('club.list');
-  Route::get('club/{club}/game/home','ClubController@edit_homegame')->name('club.edit.homegame');
+  Route::get('club/{club}/game/home','ClubController@list_homegame')->name('club.list.homegame');
   Route::get('club/{club}/game/upload','ClubGameController@upload')->name('club.upload.homegame');
   Route::post('club/{club}/game/import','ClubGameController@import')->name('club.import.homegame');
   Route::get('club/{club}/game/list_home', 'ClubGameController@list_home')->name('club.game.list_home');
@@ -73,7 +73,7 @@ Route::get('club/list_stats', 'ClubController@list_stats')->name('club.list_stat
 Route::resource('club', 'ClubController')->only('store','update','destroy');
 Route::get('club/{club}/game/chart_home', 'ClubGameController@chart_home')->name('club.game.chart_home');
 Route::get('club/{club}/gym/{gym_no}', 'ClubGymController@show')->name('club.gym.show');
-Route::get('club/{club}/gym/list', 'ClubGymController@list_select4club')->name('gym.list_sel4club');
+Route::get('club/{club}/list/gym', 'ClubGymController@list_select4club')->name('gym.list_sel4club');
 Route::resource('club.gym', 'ClubGymController')->shallow()->only('store','update','destroy');
 
 Route::get('league/list', 'LeagueController@list')->name('league.list');
@@ -114,3 +114,4 @@ Route::get('schedule/list', 'ScheduleController@list')->name('schedule.list');
 Route::get('schedule/list_sel', 'ScheduleController@list_select')->name('schedule.list_sel');
 Route::get('schedule/size/{size}/list_sel', 'ScheduleController@list_size_select')->name('schedule.list_size_sel');
 Route::resource('schedule', 'ScheduleController')->except('index','create','edit');
+Route::get('region/list_sel', 'RegionController@list_select')->name('region.list_sel');

@@ -20,20 +20,21 @@ class ClubGymController extends Controller
     {
         //
     }
+
     public function list_select4club(Club $club)
     {
-      Log::debug(print_r($club,true));
-
-      $gyms = Club::where('id', $club->id)->gyms()->get();
+      //Log::debug(print_r($club,true));
+      $gyms = $club->gyms()->get();
 
       Log::debug('got gyms '.count($gyms));
       $response = array();
 
-      foreach($gyms as $gym){
-          $response[] = array(
-                "id"=>$gym->id,
-                "text"=>$gym->gym_no.' - '.$gym->name
-              );
+      foreach($gyms as $lgym){
+        $response[] = array(
+            "id"=>$lgym->id,
+            "text"=>$lgym->gym_no.' - '.$lgym->name
+            );
+
       }
       return Response::json($response);
     }
@@ -92,7 +93,7 @@ class ClubGymController extends Controller
             "text"=> $g->gym_no.' - '.$g->name
           );
         }
-        //Log::debug(print_r($gym,true));
+        Log::debug(print_r($gym,true));
         return Response::json($gyms);
     }
 

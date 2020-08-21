@@ -141,7 +141,7 @@ class ScheduleController extends Controller
     {
       $data = $request->validate( [
           'name' => 'required',
-          'region_id' => 'required|exists:regions,id',
+          'region_id' => 'required|exists:regions,code',
           'eventcolor' => 'required',
           'size' => 'required|exists:league_team_sizes,size'
       ]);

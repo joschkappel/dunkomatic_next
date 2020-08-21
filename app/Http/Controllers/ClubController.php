@@ -200,7 +200,7 @@ class ClubController extends Controller
               new Uppercase ),
             'name' => 'required|max:255',
             'url' => 'required|url|max:255',
-            'region' => 'required|max:5|exists:regions,id',
+            'region' => 'required|max:5|exists:regions,code',
             'club_no' => 'required|unique:clubs|max:7',
         ]);
 
@@ -240,10 +240,10 @@ class ClubController extends Controller
      * @param  \App\Club  $club
      * @return \Illuminate\Http\Response
      */
-    public function edit_homegame($language, Club $club)
+    public function list_homegame($language, Club $club)
     {
-        Log::debug('editing club '.$club->id);
-        return view('game/gamehome_edit', ['club' => $club]);
+        Log::debug('listing hgames for club '.$club->id);
+        return view('game/gamehome_list', ['club' => $club]);
     }
 
     /**
@@ -266,7 +266,7 @@ class ClubController extends Controller
             new Uppercase ),
           'name' => 'required|max:255',
           'url' => 'required|url|max:255',
-          'region' => 'required|max:5|exists:regions,id',
+          'region' => 'required|max:5|exists:regions,code',
           'club_no' => array(
             'required',
              Rule::unique('clubs')->ignore($club->id),

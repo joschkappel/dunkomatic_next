@@ -79,6 +79,7 @@ class ClubGameController extends Controller
           ->editColumn('game_no', function($game){
               $link = '<a href="#" id="gameEditLink" data-id="'.$game->id.
                       '" data-game-date="'.$game->game_date.'" data-game-time="'.$game->game_time.'" data-club-id-home"'.$game->club_id_home.
+                      '" data-gym-no="'.$game->gym_no.'" data-gym-id="'.$game->gym_id.'" data-league="'.$game->league['shortname'].
                       '">'.$game->game_no.' <i class="fas fa-arrow-circle-right"></i></a>';
               return array('display' =>$link, 'sort'=>$game->game_no);
           })

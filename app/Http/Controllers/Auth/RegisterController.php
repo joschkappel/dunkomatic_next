@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\User;
+use App\Region;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class RegisterController extends Controller
 {
@@ -53,6 +55,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'region' => ['required', 'exists:regions,id'],
         ]);
     }
 
@@ -64,10 +67,16 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        // get region shortcode
+        Log::debug($data['region']);
+        $region = Region::where('id',$data['region'])->first();
+        Log::debug(print_r($region,true));
+
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'region' => $region->code,
         ]);
     }
 }

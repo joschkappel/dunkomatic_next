@@ -17,7 +17,7 @@ class CreateSchedulesTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('region_id',5)->nullable();
-            $table->foreign('region_id')->references('id')->on('regions');
+            $table->foreign('region_id')->references('code')->on('regions');
             $table->string('eventcolor')->default('green');
             $table->boolean('active')->default(True);
             $table->string('size');

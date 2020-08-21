@@ -9,7 +9,7 @@
         <div class="modal-content">
             <!--Header-->
             <div class="modal-header bg-info">
-                <p class="heading">@lang('game.action.editdate')</p>
+                <p class="heading">@lang('game.action.editdate')</p>  <p class="heading" id="modtitle"></p>
 
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true" class="white-text">&times;</span>
@@ -24,6 +24,8 @@
                             @csrf
                             @method('PUT')
                             <input type="hidden"  name="club_id" id="club_id"/>
+                            <input type="hidden"  name="gym_id" id="gym_id"/>
+                            <input type="hidden"  name="gym_no" id="gym_no"/>
                             <div class="form-group row ">
                               <label for='gdate' class="col-sm-4 col-form-label">@lang('game.game_date')</label>
                               <div class="col-sm-5">
@@ -50,6 +52,7 @@
                               <label for='selGym' class="col-sm-4 col-form-label">{{ trans_choice('gym.gym',1)}}</label>
                                   <div class="col-sm-6">
                                     <select class='js-gym-single js-states form-control select2 @error('gym_id') /> is-invalid @enderror' id='selGym' name="gym_id">
+                                       <option id="selOption" value="" selected="selected"></option>
                                     </select>
                                     @error('gymid')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -78,7 +81,7 @@
   <script src="{{ URL::asset('vendor/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
 
 <script>
-    $(function() {
+    $(document).ready(function() {
       $('#gtime').datetimepicker({
           format: 'LT',
           locale: '{{ app()->getLocale()}}',
@@ -94,25 +97,57 @@
           useCurrent: false,
       });
 
-      var url = "{{route('gym.list_sel4club',['club' => $club->id])}}";
-      $("#selGym").select2({
-          placeholder: "@lang('gym.action.select')...",
-          multiple: false,
-          allowClear: false,
-          ajax: {
-                  url: url,
-                  type: "get",
-                  delay: 250,
-                  processResults: function (response) {
-                    return {
-                      results: response
-                    };
-                  },
-                  cache: true
+
+      $("#modalEditGamedate").on('show.bs.modal',  function (e) {
+        var urlgyms = "{{route('gym.list_sel4club',['club' => $club->id])}}";
+        var gymSelect = $('#selGym');
+        var urlgym = "{{route('club.gym.show',['club' => $club->id, 'gym_no' => ':gymno:'])}}";
+        urlgym = urlgym.replace(':gymno:', $("#gym_no").val());
+
+        $("#selGym").select2({
+            placeholder: "{{ __('gym.action.select')}}...",
+            multiple: false,
+            allowClear: false,
+            dropdownParent: $('#modalEditGamedate'),
+            ajax: {
+                    url: urlgyms,
+                    type: "get",
+                    delay: 250,
+                    processResults: function (response) {
+                      return {
+                        results: response
+                      };
+                    },
+                    cache: true
+                  }
+        });
+
+        $.ajax({
+            type: 'GET',
+            url: urlgym
+        }).then(function (data) {
+            // create the option and append to Select2
+            var option = new Option(data[0].text, data[0].id, true, true);
+            gymSelect.append(option).trigger('change');
+
+            // manually trigger the `select2:select` event
+            gymSelect.trigger({
+                type: 'select2:select',
+                params: {
+                    data: data
                 }
+            });
+        });
       });
 
-    });
+
+      });
+
+
+
+
+
+
 
 </script>
 @endpush

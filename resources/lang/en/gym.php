@@ -5,6 +5,7 @@ return [
   'action.create' => 'Create Gym',
   'action.edit' => 'Modify Gym',
   'action.delete' => 'Delete Gym',
+  'action.select' => 'Select Gym',  
   'title.new' => 'Create a new Gym for club :CLUB',
   'title.edit' => 'Modify Details for Gym :GYMNO of Club :CLUB',
   'title.delete' => 'Delete a Gym from ',

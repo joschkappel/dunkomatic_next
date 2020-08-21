@@ -24,10 +24,11 @@
                       <table class="table table-hover table-bordered table-sm" id="table">
                          <thead class="thead-light">
                             <tr>
-                               <th>Id</th>
+                               <th>id</th>
                                <th>@lang('game.game_no')</th>
                                <th>@lang('game.game_date')</th>
                                <th>@lang('game.gym_no')</th>
+                               <th>gym_id</th>
                                <th>@lang('game.game_time')</th>
                                <th class="text-center">@lang('game.overlap')</th>
                                <th>{{ trans_choice('league.league',1)}}</th>
@@ -114,6 +115,7 @@
                     export: 'gym_no.default',
                     display: 'gym_no.display'
                   }, name: 'gym_no.default' },
+                 { data: 'gym_id', name: 'gym_id', visible: false },
                  { data: 'game_time', name: 'game_time' },
                  { data: 'duplicate', name: 'duplicate' },
                  { data: 'league.shortname', name: 'league.shortname'  },
@@ -128,6 +130,9 @@
         var gtime = moment($(this).data('game-time'),'HH:mm:ss').format('LT');
         $("#game_time").val(gtime);
         $("#game_date").val(gdate);
+        $("#gym_id").val($(this).data('gym-id'));
+        $("#gym_no").val($(this).data('gym-no'));
+        $("#modtitle").html($(this).data('league')+' '+$(this).data('gym-no'));
         $("#club_id").val($(this).data('club-id-home'));
         var url = "{{route('game.update',['game'=>':game:'])}}";
         url = url.replace(':game:', $(this).data('id'));

@@ -8,6 +8,10 @@ use App\Team;
 use App\Club;
 use App\Game;
 
+use App\Enums\LeagueAgeType;
+use App\Enums\LeagueGenderType;
+use BenSampo\Enum\Rules\EnumValue;
+
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Datatables;
@@ -221,7 +225,10 @@ class LeagueController extends Controller
     public function create()
     {
       Log::info('create new league');
-      return view('league/league_new', ['region' => Auth::user()->region]);
+      return view('league/league_new', ['region' => Auth::user()->region,
+                                        'agetype' => LeagueAgeType::getInstances(),
+                                        'gendertype' => LeagueGenderType::getInstances()]
+                                      );
     }
 
     /**
@@ -241,7 +248,10 @@ class LeagueController extends Controller
             'max:10' ),
           'schedule_id' => 'required|exists:schedules,id',
           'name' => 'required|max:255',
-          'region' => 'required|max:5|exists:regions,id'
+          'region' => 'required|max:5|exists:regions,code',
+          'age_type' => ['required', new EnumValue(LeagueAgeType::class, false)],
+          'gender_type' => ['required', new EnumValue(LeagueGenderType::class, false)],
+
       ]);
 
       $above_region = $request->input('above_region');
@@ -286,7 +296,10 @@ class LeagueController extends Controller
       Log::debug('editing league '.$league->id);
       $member = $league->member_roles()->with('member')->get();
 //      Log::debug(print_r($member[0]['member'],true));
-      return view('league/league_edit', ['league' => $league, 'member' => $member[0]->member]);
+      return view('league/league_edit', ['league' => $league,
+                                         'member' => $member[0]->member,
+                                         'agetype' => LeagueAgeType::getInstances(),
+                                         'gendertype' => LeagueGenderType::getInstances()]);
     }
 
     /**
@@ -307,7 +320,9 @@ class LeagueController extends Controller
             'max:10' ),
           'schedule_id' => 'required|exists:schedules,id',
           'name' => 'required|max:255',
-          'region' => 'required|max:5|exists:regions,id'
+          'region' => 'required|max:5|exists:regions,code',
+          'age_type' => ['required', new EnumValue(LeagueAgeType::class, false)],
+          'gender_type' => ['required', new EnumValue(LeagueGenderType::class, false)],
       ]);
 
       $above_region = $request->input('above_region');
