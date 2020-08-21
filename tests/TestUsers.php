@@ -23,10 +23,11 @@ class TestUsers
         'user_old' => 'admin',
         'email' => 'admin@gmail.com',
         'email_verified_at' => now(),
+        'approved_at' => now(),
         'region' => 'HBVDA',
         'password' => bcrypt($this->password),
-        'superuser' => true,
-        'regionuser' => true
+        'admin' => true,
+        'regionadmin' => false
       ]);
 
       return $this->admin_user;
@@ -42,10 +43,11 @@ class TestUsers
         'user_old' => 'admin',
         'email' => 'region@gmail.com',
         'email_verified_at' => now(),
+        'approved_at' => now(),
         'region' => 'HBVDA',
         'password' => bcrypt($this->password),
-        'superuser' => false,
-        'regionuser' => true
+        'admin' => false,
+        'regionadmin' => true
       ]);
     }
 
@@ -61,10 +63,11 @@ class TestUsers
         'user_old' => 'admin',
         'email' => 'testuser@gmail.com',
         'email_verified_at' => now(),
+        'approved_at' => now(),
         'region' => 'HBVDA',
         'password' => bcrypt($this->password),
-        'superuser' => false,
-        'regionuser' => false
+        'admin' => false,
+        'regionadmin' => false
       ]);
     }
 

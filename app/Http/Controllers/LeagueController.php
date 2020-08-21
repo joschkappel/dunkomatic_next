@@ -29,7 +29,7 @@ class LeagueController extends Controller
      */
     public function index()
     {
-      if (( Auth::user()->superuser ) or ( Auth::user()->regionuser )) {
+      if ( Auth::user()->regionadmin )  {
         return view('league/league_list');
       } else {
 

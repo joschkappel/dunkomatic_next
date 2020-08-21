@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
+use App\Notifications\NewUser;
+
 class RegisterController extends Controller
 {
     /*
@@ -70,13 +72,21 @@ class RegisterController extends Controller
         // get region shortcode
         Log::debug($data['region']);
         $region = Region::where('id',$data['region'])->first();
-        Log::debug(print_r($region,true));
 
-        return User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'region' => $region->code,
         ]);
+
+        $radmin = User::regionadmin($region->code)->first();
+
+        if ( $radmin !== null ) {
+            Log::debug(print_r($radmin,true));
+            $radmin->notify(new NewUser($user));
+        } else {
+            Log::error('is null');
+        }
     }
 }

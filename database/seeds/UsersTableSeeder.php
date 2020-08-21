@@ -16,30 +16,33 @@ class UsersTableSeeder extends Seeder
           'user_old' => 'admin',
           'email' => 'admin@gmail.com',
           'email_verified_at' => now(),
+          'approved_at' => now(),
           'region' => 'HBV',
           'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-          'superuser' => true,
-          'regionuser' => true
+          'admin' => true,
+          'regionadmin' => false
         ]);
         DB::table('users')->insert([
           'name' => 'region',
           'user_old' => 'admin',
           'email' => 'region@gmail.com',
           'email_verified_at' => now(),
+          'approved_at' => now(),
           'region' => 'HBVDA',
           'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-          'superuser' => false,
-          'regionuser' => true
+          'admin' => false,
+          'regionadmin' => true
         ]);
         DB::table('users')->insert([
           'name' => 'user',
           'user_old' => 'admin',
           'email' => 'user@gmail.com',
           'email_verified_at' => now(),
+          'approved_at' => now(),
           'region' => 'HBVDA',
           'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-          'superuser' => false,
-          'regionuser' => false,
+          'admin' => false,
+          'regionadmin' => false,
           'club_ids' => "25,26",
         ]);
 
@@ -52,13 +55,13 @@ class UsersTableSeeder extends Seeder
           foreach ($old_user as $user) {
 
             $superuser = false;
-            $regionuser = false;
+            $regionadmin = false;
 
-            if ( $user->security_group_id == 4 ){
+            if ( $user->security_group_id == 4 ) {
               $superuser = true;
             }
-            if ( $user->security_group_id == 5 ){
-              $regionuser = true;
+            if ( $user->security_group_id == 5 ) {
+              $regionadmin = true;
             }
 
             if (DB::connection('dunknxt')->table('users')->where('email',$user->email)->doesntExist()){
@@ -67,11 +70,12 @@ class UsersTableSeeder extends Seeder
                 'name'          => $user->system_manager_name,
                 'user_old'      => $user->username,
                 'email'         => $user->email,
-                'email_verified_at'      => now(),
+                'email_verified_at' => now(),
+                'approved_at' => null,
                 'region'        => 'HBV',
                 'password'     => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-                'superuser'     => $superuser,
-                'regionuser'    => $regionuser,
+                'admin'     => $superuser,
+                'regionadmin' => $regionadmin,
                 'created_at'    => now()
               ]);
             }

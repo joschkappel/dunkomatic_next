@@ -16,7 +16,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','region'
+        'name', 'email', 'password','region','admin','regionadmin','approved_at'
     ];
 
     /**
@@ -35,10 +35,16 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'approved_at' => 'datetime',
     ];
 
     public function user_region()
     {
         return $this->belongsTo('App\Region','region','code');
+    }
+
+    public function scopeRegionadmin($query, $region)
+    {
+        return $query->where('region',$region)->where('regionadmin', true);
     }
 }

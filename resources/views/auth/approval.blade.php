@@ -9,11 +9,8 @@
 
 @php( $dashboard_url = View::getSection('dashboard_url') ?? config('adminlte.dashboard_url', 'home') )
 
-@if (config('adminlte.use_route_url', false))
-    @php( $dashboard_url = $dashboard_url ? route($dashboard_url) : '' )
-@else
-    @php( $dashboard_url = $dashboard_url ? url($dashboard_url) : '' )
-@endif
+@php( $dashboard_url = $dashboard_url ? route($dashboard_url,app()->getLocale()) : '' )
+
 
 @section('body')
     <div class="login-box">
@@ -22,19 +19,19 @@
         </div>
         <div class="card">
             <div class="card-body login-card-body">
-                <p class="login-box-msg">{{ __('adminlte::adminlte.verify_message') }}</p>
+                <p class="login-box-msg">{{ __('auth.approval_message') }}</p>
                 @if (session('resent'))
                     <div class="alert alert-success" role="alert">
-                        {{ __('adminlte::adminlte.verify_email_sent') }}
+                        {{ __('auth.verify_email_sent') }}
                     </div>
                 @endif
 
-                {{ __('adminlte::adminlte.verify_check_your_email') }}
-                {{ __('adminlte::adminlte.verify_if_not_recieved') }},
+                {{ __('auth.verify_check_your_email') }}
+                {{ __('auth.verify_if_not_recieved') }},
 
-                <form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
+                <form class="d-inline" method="POST" action="{{ route('verification.resend', app()->getLocale()) }}">
                     @csrf
-                    <button type="submit" class="btn btn-link p-0 m-0 align-baseline">{{ __('adminlte::adminlte.verify_request_another') }}</button>.
+                    <button type="submit" class="btn btn-link p-0 m-0 align-baseline">{{ __('auth.verify_request_another') }}</button>.
                 </form>
             </div>
         </div>
