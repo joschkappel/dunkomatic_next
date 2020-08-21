@@ -68,7 +68,7 @@ class ClubController extends Controller
      */
     public function index()
     {
-        if (( Auth::user()->superuser ) or ( Auth::user()->regionuser )) {
+        if ( Auth::user()->regionadmin )  {
           return view('club/club_list');
         } else {
 

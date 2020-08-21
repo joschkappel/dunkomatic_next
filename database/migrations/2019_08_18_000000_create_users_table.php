@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('user_old')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('approved_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
@@ -28,8 +29,8 @@ class CreateUsersTable extends Migration
             $table->foreign('region')->references('code')->on('regions');
             $table->string('club_ids')->nullable();
             $table->string('league_ids')->nullable();
-            $table->boolean('superuser')->default(false);
-            $table->boolean('regionuser')->default(false);
+            $table->boolean('admin')->default(false);
+            $table->boolean('regionadmin')->default(false);
         });
     }
 

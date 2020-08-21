@@ -23,11 +23,15 @@ Route::group(['prefix' => '{language}'], function(){
       return view('welcome');
   })->name('welcome');
 
-Auth::routes(['verify' => true]);
+  Auth::routes(['verify' => true]);
 
   Route::get('home', function() {
       return view('home');
-  })->name('home')->middleware('auth');
+  })->name('home')->middleware('auth')->middleware('verified')->middleware('approved');
+  Route::get('/approval', 'HomeController@approval')->name('approval')->middleware('auth');
+
+  Route::get('/users', 'UserController@index')->name('admin.users.index')->middleware('auth')->middleware('regionadmin');
+  Route::get('/users/{user}/approve', 'UserController@approve')->name('admin.users.approve')->middleware('auth')->middleware('regionadmin');
 
   Route::get('club/index_stats', 'ClubController@index_stats')->name('club.index_stats');
   Route::get('club/{id}/list', 'ClubController@dashboard')->name('club.dashboard');

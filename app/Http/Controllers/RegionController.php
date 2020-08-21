@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Region;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
@@ -27,10 +28,12 @@ class RegionController extends Controller
 
       foreach($regions as $region){
           Log::debug(print_r($region,true));
-          $response[] = array(
-                "id"=>$region->id,
-                "text"=>$region->name
-              );
+          if ( User::regionadmin($region->code)->exists()) {
+            $response[] = array(
+                  "id"=>$region->id,
+                  "text"=>$region->name
+                );
+          }
       }
       Log::debug(print_r($response,true));
 
