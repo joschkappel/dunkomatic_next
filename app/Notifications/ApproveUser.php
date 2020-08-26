@@ -8,19 +8,20 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NewUser extends Notification
+class ApproveUser extends Notification
 {
     use Queueable;
 
-    private $new_user;
+    private $radmin_user;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(User $new_user)
+    public function __construct(User $radmin_user, User $new_user)
     {
+      $this->radmin_user = $radmin_user;
       $this->new_user = $new_user;
     }
 
@@ -44,8 +45,10 @@ class NewUser extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->line('New user has registered with email ' . $this->new_user->email)
-            ->action('Approve user', route('admin.user.edit', ['language'=>app()->getLocale(), 'user_id'=>$this->new_user->id]));
+            ->subject('Dunkomatic Access Request Approval')
+            ->greeting('Hello '. $this->new_user->name . ' !' )
+            ->line('Region admin for region ' . $this->radmin_user->region . ' has approved your access request.')
+            ->line('Make sure to verify your email and happy days with DUnkomatic !' );
     }
 
     /**

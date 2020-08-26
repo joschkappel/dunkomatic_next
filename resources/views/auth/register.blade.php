@@ -14,15 +14,9 @@
 @php( $register_url = View::getSection('register_url') ?? config('adminlte.register_url', 'register') )
 @php( $dashboard_url = View::getSection('dashboard_url') ?? config('adminlte.dashboard_url', 'home') )
 
-@if (config('adminlte.use_route_url', false))
-    @php( $login_url = $login_url ? route($login_url, app()->getLocale()) : '' )
-    @php( $register_url = $register_url ? route($register_url, app()->getLocale()) : '' )
-    @php( $dashboard_url = $dashboard_url ? route($dashboard_url,app()->getLocale()) : '' )
-@else
-    @php( $login_url = $login_url ? url($login_url) : '' )
-    @php( $register_url = $register_url ? url($register_url) : '' )
-    @php( $dashboard_url = $dashboard_url ? url($dashboard_url) : '' )
-@endif
+@php( $login_url = $login_url ? route($login_url, app()->getLocale()) : '' )
+@php( $register_url = $register_url ? route($register_url, app()->getLocale()) : '' )
+@php( $dashboard_url = $dashboard_url ? route($dashboard_url,app()->getLocale()) : '' )
 
 @section('body')
     <div class="register-box">
@@ -101,6 +95,20 @@
                         </button>
                       </span>
                     </div>
+                    <div class="input-group mb-3">
+                        <input type="input" name="reason_join" class="form-control {{ $errors->has('reason_join') ? 'is-invalid' : '' }}" value="{{ old('reason_join') }}"
+                               placeholder="{{ __('auth.reason_join') }}">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="far fa-question-circle"></span>
+                            </div>
+                        </div>
+                        @if ($errors->has('reason_join'))
+                            <div class="invalid-feedback">
+                                <strong>{{ $errors->first('reason_join') }}</strong>
+                            </div>
+                        @endif
+                    </div>
                     <button type="submit" class="btn btn-primary btn-block btn-flat">
                         {{ __('auth.register') }}
                     </button>
@@ -126,7 +134,7 @@
               multiple: false,
               allowClear: false,
               minimumResultsForSearch: 10,
-              placeholder: "Region",
+              placeholder: "{{__('club.region')}}",
               ajax: {
                       url: "{{ route('region.list_sel')}}",
                       type: "get",

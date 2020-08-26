@@ -71,7 +71,7 @@
                       <a href="{{ route('welcome', 'en') }}" ><i class="flag-icon flag-icon-gb"></i></a>
                       <a href="{{ route('welcome', 'de') }}" ><i class="flag-icon flag-icon-de"></i></a>
                     @auth
-                        <a href="{{ route('home', app()->getLocale()) }}">Home</a>
+                        <a href="{{ route('home', ['language'=> app()->getLocale()]) }}">Home</a>
                     @else
 
                         <a href="{{ route('login', app()->getLocale()) }}">{{ __('adminlte::adminlte.sign_in') }}</a>

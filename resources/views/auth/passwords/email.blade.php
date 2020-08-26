@@ -9,13 +9,8 @@
 @php( $password_email_url = View::getSection('password_email_url') ?? config('adminlte.password_email_url', 'password/email') )
 @php( $dashboard_url = View::getSection('dashboard_url') ?? config('adminlte.dashboard_url', 'home') )
 
-@if (config('adminlte.use_route_url', false))
-    @php( $password_email_url = $password_email_url ? route($password_email_url) : '' )
-    @php( $dashboard_url = $dashboard_url ? route($dashboard_url) : '' )
-@else
-    @php( $password_email_url = $password_email_url ? url($password_email_url) : '' )
-    @php( $dashboard_url = $dashboard_url ? url($dashboard_url) : '' )
-@endif
+@php( $password_email_url = $password_email_url ? route($password_email_url, app()->getLocale() ) : '' )
+@php( $dashboard_url = $dashboard_url ? route($dashboard_url, app()->getLocale() ) : '' )
 
 @section('body')
     <div class="login-box">

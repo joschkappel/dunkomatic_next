@@ -2,13 +2,33 @@
 
 namespace App;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
+use Illuminate\Support\Facades\Auth;
 
-class Club extends Model
+class Club extends Model implements Auditable
 {
+
+  use \OwenIt\Auditing\Auditable;
+  public function generateTags(): array
+  {
+      return [
+          $this->shortname,
+          $this->region
+      ];
+  }
   protected $fillable = [
         'id','name','shortname','region','url','club_no','club_ids','league_ids'
-    ];
+  ];
+
+  /**
+   * Get all of the users for the club.
+   */
+  public function useables()
+  {
+      return $this->morphToMany(User::class, 'useable');
+  }
 
   public function gyms()
   {
@@ -51,5 +71,9 @@ class Club extends Model
   public function games_guest()
   {
       return $this->hasMany('App\Game', 'club_id_guest', 'id');
+  }
+  public function scopeUserRegion($query)
+  {
+      return $query->where('region',Auth::user()->region);
   }
 }

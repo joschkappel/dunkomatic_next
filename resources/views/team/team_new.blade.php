@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+vv k@extends('adminlte::page')
 
 @section('css')
 <!-- Bootstrap Color Picker -->

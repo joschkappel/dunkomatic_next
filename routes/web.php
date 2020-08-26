@@ -15,23 +15,34 @@ use App\Club;
 |
 */
 
-Route::redirect('/', '/en');
+Route::get('/', function () {
+    return redirect(app()->getLocale());
+});
 
+Route::group([
+  'prefix' => '{language}',
+  'where' => ['language' => '[a-zA-Z]{2}'],
+  'middleware' => 'setLanguage'], function() {
 
-Route::group(['prefix' => '{language}'], function(){
   Route::get('/', function () {
       return view('welcome');
   })->name('welcome');
 
   Auth::routes(['verify' => true]);
 
-  Route::get('home', function() {
+  Route::get('/home', function() {
       return view('home');
   })->name('home')->middleware('auth')->middleware('verified')->middleware('approved');
   Route::get('/approval', 'HomeController@approval')->name('approval')->middleware('auth');
 
-  Route::get('/users', 'UserController@index')->name('admin.users.index')->middleware('auth')->middleware('regionadmin');
-  Route::get('/users/{user}/approve', 'UserController@approve')->name('admin.users.approve')->middleware('auth')->middleware('regionadmin');
+  Route::get('/user/new', 'UserController@index_new')->name('admin.user.index.new')->middleware('auth')->middleware('regionadmin');
+  Route::get('/user/dt', 'UserController@datatable')->name('admin.user.dt')->middleware('auth')->middleware('regionadmin');
+  Route::post('/user/{user_id}/approve', 'UserController@approve')->name('admin.user.approve')->middleware('auth')->middleware('regionadmin');
+  Route::get('/user/{user_id}/edit', 'UserController@edit')->name('admin.user.edit')->middleware('auth')->middleware('regionadmin');
+  Route::get('/user/show', 'UserController@show')->name('admin.user.show')->middleware('auth');
+  Route::get('/user', 'UserController@index')->name('admin.user.index')->middleware('auth')->middleware('regionadmin');
+  Route::get('/audit', 'AuditController@index')->name('admin.audit.index')->middleware('auth')->middleware('regionadmin');
+  Route::get('/audit/dt', 'AuditController@datatable')->name('admin.audit.dt')->middleware('auth')->middleware('regionadmin');
 
   Route::get('club/index_stats', 'ClubController@index_stats')->name('club.index_stats');
   Route::get('club/{id}/list', 'ClubController@dashboard')->name('club.dashboard');
@@ -71,6 +82,9 @@ Route::group(['prefix' => '{language}'], function(){
   Route::resource('schedule', 'ScheduleController')->only('index','create','edit');
 
 });
+Route::redirect('/home', '/de/home');
+Route::delete('/user/{user_id}', 'UserController@destroy')->name('admin.user.destroy')->middleware('auth')->middleware('regionadmin');
+Route::put('/user/{user_id}', 'UserController@update')->name('admin.user.update')->middleware('auth');
 
 Route::get('club/list_sel', 'ClubController@list_select')->name('club.list_sel');
 Route::get('club/list_stats', 'ClubController@list_stats')->name('club.list_stats');
@@ -81,6 +95,7 @@ Route::get('club/{club}/list/gym', 'ClubGymController@list_select4club')->name('
 Route::resource('club.gym', 'ClubGymController')->shallow()->only('store','update','destroy');
 
 Route::get('league/list', 'LeagueController@list')->name('league.list');
+Route::get('league/list_sel', 'LeagueController@list_select')->name('league.list_sel');
 Route::get('league/list/club/{club}', 'LeagueController@list_select4club')->name('league.list_sel4club');
 Route::delete('league/{league}/club/{club}', 'LeagueController@deassign_club')->name('league.deassign-club');
 Route::post('league/{league}/club', 'LeagueController@assign_club')->name('league.assign-club');

@@ -20,12 +20,12 @@ class CreateLeaguesTable extends Migration
             $table->char('shortname', 10)->unique();
             $table->text('name');
             $table->boolean('active')->default(True);
-            $table->boolean('changeable')->default(True);
             $table->boolean('above_region')->default(False);
             $table->unsignedInteger('schedule_id')->nullable();
             $table->foreign('schedule_id')->references('id')->on('schedules');
             $table->unsignedInteger('age_type')->nullable();
             $table->unsignedInteger('gender_type')->nullable();
+            $table->timestamp('generated_at')->nullable();
             $table->timestamps();
             //$table->unique('region','shortname');
         });
