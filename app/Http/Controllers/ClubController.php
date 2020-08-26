@@ -30,17 +30,8 @@ class ClubController extends Controller
      */
     public function list_stats()
     {
-      //
-      $region = Auth::user()->region;
-      Log::debug('get clubs for region '.$region);
 
-      if ($region == ''){
-        $clubs = Club::query();
-      } else {
-        $clubs = Club::query()->where('region', '=', $region);
-      }
-
-      $clubs = $clubs->withCount(['leagues','teams','games_home',
+      $clubs = Club::userRegion()->withCount(['leagues','teams','games_home',
                                      'games_home_notime' => function (Builder $query) {
                                           $query->whereNull('game_time');},
                                      'games_home_noshow' => function (Builder $query) {
@@ -118,15 +109,7 @@ class ClubController extends Controller
      */
     public function list()
     {
-        //
-        $region = Auth::user()->region;
-        Log::debug('get clubs for region '.$region);
-
-        if ($region == ''){
-          $clublist = datatables::of(Club::query());
-        } else {
-          $clublist = datatables::of(Club::query()->where('region', '=', $region));
-        }
+        $clublist = datatables::of(Club::userRegion());
 
         return $clublist
           ->addIndexColumn()
@@ -154,9 +137,8 @@ class ClubController extends Controller
      */
     public function list_select()
     {
-      $user_region = array( Auth::user()->region );
 
-      $clubs = Club::query()->whereIn('region', $user_region)->orderBy('name','ASC')->get();
+      $clubs = Club::query()->userRegion( Auth::user()->region )->orderBy('name','ASC')->get();
 
       Log::debug('got clubs '.count($clubs));
       $response = array();
@@ -277,7 +259,7 @@ class ClubController extends Controller
            return redirect()->route('club.index', app()->getLocale() );
         }
 
-        $check = club::where('id', $club->id)->update($data);
+        $check = Club::find($club->id)->update($data);
         return redirect()->route('club.dashboard',['language'=>app()->getLocale(), 'id'=>$club]);
     }
 

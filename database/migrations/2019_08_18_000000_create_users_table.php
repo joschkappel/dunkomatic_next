@@ -22,6 +22,9 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('approved_at')->nullable();
+            $table->timestamp('rejected_at')->nullable();
+            $table->string('reason_join')->nullable();
+            $table->string('reason_reject')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

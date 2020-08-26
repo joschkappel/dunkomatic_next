@@ -5,8 +5,9 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\CanResetPassword;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
 {
     use Notifiable;
 
@@ -16,7 +17,8 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','region','admin','regionadmin','approved_at'
+        'id','name', 'email', 'password','region','admin','regionadmin','approved_at','rejected_at','reason_join','reason_reject',
+        'club_ids','league_ids','email_verified_at'
     ];
 
     /**
@@ -36,7 +38,29 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
         'approved_at' => 'datetime',
+        'created_at' => 'datetime',
+        'rejected_at' => 'datetime',
     ];
+
+    public function adminlte_profile_url()
+    {
+        return 'admin.user.show';
+    }
+    /**
+     * Get all of the clubs that are assigned this user.
+     */
+    public function clubs()
+    {
+        return $this->morphedByMany('App\Club', 'useable');
+    }
+
+    /**
+     * Get all of the leagues that are assigned this user.
+     */
+    public function leagues()
+    {
+        return $this->morphedByMany('App\League', 'useable');
+    }
 
     public function user_region()
     {
@@ -46,5 +70,9 @@ class User extends Authenticatable implements MustVerifyEmail
     public function scopeRegionadmin($query, $region)
     {
         return $query->where('region',$region)->where('regionadmin', true);
+    }
+    public function scopeRegion($query, $region)
+    {
+        return $query->where('region',$region);
     }
 }

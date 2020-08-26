@@ -99,6 +99,7 @@ class LeagueGameController extends Controller
           //Log::debug(print_r($g, true));
           Game::updateOrCreate(['league_id' => $league->id, 'game_no' => $s->game_no], $g);
         }
+        League::find($league->id)->update(['generated_at' => now()]);
 
         return Response::json(['success' => 'all good'], 200);
     }
@@ -162,6 +163,7 @@ class LeagueGameController extends Controller
     public function destroy_game(League $league)
     {
         $league->games()->delete();
+        League::find($league->id)->update(['generated_at' => null]);
         return Response::json(['success' => 'all good'], 200);
     }
 

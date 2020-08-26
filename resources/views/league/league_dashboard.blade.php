@@ -9,7 +9,7 @@
 <div class="container-fluid">
     <div class="row ">
       <div class="col-sm">
-              <div class="small-box bg-gray">
+            <div class="small-box bg-gray">
                   <div class="inner">
                     <div class="row">
                       <div class="col-sm-8 pd-2">
@@ -58,6 +58,13 @@
 
         <!-- card CLS -->
         <div class="card card-outline card-info " id="clubsCard">
+          @if ( $league->isGenerated )
+          <div class="ribbon-wrapper ribbon-lg">
+            <div class="ribbon bg-warning text-lg">
+              GENERATED
+            </div>
+          </div>
+        @endif
           <div class="card-header">
             <h4 class="card-title"><i class="fas fa-basketball-ball"></i> @lang('club.entitlement') / @lang('team.registration')
               <span class="badge badge-pill badge-info">{{ count($assigned_clubs) }}</span> /
@@ -77,7 +84,9 @@
                   <tr>
                      <th>No</th>
                      <th>@lang('club.entitled')</th>
+                     @if (!$league->isGenerated)
                      <th>@lang('team.action.de_assign')</th>
+                    @endif
                      <th>@lang('team.registered')</th>
                   </tr>
                </thead>
@@ -87,12 +96,12 @@
                    @isset ( $assigned_clubs[$i] )
                      <td><span class="badge badge-pill badge-dark">{{ $i }}</span></td>
                      <td class="text-dark">{{ $assigned_clubs[$i]['shortname'] }}</td>
-                     <td><button id="deassignClub" data-id="{{ $assigned_clubs[$i]['club_id'] }}" type="button" class="btn btn-outline-danger btn-sm "> <i class="fas fa-unlink"></i> </button></td>
+                      @if (!$league->isGenerated)<td><button id="deassignClub" data-id="{{ $assigned_clubs[$i]['club_id'] }}" type="button" class="btn btn-outline-danger btn-sm "> <i class="fas fa-unlink"></i> </button></td>@endif
                    @endisset
                    @empty ( $assigned_clubs[$i] )
                      <td><span class="badge badge-pill badge-info">{{ $i }}</span></td>
                      <td class="text-info">@lang('team.unassigned')</td>
-                     <td><button type="button" id="assignClub" class="btn btn-outline-info btn-sm" data-itemid="{{ $i }}" data-toggle="modal" data-target="#modalAssignClub"><i class="fas fa-link"></i></button></td>
+                      @if (!$league->isGenerated)<td><button type="button" id="assignClub" class="btn btn-outline-info btn-sm" data-itemid="{{ $i }}" data-toggle="modal" data-target="#modalAssignClub"><i class="fas fa-link"></i></button></td>@endif
                    @endempty
                    @isset ( $assigned_teams[$i] )
                      <td class="text-dark">{{ $assigned_teams[$i]['shortname'] }} {{ $assigned_teams[$i]['team_no'] }}</td>
@@ -170,13 +179,13 @@
         <!-- /.card-body -->
         <div class="card-footer">
           <button type="button" class="btn btn-outline-secondary" id="createGames"
-            @if ( count($assigned_teams) < 2) disabled @endif><i class="fas fa-plus-circle"></i>  @lang('game.action.create')
+            @if (( count($assigned_teams) < 2) or ($league->isGenerated)) disabled @endif><i class="fas fa-plus-circle"></i>  @lang('game.action.create')
           </button>
           <button type="button" class="btn btn-outline-secondary" id="deleteGames"
-            ><i class="fa fa-trash"></i>  @lang('game.action.delete')
+              @if (!$league->isGenerated) disabled @endif><i class="fa fa-trash"></i>  @lang('game.action.delete')
           </button>
           <button type="button" class="btn btn-outline-secondary" id="deleteNoshowGames"
-            ><i class="fa fa-trash"></i>  @lang('game.action.delete.noshow')
+              @if (!$league->isGenerated) disabled @endif><i class="fa fa-trash"></i>  @lang('game.action.delete.noshow')
           </button>
         </div>
         <!-- /.card-footer -->

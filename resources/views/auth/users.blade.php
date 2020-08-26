@@ -15,19 +15,19 @@
                             </div>
                         @endif
 
-                        <table class="table">
+                        <table class="table table-striped table-border">
                             <tr>
                                 <th>User name</th>
                                 <th>Email</th>
                                 <th>Registered at</th>
                                 <th></th>
                             </tr>
-                            @forelse ($users as $user)
+                            @forelse ($users as $auser)
                                 <tr>
-                                    <td>{{ $user->name }}</td>
-                                    <td>{{ $user->email }}</td>
-                                    <td>{{ $user->created_at }}</td>
-                                    <td><a href="{{ route('admin.users.approve', ['language'=>app()->getLocale(), 'user'->$user->id]) }}"
+                                    <td>{{ $auser->name }}</td>
+                                    <td>{{ $auser->email }}</td>
+                                    <td>{{ $auser->created_at }}</td>
+                                    <td><a href="{{ route('admin.user.edit', ['language' => app()->getLocale(), 'user_id' => $auser->id ]) }}"
                                            class="btn btn-primary btn-sm">Approve</a></td>
                                 </tr>
                             @empty

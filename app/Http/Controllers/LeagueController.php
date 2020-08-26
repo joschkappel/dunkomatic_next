@@ -56,17 +56,10 @@ class LeagueController extends Controller
      */
     public function list_stats()
     {
-      //
-      $region = Auth::user()->region;
-      Log::debug('get leagues for region '.$region);
 
-      if ($region == ''){
-        $leagues = League::query()->with('schedule');
-      } else {
-        $leagues = League::query()->where('region', '=', $region)->with('schedule');
-      }
-
-      $leagues = $leagues->withCount(['clubs','teams','games',
+      $leagues = League::userRegion()
+                  ->with('schedule')
+                  ->withCount(['clubs','teams','games',
                                      'games_notime' => function (Builder $query) {
                                           $query->whereNull('game_time');},
                                      'games_noshow' => function (Builder $query) {
@@ -106,14 +99,7 @@ class LeagueController extends Controller
     public function list()
     {
         //
-        $region = Auth::user()->region;
-        Log::debug('get leagues for region '.$region);
-
-        if ($region == ''){
-          $leaguelist = datatables::of(League::query()->with('schedule'));
-        } else {
-          $leaguelist = datatables::of(League::query()->where('region', '=', $region)->with('schedule'));
-        }
+        $leaguelist = datatables::of(League::userRegion()->with('schedule'));
 
         return $leaguelist
           ->addIndexColumn()
@@ -129,6 +115,28 @@ class LeagueController extends Controller
               return '<a href="' . route('league.dashboard', ['language'=>app()->getLocale(),'id'=>$data->id]) .'">'.$data->shortname.'</a>';
               })
           ->make(true);
+    }
+
+    /**
+     * Display a listing of the resource for selectboxes.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function list_select()
+    {
+
+      $leagues = League::query()->userRegion( Auth::user()->region )->orderBy('name','ASC')->get();
+
+      Log::debug('got leagues '.count($leagues));
+      $response = array();
+
+      foreach($leagues as $league){
+          $response[] = array(
+                "id"=>$league->id,
+                "text"=>$league->shortname
+              );
+      }
+      return Response::json($response);
     }
 
     /**
@@ -340,7 +348,7 @@ class LeagueController extends Controller
       }
 
       Log::debug(print_r($data, true));
-      $check = league::where('id', $league->id)->update($data);
+      $check = League::find($league->id)->update($data);
       return redirect()->route('league.dashboard',['language'=>app()->getLocale(), 'id'=>$league]);
     }
 

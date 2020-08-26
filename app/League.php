@@ -2,14 +2,49 @@
 
 namespace App;
 use App\Game;
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class League extends Model
+class League extends Model implements Auditable
 {
+
+  use \OwenIt\Auditing\Auditable;
+  public function generateTags(): array
+  {
+      return [
+          $this->shortname,
+          $this->region
+      ];
+  }
   protected $fillable = [
-        'id','name','shortname','region','active','above_region','changeable', 'schedule_id'
-    ];
+        'id','name','shortname','region','active','above_region','schedule_id','generated_at'
+  ];
+  /**
+   * The attributes that should be cast to native types.
+   *
+   * @var array
+   */
+  protected $casts = [
+      'generated_at' => 'datetime',
+  ];
+
+  public function getIsGeneratedAttribute()
+  {
+      $cnt = League::find($this->id)->games()->count();
+      //Log::debug(print_r($cnt,true));
+      return ( $cnt == 0 ) ? false : true;
+  }
+  /**
+   * Get all of the users for the club.
+   */
+  public function useables()
+  {
+      return $this->morphToMany('App\User', 'useable');
+  }
 
   public function region()
   {
@@ -53,5 +88,9 @@ class League extends Model
   public function games_overlap()
   {
       return $this->hasMany('App\Game');
+  }
+  public function scopeUserRegion($query)
+  {
+      return $query->where('region',Auth::user()->region);
   }
 }
