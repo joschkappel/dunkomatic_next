@@ -132,7 +132,7 @@
           allowClear: true,
           minimumResultsForSearch: -1,
           ajax: {
-                  url: "{{ route('schedule.list_sel')}}",
+                  url: "{{ route('schedule.sb.region')}}",
                   type: "get",
                   delay: 250,
                   processResults: function (response) {

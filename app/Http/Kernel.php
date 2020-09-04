@@ -69,4 +69,8 @@ class Kernel extends HttpKernel
         'regionadmin' => \App\Http\Middleware\CheckRegionAdmin::class,
         'setLanguage' => \App\Http\Middleware\SetLanguage::class,
     ];
+
+
+
+
 }

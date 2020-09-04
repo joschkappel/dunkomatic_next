@@ -187,6 +187,16 @@
           <button type="button" class="btn btn-outline-secondary" id="deleteNoshowGames"
               @if (!$league->isGenerated) disabled @endif><i class="fa fa-trash"></i>  @lang('game.action.delete.noshow')
           </button>
+          <button type="button" class="btn btn-outline-secondary" id="injectTeam"
+              @if ((!$league->isGenerated) or (count($assigned_teams) == $league->schedule['size'])) disabled @endif><i class="fa fa-trash"></i>  @lang('game.action.team.add')
+          </button>
+          <button type="button" class="btn btn-outline-secondary" id="withdrawTeam"
+              @if ((!$league->isGenerated) or (count($assigned_teams) == 0)) disabled @endif><i class="fa fa-trash"></i>  @lang('game.action.team.withdraw')
+          </button>
+          <a href="{{ route('league.game.index',['language'=>app()->getLocale(), 'league' => $league ]) }}" class="btn btn-primary" >
+          <i class="far fa-edit"></i> @lang('league.action.game.list')</a>
+
+
         </div>
         <!-- /.card-footer -->
       </div>
@@ -194,6 +204,8 @@
       <!-- all modals here -->
       @include('league/includes/assign_club')
       @include('member/includes/memberroles_delete')
+      @include('league/includes/withdraw_team')
+      @include('league/includes/inject_team')
       <!-- all modals above -->
     </div>
     <!-- ./deck -->
@@ -256,6 +268,14 @@ reserved.
         var itemid = $(this).data("itemid");
         $('#itemid').val($(this).data('itemid'));
         $('#modalAssignClub').modal('show');
+     });
+
+     $("button#withdrawTeam").click( function(){
+        $('#modalWithdrawTeam').modal('show');
+     });
+
+     $("button#injectTeam").click( function(){
+        $('#modalInjectTeam').modal('show');
      });
 
      $("button#deleteMemberrole").click( function(){

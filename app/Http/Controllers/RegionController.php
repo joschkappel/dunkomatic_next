@@ -19,7 +19,7 @@ class RegionController extends Controller
     {
         //
     }
-    public function list_select()
+    public function admin_sb()
     {
       $regions = Region::query()->get();
 

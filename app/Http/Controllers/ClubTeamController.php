@@ -21,6 +21,13 @@ class ClubTeamController extends Controller
         //
     }
 
+    public function pickchar($language, Club $club)
+    {
+      $club = Club::where('id', $club->id)->with('teams.league.teams')->with('teams.league.schedule')->first();
+      //dd($club);
+      return view('club.club_pickchar', ['club'=>$club]);
+    }
+
     /**
      * Show the form for creating a new resource.
      *

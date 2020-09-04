@@ -136,7 +136,7 @@
               minimumResultsForSearch: 10,
               placeholder: "{{__('club.region')}}",
               ajax: {
-                      url: "{{ route('region.list_sel')}}",
+                      url: "{{ route('region.admin.sb')}}",
                       type: "get",
                       delay: 250,
                       processResults: function (response) {

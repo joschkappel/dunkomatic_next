@@ -223,7 +223,7 @@
             allowClear: true,
             minimumResultsForSearch: 20,
             ajax: {
-                    url: "{{ route('league.list_sel4club',['club' => $team->club_id])}}",
+                    url: "{{ route('league.sb.club',['club' => $team->club_id])}}",
                     type: "get",
                     delay: 250,
                     processResults: function (response) {

@@ -135,10 +135,10 @@ class ClubController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function list_select()
+    public function sb_region()
     {
 
-      $clubs = Club::query()->userRegion( Auth::user()->region )->orderBy('name','ASC')->get();
+      $clubs = Club::query()->userRegion( Auth::user()->region )->orderBy('shortname','ASC')->get();
 
       Log::debug('got clubs '.count($clubs));
       $response = array();

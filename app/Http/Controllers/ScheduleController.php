@@ -31,7 +31,7 @@ class ScheduleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function list_select()
+    public function sb_region()
     {
       $user_region = array( Auth::user()->region );
 
@@ -56,7 +56,7 @@ class ScheduleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function list_size_select(LeagueTeamSize $size)
+    public function sb_size(LeagueTeamSize $size)
     {
       $user_region = array( Auth::user()->region );
       Log::debug('SIZE :'.print_r($size,true));

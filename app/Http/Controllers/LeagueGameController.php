@@ -9,6 +9,8 @@ use App\Gym;
 use App\ScheduleEvent;
 use App\LeagueTeamScheme;
 
+use Datatables;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
@@ -24,11 +26,40 @@ class LeagueGameController extends Controller
      * @param  \App\League  $league
      * @return \Illuminate\Http\Response
      */
-    public function index(League $league)
+    public function index($language, League $league)
     {
-        //
+       return view('game/league_game_list', ['league' => $league]);
     }
+    public function datatable($language, League $league)
+    {
+      $games = $league->games()->get();
+      $glist = datatables::of($games);
 
+      $glist =  $glist
+        ->rawColumns(['game_no.display'])
+        ->editColumn('game_time', function($game){
+          return Carbon::parse($game->game_time)->isoFormat('LT');
+        })
+        ->editColumn('game_no', function($game){
+            $link = '<a href="#" id="gameEditLink" data-id="'.$game->id.
+                    '" data-game-date="'.$game->game_date.'" data-game-time="'.$game->game_time.'" data-club-id-home"'.$game->club_id_home.
+                    '" data-gym-no="'.$game->gym_no.'" data-gym-id="'.$game->gym_id.'" data-league="'.$game->league['shortname'].
+                    '">'.$game->game_no.' <i class="fas fa-arrow-circle-right"></i></a>';
+            return array('display' =>$link, 'sort'=>$game->game_no);
+        })
+        ->editColumn('game_date', function ($game) use ($language) {
+                return array('display' => Carbon::parse($game->game_date)->locale( $language )->isoFormat('ddd L'),
+                             'ts'=>Carbon::parse($game->game_date)->timestamp,
+                             'filter' => Carbon::parse($game->game_date)->locale( $language )->isoFormat('L'));
+            })
+        ->editColumn('gym_no', function ($game) {
+                return array('display' => $game->gym_no,
+                             'default' => $game->gym_no);
+            })
+        ->make(true);
+        Log::debug(print_r($glist,true));
+        return $glist;
+      }
     /**
      * Show the form for creating a new resource.
      *
@@ -65,8 +96,8 @@ class LeagueGameController extends Controller
         foreach ($scheme as $s){
           $gday = $gdate_by_day[ $s->game_day ];
 
-          $hteam = $teams->firstWhere('league_char', $s->team_home);
-          $gteam = $teams->firstWhere('league_char', $s->team_guest);
+          $hteam = $teams->firstWhere('league_no', $s->team_home);
+          $gteam = $teams->firstWhere('league_no', $s->team_guest);
 
           $g = array();
           $g['region'] = $league->region;

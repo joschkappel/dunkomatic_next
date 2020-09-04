@@ -104,7 +104,7 @@
             allowClear: false,
             minimumResultsForSearch: 20,
             ajax: {
-                    url: "{{ route('club.list_sel')}}",
+                    url: "{{ route('club.sb.region')}}",
                     type: "get",
                     delay: 250,
                     processResults: function (response) {
@@ -121,7 +121,7 @@
             allowClear: false,
             minimumResultsForSearch: 20,
             ajax: {
-                    url: "{{ route('league.list_sel')}}",
+                    url: "{{ route('league.region.sb')}}",
                     type: "get",
                     delay: 250,
                     processResults: function (response) {

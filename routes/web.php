@@ -52,6 +52,7 @@ Route::group([
   Route::post('club/{club}/game/import','ClubGameController@import')->name('club.import.homegame');
   Route::get('club/{club}/game/list_home', 'ClubGameController@list_home')->name('club.game.list_home');
   Route::get('club/{club}/game/chart', 'ClubGameController@chart')->name('club.game.chart');
+  Route::get('club/{club}/team/pickchar', 'ClubTeamController@pickchar')->name('club.team.pickchar');
 
   Route::resource('club', 'ClubController')->except('store','update','destroy');
   Route::resource('club.gym', 'ClubGymController')->shallow()->except('store','update','destroy','show');
@@ -59,8 +60,10 @@ Route::group([
   Route::get('league/index_stats', 'LeagueController@index_stats')->name('league.index_stats');
   Route::get('league/list_stats', 'LeagueController@list_stats')->name('league.list_stats');
   Route::get('league/{id}/list', 'LeagueController@dashboard')->name('league.dashboard');
+  Route::get('league/{league}/game/dt', 'LeagueGameController@datatable')->name('league.game.dt');
   Route::resource('league', 'LeagueController')->except('store','update','destroy');
-  Route::resource('league.game', 'LeagueGameController')->shallow()->only(['index','create','edit']);;
+  Route::resource('league.game', 'LeagueGameController')->shallow()->only(['index','create','edit']);
+  Route::get('report/league/{league}', 'ReportController@league_games')->name('report.league');
 
   Route::resource('member', 'MemberController')->only(['show']);
   Route::resource('club.memberrole', 'ClubMemberRoleController')->only(['index','create','edit']);
@@ -82,11 +85,13 @@ Route::group([
   Route::resource('schedule', 'ScheduleController')->only('index','create','edit');
 
 });
+
+// APIs , no locale or language required !
 Route::redirect('/home', '/de/home');
 Route::delete('/user/{user_id}', 'UserController@destroy')->name('admin.user.destroy')->middleware('auth')->middleware('regionadmin');
 Route::put('/user/{user_id}', 'UserController@update')->name('admin.user.update')->middleware('auth');
 
-Route::get('club/list_sel', 'ClubController@list_select')->name('club.list_sel');
+Route::get('club/region/sb', 'ClubController@sb_region')->name('club.sb.region');
 Route::get('club/list_stats', 'ClubController@list_stats')->name('club.list_stats');
 Route::resource('club', 'ClubController')->only('store','update','destroy');
 Route::get('club/{club}/game/chart_home', 'ClubGameController@chart_home')->name('club.game.chart_home');
@@ -95,8 +100,9 @@ Route::get('club/{club}/list/gym', 'ClubGymController@list_select4club')->name('
 Route::resource('club.gym', 'ClubGymController')->shallow()->only('store','update','destroy');
 
 Route::get('league/list', 'LeagueController@list')->name('league.list');
-Route::get('league/list_sel', 'LeagueController@list_select')->name('league.list_sel');
-Route::get('league/list/club/{club}', 'LeagueController@list_select4club')->name('league.list_sel4club');
+Route::get('league/region/sb', 'LeagueController@sb_region')->name('league.sb.region');
+Route::get('league/{league}/freechar/sb', 'LeagueController@selectbox_freechars')->name('league.sb_freechar');
+Route::get('league/club/{club}/sb', 'LeagueController@sb_club')->name('league.sb.club');
 Route::delete('league/{league}/club/{club}', 'LeagueController@deassign_club')->name('league.deassign-club');
 Route::post('league/{league}/club', 'LeagueController@assign_club')->name('league.assign-club');
 Route::resource('league', 'LeagueController')->only('store','update','destroy');
@@ -107,10 +113,15 @@ Route::resource('memberrole', 'MemberRoleController')->only(['destroy']);
 
 Route::delete('league/{league}/game', 'LeagueGameController@destroy_game')->name('league.game.destroy');
 Route::delete('league/{league}/game/noshow', 'LeagueGameController@destroy_noshow_game')->name('league.game.destroy_noshow');
+Route::delete('league/{league}/team', 'TeamController@withdraw')->name('league.team.withdraw');
+Route::post('league/{league}/team', 'TeamController@inject')->name('league.team.inject');
+Route::post('league/{league}/char', 'TeamController@pick_char')->name('league.team.pickchar');
+Route::get('league/{league}/team/sb', 'TeamController@league_selectbox')->name('league.team.sb');
 Route::resource('league.game', 'LeagueGameController')->shallow()->except(['index','create','edit']);;
 
 Route::put('team/league', 'TeamController@assign_league')->name('team.assign-league');
 Route::delete('team/league', 'TeamController@deassign_league')->name('team.deassign-league');
+Route::get('team/league/{league}/free/sb', 'TeamController@freeteam_selectbox')->name('team.free.sb');
 
 Route::resource('club.team', 'ClubTeamController')->shallow()->except('index','create','edit');;
 
@@ -130,7 +141,7 @@ Route::resource('schedule_event', 'ScheduleEventController');
 
 Route::delete('schedule/delete/{id}', 'ScheduleController@destroy')->name('schedule.delete');
 Route::get('schedule/list', 'ScheduleController@list')->name('schedule.list');
-Route::get('schedule/list_sel', 'ScheduleController@list_select')->name('schedule.list_sel');
-Route::get('schedule/size/{size}/list_sel', 'ScheduleController@list_size_select')->name('schedule.list_size_sel');
+Route::get('schedule/region/sb', 'ScheduleController@sb_region')->name('schedule.sb.region');
+Route::get('schedule/size/{size}/sb', 'ScheduleController@sb_size')->name('schedule.sb.size');
 Route::resource('schedule', 'ScheduleController')->except('index','create','edit');
-Route::get('region/list_sel', 'RegionController@list_select')->name('region.list_sel');
+Route::get('region/admin/sb', 'RegionController@admin_sb')->name('region.admin.sb');
