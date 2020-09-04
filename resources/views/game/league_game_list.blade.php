@@ -17,32 +17,36 @@
             <!-- general form elements -->
             <div class="card card-info">
                 <div class="card-header">
-                    <h3 class="card-title">@lang('club.title.gamehome.edit', ['club'=>$club->shortname])</h3>
+                    <h3 class="card-title">
+                        @lang('league.title.game', ['league'=>$league->shortname])</h3>
                 </div>
                 <!-- /.card-header -->
-                    <div class="card-body">
-                      <table class="table table-hover table-bordered table-sm" id="table">
-                         <thead class="thead-light">
+                <div class="card-body">
+                    <table class="table table-hover table-bordered table-sm" id="table">
+                        <thead class="thead-light">
                             <tr>
-                               <th>id</th>
-                               <th>@lang('game.game_no')</th>
-                               <th>@lang('game.game_date')</th>
-                               <th>@lang('game.gym_no')</th>
-                               <th>gym_id</th>
-                               <th>@lang('game.game_time')</th>
-                               <th class="text-center">@lang('game.overlap')</th>
-                               <th>{{ trans_choice('league.league',1)}}</th>
-                               <th>@lang('game.team_home')</th>
-                               <th>@lang('game.team_guest')</th>
+                                <th>id</th>
+                                <th>
+                                    @lang('game.game_no')</th>
+                                <th>
+                                    @lang('game.game_date')</th>
+                                <th>
+                                    @lang('game.gym_no')</th>
+                                <th>gym_id</th>
+                                <th>
+                                    @lang('game.game_time')</th>
+                                <th>
+                                    @lang('game.team_home')</th>
+                                <th>
+                                    @lang('game.team_guest')</th>
                             </tr>
-                         </thead>
-                      </table>
-                    </div>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
     <!-- all modals here -->
-    @include('game/includes/edit_gamedate')
     <!-- all modals above -->
 </div>
 @endsection
@@ -72,12 +76,6 @@
   <script src="{{ URL::asset('vendor/moment/locale/en-gb.js') }}"></script>
 @endif
 <script>
-    $.fn.dataTable.ext.buttons.import = {
-        text: '{{__('game.excel.import')}}',
-        action: function ( e, dt, node, config ) {
-            window.open('{{ route('club.upload.homegame',['language'=>app()->getLocale(), 'club' => $club ])}}',"_self");
-        }
-    };
     $('#table').DataTable({
         processing: true,
         serverSide: false,
@@ -89,20 +87,19 @@
           { extend: 'excelHtml5',
             text: '{{__('game.excel.export')}}',
             exportOptions: { orthogonal: 'export' },
-            title: '{{$club->shortname}}_{{ trans_choice('game.homegame',2)}}',
+            title: '{{$league->shortname}}_{{ trans_choice('game.homegame',2)}}',
             sheetName: '{{ trans_choice('game.homegame',2)}}',
           },
-          'print',
-          'import'
+          'print'
         ],
-        order: [[ 2,'asc'],[ 3,'asc'], [ 4,'asc']],
+        order: [[ 1,'asc']],
         @if (app()->getLocale() == 'de')
         language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/German.json')}}" },
         @endif
         @if (app()->getLocale() == 'en')
         language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/English.json')}}" },
         @endif
-        ajax: '{{ route('club.game.list_home',['language' => app()->getLocale(), 'club'=>$club]) }}',
+        ajax: '{{ route('league.game.dt',['language' => app()->getLocale(), 'league'=>$league]) }}',
         columns: [
                  { data: 'id', name: 'id', visible: false },
                  { data: {
@@ -122,31 +119,10 @@
                   }, name: 'gym_no.default' },
                  { data: 'gym_id', name: 'gym_id', visible: false },
                  { data: 'game_time', name: 'game_time' },
-                 { data: 'duplicate', name: 'duplicate' },
-                 { data: 'league.shortname', name: 'league.shortname'  },
                  { data: 'team_home', name: 'team_home'},
                  { data: 'team_guest', name: 'team_guest'},
               ]
     });
-
-  $('body').on('click', '#gameEditLink', function() {
-        moment.locale('{{app()->getLocale()}}');
-        var gdate = moment($(this).data('game-date')).format('L');
-        var gtime = moment($(this).data('game-time'),'HH:mm:ss').format('LT');
-        $("#game_time").val(gtime);
-        $("#game_date").val(gdate);
-        $("#gym_id").val($(this).data('gym-id'));
-        $("#gym_no").val($(this).data('gym-no'));
-        $("#modtitle").html($(this).data('league')+' '+$(this).data('gym-no'));
-        $("#club_id").val($(this).data('club-id-home'));
-        var url = "{{route('game.update',['game'=>':game:'])}}";
-        url = url.replace(':game:', $(this).data('id'));
-        $('#formGamedate').attr('action', url);
-        $("#modalEditGamedate").modal('show');
-      });
-
-
-
 
 </script>
 @endsection

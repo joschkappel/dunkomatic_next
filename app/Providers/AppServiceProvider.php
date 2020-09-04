@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 
 use App\Club;
 use App\League;
+use App\Setting;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,6 +33,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(Dispatcher $events)
     {
+
+        config([
+          'global' => Setting::all([
+              'name','value'
+          ])
+          ->keyBy('name') // key every setting by its name
+          ->transform(function ($setting) {
+               return $setting->value; // return only the value
+          })
+          ->toArray() // make it an array
+        ]);
+
         $events->listen(BuildingMenu::class, function (BuildingMenu $event) {
             $clubmenu = array();
             $clubmenu['text'] = trans_choice('club.club', 2);

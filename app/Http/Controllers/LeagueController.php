@@ -122,7 +122,7 @@ class LeagueController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function list_select()
+    public function sb_region()
     {
 
       $leagues = League::query()->userRegion( Auth::user()->region )->orderBy('name','ASC')->get();
@@ -139,12 +139,39 @@ class LeagueController extends Controller
       return Response::json($response);
     }
 
+    public function selectbox_freechars(League $league)
+    {
+      $size = $league->load('schedule')->schedule['size'];
+      $chars = config('dunkomatic.league_team_chars');
+      $all_chars = array_slice( array_values($chars), 0, $size, true );
+      Log::debug(print_r($all_chars,true));
+
+      //$clubs = $league->clubs()->get();
+      //$club_chars = $clubs->pluck('pivot.league_char')->toArray();
+      $teams = $league->teams()->get();
+      $team_chars = $teams->pluck('league_char')->toArray();
+
+      Log::debug(print_r($team_chars,true));
+
+      $freechars = array_diff($all_chars,$team_chars);
+
+      foreach ($freechars as $key => $value){
+
+        $response[] = array(
+              "id"=>$key+1,
+              "text"=>($key+1).' - '.$value
+            );
+      }
+      return Response::json($response);
+
+    }
+
     /**
      * Display a listing of the resource for selectboxes. leagues for club
      *
      * @return \Illuminate\Http\Response
      */
-    public function list_select4club(Club $club)
+    public function sb_club(Club $club)
     {
       Log::debug(print_r($club,true));
 
@@ -206,7 +233,7 @@ class LeagueController extends Controller
               //Log::debug(print_r($teams,true));
               $assigned_team = array();
               foreach($teams as $team){
-                  $assigned_team[$team->league_char] = array(
+                  $assigned_team[$team->league_no] = array(
                         "team_id"=>$team->id,
                         "shortname"=>$team['club']->shortname,
                         "team_no"=>$team->team_no,
@@ -408,8 +435,8 @@ class LeagueController extends Controller
            $league = League::find($league);
            $check = False;
            $league_no = $request->input( 'item_id');
-           $upperArr = range('A', 'Q');
-           $league_char = $upperArr[$league_no-1];
+           $upperArr = config('dunkomatic.league_team_chars');
+           $league_char = $upperArr[$league_no];
 
            Log::debug('league_car: '.$league_char);
 

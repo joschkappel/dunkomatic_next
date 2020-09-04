@@ -39,8 +39,15 @@ class TeamsTableSeeder extends Seeder
           $team->league_id = null;
         }
 
-        $upperArr = range('A', 'Q');
-        $league_no = array_search( $team->league_char ,$upperArr, true)+1;
+        $upperArr = config('dunkomatic.league_team_chars');
+
+        if ($team->league_char > 0){
+          $league_char = $upperArr[$team->league_char];
+          $league_no = $team->league_char;
+        } else {
+          $league_char = null;
+          $league_no = null;
+        }
 
         // old: dayof week:  1=sat, 2=sun, .....
         // new: iso days of week: 1=mon, 2=tue,....7=sun
@@ -60,7 +67,7 @@ class TeamsTableSeeder extends Seeder
           'team_no'       => $team->team_no,
           'league_id'     => $team->league_id,
           'club_id'       => $team->club_id,
-          'league_char'   => $team->league_char,
+          'league_char'   => $league_char,
           'league_no'     => $league_no,
           'league_prev'   => $team->league_prev,
           'training_day'  => $tday,

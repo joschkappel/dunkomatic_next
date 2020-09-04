@@ -6,6 +6,9 @@ use App\Team;
 use App\Club;
 use App\League;
 use App\Schedule;
+use App\ScheduleEvent;
+use App\LeagueTeamScheme;
+use App\Game;
 
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
@@ -24,6 +27,144 @@ class TeamController extends Controller
     public function index()
     {
         //
+    }
+    public function league_selectbox(League $league)
+    {
+        $teams =  $league->teams()->with('club')->get();
+        //Log::debug(print_r($teams,true));
+        $response = array();
+
+        foreach ($teams as $t){
+          $response[] = array(
+                "id"=>$t->id,
+                "text"=>$t['club']->shortname.''.$t->team_no
+              );
+        }
+        return Response::json($response);
+    }
+
+    public function withdraw(Request $request, League $league)
+    {
+        Log::debug(print_r($request->all(),true));
+        $team = Team::findOrFail($request->input('team_id'));
+
+        // Team: league_prev, league_id, league_char, league_no,
+        $team->update(['league_prev'=>$league->shortname,'league_id'=>null,'league_char'=>null,'league_no'=>null]);
+        // Game: delete all games with gameteam home+guest
+        $team->games_home()->delete();
+        $team->games_guest()->delete();
+
+        // League:club delete
+        $league->clubs()->detach($team->club_id);
+        return redirect()->back();
+
+    }
+
+    public function freeteam_selectbox(League $league)
+    {
+        //Log::debug(print_r($league,true));
+        $free_teams = Team::whereNull('league_id')->orWhere(function($query) use($league)
+          { $query->where('league_id', $league->id)
+                  ->whereNull('league_no');
+          })->with('club')->get();
+        //Log::debug(print_r($teams,true));
+        $response = array();
+
+        foreach ($free_teams as $t){
+          $response[] = array(
+                "id"=>$t->id,
+                "text"=>$t['club']->shortname.''.$t->team_no.' ('.$t->league_prev.')'
+              );
+        }
+        return Response::json($response);
+    }
+
+    public function inject(Request $request, League $league)
+    {
+        Log::debug(print_r($request->all(),true));
+        $league_no = $request->input('league_no');
+        $size = $league->load('schedule')->schedule['size'];
+        $chars = config('dunkomatic.league_team_chars');
+        $upperArr = array_slice( $chars, 0, $size, true );
+        $league_char = $upperArr[$league_no];
+        // update team
+        $team_id = $request->input('team_id');
+        $team = Team::find($team_id);
+        $team->update(['league_id'=>$league->id, 'league_no'=>$league_no, 'league_char'=>$league_char]);
+
+        $used_char = $league->clubs()->pluck('league_char')->toArray();
+        $free_char = array_diff( $upperArr, $used_char);
+        Log::debug(print_r($free_char,true));
+
+        $clubleague_char = array_shift( $free_char );
+        $clubleague_no = array_search( $clubleague_char, $chars, false);
+        $league = League::find($league->id);
+        $league->clubs()->attach($team->club_id,['league_no' =>$clubleague_no ,'league_char' => $clubleague_char ]);
+
+        // are games still there ?
+        // get size
+        $league->load('schedule');
+        // get scheme
+        $scheme = collect(LeagueTeamScheme::where('size', $league->schedule['size'])->get());
+
+        // get schedule
+        $schedule = collect(ScheduleEvent::where('schedule_id', $league->schedule_id)->get());
+        $gdate_by_day = $schedule->pluck('game_date','game_day');
+
+        // get teams
+        $teams = collect(Team::where('league_id',$league->id)->with('club')->get());
+
+
+        foreach ($scheme as $s){
+          if (($s->team_home == $league_no) or ($s->team_guest == $league_no)){
+
+            if (!$league->games()->where('game_no',$s->game_no)->exists()) {
+
+              $gday = $gdate_by_day[ $s->game_day ];
+              $hteam = $teams->firstWhere('league_no', $s->team_home);
+              $gteam = $teams->firstWhere('league_no', $s->team_guest);
+
+              $g = array();
+              $g['league_id'] = $league->id;
+              $g['game_no'] = $s->game_no;
+              $g['region'] = $league->region;
+              $g['game_plandate'] = $gday;
+              if (isset($hteam['preferred_game_day'])){
+                $pref_gday = $hteam['preferred_game_day'] % 7;
+                $g['game_date'] = $gday->next($pref_gday);
+              } else {
+                $g['game_date'] = $gday;
+              };
+              $g['gym_no'] = "1";
+              $g['referee_1'] = "";
+              $g['referee_2'] = "";
+              $g['team_char_home'] = $s->team_home;
+              $g['team_char_guest'] = $s->team_guest;
+
+              if (isset($hteam)){
+                $g['game_time'] = $hteam['preferred_game_time'];
+                $g['club_id_home'] = $hteam['club']['id'];
+                $g['team_id_home'] = $hteam['id'];
+                $g['team_home'] = $hteam['club']['shortname'].$hteam['team_no'];
+              };
+
+              if ( isset($gteam)){
+                $g['club_id_guest'] = $gteam['club']['id'];
+                $g['team_id_guest'] = $gteam['id'];
+                $g['team_guest'] = $gteam['club']['shortname'].$gteam['team_no'];
+              }
+
+              Log::debug('creating game no:'.$g['game_no']);
+              Game::create($g);
+            } else {
+              $team->load('club');
+              $league->games()->where('game_no',$s->game_no)->where('team_char_home',$league_no)->update(['club_id_home'=>$team->club_id, 'team_id_home'=>$team->id, 'team_home'=>$team['club']->shortname.$team->team_no ]);
+              $league->games()->where('game_no',$s->game_no)->where('team_char_guest',$league_no)->update(['club_id_guest'=>$team->club_id, 'team_id_guest'=>$team->id, 'team_guest'=>$team['club']->shortname.$team->team_no ]);
+            }
+          }
+        }
+
+        return redirect()->back();
     }
 
     /**
@@ -56,7 +197,7 @@ class TeamController extends Controller
     public function store_plan(Request $request)
     {
       Log::info(print_r($request->input(), true));
-      $upperArr = range('A', 'Q');
+      $upperArr = config('dunkomatic.league_team_chars');
       $club_id = $request->input('club_id');
 
       foreach ($request->input() as $key => $league_no) {
@@ -66,7 +207,7 @@ class TeamController extends Controller
           // update team league character
           $team = Team::find($team_id);
           $team->league_no = $league_no;
-          $team->league_char = $upperArr[ $league_no - 1 ];
+          $team->league_char = $upperArr[ $league_no ];
 
           $check = $team->save();
         }
@@ -134,10 +275,49 @@ class TeamController extends Controller
          $league_id = $request->input('league_id');
          $club_id = $request->input('club_id');
 
-         Team::where('id', $team_id)->update(array('league_id' => $league_id));
+         $udata = array();
+         $udata['league_id'] = $league_id;
+
+         if ( $request->input('league_no') !== null ){
+           $udata['league_no'] = $request->input('league_no');
+           $upperArr = config('dunkomatic.league_team_chars');
+           $udata['league_char'] = $upperArr[$request->input('league_no')];
+         }
+
+         Log::debug(print_r($udata,true));
+         $team = Team::findOrFail($team_id);
+         $team->update($udata);
 
          return redirect()->route('club.dashboard', ['language'=>app()->getLocale(), 'id' => $club_id ]);
      }
+
+     /**
+      * Attach team to league
+      *
+      * @param  \App\League  $league
+      * @return \Illuminate\Http\Response
+      */
+      public function pick_char(Request $request )
+      {
+          Log::info(print_r($request->input(), true));
+          // get data
+          $team_id = $request->input('team_id');
+          $league_id = $request->input('league_id');
+          $league_no = $request->input('league_no');
+
+          $udata = array();
+          $udata['league_id'] = $league_id;
+          $udata['league_no'] = $league_no;
+          $upperArr = config('dunkomatic.league_team_chars');
+          $udata['league_char'] = $upperArr[$league_no];
+
+          Log::debug(print_r($udata,true));
+          $team = Team::findOrFail($team_id);
+          $team->update($udata);
+
+          return Response::json(['success' => 'all good'], 200);
+      }
+
 
      /**
       * DeAttach team from league

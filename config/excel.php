@@ -49,7 +49,7 @@ return [
         |
         */
         'properties'             => [
-            'creator'        => '',
+            'creator'        => 'Jochen Kappel',
             'lastModifiedBy' => '',
             'title'          => '',
             'description'    => '',
@@ -57,7 +57,7 @@ return [
             'keywords'       => '',
             'category'       => '',
             'manager'        => '',
-            'company'        => '',
+            'company'        => 'w.p.o. projects',
         ],
     ],
 

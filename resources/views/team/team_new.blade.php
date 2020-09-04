@@ -1,4 +1,4 @@
-vv k@extends('adminlte::page')
+@extends('adminlte::page')
 
 @section('css')
 <!-- Bootstrap Color Picker -->
@@ -216,7 +216,7 @@ vv k@extends('adminlte::page')
             allowClear: true,
             minimumResultsForSearch: 20,
             ajax: {
-                    url: "{{ route('league.list_sel4club',['club' => $club])}}",
+                    url: "{{ route('league.sb.club',['club' => $club])}}",
                     type: "get",
                     delay: 250,
                     processResults: function (response) {

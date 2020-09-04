@@ -53,7 +53,7 @@
           allowClear: false,
           minimumResultsForSearch: -1,
           ajax: {
-                  url: "{{ route('schedule.list_size_sel',['size' => $schedule->size])}}",
+                  url: "{{ route('schedule.sb.size',['size' => $schedule->size])}}",
                   type: "get",
                   delay: 250,
                   processResults: function (response) {
