@@ -95,6 +95,10 @@
 
 @endsection
 
+@section('footer')
+jochenk
+@stop
+
 @section('js')
 <script>
     $(function() {
