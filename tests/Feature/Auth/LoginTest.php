@@ -24,7 +24,7 @@ class LoginTest extends TestCase
     /** @test **/
      public function test_user_can_view_a_login_form()
      {
-         $response = $this->get('/login');
+         $response = $this->get('/de/login');
 
          $response->assertSuccessful();
          $response->assertViewIs('auth.login');
@@ -35,9 +35,9 @@ class LoginTest extends TestCase
      {
          $region_user = $this->testUser->getRegionUser();
 
-         $response = $this->actingAs($region_user)->get('/login');
+         $response = $this->actingAs($region_user)->get('/de/login');
 
-         $response->assertRedirect('/home');
+         $response->assertRedirect('/de/home');
      }
 
     /** @test **/
@@ -45,7 +45,7 @@ class LoginTest extends TestCase
      {
          $region_user = $this->testUser->getRegionUser();
 
-         $response = $this->post('/login', [
+         $response = $this->post('/de/login', [
              'email' => $region_user->email,
              'password' => $this->testUser->getPassword(),
          ]);
@@ -58,12 +58,12 @@ class LoginTest extends TestCase
      {
          $region_user = $this->testUser->getRegionUser();
 
-         $response = $this->from('/login')->post('/login', [
+         $response = $this->from('/de/login')->post('/de/login', [
              'email' => $region_user->email,
              'password' => 'invalid-password',
          ]);
 
-         $response->assertRedirect('/login');
+         $response->assertRedirect('/de/login');
          $response->assertSessionHasErrors('email');
          $this->assertTrue(session()->hasOldInput('email'));
          $this->assertFalse(session()->hasOldInput('password'));
