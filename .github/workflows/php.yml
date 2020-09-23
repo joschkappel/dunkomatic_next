@@ -29,5 +29,5 @@ jobs:
     - name: Seed static tables
       run: php artisan db:seed --class TestDatabaseSeeder
     - name: run tests
-      run: php artisan test --env testing
+      run: php artisan test --help
         
