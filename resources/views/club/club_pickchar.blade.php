@@ -2,18 +2,20 @@
 
 @section('css')
   <link href="{{ URL::asset('vendor/pace-progress/themes/blue/pace-theme-center-radar.css') }}" rel="stylesheet" />
+  <link href="{{ URL::asset('vendor/chart.js/Chart.css') }}" rel="stylesheet">
 @endsection
 
 @section('plugins.Datatables', true)
 @section('content')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-8">
 
         <!-- card TEAMS -->
         <div class="card card-info">
           <div class="card-header">
-            <h4 class="card-title"><i class="fas fa-users fa-lg"></i> {{trans_choice('team.team',2 )}}  <span class="badge badge-pill badge-info">{{ count($club['teams']) }}</span></h4>
+            <h4 class="card-title"><i class="fas fa-users fa-lg"></i> {{trans_choice('team.team',2 )}}  <span class="badge badge-pill badge-dark">{{ count($club['teams']) }}</span></h4>
             <div class="card-tools">
             </div>
             <!-- /.card-tools -->
@@ -80,6 +82,7 @@
         <!-- /.card -->
 
     </div>
+    @include('team/includes/teamleague_chart')
 
     <!-- ./deck -->
     <!-- all modals here -->
@@ -99,9 +102,50 @@ reserved.
 
 @section('js')
 <script data-pace-options='maxProgressPerFrame: 2'  src="{{ URL::asset('vendor/pace-progress/pace.js') }}"></script>
+<script src="{{ URL::asset('vendor/moment/moment.min.js')}}"></script>
+<script src="{{ URL::asset('vendor/chart.js/Chart.js')}}"></script>
 
 <script>
+  $(document).ajaxStart(function() { Pace.restart(); });
+
   $(function() {
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          datasets: [{
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            label: 'series1',
+
+          }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                          ticks: {
+                              beginAtZero:true,
+                              precision: 0
+                          },
+                          scaleLabel: {
+                            display: true,
+                            labelString: '@lang('team.game.perday.games')'
+                          }
+                      }],
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                        unit: 'week'
+                    },
+                    distribution: 'linear',
+                    ticks: {
+                      maxTicksLimit: 30
+                    }
+                }]
+            }
+        }
+    });
+
     $('td').click(function(){
       var col = $(this).index();
       var row = $(this).parent().index();
@@ -139,6 +183,44 @@ reserved.
       }
 
     });
+
+    refreshChart();
+
+    function refreshChart(){
+      $.ajaxSetup({
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
+      var selData = {};
+      selData['club_id'] = {!! json_encode($club->id) !!};
+      selData['_token'] = "{{ csrf_token() }}";
+      @foreach ($club['teams'] as $t )
+        selData['selSize:'+ {!!$t['league']['id']!!}+':'+{!!$t['id']!!}] = {!!$t['league_no']!!};
+      @endforeach
+      console.log(selData);
+      var data = JSON.stringify(selData);
+      $.ajax({
+          type: 'POST',
+          url: '{{ route('team.list-chart', app()->getLocale()) }}',
+          data: data,
+          dataType: 'json',
+          contentType: "application/json",
+          success: function(response) {
+            var chartdata = response.map(function(elem) {
+              return {
+                t: elem.gamedate,
+                y: elem.homegames
+              };
+            });
+
+            myChart.data.datasets.forEach((dataset) => {
+              dataset.data = chartdata;
+            });
+            myChart.update();
+          },
+      });
+    }
   });
 
 </script>
