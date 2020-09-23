@@ -9,6 +9,8 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestUsers;
 use App\Club;
+use App\Region;
+use Illuminate\Support\Facades\Log;
 
 class CreateClubTest extends TestCase
 {
@@ -26,6 +28,7 @@ class CreateClubTest extends TestCase
     {
 
       $region_user = $this->testUser->getRegionUser();
+      $region = factory(\App\Region::class)->create();
 
       $response = $this->actingAs($region_user)
                         ->post('club', [
@@ -36,11 +39,13 @@ class CreateClubTest extends TestCase
                           'url' => 'http://example.com',
                       ]);
 
+      $club =  Club::where("club_no","=","9999")->first();
+      Log::debug(print_r($club,true));
       $this->assertDatabaseHas('clubs', ['club_no' => '9999']);
 
       $response
           ->assertStatus(302)
-          ->assertHeader('Location', url('/club'));
+          ->assertHeader('Location', url('/de/club'));
     }
 
     /** @test  **/
@@ -82,7 +87,7 @@ class CreateClubTest extends TestCase
                             ]);
           } catch (ValidationException $e) {
               $this->assertEquals(
-                  'The url format is invalid.',
+                  'Das url-Format ist inkorrekt.',
                   $e->validator->errors()->first('url')
               );
               continue;
@@ -103,7 +108,7 @@ class CreateClubTest extends TestCase
     {
 
       $region_user = $this->testUser->getRegionUser();
-
+      $region = factory(\App\Region::class)->create();
       $response = $this->actingAs($region_user)
                         ->post('club', [
                           'shortname' => 'TEST',
@@ -119,7 +124,7 @@ class CreateClubTest extends TestCase
       $this->assertDatabaseHas('clubs', ['id' => $club->id]);
 
       $response = $this->actingAs($region_user)
-                        ->get('club/'.$club->id.'/delete');
+                        ->delete('club/'.$club->id);
 
       $this->assertDatabaseMissing('clubs', ['id' => $club->id]);
 
