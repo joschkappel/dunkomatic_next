@@ -17,6 +17,12 @@ jobs:
     - name: Validate composer.json and composer.lock
       run: composer validate
 
+    - name: update composer.json and composer.lock
+      run: composer update
+    - name: Validate composer.json and composer.lock
+      run: composer dump-autoload
+  
+
     - name: Cache Composer packages
       id: composer-cache
       uses: actions/cache@v2
