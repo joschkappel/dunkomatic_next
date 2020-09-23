@@ -28,4 +28,6 @@ jobs:
         php artisan migrate
     - name: Seed static tables
       run: php artisan db:seed --class TestDatabaseSeeder
+    - name: run tests
+      run: php artisan test
         
