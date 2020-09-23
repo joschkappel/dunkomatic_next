@@ -34,16 +34,16 @@ class AppServiceProvider extends ServiceProvider
     public function boot(Dispatcher $events)
     {
 
-        config([
-          'global' => Setting::all([
-              'name','value'
-          ])
-          ->keyBy('name') // key every setting by its name
-          ->transform(function ($setting) {
-               return $setting->value; // return only the value
-          })
-          ->toArray() // make it an array
-        ]);
+        // config([
+        //   'global' => Setting::all([
+        //       'name','value'
+        //   ])
+        //   ->keyBy('name') // key every setting by its name
+        //   ->transform(function ($setting) {
+        //        return $setting->value; // return only the value
+        //   })
+        //   ->toArray() // make it an array
+        // ]);
 
         $events->listen(BuildingMenu::class, function (BuildingMenu $event) {
             $clubmenu = array();
