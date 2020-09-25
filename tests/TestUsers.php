@@ -17,7 +17,7 @@ class TestUsers
   public function getAdminUser()
   {
     if (!$this->admin_user) {
-      $this->admin_user = factory(User::class)->create([
+      $this->admin_user = User::factory()->create([
         'id' => '100000',
         'name' => 'admin',
         'user_old' => 'admin',
@@ -37,7 +37,7 @@ class TestUsers
   public function getRegionUser()
   {
     if (!$this->region_user) {
-      $this->region_user = factory(User::class)->create([
+      $this->region_user = User::factory()->create([
         'id' => '100001',
         'name' => 'region',
         'user_old' => 'admin',
@@ -57,7 +57,7 @@ class TestUsers
   public function getTestUser()
   {
     if (!$this->test_user) {
-      $this->test_user = factory(User::class)->create([
+      $this->test_user = User::factory()->create([
         'id' => '100002',
         'name' => 'testuser',
         'user_old' => 'admin',

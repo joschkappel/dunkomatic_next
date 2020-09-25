@@ -28,7 +28,7 @@ class CreateClubTest extends TestCase
     {
 
       $region_user = $this->testUser->getRegionUser();
-      $region = factory(\App\Region::class)->create();
+      $region = Region::factory()->create();
 
       $response = $this->actingAs($region_user)
                         ->post('club', [
@@ -108,7 +108,7 @@ class CreateClubTest extends TestCase
     {
 
       $region_user = $this->testUser->getRegionUser();
-      $region = factory(\App\Region::class)->create();
+      $region = Region::factory()->create();
       $response = $this->actingAs($region_user)
                         ->post('club', [
                           'shortname' => 'TEST',
