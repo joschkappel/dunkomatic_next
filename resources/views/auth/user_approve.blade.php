@@ -125,7 +125,7 @@ jochenk
             allowClear: false,
             minimumResultsForSearch: 20,
             ajax: {
-                    url: "{{ route('league.region.sb')}}",
+                    url: "{{ route('league.sb.region')}}",
                     type: "get",
                     delay: 250,
                     processResults: function (response) {
