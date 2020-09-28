@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,22 +14,22 @@ class Team extends Model
 
   public function club()
   {
-      return $this->belongsTo('App\Club');
+      return $this->belongsTo('App\Models\Club');
   }
 
   public function league()
   {
-      return $this->belongsTo('App\League');
+      return $this->belongsTo('App\Models\League');
   }
 
   public function games_home()
   {
-      return $this->hasMany('App\Game','team_id_home');
+      return $this->hasMany('App\Models\Game','team_id_home');
   }
 
   public function games_guest()
   {
-      return $this->hasMany('App\Game','team_id_guest');
+      return $this->hasMany('App\Models\Game','team_id_guest');
   }
 
 }

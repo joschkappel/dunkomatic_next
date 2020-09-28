@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\ScheduleEvent;
-use App\Schedule;
+use App\Models\ScheduleEvent;
+use App\Models\Schedule;
 use Illuminate\Http\Request;
 use Datatables;
 use Illuminate\Support\Facades\Log;
@@ -27,7 +27,7 @@ class ScheduleEventController extends Controller
                group by game_date
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Schedule  $schedule
+     * @param  \App\Models\Schedule  $schedule
      * @return \Illuminate\Http\Response
      */
     public function list_piv(Request $request)
@@ -251,7 +251,7 @@ class ScheduleEventController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Schedule  $schedule
+     * @param  \App\Models\Schedule  $schedule
      * @return \Illuminate\Http\Response
      */
     public function show(Schedule $schedule)
@@ -262,7 +262,7 @@ class ScheduleEventController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Schedule  $schedule
+     * @param  \App\Models\Schedule  $schedule
      * @return \Illuminate\Http\Response
      */
     public function edit(Schedule $schedule)
@@ -274,7 +274,7 @@ class ScheduleEventController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Schedule  $schedule
+     * @param  \App\Models\Schedule  $schedule
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, ScheduleEvent $schedule_event)
@@ -307,7 +307,7 @@ class ScheduleEventController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Schedule  $schedule
+     * @param  \App\Models\Schedule  $schedule
      * @return \Illuminate\Http\Response
      */
     public function destroy(Schedule $schedule)
@@ -318,7 +318,7 @@ class ScheduleEventController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Schedule  $schedule
+     * @param  \App\Models\Schedule  $schedule
      * @return \Illuminate\Http\Response
      */
     public function list_destroy($id)

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,6 +14,6 @@ class ScheduleEvent extends Model
 
   public function schedule()
   {
-      return $this->belongsTo('App\Schedule','schedule_id');
+      return $this->belongsTo('App\Models\Schedule','schedule_id');
   }
 }

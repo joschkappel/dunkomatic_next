@@ -1,15 +1,15 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class LeagueTeamChar extends Model
+class LeagueTeamScheme extends Model
 {
   /**
   * The table associated with the model.
   *
   * @var string
   */
-  protected $table = 'league_team_chars';
+  protected $table = 'league_team_schemes';
 }

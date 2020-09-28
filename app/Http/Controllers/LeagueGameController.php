@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Game;
-use App\League;
-use App\Team;
-use App\Gym;
-use App\ScheduleEvent;
-use App\LeagueTeamScheme;
+use App\Models\Game;
+use App\Models\League;
+use App\Models\Team;
+use App\Models\Gym;
+use App\Models\ScheduleEvent;
+use App\Models\LeagueTeamScheme;
 
 use Datatables;
 
@@ -23,7 +23,7 @@ class LeagueGameController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  \App\League  $league
+     * @param  \App\Models\League  $league
      * @return \Illuminate\Http\Response
      */
     public function index($language, League $league)
@@ -63,7 +63,7 @@ class LeagueGameController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @param  \App\League  $league
+     * @param  \App\Models\League  $league
      * @return \Illuminate\Http\Response
      */
     public function create(League $league)
@@ -75,7 +75,7 @@ class LeagueGameController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\League  $league
+     * @param  \App\Models\League  $league
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, League $league)
@@ -138,8 +138,8 @@ class LeagueGameController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\League  $league
-     * @param  \App\Game  $game
+     * @param  \App\Models\League  $league
+     * @param  \App\Models\Game  $game
      * @return \Illuminate\Http\Response
      */
     public function show(League $league, Game $game)
@@ -150,8 +150,8 @@ class LeagueGameController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\League  $league
-     * @param  \App\Game  $game
+     * @param  \App\Models\League  $league
+     * @param  \App\Models\Game  $game
      * @return \Illuminate\Http\Response
      */
     public function edit(League $league, Game $game)
@@ -163,8 +163,8 @@ class LeagueGameController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\League  $league
-     * @param  \App\Game  $game
+     * @param  \App\Models\League  $league
+     * @param  \App\Models\Game  $game
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Game $game)
@@ -187,8 +187,8 @@ class LeagueGameController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\League  $league
-     * @param  \App\Game  $game
+     * @param  \App\Models\League  $league
+     * @param  \App\Models\Game  $game
      * @return \Illuminate\Http\Response
      */
     public function destroy_game(League $league)
@@ -201,8 +201,8 @@ class LeagueGameController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\League  $league
-     * @param  \App\Game  $game
+     * @param  \App\Models\League  $league
+     * @param  \App\Models\Game  $game
      * @return \Illuminate\Http\Response
      */
     public function destroy_noshow_game(League $league)

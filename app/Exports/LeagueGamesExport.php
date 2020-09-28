@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Game;
+use App\Models\Game;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -52,7 +52,7 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
      */
     public function clubs()
     {
-        return $this->morphedByMany('App\Club', 'useable');
+        return $this->morphedByMany('App\Models\Club', 'useable');
     }
 
     /**
@@ -60,7 +60,7 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
      */
     public function leagues()
     {
-        return $this->morphedByMany('App\League', 'useable');
+        return $this->morphedByMany('App\Models\League', 'useable');
     }
 
     public function user_region()

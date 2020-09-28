@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Team;
-use App\Club;
-use App\League;
-use App\Schedule;
-use App\ScheduleEvent;
-use App\LeagueTeamScheme;
-use App\Game;
+use App\Models\Team;
+use App\Models\Club;
+use App\Models\League;
+use App\Models\Schedule;
+use App\Models\ScheduleEvent;
+use App\Models\LeagueTeamScheme;
+use App\Models\Game;
 
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
@@ -219,7 +219,7 @@ class TeamController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Team  $team
+     * @param  \App\Models\Team  $team
      * @return \Illuminate\Http\Response
      */
     public function show(Team $team)
@@ -230,7 +230,7 @@ class TeamController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Team  $team
+     * @param  \App\Models\Team  $team
      * @return \Illuminate\Http\Response
      */
     public function edit(Team $team)
@@ -242,7 +242,7 @@ class TeamController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Team  $team
+     * @param  \App\Models\Team  $team
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Team $team)
@@ -253,7 +253,7 @@ class TeamController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Team  $team
+     * @param  \App\Models\Team  $team
      * @return \Illuminate\Http\Response
      */
     public function destroy(Team $team)
@@ -264,7 +264,7 @@ class TeamController extends Controller
     /**
      * Attach team to league
      *
-     * @param  \App\League  $league
+     * @param  \App\Models\League  $league
      * @return \Illuminate\Http\Response
      */
      public function assign_league(Request $request )
@@ -294,7 +294,7 @@ class TeamController extends Controller
      /**
       * Attach team to league
       *
-      * @param  \App\League  $league
+      * @param  \App\Models\League  $league
       * @return \Illuminate\Http\Response
       */
       public function pick_char(Request $request )
@@ -322,7 +322,7 @@ class TeamController extends Controller
      /**
       * DeAttach team from league
       *
-      * @param  \App\League  $league
+      * @param  \App\Models\League  $league
       * @return \Illuminate\Http\Response
       */
       public function deassign_league(Request $request  )

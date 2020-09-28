@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\MemberRole;
-use App\Member;
+use App\Models\MemberRole;
+use App\Models\Member;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;

@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
-use App\League;
-use App\Region;
+use App\Models\League;
+use App\Models\Region;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;

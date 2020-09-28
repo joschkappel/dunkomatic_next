@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Club;
-use App\Game;
+use App\Models\Club;
+use App\Models\Game;
 use Illuminate\Http\Request;
 
 use Datatables;
@@ -23,7 +23,7 @@ class ClubGameController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  \App\Club  $club
+     * @param  \App\Models\Club  $club
      * @return \Illuminate\Http\Response
      */
     public function index(Club $club)
@@ -143,7 +143,7 @@ class ClubGameController extends Controller
     /**
      * Show the form for uploading game files
      *
-     * @param  \App\Club  $club
+     * @param  \App\Models\Club  $club
      * @return \Illuminate\Http\Response
      */
     public function upload($language, Club $club)
@@ -155,7 +155,7 @@ class ClubGameController extends Controller
      * update games with file contents
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Club  $club
+     * @param  \App\Models\Club  $club
      * @return \Illuminate\Http\Response
      */
     public function import(Request $request, $language, Club $club)
@@ -188,7 +188,7 @@ class ClubGameController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @param  \App\Club  $club
+     * @param  \App\Models\Club  $club
      * @return \Illuminate\Http\Response
      */
     public function create(Club $club)
@@ -200,7 +200,7 @@ class ClubGameController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Club  $club
+     * @param  \App\Models\Club  $club
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, Club $club)
@@ -211,8 +211,8 @@ class ClubGameController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Club  $club
-     * @param  \App\Game  $game
+     * @param  \App\Models\Club  $club
+     * @param  \App\Models\Game  $game
      * @return \Illuminate\Http\Response
      */
     public function show(Club $club, Game $game)
@@ -223,8 +223,8 @@ class ClubGameController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Club  $club
-     * @param  \App\Game  $game
+     * @param  \App\Models\Club  $club
+     * @param  \App\Models\Game  $game
      * @return \Illuminate\Http\Response
      */
     public function edit(Club $club, Game $game)
@@ -236,8 +236,8 @@ class ClubGameController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Club  $club
-     * @param  \App\Game  $game
+     * @param  \App\Models\Club  $club
+     * @param  \App\Models\Game  $game
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Club $club, Game $game)
@@ -248,8 +248,8 @@ class ClubGameController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Club  $club
-     * @param  \App\Game  $game
+     * @param  \App\Models\Club  $club
+     * @param  \App\Models\Game  $game
      * @return \Illuminate\Http\Response
      */
     public function destroy(Club $club, Game $game)

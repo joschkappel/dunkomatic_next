@@ -1,8 +1,8 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
-use App\User;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Support\Facades\Auth;
@@ -32,17 +32,17 @@ class Club extends Model implements Auditable
 
   public function gyms()
   {
-      return $this->hasMany('App\Gym');
+      return $this->hasMany('App\Models\Gym');
   }
 
   public function leagues()
   {
-      return $this->belongsToMany('App\League','league_clubs')->withPivot('league_char', 'league_no');;
+      return $this->belongsToMany('App\Models\League','league_clubs')->withPivot('league_char', 'league_no');;
   }
 
   public function teams()
   {
-      return $this->hasMany('App\Team');
+      return $this->hasMany('App\Models\Team');
   }
 
   public function member_roles()
@@ -57,20 +57,20 @@ class Club extends Model implements Auditable
 
   public function games_home()
   {
-      return $this->hasMany('App\Game', 'club_id_home', 'id');
+      return $this->hasMany('App\Models\Game', 'club_id_home', 'id');
   }
   public function games_home_notime()
   {
-      return $this->hasMany('App\Game', 'club_id_home', 'id');
+      return $this->hasMany('App\Models\Game', 'club_id_home', 'id');
   }
   public function games_home_noshow()
   {
-      return $this->hasMany('App\Game', 'club_id_home', 'id');
+      return $this->hasMany('App\Models\Game', 'club_id_home', 'id');
   }
 
   public function games_guest()
   {
-      return $this->hasMany('App\Game', 'club_id_guest', 'id');
+      return $this->hasMany('App\Models\Game', 'club_id_guest', 'id');
   }
   public function scopeUserRegion($query)
   {

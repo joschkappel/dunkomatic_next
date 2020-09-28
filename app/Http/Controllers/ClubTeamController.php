@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Club;
-use App\Team;
+use App\Models\Club;
+use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
@@ -13,7 +13,7 @@ class ClubTeamController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  \App\Club  $club
+     * @param  \App\Models\Club  $club
      * @return \Illuminate\Http\Response
      */
     public function index(Club $club)
@@ -31,7 +31,7 @@ class ClubTeamController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @param  \App\Club  $club
+     * @param  \App\Models\Club  $club
      * @return \Illuminate\Http\Response
      */
     public function create($language, Club $club)
@@ -43,7 +43,7 @@ class ClubTeamController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Club  $club
+     * @param  \App\Models\Club  $club
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, Club $club)
@@ -76,8 +76,8 @@ class ClubTeamController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Club  $club
-     * @param  \App\Team  $team
+     * @param  \App\Models\Club  $club
+     * @param  \App\Models\Team  $team
      * @return \Illuminate\Http\Response
      */
     public function show(Club $club, Team $team)
@@ -88,8 +88,8 @@ class ClubTeamController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Club  $club
-     * @param  \App\Team  $team
+     * @param  \App\Models\Club  $club
+     * @param  \App\Models\Team  $team
      * @return \Illuminate\Http\Response
      */
     public function edit($language, Club $club, Team $team)
@@ -106,8 +106,8 @@ class ClubTeamController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Club  $club
-     * @param  \App\Team  $team
+     * @param  \App\Models\Club  $club
+     * @param  \App\Models\Team  $team
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Club $club, Team $team)
@@ -140,8 +140,8 @@ class ClubTeamController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Club  $club
-     * @param  \App\Team  $team
+     * @param  \App\Models\Club  $club
+     * @param  \App\Models\Team  $team
      * @return \Illuminate\Http\Response
      */
     public function destroy( Club $club, Team $team)

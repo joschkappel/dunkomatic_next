@@ -4,7 +4,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-use App\Region;
+use App\Models\Region;
 
 
 class RegionFactory extends Factory

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\LeagueTeamScheme;
+use App\Models\LeagueTeamScheme;
 use Illuminate\Http\Request;
 use Datatables;
 use Illuminate\Support\Facades\Log;
