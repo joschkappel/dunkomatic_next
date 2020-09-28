@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Club;
-use App\Gym;
+use App\Models\Club;
+use App\Models\Gym;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
@@ -13,7 +13,7 @@ class ClubGymController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  \App\Club  $club
+     * @param  \App\Models\Club  $club
      * @return \Illuminate\Http\Response
      */
     public function index(Club $club)
@@ -41,7 +41,7 @@ class ClubGymController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @param  \App\Club  $club
+     * @param  \App\Models\Club  $club
      * @return \Illuminate\Http\Response
      */
     public function create($language, Club $club)
@@ -53,7 +53,7 @@ class ClubGymController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Club  $club
+     * @param  \App\Models\Club  $club
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, Club $club)
@@ -74,8 +74,8 @@ class ClubGymController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Club  $club
-     * @param  \App\Gym  $gym
+     * @param  \App\Models\Club  $club
+     * @param  \App\Models\Gym  $gym
      * @return \Illuminate\Http\Response
      */
     public function show(Club $club, $gym_no)
@@ -100,8 +100,8 @@ class ClubGymController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Club  $club
-     * @param  \App\Gym  $gym
+     * @param  \App\Models\Club  $club
+     * @param  \App\Models\Gym  $gym
      * @return \Illuminate\Http\Response
      */
     public function edit( $language, Gym $gym)
@@ -115,8 +115,8 @@ class ClubGymController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Club  $club
-     * @param  \App\Gym  $gym
+     * @param  \App\Models\Club  $club
+     * @param  \App\Models\Gym  $gym
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Club $club, Gym $gym)
@@ -137,8 +137,8 @@ class ClubGymController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Club  $club
-     * @param  \App\Gym  $gym
+     * @param  \App\Models\Club  $club
+     * @param  \App\Models\Gym  $gym
      * @return \Illuminate\Http\Response
      */
     public function destroy(  Gym $gym)

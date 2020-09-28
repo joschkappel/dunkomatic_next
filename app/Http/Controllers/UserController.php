@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
-use App\Club;
-use App\League;
+use App\Models\User;
+use App\Models\Club;
+use App\Models\League;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;

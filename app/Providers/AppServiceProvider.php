@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Log;
 
-use App\Club;
-use App\League;
-use App\Setting;
+use App\Models\Club;
+use App\Models\League;
+use App\Models\Setting;
 
 class AppServiceProvider extends ServiceProvider
 {

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\League;
-use App\LeagueClub;
-use App\Team;
-use App\Club;
-use App\Game;
+use App\Models\League;
+use App\Models\LeagueClub;
+use App\Models\Team;
+use App\Models\Club;
+use App\Models\Game;
 
 use App\Enums\LeagueAgeType;
 use App\Enums\LeagueGenderType;
@@ -312,7 +312,7 @@ class LeagueController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\League  $league
+     * @param  \App\Models\League  $league
      * @return \Illuminate\Http\Response
      */
     public function show(League $league)
@@ -323,7 +323,7 @@ class LeagueController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\League  $league
+     * @param  \App\Models\League  $league
      * @return \Illuminate\Http\Response
      */
     public function edit($language, League $league)
@@ -341,7 +341,7 @@ class LeagueController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\League  $league
+     * @param  \App\Models\League  $league
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, League $league)
@@ -382,7 +382,7 @@ class LeagueController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\League  $league
+     * @param  \App\Models\League  $league
      * @return \Illuminate\Http\Response
      */
      public function destroy(Request $request, $id)
@@ -400,7 +400,7 @@ class LeagueController extends Controller
      /**
       * Detach club from league
       *
-      * @param  \App\League  $league
+      * @param  \App\Models\League  $league
       * @return \Illuminate\Http\Response
       */
       public function deassign_club(Request $request, $league_id, $club_id)
@@ -424,7 +424,7 @@ class LeagueController extends Controller
       /**
        * Attach club to league
        *
-       * @param  \App\League  $league
+       * @param  \App\Models\League  $league
        * @return \Illuminate\Http\Response
        */
        public function assign_club(Request $request, $league )

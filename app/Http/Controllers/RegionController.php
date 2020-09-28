@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Region;
-use App\User;
+use App\Models\Region;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;

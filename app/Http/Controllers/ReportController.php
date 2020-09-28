@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\League;
+use App\Models\League;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Exports\LeagueGameExport;

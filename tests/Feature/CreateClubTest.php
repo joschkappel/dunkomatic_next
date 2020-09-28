@@ -8,8 +8,8 @@ use Tests\TestCase;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestUsers;
-use App\Club;
-use App\Region;
+use App\Models\Club;
+use App\Models\Region;
 use Illuminate\Support\Facades\Log;
 
 class CreateClubTest extends TestCase

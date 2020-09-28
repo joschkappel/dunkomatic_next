@@ -1,8 +1,8 @@
 <?php
 
-namespace App;
-use App\Game;
-use App\User;
+namespace App\Models;
+use App\Models\Game;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -43,7 +43,7 @@ class League extends Model implements Auditable
    */
   public function useables()
   {
-      return $this->morphToMany('App\User', 'useable');
+      return $this->morphToMany('App\Models\User', 'useable');
   }
 
   public function region()
@@ -53,17 +53,17 @@ class League extends Model implements Auditable
 
   public function schedule()
   {
-      return $this->belongsTo('App\Schedule','schedule_id','id');
+      return $this->belongsTo('App\Models\Schedule','schedule_id','id');
   }
 
   public function clubs()
   {
-      return $this->belongsToMany('App\Club','league_clubs')->withPivot('league_char', 'league_no');;
+      return $this->belongsToMany('App\Models\Club','league_clubs')->withPivot('league_char', 'league_no');;
   }
 
   public function teams()
   {
-      return $this->hasMany('App\Team');
+      return $this->hasMany('App\Models\Team');
   }
 
   public function member_roles()
@@ -73,21 +73,21 @@ class League extends Model implements Auditable
 
   public function games()
   {
-      return $this->hasMany('App\Game');
+      return $this->hasMany('App\Models\Game');
   }
 
   public function games_notime()
   {
-      return $this->hasMany('App\Game');
+      return $this->hasMany('App\Models\Game');
   }
 
   public function games_noshow()
   {
-      return $this->hasMany('App\Game');
+      return $this->hasMany('App\Models\Game');
   }
   public function games_overlap()
   {
-      return $this->hasMany('App\Game');
+      return $this->hasMany('App\Models\Game');
   }
   public function scopeUserRegion($query)
   {

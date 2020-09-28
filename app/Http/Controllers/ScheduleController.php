@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Schedule;
-use App\Region;
-use App\LeagueTeamSize;
+use App\Models\Schedule;
+use App\Models\Region;
+use App\Models\LeagueTeamSize;
 
 
 use Illuminate\Http\Request;
@@ -161,7 +161,7 @@ class ScheduleController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Schedule  $schedule
+     * @param  \App\Models\Schedule  $schedule
      * @return \Illuminate\Http\Response
      */
     public function show(Schedule $schedule)
@@ -172,7 +172,7 @@ class ScheduleController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Schedule  $schedule
+     * @param  \App\Models\Schedule  $schedule
      * @return \Illuminate\Http\Response
      */
     public function edit($language, Schedule $schedule)
@@ -187,7 +187,7 @@ class ScheduleController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Schedule  $schedule
+     * @param  \App\Models\Schedule  $schedule
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Schedule $schedule)

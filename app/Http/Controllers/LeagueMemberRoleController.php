@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\League;
-use App\Member;
-use App\MemberRole;
-use App\Club;
+use App\Models\League;
+use App\Models\Member;
+use App\Models\MemberRole;
+use App\Models\Club;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -16,7 +16,7 @@ class LeagueMemberRoleController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  \App\League  $league
+     * @param  \App\Models\League  $league
      * @return \Illuminate\Http\Response
      */
     public function index($language, League $league)
@@ -51,7 +51,7 @@ class LeagueMemberRoleController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @param  \App\League  $league
+     * @param  \App\Models\League  $league
      * @return \Illuminate\Http\Response
      */
     public function create($language, League $league)
@@ -63,7 +63,7 @@ class LeagueMemberRoleController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\League  $league
+     * @param  \App\Models\League  $league
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, League $league)
@@ -113,7 +113,7 @@ class LeagueMemberRoleController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\League  $league
+     * @param  \App\Models\League  $league
      * @param  \App\Member  $member
      * @return \Illuminate\Http\Response
      */
@@ -125,7 +125,7 @@ class LeagueMemberRoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\League  $league
+     * @param  \App\Models\League  $league
      * @param  \App\MemberRole  $memberrole
      * @return \Illuminate\Http\Response
      */
@@ -144,7 +144,7 @@ class LeagueMemberRoleController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\League  $league
+     * @param  \App\Models\League  $league
      * @param  \App\Member  $member
      * @return \Illuminate\Http\Response
      */

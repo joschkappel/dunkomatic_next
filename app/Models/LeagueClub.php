@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,12 +12,12 @@ class LeagueClub extends Model
 
   public function league()
   {
-      return $this->belongsTo('App\League','league_id','id');
+      return $this->belongsTo('App\Models\League','league_id','id');
   }
 
   public function club()
   {
-      return $this->belongsTo('App\Club','club_id','id');
+      return $this->belongsTo('App\Models\Club','club_id','id');
   }
 
 }

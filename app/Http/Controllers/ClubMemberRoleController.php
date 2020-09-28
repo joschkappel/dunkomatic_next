@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Club;
-use App\Member;
-use App\MemberRole;
+use App\Models\Club;
+use App\Models\Member;
+use App\Models\MemberRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
@@ -41,7 +41,7 @@ class ClubMemberRoleController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @param  \App\Club  $club
+     * @param  \App\Models\Club  $club
      * @return \Illuminate\Http\Response
      */
     public function create($language, Club $club)
@@ -53,7 +53,7 @@ class ClubMemberRoleController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Club  $club
+     * @param  \App\Models\Club  $club
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, Club $club)
@@ -107,7 +107,7 @@ class ClubMemberRoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Club  $club
+     * @param  \App\Models\Club  $club
      * @param  \App\MemberRole  $memberrole
      * @return \Illuminate\Http\Response
      */
@@ -126,7 +126,7 @@ class ClubMemberRoleController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Club  $club
+     * @param  \App\Models\Club  $club
      * @param  \App\Member  $member
      * @return \Illuminate\Http\Response
      */

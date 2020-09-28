@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,11 +21,11 @@ class Schedule extends Model
 
   public function events()
   {
-      return $this->hasMany('App\ScheduleEvent','schedule_id','id');
+      return $this->hasMany('App\Models\ScheduleEvent','schedule_id','id');
   }
 
   public function size()
   {
-      return $this->belongsTo('App\LeagueTeamSize','size','size');
+      return $this->belongsTo('App\Models\LeagueTeamSize','size','size');
   }
 }
