@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('css')
+@section('app_css')
     @stack('css')
     @yield('css')
 @stop
@@ -38,7 +38,7 @@
     </div>
 @stop
 
-@section('js')
+@section('app_js')
     @stack('js')
     @yield('js')
 @stop

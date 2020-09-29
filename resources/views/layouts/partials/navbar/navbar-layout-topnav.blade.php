@@ -22,7 +22,7 @@
             {{-- Navbar left links --}}
             <ul class="nav navbar-nav">
                 {{-- Configured left links --}}
-                @each('layouts.partials.navbar.menu-item', $menu->menu('navbar-left'), 'item')
+                @each('layouts.partials.navbar.menu-item', app(\App\Menu::class)->menu('navbar-left'), 'item')
 
                 {{-- Custom left links --}}
                 @yield('content_top_nav_left')
@@ -35,7 +35,7 @@
             @yield('content_top_nav_right')
 
             {{-- Configured right links --}}
-            @each('layouts.partials.navbar.menu-item', $menu->menu('navbar-right'), 'item')
+            @each('layouts.partials.navbar.menu-item', app(\App\Menu::class)->menu('navbar-right'), 'item')
 
             {{-- User menu link --}}
             @if(Auth::user())

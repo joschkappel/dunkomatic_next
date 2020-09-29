@@ -20,7 +20,7 @@ class LayoutHelper
      */
     public static function isLayoutTopnavEnabled()
     {
-        return config('dunkomatic.layout_topnav') || View::getSection('layout_topnav');
+        return config('menu.layout_topnav') || View::getSection('layout_topnav');
     }
 
     /**
@@ -30,7 +30,7 @@ class LayoutHelper
      */
     public static function isLayoutBoxedEnabled()
     {
-        return config('dunkomatic.layout_boxed') || View::getSection('layout_boxed');
+        return config('menu.layout_boxed') || View::getSection('layout_boxed');
     }
 
     /**
@@ -61,7 +61,7 @@ class LayoutHelper
 
         // Add data related to the "sidebar_scrollbar_theme" configuration.
 
-        $sb_theme_cfg = config('dunkomatic.sidebar_scrollbar_theme', 'os-theme-light');
+        $sb_theme_cfg = config('menu.sidebar_scrollbar_theme', 'os-theme-light');
 
         if ($sb_theme_cfg != 'os-theme-light') {
             $data[] = 'data-scrollbar-theme='.$sb_theme_cfg;
@@ -69,7 +69,7 @@ class LayoutHelper
 
         // Add data related to the "sidebar_scrollbar_auto_hide" configuration.
 
-        $sb_auto_hide = config('dunkomatic.sidebar_scrollbar_auto_hide', 'l');
+        $sb_auto_hide = config('menu.sidebar_scrollbar_auto_hide', 'l');
 
         if ($sb_auto_hide != 'l') {
             $data[] = 'data-scrollbar-auto-hide='.$sb_auto_hide;
@@ -102,7 +102,7 @@ class LayoutHelper
         // Add classes related to fixed sidebar layout configuration. The fixed
         // sidebar is not compatible with layout topnav.
 
-        if (! self::isLayoutTopnavEnabled() && config('dunkomatic.layout_fixed_sidebar')) {
+        if (! self::isLayoutTopnavEnabled() && config('menu.layout_fixed_sidebar')) {
             $classes[] = 'layout-fixed';
         }
 
@@ -126,7 +126,7 @@ class LayoutHelper
     private static function makeFixedResponsiveClasses($section)
     {
         $classes = [];
-        $cfg = config('dunkomatic.layout_fixed_'.$section);
+        $cfg = config('menu.layout_fixed_'.$section);
 
         if ($cfg === true) {
             $cfg = ['xs' => true];
@@ -162,15 +162,15 @@ class LayoutHelper
 
         // Add classes related to the "sidebar_mini" configuration.
 
-        if (config('dunkomatic.sidebar_mini', true) === true) {
+        if (config('menu.sidebar_mini', true) === true) {
             $classes[] = 'sidebar-mini';
-        } elseif (config('dunkomatic.sidebar_mini', true) == 'md') {
+        } elseif (config('menu.sidebar_mini', true) == 'md') {
             $classes[] = 'sidebar-mini sidebar-mini-md';
         }
 
         // Add classes related to the "sidebar_collapse" configuration.
 
-        if (config('dunkomatic.sidebar_collapse') || View::getSection('sidebar_collapse')) {
+        if (config('menu.sidebar_collapse') || View::getSection('sidebar_collapse')) {
             $classes[] = 'sidebar-collapse';
         }
 
@@ -188,7 +188,7 @@ class LayoutHelper
 
         // Add classes related to the "right_sidebar" configuration.
 
-        if (config('dunkomatic.right_sidebar') && config('dunkomatic.right_sidebar_push')) {
+        if (config('menu.right_sidebar') && config('menu.right_sidebar_push')) {
             $classes[] = 'control-sidebar-push';
         }
 
@@ -203,7 +203,7 @@ class LayoutHelper
     private static function makeCustomBodyClasses()
     {
         $classes = [];
-        $cfg = config('dunkomatic.classes_body', '');
+        $cfg = config('menu.classes_body', '');
 
         if (is_string($cfg) && $cfg) {
             $classes[] = $cfg;

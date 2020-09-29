@@ -9,7 +9,7 @@ return [
   'logo_img_alt' => 'DunkOMatic',
 
   'layout_topnav' => false,
-  'layout_boxed' => null,
+  'layout_boxed' => false,
   'layout_fixed_sidebar' => null,
   'layout_fixed_navbar' => null,
   'layout_fixed_footer' => true,
@@ -51,7 +51,7 @@ return [
   'right_sidebar_push' => true,
   'right_sidebar_scrollbar_theme' => 'os-theme-light',
   'right_sidebar_scrollbar_auto_hide' => 'l',
-  'menu' => [],
+  'menu' => [ ],
   'filters' => [
     App\Menu\Filters\HrefFilter::class,
     App\Menu\Filters\SearchFilter::class,

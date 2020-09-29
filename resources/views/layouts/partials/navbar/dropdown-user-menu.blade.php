@@ -46,8 +46,9 @@
             @yield('usermenu_header')
         @endif
 
+        
         {{-- Configured user menu links --}}
-        @each('adminlte::partials.menuitems.menu-item-top-nav-user', $menu->menu(), 'item')
+        @each('layouts.partials.menuitems.menu-item-top-nav-user', app(\App\Menu::class)->menu(), 'item')
 
         {{-- User menu body --}}
         @hasSection('usermenu_body')

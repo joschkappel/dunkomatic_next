@@ -47,7 +47,8 @@
         @endif
 
         {{-- Configured user menu links --}}
-        @each('layouts.partials.navbar.dropdown-item', $menu->menu("navbar-user"), 'item')
+
+        @each('layouts.partials.navbar.dropdown-item', app(\App\Menu::class)->menu("navbar-user"), 'item')
 
         {{-- User menu body --}}
         @hasSection('usermenu_body')

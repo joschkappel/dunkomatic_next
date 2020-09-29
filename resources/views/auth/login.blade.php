@@ -1,10 +1,10 @@
 @extends('layouts.master')
 
-@section('css_pre')
+@section('app_css_pre')
     <link rel="stylesheet" href="{{ asset('vendor/icheck-bootstrap/icheck-bootstrap.min.css') }}">
 @stop
 
-@section('css')
+@section('app_css')
     @stack('css')
     @yield('css')
 @stop
@@ -91,7 +91,7 @@
     </div>
 @stop
 
-@section('js')
+@section('app_js')
     @stack('js')
     @yield('js')
 @stop

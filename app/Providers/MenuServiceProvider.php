@@ -39,12 +39,15 @@ class MenuServiceProvider extends BaseServiceProvider
      */
     public function boot(Factory $view, Dispatcher $events, Repository $config)
     {
-        // $this->loadViews();
+        $this->loadViews();
         // $this->loadTranslations();
+
+
         $this->loadConfig();
         // $this->registerCommands();
         $this->registerViewComposers($view);
         //$this->registerMenu($events, $config);
+
     }
 
     /**
@@ -54,8 +57,8 @@ class MenuServiceProvider extends BaseServiceProvider
      */
     private function loadViews()
     {
-        $viewsPath = $this->packagePath('resources/views');
-        $this->loadViewsFrom($viewsPath, 'adminlte');
+        $viewsPath = resource_path('views');
+        $this->loadViewsFrom($viewsPath, 'layouts');
     }
 
     /**
@@ -102,7 +105,7 @@ class MenuServiceProvider extends BaseServiceProvider
      */
     private function registerViewComposers(Factory $view)
     {
-        $view->composer('page', ViewComposer::class);
+        $view->composer('\App\Menu', ViewComposer::class);
     }
 
     /**
@@ -118,10 +121,11 @@ class MenuServiceProvider extends BaseServiceProvider
         $events->listen(
             BuildingMenu::class,
             function (BuildingMenu $event) use ($config) {
-                $menu = $config->get('menu', []);
+                $menu = $config->get('menu.menu', []);
                 $menu = is_array($menu) ? $menu : [];
                 $event->menu->add(...$menu);
             }
         );
+
     }
 }

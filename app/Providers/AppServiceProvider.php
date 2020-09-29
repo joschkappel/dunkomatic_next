@@ -143,7 +143,6 @@ class AppServiceProvider extends ServiceProvider
             $event->menu->add([
               'icon' => 'flag-icon flag-icon-'.$icon_locale,
               'text' => strtoupper(App::getLocale()),
-              'active' => true,
               'topnav_right' => true,
               'submenu' => [
                 [

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('css')
+@section('app_css')
   <!-- iCheck for checkboxes and radio inputs -->
 <link href="{{ URL::asset('vendor/icheck-bootstrap/icheck-bootstrap.min.css') }}" rel="stylesheet">
 
@@ -123,7 +123,7 @@
     </div><!-- /.register-box -->
 @stop
 
-@section('js')
+@section('app_js')
 
     @stack('js')
     <script>

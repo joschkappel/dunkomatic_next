@@ -19,7 +19,7 @@
                     data-accordion="false"
                 @endif>
                 {{-- Configured sidebar links --}}
-                @each('layouts.partials.sidebar.menu-item', $menu->menu('sidebar'), 'item')
+                @each('layouts.partials.sidebar.menu-item', app(\App\Menu::class)->menu('sidebar'), 'item')
             </ul>
         </nav>
     </div>

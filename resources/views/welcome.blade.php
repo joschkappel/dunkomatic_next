@@ -78,10 +78,10 @@
                         <a href="{{ route('home', ['language'=> app()->getLocale()]) }}">Home</a>
                     @else
 
-                        <a href="{{ route('login', app()->getLocale()) }}">{{ __('adminlte::adminlte.sign_in') }}</a>
+                        <a href="{{ route('login', app()->getLocale()) }}">{{ __('auth.sign_in') }}</a>
 
                         @if (Route::has('register'))
-                            <a href="{{ route('register', app()->getLocale()) }}">{{ __('adminlte::adminlte.register') }}</a>
+                            <a href="{{ route('register', app()->getLocale()) }}">{{ __('auth.register') }}</a>
                         @endif
                     @endauth
                 </div>
