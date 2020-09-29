@@ -19,6 +19,9 @@
         @yield('title_postfix', config('dunkomatic.title_postfix', ''))
     </title>
 
+    {{-- Custom stylesheets  --}}
+    @yield('app_css_pre')
+
     {{-- Base Stylesheets --}}
     <link rel="stylesheet" href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
@@ -26,6 +29,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     <link rel="stylesheet" href="{{ asset('vendor/flag-icon-css/css/flag-icon.min.css') }}">
 
+    {{-- Custom Stylesheets  --}}
+    @yield('app_css')
 
     {{-- Favicon --}}
     @if(config('dunkomatic.use_ico_only'))
@@ -50,6 +55,8 @@
         <meta name="msapplication-TileImage" content="{{ asset('favicon/ms-icon-144x144.png') }}">
     @endif
 
+
+
 </head>
 
 <body class="@yield('classes_body')" @yield('body_data')>
@@ -61,10 +68,13 @@
     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+    {{-- Configured Scripts --}}
+    @include('layouts::plugins', ['type' => 'js'])
+
     <script src="{{ asset('vendor/adminlte/dist/js/adminlte.min.js') }}"></script>
 
     {{-- Custom Scripts --}}
-    @yield('js')
+    @yield('app_js')
 
 </body>
 

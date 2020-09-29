@@ -1,4 +1,4 @@
-@extends('page')
+@extends('layouts.page')
 
 @section('css')
   <link type="text/css" rel="stylesheet" href="{{ URL::asset('vendor/datatables/css/dataTables.bootstrap4.min.css') }}" />

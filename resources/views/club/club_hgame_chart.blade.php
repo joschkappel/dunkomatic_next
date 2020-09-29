@@ -1,4 +1,4 @@
-@extends('page')
+@extends('layouts.page')
 
 @section('css')
   <link href="{{ URL::asset('vendor/chart.js/Chart.css') }}" rel="stylesheet">

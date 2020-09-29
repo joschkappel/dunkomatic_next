@@ -23,7 +23,7 @@
 
     {{-- Menu items --}}
     <ul class="nav nav-treeview">
-        @each('partials.sidebar.menu-item', $item['submenu'], 'item')
+        @each('layouts.partials.sidebar.menu-item', $item['submenu'], 'item')
     </ul>
 
 </li>

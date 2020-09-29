@@ -10,16 +10,16 @@
 @elseif ($menuItemHelper->isSearchBar($item))
 
     {{-- Search form --}}
-    @include('partials.sidebar.menu-item-search-form')
+    @include('layouts.partials.sidebar.menu-item-search-form')
 
 @elseif ($menuItemHelper->isSubmenu($item))
 
     {{-- Treeview menu --}}
-    @include('partials.sidebar.menu-item-treeview-menu')
+    @include('layouts.partials.sidebar.menu-item-treeview-menu')
 
 @elseif ($menuItemHelper->isLink($item))
 
     {{-- Link --}}
-    @include('partials.sidebar.menu-item-link')
+    @include('layouts.partials.sidebar.menu-item-link')
 
 @endif

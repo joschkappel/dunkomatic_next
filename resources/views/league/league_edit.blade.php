@@ -1,5 +1,5 @@
 
-@extends('page')
+@extends('layouts.page')
 
 @push('css')
   <!-- iCheck for checkboxes and radio inputs -->

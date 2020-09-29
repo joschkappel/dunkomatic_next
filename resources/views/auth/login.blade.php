@@ -1,4 +1,4 @@
-@extends('master')
+@extends('layouts.master')
 
 @section('css_pre')
     <link rel="stylesheet" href="{{ asset('vendor/icheck-bootstrap/icheck-bootstrap.min.css') }}">

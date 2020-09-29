@@ -47,7 +47,7 @@
         @endif
 
         {{-- Configured user menu links --}}
-        @each('partials.navbar.dropdown-item', $menu->menu("navbar-user"), 'item')
+        @each('layouts.partials.navbar.dropdown-item', $menu->menu("navbar-user"), 'item')
 
         {{-- User menu body --}}
         @hasSection('usermenu_body')

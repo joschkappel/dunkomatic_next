@@ -6,9 +6,9 @@
 
         {{-- Navbar brand logo --}}
         @if(config('menu.logo_img_xl'))
-            @include('partials.common.brand-logo-xl')
+            @include('layouts.partials.common.brand-logo-xl')
         @else
-            @include('partials.common.brand-logo-xs')
+            @include('layouts.partials.common.brand-logo-xs')
         @endif
 
         {{-- Navbar toggler button --}}
@@ -22,7 +22,7 @@
             {{-- Navbar left links --}}
             <ul class="nav navbar-nav">
                 {{-- Configured left links --}}
-                @each('partials.navbar.menu-item', $menu->menu('navbar-left'), 'item')
+                @each('layouts.partials.navbar.menu-item', $menu->menu('navbar-left'), 'item')
 
                 {{-- Custom left links --}}
                 @yield('content_top_nav_left')
@@ -35,20 +35,20 @@
             @yield('content_top_nav_right')
 
             {{-- Configured right links --}}
-            @each('partials.navbar.menu-item', $menu->menu('navbar-right'), 'item')
+            @each('layouts.partials.navbar.menu-item', $menu->menu('navbar-right'), 'item')
 
             {{-- User menu link --}}
             @if(Auth::user())
                 @if(config('menu.usermenu_enabled'))
-                    @include('partials.navbar.menu-item-dropdown-user-menu')
+                    @include('layouts.partials.navbar.menu-item-dropdown-user-menu')
                 @else
-                    @include('partials.navbar.menu-item-logout-link')
+                    @include('layouts.partials.navbar.menu-item-logout-link')
                 @endif
             @endif
 
             {{-- Right sidebar toggler link --}}
             @if(config('menu.right_sidebar'))
-                @include('partials.navbar.menu-item-right-sidebar-toggler')
+                @include('layouts.partials.navbar.menu-item-right-sidebar-toggler')
             @endif
         </ul>
 

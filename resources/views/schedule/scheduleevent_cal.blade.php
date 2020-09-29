@@ -1,4 +1,4 @@
-@extends('page')
+@extends('layouts.page')
 
 @section('css')
 <link rel='stylesheet' href='{{ URL::asset('vendor/fullcalendar/main.css') }}' />

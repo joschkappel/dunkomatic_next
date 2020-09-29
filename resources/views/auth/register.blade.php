@@ -1,4 +1,4 @@
-@extends('master')
+@extends('layouts.master')
 
 @section('css')
   <!-- iCheck for checkboxes and radio inputs -->

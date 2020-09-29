@@ -1,4 +1,4 @@
-@extends('master')
+@extends('layouts.master')
 
 @inject('layoutHelper', \App\Helpers\LayoutHelper)
 
@@ -8,7 +8,7 @@
     @php( $def_container_class = 'container-fluid' )
 @endif
 
-@section('css')
+@section('app_css')
     @stack('css')
     @yield('css')
 @stop
@@ -22,14 +22,14 @@
 
         {{-- Top Navbar --}}
         @if($layoutHelper->isLayoutTopnavEnabled())
-            @include('partials.navbar.navbar-layout-topnav')
+            @include('layouts.partials.navbar.navbar-layout-topnav')
         @else
-            @include('partials.navbar.navbar')
+            @include('layouts.partials.navbar.navbar')
         @endif
 
         {{-- Left Main Sidebar --}}
         @if(!$layoutHelper->isLayoutTopnavEnabled())
-            @include('partials.sidebar.left-sidebar')
+            @include('layouts.partials.sidebar.left-sidebar')
         @endif
 
         {{-- Content Wrapper --}}
@@ -53,18 +53,18 @@
 
         {{-- Footer --}}
         @hasSection('footer')
-            @include('partials.footer.footer')
+            @include('layouts.partials.footer.footer')
         @endif
 
         {{-- Right Control Sidebar --}}
         @if(config('menu.right_sidebar'))
-            @include('partials.sidebar.right-sidebar')
+            @include('layouts.partials.sidebar.right-sidebar')
         @endif
 
     </div>
 @stop
 
-@section('js')
+@section('app_js')
     @stack('js')
     @yield('js')
 @stop

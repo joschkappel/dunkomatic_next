@@ -3,16 +3,16 @@
 @if ($menuItemHelper->isSearchBar($item))
 
     {{-- Search form --}}
-    @include('partials.navbar.menu-item-search-form')
+    @include('layouts.partials.navbar.menu-item-search-form')
 
 @elseif ($menuItemHelper->isSubmenu($item))
 
     {{-- Dropdown menu --}}
-    @include('partials.navbar.menu-item-dropdown-menu')
+    @include('layouts.partials.navbar.menu-item-dropdown-menu')
 
 @elseif ($menuItemHelper->isLink($item))
 
     {{-- Link --}}
-    @include('partials.navbar.menu-item-link')
+    @include('layouts.partials.navbar.menu-item-link')
 
 @endif

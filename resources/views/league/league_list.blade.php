@@ -1,4 +1,4 @@
-@extends('page')
+@extends('layouts.page')
 
 @section('content_header')
     @if(Session::has('success'))

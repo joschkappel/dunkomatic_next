@@ -3,11 +3,11 @@
 @if ($menuItemHelper->isSubmenu($item))
 
     {{-- Dropdown submenu --}}
-    @include('partials.navbar.dropdown-item-submenu')
+    @include('layouts.partials.navbar.dropdown-item-submenu')
 
 @elseif ($menuItemHelper->isLink($item))
 
     {{-- Dropdown link --}}
-    @include('partials.navbar.dropdown-item-link')
+    @include('layouts.partials.navbar.dropdown-item-link')
 
 @endif

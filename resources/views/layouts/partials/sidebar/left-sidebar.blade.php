@@ -2,9 +2,9 @@
 
     {{-- Sidebar brand logo --}}
     @if(config('dunkomatic.logo_img_xl'))
-        @include('partials.common.brand-logo-xl')
+        @include('layouts.partials.common.brand-logo-xl')
     @else
-        @include('partials.common.brand-logo-xs')
+        @include('layouts.partials.common.brand-logo-xs')
     @endif
 
     {{-- Sidebar menu --}}
@@ -19,7 +19,7 @@
                     data-accordion="false"
                 @endif>
                 {{-- Configured sidebar links --}}
-                @each('partials.sidebar.menu-item', $menu->menu('sidebar'), 'item')
+                @each('layouts.partials.sidebar.menu-item', $menu->menu('sidebar'), 'item')
             </ul>
         </nav>
     </div>

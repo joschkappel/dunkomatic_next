@@ -1,4 +1,4 @@
-@extends('page')
+@extends('layouts.page')
 
 @section('css')
   <link href="{{ URL::asset('vendor/pace-progress/themes/blue/pace-theme-center-radar.css') }}" rel="stylesheet" />

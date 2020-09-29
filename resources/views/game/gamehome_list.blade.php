@@ -1,4 +1,4 @@
-@extends('page')
+@extends('layouts.page')
 
 
 @section('css')

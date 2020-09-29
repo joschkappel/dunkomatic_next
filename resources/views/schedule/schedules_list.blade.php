@@ -1,4 +1,4 @@
-@extends('page')
+@extends('layouts.page')
 
 @section('plugins.Datatables', true)
 @section('plugins.Select2', true)

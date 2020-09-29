@@ -25,7 +25,7 @@
       </a>
       @if (isset($item['submenu']))
           <ul class="dropdown-menu border-0 shadow">
-              @each('partials.menuitems.menu-item-sub-top-nav', $item['submenu'], 'item')
+              @each('layouts.partials.menuitems.menu-item-sub-top-nav', $item['submenu'], 'item')
           </ul>
       @endif
   </li>
