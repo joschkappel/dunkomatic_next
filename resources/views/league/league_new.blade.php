@@ -1,5 +1,5 @@
 
-@extends('adminlte::page')
+@extends('page')
 
 @push('css')
   <!-- iCheck for checkboxes and radio inputs -->

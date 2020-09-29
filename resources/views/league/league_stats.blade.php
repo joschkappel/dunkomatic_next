@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('page')
 
 @section('plugins.Datatables', true)
 

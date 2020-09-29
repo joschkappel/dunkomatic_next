@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('page')
 
 @section('content_header')
 <div class="container-fluid">

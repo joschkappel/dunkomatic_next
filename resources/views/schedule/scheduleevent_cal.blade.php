@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('page')
 
 @section('css')
 <link rel='stylesheet' href='{{ URL::asset('vendor/fullcalendar/main.css') }}' />

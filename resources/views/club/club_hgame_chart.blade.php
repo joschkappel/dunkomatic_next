@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('page')
 
 @section('css')
   <link href="{{ URL::asset('vendor/chart.js/Chart.css') }}" rel="stylesheet">

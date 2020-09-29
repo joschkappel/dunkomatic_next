@@ -1,6 +1,8 @@
-@extends('adminlte::page')
+@extends('page')
 
 @section('css')
+  <link type="text/css" rel="stylesheet" href="{{ URL::asset('vendor/datatables/css/dataTables.bootstrap4.min.css') }}" />
+  <link type="text/css" rel="stylesheet" href="{{ URL::asset('vendor/datatables-plugins/responsive/css/responsive.bootstrap4.min.css') }}" />
   <link href="{{ URL::asset('vendor/pace-progress/themes/blue/pace-theme-center-radar.css') }}" rel="stylesheet" />
 @endsection
 
@@ -38,7 +40,6 @@
 </div><!-- /.container-fluid -->
 @stop
 
-@section('plugins.Datatables', true)
 @section('content')
 <div class="container-fluid">
   <div class="row">
@@ -211,6 +212,10 @@ reserved.
 
 @section('js')
 <script data-pace-options='maxProgressPerFrame: 2'  src="{{ URL::asset('vendor/pace-progress/pace.js') }}"></script>
+<script src="{{ URL::asset('vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ URL::asset('vendor/datatables/js/dataTables.bootstrap4.min.js') }}"></script>
+<script src="{{ URL::asset('vendor/datatables-plugins/responsive/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ URL::asset('vendor/datatables-plugins/responsive/js/responsive.bootstrap4.min.js') }}"></script>
 
 <script>
   $(function() {

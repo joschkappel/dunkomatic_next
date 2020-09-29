@@ -4,7 +4,11 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>DunkOmatic Next</title>
+        <title>
+          @yield('title_prefix', config('dunkomatic.title_prefix', ''))
+          @yield('title', config('dunkomatic.title', 'dunkomatic'))
+          @yield('title_postfix', config('dunkomatic.title_postfix', ''))
+        </title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
@@ -85,7 +89,9 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Dunk-O-matic Next
+                  @yield('title_prefix', config('dunkomatic.title_prefix', ''))
+                  @yield('title', config('dunkomatic.title', 'dunkomatic'))
+                  @yield('title_postfix', config('dunkomatic.title_postfix', ''))
                 </div>
 
                 <div class="links">

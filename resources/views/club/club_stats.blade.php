@@ -1,6 +1,10 @@
-@extends('adminlte::page')
+@extends('page')
 
-@section('plugins.Datatables', true)
+@section('css')
+  <link type="text/css" rel="stylesheet" href="{{ URL::asset('vendor/datatables/css/dataTables.bootstrap4.min.css') }}" />
+  <link type="text/css" rel="stylesheet" href="{{ URL::asset('vendor/datatables-plugins/responsive/css/responsive.bootstrap4.min.css') }}" />
+@endsection
+
 
 @section('content')
 
@@ -43,6 +47,11 @@ jochenk
 
 
 @section('js')
+  <script src="{{ URL::asset('vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ URL::asset('vendor/datatables/js/dataTables.bootstrap4.min.js') }}"></script>
+  <script src="{{ URL::asset('vendor/datatables-plugins/responsive/js/dataTables.responsive.min.js') }}"></script>
+  <script src="{{ URL::asset('vendor/datatables-plugins/responsive/js/responsive.bootstrap4.min.js') }}"></script>
+  
 <script>
    $(function() {
          $('#table').DataTable({
