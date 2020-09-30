@@ -88,5 +88,6 @@ class RegisterController extends Controller
       } else {
           Log::error('is null');
       }
+      return $user;
     }
 }

@@ -1,6 +1,6 @@
-@extends('adminlte::master')
+@extends('layouts.master')
 
-@section('adminlte_css')
+@section('app_css')
     @yield('css')
 @stop
 
@@ -9,7 +9,7 @@
 @section('body')
     <div class="login-box">
         <div class="login-logo">
-            <a href="{{ route('home',app()->getLocale()) }}">{!! config('adminlte.logo', '<b>Admin</b>LTE') !!}</a>
+            <a href="{{ route('home',app()->getLocale()) }}">{!! config('menu.logo') !!}</a>
         </div>
         <div class="card">
             <div class="card-body login-card-body">
@@ -67,8 +67,8 @@
     </div>
 @stop
 
-@section('adminlte_js')
-    <script src="{{ asset('vendor/adminlte/dist/js/adminlte.min.js') }}"></script>
+@section('app_js')
+
     @stack('js')
     @yield('js')
 @stop

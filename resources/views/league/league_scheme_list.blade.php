@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('layouts.page')
 
 @section('plugins.Datatables', true)
 @section('plugins.Select2', true)
@@ -42,6 +42,7 @@
 
       $(".js-example-placeholder-single").select2({
           placeholder: "@lang('schedule.action.size.select')...",
+          theme: 'bootstrap4',
           allowClear: false,
           minimumResultsForSearch: -1,
           ajax: {

@@ -1,8 +1,7 @@
-@extends('adminlte::page')
+@extends('layouts.page')
 
-@section('css')
-  <link href="{{ URL::asset('vendor/pace-progress/themes/blue/pace-theme-center-radar.css') }}" rel="stylesheet" />
-@endsection
+@section('plugins.Pace', true)
+@section('plugins.Select2', true)
 
 @section('content_header')
 <div class="container-fluid">
@@ -38,7 +37,6 @@
 </div><!-- /.container-fluid -->
 @stop
 
-@section('plugins.Datatables', true)
 @section('content')
 <div class="container-fluid">
   <div class="row">
@@ -99,15 +97,18 @@
                   </tr>
                </thead>
                <tbody>
+          
                @foreach ($teams as $team )
                  <tr>
-                   <td><button id="deleteTeam" data-league-sname="{{$team->league['shortname']}}" data-team-id="{{ $team->id }}" data-team-no="{{ $team->team_no }}" data-club-sname="{{ $club->shortname }}" type="button" class="btn btn-outline-danger btn-sm "> <i class="fas fa-trash"></i> </button></td>
-                   <td><a href="{{ route('team.edit', [ 'language'=>app()->getLocale(), 'team' =>$team->id] ) }}">{{$club->shortname}}{{ $team->team_no }}<i class="fas fa-arrow-circle-right"></i></a>
                    @isset ( ($team->league['shortname']) )
+                     <td><button id="deleteTeam" data-league-sname="{{$team->league['shortname']}}" data-team-id="{{ $team->id }}" data-team-no="{{ $team->team_no }}" data-club-sname="{{ $club->shortname }}" type="button" class="btn btn-outline-danger btn-sm "> <i class="fas fa-trash"></i> </button></td>
+                     <td><a href="{{ route('team.edit', [ 'language'=>app()->getLocale(), 'team' =>$team->id] ) }}">{{$club->shortname}}{{ $team->team_no }}<i class="fas fa-arrow-circle-right"></i></a>
                      <td><button type="button" class="btn btn-dark btn-sm " disabled>{{$team->league['shortname']}}-{{$team->league_char}}</button></td>
                      <td><button id="deassignLeague" data-league-id="{{$team->league['id']}}" data-team-id="{{ $team->id }}" data-club-id="{{ $club->id }}" type="button" class="btn btn-outline-secondary btn-sm "> <i class="fas fa-unlink"></i> </button></td>
                    @endisset
                    @empty ( ($team->league['shortname']) )
+                     <td><button id="deleteTeam" data-team-id="{{ $team->id }}" data-team-no="{{ $team->team_no }}" data-club-sname="{{ $club->shortname }}" type="button" class="btn btn-outline-danger btn-sm "> <i class="fas fa-trash"></i> </button></td>
+                     <td><a href="{{ route('team.edit', [ 'language'=>app()->getLocale(), 'team' =>$team->id] ) }}">{{$club->shortname}}{{ $team->team_no }}<i class="fas fa-arrow-circle-right"></i></a>
                      <td class="text-info">@lang('team.league.unassigned',['league' => $team->league_prev ])</td>
                      <td><button type="button" id="assignLeague" class="btn btn-outline-info btn-sm" data-team-id="{{ $team->id }}" data-club-id="{{ $club->id }}" data-toggle="modal" data-target="#modalAssignLeague"><i class="fas fa-link"></i></button></td>
                    @endempty
@@ -210,8 +211,6 @@ reserved.
 
 
 @section('js')
-<script data-pace-options='maxProgressPerFrame: 2'  src="{{ URL::asset('vendor/pace-progress/pace.js') }}"></script>
-
 <script>
   $(function() {
     $("button#assignLeague").click( function(){

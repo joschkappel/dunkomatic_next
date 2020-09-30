@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('layouts.page')
 
 @section('plugins.Datatables', true)
 
@@ -43,6 +43,7 @@ jochenk
 
 
 @section('js')
+
 <script>
    $(function() {
          $('#table').DataTable({

@@ -48,6 +48,7 @@
 
       $(".js-example-placeholder-single").select2({
           placeholder: "{{ __('team.action.select')}}...",
+          theme: 'bootstrap4',
           allowClear: false,
           minimumResultsForSearch: -1,
           ajax: {

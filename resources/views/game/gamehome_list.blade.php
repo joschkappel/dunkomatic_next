@@ -1,13 +1,6 @@
-@extends('adminlte::page')
-
-
-@section('css')
-  <link type="text/css" rel="stylesheet" href="{{ URL::asset('vendor/datatables/css/dataTables.bootstrap4.min.css') }}" />
-  <link type="text/css" rel="stylesheet" href="{{ URL::asset('vendor/datatables-plugins/responsive/css/responsive.bootstrap4.min.css') }}" />
-  <link type="text/css" rel="stylesheet" href="{{ URL::asset('vendor/datatables-plugins/buttons/css/buttons.bootstrap4.min.css') }}" />
-
-@endsection
-
+@extends('layouts.page')
+@section('plugins.Datatables', true)
+@section('plugins.DatatableButtons', true)
 
 @section('content')
 <div class="container-fluid">
@@ -49,28 +42,8 @@
 
 @section('js')
 
-<script src="{{ URL::asset('vendor/moment/moment.min.js') }}"></script>
-<script src="{{ URL::asset('vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
-<script src="{{ URL::asset('vendor/datatables/js/dataTables.bootstrap4.min.js') }}"></script>
-<script src="{{ URL::asset('vendor/datatables-plugins/responsive/js/dataTables.responsive.min.js') }}"></script>
-<script src="{{ URL::asset('vendor/datatables-plugins/responsive/js/responsive.bootstrap4.min.js') }}"></script>
-<script src="{{ URL::asset('vendor/datatables-plugins/buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ URL::asset('vendor/moment/moment-with-locales.min.js') }}"></script>
 
-
-<script src="{{ URL::asset('vendor/datatables-plugins/jszip/jszip.min.js') }}"></script>
-
-<script src="{{ URL::asset('vendor/datatables-plugins/buttons/js/buttons.bootstrap4.min.js') }}"></script>
-<script src="{{ URL::asset('vendor/datatables-plugins/buttons/js/buttons.html5.min.js') }}"></script>
-<script src="{{ URL::asset('vendor/datatables-plugins/buttons/js/buttons.flash.min.js') }}"></script>
-<script src="{{ URL::asset('vendor/datatables-plugins/buttons/js/buttons.print.min.js') }}"></script>
-
-
-@if (app()->getLocale() == 'de')
-  <script src="{{ URL::asset('vendor/moment/locale/de.js') }}"></script>
-@endif
-@if (app()->getLocale() == 'en')
-  <script src="{{ URL::asset('vendor/moment/locale/en-gb.js') }}"></script>
-@endif
 <script>
     $.fn.dataTable.ext.buttons.import = {
         text: '{{__('game.excel.import')}}',

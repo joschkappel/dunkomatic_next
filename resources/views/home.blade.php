@@ -1,6 +1,6 @@
-@extends('adminlte::page')
+@extends('layouts.page')
 
-@section('title', 'DunkOmatic Next')
+@section('title', 'DunkOmatic')
 
 @section('content_header')
     <h1 class="m-0 text-dark">Dashboard</h1>

@@ -1,13 +1,13 @@
-@extends('adminlte::master')
+@extends('layouts.master')
 
-@section('adminlte_css')
+@section('app_css')
     @stack('css')
     @yield('css')
 @stop
 
 @section('classes_body', 'login-page')
 
-@php( $dashboard_url = View::getSection('dashboard_url') ?? config('adminlte.dashboard_url', 'home') )
+@php( $dashboard_url = View::getSection('dashboard_url') ?? config('dunkomatic.dashboard_url', 'home') )
 
 @php( $dashboard_url = $dashboard_url ? route($dashboard_url,app()->getLocale()) : '' )
 
@@ -15,7 +15,7 @@
 @section('body')
     <div class="login-box">
         <div class="login-logo">
-            <a href="{{ $dashboard_url }}">{!! config('adminlte.logo', '<b>Admin</b>LTE') !!}</a>
+            <a href="{{ $dashboard_url }}">{!! config('menu.logo') !!}</a>
         </div>
         <div class="card">
             <div class="card-body login-card-body">
@@ -38,8 +38,7 @@
     </div>
 @stop
 
-@section('adminlte_js')
-    <script src="{{ asset('vendor/adminlte/dist/js/adminlte.min.js') }}"></script>
+@section('app_js')
     @stack('js')
     @yield('js')
 @stop

@@ -1,10 +1,7 @@
 
-@extends('adminlte::page')
+@extends('layouts.page')
 
-@push('css')
-  <!-- iCheck for checkboxes and radio inputs -->
-<link href="{{ URL::asset('vendor/icheck-bootstrap/icheck-bootstrap.min.css') }}" rel="stylesheet">
-@endpush
+@section('plugins.ICheck',true)
 
 @section('content')
 <div class="container-fluid">
@@ -115,11 +112,13 @@
     $(function() {
 
       $("#selAgeType").select2({
+          theme: 'bootstrap4',
           multiple: false,
           allowClear: false,
           minimumResultsForSearch: 10,
       });
       $("#selGenderType").select2({
+          theme: 'bootstrap4',
           multiple: false,
           allowClear: false,
           minimumResultsForSearch: 10,
@@ -128,6 +127,7 @@
 
       $(".js-example-placeholder-single").select2({
           placeholder: "@lang('schedule.action.select')...",
+          theme: 'bootstrap4',
           multiple: false,
           allowClear: true,
           minimumResultsForSearch: -1,

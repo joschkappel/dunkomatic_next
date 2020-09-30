@@ -49,6 +49,7 @@
     $(function() {
       $(".js-schedule-single").select2({
           placeholder: "@lang('schedule.action.select')...",
+          theme: 'bootstrap4',
           multiple: false,
           allowClear: false,
           minimumResultsForSearch: -1,

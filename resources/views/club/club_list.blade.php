@@ -1,4 +1,6 @@
-@extends('adminlte::page')
+@extends('layouts.page')
+
+@section('plugins.Datatables', true)
 
 @section('content_header')
     @if(Session::has('success'))
@@ -8,7 +10,6 @@
 @endif
 @stop
 
-@section('plugins.Datatables', true)
 @section('content')
 
             <div class="row">
@@ -48,7 +49,6 @@ jochenk
 
 
 @section('js')
-
 <script>
          $(function() {
                $('#table').DataTable({

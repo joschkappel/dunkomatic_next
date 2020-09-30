@@ -1,9 +1,7 @@
-@extends('adminlte::page')
+@extends('layouts.page')
 @section('plugins.Select2', true)
-@push('css')
-  <!-- iCheck for checkboxes and radio inputs -->
-<link href="{{ URL::asset('vendor/toastr/toastr.min.css') }}" rel="stylesheet">
-@endpush
+@section('plugins.Datatables', true)
+@section('plugins.Toastr', true)
 
 @section('content_header')
 <div class="container-fluid">
@@ -50,7 +48,7 @@
 </div><!-- /.container-fluid -->
 @stop
 
-@section('plugins.Datatables', true)
+
 @section('content')
 <div class="container-fluid">
   <div class="row">
@@ -223,8 +221,6 @@ reserved.
 
 
 @section('js')
-<script src="{{ URL::asset('vendor/toastr/toastr.min.js') }}"></script>
-
 <script>
   $(function() {
 

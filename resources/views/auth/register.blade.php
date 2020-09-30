@@ -1,18 +1,17 @@
-@extends('adminlte::master')
+@extends('layouts.master')
 
-@section('adminlte_css')
-  <!-- iCheck for checkboxes and radio inputs -->
-<link href="{{ URL::asset('vendor/icheck-bootstrap/icheck-bootstrap.min.css') }}" rel="stylesheet">
+@section('plugins.Select2', true)
 
+@section('app_css')
     @stack('css')
     @yield('css')
 @stop
 
 @section('classes_body', 'register-page')
 
-@php( $login_url = View::getSection('login_url') ?? config('adminlte.login_url', 'login') )
-@php( $register_url = View::getSection('register_url') ?? config('adminlte.register_url', 'register') )
-@php( $dashboard_url = View::getSection('dashboard_url') ?? config('adminlte.dashboard_url', 'home') )
+@php( $login_url = View::getSection('login_url') ?? config('dunkomatic.login_url', 'login') )
+@php( $register_url = View::getSection('register_url') ?? config('dunkomatic.register_url', 'register') )
+@php( $dashboard_url = View::getSection('dashboard_url') ?? config('dunkomatic.dashboard_url', 'home') )
 
 @php( $login_url = $login_url ? route($login_url, app()->getLocale()) : '' )
 @php( $register_url = $register_url ? route($register_url, app()->getLocale()) : '' )
@@ -21,7 +20,7 @@
 @section('body')
     <div class="register-box">
         <div class="register-logo">
-            <a href="{{ $dashboard_url }}">{!! config('adminlte.logo', '<b>Admin</b>LTE') !!}</a>
+            <a href="{{ $dashboard_url }}">{!! config('menu.logo') !!}</a>
         </div>
         <div class="card">
             <div class="card-body register-card-body">
@@ -123,15 +122,15 @@
     </div><!-- /.register-box -->
 @stop
 
-@section('adminlte_js')
+@section('app_js')
 
-    <script src="{{ asset('vendor/adminlte/dist/js/adminlte.min.js') }}"></script>
     @stack('js')
     <script>
       $(document).ready(function(){
 
           $("#selRegion").select2({
               multiple: false,
+              theme: 'bootstrap4',
               allowClear: false,
               minimumResultsForSearch: 10,
               placeholder: "{{__('club.region')}}",

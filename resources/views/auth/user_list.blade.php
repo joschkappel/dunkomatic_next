@@ -1,15 +1,6 @@
-@extends('adminlte::page')
-
-@section('content_header')
-    @if(Session::has('success'))
-    <div class="alert alert-success">
-        {{Session::get('success')}}
-    </div>
-@endif
-@stop
+@extends('layouts.page')
 
 @section('plugins.Datatables', true)
-
 
 @section('content')
 

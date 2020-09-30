@@ -1,10 +1,8 @@
-@extends('adminlte::page')
+@extends('layouts.page')
 
-@section('css')
-  <!-- iCheck for checkboxes and radio inputs -->
-<link href="{{ URL::asset('vendor/icheck-bootstrap/icheck-bootstrap.min.css') }}" rel="stylesheet">
-@endsection
 @section('plugins.Select2', true)
+@section('plugins.ICheck', true)
+
 
 @section('content')
 <div class="container-fluid">
@@ -104,6 +102,7 @@ jochenk
     $(function() {
         $("#selClubs").select2({
             placeholder: "@lang('club.action.select')...",
+            theme: 'bootstrap4',
             multiple: true,
             allowClear: false,
             minimumResultsForSearch: 20,
@@ -121,6 +120,7 @@ jochenk
         });
         $("#selLeagues").select2({
             placeholder: "@lang('league.action.select')...",
+            theme: 'bootstrap4',
             multiple: true,
             allowClear: false,
             minimumResultsForSearch: 20,

@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Events\Dispatcher;
-use JeroenNoten\LaravelAdminLte\Events\BuildingMenu;
+use App\Events\BuildingMenu;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        ///
     }
 
     /**
@@ -33,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(Dispatcher $events)
     {
+
 
        // if (\Schema::hasTable('settings')){
        //  config([
@@ -46,6 +47,7 @@ class AppServiceProvider extends ServiceProvider
        //    ->toArray() // make it an array
        //  ]);
        // };
+
 
         $events->listen(BuildingMenu::class, function (BuildingMenu $event) {
             $clubmenu = array();

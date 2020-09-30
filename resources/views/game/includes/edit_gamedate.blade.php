@@ -1,6 +1,5 @@
-@push('css')
-  <link href="{{ URL::asset('vendor/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}" rel="stylesheet">
-@endpush
+@section('plugins.Moment', true)
+@section('plugins.TempusDominus', true)
 @section('plugins.Select2', true)
 
 <div class="modal fade right" id="modalEditGamedate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false">
@@ -75,10 +74,6 @@
 </div>
 <!--Modal: modalRelatedContent-->
 @push('js')
-//  <script src="{{ URL::asset('vendor/moment/moment.min.js') }}"></script>
-  @if (app()->getLocale() == 'de')<script src="{{ URL::asset('vendor/moment/locale/de.js') }}"></script>
-  @endif
-  <script src="{{ URL::asset('vendor/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
 
 <script>
     $(document).ready(function() {
@@ -94,7 +89,7 @@
       $('#gdate').datetimepicker({
           format: 'L',
           locale: '{{ app()->getLocale()}}',
-          useCurrent: false,
+          useCurrent: false
       });
 
 
@@ -106,6 +101,7 @@
 
         $("#selGym").select2({
             placeholder: "{{ __('gym.action.select')}}...",
+            theme: 'bootstrap4',
             multiple: false,
             allowClear: false,
             dropdownParent: $('#modalEditGamedate'),

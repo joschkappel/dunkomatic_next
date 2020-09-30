@@ -1,11 +1,7 @@
-@extends('adminlte::page')
+@extends('layouts.page')
 
-@section('css')
-<!-- Bootstrap Color Picker -->
-<link href="{{ URL::asset('vendor/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css') }}" rel="stylesheet">
-  <!-- iCheck for checkboxes and radio inputs -->
-<link href="{{ URL::asset('vendor/icheck-bootstrap/icheck-bootstrap.min.css') }}" rel="stylesheet">
-@endsection
+@section('plugins.ICheck',true)
+@section('plugins.Colorpicker',true)
 
 @section('content')
 <div class="container-fluid">
@@ -78,8 +74,6 @@
 @endsection
 
 @section('js')
-<!-- bootstrap color picker -->
-<script src="{{ URL::asset('vendor/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js') }}"></script>
 
 <script>
   $(function() {

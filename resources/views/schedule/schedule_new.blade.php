@@ -1,14 +1,8 @@
-@extends('adminlte::page')
+@extends('layouts.page')
 
 @section('plugins.Select2', true)
-
-@section('css')
-<!-- Bootstrap Color Picker -->
-<link href="{{ URL::asset('vendor/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css') }}" rel="stylesheet">
-<!-- iCheck for checkboxes and radio inputs -->
-<link href="{{ URL::asset('vendor/icheck-bootstrap/icheck-bootstrap.min.css') }}" rel="stylesheet">
-
-@endsection
+@section('plugins.ICheck',true)
+@section('plugins.Colorpicker',true)
 
 @section('content')
 <div class="container-fluid">
@@ -99,6 +93,7 @@
 
       $(".js-example-placeholder-single").select2({
           placeholder: "@lang('schedule.action.size.select')...",
+          theme: 'bootstrap4',
           allowClear: false,
           minimumResultsForSearch: -1,
           ajax: {

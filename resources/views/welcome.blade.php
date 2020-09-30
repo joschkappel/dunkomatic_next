@@ -4,7 +4,11 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>DunkOmatic Next</title>
+        <title>
+          @yield('title_prefix', config('dunkomatic.title_prefix', ''))
+          @yield('title', config('dunkomatic.title', 'dunkomatic'))
+          @yield('title_postfix', config('dunkomatic.title_postfix', ''))
+        </title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
@@ -74,10 +78,10 @@
                         <a href="{{ route('home', ['language'=> app()->getLocale()]) }}">Home</a>
                     @else
 
-                        <a href="{{ route('login', app()->getLocale()) }}">{{ __('adminlte::adminlte.sign_in') }}</a>
+                        <a href="{{ route('login', app()->getLocale()) }}">{{ __('auth.sign_in') }}</a>
 
                         @if (Route::has('register'))
-                            <a href="{{ route('register', app()->getLocale()) }}">{{ __('adminlte::adminlte.register') }}</a>
+                            <a href="{{ route('register', app()->getLocale()) }}">{{ __('auth.register') }}</a>
                         @endif
                     @endauth
                 </div>
@@ -85,7 +89,9 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Dunk-O-matic Next
+                  @yield('title_prefix', config('dunkomatic.title_prefix', ''))
+                  @yield('title', config('dunkomatic.title', 'dunkomatic'))
+                  @yield('title_postfix', config('dunkomatic.title_postfix', ''))
                 </div>
 
                 <div class="links">
