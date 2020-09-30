@@ -56,6 +56,7 @@
 
       $(".js-league-single").select2({
           placeholder: "@lang('league.action.select')...",
+          theme: 'bootstrap4',
           allowClear: false,
           minimumResultsForSearch: -1,
           ajax: {
@@ -74,6 +75,7 @@
 
       $(".js-freechar-single").select2({
           placeholder: "{{ __('league.sb_freechar')}}...",
+          theme: 'bootstrap4',
           allowClear: true,
       });
 
@@ -84,6 +86,7 @@
         $('#selChar').val(null).trigger('change');
         $(".js-freechar-single").select2({
             placeholder: "{{ __('league.sb_freechar')}}...",
+            theme: 'bootstrap4',
             allowClear: true,
             ajax: {
                     url: url,

@@ -1,12 +1,14 @@
 @extends('layouts.page')
 
+@section('plugins.Pace', true)
+
 @section('plugins.Select2', true)
+@section('plugins.Chartjs', true)
 
 
 @section('css')
-  <link href="{{ URL::asset('vendor/chart.js/Chart.css') }}" rel="stylesheet">
   <link href="{{ URL::asset('vendor/bootstrap-slider/css/bootstrap-slider.css') }}" rel="stylesheet">
-  <link href="{{ URL::asset('vendor/pace-progress/themes/blue/pace-theme-center-radar.css') }}" rel="stylesheet" />
+
 @endsection
 
 
@@ -95,18 +97,15 @@ jochenk
 
 
 @section('js')
-<script src="{{ URL::asset('vendor/moment/moment.min.js')}}"></script>
-<script src="{{ URL::asset('vendor/chart.js/Chart.js')}}"></script>
 <script src="{{ URL::asset('vendor/bootstrap-slider/bootstrap-slider.js')}}"></script>
 
-  <script data-pace-options='maxProgressPerFrame: 2'  src="{{ URL::asset('vendor/pace-progress/pace.js') }}"></script>
 <script >
     $(document).ajaxStart(function() { Pace.restart(); });
 
     $(function() {
         //Initialize Select2 Elements
         $('.js-single-size').select2({
-
+            theme: 'bootstrap4',
             multiple: false,
             allowClear: false
         });

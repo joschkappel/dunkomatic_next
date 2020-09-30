@@ -1,9 +1,8 @@
 @extends('layouts.master')
 
-@section('app_css')
-  <!-- iCheck for checkboxes and radio inputs -->
-<link href="{{ URL::asset('vendor/icheck-bootstrap/icheck-bootstrap.min.css') }}" rel="stylesheet">
+@section('plugins.Select2', true)
 
+@section('app_css')
     @stack('css')
     @yield('css')
 @stop
@@ -131,6 +130,7 @@
 
           $("#selRegion").select2({
               multiple: false,
+              theme: 'bootstrap4',
               allowClear: false,
               minimumResultsForSearch: 10,
               placeholder: "{{__('club.region')}}",

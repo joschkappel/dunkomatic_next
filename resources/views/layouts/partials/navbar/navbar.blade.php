@@ -6,6 +6,8 @@
     <ul class="navbar-nav">
         {{-- Left sidebar toggler link --}}
         @include('layouts.partials.navbar.menu-item-left-sidebar-toggler')
+        {{-- Configured left links --}}
+        @each('layouts.partials.navbar.menu-item', app(\App\Menu::class)->menu('navbar-left'), 'item')
 
         {{-- Custom left links --}}
         @yield('content_top_nav_left')
@@ -15,6 +17,10 @@
     <ul class="navbar-nav ml-auto">
         {{-- Custom right links --}}
         @yield('content_top_nav_right')
+
+        {{-- Configured right links --}}
+        {{-- dd( app(\App\Menu::class)->menu() )--}}
+        @each('layouts.partials.navbar.menu-item', app(\App\Menu::class)->menu('navbar-right'), 'item')
 
         {{-- User menu link --}}
         @if(Auth::user())

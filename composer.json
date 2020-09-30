@@ -18,7 +18,7 @@
         "graylog2/gelf-php": "^1.5",
         "guzzlehttp/guzzle": "^7.0.1",
         "itsjavi/bootstrap-colorpicker": "^3.2",
-        "jeroennoten/laravel-adminlte": "^3.2",
+
         "laravel-admin-ext/daterangepicker": "^1.0",
         "laravel/framework": "^8.0",
         "laravel/tinker": "^2.0",

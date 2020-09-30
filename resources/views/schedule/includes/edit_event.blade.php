@@ -35,8 +35,8 @@
                               <label for="game_date" class="col-sm-2 col-form-label">Game Date</label>
                               <div class="col-sm-10">
                                   <div class="input-group date" id="game_date" data-target-input="nearest">
-                                      <input type="text" name='game_date' class="form-control " data-target="#game_date" />
-                                      <div class="input-group-append" data-target="#game_date" data-toggle="game_date">
+                                      <input type="text" name='game_date' id='game_date' class="form-control datetimepicker-input " data-target="#game_date" />
+                                      <div class="input-group-append" data-target="#game_date" data-toggle="datetimepicker">
                                           <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                       </div>
                                   </div>
@@ -63,14 +63,3 @@
     </div>
     <!--Modal: modalRelatedContent-->
 </div>
-
-@push('js')
-
-<script>
-    $(function() {
-        let thisyear = new Date().getFullYear();
-        let oneYearFromNow = new Date().getFullYear() + 1;
-
-    });
-</script>
-@endpush

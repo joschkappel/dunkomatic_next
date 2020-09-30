@@ -1,15 +1,6 @@
 @extends('layouts.page')
 
-@section('content_header')
-    @if(Session::has('success'))
-    <div class="alert alert-success">
-        {{Session::get('success')}}
-    </div>
-@endif
-@stop
-
 @section('plugins.Datatables', true)
-
 
 @section('content')
 

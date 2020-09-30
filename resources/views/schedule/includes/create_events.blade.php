@@ -21,17 +21,18 @@
                             <input type="hidden" name="schedule_id" value="{{ $schedule->id }}">
                             <input type="hidden" name="schedule_size" value="{{ $schedule->size }}">
                             <div class="form-group row ">
-                                <label for="title" class="col-sm-2 col-form-label">Start Date</label>
+                                <label for="startdate" class="col-sm-2 col-form-label">Start Date</label>
                                 <div class="col-sm-10">
                                     <div class="input-group date" id="startdate" data-target-input="nearest">
-                                        <input type="text" name='startdate' class="form-control " data-target="#startdate" />
-                                        <div class="input-group-append" data-target="#startdate" data-toggle="startdate">
+                                        <input type="text" name='startdate' id='startdate' class="form-control datetimepicker-input" data-target="#startdate" />
+                                        <div class="input-group-append" data-target="#startdate" data-toggle="datetimepicker">
                                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <div class="card-footer">
                             <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
                                 <button type="submit" class="btn btn-info">Submit</button>
@@ -50,20 +51,16 @@
 
 <script>
     $(function() {
-        let thisyear = new Date().getFullYear();
-        let oneYearFromNow = new Date().getFullYear() + 1;
-        console.log(thisyear);
-        console.log(oneYearFromNow);
-        var today = new Date();
+        let date = new Date();
+        let startDate = date.setDate(date.getDate() + 30);
+        let endDate = date.setDate(date.getDate() + 365);
 
-        $('input[name="startdate"]').daterangepicker({
-            singleDatePicker: true,
-            showDropdowns: true,
-            opens: 'center',
-            drops: 'auto',
-            minYear: thisyear,
-            maxYear: oneYearFromNow,
-            startDate: today,
+        $('#startdate').datetimepicker({
+            format: 'L',
+            locale: '{{ app()->getLocale()}}',
+            useCurrent: true,
+            minDate: startDate,
+            maxDate: endDate,
         });
     });
 </script>

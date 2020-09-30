@@ -21,7 +21,7 @@ class League extends Model implements Auditable
       ];
   }
   protected $fillable = [
-        'id','name','shortname','region','active','above_region','schedule_id','generated_at'
+        'id','name','shortname','region','active','above_region','schedule_id','generated_at','age_type','gender_type'
   ];
   /**
    * The attributes that should be cast to native types.

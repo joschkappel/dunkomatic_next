@@ -1,10 +1,6 @@
 @extends('layouts.page')
 
-@section('css')
-  <link type="text/css" rel="stylesheet" href="{{ URL::asset('vendor/datatables/css/dataTables.bootstrap4.min.css') }}" />
-  <link type="text/css" rel="stylesheet" href="{{ URL::asset('vendor/datatables-plugins/responsive/css/responsive.bootstrap4.min.css') }}" />
-@endsection
-
+@section('plugins.Datatables', true)
 
 @section('content_header')
     @if(Session::has('success'))
@@ -53,11 +49,6 @@ jochenk
 
 
 @section('js')
-  <script src="{{ URL::asset('vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
-  <script src="{{ URL::asset('vendor/datatables/js/dataTables.bootstrap4.min.js') }}"></script>
-  <script src="{{ URL::asset('vendor/datatables-plugins/responsive/js/dataTables.responsive.min.js') }}"></script>
-  <script src="{{ URL::asset('vendor/datatables-plugins/responsive/js/responsive.bootstrap4.min.js') }}"></script>
-
 <script>
          $(function() {
                $('#table').DataTable({

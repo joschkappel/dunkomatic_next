@@ -78,7 +78,11 @@ class LeagueController extends Controller
             return '<a href="' . route('league.dashboard', ['language'=>app()->getLocale(),'id'=>$data->id]) .'">'.$data->shortname.'</a>';
             })
         ->addColumn('reg_rel', function($data){
-              $reg_rel = round(($data->teams_count * 100)/$data->clubs_count);
+              if ($data->clubs_count!=0){
+                $reg_rel = round(($data->teams_count * 100)/$data->clubs_count);
+              } else {
+                $reg_rel = 0;
+              }
               if ($reg_rel >= 100){
                 return '<div class="bg-success text-center">'.$reg_rel.'</div>';
               } else if ($reg_rel <= 50){
@@ -329,10 +333,15 @@ class LeagueController extends Controller
     public function edit($language, League $league)
     {
       Log::debug('editing league '.$league->id);
-      $member = $league->member_roles()->with('member')->get();
-//      Log::debug(print_r($member[0]['member'],true));
+      $member = $league->member_roles()->with('member')->first();
+      if (isset($member)){
+        $rmember = $member->member;
+      } else {
+        $rmember = null;
+      }
+      Log::debug(print_r($rmember,true));
       return view('league/league_edit', ['league' => $league,
-                                         'member' => $member[0]->member,
+                                         'member' => $rmember,
                                          'agetype' => LeagueAgeType::getInstances(),
                                          'gendertype' => LeagueGenderType::getInstances()]);
     }
@@ -374,7 +383,7 @@ class LeagueController extends Controller
         $data['active'] = False;
       }
 
-      Log::debug(print_r($data, true));
+      Log::debug('ready to update league:'.print_r($data, true));
       $check = League::find($league->id)->update($data);
       return redirect()->route('league.dashboard',['language'=>app()->getLocale(), 'id'=>$league]);
     }

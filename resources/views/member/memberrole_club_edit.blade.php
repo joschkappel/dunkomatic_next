@@ -144,6 +144,7 @@
 
       $(".js-placeholder-single").select2({
           placeholder: "@lang('role.action.select')...",
+          theme: 'bootstrap4',
           multiple: false,
           allowClear: false,
           minimumResultsForSearch: -1,

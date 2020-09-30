@@ -28,7 +28,8 @@
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/dist/css/adminlte.min.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     <link rel="stylesheet" href="{{ asset('vendor/flag-icon-css/css/flag-icon.min.css') }}">
-
+    {{-- Configured Stylesheets --}}
+    @include('layouts.plugins', ['type' => 'css'])
     {{-- Custom Stylesheets  --}}
     @yield('app_css')
 

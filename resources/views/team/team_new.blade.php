@@ -1,10 +1,7 @@
 @extends('layouts.page')
 
-@section('css')
-<!-- Bootstrap Color Picker -->
-<link href="{{ URL::asset('vendor/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}" rel="stylesheet">
-@endsection
-
+@section('plugins.Moment', true)
+@section('plugins.TempusDominus', true)
 @section('plugins.Select2', true)
 
 @section('content')
@@ -170,8 +167,6 @@
 @endsection
 
 @section('js')
-<script src="{{ URL::asset('vendor/moment/moment.min.js') }}"></script>
-<script src="{{ URL::asset('vendor/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
 <script>
     $(function() {
 
@@ -194,24 +189,28 @@
 
         $("#selTday").select2({
             placeholder: "Select training day...",
+            theme: 'bootstrap4',
             multiple: false,
             allowClear: false,
             minimumResultsForSearch: 20
         });
         $("#selGday").select2({
             placeholder: "Select preferred game day...",
+            theme: 'bootstrap4',
             multiple: false,
             allowClear: true,
             minimumResultsForSearch: 20
         });
         $("#selTeamNo").select2({
             placeholder: "Select team number...",
+            theme: 'bootstrap4',
             multiple: false,
             allowClear: false,
             minimumResultsForSearch: 20
         });
         $("#selLeague").select2({
             placeholder: "@lang('league.action.select')...",
+            theme: 'bootstrap4',
             multiple: false,
             allowClear: true,
             minimumResultsForSearch: 20,

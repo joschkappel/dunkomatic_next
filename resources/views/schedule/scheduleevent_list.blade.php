@@ -1,14 +1,10 @@
 @extends('layouts.page')
 
-@section('css')
-  <link type="text/css" rel="stylesheet" href="{{ URL::asset('vendor/datatables/css/dataTables.bootstrap4.min.css') }}" />
-  <link type="text/css" rel="stylesheet" href="{{ URL::asset('vendor/datatables-plugins/responsive/css/responsive.bootstrap4.min.css') }}" />
+@section('plugins.Datatables',true)
+@section('plugins.Moment',true)
+@section('plugins.TempusDominus',true)
+@section('plugins.DateRangePicker',false)
 
-  <link href="{{ URL::asset('vendor/daterangepicker/daterangepicker.css') }}" rel="stylesheet">
-.red {
-  background-color: red !important;
-}
-@endsection
 
 @section('content')
 
@@ -61,16 +57,6 @@ jochen
 
 
 @section('js')
-<script src="{{ URL::asset('vendor/moment/moment.min.js') }}"></script>
-<script src="{{ URL::asset('vendor/daterangepicker/daterangepicker.js') }}"></script>
-<script src="{{ URL::asset('vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
-<script src="{{ URL::asset('vendor/datatables/js/dataTables.bootstrap4.min.js') }}"></script>
-<script src="{{ URL::asset('vendor/datatables-plugins/responsive/js/dataTables.responsive.min.js') }}"></script>
-<script src="{{ URL::asset('vendor/datatables-plugins/responsive/js/responsive.bootstrap4.min.js') }}"></script>
-
-@if (app()->getLocale() == 'de')
-  <script src="{{ URL::asset('vendor/moment/locale/de.js') }}"></script>
-@endif
 
 <script>
        $('#table').DataTable({
@@ -79,7 +65,9 @@ jochen
        responsive: true,
        @if (app()->getLocale() == 'de')
        language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/German.json')}}" },
-       @endif       
+       @else
+       language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/English.json')}}" },
+       @endif
        order: [[1,'asc']],
        ajax: '{{ route('schedule_event.list-dt',$schedule->id) }}',
        columns: [
@@ -94,8 +82,9 @@ jochen
 
 
         var old_gamedate;
-        let thisyear = new Date().getFullYear();
-        let oneYearFromNow = new Date().getFullYear() + 1;
+        let date = new Date();
+        let startDate = date.setDate(date.getDate() + 30);
+        let endDate = date.setDate(date.getDate() + 365);
 
 
         $('body').on('click', '#eventEditLink', function(){
@@ -107,14 +96,12 @@ jochen
             } else {
               $('input[name="full_weekend"]').attr('checked', false);
             }
-            $('input[name="game_date"]').daterangepicker({
-                startDate: old_gamedate,
-                singleDatePicker: true,
-                showDropdowns: true,
-                opens: 'center',
-                drops: 'auto',
-                minYear: thisyear,
-                maxYear: oneYearFromNow
+            $('#game_date').datetimepicker({
+                format: 'L',
+                locale: '{{ app()->getLocale()}}',
+                defaultDate: $(this).data('game-date'),
+                minDate: startDate,
+                maxDate: endDate,
             });
             $('#editEventForm').attr('action', '/schedule_event/'+$(this).data('id'));
             $('#modalEditEvent').modal('show');

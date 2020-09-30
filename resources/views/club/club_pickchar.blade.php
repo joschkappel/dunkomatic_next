@@ -1,11 +1,9 @@
 @extends('layouts.page')
 
-@section('css')
-  <link href="{{ URL::asset('vendor/pace-progress/themes/blue/pace-theme-center-radar.css') }}" rel="stylesheet" />
-  <link href="{{ URL::asset('vendor/chart.js/Chart.css') }}" rel="stylesheet">
-@endsection
-
+@section('plugins.Pace', true)
+@section('plugins.Chartjs', true)
 @section('plugins.Datatables', true)
+
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="container-fluid">
@@ -101,9 +99,6 @@ reserved.
 
 
 @section('js')
-<script data-pace-options='maxProgressPerFrame: 2'  src="{{ URL::asset('vendor/pace-progress/pace.js') }}"></script>
-<script src="{{ URL::asset('vendor/moment/moment.min.js')}}"></script>
-<script src="{{ URL::asset('vendor/chart.js/Chart.js')}}"></script>
 
 <script>
   $(document).ajaxStart(function() { Pace.restart(); });

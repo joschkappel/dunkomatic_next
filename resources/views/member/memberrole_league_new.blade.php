@@ -162,6 +162,7 @@
 
       $(".js-placeholder-multi").select2({
           placeholder: "@lang('role.action.select')...",
+          theme: 'bootstrap4',
           multiple: true,
           allowClear: false,
           minimumResultsForSearch: 10,
@@ -212,6 +213,7 @@
 
       $(".js-placeholder-single").select2({
           placeholder: "@lang('role.member.action.select')...",
+          theme: 'bootstrap4',
           multiple: false,
           allowClear: true,
           minimumResultsForSearch: -1,
