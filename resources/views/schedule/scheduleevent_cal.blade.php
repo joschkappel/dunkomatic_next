@@ -9,11 +9,6 @@
   <div id='calendar'></div>
 @stop
 
-@section('footer')
-jochenk
-@stop
-
-
 @section('js')
   <script>
         document.addEventListener('DOMContentLoaded', function() {

@@ -52,9 +52,9 @@
         </div>
 
         {{-- Footer --}}
-        @hasSection('footer')
-            @include('layouts.partials.footer.footer')
-        @endif
+        {{-- @hasSection('footer') --}}
+        @include('layouts.partials.footer.footer')
+        {{-- @endif --}}
 
         {{-- Right Control Sidebar --}}
         @if(config('menu.right_sidebar'))

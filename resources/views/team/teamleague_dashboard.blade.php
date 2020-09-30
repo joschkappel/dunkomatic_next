@@ -91,11 +91,6 @@
 </div>
 @stop
 
-@section('footer')
-jochenk
-@stop
-
-
 @section('js')
 <script src="{{ URL::asset('vendor/bootstrap-slider/bootstrap-slider.js')}}"></script>
 

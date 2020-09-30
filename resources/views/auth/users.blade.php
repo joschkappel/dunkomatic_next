@@ -42,6 +42,3 @@
         </div>
     </div>
 @endsection
-@section('footer')
-jk
-@endsection

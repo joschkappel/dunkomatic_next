@@ -51,11 +51,6 @@
     </div>
 @stop
 
-@section('footer')
-jochen
-@stop
-
-
 @section('js')
 
 <script>

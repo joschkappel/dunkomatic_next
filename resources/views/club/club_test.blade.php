@@ -56,9 +56,6 @@
 
 @stop
 
-@section('footer')
-jochenk
-@stop
 
 @section('css')
 

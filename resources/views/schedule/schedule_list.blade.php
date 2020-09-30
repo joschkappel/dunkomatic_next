@@ -52,11 +52,6 @@
     </div>
 @stop
 
-@section('footer')
-jochenk
-@stop
-
-
 @section('js')
 
 <script>
@@ -90,7 +85,7 @@ jochenk
               $('#confirmDeleteSchedule').attr('action', url);
               $('#modalDeleteSchedule').modal('show');
            });
-       
+
 
 </script>
 @stop
