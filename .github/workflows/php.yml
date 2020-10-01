@@ -31,11 +31,11 @@ jobs:
     - name: run phpunit tests
       run: php artisan test
     - name: Prepare Dusk Environment
-      run: cp .env.dusk.local .env
+      run: cp .env.dusk.git .env
     - name: Create Database
       run: |
         sudo systemctl start mysql
-        mysql --user="root" --password="root" -e "CREATE DATABASE dunkomatic_next character set UTF8mb4 collate utf8mb4_bin;"
+        mysql --user="root" --password="root" -e "CREATE DATABASE dunkomatic_test character set UTF8mb4 collate utf8mb4_bin;"
     - name: Upgrade Chrome Driver
       run: php artisan dusk:chrome-driver `/opt/google/chrome/chrome --version | cut -d " " -f3 | cut -d "." -f1`
     - name: Start Chrome Driver
@@ -43,7 +43,5 @@ jobs:
     - name: Run Laravel Server
       run: php artisan serve &
     - name: Run Dusk Tests
-      env:
-        APP_URL: "http://127.0.0.1:8000"
       run: php artisan dusk
         
