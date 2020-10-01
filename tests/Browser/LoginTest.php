@@ -61,6 +61,7 @@ class LoginTest extends DuskTestCase
 
                   $second->loginAs($u2)->visit('/de/home')
                          ->assertPathIs('/de/home')
+                         ->assertAuthenticated()
                          ->assertAuthenticatedAs($u2);
               });
     }
