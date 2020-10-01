@@ -34,6 +34,14 @@ jobs:
       run: |
         cp .env.dusk.git .env
         cp tests/DuskTestCase.php.git tests/DuskTestCase.php
+    - name: Prepare Chrome
+      run: |
+       cd ~
+       # install Google Chrome  
+       sudo apt-get install libgbm1
+       wget --quiet https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+       sudo dpkg --install google-chrome-stable_current_amd64.deb
+       cd -       
     - name: Create Database
       run: |
         sudo systemctl start mysql
