@@ -43,7 +43,7 @@ jobs:
     - name: Run Laravel Server
       run: php artisan serve &
     - name: Run Dusk Tests
-        env:
-          APP_URL: "http://127.0.0.1:8000"
+      env:
+        APP_URL: "http://127.0.0.1:8000"
       run: php artisan dusk
         
