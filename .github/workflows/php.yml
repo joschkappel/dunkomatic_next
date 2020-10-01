@@ -47,7 +47,11 @@ jobs:
       run: ./vendor/laravel/dusk/bin/chromedriver-linux &
     - name: Run Laravel Server
       run: php artisan serve &
+    - name: Sleep for 10s
+        uses: juliangruber/sleep-action@v1
+        with:
+          time: 10s
     - name: Test dusk server access
       run: curl http://localhost:8000/de/login
     - name: Run Dusk Tests
-      run: php artisan dusk 
+      run: php artisan dusk
