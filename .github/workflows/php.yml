@@ -54,4 +54,4 @@ jobs:
     - name: Test dusk server access
       run: curl http://localhost:8000/de/login
     - name: Run Dusk Tests
-      run: php artisan dusk
+      run: php artisan dusk --env=git
