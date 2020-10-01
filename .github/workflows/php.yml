@@ -32,7 +32,7 @@ jobs:
       run: php artisan test
     - name: Prepare Dusk Environment
       run: |
-        # cp .env.dusk.git .env
+        cp .env.dusk.git .env
         cp tests/DuskTestCase.php.git tests/DuskTestCase.php
     - name: Prepare Chrome
       run: |
@@ -46,12 +46,16 @@ jobs:
       run: |
         sudo systemctl start mysql
         mysql --user="root" --password="root" -e "CREATE DATABASE dunkomatic_test character set UTF8mb4 collate utf8mb4_bin;"
+        php artisan migrate
+        php artisan db:seed --class=TestDatabaseSeeder
     - name: Upgrade Chrome Driver
       run: php artisan dusk:chrome-driver `/opt/google/chrome/chrome --version | cut -d " " -f3 | cut -d "." -f1`
     - name: Start Chrome Driver
       run: ./vendor/laravel/dusk/bin/chromedriver-linux &
     - name: Run Laravel Server
       run: php artisan serve &
+    - name: try access
+      run: curl http://localhost:8000/de/login
     - name: Run Dusk Tests
-      run: php artisan dusk --env=dusk.git
+      run: php artisan dusk --env=git
         
