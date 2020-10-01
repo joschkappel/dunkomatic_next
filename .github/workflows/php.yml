@@ -2,7 +2,7 @@ name: PHP Composer
 
 on:
   push:
-    branches: [ master, laravel8 ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -35,7 +35,7 @@ jobs:
     - name: Create Database
       run: |
         sudo systemctl start mysql
-        mysql --user="root" --password="root" -e "CREATE DATABASE 'dunkomatic_next' character set UTF8mb4 collate utf8mb4_bin;"
+        mysql --user="root" --password="root" -e "CREATE DATABASE dunkomatic_next character set UTF8mb4 collate utf8mb4_bin;"
     - name: Upgrade Chrome Driver
       run: php artisan dusk:chrome-driver `/opt/google/chrome/chrome --version | cut -d " " -f3 | cut -d "." -f1`
     - name: Start Chrome Driver
