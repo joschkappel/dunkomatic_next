@@ -1,4 +1,4 @@
-name: PHP Composer
+name: PHPunit and Dusk Tests
 
 on:
   push:
@@ -14,48 +14,40 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Copy ENV Laravel Configuration for CI
-      run: php -r "file_exists('.env') || copy('.env.ci', '.env');"
+      run: |
+        cp .env.dusk.git .env
+        cp tests/DuskTestCase.php.git tests/DuskTestCase.php
     - name: Install Dependencies (PHP vendors)
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
     - name: Install NPM Dependencies
       run: npm install
     - name: Generate key
-      run: php artisan key:generate      
-    - name: Create DB and schemas
-      run: |
-        mkdir -p database
-        touch database/database.sqlite
-        php artisan migrate
-    - name: Seed static tables
-      run: php artisan db:seed --class TestDatabaseSeeder
-    - name: run phpunit tests
-      run: php artisan test
-    - name: Prepare Dusk Environment
-      run: |
-        cp .env.dusk.git .env
-        cp tests/DuskTestCase.php.git tests/DuskTestCase.php
-    - name: Prepare Chrome
-      run: |
-       cd ~
-       # install Google Chrome  
-       sudo apt-get install libgbm1
-       wget --quiet https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-       sudo dpkg --install google-chrome-stable_current_amd64.deb
-       cd -       
+      run: php artisan key:generate
     - name: Create Database
       run: |
         sudo systemctl start mysql
         mysql --user="root" --password="root" -e "CREATE DATABASE dunkomatic_test character set UTF8mb4 collate utf8mb4_bin;"
-        php artisan migrate
-        php artisan db:seed --class=TestDatabaseSeeder
+    - name: Create Schema
+      run: php artisan migrate
+    - name: Seed static tables
+      run: php artisan db:seed --class=TestDatabaseSeeder
+    - name: Prepare Chrome
+      run: |
+       cd ~
+       # install Google Chrome
+       sudo apt-get install libgbm1
+       wget --quiet https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+       sudo dpkg --install google-chrome-stable_current_amd64.deb
+       cd -
     - name: Upgrade Chrome Driver
       run: php artisan dusk:chrome-driver `/opt/google/chrome/chrome --version | cut -d " " -f3 | cut -d "." -f1`
+    - name: Run phpunit tests
+      run: php artisan test
     - name: Start Chrome Driver
       run: ./vendor/laravel/dusk/bin/chromedriver-linux &
     - name: Run Laravel Server
       run: php artisan serve &
-    - name: try access
+    - name: Test dusk server access
       run: curl http://localhost:8000/de/login
     - name: Run Dusk Tests
-      run: php artisan dusk --env=git
-        
+      run: php artisan dusk 
