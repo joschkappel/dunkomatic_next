@@ -44,6 +44,7 @@ class LoginTest extends DuskTestCase
                           ->type('email', $u1->email)
                           ->type('password', 'password')
                           ->click('@login')
+                          ->assertPathBeginsWith('/de')
                           ->assertPathIs('/de/approval');
 
               });
@@ -58,7 +59,9 @@ class LoginTest extends DuskTestCase
         $u2 = $this->user2;
         $this->browse(function ($first, $second) use ($u2) {
 
-                  $second->loginAs($u2)->visit('/de/home')->assertPathIs('/de/home');
+                  $second->loginAs($u2)->visit('/de/home')
+                         ->assertPathIs('/de/home')
+                         ->assertAuthenticatedAs($u2);
               });
     }
 }
