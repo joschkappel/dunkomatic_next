@@ -34,6 +34,7 @@
     "require-dev": {
         "facade/ignition": "^2.3.6",
         "fzaninotto/faker": "^1.9.1",
+        "laravel/dusk": "^6.7",
         "nunomaduro/collision": "^5.0",
         "phpunit/phpunit": "^9.0"
     },

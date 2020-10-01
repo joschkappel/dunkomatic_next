@@ -100,10 +100,54 @@ class CreateClubTest extends TestCase
       ]);
     }
 
-    /** @test  **/
-    public function club_is_not_created_with_invalid_shortname() {}
+    /**
+     * @test
+     */
+    public function club_is_not_created_with_invalid_shortname()
+    {
+      $this->withoutExceptionHandling();
+      $region_user = $this->testUser->getRegionUser();
 
-    /** @test  **/
+      try {
+        $response = $this->actingAs($region_user)
+                          ->post('club', [
+                            'shortname' => 'ts',
+                            'name' => 'Test club',
+                            'region' => 'XXX',
+                            'club_no' => '9999',
+                            'url' => 'http://google.com'
+                        ]);
+      } catch (ValidationException $e) {
+          $this->assertEquals(
+              'Code muss mindestens 4 Zeichen lang sein.',
+              $e->validator->errors()->first('shortname')
+          );
+      }
+
+      try {
+        $response = $this->actingAs($region_user)
+                          ->post('club', [
+                            'shortname' => 'toolong',
+                            'name' => 'Test club',
+                            'region' => 'XXX',
+                            'club_no' => '9999',
+                            'url' => 'http://google.com'
+                        ]);
+      } catch (ValidationException $e) {
+          $this->assertEquals(
+              'Code darf nicht länger als 4 Zeichen sein.',
+              $e->validator->errors()->first('shortname')
+          );
+      }
+
+      $this->assertDatabaseMissing('clubs', [
+          'club_no' => '9999'
+      ]);
+    }
+
+    /**
+     * @test
+     */
     public function user_can_delete_club()
     {
 
@@ -131,4 +175,5 @@ class CreateClubTest extends TestCase
       $response
           ->assertStatus(200);
     }
+
 }
