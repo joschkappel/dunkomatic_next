@@ -15,7 +15,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: Copy ENV Laravel Configuration for CI
       run: |
-        rm .env
         cp .env.dusk.git .env
         cp tests/DuskTestCase.php.git tests/DuskTestCase.php
     - name: Install Dependencies (PHP vendors)
