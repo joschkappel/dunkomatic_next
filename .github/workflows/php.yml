@@ -48,12 +48,13 @@ jobs:
     - name: Reset the DB
       run: |
         php artisan migrate:fresh
-        php artisan db:seed --class=TestDatabaseSeeder      
+        php artisan db:seed --class=TestDatabaseSeeder
     - name: Run Laravel Server
       run: |
         php artisan cache:clear
         php artisan config:clear
         php artisan serve --env=dusk.git &
+        php artisan config:clear
     - name: Test dusk server access
       run: curl http://localhost:8000/de/login
     - name: Run Dusk Tests
