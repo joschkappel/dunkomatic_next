@@ -45,17 +45,9 @@ jobs:
       run: php artisan test
     - name: Start Chrome Driver
       run: ./vendor/laravel/dusk/bin/chromedriver-linux &
-    - name: Reset the DB
-      run: |
-        php artisan migrate:fresh
-        php artisan db:seed --class=TestDatabaseSeeder
     - name: Run Laravel Server
       run: |
-        php artisan cache:clear
-        php artisan config:clear
-        php artisan serve --env=dusk.git &
-        php artisan config:clear
-    - name: Test dusk server access
+        php artisan serve &
       run: curl http://localhost:8000/de/login
     - name: Run Dusk Tests
-      run: php artisan dusk --env=git
+      run: php artisan dusk 
