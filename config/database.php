@@ -110,7 +110,7 @@ return [
         'client' => env('REDIS_CLIENT', 'predis'),
 
         'options' => [
-            'cluster' => env('REDIS_CLUSTER', 'redis'),
+            'cluster' => env('REDIS_CLUSTER', 'localhost'),
             'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
         ],
 
