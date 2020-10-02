@@ -50,7 +50,6 @@ jobs:
       run: php artisan serve &
     - name: Test dusk server access
       run: |
-        curl http://127.0.0.1:8000
         curl http://127.0.0.1:8000/de/login
-    # - name: Run Dusk Tests
-    #   run: php artisan dusk
+    - name: Run Dusk Tests
+      run: php artisan dusk
