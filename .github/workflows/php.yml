@@ -11,28 +11,13 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    # Service containers to run with `container-job`
-    services:
-      # Label used to access the service container
-      redis:
-        # Docker Hub image
-        image: redis
-        # Set health checks to wait until redis has started
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          # Maps port 6379 on service container to the host
-          - 6379:6379
-
     steps:
     - uses: actions/checkout@v2
     - name: Copy ENV Laravel Configuration for CI
       run: |
         cp .env.dusk.git .env
         cp tests/DuskTestCase.php.git tests/DuskTestCase.php
+        rm .env.dev
     - name: Install Dependencies (PHP vendors)
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
     - name: Install NPM Dependencies
