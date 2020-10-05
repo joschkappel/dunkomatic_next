@@ -53,7 +53,10 @@
                             <div class="form-group row">
                                 <label for="selSchedule" class="col-sm-4 col-form-label">{{ trans_choice('schedule.schedule',1)}}</label>
                                 <div class="col-sm-6">
-                                  <select class='js-example-placeholder-single js-states form-control select2' id='selSchedule' name='schedule_id'></select>
+                                  <select class='js-sel-schedule js-states form-control select2 @error('schedule_id') is-invalid @enderror' id='selSchedule' name='schedule_id'></select>
+                                  @error('schedule_id')
+                                  <div class="invalid-feedback">{{ $message }}</div>
+                                  @enderror
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -125,7 +128,7 @@
       });
 
 
-      $(".js-example-placeholder-single").select2({
+      $(".js-sel-schedule").select2({
           placeholder: "@lang('schedule.action.select')...",
           theme: 'bootstrap4',
           multiple: false,

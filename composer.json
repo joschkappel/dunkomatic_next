@@ -36,7 +36,8 @@
         "fzaninotto/faker": "^1.9.1",
         "laravel/dusk": "^6.7",
         "nunomaduro/collision": "^5.0",
-        "phpunit/phpunit": "^9.0"
+        "phpunit/phpunit": "^9.0",
+        "roquie/laravel-dusk-select2": "^2.1"
     },
     "config": {
         "optimize-autoloader": true,

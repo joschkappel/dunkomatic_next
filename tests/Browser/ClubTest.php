@@ -39,8 +39,9 @@ class ClubTest extends DuskTestCase
     {
         $u = $this->user;
         $club_no = '1234567';
+        $club_no2 = '1122334';
 
-        $this->browse(function ($browser) use ($u, $club_no) {
+        $this->browse(function ($browser) use ($u, $club_no, $club_no2) {
           $browser->loginAs($u)->visit('/de/club')
                   ->assertSee('Vereinsliste')
                   ->clickLink('Neuer Verein')
@@ -52,15 +53,13 @@ class ClubTest extends DuskTestCase
                   ->type('club_no',$club_no)
                   ->type('url', $this->faker->url)
                   ->press('Senden');
-        });
 
-        $this->assertDatabaseHas('clubs', ['club_no' => $club_no]);;
-        $club = Club::first();
+          $this->assertDatabaseHas('clubs', ['club_no' => $club_no]);;
+          $club = Club::first();
 
-        $club_no2 = '1122334';
-        $this->browse(function ($browser) use ( $club, $club_no2) {
-          $browser->assertPathIs('/de/club')
-                  ->assertSee('VVVV')
+          $browser->visit('/de/club');
+          $browser->waitUntil('!$.active');
+          $browser->assertSee('VVVV')
                   ->clickLink('VVVV')
                   ->assertPathIs('/de/club/'.$club->id.'/list')
                   ->clickLink('Vereinsdaten ändern')
@@ -71,9 +70,10 @@ class ClubTest extends DuskTestCase
                   ->press('Senden')
                   ->assertPathIs('/de/club/'.$club->id.'/list')
                   ->assertSee('VVVXXX');
-        });
 
         $this->assertDatabaseHas('clubs', ['club_no' => $club_no2]);
+
+        });
 
     }
 
