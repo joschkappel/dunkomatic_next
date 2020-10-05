@@ -17,11 +17,11 @@ class MemberRole extends Model
 
   public function member()
   {
-      return $this->belongsTo('App\Member');
+      return $this->belongsTo('App\Models\Member');
   }
 
   public function role()
   {
-      return $this->belongsTo('App\Role');
+      return $this->belongsTo('App\Models\Role');
   }
 }

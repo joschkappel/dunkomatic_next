@@ -20,7 +20,7 @@
                         </div>
                         @endif
                         <div class="form-group row">
-                            <label for="title" class="col-sm-4 col-form-label">@lang('club.region')</label>
+                            <label for="region" class="col-sm-4 col-form-label">@lang('club.region')</label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control @error('region') is-invalid @enderror" id="region" name="region" placeholder="@lang('club.region')" value="HBVDA">
                                 @error('region')
@@ -29,7 +29,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="title" class="col-sm-4 col-form-label">@lang('club.club_no')</label>
+                            <label for="club_no" class="col-sm-4 col-form-label">@lang('club.club_no')</label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control @error('club_no') is-invalid @enderror" id="club_no" name="club_no" placeholder="@lang('club.club_no')" value="0614...">
                                 @error('club_no')
@@ -47,7 +47,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="title" class="col-sm-4 col-form-label">Name</label>
+                            <label for="name" class="col-sm-4 col-form-label">Name</label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="@lang('club.name')" value="{{ old('name') }}">
                                 @error('name')

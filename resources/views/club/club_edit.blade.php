@@ -21,7 +21,7 @@
                         </div>
                         @endif
                         <div class="form-group row">
-                            <label for="title" class="col-sm-4 col-form-label">@lang('club.region')</label>
+                            <label for="region" class="col-sm-4 col-form-label">@lang('club.region')</label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control @error('region') is-invalid @enderror" id="region" name="region" placeholder="@lang('club.region')" value="{{ $club->region}}">
                                 @error('region')
@@ -30,7 +30,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="title" class="col-sm-4 col-form-label">@lang('club.club_no')</label>
+                            <label for="club_no" class="col-sm-4 col-form-label">@lang('club.club_no')</label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control @error('club_no') is-invalid @enderror" id="club_no" name="club_no" placeholder="@lang('club.club_no')" value="{{ $club->club_no }}">
                                 @error('club_no')
@@ -39,7 +39,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="title" class="col-sm-4 col-form-label">@lang('club.shortname')</label>
+                            <label for="shortname" class="col-sm-4 col-form-label">@lang('club.shortname')</label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control @error('shortname') is-invalid @enderror" id="shortname" name="shortname" placeholder="@lang('club.shortname')" value="{{ $club->shortname }}">
                                 @error('shortname')
@@ -48,7 +48,7 @@
                             </div>
                         </div>
                         <div class="form-group row ">
-                            <label for="title" class="col-sm-4 col-form-label">@lang('club.name')</label>
+                            <label for="name" class="col-sm-4 col-form-label">@lang('club.name')</label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="@lang('club.name')" value="{{ $club->name }}">
                                 @error('name')
