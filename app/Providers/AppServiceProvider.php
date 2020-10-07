@@ -179,6 +179,11 @@ class AppServiceProvider extends ServiceProvider
                   'icon'  => 'fas fa-stream',
                   'url' => route('admin.audit.index', app()->getLocale()),
                 ],
+                [
+                  'text'  => __('message.menu.list'),
+                  'icon'  => 'fas fa-envelope',
+                  'url' => route('message.index', app()->getLocale()),
+                ],
               ]
             ]);
         });

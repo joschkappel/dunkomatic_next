@@ -65,9 +65,12 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
 
     public function user_region()
     {
-        return $this->belongsTo('App\Region','region','code');
+        return $this->belongsTo('App\Models\Region','region','code');
     }
-
+    public function messages()
+    {
+        return $this->hasMany('App\Models\Messages','id','user_id');
+    }
     public function scopeRegionadmin($query, $region)
     {
         return $query->where('region',$region)->where('regionadmin', true);

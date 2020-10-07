@@ -34,6 +34,27 @@ return [
 
 
   'plugins' => [
+      'Summernote' => [
+        'name' => 'Summernote',
+        'active' => true,
+        'files' => [
+          [
+            'type' => 'js',
+            'asset' => true,
+            'location' => 'vendor/summernote/summernote-bs4.min.js'
+          ],
+          [
+            'type' => 'js',
+            'asset' => true,
+            'location' => 'vendor/summernote/lang/summernote-de-DE.min.js'
+          ],
+          [
+            'type' => 'css',
+            'asset' => true,
+            'location' => 'vendor/summernote/summernote-bs4.min.css'
+          ],
+        ]
+      ],
       'Moment' => [
          'name' => 'Moment',
          'active' => true,

@@ -1,4 +1,4 @@
-name: PHPunit and Dusk Tests
+name: Laravel Tests
 
 on:
   push:
@@ -46,7 +46,7 @@ jobs:
     - name: Start Chrome Driver
       run: ./vendor/laravel/dusk/bin/chromedriver-linux &
     - name: Create Schema
-      run: php artisan migrate:fresh 
+      run: php artisan migrate:fresh
     - name: Run Laravel Server
       run: php artisan serve  &
     - name: Test dusk server access

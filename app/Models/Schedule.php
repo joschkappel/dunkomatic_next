@@ -18,7 +18,7 @@ class Schedule extends Model
 
   public function region()
   {
-      return $this->belongsTo('App\Region','region_id','id');
+      return $this->belongsTo('App\Models\Region','region_id','id');
   }
 
   public function events()

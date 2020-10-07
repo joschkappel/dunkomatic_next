@@ -52,7 +52,7 @@ class Club extends Model implements Auditable
 
   public function region()
   {
-      return $this->belongsTo('App\Region','region','code');
+      return $this->belongsTo('App\Models\Region','region','code');
   }
 
   public function games_home()

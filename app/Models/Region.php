@@ -12,4 +12,9 @@ class Region extends Model
   protected $fillable = [
       'id','code','name', 'hq'
   ];
+
+  public function messages()
+  {
+      return $this->hasMany('App\Models\MessageDestination','region','code');
+  }
 }

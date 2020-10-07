@@ -83,6 +83,10 @@ Route::group([
   Route::get('schedule/index_piv', function() { return view('schedule/schedules_list');})->name('schedule.index_piv');
   Route::resource('schedule', 'ScheduleController')->only('index','create','edit');
 
+  Route::resource('message', 'MessageController')->only('index','create','edit');
+  Route::get('/message/user/{user}/dt', 'MessageController@list_user_dt')->name('message.user.dt');
+  Route::get('/message/region/{region}/dt', 'MessageController@list_region_dt')->name('message.region.dt');
+
 });
 
 // APIs , no locale or language required !
@@ -144,3 +148,4 @@ Route::get('schedule/region/sb', 'ScheduleController@sb_region')->name('schedule
 Route::get('schedule/size/{size}/sb', 'ScheduleController@sb_size')->name('schedule.sb.size');
 Route::resource('schedule', 'ScheduleController')->except('index','create','edit');
 Route::get('region/admin/sb', 'RegionController@admin_sb')->name('region.admin.sb');
+Route::resource('message', 'MessageController')->except('index','create','edit');
