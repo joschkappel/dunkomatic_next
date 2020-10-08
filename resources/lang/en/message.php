@@ -16,4 +16,6 @@ return [
   'body' => 'Bodytext',
   'dest_to' => 'Send to',
   'dest_cc' => 'Copy to',
+  'tl_to' => 'Message from ',
+  'tl_cc' => 'Message Copy from ',
 ];

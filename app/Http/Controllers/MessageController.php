@@ -36,7 +36,7 @@ class MessageController extends Controller
      */
     public function list_user_dt($language, User $user)
     {
-      $msgs = Message::where('author', $user->id)->orderBy('valid_from','ASC')->get();
+      $msgs = $user->messages()->orderBy('valid_from','ASC')->get();
 
       $msglist = datatables::of($msgs);
 
@@ -102,12 +102,23 @@ class MessageController extends Controller
         ]);
 
         Log::info(print_r($data, true));
-        $dest_tos = $data['dest_to'];
-        $dest_ccs = $data['dest_cc'];
         $region = $data['dest_region_id'];
-        unset($data['dest_to']);
-        unset($data['dest_cc']);
         unset($data['dest_region_id']);
+
+        if ( isset($data['dest_to'])) {
+          $dest_tos = $data['dest_to'];
+          unset($data['dest_to']);
+        } else {
+          $dest_tos = [];
+        }
+
+
+        if ( isset($data['dest_cc'])){
+          $dest_ccs = $data['dest_cc'];
+          unset($data['dest_cc']);
+        } else {
+          $dest_ccs = [];
+        }
 
         $msg = Message::create($data);
 
@@ -192,12 +203,23 @@ class MessageController extends Controller
 
       $message->destinations()->delete();
 
-      $dest_tos = $data['dest_to'];
-      $dest_ccs = $data['dest_cc'];
       $region = $data['dest_region_id'];
-      unset($data['dest_to']);
-      unset($data['dest_cc']);
       unset($data['dest_region_id']);
+
+      if ( isset($data['dest_to'])) {
+        $dest_tos = $data['dest_to'];
+        unset($data['dest_to']);
+      } else {
+        $dest_tos = [];
+      }
+
+
+      if ( isset($data['dest_cc'])){
+        $dest_ccs = $data['dest_cc'];
+        unset($data['dest_cc']);
+      } else {
+        $dest_ccs = [];
+      }
 
       $message->update($data);
 

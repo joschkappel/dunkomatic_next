@@ -69,7 +69,7 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     }
     public function messages()
     {
-        return $this->hasMany('App\Models\Messages','id','user_id');
+        return $this->hasMany('App\Models\Message','author');
     }
     public function scopeRegionadmin($query, $region)
     {

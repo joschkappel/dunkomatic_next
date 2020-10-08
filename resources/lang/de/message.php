@@ -15,5 +15,7 @@ return [
   'title' => 'Kurztitel',
   'body' => 'Nachricht',
   'dest_to' => 'Nachricht an',
-  'dest_cc' => 'Kopie an',  
+  'dest_cc' => 'Kopie an',
+  'tl_to' => 'Nachricht von ',
+  'tl_cc' => 'Nachricht-Kopie von ',
 ];

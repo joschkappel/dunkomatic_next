@@ -12,6 +12,7 @@
             <div class="card">
                 <div class="card-body">
                     <p class="mb-0">{{ __('You are logged in!') }}</p>
+                    @include('message.includes.message_timeline')
                 </div>
             </div>
         </div>
@@ -20,9 +21,10 @@
 
 @section('css')
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-<link  href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
+{{-- <link  href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet"> --}}
 @stop
 
 @section('js')
     <script> console.log('Hi!'); </script>
+
 @stop

@@ -29,9 +29,7 @@ Route::group([
 
   Auth::routes(['verify' => true]);
 
-  Route::get('/home', function() {
-      return view('home');
-  })->name('home')->middleware('auth')->middleware('verified')->middleware('approved');
+  Route::get('/home', 'HomeController@home')->name('home')->middleware('auth')->middleware('verified')->middleware('approved');
   Route::get('/approval', 'HomeController@approval')->name('approval')->middleware('auth');
 
   Route::get('/user/new', 'UserController@index_new')->name('admin.user.index.new')->middleware('auth')->middleware('regionadmin');
