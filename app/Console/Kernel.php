@@ -6,6 +6,8 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 use App\Jobs\ProcessLeagueReports;
+use App\Jobs\ProcessNewSeason;
+use App\Jobs\DailyJanitor;
 
 class Kernel extends ConsoleKernel
 {
@@ -26,8 +28,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->job(new ProcessLeagueReports('HBV'), 'exports')->hourly();
+        $schedule->job(new ProcessLeagueReports('HBV'), 'exports')->daily();
+        //$schedule->job(new ProcessLeagueReports('HBV'), 'exports')->everyMinute();
         $schedule->job(new ProcessLeagueReports('HBVDA'), 'exports')->daily();
+        $schedule->job(new DailyJanitor(), 'janitor')->daily();
+        $schedule->job(new ProcessNewSeason(),'janitor')->yearly();
+
     }
 
     /**
