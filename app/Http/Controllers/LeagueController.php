@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Database\Eloquent\Builder;
 
+use App\Notifications\ClubAssigned;
+
 class LeagueController extends Controller
 {
     /**
@@ -447,13 +449,13 @@ class LeagueController extends Controller
            $upperArr = config('dunkomatic.league_team_chars');
            $league_char = $upperArr[$league_no];
 
-           Log::debug('league_car: '.$league_char);
+           Log::debug('league_char: '.$league_char);
 
            if ($league){
              $check = $league->clubs()->attach($request->input('club_id'),
               ['league_no' => $league_no,
                'league_char' => $league_char ]);
-
+              Auth::user()->notify(new ClubAssigned($request->input()));
            }
            return redirect()->route('league.dashboard', ['language'=>app()->getLocale(), 'id' => $league ]);
        }

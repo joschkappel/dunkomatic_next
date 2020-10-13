@@ -23,4 +23,12 @@ class MessageDestination extends Model
         return $this->belongsTo('App\Models\Message','message_id','id');
     }
 
+    public function club()
+    {
+        return $this->belongsTo('App\Models\Club','club_id','id');
+    }
+    public function league()
+    {
+        return $this->belongsTo('App\Models\League','league_id','id');
+    }
 }

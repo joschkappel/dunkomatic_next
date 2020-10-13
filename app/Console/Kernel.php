@@ -33,7 +33,7 @@ class Kernel extends ConsoleKernel
         $schedule->job(new ProcessLeagueReports('HBVDA'), 'exports')->daily();
         $schedule->job(new DailyJanitor(), 'janitor')->daily();
         $schedule->job(new ProcessNewSeason(),'janitor')->yearly();
-
+        $schedule->command('telescope:prune')->daily();
     }
 
     /**

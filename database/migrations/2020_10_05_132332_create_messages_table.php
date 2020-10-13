@@ -16,12 +16,14 @@ class CreateMessagesTable extends Migration
         Schema::create('messages', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
-            $table->unsignedBigInteger('author');
+            $table->unsignedBigInteger('author')->nullable;
             $table->foreign('author')->references('id')->on('users');
             $table->string('title');
-            $table->string('body');
-            $table->date('valid_from')->nullable();
-            $table->date('valid_to')->nullable();
+            $table->text('greeting');
+            $table->text('body');
+            $table->text('salutation');
+            $table->date('send_at')->nullable();
+            $table->date('sent_at')->nullable();
         });
     }
 
