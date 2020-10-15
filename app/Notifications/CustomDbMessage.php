@@ -10,7 +10,6 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Models\Message;
-use App\Enums\MessageScopeType;
 
 class CustomDbMessage extends Notification
 {

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\Role;
 
 class MemberRole extends Model
 {
@@ -24,12 +25,9 @@ class MemberRole extends Model
       return $this->belongsTo('App\Models\Role');
   }
 
-  public function scopeClubAdmin($query)
+  public function scopeIsRole($query, $role_id)
   {
-    $query->where('role_id',1);
+    $query->where('role_id', $role_id);
   }
-  public function scopeLeagueAdmin($query)
-  {
-    $query->where('role_id',3);
-  }
+
 }

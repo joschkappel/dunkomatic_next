@@ -7,10 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Message;
 use App\Models\User;
-use App\Enums\MessageScopeType;
-use App\Enums\MessageType;
 use Carbon\Carbon;
 
 class HomeController extends Controller

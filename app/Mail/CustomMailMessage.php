@@ -10,7 +10,6 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Models\Message;
-use App\Enums\MessageScopeType;
 
 class CustomMailMessage extends Mailable
 {

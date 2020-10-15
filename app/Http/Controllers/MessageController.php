@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use App\Enums\MessageScopeType;
+use App\Enums\Role;
 use App\Enums\MessageType;
 use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Database\Eloquent\Builder;
@@ -96,7 +96,7 @@ class MessageController extends Controller
     public function create($language)
     {
       Log::info('create new message');
-      return view('message/message_new', ['scopetype' => MessageScopeType::getInstances()]);
+      return view('message/message_new', ['scopetype' => Role::getInstances()]);
     }
 
     /**
@@ -116,8 +116,8 @@ class MessageController extends Controller
             'send_at' => 'required|date|after:today',
             'author' => 'required|exists:users,id',
             'dest_region_id' => 'required|max:5|exists:regions,code',
-            'dest_to.*' => ['required', new EnumValue(MessageScopeType::class, false)],
-            'dest_cc.*' => [ new EnumValue(MessageScopeType::class, false)],
+            'dest_to.*' => ['required', new EnumValue(Role::class, false)],
+            'dest_cc.*' => [ new EnumValue(Role::class, false)],
         ]);
 
         Log::info(print_r($data, true));
@@ -194,7 +194,7 @@ class MessageController extends Controller
       $data['dest_cc'] = $dest_cc;
       Log::debug(print_r($data,true));
 
-      return view('message/message_edit', ['message' => $data, 'scopetype' => MessageScopeType::getInstances()]);
+      return view('message/message_edit', ['message' => $data, 'scopetype' => Role::getInstances()]);
     }
 
     /**
@@ -215,8 +215,8 @@ class MessageController extends Controller
           'send_at' => 'date|after:today',
           'author' => 'required|exists:users,id',
           'dest_region_id' => 'required|max:5|exists:regions,code',
-          'dest_to.*' => ['required', new EnumValue(MessageScopeType::class, false)],
-          'dest_cc.*' => [ new EnumValue(MessageScopeType::class, false)],
+          'dest_to.*' => ['required', new EnumValue(Role::class, false)],
+          'dest_cc.*' => [ new EnumValue(Role::class, false)],
       ]);
 
       Log::info(print_r($data, true));
