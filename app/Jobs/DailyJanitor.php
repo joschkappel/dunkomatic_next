@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 
 use Carbon\Carbon;
 use App\Models\Message;
+use Illuminate\Notifications\Notification;
 
 class DailyJanitor implements ShouldQueue
 {
@@ -33,12 +34,15 @@ class DailyJanitor implements ShouldQueue
     public function handle()
     {
         // drop all outdated messages;
-        $today = Carbon::today()->toDateString();
-        $old_msgs = Message::whereDate('valid_to','<', $today)->get();
+        $aweekago = Carbon::today()->subDays(7)->toDateString();
+        $old_msgs = Message::whereDate('sent_at','<', $aweekago)->get();
         foreach ($old_msgs as $om){
           $om->destinations->delete();
           $om->delete();
         }
+
+        // drop all read notifications
+        $old_notifs = Notification::whereDate('read_at','<', $aweekago)->delete();
 
 
     }

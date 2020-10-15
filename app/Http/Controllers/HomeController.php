@@ -25,42 +25,30 @@ class HomeController extends Controller
     $today = Carbon::today()->toDateString();
     Log::debug($today);
 
-    $msgs = Message::whereDate('valid_from','<=',$today)
-                   ->whereDate('valid_to','>=',$today)
-                   ->whereHas('destinations', function ( Builder $query){
-                      $query->where('region',Auth::user()->region)
-                            ->where('scope',MessageScopeType::fromValue(MessageScopeType::User)->value);
-                      })
-                   ->orderby('valid_from')
-                   ->get();
+    $user = Auth::user();
 
-    Log::debug(print_r($msgs,true));
     $msglist = array();
     $vf = null;
     $mi = array();
 
-    foreach ($msgs as $m){
-      if ($vf != $m->valid_from){
+    foreach ($user->unreadNotifications as $m){
+      $valid_from = Carbon::parse($m->created_at)->locale( app()->getLocale() )->isoFormat('L');
+      if ($vf != $valid_from){
         $msglist[] = $mi;
         $mi = array();
-        $mi['valid_from'] = $m->valid_from;
-        $vf = $m->valid_from;
+        $mi['valid_from'] = $valid_from;
+        $vf = $valid_from;
       }
 
       $md = array();
-      $md['body'] = $m->body;
-      $md['author'] = User::find($m->author)->name;
-      foreach ( $m['destinations'] as $d){
-        if ($d['scope'] ==  MessageScopeType::fromValue(MessageScopeType::User)->value ) {
-          $md['type'] = $d['type'];
-        } else {
-          $md['type'] = null;
-        }
-      }
-
+      $md['body'] = $m->data['greeting'].', '.$m->data['lines'].', '.$m->data['salutation'];
+      $md['subject'] = $m->data['subject'];
+      $md['author'] = User::find($m->notifiable_id )->name;
+      $md['type'] = null;
       $mi['items'][] = $md;
 
     }
+
     $msglist[] = $mi;
     array_shift($msglist);
 

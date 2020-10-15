@@ -4,17 +4,18 @@
 /storage/*.key
 vendor/*
 !vendor/laravel/
-# vendor/laravel/*
-# !vendor/laravel/framework/
-# vendor/laravel/framework/*
-# !vendor/laravel/framework/src/
-# vendor/laravel/framework/src/*
-# !vendor/laravel/framework/src/Illuminate/
-# vendor/laravel/framework/src/Illuminate/*
-# !vendor/laravel/framework/src/Illuminate/Auth/
+vendor/laravel/*
+!vendor/laravel/framework/
+vendor/laravel/framework/*
+!vendor/laravel/framework/src/
+vendor/laravel/framework/src/*
+!vendor/laravel/framework/src/Illuminate/
+vendor/laravel/framework/src/Illuminate/*
+!vendor/laravel/framework/src/Illuminate/Auth/
 
 .env
 .env.backup
+.env.dev
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml

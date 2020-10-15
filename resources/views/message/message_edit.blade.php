@@ -1,6 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Summernote', true)
 @section('plugins.Moment', true)
 @section('plugins.TempusDominus', true)
 
@@ -36,37 +35,41 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label for="greeting" class="col-sm-4 col-form-label">@lang('message.greeting')</label>
+                            <div class="col-sm-6">
+                              <textarea class="form-control @error('greeting') is-invalid @enderror" name="greeting" id="greeting"></textarea>
+                              @error('greeting')
+                              <div class="invalid-feedback">{{ $message }}</div>
+                              @enderror
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label for="body" class="col-sm-4 col-form-label">@lang('message.body')</label>
                             <div class="col-sm-6">
-                              <textarea class="form-control summernote @error('body') is-invalid @enderror" name="body" id="summernote"></textarea>
+                              <textarea class="form-control @error('body') is-invalid @enderror" name="body" id="body"></textarea>
                               @error('body')
                               <div class="invalid-feedback">{{ $message }}</div>
                               @enderror
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="valid_from" class="col-sm-4 col-form-label">@lang('message.valid_from')</label>
+                            <label for="salutation" class="col-sm-4 col-form-label">@lang('message.salutation')</label>
                             <div class="col-sm-6">
-                                <div class="input-group date" id="valid_from" data-target-input="nearest">
-                                    <input type="text" name='valid_from' id='valid_from' class="form-control datetimepicker-input @error('valid_from') is-invalid @enderror" data-target="#valid_from" />
-                                    <div class="input-group-append" data-target="#valid_from" data-toggle="datetimepicker">
-                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                    </div>
-                                    @error('valid_from')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                              <textarea class="form-control @error('salutation') is-invalid @enderror" name="salutation" id="salutation" ></textarea>
+                              @error('salutation')
+                              <div class="invalid-feedback">{{ $message }}</div>
+                              @enderror
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="valid_to" class="col-sm-4 col-form-label">@lang('message.valid_to')</label>
+                            <label for="send_at" class="col-sm-4 col-form-label">@lang('message.send_at')</label>
                             <div class="col-sm-6">
-                                <div class="input-group date" id="valid_to" data-target-input="nearest">
-                                    <input type="text" name='valid_to' id='valid_to' class="form-control datetimepicker-input @error('valid_to') is-invalid @enderror" data-target="#valid_to" />
-                                    <div class="input-group-append" data-target="#valid_to" data-toggle="datetimepicker">
+                                <div class="input-group date" id="send_at" data-target-input="nearest">
+                                    <input type="text" name='send_at' id='send_at' class="form-control datetimepicker-input @error('send_at') is-invalid @enderror" data-target="#send_at" />
+                                    <div class="input-group-append" data-target="#send_at" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
-                                    @error('valid_to')
+                                    @error('send_at')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -115,25 +118,9 @@
 
   <script>
       $(function() {
-        $('#summernote').summernote({
-          lang: @if (app()->getLocale() == 'de') 'de-DE' @else 'en-US'  @endif,
-          placeholder: 'Edit your message...',
-          tabsize: 2,
-          height: 100,
-          toolbar: [
-            ['style', ['style']],
-            ['font', ['bold', 'underline', 'clear']],
-            ['fontname', ['fontname']],
-            ['color', ['color']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['table', ['table']],
-            ['view', ['fullscreen', 'help']],
-          ],
-        });
-
-        var content = {!! json_encode($message['message']->body)  !!}
-        $('#summernote').summernote('code',content);
-
+        $("#body").val('{{ (old('body')!='') ? old('body') : $message['message']->body }}');
+        $("#greeting").val('{{ (old('greeting')!='') ? old('greeting') : $message['message']->greeting }}');
+        $("#salutation").val('{{ (old('salutation')!='') ? old('salutation') : $message['message']->salutation }}');
         $("#selDestTo").select2({
             theme: 'bootstrap4',
             multiple: true,
@@ -147,29 +134,16 @@
         });
         $("#selDestCc").val({{ json_encode(Arr::flatten($message['dest_cc'])) }} ).change();
 
-        
+
         moment.locale('{{ app()->getLocale() }}');
 
-        $('#valid_from').datetimepicker({
+        var send_at = '{{ (old('send_at')!='') ? old('send_at') : $message['message']->send_at}}';
+        var m_send_at = moment(send_at);
+
+        $('#send_at').datetimepicker({
             format: 'L',
             locale: '{{ app()->getLocale()}}',
-            defaultDate: moment('{{$message['message']->valid_from}}').format('L'),
-            minDate: moment('{{$message['message']->created_at}}').format('L'),
-        });
-
-        $('#valid_to').datetimepicker({
-            format: 'L',
-            locale: '{{ app()->getLocale()}}',
-            defaultDate: moment('{{$message['message']->valid_to}}').format('L'),
-            minDate: moment('{{$message['message']->created_at}}').add(6, 'd').format('L'),
-        });
-
-        $("#valid_from").on("change.datetimepicker", function (e) {
-          $('#valid_to').datetimepicker('minDate', e.date);
-        });
-
-        $("#valid_to").on("change.datetimepicker", function (e) {
-          $('#valid_from').datetimepicker('maxDate', e.date);
+            defaultDate: m_send_at.format('L')
         });
 
       });

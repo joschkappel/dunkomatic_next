@@ -84,6 +84,7 @@ Route::group([
   Route::resource('message', 'MessageController')->only('index','create','edit');
   Route::get('/message/user/{user}/dt', 'MessageController@list_user_dt')->name('message.user.dt');
   Route::get('/message/region/{region}/dt', 'MessageController@list_region_dt')->name('message.region.dt');
+  Route::post('/message/{message}/send', 'MessageController@send')->name('message.send');
 
 });
 

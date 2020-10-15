@@ -93,4 +93,8 @@ class League extends Model implements Auditable
   {
       return $query->where('region',Auth::user()->region);
   }
+  public function scopeLeagueRegion($query, $region)
+  {
+      return $query->where('region', $region);
+  }
 }

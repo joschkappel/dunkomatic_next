@@ -47,7 +47,7 @@ class Club extends Model implements Auditable
 
   public function member_roles()
   {
-      return $this->morphMany(MemberRole::class, 'unit');
+      return $this->morphMany('App\Models\MemberRole', 'unit');
   }
 
   public function region()
@@ -75,5 +75,9 @@ class Club extends Model implements Auditable
   public function scopeUserRegion($query)
   {
       return $query->where('region',Auth::user()->region);
+  }
+  public function scopeClubRegion($query, $region)
+  {
+      return $query->where('region', $region);
   }
 }

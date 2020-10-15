@@ -37,7 +37,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(Dispatcher $events)
     {
 
-
        // if (\Schema::hasTable('settings')){
        //  config([
        //    'global' => Setting::all([

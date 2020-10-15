@@ -9,12 +9,12 @@
       @foreach ( $msgdate['items'] as $msg )
     <div>
     <!-- Before each timeline item corresponds to one icon on the left scale -->
-      <i class="fas fa-envelope @if ($msg['type'] == 2) bg-primary @elseif ($msg['type'] == 1) bg-info @endif"></i>
+      <i class="fas fa-envelope bg-info "></i>
       <!-- Timeline item -->
       <div class="timeline-item">
         <!-- Header. Optional -->
 
-        <h3 class="timeline-header">@if ($msg['type'] == 2) {{ __('message.tl_to')}} @elseif ($msg['type'] == 1) {{__('message.tl_cc')}} @endif <strong>{{ $msg['author'] }}</strong></h3>
+        <h3 class="timeline-header"><strong>{{ $msg['author'] }}</strong>: {{ $msg['subject'] }}</h3>
         <!-- Body -->
         <div class="timeline-body">
           {!! $msg['body'] !!}

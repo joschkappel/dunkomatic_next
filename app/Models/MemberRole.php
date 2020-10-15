@@ -14,7 +14,6 @@ class MemberRole extends Model
   {
       return $this->morphTo();
   }
-
   public function member()
   {
       return $this->belongsTo('App\Models\Member');
@@ -23,5 +22,14 @@ class MemberRole extends Model
   public function role()
   {
       return $this->belongsTo('App\Models\Role');
+  }
+
+  public function scopeClubAdmin($query)
+  {
+    $query->where('role_id',1);
+  }
+  public function scopeLeagueAdmin($query)
+  {
+    $query->where('role_id',3);
   }
 }

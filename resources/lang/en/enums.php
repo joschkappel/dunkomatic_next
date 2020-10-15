@@ -17,5 +17,16 @@ return [
         LeagueGenderType::Mixed => 'mixed',
     ],
 
+    Role::class => [
+      Role::User => 'User',
+      Role::ClubLead => 'Club lead',
+      Role::RefereeLead => 'Referee lead',
+      Role::LeagueLead => 'League lead',
+      Role::RegionTeam => 'Region team',
+      Role::GirlsLead => 'Girls lead',
+      Role::JuniorsLead => 'Juniors lead',
+      Role::RegionLead => 'Region lead',
+      Role::Admin => 'Admin'
+    ],
 
 ];

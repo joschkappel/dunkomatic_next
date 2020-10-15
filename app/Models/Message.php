@@ -12,10 +12,10 @@ class Message extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id','title','body', 'valid_from', 'valid_to', 'author'
+        'id','title','body', 'greeting', 'salutation', 'send_at', 'sent_at', 'author'
     ];
 
-    protected $dates = ['valid_from', 'valid_to'];
+    protected $dates = ['send_at', 'sent_at'];
 
     public function user()
     {

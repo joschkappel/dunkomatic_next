@@ -16,6 +16,9 @@ use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 
+use App\Jobs\ProcessCustomMessages;
+
+
 class MessageController extends Controller
 {
     /**
@@ -36,33 +39,48 @@ class MessageController extends Controller
      */
     public function list_user_dt($language, User $user)
     {
-      $msgs = $user->messages()->orderBy('valid_from','ASC')->get();
+      $msgs = $user->messages()->orderBy('updated_at','ASC')->get();
 
       $msglist = datatables::of($msgs);
 
       return $msglist
-        ->rawColumns(['valid_from','valid_to', 'body','action','title'])
+        ->rawColumns(['send_at','sent_at', 'action_send', 'action','title'])
         ->addIndexColumn()
         ->addColumn('action', function($data){
                $btn = '<button type="button" id="deleteMessage" name="deleteMessage" class="btn btn-outline-danger btn-sm" data-msg-id="'.$data->id.'"
                   data-msg-title="'.$data->title.'" data-toggle="modal" data-target="#modalDeleteMessage"><i class="fa fa-trash"></i></button>';
                 return $btn;
         })
+        ->addColumn('action_send', function($data){
+          if ( ( ($data->send_at == null) or ($data->send_at > now())) and ($data->sent_at == null) ){
+            $btn = '<button type="button" id="sendMessage" name="sendMessage" class="btn btn-outline-success btn-sm" data-msg-id="'.$data->id.'"
+               data-msg-title="'.$data->title.'"><i class="far fa-paper-plane"></i></button>';
+            return $btn;
+          };
+        })
         ->editColumn('title', function($msg){
-          if ( $msg->valid_from <= now() ){
+          if (( isset($msg->sent_at) and ($msg->sent_at) < now() )){
             return $msg->title;
           } else {
             return '<a href="' . route('message.edit', ['language'=>app()->getLocale(), 'message' =>$msg->id]) .'">'.$msg->title.' <i class="fas fa-arrow-circle-right"></i></a>';
           }
         })
-        ->editColumn('created_at', function ($msg) use ($language) {
-                return Carbon::parse($msg->created_at)->locale( $language )->isoFormat('LLL');
+        ->editColumn('updated_at', function ($msg) use ($language) {
+                return Carbon::parse($msg->updated_at)->locale( $language )->isoFormat('LLL');
             })
-        ->editColumn('valid_from', function ($msg) use ($language) {
-              return Carbon::parse($msg->valid_from)->locale( $language )->isoFormat('L');
+        ->editColumn('send_at', function ($msg) use ($language) {
+            if ($msg->send_at != null ){
+              return Carbon::parse($msg->send_at)->locale( $language )->isoFormat('L');
+            } else {
+              return null;
+            };
             })
-        ->editColumn('valid_to', function ($msg) use ($language) {
-              return Carbon::parse($msg->valid_to)->locale( $language )->isoFormat('L');
+        ->editColumn('sent_at', function ($msg) use ($language) {
+            if ($msg->sent_at != null ){
+              return Carbon::parse($msg->sent_at)->locale( $language )->isoFormat('L');
+            } else {
+              return null;
+            }
             })
         ->editColumn('body', function ($msg) {
               return  Str::substr($msg->body,0,20);
@@ -92,9 +110,10 @@ class MessageController extends Controller
         Log::debug(print_r($request->all(),true));
         $data = $request->validate( [
             'title' => 'required|string|max:20',
-            'body' => 'required|string|max:255',
-            'valid_from' => 'required|date|before:valid_to',
-            'valid_to' => 'required|date|after_or_equal:valid_from',
+            'body' => 'required|string',
+            'greeting' => 'required|string',
+            'salutation' => 'required|string',
+            'send_at' => 'required|date|after:today',
             'author' => 'required|exists:users,id',
             'dest_region_id' => 'required|max:5|exists:regions,code',
             'dest_to.*' => ['required', new EnumValue(MessageScopeType::class, false)],
@@ -190,9 +209,10 @@ class MessageController extends Controller
       Log::debug(print_r($request->all(),true));
       $data = $request->validate( [
           'title' => 'required|string|max:20',
-          'body' => 'required|string|max:255',
-          'valid_from' => 'required|date|before:valid_to',
-          'valid_to' => 'required|date|after_or_equal:valid_from',
+          'body' => 'required|string',
+          'greeting' => 'required|string',
+          'salutation' => 'required|string',
+          'send_at' => 'date|after:today',
           'author' => 'required|exists:users,id',
           'dest_region_id' => 'required|max:5|exists:regions,code',
           'dest_to.*' => ['required', new EnumValue(MessageScopeType::class, false)],
@@ -240,6 +260,24 @@ class MessageController extends Controller
 
       return redirect()->route('message.index', ['language' => app()->getLocale()]);
     }
+
+    /**
+     * sedn notification for this message
+     *
+     * @param  $language
+     * @param  \App\Models\Message  $message
+     */
+    public function send($language, Message $message)
+    {
+      Log::info('will prepare notification for: '.$message->title);
+
+      ProcessCustomMessages::dispatch($message);
+                //->delay(now()->addMinutes(1));
+
+
+      return true;
+    }
+
 
     /**
      * Remove the specified resource from storage.
