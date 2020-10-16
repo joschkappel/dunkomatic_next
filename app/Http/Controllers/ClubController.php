@@ -90,9 +90,8 @@ class ClubController extends Controller
             if ($data['club']){
               $data['gyms'] = $data['club']->gyms()->get();
               $data['teams'] = $data['club']->teams()->with('league')->get();
-              $data['member_roles'] = $data['club']->member_roles()->with('role','member')->get();
-//              $data['members'] = Member::with('member_roles.unit')->where('member_roles.unit.id',$id)->get();
-  //            Log::debug(print_r($data['members'],true));
+              $data['member_roles'] = $data['club']->members()->get();
+            //  Log::debug(print_r($data['member_roles'],true));
               $data['games_home'] = $data['club']->games_home()->get();
               //Log::debug(print_r($data['games_home'],true ));
               return view('club/club_dashboard', $data);

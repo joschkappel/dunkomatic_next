@@ -139,13 +139,13 @@
         <!-- /.card-header -->
         <div class="card-body">
           @foreach ($member_roles as $mrole )
-          <p><button type="button" id="deleteMemberrole" class="btn btn-outline-danger btn-sm" data-member-id="{{ $mrole['member']->id }}"
-            data-role-id="{{ $mrole->id }}"
-            data-member-name="{{ $mrole['member']['firstname'] }} {{ $mrole['member']['lastname'] }}"
-            data-role-name="{{ $mrole['role']['name'] }}"
+          <p><button type="button" id="deleteMemberrole" class="btn btn-outline-danger btn-sm" data-member-id="{{ $mrole->id }}"
+            data-role-id="{{ $mrole['pivot']->id }}"
+            data-member-name="{{ $mrole->firstname }} {{ $mrole->lastname }}"
+            data-role-name="{{ App\Enums\Role::getDescription($mrole['pivot']->role_id) }}"
             data-league-sname="{{ $league->shortname }}" data-toggle="modal" data-target="#modalDeleteMemberRole"><i class="fa fa-trash"></i></button>
-          <a href="{{ route('league.memberrole.edit',['language'=>app()->getLocale(), 'memberrole' => $mrole, 'league' => $league ]) }}" class=" px-2">
-              {{ $mrole['role']['name'] }} {{ $mrole['function'] }} - {{ $mrole['member']['firstname'] }} {{ $mrole['member']['lastname'] }} <i class="fas fa-arrow-circle-right"></i>
+          <a href="{{ route('league.memberrole.edit',['language'=>app()->getLocale(), 'memberrole' => $mrole['pivot']->id, 'league' => $league ]) }}" class=" px-2">
+              {{App\Enums\Role::getDescription($mrole['pivot']->role_id) }} {{ $mrole['pivot']->function }} - {{ $mrole->firstname }} {{ $mrole->lastname }} <i class="fas fa-arrow-circle-right"></i>
           </a></p>
           @endforeach
 

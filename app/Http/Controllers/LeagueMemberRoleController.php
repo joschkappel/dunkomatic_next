@@ -11,6 +11,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 
+use BenSampo\Enum\Rules\EnumValue;
+use App\Enums\Role;
+
 class LeagueMemberRoleController extends Controller
 {
     /**
@@ -72,7 +75,7 @@ class LeagueMemberRoleController extends Controller
 
       $data = $request->validate( [
           'selMember' => 'nullable|exists:members,id',
-          'selRole'   => 'required|array|min:1|exists:roles,id',
+          'selRole'   => 'required|array|min:1',
           'function'  => 'max:40',
           'firstname' => 'required|max:20',
           'lastname' => 'required|max:60',

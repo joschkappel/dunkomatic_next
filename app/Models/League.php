@@ -71,6 +71,12 @@ class League extends Model implements Auditable
       return $this->morphMany(MemberRole::class, 'unit');
   }
 
+  public function members()
+  {
+      return $this->morphToMany('App\Models\Member', 'unit', 'member_roles', 'unit_id', 'member_id' )->withPivot('role_id','function','id');
+      // test: League::find(251)->members()->withpivot('role_id')->get();
+  }
+
   public function games()
   {
       return $this->hasMany('App\Models\Game');

@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
         $this->call([
           SettingsTableSeeder::class,
           RegionsTableSeeder::class,
-          RolesTableSeeder::class,
           LeagueTeamSizesTableSeeder::class,
           LeagueTeamCharsTableSeeder::class,
           SchedulesTableSeeder::class,

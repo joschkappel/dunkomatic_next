@@ -13,7 +13,7 @@ return [
   'title' => 'Title',
   'send_at' => 'Send at',
   'sent_at' => 'Sent at',
-  'title' => 'Titel',
+  'title' => 'Subject',
   'body' => 'Bodytext',
   'greeting' => 'Greeting',
   'salutation' => 'Salutation',

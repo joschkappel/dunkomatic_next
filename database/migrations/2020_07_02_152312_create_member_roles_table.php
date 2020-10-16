@@ -18,7 +18,6 @@ class CreateMemberRolesTable extends Migration
             $table->unsignedInteger('member_id');
             $table->foreign('member_id')->references('id')->on('members');
             $table->unsignedInteger('role_id');
-            $table->foreign('role_id')->references('id')->on('roles');
             $table->unsignedInteger('unit_id')->index()->nullable();
             $table->string('unit_type')->nullable();
             $table->string('function',40)->nullable();

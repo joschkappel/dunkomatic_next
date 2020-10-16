@@ -50,6 +50,12 @@ class Club extends Model implements Auditable
       return $this->morphMany('App\Models\MemberRole', 'unit');
   }
 
+  public function members()
+  {
+      return $this->morphToMany('App\Models\Member', 'unit', 'member_roles', 'unit_id', 'member_id' )->withPivot('role_id','function','id');
+      // test: Club::find(261)->members()->withPivot('role_id','function')->get();
+  }
+
   public function region()
   {
       return $this->belongsTo('App\Models\Region','region','code');

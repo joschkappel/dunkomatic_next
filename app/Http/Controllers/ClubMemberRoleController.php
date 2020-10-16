@@ -8,6 +8,8 @@ use App\Models\MemberRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
+use BenSampo\Enum\Rules\EnumValue;
+use App\Enums\Role;
 
 class ClubMemberRoleController extends Controller
 {
@@ -19,11 +21,7 @@ class ClubMemberRoleController extends Controller
      */
     public function index( $language, Club $club)
     {
-      //Log::debug(print_r($club,true));
-      $memberlist = $club->member_roles()->get('member_id');
-
-      //Log::debug('got members '.print_r($memberlist,true));
-      $members = Member::whereIn('id', $memberlist)->get();
+      $members = $club->members()->get();
       //Log::debug('got members '.count($members));
 
       $response = array();
@@ -62,7 +60,7 @@ class ClubMemberRoleController extends Controller
 
       $data = $request->validate( [
           'selMember' => 'nullable|exists:members,id',
-          'selRole'   => 'required|array|min:1|exists:roles,id',
+          'selRole'   => 'required|array|min:1',
           'function'  => 'max:40',
           'firstname' => 'required|max:20',
           'lastname' => 'required|max:60',
@@ -133,7 +131,7 @@ class ClubMemberRoleController extends Controller
     public function update(Request $request, Club $club, Member $memberrole)
     {
               $data = $request->validate( [
-                  'selRole'   => 'required|exists:roles,id',
+                  'selRole'   => ['required', new EnumValue(Role::class, false)],
                   'firstname' => 'required|max:20',
                   'lastname' => 'required|max:60',
                   'zipcode' => 'required|max:10',

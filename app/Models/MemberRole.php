@@ -20,11 +20,6 @@ class MemberRole extends Model
       return $this->belongsTo('App\Models\Member');
   }
 
-  public function role()
-  {
-      return $this->belongsTo('App\Models\Role');
-  }
-
   public function scopeIsRole($query, $role_id)
   {
     $query->where('role_id', $role_id);

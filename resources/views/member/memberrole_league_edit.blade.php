@@ -17,7 +17,7 @@
                     <div class="card-body">
                         @method('PUT')
                         @csrf
-                        <input type="hidden" name="old_role_id" value="{{ $member_roles->role['id'] }}">
+                        <input type="hidden" name="old_role_id" value="{{ $member_roles->role_id }}">
                         @if ($errors->any())
                         <div class="alert alert-danger" role="alert">
                            @lang('Please fix the following errors')
@@ -27,7 +27,7 @@
                           <label class="col-sm-2 col-form-label" for='selRole'>{{trans_choice('role.role',1)}}</label>
                           <div class="col-sm-10">
                             <select class='js-placeholder-single js-states form-control select2 ' disabled  name="selRole" id='selRole'>
-                               <option value="{{ $member_roles->role['id'] }}" selected>{{ $member_roles->role['name'] }}</option>
+                               <option value="{{ $member_roles->role_id }}" selected>{{ App\Enums\Role::getDescription($member_roles->role_id) }}</option>
                             </select>
                           </div>
                             </div>

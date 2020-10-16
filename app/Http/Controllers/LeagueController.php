@@ -213,7 +213,7 @@ class LeagueController extends Controller
               // get assigned clubs
               $clubs = $league->clubs()->get();
               $data['clubs'] = $clubs;
-              $data['member_roles'] = $data['league']->member_roles()->with('role','member')->get();
+              $data['member_roles'] = $data['league']->members()->get();
 
               $assigned_club = array();
               foreach($clubs as $club){

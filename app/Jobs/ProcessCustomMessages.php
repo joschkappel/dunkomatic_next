@@ -14,7 +14,7 @@ use App\Models\Club;
 use App\Models\League;
 use App\Models\Member;
 use App\Notifications\CustomDbMessage;
-//use App\Notifications\CustomMailMessage;
+use App\Notifications\AppActionMessage;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CustomMailMessage;
 use App\Enums\Role;
@@ -53,6 +53,8 @@ class ProcessCustomMessages implements ShouldQueue
 
       $to_list = array();
       $cc_list = array();
+      $to_roles = array();
+      $cc_roles = array();
       $drop_mail = false;
 
       foreach ($mdest as $d){
@@ -92,10 +94,12 @@ class ProcessCustomMessages implements ShouldQueue
             $a['name'] = $adr->firstname.' '.$adr->lastname;
             $adrlist[] = $a;
           }
-          if ( $d->type == MessageType::fromValue(MessageType::to)->value ) {
+          if ( $d->type == MessageType::to ) {
             $to_list = array_merge($to_list, $adrlist);
+            $to_roles[] = Role::getDescription($role).' '.$d->region;
           } else {
             $cc_list = array_merge($cc_list, $adrlist);
+            $cc_roles[] = Role::getDescription($role).' '.$d->region;
           }
         }
       }
@@ -108,6 +112,10 @@ class ProcessCustomMessages implements ShouldQueue
       }
 
       $this->message->update(['sent_at'=>Carbon::today()]);
+      $author = User::where('id',$this->message->author)->first();
+
+      $msg = 'Message send to '.implode(', ', $to_roles).'. With copy to '.implode(', ', $cc_roles);
+      $author->notify(new AppActionMessage('Message '.$this->message->title.' sent', $msg));
 
     }
 }

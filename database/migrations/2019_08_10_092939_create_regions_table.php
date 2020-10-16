@@ -17,7 +17,7 @@ class CreateRegionsTable extends Migration
             $table->increments('id');
             $table->string('code', 5)->unique();
             $table->string('name');
-            $table->string('hq');
+            $table->string('hq')->nullable();
             $table->timestamps();
         });
     }

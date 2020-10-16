@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Dunkomatic'),
+    'name' => env('APP_NAME', 'DunkOmatic'),
     'version' => env('APP_VERSION', '0.0.1'),
     'creator_url' => 'https://github.com/joschkappel',
 
