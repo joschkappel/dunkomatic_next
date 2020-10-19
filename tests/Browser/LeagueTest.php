@@ -5,6 +5,7 @@ namespace Tests\Browser;
 use App\Models\User;
 use App\Models\Schedule;
 use App\Models\League;
+use App\Models\Member;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
@@ -27,6 +28,10 @@ class LeagueTest extends DuskTestCase
                   'regionadmin' => True,
                   'approved_at' => now(),
               ]);
+        $this->member = Member::factory()->create([
+                        'email1' => 'taylor3@laravel.com',
+                        'user_id' => $this->user->id,
+                      ]);
 
     }
 
@@ -74,7 +79,7 @@ class LeagueTest extends DuskTestCase
                   ->type('name','Runde VVVXXX')
                   ->press('Senden')
                   ->assertPathIs('/de/league/'.$league->id.'/list')
-                  //->screenshot('Geänderte_runde')
+                  ->screenshot('Geänderte_runde')
                   ->assertSee('LSY');
 
           $this->assertDatabaseHas('leagues', ['shortname' => $league_code2]);

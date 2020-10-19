@@ -335,7 +335,7 @@ class LeagueController extends Controller
     public function edit($language, League $league)
     {
       Log::debug('editing league '.$league->id);
-      $member = $league->member_roles()->with('member')->first();
+      $member = $league->memberships()->with('member')->first();
       if (isset($member)){
         $rmember = $member->member;
       } else {

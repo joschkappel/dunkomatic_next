@@ -4,6 +4,7 @@ namespace Tests\Browser;
 
 use App\Models\User;
 use App\Models\Club;
+use App\Models\Member;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
@@ -15,6 +16,7 @@ class ClubTest extends DuskTestCase
 {
     use DatabaseMigrations;
     private $user;
+    private $member;
 
     public function setUp(): void
     {
@@ -26,6 +28,10 @@ class ClubTest extends DuskTestCase
                   'regionadmin' => True,
                   'approved_at' => now(),
               ]);
+        $this->member = Member::factory()->create([
+                        'email1' => 'taylor3@laravel.com',
+                        'user_id' => $this->user->id,
+                      ]);
 
     }
 
