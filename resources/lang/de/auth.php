@@ -2,7 +2,7 @@
 
 return [
 
-    'full_name'                   => 'Vollständiger Name',
+    'full_name'                   => 'Benutzername',
     'email'                       => 'E-Mail',
     'password'                    => 'Passwort',
     'retype_password'             => 'Passwort bestätigen',
@@ -27,4 +27,7 @@ return [
     'approval_message'            => 'Dein Account muss noch vom Bezirksvorstand zugelassen werden',
     'title.edit'                  => 'Ändere Benutzerdaten',
     'reason_join'                 => 'Warum benötigst du einen Zugang ?',
+    'complete.profile'            => 'Bitte vervollständinge Dein Nutzerprofil',
+    'action.complete.profile'     => 'Profil vervollständigen',
+    'profile'                     => 'Profil',
 ];

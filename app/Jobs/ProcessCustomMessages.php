@@ -65,13 +65,13 @@ class ProcessCustomMessages implements ShouldQueue
           // get in scope clubs
           $clubs = Club::clubRegion($d->region)->pluck('id');
           // get all club admim members
-          $members = Member::whereHas('member_roles', function ($query) use($clubs,$role){ $query->isRole($role)->whereIn('unit_id',$clubs); })->get(['email1','firstname','lastname']);
+          $members = Member::whereHas('memberships', function ($query) use($clubs,$role){ $query->isRole($role)->whereIn('membershipable_id',$clubs); })->get(['email1','firstname','lastname']);
           $drop_mail = true;
         } else if ($role->is(Role::LeagueLead) ){
           // get in scope leagues
           $leagues = League::leagueRegion($d->region)->pluck('id');
           // get all club admim members
-          $members = Member::whereHas('member_roles', function ($query) use($leagues) { $query->isRole(Role::LeagueLead)->whereIn('unit_id',$leagues); })->get(['email1','firstname','lastname']);
+          $members = Member::whereHas('memberships', function ($query) use($leagues) { $query->isRole(Role::LeagueLead)->whereIn('membershipable_id',$leagues); })->get(['email1','firstname','lastname']);
           $drop_mail = true;
         } else if ($role->is( Role::Admin )){
           $users = User::regionAdmin($d->region)->get();

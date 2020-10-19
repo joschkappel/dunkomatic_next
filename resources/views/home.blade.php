@@ -3,7 +3,10 @@
 @section('title', 'DunkOmatic')
 
 @section('content_header')
-    <h1 class="m-0 text-dark">Dashboard</h1>
+    @if (!Auth::user()->member()->first()->is_complete) <h3 class="m-0 text-danger">@lang('auth.complete.profile') </h3>
+      <a href="{{ route(@config('dunkomatic.profile_url'), ['language'=>app()->getLocale(),'user'=>Auth::user()]) }}" class="text-center btn btn-danger btn-sm mb-3">@lang('auth.action.complete.profile')</a>
+    @else <h1 class="m-0 text-dark">{{ trans_choice('message.message',2)}}</h1>
+    @endif
 @stop
 
 @section('content')

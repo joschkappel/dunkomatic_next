@@ -22,14 +22,6 @@ class Club extends Model implements Auditable
         'id','name','shortname','region','url','club_no','club_ids','league_ids'
   ];
 
-  /**
-   * Get all of the users for the club.
-   */
-  public function useables()
-  {
-      return $this->morphToMany(User::class, 'useable');
-  }
-
   public function gyms()
   {
       return $this->hasMany('App\Models\Gym');
@@ -45,14 +37,14 @@ class Club extends Model implements Auditable
       return $this->hasMany('App\Models\Team');
   }
 
-  public function member_roles()
+  public function memberships()
   {
-      return $this->morphMany('App\Models\MemberRole', 'unit');
+      return $this->morphMany('App\Models\Membership', 'membershipable');
   }
 
   public function members()
   {
-      return $this->morphToMany('App\Models\Member', 'unit', 'member_roles', 'unit_id', 'member_id' )->withPivot('role_id','function','id');
+      return $this->morphToMany('App\Models\Member', 'membershipable', 'memberships', 'membershipable_id', 'member_id' )->withPivot('role_id','function','id');
       // test: Club::find(261)->members()->withPivot('role_id','function')->get();
   }
 

@@ -2,7 +2,7 @@
 
 return [
 
-    'full_name'                   => 'Full name',
+    'full_name'                   => 'Username',
     'email'                       => 'Email',
     'password'                    => 'Password',
     'retype_password'             => 'Retype password',
@@ -27,4 +27,7 @@ return [
     'approval_message'            => 'Your account needs a approval by the region admin',
     'title.edit'                  => 'Modify User Profile',
     'reason_join'                 => 'Why do you want access ?',
+    'complete.profile'            => 'Please complete your user profile data',
+    'profile'                     => 'Profile',
+    'action.complete.profile'     => 'Profile completion',
 ];

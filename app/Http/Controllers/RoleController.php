@@ -19,7 +19,7 @@ class RoleController extends Controller
       Log::debug(print_r($request->all(),true));
 
       if ( isset($request->scope) and ($request->scope == 'LEAGUE')){
-        $roles = Role::coerce('LeagueLead');
+        $roles[] = Role::coerce('LeagueLead');
       } else {
         $roles = Role::getInstances();
       };

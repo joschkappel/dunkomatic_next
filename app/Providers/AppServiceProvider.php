@@ -64,7 +64,7 @@ class AppServiceProvider extends ServiceProvider
                 $smenu['icon'] =  'fas fa-list';
                 $clubmenu['submenu'][] = $smenu;
             } else {
-                foreach (Auth::user()->clubs as $c) {
+                foreach (Auth::user()->member()->first()->clubs()->get() as $c) {
                     $smenu['text'] = $c->shortname;
                     $smenu['url']  = route('club.dashboard', ['language'=>app()->getLocale(), 'id'=>$c->id ]);
                     $smenu['icon_color'] = 'orange';
@@ -93,7 +93,7 @@ class AppServiceProvider extends ServiceProvider
                 $smenu['icon'] =  'fas fa-list';
                 $leaguemenu['submenu'][] = $smenu;
             } else {
-                foreach (Auth::user()->leagues as $l) {
+                foreach (Auth::user()->member()->first()->leagues()->get() as $l) {
                     $smenu['text'] = $l->shortname;
                     $smenu['url']  = route('league.dashboard', ['language'=>app()->getLocale(), 'id'=>$l->id ]);
                     $smenu['icon_color'] = 'yellow';

@@ -38,13 +38,6 @@ class League extends Model implements Auditable
       //Log::debug(print_r($cnt,true));
       return ( $cnt == 0 ) ? false : true;
   }
-  /**
-   * Get all of the users for the club.
-   */
-  public function useables()
-  {
-      return $this->morphToMany('App\Models\User', 'useable');
-  }
 
   public function region()
   {
@@ -66,14 +59,14 @@ class League extends Model implements Auditable
       return $this->hasMany('App\Models\Team');
   }
 
-  public function member_roles()
+  public function memberships()
   {
-      return $this->morphMany(MemberRole::class, 'unit');
+      return $this->morphMany('App\Models\Membership', 'membershipable');
   }
 
   public function members()
   {
-      return $this->morphToMany('App\Models\Member', 'unit', 'member_roles', 'unit_id', 'member_id' )->withPivot('role_id','function','id');
+      return $this->morphToMany('App\Models\Member', 'membershipable', 'memberships', 'membershipable_id', 'member_id' )->withPivot('role_id','function','id');
       // test: League::find(251)->members()->withpivot('role_id')->get();
   }
 

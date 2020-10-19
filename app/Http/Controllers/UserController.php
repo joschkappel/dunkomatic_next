@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Club;
 use App\Models\League;
+use App\Models\Member;
+use App\Models\MemberRole;
+
+use App\Enums\Role;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -96,14 +100,16 @@ class UserController extends Controller
           return view('auth/users', compact('users'));
       }
 
-  public function show($language)
+  public function show($language, User $user)
       {
-        return view('auth/user_edit');
+        $member = $user->member()->first();
+
+        return view('auth/user_edit', ['user'=>$user, 'member'=>$member]);
       }
 
-  public function edit($language, $user_id)
+  public function edit($language, User $user)
       {
-          $user = User::findOrFail($user_id);
+          //$user = User::findOrFail($user_id);
 
           return view('auth/user_approve', compact('user'));
       }
@@ -151,17 +157,26 @@ class UserController extends Controller
 
           if ( $request->approved == 'on'){
             $user->update(['approved_at' => now()]);
+            // create the member witha  role = user
+            $member = new Member(['lastname'=> $user->name, 'email1'=>$user->email, 'user_id'=>$user->id]);
+            $member->save();
 
             foreach ($data['club_ids'] as $c_id){
                 $club = Club::find($c_id);
-                $club->useables()->save($user);
+                $new_mship = MemberRole::create(['role_id' => Role::User, 'member_id' => $member->id ] );
+                $club->memberships()->save($new_mship);
             }
             foreach ($data['league_ids'] as $l_id){
                 $league = League::find($l_id);
-                $league->useables()->save($user);
+                $new_mship = MemberRole::create(['role_id' => Role::User, 'member_id' => $member->id ] );
+                $league->memberships()->save($new_mship);
             }
 
             $user->notify(new ApproveUser(Auth::user(), $user));
+
+
+
+
           } else {
             $user->update(['rejected_at' => now(), 'approved_at' => null, 'reason_reject' => $data['reason_reject']]);
             $user->notify(new RejectUser(Auth::user(), $user));

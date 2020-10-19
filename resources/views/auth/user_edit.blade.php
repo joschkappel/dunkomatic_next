@@ -43,6 +43,26 @@
                     </div>
                 </form>
             </div>
+            <!-- general form elements -->
+            <div class="card card-info">
+                <div class="card-header">
+                    <h3 class="card-title">@lang('role.title.edit', ['member'=> $member->firstname.' '.$member->lastname] )</h3>
+                </div>
+                <!-- /.card-header -->
+                <form class="form-horizontal" action="{{ route('member.update', $member)}}" method="POST">
+                    <div class="card-body">
+                        @method('PUT')
+                        @csrf
+                        @if ($errors->any())
+                        <div class="alert alert-danger" role="alert">
+                           @lang('Please fix the following errors')
+                        </div>
+                        @endif
+                            @include('member.includes.member_edit')
+                        <button type="submit" class="btn btn-info">{{__('Submit')}}</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>

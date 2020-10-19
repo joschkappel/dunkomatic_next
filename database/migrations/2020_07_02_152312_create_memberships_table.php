@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMemberRolesTable extends Migration
+class CreateMembershipsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateMemberRolesTable extends Migration
      */
     public function up()
     {
-        Schema::create('member_roles', function (Blueprint $table) {
+        Schema::create('memberships', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('member_id');
             $table->foreign('member_id')->references('id')->on('members');
             $table->unsignedInteger('role_id');
-            $table->unsignedInteger('unit_id')->index()->nullable();
-            $table->string('unit_type')->nullable();
+            $table->morphs('membershipable');
             $table->string('function',40)->nullable();
             $table->timestamps();
         });
@@ -32,6 +31,6 @@ class CreateMemberRolesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('member_roles');
+        Schema::dropIfExists('memberships');
     }
 }

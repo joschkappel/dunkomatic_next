@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Club;
 use App\Models\Member;
-use App\Models\MemberRole;
+use App\Models\Membership;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use BenSampo\Enum\Rules\EnumValue;
 use App\Enums\Role;
 
-class ClubMemberRoleController extends Controller
+class ClubMembershipController extends Controller
 {
 
     /**
@@ -44,7 +44,7 @@ class ClubMemberRoleController extends Controller
      */
     public function create($language, Club $club)
     {
-      return view('member/memberrole_club_new', ['club' => $club]);
+      return view('member/membership_club_new', ['club' => $club]);
     }
 
     /**
@@ -91,9 +91,9 @@ class ClubMemberRoleController extends Controller
 
       foreach ( $data['selRole'] as $k => $role ){
         //Log::debug($role);
-        $new_mrole = MemberRole::create(['role_id' => $role, 'member_id' => $member->id ] );
+        $new_mrole = Membership::create(['role_id' => $role, 'member_id' => $member->id ] );
         //Log::debug(print_r($new_mrole,true));
-        $club->member_roles()->save($new_mrole);
+        $club->memberships()->save($new_mrole);
       }
 
       return redirect()->action(
@@ -106,17 +106,17 @@ class ClubMemberRoleController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Club  $club
-     * @param  \App\MemberRole  $memberrole
+     * @param  \App\Membership  $membership
      * @return \Illuminate\Http\Response
      */
-    public function edit($language, Club $club, MemberRole $memberrole)
+    public function edit($language, Club $club, Membership $membership)
     {
-      $data = MemberRole::with('member')->find($memberrole->id);
+      $data = Membership::with('member')->find($membership->id);
       $member = $data['member'];
-      $member_roles = $data;
-      Log::debug(print_r($member_roles,true));
+      $memberships = $data;
+      Log::debug(print_r($memberships,true));
       //Log::debug(print_r($member,true));
-      return view('member/memberrole_club_edit', ['member' => $member, 'member_roles' => $member_roles, 'club' => $club]);
+      return view('member/membership_club_edit', ['member' => $member, 'member_roles' => $memberships, 'club' => $club]);
 
     }
 
@@ -128,7 +128,7 @@ class ClubMemberRoleController extends Controller
      * @param  \App\Member  $member
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Club $club, Member $memberrole)
+    public function update(Request $request, Club $club, Member $membership)
     {
               $data = $request->validate( [
                   'selRole'   => ['required', new EnumValue(Role::class, false)],
@@ -146,7 +146,7 @@ class ClubMemberRoleController extends Controller
                   'email2' => 'nullable|max:40|email:rfc,dns',
               ]);
 
-              $member = $memberrole;
+              $member = $membership;
 
               //Log::info(print_r($data, true));
               Log::debug(print_r($request->all(),true));
@@ -154,13 +154,16 @@ class ClubMemberRoleController extends Controller
 
               if ( $data['selRole'] != $request['old_role_id'] ){
                 // first delete all roles that are not in scope anymore
-                $check = MemberRole::where('member_id', $member->id)->whereAnd('role_id', $request['old_role_id'])->delete();
+                $check = Membership::where('member_id', $member->id)->whereAnd('role_id', $request['old_role_id'])->delete();
                 //Log::debug($role);
-                $new_mrole = MemberRole::updateOrCreate(['member_id' => $member->id, 'role_id' => $data['selRole'] ]);
+                $new_mrole = Membership::updateOrCreate(['member_id' => $member->id,
+                                                         'role_id' => $data['selRole'],
+                                                          'membershipable_id' => $club->id,
+                                                          'membershipable_type' => 'App\Models\Club']);
                 //Log::debug(print_r($new_mrole,true));
 
                 //Log::debug(print_r($club,true));
-                $club->member_roles()->save($new_mrole);
+                $club->memberships()->save($new_mrole);
 
               }
 

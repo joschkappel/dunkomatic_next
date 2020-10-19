@@ -1,25 +1,16 @@
 @php( $logout_url = View::getSection('logout_url') ?? config('dunkomatic.logout_url', 'logout') )
-@php( $profile_url = View::getSection('profile_url') ?? config('dunkomatic.profile_url', 'logout') )
+@php( $profile_url = View::getSection('profile_url') ?? config('dunkomatic.profile_url', 'profile') )
 
-@if (config('menu.usermenu_profile_url', false))
-    @php( $profile_url = Auth::user()->adminlte_profile_url() )
-@endif
-
-@php( $profile_url = $profile_url ? route($profile_url, app()->getLocale()) : '' )
+@php( $profile_url = $profile_url ? route($profile_url, ['language'=>app()->getLocale(),'user'=>Auth::user()]) : '' )
 @php( $logout_url = $logout_url ? route($logout_url, app()->getLocale()) : '' )
 
 
 <li class="nav-item dropdown user-menu">
 
     {{-- User menu toggler --}}
-    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-        @if(config('menu.usermenu_image'))
-            <img src="{{ Auth::user()->adminlte_image() }}"
-                 class="user-image img-circle elevation-2"
-                 alt="{{ Auth::user()->name }}">
-        @endif
+    <a href="#" class="nav-link dropdown-toggle " data-toggle="dropdown">
         <span @if(config('menu.usermenu_image')) class="d-none d-md-inline" @endif>
-            {{ Auth::user()->name }}
+            @if (!Auth::user()->member()->first()->is_complete)   <i class="fas fa-exclamation-triangle text-danger"></i>@endif {{ Auth::user()->name }}
         </span>
     </a>
 
@@ -28,18 +19,9 @@
 
         {{-- User menu header --}}
         @if(!View::hasSection('usermenu_header') && config('menu.usermenu_header'))
-            <li class="user-header {{ config('menu.usermenu_header_class', 'bg-primary') }}
-                @if(!config('menu.usermenu_image')) h-auto @endif">
-                @if(config('menu.usermenu_image'))
-                    <img src="{{ Auth::user()->adminlte_image() }}"
-                         class="img-circle elevation-2"
-                         alt="{{ Auth::user()->name }}">
-                @endif
-                <p class="@if(!config('menu.usermenu_image')) mt-0 @endif">
-                    {{ Auth::user()->name }}
-                    @if(config('menu.usermenu_desc'))
-                        <small>{{ Auth::user()->adminlte_desc() }}</small>
-                    @endif
+            <li class="user-header {{ config('menu.usermenu_header_class', 'bg-primary') }} h-auto">
+                <p class="mt-0 ">
+                      @if (!Auth::user()->member()->first()->is_complete)   <i class="fas fa-exclamation-triangle text-white"></i>@endif {{ Auth::user()->name }}
                 </p>
             </li>
         @else

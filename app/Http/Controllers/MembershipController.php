@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MemberRole;
+use App\Models\Membership;
 use App\Models\Member;
 
 use Illuminate\Http\Request;
@@ -10,16 +10,16 @@ use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Facades\Response;
 
-class MemberRoleController extends Controller
+class MembershipController extends Controller
 {
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\MemberRole  $memberRole
+     * @param  \App\Membership  $memberRole
      * @return \Illuminate\Http\Response
      */
-    public function show(MemberRole $memberRole)
+    public function show(Membership $memberRole)
     {
         //
     }
@@ -27,23 +27,23 @@ class MemberRoleController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\MemberRole  $memberRole
+     * @param  \App\Membership  $memberRole
      * @return \Illuminate\Http\Response
      */
-    public function destroy( MemberRole $memberrole)
+    public function destroy( Membership $membership)
     {
-        // Log::debug(print_r($memberrole,true));
-        $member = Member::find($memberrole->member_id);
+        // Log::debug(print_r($membership,true));
+        $member = Member::find($membership->member_id);
         // Log::debug(print_r($member,true));
         // delete role
-        $check = MemberRole::where('id', $memberrole->id)->delete();
+        $check = Membership::where('id', $membership->id)->delete();
 
         // get left roles for member
-        $other_roles = $member->member_roles()->get();
+        $other_roles = $member->memberships()->get();
         Log::debug(print_r(count($other_roles),true));
         if ( count($other_roles) == 0){
           // delete member as well
-          Member::find($memberrole->member_id)->delete();
+          Member::find($membership->member_id)->delete();
         }
 
         return redirect()->back();

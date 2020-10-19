@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\League;
 use App\Models\Member;
-use App\Models\MemberRole;
+use App\Models\Membership;
 use App\Models\Club;
 
 use Illuminate\Http\Request;
@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Response;
 use BenSampo\Enum\Rules\EnumValue;
 use App\Enums\Role;
 
-class LeagueMemberRoleController extends Controller
+class LeagueMembershipController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -25,17 +25,17 @@ class LeagueMemberRoleController extends Controller
     public function index($language, League $league)
     {
       Log::debug(print_r($league->region,true));
-      $clublist = Club::where('region', $league->region)->with('member_roles')->get();
+      $clublist = Club::where('region', $league->region)->with('memberships')->get();
       Log::debug('got clubs '.print_r(count($clublist),true));
 
       $mroles = array();
       foreach( $clublist as $club){
-        foreach( $club->member_roles as $mr){
+        foreach( $club->memberships as $mr){
           $mroles[] = $mr->id;
         }
       }
 
-      Log::debug('got memberroles '.print_r(count($mroles),true));
+      Log::debug('got memberships '.print_r(count($mroles),true));
       $members = Member::whereIn('id', $mroles)->orderBy('lastname','ASC','firstname','ASC')->get();
       Log::debug('got members '.count($members));
 
@@ -59,7 +59,7 @@ class LeagueMemberRoleController extends Controller
      */
     public function create($language, League $league)
     {
-      return view('member/memberrole_league_new', ['league' => $league]);
+      return view('member/membership_league_new', ['league' => $league]);
     }
 
     /**
@@ -103,9 +103,12 @@ class LeagueMemberRoleController extends Controller
 
       foreach ( $data['selRole'] as $k => $role ){
         //Log::debug($role);
-        $new_mrole = MemberRole::create(['role_id' => $role, 'member_id' => $member->id ] );
+        $new_mrole = Membership::create(['role_id' => $role,
+                                         'member_id' => $member->id,
+                                         'membershipable_id' => $league->id ,
+                                         'membershipable_type' => 'App\Models\League']);
         //Log::debug(print_r($new_mrole,true));
-        $league->member_roles()->save($new_mrole);
+        //$league->memberships()->save($new_mrole);
       }
 
       return redirect()->action(
@@ -129,17 +132,17 @@ class LeagueMemberRoleController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\League  $league
-     * @param  \App\MemberRole  $memberrole
+     * @param  \App\Membership  $membership
      * @return \Illuminate\Http\Response
      */
-    public function edit($language, League $league, MemberRole $memberrole)
+    public function edit($language, League $league, Membership $membership)
     {
-      $data = MemberRole::with('member')->find($memberrole->id);
+      $data = Membership::with('member')->find($membership->id);
       $member = $data['member'];
-      $member_roles = $data;
-      Log::debug(print_r($member_roles,true));
+      $memberships = $data;
+      Log::debug(print_r($memberships,true));
       //Log::debug(print_r($member,true));
-      return view('member/memberrole_league_edit', ['member' => $member, 'member_roles' => $member_roles, 'league' => $league]);
+      return view('member/membership_league_edit', ['member' => $member, 'member_roles' => $memberships, 'league' => $league]);
 
     }
 
@@ -151,7 +154,7 @@ class LeagueMemberRoleController extends Controller
      * @param  \App\Member  $member
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, League $league, Member $memberrole)
+    public function update(Request $request, League $league, Member $membership)
     {
       Log::debug(print_r($request->all(),true));
       $data = $request->validate( [
@@ -169,7 +172,7 @@ class LeagueMemberRoleController extends Controller
           'email2' => 'nullable|max:40|email:rfc,dns',
       ]);
 
-      $member = $memberrole;
+      $member = $membership;
 
       //Log::info(print_r($data, true));
 

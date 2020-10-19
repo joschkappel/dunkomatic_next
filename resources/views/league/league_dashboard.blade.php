@@ -144,7 +144,7 @@
             data-member-name="{{ $mrole->firstname }} {{ $mrole->lastname }}"
             data-role-name="{{ App\Enums\Role::getDescription($mrole['pivot']->role_id) }}"
             data-league-sname="{{ $league->shortname }}" data-toggle="modal" data-target="#modalDeleteMemberRole"><i class="fa fa-trash"></i></button>
-          <a href="{{ route('league.memberrole.edit',['language'=>app()->getLocale(), 'memberrole' => $mrole['pivot']->id, 'league' => $league ]) }}" class=" px-2">
+          <a href="{{ route('league.membership.edit',['language'=>app()->getLocale(), 'membership' => $mrole['pivot']->id, 'league' => $league ]) }}" class=" px-2">
               {{App\Enums\Role::getDescription($mrole['pivot']->role_id) }} {{ $mrole['pivot']->function }} - {{ $mrole->firstname }} {{ $mrole->lastname }} <i class="fas fa-arrow-circle-right"></i>
           </a></p>
           @endforeach
@@ -153,7 +153,7 @@
         </div>
         <!-- /.card-body -->
         <div class="card-footer">
-          <a href="{{ route('league.memberrole.create',['language'=>app()->getLocale(), 'league' => $league ])}}" class="btn btn-outline-secondary" >
+          <a href="{{ route('league.membership.create',['language'=>app()->getLocale(), 'league' => $league ])}}" class="btn btn-outline-secondary" >
           <i class="fas fa-plus-circle"></i>  @lang('role.action.create')
           </a>
         </div>
@@ -201,7 +201,7 @@
       <!-- /.card -->
       <!-- all modals here -->
       @include('league/includes/assign_club')
-      @include('member/includes/memberroles_delete')
+      @include('member/includes/membership_delete')
       @include('league/includes/withdraw_team')
       @include('league/includes/inject_team')
       <!-- all modals above -->
@@ -271,7 +271,7 @@
         $('#unit_shortname').html($(this).data('league-sname'));
         $('#role_name').html($(this).data('role-name'));
         $('#member_name').html($(this).data('member-name'));
-        var url = "{{ route('memberrole.destroy', ['language'=>app()->getLocale(), 'memberrole'=>':role:' ])}}";
+        var url = "{{ route('membership.destroy', ['language'=>app()->getLocale(), 'membership'=>':role:' ])}}";
         url = url.replace(':role:', $(this).data('role-id'));
         $('#confirmDeleteMemberRole').attr('action', url);
         $('#modalDeleteMember').modal('show');

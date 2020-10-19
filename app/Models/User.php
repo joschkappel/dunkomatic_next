@@ -8,6 +8,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+use App\Models\Member;
+
 class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
 {
     use Notifiable, HasFactory;
@@ -43,25 +45,14 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
         'rejected_at' => 'datetime',
     ];
 
-    public function adminlte_profile_url()
-    {
-        return 'admin.user.show';
-    }
     /**
-     * Get all of the clubs that are assigned this user.
+     * Get the related member
      */
-    public function clubs()
+    public function member()
     {
-        return $this->morphedByMany('App\Models\Club', 'useable');
+        return $this->hasOne('App\Models\Member');
     }
 
-    /**
-     * Get all of the leagues that are assigned this user.
-     */
-    public function leagues()
-    {
-        return $this->morphedByMany('App\Models\League', 'useable');
-    }
 
     public function user_region()
     {

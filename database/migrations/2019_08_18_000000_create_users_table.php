@@ -30,8 +30,6 @@ class CreateUsersTable extends Migration
             $table->timestamps();
             $table->string('region',5);
             $table->foreign('region')->references('code')->on('regions');
-            $table->string('club_ids')->nullable();
-            $table->string('league_ids')->nullable();
             $table->boolean('admin')->default(false);
             $table->boolean('regionadmin')->default(false);
         });
