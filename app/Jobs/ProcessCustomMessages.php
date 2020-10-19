@@ -46,7 +46,7 @@ class ProcessCustomMessages implements ShouldQueue
      */
     public function handle()
     {
-      app('view')->addNamespace('mail', resource_path('views/mail/html'));
+      //app('view')->addNamespace('mail', resource_path('views/mail/html'));
       //Log::debug('handle 1:'.print_r($this->message,true));
       $mdest = Message::where('id', $this->message->id)->first()->destinations()->get();
       //Log::info('handle 2:'.print_r($mdest,true));

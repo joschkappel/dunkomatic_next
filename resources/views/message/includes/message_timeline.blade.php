@@ -4,7 +4,7 @@
     @foreach ( $msglist as $msgdate)
     <!-- Timeline time label -->
     <div class="time-label">
-      <span class="bg-green">{{ \Carbon\Carbon::parse($msgdate['valid_from'])->locale( app()->getLocale() )->isoFormat('LL') }}</span>
+      <span class="bg-green">{{ \Carbon\CarbonImmutable::parse($msgdate['valid_from'])->locale( app()->getLocale() )->isoFormat('ll') }}</span>
     </div>
       @foreach ( $msgdate['items'] as $msg )
     <div>
@@ -12,8 +12,9 @@
       <i class="fas fa-envelope bg-info "></i>
       <!-- Timeline item -->
       <div class="timeline-item">
+      <!-- Time -->
+        <span class="time"><i class="fas fa-clock"></i> {{ \Carbon\CarbonImmutable::parse($msg['created_at'])->locale( app()->getLocale() )->isoFormat('HH:mm:ss') }}</span>
         <!-- Header. Optional -->
-
         <h3 class="timeline-header"><strong>{{ $msg['author'] }}</strong>: {{ $msg['subject'] }}</h3>
         <!-- Body -->
         <div class="timeline-body">

@@ -44,7 +44,7 @@ class MessageController extends Controller
       $msglist = datatables::of($msgs);
 
       return $msglist
-        ->rawColumns(['send_at','sent_at', 'action_send', 'action','title'])
+        ->rawColumns(['send_at','sent_at', 'action_send', 'action','title','body'])
         ->addIndexColumn()
         ->addColumn('action', function($data){
                $btn = '<button type="button" id="deleteMessage" name="deleteMessage" class="btn btn-outline-danger btn-sm" data-msg-id="'.$data->id.'"

@@ -43,11 +43,14 @@ class CustomMailMessage extends Mailable
     public function build()
     {
 
-      return $this->view('mail.freetext_email')
+      $iL = explode('<p>',$this->message['body']);
+      return $this->markdown('mail.appaction_mail')
                   ->subject($this->message['title'])
                   ->with([
+                        'level' => 'success',
                         'greeting' => $this->message['greeting'],
-                        'body' => $this->message['body'],
+                        'introLines' => $iL,
+                        'outroLines' => [],
                         'salutation' => $this->message['salutation'],
                       ])
                   ->from([['email'=>$this->sender_email, 'name'=>$this->sender_name]]);

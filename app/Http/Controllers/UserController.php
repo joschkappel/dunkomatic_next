@@ -31,17 +31,17 @@ class UserController extends Controller
 
   public function datatable($language)
       {
-        $users = User::region(Auth::user()->region)->with('clubs','leagues')->get();
+        $users = User::region(Auth::user()->region)->get();
         //Log::debug(print_r($users,true));
         $userlist = datatables::of($users);
 
         return $userlist
           ->addIndexColumn()
           ->addColumn('clubs', function ($userlist) {
-                  return $userlist['clubs']->pluck('shortname')->implode(', ');;
+                  return $userlist->member()->first()->clubs()->pluck('shortname')->implode(', ');;
               })
           ->addColumn('leagues', function ($userlist) {
-                  return $userlist['leagues']->pluck('shortname')->implode(', ');;
+                  return $userlist->member()->first()->leagues()->pluck('shortname')->implode(', ');;
               })
           ->editColumn('created_at', function ($userlist) use ($language) {
                   if ($userlist->created_at){

@@ -1,5 +1,6 @@
 @extends('layouts.page')
 
+@section('plugins.Summernote', true)
 @section('plugins.Moment', true)
 @section('plugins.TempusDominus', true)
 
@@ -46,7 +47,7 @@
                         <div class="form-group row">
                             <label for="body" class="col-sm-4 col-form-label">@lang('message.body')</label>
                             <div class="col-sm-6">
-                              <textarea class="form-control @error('body') is-invalid @enderror" name="body" id="body"></textarea>
+                              <textarea class="form-control @error('body') is-invalid @enderror" name="body" id="summernote"></textarea>
                               @error('body')
                               <div class="invalid-feedback">{{ $message }}</div>
                               @enderror
@@ -118,7 +119,25 @@
 
   <script>
       $(function() {
-        $("#body").val('{{ (old('body')!='') ? old('body') : $message['message']->body }}');
+        $('#summernote').summernote({
+          lang: @if (app()->getLocale() == 'de') 'de-DE' @else 'en-US'  @endif,
+          placeholder: 'Edit your message...',
+          tabsize: 2,
+          height: 100,
+          toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'underline', 'clear', 'italic']],
+            ['fontname', ['fontname']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['view', ['fullscreen', 'help']],
+          ],
+        });
+
+        var content = {!! (old('body')!='') ? old('body') : json_encode($message['message']->body) !!}
+        $('#summernote').summernote('code',content);
+
         $("#greeting").val('{{ (old('greeting')!='') ? old('greeting') : $message['message']->greeting }}');
         $("#salutation").val('{{ (old('salutation')!='') ? old('salutation') : $message['message']->salutation }}');
         $("#selDestTo").select2({

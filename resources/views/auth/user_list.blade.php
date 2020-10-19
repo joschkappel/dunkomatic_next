@@ -20,14 +20,14 @@
             <thead class="thead-light">
                <tr>
                   <th>Id</th>
-                  <th>@lang('user.name')</th>
-                  <th>@lang('user.email')</th>
-                  <th>@lang('user.clubs')</th>
-                  <th>@lang('user.leagues')</th>
-                  <th>@lang('user.created')</th>
-                  <th>@lang('user.verified')</th>
-                  <th>@lang('user.approved')</th>
-                  <th>@lang('user.rejected')</th>
+                  <th>@lang('auth.full_name')</th>
+                  <th>@lang('auth.email')</th>
+                  <th>@lang('auth.user.clubs')</th>
+                  <th>@lang('auth.user.leagues')</th>
+                  <th>{{__('Created at')}}</th>
+                  <th>{{__('Email verfified at')}}</th>
+                  <th>{{__('Approved at')}}</th>
+                  <th>{{__('Rejected at')}}</th>
                </tr>
             </thead>
          </table>

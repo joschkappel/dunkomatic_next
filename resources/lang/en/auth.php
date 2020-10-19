@@ -30,4 +30,6 @@ return [
     'complete.profile'            => 'Please complete your user profile data',
     'profile'                     => 'Profile',
     'action.complete.profile'     => 'Profile completion',
+    'user.clubs'                  => 'Authorized for clubs',
+    'user.leagues'                => 'Authorized for leagues',
 ];

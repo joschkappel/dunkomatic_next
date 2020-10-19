@@ -30,4 +30,7 @@ return [
     'complete.profile'            => 'Bitte vervollständinge Dein Nutzerprofil',
     'action.complete.profile'     => 'Profil vervollständigen',
     'profile'                     => 'Profil',
+    'user.clubs'                  => 'Authorisierte Vereine',
+    'user.leagues'                => 'Authorisierte Runden',
+
 ];
