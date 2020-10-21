@@ -6,14 +6,10 @@
             <div class="row">
               <div class="col-12">
                 <div class="card">
-                  <div class="card-header">
+                  <div class="card-header bg-secondary">
                     <h3 class="card-title">@lang('message.title.list')</h3>
                   </div>
                   <!-- /.card-header -->
-
-                  <div class="card-tools p-2">
-            <a href="{{ route('message.create', app()->getLocale() ) }}" class="text-center btn btn-success btn-sm mb-3">@lang('message.action.create')</a>
-          </div>
           <div class="card-body">
             @csrf
 
@@ -32,12 +28,18 @@
             </thead>
          </table>
           </div>
-
+          <!-- /.card-body -->
+          <div class="card-footer">
+            <a href="{{ route('message.create', app()->getLocale() ) }}" class="text-center btn btn-success mb-3"><i class="fas fa-plus-circle"></i> @lang('message.action.create')</a>
+          </div>
+          <!-- /.card-footer -->
         </div>
-        <!-- /.card-body -->
+        <!-- /.card -->
         <!-- all modals here -->
         @include('message/includes/message_delete')
         <!-- all modals above -->
+
+
       </div>
     </div>
 @stop
@@ -49,6 +51,12 @@
                $('#table').DataTable({
                  processing: true,
                  serverSide: true,
+                 responsive: true,
+                 @if (app()->getLocale() == 'de')
+                 language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/German.json')}}" },
+                 @else
+                 language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/English.json')}}" },
+                 @endif
                  order: [[1,'asc']],
                  ajax: '{{ route('message.user.dt', ['language'=>app()->getLocale(), 'user'=> Auth::user()->id]) }}',
                  columns: [

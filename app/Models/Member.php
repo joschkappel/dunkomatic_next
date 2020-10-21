@@ -35,6 +35,11 @@ class Member extends Model
     }
   }
 
+  public function getNameAttribute()
+  {
+    return $this->firstname.' '.$this->lastname;
+  }
+
   public function memberships()
   {
       return $this->hasMany('App\Models\Membership');

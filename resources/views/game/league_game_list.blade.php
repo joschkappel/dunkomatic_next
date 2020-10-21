@@ -54,6 +54,11 @@
         processing: true,
         serverSide: false,
         responsive: true,
+        @if (app()->getLocale() == 'de')
+        language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/German.json')}}" },
+        @else
+        language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/English.json')}}" },
+        @endif
         ordering: true,
         stateSave: true,
         dom: 'Bflrtip',

@@ -92,6 +92,7 @@ Route::group([
 Route::redirect('/home', '/de/home');
 Route::delete('/user/{user_id}', 'UserController@destroy')->name('admin.user.destroy')->middleware('auth')->middleware('regionadmin');
 Route::put('/user/{user_id}', 'UserController@update')->name('admin.user.update')->middleware('auth');
+Route::put('/user/{user}/allowance', 'UserController@allowance')->name('admin.user.allowance')->middleware('auth')->middleware('regionadmin');
 Route::put('/member/{member}', 'MemberController@update')->name('member.update');
 
 Route::get('club/region/sb', 'ClubController@sb_region')->name('club.sb.region');

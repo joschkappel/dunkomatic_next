@@ -6,12 +6,17 @@ use App\Models\Game;
 use App\Models\League;
 use App\Models\Team;
 use App\Models\Gym;
+use App\Models\Club;
 use App\Models\ScheduleEvent;
 use App\Models\LeagueTeamScheme;
+use App\Enums\Role;
+
+use App\Notifications\LeagueGamesGenerated;
 
 use Datatables;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Database\Eloquent\Builder;
@@ -131,6 +136,22 @@ class LeagueGameController extends Controller
           Game::updateOrCreate(['league_id' => $league->id, 'game_no' => $s->game_no], $g);
         }
         League::find($league->id)->update(['generated_at' => now()]);
+
+        $clublist = $league->teams()->pluck('club_id');
+
+        foreach ($clublist as $c){
+          $club = Club::find($c);
+          $member = $club->memberships()->isRole(Role::ClubLead)->first()->member;
+
+          if (isset($member)){
+            $member->notify(new LeagueGamesGenerated($league, $club, Auth::user()->name, $member->name ));
+            $user = $member->user;
+            if (isset($user)){
+              $user->notify(new LeagueGamesGenerated($league, $club, Auth::user()->name, $user->name ));
+            }
+          }
+
+        }
 
         return Response::json(['success' => 'all good'], 200);
     }

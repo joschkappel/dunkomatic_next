@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Models\Club;
 use App\Models\League;
 use App\Models\Member;
-use App\Models\MemberRole;
+use App\Models\Membership;
 
 use App\Enums\Role;
 
@@ -37,6 +37,10 @@ class UserController extends Controller
 
         return $userlist
           ->addIndexColumn()
+          ->rawColumns(['name'])
+          ->editColumn('name', function ($userlist) {
+              return '<a href="' . route('admin.user.edit', ['language'=>app()->getLocale(),'user'=>$userlist->id]) .'">'.$userlist->name.'</a>';
+              })
           ->addColumn('clubs', function ($userlist) {
                   return $userlist->member()->first()->clubs()->pluck('shortname')->implode(', ');;
               })
@@ -104,14 +108,21 @@ class UserController extends Controller
       {
         $member = $user->member()->first();
 
-        return view('auth/user_edit', ['user'=>$user, 'member'=>$member]);
+        return view('auth/user_profile', ['user'=>$user, 'member'=>$member]);
       }
 
   public function edit($language, User $user)
       {
           //$user = User::findOrFail($user_id);
 
-          return view('auth/user_approve', compact('user'));
+          if ( $user->approved_at == null){
+            return view('auth/user_approve', compact('user'));
+          } else {
+            $user['clubs'] = $user->member->clubs()->pluck('clubs.id','clubs.shortname');
+            $user['leagues'] = $leagues = $user->member->leagues()->pluck('leagues.id','leagues.shortname');
+            return view('auth/user_edit', ['user'=>$user]);
+          }
+
       }
 
   public function update(Request $request, $user_id)
@@ -163,12 +174,12 @@ class UserController extends Controller
 
             foreach ($data['club_ids'] as $c_id){
                 $club = Club::find($c_id);
-                $new_mship = MemberRole::create(['role_id' => Role::User, 'member_id' => $member->id ] );
+                $new_mship = Membership::create(['role_id' => Role::User, 'member_id' => $member->id ] );
                 $club->memberships()->save($new_mship);
             }
             foreach ($data['league_ids'] as $l_id){
                 $league = League::find($l_id);
-                $new_mship = MemberRole::create(['role_id' => Role::User, 'member_id' => $member->id ] );
+                $new_mship = Membership::create(['role_id' => Role::User, 'member_id' => $member->id ] );
                 $league->memberships()->save($new_mship);
             }
 
@@ -184,5 +195,18 @@ class UserController extends Controller
 
           return redirect()->route('admin.user.index.new', app()->getLocale())->withMessage('User approved successfully');
       }
+
+  public function allowance(Request $request, User $user)
+  {
+    Log::debug(print_r($request->all(),true));
+    //$u = User::find($user);
+
+    $member = Member::find($user->member->id);
+    $member->memberships()->delete();
+    $member->clubs()->attach($request['club_ids'], array('role_id' => Role::User));
+    $member->leagues()->attach($request['league_ids'], array('role_id' => Role::User));
+
+    return redirect()->route('admin.user.index', app()->getLocale());
+  }
 
 }

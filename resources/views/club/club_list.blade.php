@@ -21,7 +21,7 @@
                   <!-- /.card-header -->
 
                   <div class="card-tools p-2">
-                    <a href="{{ route('club.create', app()->getLocale()) }}" class="text-center btn btn-success btn-sm mb-3">@lang('club.action.create')</a>
+                    <a href="{{ route('club.create', app()->getLocale()) }}" class="text-center btn btn-success mb-3"><i class="fas fa-plus-circle"></i> @lang('club.action.create')</a>
           </div>
           <div class="card-body">
 
@@ -49,6 +49,12 @@
                $('#table').DataTable({
                processing: true,
                serverSide: true,
+               responsive: true,
+               @if (app()->getLocale() == 'de')
+               language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/German.json')}}" },
+               @else
+               language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/English.json')}}" },
+               @endif
                order: [[1,'asc']],
                ajax: '{{ route('club.list', app()->getLocale()) }}',
                columns: [

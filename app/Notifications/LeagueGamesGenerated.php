@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\League;
 use App\Models\Club;
 
-class ClubAssigned extends Notification
+class LeagueGamesGenerated extends Notification
 {
     use Queueable;
 
@@ -41,11 +41,11 @@ class ClubAssigned extends Notification
      */
     public function via($notifiable)
     {
-        if ( get_class($notifiable) == 'App\Models\User') {
-          return ['database'];
-        } else {
-          return ['mail'];
-        }
+      if ( get_class($notifiable) == 'App\Models\User') {
+        return ['database'];
+      } else {
+        return ['mail'];
+      }
     }
 
     /**
@@ -57,12 +57,12 @@ class ClubAssigned extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->level('success')
-                    ->subject('Club assigned to league '.$this->league->shortname)
+                    ->level('info')
+                    ->subject('League games generated: '.$this->league->shortname)
                     ->greeting('Dear '.$this->receiver_name)
-                    ->line('Your club has been assigned to league '.$this->league->name.'.')
-                    ->line('You are ready to register a team with the league now.')
-                    ->action('Register Team', url( route('club.dashboard', ['language'=>app()->getLocale(), 'id'=>$this->club->id])))
+                    ->line('The games for league '.$this->league->name.' have been generated and are ready for you ')
+                    ->line('to check or edit your home game dates and start times.')
+                    ->action('Edit Homegames', url( route('club.list.homegame',['language'=>app()->getLocale(), 'club' => $this->club ]) ))
                     ->line('Thank you for using DunkOmatic !')
                     ->salutation('BR your league-lead '.$this->sender_name);
     }
@@ -75,15 +75,15 @@ class ClubAssigned extends Notification
      */
     public function toArray($notifiable)
     {
-        $lines =  '<p>Your club has been assigned to league <b>'.$this->league->name.'</b>.</p>';
-        $lines .= '<p>You are ready to register a team with the league now.</p>';
-        $lines .= '<p><a href="'.url(route('club.dashboard', ['language'=>app()->getLocale(), 'id'=>$this->club->id])).'">Register Team</a></p>';
+      $lines =  '<p>The games for league <b>'.$this->league->name.'</b> have been generated and are ready for you to check or edit your home games dates and start times.</p>';
+      $lines .= '<p><a href="'.url( route('club.list.homegame',['language'=>app()->getLocale(), 'club' => $this->club ])).'">Edit Homegames</a></p>';
+      $lines .= '<p><a href="'.url( route('club.game.chart',['language'=>app()->getLocale(), 'club' => $this->club ])).'">Homegame Overview</a></p>';
 
-        return [
-            'subject' => 'Club assigned to league '.$this->league->shortname,
-            'greeting' => 'Dear '.$this->receiver_name,
-            'lines' => $lines,
-            'salutation' => 'BR your league-lead '.$this->sender_name,
-        ];
+      return [
+          'subject' => 'League games generated: '.$this->league->shortname,
+          'greeting' => '',
+          'lines' => $lines,
+          'salutation' => ''
+      ];
     }
 }

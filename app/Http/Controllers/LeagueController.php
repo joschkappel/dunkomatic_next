@@ -10,6 +10,7 @@ use App\Models\Game;
 
 use App\Enums\LeagueAgeType;
 use App\Enums\LeagueGenderType;
+use App\Enums\Role;
 use BenSampo\Enum\Rules\EnumValue;
 
 use Illuminate\Http\Request;
@@ -21,6 +22,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Database\Eloquent\Builder;
 
 use App\Notifications\ClubAssigned;
+use App\Notifications\ClubDeAssigned;
 
 class LeagueController extends Controller
 {
@@ -416,17 +418,28 @@ class LeagueController extends Controller
       */
       public function deassign_club(Request $request, $league_id, $club_id)
       {
-          Log::info(print_r($club_id, true));
-          Log::info(print_r($league_id, true));
-
+          // Log::info(print_r($club_id, true));
+          // Log::info(print_r($league_id, true));
           $league = League::find($league_id);
+          $club = Club::find($club_id);
+
           $check = False;
 
           if ($league){
             $check = $league->clubs()->wherePivot('club_id','=',$club_id)->detach();
             // deassign teams as well
-            $teams = Team::where('club_id', $club_id)->where('league_id', $league_id)
-                    ->update(['league_id' => null, 'league_no' => null, 'league_char' => null]);
+            $team = Team::where('club_id', $club_id)->where('league_id', $league_id)->first();
+            $check = $team->update(['league_id' => null, 'league_no' => null, 'league_char' => null]);
+
+            $member = $club->memberships()->isRole(Role::ClubLead)->first()->member;
+
+            if (isset($member)){
+              $member->notify(new ClubDeAssigned($league, $club, $team, Auth::user()->name, $member->name ));
+              $user = $member->user;
+              if (isset($user)){
+                $user->notify(new ClubDeAssigned($league, $club, $team, Auth::user()->name, $user->name ));
+              }
+            }
           }
 
           return Response::json($check);
@@ -455,7 +468,16 @@ class LeagueController extends Controller
              $check = $league->clubs()->attach($request->input('club_id'),
               ['league_no' => $league_no,
                'league_char' => $league_char ]);
-              Auth::user()->notify(new ClubAssigned($request->input()));
+              $club = Club::find($request->input('club_id'));
+              $member = $club->memberships()->isRole(Role::ClubLead)->first()->member;
+
+              if (isset($member)){
+                $member->notify(new ClubAssigned($league, $club, Auth::user()->name, $member->name ));
+                $user = $member->user;
+                if (isset($user)){
+                  $user->notify(new ClubAssigned($league, $club, Auth::user()->name, $user->name ));
+                }
+              }
            }
            return redirect()->route('league.dashboard', ['language'=>app()->getLocale(), 'id' => $league ]);
        }

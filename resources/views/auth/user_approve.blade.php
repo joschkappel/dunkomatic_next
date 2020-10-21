@@ -12,7 +12,7 @@
             <!-- general form elements -->
             <div class="card card-info">
                 <div class="card-header">
-                    <h3 class="card-title">@lang('user.title.approve')</h3>
+                    <h3 class="card-title">@lang('auth.title.approve')</h3>
                 </div>
                 <!-- /.card-header -->
                 <form class="form-horizontal" action="{{ route('admin.user.approve', ['language'=>app()->getLocale(), 'user_id'=>$user->id]) }}" method="post">
@@ -26,19 +26,19 @@
                         </div>
                         @endif
                         <div class="form-group row">
-                            <label for="title" class="col-sm-4 col-form-label">@lang('user.name')</label>
+                            <label for="title" class="col-sm-4 col-form-label">@lang('auth.full_name')</label>
                             <div class="col-sm-6">
                                 <input type="input" readonly class="form-control" id="name" value="{{ $user->name}}">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="title" class="col-sm-4 col-form-label">@lang('user.email')</label>
+                            <label for="title" class="col-sm-4 col-form-label">@lang('auth.email')</label>
                             <div class="col-sm-6">
                                 <input type="input" readonly class="form-control" id="email" value="{{ $user->email}}">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="title" class="col-sm-4 col-form-label">@lang('user.reason_join')</label>
+                            <label for="title" class="col-sm-4 col-form-label">@lang('auth.reason_join')</label>
                             <div class="col-sm-6">
                                 <input type="input" readonly class="form-control" id="reason_join" value="{{ $user->reason_join}}">
                             </div>
@@ -71,9 +71,9 @@
                           </div>
                         </div>
                         <div class="form-group row">
-                            <label for="reason_reject" class="col-sm-4 col-form-label">@lang('user.reason_reject')</label>
+                            <label for="reason_reject" class="col-sm-4 col-form-label">@lang('auth.reason_reject')</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control @error('reason_reject') is-invalid @enderror" id="reason_reject" name="reason_reject" placeholder="@lang('user.reason_reject')" value="{{ old('reason_reject') }}">
+                                <input type="text" class="form-control @error('reason_reject') is-invalid @enderror" id="reason_reject" name="reason_reject" placeholder="@lang('auth.reason_reject')" value="{{ old('reason_reject') }}">
                                 @error('reason_reject')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

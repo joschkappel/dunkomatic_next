@@ -130,7 +130,8 @@
             ['color', ['color']],
             ['para', ['ul', 'ol', 'paragraph']],
             ['table', ['table']],
-            ['view', ['fullscreen', 'help']],
+            ['insert', ['link']],
+            ['view', ['fullscreen', 'codeview', 'help']],
           ],
         });
 

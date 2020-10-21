@@ -16,18 +16,12 @@
             <div class="row">
               <div class="col-12">
                 <div class="card">
-                  <div class="card-header">
-                    <h3 class="card-title">@lang('league.title.list', ['region' => Auth::user()->region ])</h3>
+                  <div class="card-header bg-secondary">
+                      <h3 class="card-title">@lang('league.title.list', ['region' => Auth::user()->region ])</h3>
                   </div>
                   <!-- /.card-header -->
 
-                  <div class="card-tools p-2">
-                    <a href="{{ route('league.create', app()->getLocale()) }}" class="text-center btn btn-success btn-sm mb-3">@lang('league.action.create')</a>
-                    <a href="{{ route('league.list_stats', app()->getLocale()) }}" class="text-center btn btn-success btn-sm mb-3">TESTING</a>
-
-          </div>
           <div class="card-body">
-
          <table class="table table-hover table-bordered table-sm" id="table">
             <thead class="thead-light">
                <tr>
@@ -42,7 +36,12 @@
          </table>
           </div>
           <!-- /.card-body -->
+          <div class="card-footer">
+            <a href="{{ route('league.create', app()->getLocale()) }}" class="text-center btn btn-success mb-3"><i class="fas fa-plus-circle"></i> @lang('league.action.create')</a>
+          </div>
+          <!-- /.card-footer -->
         </div>
+      <!-- /.card -->
       </div>
     </div>
 @stop
@@ -53,6 +52,12 @@
                $('#table').DataTable({
                processing: true,
                serverSide: true,
+               responsive: true,
+               @if (app()->getLocale() == 'de')
+               language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/German.json')}}" },
+               @else
+               language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/English.json')}}" },
+               @endif
                order: [[1,'asc']],
                ajax: '{{ route('league.list') }}',
                columns: [
