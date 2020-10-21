@@ -59,7 +59,7 @@
           @if ( $league->isGenerated )
           <div class="ribbon-wrapper ribbon-lg">
             <div class="ribbon bg-warning text-lg">
-              GENERATED
+              @lang('league.generated')
             </div>
           </div>
         @endif

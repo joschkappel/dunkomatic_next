@@ -24,5 +24,9 @@ class Membership extends Model
   {
     $query->where('role_id', $role_id);
   }
+  public function scopeIsNotRole($query, $role_id)
+  {
+    $query->where('role_id', '!=', $role_id);
+  }
 
 }

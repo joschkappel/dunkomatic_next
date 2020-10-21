@@ -28,12 +28,17 @@
                   <th>{{__('Email verfified at')}}</th>
                   <th>{{__('Approved at')}}</th>
                   <th>{{__('Rejected at')}}</th>
+                  <th>{{__('Action')}}</th>
                </tr>
             </thead>
          </table>
           </div>
           <!-- /.card-body -->
         </div>
+        <!-- all modals here -->
+        @include('auth.includes.user_delete')
+        @include('auth.includes.user_block')
+        <!-- all modals above -->
       </div>
     </div>
 @stop
@@ -78,8 +83,27 @@
                             display: 'rejected_at.display',
                             sort: 'rejected_at.ts'
                           }, name: 'rejected_at.ts' },
+                        { data: 'action', name: 'action', orderable: false, searchable: false},
                      ]
             });
+
+            $(document).on('click', '#deleteUser', function () {
+                $('#user_id').val($(this).data('user-id'));
+                $('#user_name').html($(this).data('user-name'));
+                var url = "{{ route('admin.user.destroy', [ 'user'=>':userid:'])}}"
+                url = url.replace(':userid:',$(this).data('user-id') );
+                $('#confirmDeleteUser').attr('action', url);
+                $('#modalDeleteUser').modal('show');
+             });
+             $(document).on('click', '#blockUser', function () {
+                 $('#user_id_block').val($(this).data('user-id'));
+                 $('#user_name_block').html($(this).data('user-name'));
+                 var url = "{{ route('admin.user.block', [ 'user'=>':userid:'])}}"
+                 url = url.replace(':userid:',$(this).data('user-id') );
+                 $('#confirmBlockUser').attr('action', url);
+                 $('#modalBlockUser').modal('show');
+              });
+
          });
 
 

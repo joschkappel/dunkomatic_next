@@ -21,4 +21,5 @@ return [
   'name' => 'Name',
   'size'  => '# Teams',
   'above-region' => 'above region',
+  'generated' => 'CLOSED',
 ];

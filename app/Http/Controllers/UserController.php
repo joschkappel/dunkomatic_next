@@ -37,15 +37,35 @@ class UserController extends Controller
 
         return $userlist
           ->addIndexColumn()
-          ->rawColumns(['name'])
+          ->rawColumns(['name','action'])
+          ->addColumn('action', function($data){
+                 $state = ($data->approved_at == null) ? 'disabled' : '';
+                 $btn = '<button type="button" id="blockUser" name="blockUser" class="btn btn-outline-primary btn-sm" data-user-id="'.$data->id.'"
+                    data-user-name="'.$data->name.'" data-toggle="modal" data-target="#modalBlockUser" '.$state.'><i class="fas fa-ban"></i></button>  ';
+                  $btn .= '<button type="button" id="deleteUser" name="deleteUser" class="btn btn-outline-danger btn-sm" data-user-id="'.$data->id.'"
+                       data-user-name="'.$data->name.'" data-toggle="modal" data-target="#modalDeleteUser" ><i class="fa fa-trash"></i></button>';
+                  return $btn;
+          })
           ->editColumn('name', function ($userlist) {
-              return '<a href="' . route('admin.user.edit', ['language'=>app()->getLocale(),'user'=>$userlist->id]) .'">'.$userlist->name.'</a>';
+              if ($userlist->approved_at == null) {
+                return '<i class="fas fa-exclamation-triangle text-warning"></i>  '.$userlist->name;
+              } else {
+                return '<a href="' . route('admin.user.edit', ['language'=>app()->getLocale(),'user'=>$userlist->id]) .'">'.$userlist->name.'</a>';
+              };
               })
           ->addColumn('clubs', function ($userlist) {
-                  return $userlist->member()->first()->clubs()->pluck('shortname')->implode(', ');;
+              if ( $userlist->member != null ){
+                  return $userlist->member()->first()->clubs()->pluck('shortname')->implode(', ');
+              } else {
+                  return '';
+              }
               })
           ->addColumn('leagues', function ($userlist) {
-                  return $userlist->member()->first()->leagues()->pluck('shortname')->implode(', ');;
+              if ( $userlist->member != null ){
+                  return $userlist->member()->first()->leagues()->pluck('shortname')->implode(', ');
+                } else {
+                  return '';
+                }
               })
           ->editColumn('created_at', function ($userlist) use ($language) {
                   if ($userlist->created_at){
@@ -169,25 +189,17 @@ class UserController extends Controller
           if ( $request->approved == 'on'){
             $user->update(['approved_at' => now()]);
             // create the member witha  role = user
-            $member = new Member(['lastname'=> $user->name, 'email1'=>$user->email, 'user_id'=>$user->id]);
-            $member->save();
+            $member = new Member(['lastname'=> $user->name, 'email1'=>$user->email]);
+            $user->member()->create($member);
 
-            foreach ($data['club_ids'] as $c_id){
-                $club = Club::find($c_id);
-                $new_mship = Membership::create(['role_id' => Role::User, 'member_id' => $member->id ] );
-                $club->memberships()->save($new_mship);
-            }
-            foreach ($data['league_ids'] as $l_id){
-                $league = League::find($l_id);
-                $new_mship = Membership::create(['role_id' => Role::User, 'member_id' => $member->id ] );
-                $league->memberships()->save($new_mship);
-            }
+            if ( isset($data['club_ids']) ){
+              $member->clubs()->attach($data['club_ids'], array('role_id' => Role::User));
+            };
+            if ( isset($data['league_ids'] )){
+              $member->leagues()->attach($data['league_ids'], array('role_id' => Role::User));
+            };
 
             $user->notify(new ApproveUser(Auth::user(), $user));
-
-
-
-
           } else {
             $user->update(['rejected_at' => now(), 'approved_at' => null, 'reason_reject' => $data['reason_reject']]);
             $user->notify(new RejectUser(Auth::user(), $user));
@@ -206,6 +218,30 @@ class UserController extends Controller
     $member->clubs()->attach($request['club_ids'], array('role_id' => Role::User));
     $member->leagues()->attach($request['league_ids'], array('role_id' => Role::User));
 
+    return redirect()->route('admin.user.index', app()->getLocale());
+  }
+
+  public function destroy(Request $request, User $user)
+  {
+
+    if ( User::find($user->id)->member->memberships()->isNotRole(Role::User)->count() == 0 ) {
+      // delete user, member and memberships - he is "Only" a user
+      $member = Member::find($user->member->id);
+      $member->memberships()->delete();
+      $member->delete();
+    } else {
+      // delete only the user and detach from member
+      $member = Member::find($user->member->id);
+      $member->memberships()->isRole(Role::User)->delete();
+      $member->detach($user);
+    }
+    $user->delete();
+    return redirect()->route('admin.user.index', app()->getLocale());
+  }
+
+  public function block(Request $request, User $user)
+  {
+    $user->update(['approved_at'=> null]);
     return redirect()->route('admin.user.index', app()->getLocale());
   }
 

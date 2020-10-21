@@ -1,10 +1,11 @@
 {
     "name": "laravel/laravel",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "dunkomatic manage basketball seasons",
     "keywords": [
         "framework",
-        "laravel"
+        "laravel",
+        "dunkomatic"
     ],
     "license": "MIT",
     "require": {
@@ -18,7 +19,6 @@
         "graylog2/gelf-php": "^1.5",
         "guzzlehttp/guzzle": "^7.0.1",
         "itsjavi/bootstrap-colorpicker": "^3.2",
-
         "laravel-admin-ext/daterangepicker": "^1.0",
         "laravel/framework": "^8.0",
         "laravel/tinker": "^2.0",

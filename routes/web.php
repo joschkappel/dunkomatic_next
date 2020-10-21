@@ -90,7 +90,8 @@ Route::group([
 
 // APIs , no locale or language required !
 Route::redirect('/home', '/de/home');
-Route::delete('/user/{user_id}', 'UserController@destroy')->name('admin.user.destroy')->middleware('auth')->middleware('regionadmin');
+Route::delete('/user/{user}', 'UserController@destroy')->name('admin.user.destroy')->middleware('auth')->middleware('regionadmin');
+Route::post('/user/{user}/block', 'UserController@block')->name('admin.user.block')->middleware('auth')->middleware('regionadmin');
 Route::put('/user/{user_id}', 'UserController@update')->name('admin.user.update')->middleware('auth');
 Route::put('/user/{user}/allowance', 'UserController@allowance')->name('admin.user.allowance')->middleware('auth')->middleware('regionadmin');
 Route::put('/member/{member}', 'MemberController@update')->name('member.update');

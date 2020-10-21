@@ -27,7 +27,7 @@
                                     <td>{{ $auser->name }}</td>
                                     <td>{{ $auser->email }}</td>
                                     <td>{{ $auser->created_at }}</td>
-                                    <td><a href="{{ route('admin.user.edit', ['language' => app()->getLocale(), 'user_id' => $auser->id ]) }}"
+                                    <td><a href="{{ route('admin.user.edit', ['language' => app()->getLocale(), 'user' => $auser->id ]) }}"
                                            class="btn btn-primary btn-sm">Approve</a></td>
                                 </tr>
                             @empty

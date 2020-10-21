@@ -45,7 +45,7 @@ class NewUser extends Notification
     {
         return (new MailMessage)
             ->line('New user has registered with email ' . $this->new_user->email)
-            ->action('Approve user', route('admin.user.edit', ['language'=>app()->getLocale(), 'user_id'=>$this->new_user->id]));
+            ->action('Approve user', route('admin.user.edit', ['language'=>app()->getLocale(), 'user'=>$this->new_user->id]));
     }
 
     /**

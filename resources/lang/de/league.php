@@ -21,5 +21,6 @@ return [
   'name' => 'Name',
   'size'  => 'Anzahl Teams',
   'above-region' => 'Überbezirklich',
+  'generated' => 'GESPERRT',
 
 ];
