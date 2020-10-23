@@ -17,4 +17,11 @@ class Region extends Model
   {
       return $this->hasMany('App\Models\MessageDestination','region','code');
   }
+
+  public function users()
+  {
+      return $this->hasMany('App\Models\User','region','code');
+  }
+
+
 }

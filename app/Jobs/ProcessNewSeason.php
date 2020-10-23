@@ -10,9 +10,15 @@ use Illuminate\Queue\SerializesModels;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+
 use App\Models\Setting;
 use App\Models\Game;
 use App\Models\League;
+use App\Models\User;
+use App\Models\Member;
+
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\NewSeason;
 
 class ProcessNewSeason implements ShouldQueue
 {
@@ -60,12 +66,20 @@ class ProcessNewSeason implements ShouldQueue
             //Log::info('new season: reset team '.$l->shortname.' - '.$t->league_char);
             $t->update(['league_char' => null,
                         'league_no' => null,
-                        'league_prev' => $l->shortname ]);
+                        'league_prev' => $l->shortname,
+                        'league_id' => null ]);
           }
+          $l->update(['generate_at' => null]);
         }
 
         // clean up report folders
 
+
+        // send notification
+        $users = User::whereNotNull('approved_at')->whereNotNull('email_verified_at')->get();
+        Notification::send( $users, new NewSeason($next_season));
+        $members = Member::all();
+        Notification::send( $members, new NewSeason($next_season));
 
     }
 }

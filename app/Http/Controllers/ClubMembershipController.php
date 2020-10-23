@@ -72,8 +72,8 @@ class ClubMembershipController extends Controller
           'phone2' => 'max:40',
           'fax1' => 'max:40',
           'fax2' => 'max:40',
-          'email1' => 'required|max:40|email:rfc,dns',
-          'email2' => 'nullable|max:40|email:rfc,dns',
+          'email1' => 'required|max:60|email:rfc,dns',
+          'email2' => 'nullable|max:60|email:rfc,dns',
       ]);
 
 
@@ -142,8 +142,8 @@ class ClubMembershipController extends Controller
                   'phone2' => 'max:40',
                   'fax1' => 'max:40',
                   'fax2' => 'max:40',
-                  'email1' => 'required|max:40|email:rfc,dns',
-                  'email2' => 'nullable|max:40|email:rfc,dns',
+                  'email1' => 'required|max:60|email:rfc,dns',
+                  'email2' => 'nullable|max:60|email:rfc,dns',
               ]);
 
               $member = $membership;

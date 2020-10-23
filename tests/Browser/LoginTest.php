@@ -32,6 +32,8 @@ class LoginTest extends DuskTestCase
     }
     /**
      * A Dusk test example.
+     * @test
+     * @group auth
      *
      * @return void
      */
@@ -51,6 +53,9 @@ class LoginTest extends DuskTestCase
     }
     /**
      * A Dusk test example.
+     *
+     * @test
+     * @group auth
      *
      * @return void
      */

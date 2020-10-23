@@ -62,6 +62,7 @@ class Member extends Model
       return $this->morphedByMany('App\Models\League', 'membershipable', 'memberships',  'member_id', 'membershipable_id' )->withPivot('role_id','function','id');
 
   }
+
   /**
    * Route notifications for the mail channel.
    *

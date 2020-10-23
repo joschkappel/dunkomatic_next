@@ -23,8 +23,8 @@ class CreateMembersTable extends Migration
             $table->string('phone1', 40)->nullable();
             $table->string('phone2', 40)->nullable();
             $table->string('mobile', 40)->nullable();
-            $table->string('email1', 40);
-            $table->string('email2', 40)->nullable();
+            $table->string('email1');
+            $table->string('email2')->nullable();
             $table->string('fax1', 40)->nullable();
             $table->string('fax2', 40)->nullable();
             $table->timestamps();

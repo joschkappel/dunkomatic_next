@@ -34,9 +34,10 @@ class League extends Model implements Auditable
 
   public function getIsGeneratedAttribute()
   {
-      $cnt = League::find($this->id)->games()->count();
+      // $cnt = League::find($this->id)->games()->count();
       //Log::debug(print_r($cnt,true));
-      return ( $cnt == 0 ) ? false : true;
+      //return ( $cnt == 0 ) ? false : true;
+      return ( $this->generated_at == null ) ? false : true;
   }
 
   public function region()

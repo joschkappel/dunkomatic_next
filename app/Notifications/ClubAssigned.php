@@ -62,7 +62,7 @@ class ClubAssigned extends Notification
                     ->greeting('Dear '.$this->receiver_name)
                     ->line('Your club has been assigned to league '.$this->league->name.'.')
                     ->line('You are ready to register a team with the league now.')
-                    ->action('Register Team', url( route('club.dashboard', ['language'=>app()->getLocale(), 'id'=>$this->club->id])))
+                    ->action('Register Team', route('club.dashboard', ['language'=>app()->getLocale(), 'id'=>$this->club->id]))
                     ->line('Thank you for using DunkOmatic !')
                     ->salutation('BR your league-lead '.$this->sender_name);
     }

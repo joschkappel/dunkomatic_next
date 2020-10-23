@@ -8,11 +8,14 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-use Carbon\Carbon;
-use App\Models\Message;
-use Illuminate\Notifications\Notification;
+use App\Models\Region;
+use App\Models\User;
 
-class DailyJanitor implements ShouldQueue
+use App\Jobs\EmailValidation;
+use App\Jobs\MissingLeadCheck;
+
+
+class ProcessRegionJobs implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -33,17 +36,14 @@ class DailyJanitor implements ShouldQueue
      */
     public function handle()
     {
-        // drop all outdated messages;
-        $aweekago = Carbon::today()->subDays(7)->toDateString();
-        $old_msgs = Message::whereDate('sent_at','<', $aweekago)->get();
-        foreach ($old_msgs as $om){
-          $om->destinations->delete();
-          $om->delete();
+
+      $regions = Region::all();
+
+      foreach ($regions as $r){
+        if (User::regionAdmin($r->code)->exists()){
+          EmailValidation::dispatch($r)->delay(now()->addMinutes(1))->onQueue('janitor');
+          MissingLeadCheck::dispatch($r)->delay(now()->addMinutes(5))->onQueue('janitor');
         }
-
-        // drop all read notifications
-        $old_notifs = Notification::whereDate('read_at','<', $aweekago)->delete();
-
-
+      }
     }
 }

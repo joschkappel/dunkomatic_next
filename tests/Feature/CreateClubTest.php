@@ -34,7 +34,7 @@ class CreateClubTest extends TestCase
                         ->post('club', [
                           'shortname' => 'TEST',
                           'name' => 'Test club',
-                          'region' => 'HBV',
+                          'region' => 'HBVDA',
                           'club_no' => '9999',
                           'url' => 'http://example.com',
                       ]);
@@ -157,7 +157,7 @@ class CreateClubTest extends TestCase
                         ->post('club', [
                           'shortname' => 'TEST',
                           'name' => 'Test club',
-                          'region' => 'HBV',
+                          'region' => 'HBVDA',
                           'club_no' => '9999',
                           'url' => 'http://example.com',
                       ]);

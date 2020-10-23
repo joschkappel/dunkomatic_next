@@ -7,7 +7,8 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 use App\Jobs\ProcessLeagueReports;
 use App\Jobs\ProcessNewSeason;
-use App\Jobs\DailyJanitor;
+use App\Jobs\ProcessDbCleanup;
+use App\Jobs\ProcessRegionJobs;
 
 class Kernel extends ConsoleKernel
 {
@@ -31,7 +32,8 @@ class Kernel extends ConsoleKernel
         $schedule->job(new ProcessLeagueReports('HBV'), 'exports')->daily();
         //$schedule->job(new ProcessLeagueReports('HBV'), 'exports')->everyMinute();
         $schedule->job(new ProcessLeagueReports('HBVDA'), 'exports')->daily();
-        $schedule->job(new DailyJanitor(), 'janitor')->daily();
+        $schedule->job(new ProcessDbCleanup(), 'janitor')->weekly();//everyFiveMinutes();//
+        $schedule->job(new ProcessRegionJobs(), 'janitor')->weekly();
         $schedule->job(new ProcessNewSeason(),'janitor')->yearly();
         $schedule->command('telescope:prune')->daily();
     }

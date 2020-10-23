@@ -62,7 +62,7 @@ class LeagueGamesGenerated extends Notification
                     ->greeting('Dear '.$this->receiver_name)
                     ->line('The games for league '.$this->league->name.' have been generated and are ready for you ')
                     ->line('to check or edit your home game dates and start times.')
-                    ->action('Edit Homegames', url( route('club.list.homegame',['language'=>app()->getLocale(), 'club' => $this->club ]) ))
+                    ->action('Edit Homegames', route('club.list.homegame',['language'=>app()->getLocale(), 'club' => $this->club ]) )
                     ->line('Thank you for using DunkOmatic !')
                     ->salutation('BR your league-lead '.$this->sender_name);
     }

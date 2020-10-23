@@ -19,8 +19,8 @@ class RegionFactory extends Factory
   public function definition()
   {
     return [
-        'name' => 'Hessischer Basketball Verband',
-        'code' => 'HBV',
+        'name' => 'Bezirk Darmstadt',
+        'code' => 'HBVDA',
         'hq' => '',
         'created_at' => now()
     ];

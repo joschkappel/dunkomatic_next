@@ -78,7 +78,5 @@ class Club extends Model implements Auditable
   {
       return $query->where('region', $region);
   }
-  public function scopeMember($query, $role){
-      return $query->memberships()->isRole($role)->first();
-  }
+
 }

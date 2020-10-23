@@ -70,4 +70,5 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     {
         return $query->where('region',$region);
     }
+
 }
