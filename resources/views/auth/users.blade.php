@@ -15,7 +15,7 @@
                             </div>
                         @endif
 
-                        <table class="table table-striped table-border">
+                        <table width="100%" class="table table-striped table-border">
                             <tr>
                                 <th>User name</th>
                                 <th>Email</th>

@@ -20,7 +20,7 @@
           </div>
           <!-- /.card-header -->
           <div class="card-body">
-            <table class="table table-striped table-bordered table-sm" id="table">
+            <table width="100%" class="table table-striped table-bordered table-sm" id="table">
                <thead class="thead-light">
                   <tr>
                      <th hidden>league_id</th>

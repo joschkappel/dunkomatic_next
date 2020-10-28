@@ -1,7 +1,7 @@
 
 <div class="card-body" id="pivottable" >
 @isset($scheme)
-                    <table class="table table-hover table-striped table-bordered table-sm" id="table">
+                    <table width="100%" class="table table-hover table-striped table-bordered table-sm" id="table">
                         <thead class="thead-light">
                           <tr>
                             @foreach ($scheme[0] as $key => $value)

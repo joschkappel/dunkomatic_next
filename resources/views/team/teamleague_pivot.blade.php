@@ -1,4 +1,4 @@
-<table class="table table-hover table-striped table-sm" id="pivottable">
+<table width="100%" class="table table-hover table-striped table-sm" id="pivottable">
     <tbody>
         @isset($plan)
 

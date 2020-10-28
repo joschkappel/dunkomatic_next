@@ -29,7 +29,7 @@
             <!-- /.card-header -->
 
             <div class="card-body">
-              <table class="table table-hover table-bordered table-sm" id="table">
+              <table width="100%" class="table table-hover table-bordered table-sm" id="table">
                   <thead>
                     <tr>
                       @foreach ($test[0] as $key => $value)

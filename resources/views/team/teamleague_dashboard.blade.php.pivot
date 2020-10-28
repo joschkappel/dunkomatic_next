@@ -14,7 +14,7 @@
                     <form class="form-horizontal" id="teamLeaguePlanForm">
 
                         @csrf
-                        <table class="table table-hover  table-sm" id="table">
+                        <table width="100%" class="table table-hover  table-sm" id="table">
                             <thead class="thead-light">
                                 <tr class="d-flex">
                                     <th class="text-center col-2"> </th>
