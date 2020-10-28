@@ -12,7 +12,7 @@ class TestDatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UserSeeder::class);
+        // $this->call(UsersTableSeeder::class);
         $this->call([
           SettingsTableSeeder::class,
           RegionsTableSeeder::class,
