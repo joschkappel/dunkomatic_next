@@ -20,23 +20,21 @@ class ProcessLeagueReports implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $export_folder;
-    private $regions = array();
+    private $region;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($region_code)
+    public function __construct(Region $region)
     {
         // make sure folders are there
         $this->export_folder = 'exports/'.Str::of(config('global.season'))->replace('/','_').'/'.config('dunkomatic.report_folder_leagues');
         Storage::makeDirectory($this->export_folder);
 
         // set report scope
-        $region = Region::where('code',$region_code)->first();
-        $this->regions[] = $region->code;
-        $this->regions[] = $region->hq;
+        $this->region = $region;
     }
 
     /**
@@ -47,7 +45,7 @@ class ProcessLeagueReports implements ShouldQueue
     public function handle()
     {
         // get all leagues with games
-        $leagues = League::whereIn('region', $this->regions)->get();
+        $leagues = League::leagueRegion($this->region->code)->get();
         foreach ($leagues as $l){
             Excel::store(new LeagueGamesExport($l->id), $this->export_folder.'/'.Str::of($l->shortname)->replace('/','_').'_games.xlsx');
             Excel::store(new LeagueGamesExport($l->id), $this->export_folder.'/'.Str::of($l->shortname)->replace('/','_').'_games.html');

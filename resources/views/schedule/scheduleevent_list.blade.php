@@ -3,7 +3,7 @@
 @section('plugins.Datatables',true)
 @section('plugins.Moment',true)
 @section('plugins.TempusDominus',true)
-@section('plugins.DateRangePicker',false)
+{{-- @section('plugins.DateRangePicker',false) --}}
 
 
 @section('content')

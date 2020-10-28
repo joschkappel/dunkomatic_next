@@ -40,6 +40,7 @@ Route::group([
   Route::get('/user', 'UserController@index')->name('admin.user.index')->middleware('auth')->middleware('regionadmin');
   Route::get('/audit', 'AuditController@index')->name('admin.audit.index')->middleware('auth')->middleware('regionadmin');
   Route::get('/audit/dt', 'AuditController@datatable')->name('admin.audit.dt')->middleware('auth')->middleware('regionadmin');
+  Route::get('/region/{region}', 'RegionController@edit')->name('region.edit')->middleware('regionadmin');
 
   Route::get('club/index_stats', 'ClubController@index_stats')->name('club.index_stats');
   Route::get('club/{id}/list', 'ClubController@dashboard')->name('club.dashboard');
@@ -95,6 +96,7 @@ Route::post('/user/{user}/block', 'UserController@block')->name('admin.user.bloc
 Route::put('/user/{user_id}', 'UserController@update')->name('admin.user.update')->middleware('auth');
 Route::put('/user/{user}/allowance', 'UserController@allowance')->name('admin.user.allowance')->middleware('auth')->middleware('regionadmin');
 Route::put('/member/{member}', 'MemberController@update')->name('member.update');
+Route::put('/region/{region}', 'RegionController@update')->name('region.update')->middleware('auth')->middleware('regionadmin');
 
 Route::get('club/region/sb', 'ClubController@sb_region')->name('club.sb.region');
 Route::get('club/list_stats', 'ClubController@list_stats')->name('club.list_stats');

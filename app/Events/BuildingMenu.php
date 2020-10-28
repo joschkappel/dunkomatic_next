@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Menu\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class BuildingMenu
 {
@@ -20,6 +21,8 @@ class BuildingMenu
      */
     public function __construct(Builder $menu)
     {
-        $this->menu = $menu;
+        if ( Auth::check() ){
+          $this->menu = $menu;
+        }
     }
 }

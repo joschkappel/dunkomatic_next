@@ -8,7 +8,15 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Jobs\ProcessLeagueReports;
 use App\Jobs\ProcessNewSeason;
 use App\Jobs\ProcessDbCleanup;
-use App\Jobs\ProcessRegionJobs;
+
+use App\Jobs\EmailValidation;
+use App\Jobs\MissingLeadCheck;
+use App\Jobs\GameOverlaps;
+use App\Jobs\GameNotScheduled;
+
+use App\Models\Region;
+use App\Models\User;
+use App\Enums\JobFrequencyType;
 
 class Kernel extends ConsoleKernel
 {
@@ -29,13 +37,22 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->job(new ProcessLeagueReports('HBV'), 'exports')->daily();
-        //$schedule->job(new ProcessLeagueReports('HBV'), 'exports')->everyMinute();
-        $schedule->job(new ProcessLeagueReports('HBVDA'), 'exports')->daily();
-        $schedule->job(new ProcessDbCleanup(), 'janitor')->weekly();//everyFiveMinutes();//
-        $schedule->job(new ProcessRegionJobs(), 'janitor')->weekly();
+        $schedule->job(new ProcessDbCleanup(), 'janitor')->weekly();//everyFiveMinutes()
         $schedule->job(new ProcessNewSeason(),'janitor')->yearly();
         $schedule->command('telescope:prune')->daily();
+
+        // schedule region specific jobs
+        $regions = Region::all();
+
+        foreach ($regions as $r){
+          if (User::regionAdmin($r->code)->exists()){
+              $this->scheduleRegionTask($schedule, new GameOverlaps($r), $r->job_game_overlaps);
+              $this->scheduleRegionTask($schedule, new GameNotScheduled($r), $r->job_game_notime);
+              $this->scheduleRegionTask($schedule, new MissingLeadCheck($r), $r->job_noleads);
+              $this->scheduleRegionTask($schedule, new EmailValidation($r), $r->job_email_valid);
+              $this->scheduleRegionTask($schedule, new ProcessLeagueReports($r), $r->job_league_reports);
+          }
+        }
     }
 
     /**
@@ -49,4 +66,35 @@ class Kernel extends ConsoleKernel
 
         require base_path('routes/console.php');
     }
+
+    /** schedule tasks
+    *
+    *
+    */
+    protected function scheduleRegionTask($schedule, $job, $frequency)
+    {
+      // uncomment for easy testing of jobs
+      // $schedule->job($job,'janitor')->everyFiveMinutes();
+      // return true;
+        switch ($frequency) {
+          case JobFrequencyType::daily :
+            $schedule->job($job,'janitor')->daily();
+            //$schedule->job($job,'janitor')->everyTwoMinutes();
+            break;
+          case JobFrequencyType::weekly :
+            $schedule->job($job,'janitor')->weekly();
+            //$schedule->job($job,'janitor')->everyThreeMinutes();
+            break;
+          case JobFrequencyType::biweekly :
+            $schedule->job($job,'janitor')->twiceMonthly();
+            //$schedule->job($job,'janitor')->everyFourMinutes();
+            break;
+          case JobFrequencyType::monthly :
+            $schedule->job($job,'janitor')->monthly();
+            //$schedule->job($job,'janitor')->everyFiveMinutes();
+            break;
+          }
+      return true;
+    }
+
 }

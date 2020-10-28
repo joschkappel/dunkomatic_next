@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+use App\Enums\JobFrequencyType;
+
 class CreateRegionsTable extends Migration
 {
     /**
@@ -19,6 +21,14 @@ class CreateRegionsTable extends Migration
             $table->string('name');
             $table->string('hq')->nullable();
             $table->timestamps();
+            $table->unsignedInteger('job_game_overlaps')->default(JobFrequencyType::never);
+            $table->unsignedInteger('game_slot')->default(120);
+            $table->unsignedInteger('job_game_notime')->default(JobFrequencyType::never);
+            $table->unsignedInteger('job_noleads')->default(JobFrequencyType::never);
+            $table->unsignedInteger('job_email_valid')->default(JobFrequencyType::never);
+            $table->unsignedInteger('job_league_reports')->default(JobFrequencyType::never);
+            $table->unsignedInteger('job_club_reports')->default(JobFrequencyType::never);
+            $table->unsignedInteger('job_exports')->default(JobFrequencyType::never);            
         });
     }
 

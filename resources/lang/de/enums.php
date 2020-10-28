@@ -3,6 +3,7 @@
 use App\Enums\LeagueAgeType;
 use App\Enums\LeagueGenderType;
 use App\Enums\Role;
+use App\Enums\JobFrequencyType;
 
 return [
 
@@ -29,4 +30,13 @@ return [
       Role::RegionLead => 'Bezirskvorstand',
       Role::Admin => 'Systemverwalter'
     ],
+
+    JobFrequencyType::class => [
+      JobFrequencyType::never => 'nie',
+      JobFrequencyType::daily => 'täglich',
+      JobFrequencyType::weekly => 'wöchentlich',
+      JobFrequencyType::biweekly => 'zweiwöchentlich',
+      JobFrequencyType::monthly => 'monatlich'
+    ]
+
 ];

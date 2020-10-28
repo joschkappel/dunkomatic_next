@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Region;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
+
+use BenSampo\Enum\Rules\EnumValue;
+use App\Enums\JobFrequencyType;
+
+use App\Models\Region;
+use App\Models\User;
 
 class RegionController extends Controller
 {
@@ -39,26 +43,7 @@ class RegionController extends Controller
 
       return Response::json($response);
     }
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
     /**
      * Display the specified resource.
@@ -77,9 +62,10 @@ class RegionController extends Controller
      * @param  \App\Region  $region
      * @return \Illuminate\Http\Response
      */
-    public function edit(Region $region)
+    public function edit($language, Region $region)
     {
-        //
+        Log::info('Editing region'.$region->code);
+        return view('region/region_edit', ['region'=>$region, 'frequencytype' => JobFrequencyType::getInstances()] );
     }
 
     /**
@@ -91,17 +77,21 @@ class RegionController extends Controller
      */
     public function update(Request $request, Region $region)
     {
-        //
+        Log::debug(print_r($request->all(),true));
+        $data = $request->validate( [
+            'name' => 'required|max:40',
+            'game_slot' => 'required|integer|in:60,75,90,105,120,135,150',
+            'job_noleads' => ['required', new EnumValue(JobFrequencyType::class, false)],
+            'job_game_notime' => ['required', new EnumValue(JobFrequencyType::class, false)],
+            'job_game_overlaps' => ['required', new EnumValue(JobFrequencyType::class, false)],
+            'job_email_valid' => ['required', new EnumValue(JobFrequencyType::class, false)],
+        ]);
+
+        Log::debug(print_r($data,true));
+
+        $check = Region::find($region->id)->update($data);
+        return redirect()->route('home',['language'=>app()->getLocale()]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Region  $region
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Region $region)
-    {
-        //
-    }
+
 }

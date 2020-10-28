@@ -10,6 +10,7 @@ use Datatables;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
@@ -45,25 +46,19 @@ class ClubGameController extends Controller
         //                ->havingRaw('COUNT(*) > ?', [1])
         //                ->pluck('game_date');
 
-        $select90 = 'SELECT distinct ga.id
-               FROM games ga
-               JOIN games gb on ga.game_time <= date_add(gb.game_time, INTERVAL 89 minute)
-                   and date_add(ga.game_time,interval 89 minute) >= gb.game_time
-                   and ga.club_id_home=gb.club_id_home and ga.gym_no = gb.gym_no and ga.game_date = gb.game_date
-                   and ga.id != gb.id
-               WHERE ga.club_id_home='.$club->id.' ORDER BY ga.game_date DESC, ga.club_id_home ASC';
+        //get minimum game slot
+        $game_slot = Auth::user()->user_region->game_slot;
+        $min_slot = $game_slot - 1;
 
-         $ogames90 = collect(DB::select($select90))->pluck('id');
-
-         $select60 = 'SELECT distinct ga.id
+         $select = 'SELECT distinct ga.id
                 FROM games ga
-                JOIN games gb on ga.game_time <= date_add(gb.game_time, INTERVAL 59 minute)
-                    and date_add(ga.game_time,interval 59 minute) >= gb.game_time
+                JOIN games gb on ga.game_time <= date_add(gb.game_time, INTERVAL '.$min_slot.' minute)
+                    and date_add(ga.game_time,interval '.$min_slot.' minute) >= gb.game_time
                     and ga.club_id_home=gb.club_id_home and ga.gym_no = gb.gym_no and ga.game_date = gb.game_date
                     and ga.id != gb.id
                 WHERE ga.club_id_home='.$club->id.' ORDER BY ga.game_date DESC, ga.club_id_home ASC';
 
-         $ogames60 = collect(DB::select($select60))->pluck('id');
+         $ogames = collect(DB::select($select))->pluck('id');
 
         //Log::debug(print_r($ogames,true));
 
@@ -83,15 +78,11 @@ class ClubGameController extends Controller
                       '">'.$game->game_no.' <i class="fas fa-arrow-circle-right"></i></a>';
               return array('display' =>$link, 'sort'=>$game->game_no);
           })
-          ->addColumn('duplicate', function ($game) use ($ogames90, $ogames60){
+          ->addColumn('duplicate', function ($game) use ($ogames,$game_slot){
             $warning='';
-            if ($ogames60->contains($game->id)){
-              Log::info('found it in 60');
-              $warning = '<div class="text-center"><spawn class="bg-danger px-2"> <i class="fa fa-exclamation-triangle"></i>60</spawn></div>';
-            };
-            if ($ogames90->contains($game->id)){
-              Log::info('found it in 90');
-              $warning = $warning.'<div class="text-center"><spawn class="bg-warning px-2"> <i class="fa fa-exclamation-triangle"></i>90</spawn></div>';
+            if ($ogames->contains($game->id)){
+              //Log::info('found it in ');
+              $warning = '<div class="text-center"><spawn class="bg-danger px-2"> <i class="fa fa-exclamation-triangle"></i>'.$game_slot.'</spawn></div>';
             };
             return $warning;
           })
