@@ -76,19 +76,19 @@ class League extends Model implements Auditable
       return $this->hasMany('App\Models\Game');
   }
 
-  // public function games_notime()
-  // {
-  //     return $this->hasMany('App\Models\Game');
-  // }
-  //
-  // public function games_noshow()
-  // {
-  //     return $this->hasMany('App\Models\Game');
-  // }
-  // public function games_overlap()
-  // {
-  //     return $this->hasMany('App\Models\Game');
-  // }
+  public function games_notime()
+  {
+      return $this->hasMany('App\Models\Game');
+  }
+  
+  public function games_noshow()
+  {
+      return $this->hasMany('App\Models\Game');
+  }
+  public function games_overlap()
+  {
+      return $this->hasMany('App\Models\Game');
+  }
   public function scopeUserRegion($query)
   {
       return $query->where('region',Auth::user()->region);
