@@ -21,8 +21,6 @@ jobs:
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
 #    - name: Install NPM Dependencies
 #      run: npm install
-    - name: Generate key
-      run: php artisan key:generate
     - name: Create Database
       run: |
         sudo systemctl start mysql
@@ -31,6 +29,8 @@ jobs:
       run: php artisan migrate
     - name: Seed static tables
       run: php artisan db:seed --class=TestDatabaseSeeder
+    - name: Generate key
+      run: php artisan key:generate
     - name: Prepare Chrome
       run: |
        cd ~
