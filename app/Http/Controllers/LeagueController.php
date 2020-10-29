@@ -19,6 +19,8 @@ use Datatables;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Builder;
 
 use App\Notifications\ClubAssigned;
@@ -250,7 +252,14 @@ class LeagueController extends Controller
                       );
               }
               $data['assigned_teams'] = $assigned_team;
-              Log::debug(print_r($assigned_team,true));
+              //Log::debug(print_r($assigned_team,true));
+              $directory = 'exports/'.Str::of(config('global.season'))->replace('/','_').'/'.config('dunkomatic.report_folder_leagues');
+              $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($league){
+                return (strpos($value,$league->shortname) !== false);
+              });
+
+              //Log::debug(print_r($reports,true));
+              $data['files'] = $reports;
 
               return view('league/league_dashboard', $data);
             }

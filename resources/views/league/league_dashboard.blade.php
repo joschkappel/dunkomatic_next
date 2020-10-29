@@ -172,7 +172,11 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-
+          <div class="list-group overflow-auto">
+          @foreach ($files as $f)
+               <a href="#" class="list-group-item list-group-item-action list-group-item-info"> {{ basename($f) }}</a>
+          @endforeach
+        </div>
         </div>
         <!-- /.card-body -->
         <div class="card-footer">
