@@ -52,16 +52,7 @@ class RegistrationTest extends TestCase
                            'reason_join'=> 'am testing',
                            'region' => $region->id
                          ])
-         // $response->assertStatus(302)
-         //          ->assertHeader('Location', url('/home'));
-         // $response = $this->get('home');
-         // $response->assertStatus(302)
-         //          ->assertHeader('Location', '/de/home');
-         // $response = $this->get('de/home');
-         // $response->assertStatus(302)
-         //          ->assertHeader('Location', url('/de/email/verify'));
-         // $response = $this->get('de/email/verify');
-                  ->assertStatus(200);
+                          ->assertStatus(200);
          $this->assertDatabaseHas('users', ['email' => 'test@gmail.com']);
          $user =  User::where("email","=","test@gmail.com")->first();
 

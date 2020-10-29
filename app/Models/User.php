@@ -8,6 +8,9 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
 use App\Models\Member;
 
 class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
@@ -73,5 +76,45 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     public function scopeIsRole($query, $role)
     {
         return $query->first()->member->memberships()->isRole($role)->exists();
+    }
+    public function getLeagueFilecountAttribute()
+    {
+      $directory = 'exports/'.Str::of(config('global.season'))->replace('/','_').'/'.config('dunkomatic.report_folder_leagues');
+      $llist = $this->member->leagues()->pluck('shortname')->implode('|');
+      $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
+        return (preg_match('('.$llist.')', $value) === 1);
+        //return (strpos($value,$llist[0]) !== false);
+      });
+      return count($reports);
+    }
+    public function getLeagueFilenamesAttribute()
+    {
+      $directory = 'exports/'.Str::of(config('global.season'))->replace('/','_').'/'.config('dunkomatic.report_folder_leagues');
+      $llist = $this->member->leagues()->pluck('shortname')->implode('|');
+      $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
+        return (preg_match('('.$llist.')', $value) === 1);
+        //return (strpos($value,$llist[0]) !== false);
+      });
+      return $reports;
+    }
+    public function getClubFilecountAttribute()
+    {
+      $directory = 'exports/'.Str::of(config('global.season'))->replace('/','_').'/'.config('dunkomatic.report_folder_clubs');
+      $llist = $this->member->clubs()->pluck('shortname')->implode('|');
+      $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
+        return (preg_match('('.$llist.')', $value) === 1);
+        //return (strpos($value,$llist[0]) !== false);
+      });
+      return count($reports);
+    }
+    public function getClubFilenamesAttribute()
+    {
+      $directory = 'exports/'.Str::of(config('global.season'))->replace('/','_').'/'.config('dunkomatic.report_folder_clubs');
+      $llist = $this->member->clubs()->pluck('shortname')->implode('|');
+      $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
+        return (preg_match('('.$llist.')', $value) === 1);
+        //return (strpos($value,$llist[0]) !== false);
+      });
+      return $reports;
     }
 }
