@@ -153,3 +153,6 @@ Route::get('schedule/size/{size}/sb', 'ScheduleController@sb_size')->name('sched
 Route::resource('schedule', 'ScheduleController')->except('index','create','edit');
 Route::get('region/admin/sb', 'RegionController@admin_sb')->name('region.admin.sb');
 Route::resource('message', 'MessageController')->except('index','create','edit');
+
+Route::get('file/exports/{season}/{type}/{file}', 'FileDownloadController@get_file')->name('file.get');
+Route::get('archive/{user}', 'FileDownloadController@get_archive')->name('archive.get');

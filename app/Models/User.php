@@ -70,5 +70,8 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     {
         return $query->where('region',$region);
     }
-
+    public function scopeIsRole($query, $role)
+    {
+        return $query->first()->member->memberships()->isRole($role)->exists();
+    }
 }

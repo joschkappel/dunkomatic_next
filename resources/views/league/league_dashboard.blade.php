@@ -174,7 +174,7 @@
         <div class="card-body">
           <div class="list-group overflow-auto">
           @foreach ($files as $f)
-               <a href="#" class="list-group-item list-group-item-action list-group-item-info"> {{ basename($f) }}</a>
+               <a href="{{ route('file.get', ['filename'=>$f])}}" class="list-group-item list-group-item-action list-group-item-info"> {{ basename($f) }}</a>
           @endforeach
         </div>
         </div>
