@@ -44,7 +44,7 @@ trait EnumeratesValues
     /**
      * The methods that can be proxied.
      *
-     * @var array
+     * @var string[]
      */
     protected static $proxies = [
         'average',
@@ -197,7 +197,7 @@ trait EnumeratesValues
      */
     public function dd(...$args)
     {
-        call_user_func_array([$this, 'dump'], $args);
+        $this->dump(...$args);
 
         exit(1);
     }
