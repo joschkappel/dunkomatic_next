@@ -16,6 +16,11 @@ class RegisterTest extends DuskTestCase
 
     use DatabaseMigrations;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->artisan('db:seed', ['--class' => 'TestDatabaseSeeder']);
+    }
 
     /**
      * test registration
