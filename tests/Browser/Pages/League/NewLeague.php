@@ -39,4 +39,12 @@ class NewLeague extends Page
             '@element' => '#selector',
         ];
     }
+
+    public function create_league( Browser $browser, $code, $name ){
+      $browser->type('shortname',$code)
+              ->type('name',$name)
+              ->select2('.js-sel-schedule')
+              ->screenshot('Neue_runde')
+              ->press('Senden');
+    }
 }

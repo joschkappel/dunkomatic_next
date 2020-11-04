@@ -47,4 +47,10 @@ class EditLeague extends Page
             '@element' => '#selector',
         ];
     }
+    public function modify_league( Browser $browser, $code, $name ){
+      $browser->type('shortname',$code)
+              ->type('name',$name)
+              ->screenshot('Neue_runde2')
+              ->press('Senden');
+    }
 }

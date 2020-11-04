@@ -2,11 +2,13 @@
 
 namespace Tests\Browser\Pages\Club;
 
+use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Dusk\Browser;
 use Tests\Browser\Pages\Page;
 
 class NewClub extends Page
 {
+
     /**
      * Get the URL for the page.
      *
@@ -36,7 +38,20 @@ class NewClub extends Page
     public function elements()
     {
         return [
-            '@element' => '#selector',
+            '@region' => 'input[name=region]',
+            '@club_no' => 'input[name=club_no]',
+            '@shortname' => 'input[name=shortname]',
+            '@name' => 'input[name=name]',
+            '@url' => 'input[name=url]',
         ];
+    }
+
+    public function new_club(Browser $browser, $club_name, $club_no, $url){
+      $browser->value('@shortname','VVVV')
+              ->value('@region','HBVDA')
+              ->value('@name',$club_name)
+              ->value('@club_no',$club_no)
+              ->value('@url', $url)
+              ->press('Senden');
     }
 }

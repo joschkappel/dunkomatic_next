@@ -33,39 +33,26 @@ class ClubTest extends DuskTestCase
     {
         $u = User::regionadmin('HBVDA')->first();
         $club_no = '1234567';
-        $club_no2 = '1122334';
+        $club_no_new = '1122334';
+        $club_name = 'VVV';
+        $club_name_new = 'VVVXXX';
 
-        $this->browse(function ($browser) use ($u, $club_no, $club_no2) {
-          $browser->loginAs($u)->visit('/de/club')
-                  ->assertSee('Vereinsliste')
-                  ->clickLink('Neuer Verein')
-                  ->on(new NewClub)
-                  ->assertSee('Neuen Verein')
-                  ->type('region','HBVDA')
-                  ->type('shortname','VVVV')
-                  ->type('name','Verein VVV')
-                  ->type('club_no',$club_no)
-                  ->type('url', $this->faker->url)
-                  ->press('Senden');
+        $this->browse(function ($browser) use ($u, $club_no, $club_name) {
+          $browser->loginAs($u)
+                  ->visit(new NewClub)
+                  ->new_club($club_name, $club_no, $this->faker->url);
           });
 
           $this->assertDatabaseHas('clubs', ['club_no' => $club_no]);;
 
           $club = Club::where('shortname','VVVV')->first();
 
-          $this->browse(function ($browser) use ($u, $club_no, $club_no2, $club) {
-            $browser->visit('/de/club/'.$club->id.'/list')
-                    ->click('@btn-edit')
-                    ->on(new EditClub($club->id))
-                  ->assertSee('Ändere die Vereinsdaten')
-                  ->type('club_no',$club_no2)
-                  ->type('name','Verein VVVXXX')
-                  ->press('Senden')
-                  ->assertPathIs('/de/club/'.$club->id.'/list')
-                  ->assertSee('VVVXXX');
+          $this->browse(function ($browser) use ($club_name_new, $club_no_new, $club) {
+            $browser->visit(new EditClub($club->id))
+                    ->modify_clubno($club_name_new, $club_no_new);
           });
 
-          $this->assertDatabaseHas('clubs', ['club_no' => $club_no2]);
+          $this->assertDatabaseHas('clubs', ['club_no' => $club_no_new]);
 
 
     }

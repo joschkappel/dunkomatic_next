@@ -43,8 +43,17 @@ class EditClub extends Page
      */
     public function elements()
     {
-        return [
-            '@element' => '#selector',
-        ];
+      return [
+          '@region' => 'input[name=region]',
+          '@club_no' => 'input[name=club_no]',
+          '@shortname' => 'input[name=shortname]',
+          '@name' => 'input[name=name]',
+          '@url' => 'input[name=url]',
+      ];
+    }
+    public function modify_clubno(Browser $browser, $club_name, $club_no){
+      $browser->value('@name',$club_name)
+              ->value('@club_no',$club_no)
+              ->press('Senden');
     }
 }
