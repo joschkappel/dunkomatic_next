@@ -17,6 +17,7 @@ class TestDatabaseSeeder extends Seeder
           SettingsTableSeeder::class,
           RegionsTableSeeder::class,
           UsersTableSeeder::class,
+          TestUserSeeder::class,
           LeagueTeamSizesTableSeeder::class,
           LeagueTeamCharsTableSeeder::class,
         ]);

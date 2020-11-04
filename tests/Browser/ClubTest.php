@@ -11,28 +11,16 @@ use Tests\DuskTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Browser\Pages\Club\NewClub;
 use Tests\Browser\Pages\Club\EditClub;
+use TestDatabaseSeeder;
 
 class ClubTest extends DuskTestCase
 {
     use DatabaseMigrations;
-    private $user;
-    private $member;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->artisan('db:seed --class=TestDatabaseSeeder');
-        $this->user = User::factory()->create([
-                  'email' => 'taylor3@laravel.com',
-                  'region' => 'HBV',
-                  'regionadmin' => True,
-                  'approved_at' => now(),
-              ]);
-        $this->member = Member::factory()->create([
-                        'email1' => 'taylor3@laravel.com',
-                        'user_id' => $this->user->id,
-                      ]);
-
+        $this->seed(TestDatabaseSeeder::class);
     }
 
     use withFaker;
@@ -43,7 +31,7 @@ class ClubTest extends DuskTestCase
      */
     public function create_club()
     {
-        $u = $this->user;
+        $u = User::regionadmin('HBVDA')->first();
         $club_no = '1234567';
         $club_no2 = '1122334';
 
@@ -53,19 +41,22 @@ class ClubTest extends DuskTestCase
                   ->clickLink('Neuer Verein')
                   ->on(new NewClub)
                   ->assertSee('Neuen Verein')
-                  ->type('region','HBV')
+                  ->type('region','HBVDA')
                   ->type('shortname','VVVV')
                   ->type('name','Verein VVV')
                   ->type('club_no',$club_no)
                   ->type('url', $this->faker->url)
                   ->press('Senden');
+          });
 
           $this->assertDatabaseHas('clubs', ['club_no' => $club_no]);;
-          $club = Club::first();
 
-          $browser->visit('/de/club');
-          $browser->waitUntil('!$.active');
-          $browser->assertSee('VVVV')
+          $club = Club::where('shortname','VVVV')->first();
+
+          $this->browse(function ($browser) use ($u, $club_no, $club_no2, $club) {
+            $browser->visit('/de/club')
+                  ->waitUntil('!$.active')
+                  ->assertSee('VVVV')
                   ->clickLink('VVVV')
                   ->assertPathIs('/de/club/'.$club->id.'/list')
                   ->clickLink('Vereinsdaten ändern')
@@ -76,10 +67,10 @@ class ClubTest extends DuskTestCase
                   ->press('Senden')
                   ->assertPathIs('/de/club/'.$club->id.'/list')
                   ->assertSee('VVVXXX');
+          });
 
-        $this->assertDatabaseHas('clubs', ['club_no' => $club_no2]);
+          $this->assertDatabaseHas('clubs', ['club_no' => $club_no2]);
 
-        });
 
     }
 

@@ -7,6 +7,7 @@ use App\Models\Member;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
+use TestDatabaseSeeder;
 
 class LanguageTest extends DuskTestCase
 {
@@ -17,26 +18,19 @@ class LanguageTest extends DuskTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->artisan('db:seed --class=TestDatabaseSeeder');
-        $this->user = User::factory()->create([
-                  'email' => 'taylor3@laravel.com',
-                  'region' => 'HBV',
-                  'approved_at' => now(),
-              ]);
-        $this->member = Member::factory()->create([
-                        'email1' => 'taylor3@laravel.com',
-                        'user_id' => $this->user->id,
-                      ]);
+        $this->seed(TestDatabaseSeeder::class);
 
     }
     /**
      * A Dusk test example.
+     * @test
+     * @group i18n
      *
      * @return void
      */
     public function testLanguageSwitch()
     {
-        $u = $this->user;
+        $u = User::regionadmin('HBVDA')->first();
         $this->browse(function ($browser) use ($u) {
 
             $browser->loginAs($u)->visit('/de/home')

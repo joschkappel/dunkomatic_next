@@ -33,6 +33,7 @@ class RegisterTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/de')
+                    ->screenshot('start')
                     ->assertSee('DunkOmatic Next');
 
             if ($browser->seeLink('Registrieren')) {
