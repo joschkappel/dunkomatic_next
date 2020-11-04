@@ -15,26 +15,7 @@ class RegisterTest extends DuskTestCase
 {
 
     use DatabaseMigrations;
-    protected $region = 'HBVDA';
-    protected $user;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->artisan('db:seed', ['--class' => 'TestDatabaseSeeder']);
-        // create region admin
-        $this->user = User::factory()->create([
-                  'email' => 'taylor3@laravel.com',
-                  'region' => $this->region,
-                  'regionadmin' => True,
-                  'approved_at' => now(),
-              ]);
-        $this->member = Member::factory()->create([
-                        'email1' => 'taylor3@laravel.com',
-                        'user_id' => $this->user->id,
-                      ]);
-
-    }
 
     /**
      * test registration
