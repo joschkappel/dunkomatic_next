@@ -2,7 +2,7 @@
 /public/hot
 /public/storage
 /storage/*.key
-# vendor/*
+vendor/*
 # !vendor/laravel/
 # vendor/laravel/*
 # !vendor/laravel/framework/
