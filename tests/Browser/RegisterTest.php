@@ -9,6 +9,7 @@ use Tests\DuskTestCase;
 use App\Models\User;
 use App\Models\Member;
 use App\Models\Region;
+use Database\Seeders\TestDatabaseSeeder;
 
 
 class RegisterTest extends DuskTestCase
@@ -19,7 +20,7 @@ class RegisterTest extends DuskTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->artisan('db:seed', ['--class' => 'TestDatabaseSeeder']);
+        $this->seed(TestDatabaseSeeder::class);
     }
 
     /**
@@ -49,7 +50,7 @@ class RegisterTest extends DuskTestCase
                       ->press('Registrieren')
                       ->screenshot('Registered_user')
                       ->assertPathIs('/de/email/verify')
-                      ->assertSee('Dein Account muss noch bestätigt werden');
+                      ->assertSee('Dein Account muss noch bes');
             }
         });
 
