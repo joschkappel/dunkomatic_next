@@ -34,8 +34,8 @@ class RegisterTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/de')
-                    ->screenshot('start')
-                    ->assertSee('DunkOmatic Next');
+                    ->assertSee('DunkOmatic Next')
+                    ->screenshot('start');
 
             if ($browser->seeLink('Registrieren')) {
               $browser->clickLink('Registrieren')
@@ -48,13 +48,14 @@ class RegisterTest extends DuskTestCase
                       ->type('reason_join','am testing')
                       ->select2('.sel-region')
                       ->press('Registrieren')
-                      ->screenshot('Registered_user')
+//                      ->screenshot('Registered_user')
                       ->assertPathIs('/de/email/verify')
                       ->assertSee('Dein Account muss noch bes');
             }
         });
 
-        $newuser = User::where('name','tester')->first();
+        $this->assertDatabaseHas('users', ['name' => 'tester']);
+
 
     }
 }
