@@ -7,19 +7,15 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Tests\TestUsers;
+
 use App\Models\Club;
 use App\Models\Region;
+use App\Models\User;
 use Illuminate\Support\Facades\Log;
+use TestDatabaseSeeder;
 
 class CreateClubTest extends TestCase
 {
-    protected $testUser;
-
-    public function __construct() {
-        $this->testUser = new TestUsers();
-        parent::__construct();
-    }
 
     use RefreshDatabase;
 
@@ -27,8 +23,12 @@ class CreateClubTest extends TestCase
     public function user_can_create_new_club()
     {
 
-      $region_user = $this->testUser->getRegionUser();
-      $region = Region::factory()->create();
+      $this->seed(TestDatabaseSeeder::class);
+      $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
+      $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
+
+      $region = Region::where('code','HBVDA')->first();
+      $region_user = User::regionadmin($region->code)->first();
 
       $response = $this->actingAs($region_user)
                         ->post('club', [
@@ -40,7 +40,7 @@ class CreateClubTest extends TestCase
                       ]);
 
       $club =  Club::where("club_no","=","9999")->first();
-      Log::debug(print_r($club,true));
+      //Log::debug(print_r($club,true));
       $this->assertDatabaseHas('clubs', ['club_no' => '9999']);
 
       $response
@@ -51,7 +51,13 @@ class CreateClubTest extends TestCase
     /** @test  **/
     public function club_is_not_created_if_validation_fails()
     {
-      $region_user = $this->testUser->getRegionUser();
+
+      $this->seed(TestDatabaseSeeder::class);
+      $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
+      $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
+
+      $region = Region::where('code','HBVDA')->first();
+      $region_user = User::regionadmin($region->code)->first();
 
       $response = $this->actingAs($region_user)
                         ->post('club', [
@@ -70,10 +76,16 @@ class CreateClubTest extends TestCase
     /** @test  **/
     public function club_is_not_created_with_invalid_url()
     {
+      $this->seed(TestDatabaseSeeder::class);
+      $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
+      $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
+
+      $region = Region::where('code','HBVDA')->first();
+      $region_user = User::regionadmin($region->code)->first();
+
       $this->withoutExceptionHandling();
 
       $cases = ['//invalid-url.com', '/invalid-url', 'foo.com'];
-      $region_user = $this->testUser->getRegionUser();
 
       foreach ($cases as $case) {
           try {
@@ -106,7 +118,12 @@ class CreateClubTest extends TestCase
     public function club_is_not_created_with_invalid_shortname()
     {
       $this->withoutExceptionHandling();
-      $region_user = $this->testUser->getRegionUser();
+      $this->seed(TestDatabaseSeeder::class);
+      $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
+      $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
+
+      $region = Region::where('code','HBVDA')->first();
+      $region_user = User::regionadmin($region->code)->first();
 
       try {
         $response = $this->actingAs($region_user)
@@ -151,8 +168,13 @@ class CreateClubTest extends TestCase
     public function user_can_delete_club()
     {
 
-      $region_user = $this->testUser->getRegionUser();
-      $region = Region::factory()->create();
+      $this->seed(TestDatabaseSeeder::class);
+      $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
+      $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
+
+      $region = Region::where('code','HBVDA')->first();
+      $region_user = User::regionadmin($region->code)->first();
+
       $response = $this->actingAs($region_user)
                         ->post('club', [
                           'shortname' => 'TEST',

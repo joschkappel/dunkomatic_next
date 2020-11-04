@@ -16,6 +16,7 @@ class TestDatabaseSeeder extends Seeder
         $this->call([
           SettingsTableSeeder::class,
           RegionsTableSeeder::class,
+          UsersTableSeeder::class,
           LeagueTeamSizesTableSeeder::class,
           LeagueTeamCharsTableSeeder::class,
         ]);

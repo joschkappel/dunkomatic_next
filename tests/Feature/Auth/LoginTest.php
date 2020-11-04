@@ -6,18 +6,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
-use Tests\TestUsers;
+use App\Models\Region;
 
+use TestDatabaseSeeder;
 
 class LoginTest extends TestCase
 {
-     protected $testUser;
-
-     public function __construct() {
-         $this->testUser = new TestUsers();
-         parent::__construct();
-     }
-
 
      use RefreshDatabase;
 
@@ -33,7 +27,12 @@ class LoginTest extends TestCase
     /** @test **/
      public function test_user_cannot_view_a_login_form_when_authenticated()
      {
-         $region_user = $this->testUser->getRegionUser();
+
+         $this->seed(TestDatabaseSeeder::class);
+         $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
+
+         $region = Region::where('code','HBVDA')->first();
+         $region_user = User::regionadmin($region->code)->first();
 
          $response = $this->actingAs($region_user)->get('/de/login');
 
@@ -43,11 +42,15 @@ class LoginTest extends TestCase
     /** @test **/
      public function test_user_can_login_with_correct_credentials()
      {
-         $region_user = $this->testUser->getRegionUser();
+       $this->seed(TestDatabaseSeeder::class);
+       $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
+
+       $region = Region::where('code','HBVDA')->first();
+       $region_user = User::regionadmin($region->code)->first();
 
          $response = $this->post('/de/login', [
              'email' => $region_user->email,
-             'password' => $this->testUser->getPassword(),
+             'password' => 'password',
          ]);
 
          $response->assertRedirect('/home');
@@ -56,7 +59,11 @@ class LoginTest extends TestCase
 
      public function test_user_cannot_login_with_incorrect_password()
      {
-         $region_user = $this->testUser->getRegionUser();
+       $this->seed(TestDatabaseSeeder::class);
+       $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
+
+       $region = Region::where('code','HBVDA')->first();
+       $region_user = User::regionadmin($region->code)->first();
 
          $response = $this->from('/de/login')->post('/de/login', [
              'email' => $region_user->email,

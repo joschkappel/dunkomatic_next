@@ -25,5 +25,4 @@ class Region extends Model
       return $this->hasMany('App\Models\User','region','code');
   }
 
-
 }

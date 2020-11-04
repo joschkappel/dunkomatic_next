@@ -11,20 +11,12 @@ use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Models\Region;
 use App\Notifications\NewUser;
-use Illuminate\Auth\Notifications\VerifyEmail;
-use Tests\TestUsers;
+use App\Notifications\VerifyEmail;
+use TestDatabaseSeeder;
 
 
 class RegistrationTest extends TestCase
 {
-     protected $testUser;
-
-     public function __construct() {
-         $this->testUser = new TestUsers();
-         parent::__construct();
-     }
-
-
      use RefreshDatabase;
 
      /**
@@ -33,8 +25,12 @@ class RegistrationTest extends TestCase
       */
      public function user_registers()
      {
-         $region_admin = $this->testUser->getRegionUser();
-         $region = Region::factory()->create();
+         $this->seed(TestDatabaseSeeder::class);
+         $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
+         $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
+
+         $region = Region::where('code','HBVDA')->first();
+         $region_admin = User::regionadmin($region->code)->first();
 
          Notification::fake();
          Notification::assertNothingSent();
