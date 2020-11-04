@@ -12,6 +12,7 @@ use Tests\DuskTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Browser\Pages\League\NewLeague;
 use Tests\Browser\Pages\League\EditLeague;
+use Database\Seeders\TestDatabaseSeeder;
 
 class LeagueTest extends DuskTestCase
 {
@@ -21,18 +22,7 @@ class LeagueTest extends DuskTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->artisan('db:seed --class=TestDatabaseSeeder');
-        $this->user = User::factory()->create([
-                  'email' => 'taylor3@laravel.com',
-                  'region' => 'HBVDA',
-                  'regionadmin' => True,
-                  'approved_at' => now(),
-              ]);
-        $this->member = Member::factory()->create([
-                        'email1' => 'taylor3@laravel.com',
-                        'user_id' => $this->user->id,
-                      ]);
-
+        $this->seed(TestDatabaseSeeder::class);
     }
 
     use withFaker;
@@ -43,7 +33,7 @@ class LeagueTest extends DuskTestCase
      */
     public function create_league()
     {
-        $u = $this->user;
+        $u = User::regionadmin('HBVDA')->first();
         $league_code = 'LSX';
         $league_code2 = 'LSY';
 
@@ -67,11 +57,7 @@ class LeagueTest extends DuskTestCase
           $this->assertDatabaseHas('leagues', ['shortname' => $league_code]);
           $league = League::first();
 
-          $browser->visit('/de/league');
-          $browser->waitUntil('!$.active');
-          $browser->assertSee('LSX')
-                  ->clickLink('LSX')
-                  ->assertPathIs('/de/league/'.$league->id.'/list')
+          $browser->visit('/de/league/'.$league->id.'/list')
                   ->clickLink('Rundendaten Ändern')
                   ->on(new EditLeague($league->id))
                   ->assertSee('Ändere die Daten der Spielrunde')

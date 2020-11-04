@@ -54,13 +54,9 @@ class ClubTest extends DuskTestCase
           $club = Club::where('shortname','VVVV')->first();
 
           $this->browse(function ($browser) use ($u, $club_no, $club_no2, $club) {
-            $browser->visit('/de/club')
-                  ->waitUntil('!$.active')
-                  ->assertSee('VVVV')
-                  ->clickLink('VVVV')
-                  ->assertPathIs('/de/club/'.$club->id.'/list')
-                  ->clickLink('Vereinsdaten ändern')
-                  ->on(new EditClub($club->id))
+            $browser->visit('/de/club/'.$club->id.'/list')
+                    ->click('@btn-edit')
+                    ->on(new EditClub($club->id))
                   ->assertSee('Ändere die Vereinsdaten')
                   ->type('club_no',$club_no2)
                   ->type('name','Verein VVVXXX')

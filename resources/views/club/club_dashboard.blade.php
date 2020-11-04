@@ -16,10 +16,10 @@
                   <div class="icon">
                       <i class="fas fa-basketball-ball"></i>
                   </div>
-                  <a href="{{ route('club.edit',['language'=> app()->getLocale(),'club' => $club ]) }}" class="small-box-footer">
+                  <a href="{{ route('club.edit',['language'=> app()->getLocale(),'club' => $club ]) }}" class="small-box-footer" dusk="btn-edit">
                       @lang('club.action.edit') <i class="fas fa-arrow-circle-right"></i>
                   </a>
-                  <a id="deleteClub" href="#" data-toggle="modal" data-target="#modalDeleteClub" class="small-box-footer">
+                  <a id="deleteClub" href="#" data-toggle="modal" data-target="#modalDeleteClub" class="small-box-footer" dusk="btn-delete">
                       @lang('club.action.delete') <i class="fa fa-trash"></i>
                   </a>
               </div>
