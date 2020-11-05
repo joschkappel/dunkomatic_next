@@ -19,7 +19,7 @@ jobs:
         cp tests/DuskTestCase.php.git tests/DuskTestCase.php
     - name: Install Dependencies (PHP vendors)
       #run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
-      run: composer update -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress 
+      run: composer update -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress
 #    - name: Install NPM Dependencies
 #      run: npm install
     - name: Create Database
@@ -55,3 +55,9 @@ jobs:
         curl http://127.0.0.1:8000/de/login
     - name: Run Dusk Tests
       run: php artisan dusk --env=dusk.git
+    - name: Archive code coverage results
+      if: ${{ always() }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: screenshots
+        path: tests/Browser/screenshots/

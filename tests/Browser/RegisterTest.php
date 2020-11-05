@@ -47,8 +47,8 @@ class RegisterTest extends DuskTestCase
                       ->type('password_confirmation','password')
                       ->type('reason_join','am testing')
                       ->select2('.sel-region')
+                      ->screenshot('Registered_user')
                       ->press('Registrieren')
-//                      ->screenshot('Registered_user')
                       ->assertPathIs('/de/email/verify')
                       ->assertSee('Dein Account muss noch bes');
             }
