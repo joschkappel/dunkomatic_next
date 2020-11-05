@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a43da72dd712c426170d78a6ec7d0608",
+    "content-hash": "d5043bc7922b0b708915285938c60986",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2060,16 +2060,16 @@
         },
         {
             "name": "laravel/telescope",
-            "version": "v4.3.0",
+            "version": "v4.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/telescope.git",
-                "reference": "14d7be946ec934e05403f86886eec7aa800a06d4"
+                "reference": "7e9d9fdab18b86db6c8368f2a026ff695c8287e9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/telescope/zipball/14d7be946ec934e05403f86886eec7aa800a06d4",
-                "reference": "14d7be946ec934e05403f86886eec7aa800a06d4",
+                "url": "https://api.github.com/repos/laravel/telescope/zipball/7e9d9fdab18b86db6c8368f2a026ff695c8287e9",
+                "reference": "7e9d9fdab18b86db6c8368f2a026ff695c8287e9",
                 "shasum": ""
             },
             "require": {
@@ -2116,7 +2116,7 @@
                 "laravel",
                 "monitoring"
             ],
-            "time": "2020-11-03T19:33:42+00:00"
+            "time": "2020-11-05T12:12:19+00:00"
         },
         {
             "name": "laravel/tinker",
