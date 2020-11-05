@@ -108,6 +108,28 @@ class QueryDataTable extends DataTableAbstract
     }
 
     /**
+     * Perform search using search pane values.
+     */
+    protected function searchPanesSearch()
+    {
+        $columns = $this->request->get('searchPanes', []);
+
+        foreach ($columns as $column => $values) {
+            if ($this->isBlacklisted($column)) {
+                continue;
+            }
+
+            if ($callback = data_get($this->searchPanes, $column . '.builder')) {
+                $callback($this->getBaseQueryBuilder(), $values);
+            } else {
+                $this->getBaseQueryBuilder()->whereIn($column, $values);
+            }
+
+            $this->isFilterApplied = true;
+        }
+    }
+
+    /**
      * Prepare query by executing count, filter, order and paginate.
      */
     protected function prepareQuery()
@@ -671,11 +693,15 @@ class QueryDataTable extends DataTableAbstract
      * Apply orderColumn custom query.
      *
      * @param string $column
-     * @param array  $orderable
+     * @param array $orderable
      */
     protected function applyOrderColumn($column, $orderable)
     {
         $sql = $this->columnDef['order'][$column]['sql'];
+        if ($sql === false) {
+            return;
+        }
+
         if (is_callable($sql)) {
             call_user_func($sql, $this->query, $orderable['direction']);
         } else {

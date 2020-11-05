@@ -75,7 +75,6 @@ class VerifyEmail extends Notification
             [
                 'id' => $notifiable->getKey(),
                 'hash' => sha1($notifiable->getEmailForVerification()),
-                'language' => app()->getLocale(),    
             ]
         );
     }
