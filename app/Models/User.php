@@ -102,7 +102,7 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     }
     public function getLeagueFilecountAttribute()
     {
-      $directory = 'exports/'.Str::of(config('global.season'))->replace('/','_').'/'.config('dunkomatic.report_folder_leagues');
+      $directory = $this->user_region->league_folder;
       $llist = $this->member->leagues()->pluck('shortname')->implode('|');
       $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
         return (preg_match('('.$llist.')', $value) === 1);
@@ -112,7 +112,7 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     }
     public function getLeagueFilenamesAttribute()
     {
-      $directory = 'exports/'.Str::of(config('global.season'))->replace('/','_').'/'.config('dunkomatic.report_folder_leagues');
+      $directory = $this->user_region->league_folder;
       $llist = $this->member->leagues()->pluck('shortname')->implode('|');
       $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
         return (preg_match('('.$llist.')', $value) === 1);
@@ -122,7 +122,7 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     }
     public function getClubFilecountAttribute()
     {
-      $directory = 'exports/'.Str::of(config('global.season'))->replace('/','_').'/'.config('dunkomatic.report_folder_clubs');
+      $directory = $this->user_region->club_folder;
       $llist = $this->member->clubs()->pluck('shortname')->implode('|');
       $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
         return (preg_match('('.$llist.')', $value) === 1);
@@ -132,7 +132,7 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     }
     public function getClubFilenamesAttribute()
     {
-      $directory = 'exports/'.Str::of(config('global.season'))->replace('/','_').'/'.config('dunkomatic.report_folder_clubs');
+      $directory = $this->user_region->club_folder;
       $llist = $this->member->clubs()->pluck('shortname')->implode('|');
       $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
         return (preg_match('('.$llist.')', $value) === 1);

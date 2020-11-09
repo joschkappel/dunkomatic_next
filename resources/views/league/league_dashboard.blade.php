@@ -174,7 +174,8 @@
         <div class="card-body">
           <div class="list-group overflow-auto">
           @foreach ($files as $f)
-               <a href="{{ route('file.get', ['filename'=>$f])}}" class="list-group-item list-group-item-action list-group-item-info"> {{ basename($f) }}</a>
+            @php $fname=explode('/',$f); @endphp
+               <a href="{{ route('file.get', ['season'=>$fname[1], 'region'=>$fname[2], 'type'=> $fname[3],'file'=>$fname[4] ] )}}" class="list-group-item list-group-item-action list-group-item-info"> {{ basename($f) }}</a>
           @endforeach
         </div>
         </div>
@@ -197,8 +198,6 @@
           </button>
           <a href="{{ route('league.game.index',['language'=>app()->getLocale(), 'league' => $league ]) }}" class="btn btn-primary" >
           <i class="far fa-edit"></i> @lang('league.action.game.list')</a>
-
-
         </div>
         <!-- /.card-footer -->
       </div>

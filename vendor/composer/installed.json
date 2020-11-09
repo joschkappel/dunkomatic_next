@@ -2507,17 +2507,17 @@
     },
     {
         "name": "laravel/telescope",
-        "version": "v4.3.0",
-        "version_normalized": "4.3.0.0",
+        "version": "v4.3.1",
+        "version_normalized": "4.3.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/laravel/telescope.git",
-            "reference": "14d7be946ec934e05403f86886eec7aa800a06d4"
+            "reference": "7e9d9fdab18b86db6c8368f2a026ff695c8287e9"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/laravel/telescope/zipball/14d7be946ec934e05403f86886eec7aa800a06d4",
-            "reference": "14d7be946ec934e05403f86886eec7aa800a06d4",
+            "url": "https://api.github.com/repos/laravel/telescope/zipball/7e9d9fdab18b86db6c8368f2a026ff695c8287e9",
+            "reference": "7e9d9fdab18b86db6c8368f2a026ff695c8287e9",
             "shasum": ""
         },
         "require": {
@@ -2530,7 +2530,7 @@
             "ext-gd": "*",
             "orchestra/testbench": "^6.0"
         },
-        "time": "2020-11-03T19:33:42+00:00",
+        "time": "2020-11-05T12:12:19+00:00",
         "type": "library",
         "extra": {
             "laravel": {

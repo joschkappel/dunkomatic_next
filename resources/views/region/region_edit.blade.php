@@ -90,6 +90,16 @@
                               </select>
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label for="selClubReport" class="col-sm-6 col-form-label">@lang('region.job.club_reports')</label>
+                            <div class="col-sm-4">
+                              <select class='js-sel-league-reports js-states form-control select2' id='selClubReport' name="job_club_reports">
+                                @foreach ($frequencytype as $ft)
+                                    <option @if ($ft->value == $region->job_club_reports) selected @endif value="{{ $ft->value }}">{{ $ft->description }}</option>
+                                @endforeach
+                              </select>
+                            </div>
+                        </div>
                     <div class="card-footer">
                         <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
                             <button type="submit" class="btn btn-primary">{{__('Submit')}}</button>
@@ -136,6 +146,11 @@
             allowClear: false,
         });
         $("#selLeagueReport").select2({
+            theme: 'bootstrap4',
+            multiple: false,
+            allowClear: false,
+        });
+        $("#selClubReport").select2({
             theme: 'bootstrap4',
             multiple: false,
             allowClear: false,

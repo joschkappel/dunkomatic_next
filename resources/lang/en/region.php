@@ -9,7 +9,8 @@ return [
   'job.emails' => 'Check for valid email addresses',
   'job.overlaps' => 'Check for overlapping game schedules',
   'job.notime' => 'Check for un-scheduled games',
-  'job.league_reports' => 'Create league reports',
+  'job.league_reports' => 'Generate league reports',
+  'job.club_reports' => 'Generate club reports',
   'name' =>  'Name',
   'code' => 'Code'
 ];

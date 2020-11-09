@@ -253,7 +253,7 @@ class LeagueController extends Controller
               }
               $data['assigned_teams'] = $assigned_team;
               //Log::debug(print_r($assigned_team,true));
-              $directory = 'exports/'.Str::of(config('global.season'))->replace('/','_').'/'.config('dunkomatic.report_folder_leagues');
+              $directory =   $directory = Auth::user()->user_region->league_folder;
               $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($league){
                 return (strpos($value,$league->shortname) !== false);
               });

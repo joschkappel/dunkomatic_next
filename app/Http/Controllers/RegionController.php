@@ -85,6 +85,8 @@ class RegionController extends Controller
             'job_game_notime' => ['required', new EnumValue(JobFrequencyType::class, false)],
             'job_game_overlaps' => ['required', new EnumValue(JobFrequencyType::class, false)],
             'job_email_valid' => ['required', new EnumValue(JobFrequencyType::class, false)],
+            'job_league_reports' => ['required', new EnumValue(JobFrequencyType::class, false)],
+            'job_club_reports' => ['required', new EnumValue(JobFrequencyType::class, false)],
         ]);
 
         Log::debug(print_r($data,true));

@@ -9,7 +9,8 @@ return [
   'job.emails' => 'Prüfung auf valide Email-Adressen',
   'job.overlaps' => 'Prüfung auf übelappende Spielansetzungen',
   'job.notime' => 'Prüfung auf nicht angesetzte Spiele',
-  'job.league_reports' => 'Erzeuge Runden Listen',  
+  'job.league_reports' => 'Erzeuge Rundenlisten',
+  'job.club_reports' => 'Erzeuge Vereinslisten',
   'name' =>  'Name',
   'code' => 'Abkürzung'
 ];

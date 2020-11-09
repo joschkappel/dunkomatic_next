@@ -12,9 +12,9 @@ use App\Models\User;
 
 class FileDownloadController extends Controller
 {
-  public function get_file($season, $type, $file)
+  public function get_file($season, $region, $type, $file)
   {
-    return Storage::download('exports/'.$season.'/'.$type.'/'.$file, $file);
+    return Storage::download('exports/'.$season.'/'.$region.'/'.$type.'/'.$file, $file);
   }
 
   public function get_archive(User $user)

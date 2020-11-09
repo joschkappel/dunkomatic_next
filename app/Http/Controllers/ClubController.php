@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ClubController extends Controller
 {
@@ -86,6 +88,7 @@ class ClubController extends Controller
           Log::debug('id is - '.$id);
           if ( $id ){
             $data['club'] =  Club::find(intval($id));
+            $club =   $data['club'];
 
             if ($data['club']){
               $data['gyms'] = $data['club']->gyms()->get();
@@ -94,6 +97,14 @@ class ClubController extends Controller
             //  Log::debug(print_r($data['member_roles'],true));
               $data['games_home'] = $data['club']->games_home()->get();
               //Log::debug(print_r($data['games_home'],true ));
+
+              $directory = Auth::user()->user_region->club_folder;
+              $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($club){
+                return (strpos($value,$club->shortname) !== false);
+              });
+
+              Log::debug(print_r($reports,true));
+              $data['files'] = $reports;
               return view('club/club_dashboard', $data);
             }
           }

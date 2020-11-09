@@ -2,9 +2,9 @@
 
 namespace App\Jobs;
 
-use App\Models\League;
+use App\Models\Club;
 use App\Models\Region;
-use App\Jobs\GenerateLeagueReport;
+use App\Jobs\GenerateClubReport;
 
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
@@ -14,7 +14,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class ProcessLeagueReports implements ShouldQueue
+
+class ProcessClubReports implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -38,13 +39,13 @@ class ProcessLeagueReports implements ShouldQueue
      */
     public function handle()
     {
-        // get all leagues with games
-        $leagues = League::leagueRegion($this->region->code)->get();
-        foreach ($leagues as $l){
+        // get all clubs with games
+        $clubs = Club::clubRegion($this->region->code)->get();
+        foreach ($clubs as $c){
           $batch = Bus::batch([
-              new GenerateLeagueReport(Region::find($this->region->id), $l, 'html'),
-              new GenerateLeagueReport(Region::find($this->region->id), $l, 'xlsx'),
-              new GenerateLeagueReport(Region::find($this->region->id), $l, 'pdf'),
+            //  new GenerateClubReport(Region::find($this->region->id), $c, 'pdf'),
+              new GenerateClubReport(Region::find($this->region->id), $c, 'html'),
+              new GenerateClubReport(Region::find($this->region->id), $c, 'xlsx'),
           ])->then(function (Batch $batch) {
               // All jobs completed successfully...
               // send notification
@@ -52,7 +53,7 @@ class ProcessLeagueReports implements ShouldQueue
               // First batch job failure detected...
           })->finally(function (Batch $batch) {
               // The batch has finished executing...
-          })->name('League Reports '.$l->shortname)
+          })->name('Club Reports '.$c->shortname)
             ->onConnection('redis')
             ->onQueue('exports')
             ->dispatch();
