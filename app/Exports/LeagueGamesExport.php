@@ -15,6 +15,7 @@ class LeagueGamesExport implements FromQuery, WithMapping, WithHeadings, ShouldA
 {
 
     private $gdate = null;
+    private $league_id;
 
     public function __construct($league_id = "")
     {

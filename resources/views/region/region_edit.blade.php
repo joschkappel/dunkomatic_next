@@ -91,11 +91,31 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                           <label for="selLeagueReportFmt" class="col-sm-6 col-form-label"></label>
+                            <div class="col-sm-4">
+                              <select class='js-sel-league-reports-fmt js-states form-control select2' id='selLeagueReportFmt' name="fmt_league_reports[]">
+                                @foreach ($filetype as $ft)
+                                    <option value="{{ $ft->value }}">{{ $ft->description }}</option>
+                                @endforeach
+                              </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label for="selClubReport" class="col-sm-6 col-form-label">@lang('region.job.club_reports')</label>
                             <div class="col-sm-4">
                               <select class='js-sel-league-reports js-states form-control select2' id='selClubReport' name="job_club_reports">
                                 @foreach ($frequencytype as $ft)
                                     <option @if ($ft->value == $region->job_club_reports) selected @endif value="{{ $ft->value }}">{{ $ft->description }}</option>
+                                @endforeach
+                              </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                           <label for="selClubReportFmt" class="col-sm-6 col-form-label"></label>
+                            <div class="col-sm-4">
+                              <select class='js-sel-club-reports-fmt js-states form-control select2' id='selClubReportFmt' name="fmt_club_reports[]">
+                                @foreach ($filetype as $ft)
+                                    <option value="{{ $ft->value }}">{{ $ft->description }}</option>
                                 @endforeach
                               </select>
                             </div>
@@ -150,11 +170,28 @@
             multiple: false,
             allowClear: false,
         });
+        $("#selLeagueReportFmt").select2({
+            theme: 'bootstrap4',
+            multiple: true,
+            maximumSelectionLength: 3,
+            language: '{{ \Str::lower( app()->getLocale()) }}',
+            allowClear: false,
+        });
+        $("#selLeagueReportFmt").val({{ collect($region->fmt_league_reports->getFlags())->pluck('value')  }} ).change();
+
         $("#selClubReport").select2({
             theme: 'bootstrap4',
             multiple: false,
             allowClear: false,
         });
+        $("#selClubReportFmt").select2({
+            theme: 'bootstrap4',
+            multiple: true,
+            maximumSelectionLength: 3,
+            language: '{{ \Str::lower( app()->getLocale()) }}',
+            allowClear: false,
+        });
+        $("#selClubReportFmt").val({{ collect($region->fmt_club_reports->getFlags())->pluck('value')  }} ).change();
       });
 
  </script>

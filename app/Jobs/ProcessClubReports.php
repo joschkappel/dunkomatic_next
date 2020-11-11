@@ -4,8 +4,12 @@ namespace App\Jobs;
 
 use App\Models\Club;
 use App\Models\Region;
-use App\Jobs\GenerateClubReport;
+use App\Jobs\GenerateClubGamesReport;
+use App\Enums\Role;
+use App\Notifications\ClubReportsAvailable;
 
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Bus\Queueable;
@@ -30,6 +34,8 @@ class ProcessClubReports implements ShouldQueue
     {
         // set report scope
         $this->region = $region;
+        // remove old reports
+        Storage::deleteDirectory($region->club_folder);
     }
 
     /**
@@ -42,15 +48,22 @@ class ProcessClubReports implements ShouldQueue
         // get all clubs with games
         $clubs = Club::clubRegion($this->region->code)->get();
         foreach ($clubs as $c){
+
+          // delete old files
+          Storage::delete(File::glob(storage_path().'/app/'.$this->region->club_folder.'/'.$c->shortname.'*'));
+
           $batch = Bus::batch([
-            //  new GenerateClubReport(Region::find($this->region->id), $c, 'pdf'),
-              new GenerateClubReport(Region::find($this->region->id), $c, 'html'),
-              new GenerateClubReport(Region::find($this->region->id), $c, 'xlsx'),
-          ])->then(function (Batch $batch) {
+            [
+              new GenerateClubGamesReport(Region::find($this->region->id), $c, 'ALL' ),
+              new GenerateClubGamesReport(Region::find($this->region->id), $c, 'HOME' ),
+              new GenerateClubGamesReport(Region::find($this->region->id), $c, 'REFEREE' ),
+            ]
+          ])->then(function (Batch $batch) use ($c) {
               // All jobs completed successfully...
-              // send notification
-          })->catch(function (Batch $batch, Throwable $e) {
-              // First batch job failure detected...
+              if ($c->memberships()->isRole(Role::ClubLead)->exists()){
+                $clead = $c->memberships()->isRole(Role::ClubLead)->first()->member;
+                $clead->notify(new ClubReportsAvailable($c));
+              }
           })->finally(function (Batch $batch) {
               // The batch has finished executing...
           })->name('Club Reports '.$c->shortname)

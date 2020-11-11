@@ -15,6 +15,7 @@ class ClubGamesExport implements FromQuery, WithMapping, WithHeadings, ShouldAut
 {
 
     private $gdate = null;
+    private $club_id;
 
     public function __construct($club_id = "")
     {

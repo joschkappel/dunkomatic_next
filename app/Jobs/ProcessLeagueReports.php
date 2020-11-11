@@ -5,7 +5,11 @@ namespace App\Jobs;
 use App\Models\League;
 use App\Models\Region;
 use App\Jobs\GenerateLeagueReport;
+use App\Notifications\LeagueReportsAvailable;
+use App\Enums\Role;
 
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Bus\Queueable;
@@ -29,6 +33,9 @@ class ProcessLeagueReports implements ShouldQueue
     {
         // set report scope
         $this->region = $region;
+        // remove old reports
+        Storage::deleteDirectory($region->league_folder);
+
     }
 
     /**
@@ -38,17 +45,24 @@ class ProcessLeagueReports implements ShouldQueue
      */
     public function handle()
     {
+
         // get all leagues with games
         $leagues = League::leagueRegion($this->region->code)->get();
         foreach ($leagues as $l){
+
+          // delete old files
+          Storage::delete(File::glob(storage_path().'/app/'.$this->region->league_folder.'/'.$l->shortname.'*'));
+
           $batch = Bus::batch([
-              new GenerateLeagueReport(Region::find($this->region->id), $l, 'html'),
-              new GenerateLeagueReport(Region::find($this->region->id), $l, 'xlsx'),
-              new GenerateLeagueReport(Region::find($this->region->id), $l, 'pdf'),
-          ])->then(function (Batch $batch) {
+              new GenerateLeagueReport(Region::find($this->region->id), $l, 'ALL'),
+          ])->then(function (Batch $batch) use ($l) {
               // All jobs completed successfully...
-              // send notification
-          })->catch(function (Batch $batch, Throwable $e) {
+              if ($l->memberships()->isRole(Role::LeagueLead)->exists()){
+                $llead = $l->memberships()->isRole(Role::LeagueLead)->first()->member;
+
+                $llead->notify(new LeagueReportsAvailable($l));
+              }
+          //})->catch(function (Batch $batch, Throwable $e) {
               // First batch job failure detected...
           })->finally(function (Batch $batch) {
               // The batch has finished executing...

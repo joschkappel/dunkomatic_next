@@ -250,6 +250,18 @@ return [
                   'location' => 'vendor/select2/js/select2.min.js',
               ],
               [
+                  'type' => 'js',
+                  'asset' => true,
+                  // 'location' => '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
+                  'location' => 'vendor/select2/js/i18n/de.js',
+              ],
+              [
+                  'type' => 'js',
+                  'asset' => true,
+                  // 'location' => '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
+                  'location' => 'vendor/select2/js/i18n/en.js',
+              ],
+              [
                   'type' => 'css',
                   'asset' => true,
                   // 'location' => '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',

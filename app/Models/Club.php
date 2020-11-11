@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Region;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Support\Facades\Auth;
+
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Club extends Model implements Auditable
 {
@@ -78,5 +82,25 @@ class Club extends Model implements Auditable
   {
       return $query->where('region', $region);
   }
+  public function getFilecountAttribute()
+  {
+    $directory = Region::where('code',$this->region)->first()->club_folder;
+    $shortname = $this->shortname;
+    $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname) {
+      return (preg_match('('.$shortname.')', $value) === 1);
+      //return (strpos($value,$llist[0]) !== false);
+    });
+    return count($reports);
+  }
+  public function getFilenamesAttribute()
+  {
+    $directory = Region::where('code',$this->region)->first()->club_folder;
+    $shortname = $this->shortname;
 
+    $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname) {
+      return (preg_match('('.$shortname.')', $value) === 1);
+      //return (strpos($value,$llist[0]) !== false);
+    });
+    return $reports;
+  }
 }

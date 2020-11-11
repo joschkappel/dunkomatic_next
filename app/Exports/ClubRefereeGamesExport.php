@@ -11,15 +11,17 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Carbon\Carbon;
 
-class ClubHomeGamesExport implements FromQuery, WithMapping, WithHeadings, ShouldAutoSize, WithStyles
+class ClubRefereeGamesExport implements FromQuery, WithMapping, WithHeadings, ShouldAutoSize, WithStyles
 {
 
     private $gdate = null;
     private $club_id;
+    private $shortname;
 
-    public function __construct($club_id = "")
+    public function __construct($club_id = "", $shortname="")
     {
         $this->club_id = $club_id;
+        $this->shortname = $shortname;
         $this->gdate = null;
     }
     /**
@@ -27,10 +29,20 @@ class ClubHomeGamesExport implements FromQuery, WithMapping, WithHeadings, Shoul
     */
     public function query()
     {
-       return Game::where('club_id_home',$this->club_id)
+      $club_id=$this->club_id;
+      $shortname = $this->shortname;
+       return Game::where( function ($query) use ($club_id) {
+                      $query->where('club_id_home',$club_id)
+                            ->where('referee_1','****');
+                    })
+                    ->orWhere( function ($query) use ($shortname) {
+                      $query->where('referee_1',$shortname)
+                            ->orWhere('referee_2',$shortname);
+                    })
                     ->orderBy('game_date','asc')
                     ->orderBy('game_time','asc')
                     ->orderBy('game_no','asc');
+
     }
 
     /**
@@ -57,7 +69,7 @@ class ClubHomeGamesExport implements FromQuery, WithMapping, WithHeadings, Shoul
     {
         return [
           [
-            'Vereinsspielplan',
+            'Schirispielplan',
             'RUnde X',
             'Runde Y'
           ],

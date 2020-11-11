@@ -3,11 +3,15 @@
 namespace App\Models;
 use App\Models\Game;
 use App\Models\User;
+use App\Models\Region;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use OwenIt\Auditing\Contracts\Auditable;
+
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class League extends Model implements Auditable
 {
@@ -80,7 +84,7 @@ class League extends Model implements Auditable
   {
       return $this->hasMany('App\Models\Game');
   }
-  
+
   public function games_noshow()
   {
       return $this->hasMany('App\Models\Game');
@@ -101,5 +105,25 @@ class League extends Model implements Auditable
   {
       return $query->whereNotNull('generated_at');
   }
+  public function getFilecountAttribute()
+  {
+    $directory = Region::where('code',$this->region)->first()->league_folder;
+    $shortname = $this->shortname;
+    $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname) {
+      return (preg_match('('.$shortname.')', $value) === 1);
+      //return (strpos($value,$llist[0]) !== false);
+    });
+    return count($reports);
+  }
+  public function getFilenamesAttribute()
+  {
+    $directory = Region::where('code',$this->region)->first()->league_folder;
+    $shortname = $this->shortname;
 
+    $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname) {
+      return (preg_match('('.$shortname.')', $value) === 1);
+      //return (strpos($value,$llist[0]) !== false);
+    });
+    return $reports;
+  }
 }

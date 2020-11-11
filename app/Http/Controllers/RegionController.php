@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Response;
 
 use BenSampo\Enum\Rules\EnumValue;
 use App\Enums\JobFrequencyType;
+use App\Enums\FileType;
 
 use App\Models\Region;
 use App\Models\User;
@@ -65,7 +66,7 @@ class RegionController extends Controller
     public function edit($language, Region $region)
     {
         Log::info('Editing region'.$region->code);
-        return view('region/region_edit', ['region'=>$region, 'frequencytype' => JobFrequencyType::getInstances()] );
+        return view('region/region_edit', ['region'=>$region, 'frequencytype' => JobFrequencyType::getInstances(), 'filetype' => FileType::getInstances()] );
     }
 
     /**
@@ -87,6 +88,10 @@ class RegionController extends Controller
             'job_email_valid' => ['required', new EnumValue(JobFrequencyType::class, false)],
             'job_league_reports' => ['required', new EnumValue(JobFrequencyType::class, false)],
             'job_club_reports' => ['required', new EnumValue(JobFrequencyType::class, false)],
+            'fmt_club_reports' => 'required|array|min:1',
+            'fmt_club_reports.*' => ['required', new EnumValue(FileType::class, false)],
+            'fmt_club_reports' => 'required|array|min:1',
+            'fmt_league_reports.*' => ['required', new EnumValue(FileType::class, false)],
         ]);
 
         Log::debug(print_r($data,true));
