@@ -1,6 +1,6 @@
 <?php
 use SebastianBergmann\CodeCoverage\CodeCoverage;
-use SebastianBergmann\CodeCoverage\Driver\Selector;
+use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Filter;
 
 $composerAutoload = {composerAutoload};
@@ -29,13 +29,9 @@ if (class_exists('SebastianBergmann\CodeCoverage\CodeCoverage')) {
     $filter = new Filter;
 
     $coverage = new CodeCoverage(
-        (new Selector)->{driverMethod}($filter),
+        Driver::forLineCoverage($filter),
         $filter
     );
-
-    if ({codeCoverageCacheDirectory}) {
-        $coverage->cacheStaticAnalysis({codeCoverageCacheDirectory});
-    }
 
     $coverage->start(__FILE__);
 }

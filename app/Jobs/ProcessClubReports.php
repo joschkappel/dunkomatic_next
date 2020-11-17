@@ -34,8 +34,15 @@ class ProcessClubReports implements ShouldQueue
     {
         // set report scope
         $this->region = $region;
-        // remove old reports
-        Storage::deleteDirectory($region->club_folder);
+
+        if ( Storage::exists($region->club_folder) ){
+          // remove old reports
+          //Storage::deleteDirectory($region->club_folder, false);
+        } else {
+          // make sure folders are there
+          Storage::makeDirectory($region->club_folder);
+        };
+
     }
 
     /**
@@ -47,16 +54,18 @@ class ProcessClubReports implements ShouldQueue
     {
         // get all clubs with games
         $clubs = Club::clubRegion($this->region->code)->get();
+        $region = Region::find($this->region->id);
+
         foreach ($clubs as $c){
 
           // delete old files
-          Storage::delete(File::glob(storage_path().'/app/'.$this->region->club_folder.'/'.$c->shortname.'*'));
+          //Storage::delete(File::glob(storage_path().'/app/'.$this->region->club_folder.'/'.$c->shortname.'*'));
 
           $batch = Bus::batch([
             [
-              new GenerateClubGamesReport(Region::find($this->region->id), $c, 'ALL' ),
-              new GenerateClubGamesReport(Region::find($this->region->id), $c, 'HOME' ),
-              new GenerateClubGamesReport(Region::find($this->region->id), $c, 'REFEREE' ),
+              new GenerateClubGamesReport($region, $c, 'ALL' ),
+              new GenerateClubGamesReport($region, $c, 'HOME' ),
+              new GenerateClubGamesReport($region, $c, 'REFEREE' ),
             ]
           ])->then(function (Batch $batch) use ($c) {
               // All jobs completed successfully...
@@ -64,6 +73,8 @@ class ProcessClubReports implements ShouldQueue
                 $clead = $c->memberships()->isRole(Role::ClubLead)->first()->member;
                 $clead->notify(new ClubReportsAvailable($c));
               }
+          })->catch(function (Batch $batch, Throwable $e) {
+              // First batch job failure detected...
           })->finally(function (Batch $batch) {
               // The batch has finished executing...
           })->name('Club Reports '.$c->shortname)

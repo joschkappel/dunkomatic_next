@@ -11,7 +11,6 @@ namespace PHPUnit\TextUI\XmlConfiguration;
 
 use DOMDocument;
 use DOMElement;
-use PHPUnit\Util\Xml\SnapshotNodeList;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
@@ -38,7 +37,7 @@ final class MoveWhitelistDirectoriesToCoverage implements Migration
         $include = $document->createElement('include');
         $coverage->appendChild($include);
 
-        foreach (SnapshotNodeList::fromNodeList($whitelist->childNodes) as $child) {
+        foreach ($whitelist->childNodes as $child) {
             if (!$child instanceof DOMElement || $child->nodeName !== 'directory') {
                 continue;
             }

@@ -15,7 +15,7 @@ return [
   'notstarted' => 'Spielrunde nocht nicht begonnen',
   'game_date' => 'Datum Spieltag',
   'game_day' => 'Spieltag Nr',
-  'game_no' => 'Spielnr',
+  'game_no' => 'Nr',
   'team_home' => 'Heim',
   'team_guest' => 'Gast',
   'gym_no' => 'Halle',
@@ -27,4 +27,5 @@ return [
   'excel.export' => 'Excel Export',
   'excel.import' => 'Import Exceldatei',
   'gametime_format' => 'H:i',
+  'referee' => 'Schiri',
 ];

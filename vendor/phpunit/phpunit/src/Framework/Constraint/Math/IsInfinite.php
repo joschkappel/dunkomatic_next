@@ -12,7 +12,7 @@ namespace PHPUnit\Framework\Constraint;
 use function is_infinite;
 
 /**
- * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ * Constraint that accepts infinite.
  */
 final class IsInfinite extends Constraint
 {

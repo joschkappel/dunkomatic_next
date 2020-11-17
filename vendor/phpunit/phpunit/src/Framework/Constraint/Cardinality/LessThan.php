@@ -10,7 +10,8 @@
 namespace PHPUnit\Framework\Constraint;
 
 /**
- * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ * Constraint that asserts that the value it is evaluated for is less than
+ * a given value.
  */
 final class LessThan extends Constraint
 {

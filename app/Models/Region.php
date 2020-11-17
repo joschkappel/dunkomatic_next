@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use BenSampo\Enum\Traits\CastsEnums;
-use App\Enums\FileType;
+use App\Enums\ReportFileType;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,8 +22,8 @@ class Region extends Model
   ];
 
   protected $casts = [
-      'fmt_league_reports' => FileType::class,
-      'fmt_club_reports' => FileType::class
+      'fmt_league_reports' => ReportFileType::class,
+      'fmt_club_reports' => ReportFileType::class
   ];
 
   public function messages()

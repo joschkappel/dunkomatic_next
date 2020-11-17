@@ -4,14 +4,12 @@ namespace App\Jobs;
 
 use App\Models\League;
 use App\Models\Region;
-use App\Enums\FileType;
+use App\Enums\ReportFileType;
 
 
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Str;
 use App\Exports\LeagueGamesExport;
-
-use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Bus\Batchable;
@@ -60,13 +58,12 @@ class GenerateLeagueReport implements ShouldQueue
 
         return;
       }
-      // make sure folders are there
-      Storage::makeDirectory($this->export_folder);
 
-      foreach ( $this->region->fmt_club_reports->getFlags() as $rtype  ){
+
+      foreach ( $this->region->fmt_league_reports->getFlags() as $rtype  ){
         switch ( $this->scope ){
           case 'ALL':
-            if ($rtype->hasFlag(FileType::PDF)){
+            if ($rtype->hasFlag(ReportFileType::PDF)){
               Excel::store(new LeagueGamesExport($this->league->id), $this->rpt_name.'_all.'.$rtype->description, NULL, \Maatwebsite\Excel\Excel::MPDF );
             } else {
               Excel::store(new LeagueGamesExport($this->league->id), $this->rpt_name.'_all.'.$rtype->description );

@@ -13,7 +13,9 @@ use function file_exists;
 use function sprintf;
 
 /**
- * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ * Constraint that checks if the file(name) that it is evaluated for exists.
+ *
+ * The file path to check is passed as $other in evaluate().
  */
 final class FileExists extends Constraint
 {

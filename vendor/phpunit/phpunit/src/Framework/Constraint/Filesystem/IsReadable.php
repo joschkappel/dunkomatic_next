@@ -13,7 +13,9 @@ use function is_readable;
 use function sprintf;
 
 /**
- * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ * Constraint that checks if the file/dir(name) that it is evaluated for is readable.
+ *
+ * The file path to check is passed as $other in evaluate().
  */
 final class IsReadable extends Constraint
 {

@@ -12,7 +12,7 @@ namespace PHPUnit\Framework\Constraint;
 use function is_nan;
 
 /**
- * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ * Constraint that accepts nan.
  */
 final class IsNan extends Constraint
 {

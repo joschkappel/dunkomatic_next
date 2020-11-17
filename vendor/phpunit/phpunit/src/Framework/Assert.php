@@ -70,7 +70,6 @@ use PHPUnit\Framework\Constraint\LogicalAnd;
 use PHPUnit\Framework\Constraint\LogicalNot;
 use PHPUnit\Framework\Constraint\LogicalOr;
 use PHPUnit\Framework\Constraint\LogicalXor;
-use PHPUnit\Framework\Constraint\ObjectEquals;
 use PHPUnit\Framework\Constraint\ObjectHasAttribute;
 use PHPUnit\Framework\Constraint\RegularExpression;
 use PHPUnit\Framework\Constraint\SameSize;
@@ -86,7 +85,7 @@ use PHPUnit\Util\Xml;
 use PHPUnit\Util\Xml\Loader as XmlLoader;
 
 /**
- * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ * A set of assertion methods.
  */
 abstract class Assert
 {
@@ -427,18 +426,6 @@ abstract class Assert
         );
 
         static::assertThat($actual, $constraint, $message);
-    }
-
-    /**
-     * @throws ExpectationFailedException
-     */
-    public static function assertObjectEquals(object $expected, object $actual, string $method = 'equals', string $message = ''): void
-    {
-        static::assertThat(
-            $actual,
-            static::objectEquals($expected, $method),
-            $message
-        );
     }
 
     /**
@@ -2154,13 +2141,10 @@ abstract class Assert
     {
         if (!is_string($actualXml)) {
             self::createWarning('Passing an argument of type DOMDocument for the $actualXml parameter is deprecated. Support for this will be removed in PHPUnit 10.');
-
-            $actual = $actualXml;
-        } else {
-            $actual = (new XmlLoader)->load($actualXml);
         }
 
         $expected = (new XmlLoader)->loadFile($expectedFile);
+        $actual   = (new XmlLoader)->load($actualXml);
 
         static::assertEquals($expected, $actual, $message);
     }
@@ -2178,13 +2162,10 @@ abstract class Assert
     {
         if (!is_string($actualXml)) {
             self::createWarning('Passing an argument of type DOMDocument for the $actualXml parameter is deprecated. Support for this will be removed in PHPUnit 10.');
-
-            $actual = $actualXml;
-        } else {
-            $actual = (new XmlLoader)->load($actualXml);
         }
 
         $expected = (new XmlLoader)->loadFile($expectedFile);
+        $actual   = (new XmlLoader)->load($actualXml);
 
         static::assertNotEquals($expected, $actual, $message);
     }
@@ -2203,19 +2184,14 @@ abstract class Assert
     {
         if (!is_string($expectedXml)) {
             self::createWarning('Passing an argument of type DOMDocument for the $expectedXml parameter is deprecated. Support for this will be removed in PHPUnit 10.');
-
-            $expected = $expectedXml;
-        } else {
-            $expected = (new XmlLoader)->load($expectedXml);
         }
 
         if (!is_string($actualXml)) {
             self::createWarning('Passing an argument of type DOMDocument for the $actualXml parameter is deprecated. Support for this will be removed in PHPUnit 10.');
-
-            $actual = $actualXml;
-        } else {
-            $actual = (new XmlLoader)->load($actualXml);
         }
+
+        $expected = (new XmlLoader)->load($expectedXml);
+        $actual   = (new XmlLoader)->load($actualXml);
 
         static::assertEquals($expected, $actual, $message);
     }
@@ -2234,19 +2210,14 @@ abstract class Assert
     {
         if (!is_string($expectedXml)) {
             self::createWarning('Passing an argument of type DOMDocument for the $expectedXml parameter is deprecated. Support for this will be removed in PHPUnit 10.');
-
-            $expected = $expectedXml;
-        } else {
-            $expected = (new XmlLoader)->load($expectedXml);
         }
 
         if (!is_string($actualXml)) {
             self::createWarning('Passing an argument of type DOMDocument for the $actualXml parameter is deprecated. Support for this will be removed in PHPUnit 10.');
-
-            $actual = $actualXml;
-        } else {
-            $actual = (new XmlLoader)->load($actualXml);
         }
+
+        $expected = (new XmlLoader)->load($expectedXml);
+        $actual   = (new XmlLoader)->load($actualXml);
 
         static::assertNotEquals($expected, $actual, $message);
     }
@@ -2726,11 +2697,6 @@ abstract class Assert
     public static function countOf(int $count): Count
     {
         return new Count($count);
-    }
-
-    public static function objectEquals(object $object, string $method = 'equals'): ObjectEquals
-    {
-        return new ObjectEquals($object, $method);
     }
 
     /**

@@ -11,7 +11,6 @@ namespace PHPUnit\Framework;
 
 use function array_filter;
 use function array_map;
-use function array_values;
 use function count;
 use function explode;
 use function in_array;

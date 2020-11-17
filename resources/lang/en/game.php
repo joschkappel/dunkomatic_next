@@ -27,4 +27,5 @@ return [
   'excel.export' => 'Export to Excel',
   'excel.import' => 'Import Excelfile',
   'gametime_format' => 'g:i A',
+  'referee' => 'Referee',
 ];

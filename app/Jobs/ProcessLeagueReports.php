@@ -33,8 +33,14 @@ class ProcessLeagueReports implements ShouldQueue
     {
         // set report scope
         $this->region = $region;
-        // remove old reports
-        Storage::deleteDirectory($region->league_folder);
+
+        if (Storage::exists($region->league_folder)){
+          // remove old reports
+          //Storage::deleteDirectory($region->league_folder, false);
+        } else {
+          // make sure folders are there
+          Storage::makeDirectory($region->league_folder);
+        };
 
     }
 
@@ -51,7 +57,7 @@ class ProcessLeagueReports implements ShouldQueue
         foreach ($leagues as $l){
 
           // delete old files
-          Storage::delete(File::glob(storage_path().'/app/'.$this->region->league_folder.'/'.$l->shortname.'*'));
+          //Storage::delete(File::glob(storage_path().'/app/'.$this->region->league_folder.'/'.$l->shortname.'*'));
 
           $batch = Bus::batch([
               new GenerateLeagueReport(Region::find($this->region->id), $l, 'ALL'),
@@ -62,7 +68,7 @@ class ProcessLeagueReports implements ShouldQueue
 
                 $llead->notify(new LeagueReportsAvailable($l));
               }
-          //})->catch(function (Batch $batch, Throwable $e) {
+          })->catch(function (Batch $batch, Throwable $e) {
               // First batch job failure detected...
           })->finally(function (Batch $batch) {
               // The batch has finished executing...

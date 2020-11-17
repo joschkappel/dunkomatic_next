@@ -249,8 +249,6 @@ final class Generator
      * of the trait mocked. Concrete methods to mock can be specified with the
      * `$mockedMethods` parameter.
      *
-     * @psalm-param trait-string $traitName
-     *
      * @throws RuntimeException
      */
     public function getMockForTrait(string $traitName, array $arguments = [], string $mockClassName = '', bool $callOriginalConstructor = true, bool $callOriginalClone = true, bool $callAutoload = true, array $mockedMethods = null, bool $cloneArguments = true): MockObject
@@ -288,8 +286,6 @@ final class Generator
 
     /**
      * Returns an object for the specified trait.
-     *
-     * @psalm-param trait-string $traitName
      *
      * @throws RuntimeException
      */

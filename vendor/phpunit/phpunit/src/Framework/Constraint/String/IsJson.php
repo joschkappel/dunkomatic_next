@@ -14,7 +14,7 @@ use function json_last_error;
 use function sprintf;
 
 /**
- * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ * Constraint that asserts that a string is valid JSON.
  */
 final class IsJson extends Constraint
 {

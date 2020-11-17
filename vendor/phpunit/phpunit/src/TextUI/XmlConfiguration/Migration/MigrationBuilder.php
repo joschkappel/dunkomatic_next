@@ -9,8 +9,6 @@
  */
 namespace PHPUnit\TextUI\XmlConfiguration;
 
-use function array_key_exists;
-use function sprintf;
 use function version_compare;
 
 /**
@@ -18,11 +16,7 @@ use function version_compare;
  */
 final class MigrationBuilder
 {
-    private const AVAILABLE_MIGRATIONS = [
-        '8.5' => [
-            RemoveLogTypes::class,
-        ],
-
+    private const availableMigrations = [
         '9.2' => [
             RemoveCacheTokensAttribute::class,
             IntroduceCoverageElement::class,
@@ -47,18 +41,13 @@ final class MigrationBuilder
      */
     public function build(string $fromVersion): array
     {
-        if (!array_key_exists($fromVersion, self::AVAILABLE_MIGRATIONS)) {
-            throw new MigrationBuilderException(
-                sprintf(
-                    'Migration from schema version %s is not supported',
-                    $fromVersion
-                )
-            );
+        if (version_compare($fromVersion, '9.2', '<')) {
+            throw new MigrationBuilderException('Versions before 9.2 are not supported.');
         }
 
         $stack = [];
 
-        foreach (self::AVAILABLE_MIGRATIONS as $version => $migrations) {
+        foreach (self::availableMigrations as $version => $migrations) {
             if (version_compare($version, $fromVersion, '<')) {
                 continue;
             }

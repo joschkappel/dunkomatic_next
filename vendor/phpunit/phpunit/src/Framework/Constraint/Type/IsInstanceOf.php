@@ -14,7 +14,10 @@ use ReflectionClass;
 use ReflectionException;
 
 /**
- * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ * Constraint that asserts that the object it is evaluated for is an instance
+ * of a given class.
+ *
+ * The expected class name is passed in the constructor.
  */
 final class IsInstanceOf extends Constraint
 {

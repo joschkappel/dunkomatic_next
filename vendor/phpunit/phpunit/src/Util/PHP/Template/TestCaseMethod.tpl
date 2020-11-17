@@ -1,7 +1,7 @@
 <?php
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
-use SebastianBergmann\CodeCoverage\Driver\Selector;
+use SebastianBergmann\CodeCoverage\Driver\Driver;
 use PHPUnit\TextUI\XmlConfiguration\Loader;
 use PHPUnit\TextUI\XmlConfiguration\PhpHandler;
 
@@ -39,16 +39,12 @@ function __phpunit_run_isolated_test()
     if ({collectCodeCoverageInformation}) {
         $filter = unserialize('{codeCoverageFilter}');
 
-        $codeCoverage = new CodeCoverage(
-            (new Selector)->{driverMethod}($filter),
-            $filter
+        $result->setCodeCoverage(
+            new CodeCoverage(
+                Driver::{driverMethod}($filter),
+                $filter
+            )
         );
-
-        if ({cachesStaticAnalysis}) {
-            $codeCoverage->cacheStaticAnalysis(unserialize('{codeCoverageCacheDirectory}'));
-        }
-
-        $result->setCodeCoverage($codeCoverage);
     }
 
     $result->beStrictAboutTestsThatDoNotTestAnything({isStrictAboutTestsThatDoNotTestAnything});

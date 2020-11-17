@@ -173,7 +173,7 @@
         $("#selLeagueReportFmt").select2({
             theme: 'bootstrap4',
             multiple: true,
-            maximumSelectionLength: 3,
+            maximumSelectionLength: 2,
             language: '{{ \Str::lower( app()->getLocale()) }}',
             allowClear: false,
         });
@@ -187,7 +187,7 @@
         $("#selClubReportFmt").select2({
             theme: 'bootstrap4',
             multiple: true,
-            maximumSelectionLength: 3,
+            maximumSelectionLength: 2,
             language: '{{ \Str::lower( app()->getLocale()) }}',
             allowClear: false,
         });

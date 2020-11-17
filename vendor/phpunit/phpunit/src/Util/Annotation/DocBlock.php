@@ -18,6 +18,7 @@ use function array_merge;
 use function array_pop;
 use function array_slice;
 use function array_values;
+use function constant;
 use function count;
 use function explode;
 use function file;

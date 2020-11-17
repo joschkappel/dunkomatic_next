@@ -9,7 +9,6 @@
  */
 namespace PHPUnit\TextUI\XmlConfiguration;
 
-use function sprintf;
 use DOMDocument;
 use DOMElement;
 

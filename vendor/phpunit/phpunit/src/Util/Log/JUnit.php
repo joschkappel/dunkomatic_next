@@ -14,7 +14,6 @@ use function get_class;
 use function method_exists;
 use function sprintf;
 use function str_replace;
-use function trim;
 use DOMDocument;
 use DOMElement;
 use PHPUnit\Framework\AssertionFailedError;
@@ -169,11 +168,22 @@ final class JUnit extends Printer implements TestListener
      */
     public function addRiskyTest(Test $test, Throwable $t, float $time): void
     {
-        if (!$this->reportRiskyTests) {
+        if (!$this->reportRiskyTests || $this->currentTestCase === null) {
             return;
         }
 
-        $this->doAddFault($test, $t, 'error');
+        $error = $this->document->createElement(
+            'error',
+            Xml::prepareString(
+                "Risky Test\n" .
+                Filter::getFilteredStacktrace($t)
+            )
+        );
+
+        $error->setAttribute('type', get_class($t));
+
+        $this->currentTestCase->appendChild($error);
+
         $this->testSuiteErrors[$this->testSuiteLevel]++;
     }
 
@@ -390,10 +400,8 @@ final class JUnit extends Printer implements TestListener
             $buffer = '';
         }
 
-        $buffer .= trim(
-            TestFailure::exceptionToString($t) . "\n" .
-            Filter::getFilteredStacktrace($t)
-        );
+        $buffer .= TestFailure::exceptionToString($t) . "\n" .
+                   Filter::getFilteredStacktrace($t);
 
         $fault = $this->document->createElement(
             $type,

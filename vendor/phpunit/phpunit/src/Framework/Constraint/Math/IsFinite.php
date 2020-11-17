@@ -12,7 +12,7 @@ namespace PHPUnit\Framework\Constraint;
 use function is_finite;
 
 /**
- * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ * Constraint that accepts finite.
  */
 final class IsFinite extends Constraint
 {

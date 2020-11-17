@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 use App\Enums\JobFrequencyType;
-use App\Enums\FileType;
+use App\Enums\ReportFileType;
 
 class CreateRegionsTable extends Migration
 {
@@ -28,9 +28,9 @@ class CreateRegionsTable extends Migration
             $table->unsignedInteger('job_noleads')->default(JobFrequencyType::never);
             $table->unsignedInteger('job_email_valid')->default(JobFrequencyType::never);
             $table->unsignedInteger('job_league_reports')->default(JobFrequencyType::never);
-            $table->unsignedInteger('fmt_league_reports')->default(FileType::HTML);
+            $table->unsignedInteger('fmt_league_reports')->default(ReportFileType::HTML);
             $table->unsignedInteger('job_club_reports')->default(JobFrequencyType::never);
-            $table->unsignedInteger('fmt_club_reports')->default(FileType::HTML);
+            $table->unsignedInteger('fmt_club_reports')->default(ReportFileType::HTML);
             $table->unsignedInteger('job_exports')->default(JobFrequencyType::never);
         });
     }

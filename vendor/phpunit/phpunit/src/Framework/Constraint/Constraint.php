@@ -17,7 +17,7 @@ use SebastianBergmann\Comparator\ComparisonFailure;
 use SebastianBergmann\Exporter\Exporter;
 
 /**
- * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ * Abstract base class for constraints which can be applied to any value.
  */
 abstract class Constraint implements Countable, SelfDescribing
 {

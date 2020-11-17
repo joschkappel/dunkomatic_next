@@ -14,9 +14,6 @@ namespace PHPUnit\TextUI\CliArguments;
  */
 final class Mapper
 {
-    /**
-     * @throws Exception
-     */
     public function mapToLegacyArray(Configuration $arguments): array
     {
         $result = [
@@ -56,20 +53,8 @@ final class Mapper
             $result['configuration'] = $arguments->configuration();
         }
 
-        if ($arguments->hasCoverageCacheDirectory()) {
-            $result['coverageCacheDirectory'] = $arguments->coverageCacheDirectory();
-        }
-
-        if ($arguments->hasWarmCoverageCache()) {
-            $result['warmCoverageCache'] = $arguments->warmCoverageCache();
-        }
-
         if ($arguments->hasCoverageClover()) {
             $result['coverageClover'] = $arguments->coverageClover();
-        }
-
-        if ($arguments->hasCoverageCobertura()) {
-            $result['coverageCobertura'] = $arguments->coverageCobertura();
         }
 
         if ($arguments->hasCoverageCrap4J()) {
@@ -126,14 +111,6 @@ final class Mapper
 
         if ($arguments->hasExcludeGroups()) {
             $result['excludeGroups'] = $arguments->excludeGroups();
-        }
-
-        if ($arguments->hasTestsCovering()) {
-            $result['testsCovering'] = $arguments->testsCovering();
-        }
-
-        if ($arguments->hasTestsUsing()) {
-            $result['testsUsing'] = $arguments->testsUsing();
         }
 
         if ($arguments->hasTestSuffixes()) {
@@ -289,7 +266,7 @@ final class Mapper
         }
 
         if ($arguments->hasNoLogging()) {
-            $result['noLogging'] = $arguments->noLogging();
+            $result['notLogging'] = $arguments->noLogging();
         }
 
         if ($arguments->hasNoInteraction()) {
@@ -352,7 +329,7 @@ final class Mapper
             $result['coverageFilter'] = $arguments->coverageFilter();
         }
 
-        if ($arguments->hasRandomOrderSeed()) {
+        if ($arguments->hasRandomOrderSeer()) {
             $result['randomOrderSeed'] = $arguments->randomOrderSeed();
         }
 

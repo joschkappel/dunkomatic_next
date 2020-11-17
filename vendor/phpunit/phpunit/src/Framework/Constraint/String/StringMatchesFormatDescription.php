@@ -19,9 +19,6 @@ use function strtr;
 use SebastianBergmann\Diff\Differ;
 use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
-/**
- * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
- */
 final class StringMatchesFormatDescription extends RegularExpression
 {
     /**

@@ -27,6 +27,8 @@ class FileDownloadController extends Controller
     if ( $user->league_filecount + $user->club_filecount > 0){
       $zip = new ZipArchive;
       $fileName = $user->region.'-reports-'.Str::slug($user->name,'-').'.zip';
+      Storage::delete('public/'.$fileName);
+
       $pf = storage_path('app/public/'.$fileName);
       //Log::info(public_path($pf));
 

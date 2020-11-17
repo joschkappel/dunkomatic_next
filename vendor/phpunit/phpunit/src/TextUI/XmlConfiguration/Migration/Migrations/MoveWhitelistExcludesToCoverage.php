@@ -11,7 +11,6 @@ namespace PHPUnit\TextUI\XmlConfiguration;
 
 use DOMDocument;
 use DOMElement;
-use PHPUnit\Util\Xml\SnapshotNodeList;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
@@ -29,9 +28,9 @@ final class MoveWhitelistExcludesToCoverage implements Migration
             return;
         }
 
-        $excludeNodes = SnapshotNodeList::fromNodeList($whitelist->getElementsByTagName('exclude'));
+        $exclude = $whitelist->getElementsByTagName('exclude')->item(0);
 
-        if ($excludeNodes->count() === 0) {
+        if ($exclude === null) {
             return;
         }
 
@@ -41,30 +40,6 @@ final class MoveWhitelistExcludesToCoverage implements Migration
             throw new MigrationException('Unexpected state - No coverage element');
         }
 
-        $targetExclude = $coverage->getElementsByTagName('exclude')->item(0);
-
-        if ($targetExclude === null) {
-            $targetExclude = $coverage->appendChild(
-                $document->createElement('exclude')
-            );
-        }
-
-        foreach ($excludeNodes as $excludeNode) {
-            assert($excludeNode instanceof DOMElement);
-
-            foreach (SnapshotNodeList::fromNodeList($excludeNode->childNodes) as $child) {
-                if (!$child instanceof DOMElement || !in_array($child->nodeName, ['directory', 'file'], true)) {
-                    continue;
-                }
-
-                $targetExclude->appendChild($child);
-            }
-
-            if ($excludeNode->getElementsByTagName('*')->count() !== 0) {
-                throw new MigrationException('Dangling child elements in exclude found.');
-            }
-
-            $whitelist->removeChild($excludeNode);
-        }
+        $coverage->appendChild($exclude);
     }
 }

@@ -11,7 +11,7 @@
                     <h3 class="card-title">@lang('club.title.new', ['region' => Auth::user()->region ])</h3>
                 </div>
                 <!-- /.card-header -->
-                <form class="form-horizontal" action="{{ route('club.store', app()->getLocale()) }}" method="post">
+                <form class="form-horizontal" action="{{ route('club.store') }}" method="post">
                     <div class="card-body">
                         @csrf
                         @if ($errors->any())

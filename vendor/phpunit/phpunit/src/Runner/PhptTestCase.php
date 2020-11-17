@@ -19,6 +19,7 @@ use function dirname;
 use function explode;
 use function extension_loaded;
 use function file;
+use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
 use function is_array;
@@ -172,20 +173,14 @@ final class PhptTestCase implements Reorderable, SelfDescribing, Test
         }
 
         if ($result->getCollectCodeCoverageInformation()) {
-            $codeCoverageCacheDirectory = null;
-            $pathCoverage               = false;
-
+            $pathCoverage = false;
             $codeCoverage = $result->getCodeCoverage();
 
             if ($codeCoverage) {
-                if ($codeCoverage->cachesStaticAnalysis()) {
-                    $codeCoverageCacheDirectory = $codeCoverage->cacheDirectory();
-                }
-
                 $pathCoverage = $codeCoverage->collectsBranchAndPathCoverage();
             }
 
-            $this->renderForCoverage($code, $pathCoverage, $codeCoverageCacheDirectory);
+            $this->renderForCoverage($code, $pathCoverage);
         }
 
         $timer = new Timer;
@@ -594,7 +589,7 @@ final class PhptTestCase implements Reorderable, SelfDescribing, Test
         ];
     }
 
-    private function renderForCoverage(string &$job, bool $pathCoverage, ?string $codeCoverageCacheDirectory): void
+    private function renderForCoverage(string &$job, bool $pathCoverage): void
     {
         $files = $this->getCoverageFiles();
 
@@ -623,21 +618,14 @@ final class PhptTestCase implements Reorderable, SelfDescribing, Test
             ) . ";\n";
         }
 
-        if ($codeCoverageCacheDirectory === null) {
-            $codeCoverageCacheDirectory = 'null';
-        } else {
-            $codeCoverageCacheDirectory = "'" . $codeCoverageCacheDirectory . "'";
-        }
-
         $template->setVar(
             [
-                'composerAutoload'           => $composerAutoload,
-                'phar'                       => $phar,
-                'globals'                    => $globals,
-                'job'                        => $files['job'],
-                'coverageFile'               => $files['coverage'],
-                'driverMethod'               => $pathCoverage ? 'forLineAndPathCoverage' : 'forLineCoverage',
-                'codeCoverageCacheDirectory' => $codeCoverageCacheDirectory,
+                'composerAutoload' => $composerAutoload,
+                'phar'             => $phar,
+                'globals'          => $globals,
+                'job'              => $files['job'],
+                'coverageFile'     => $files['coverage'],
+                'driverMethod'     => $pathCoverage ? 'forLineAndPathCoverage' : 'forLineCoverage',
             ]
         );
 
@@ -651,7 +639,7 @@ final class PhptTestCase implements Reorderable, SelfDescribing, Test
         $coverage = RawCodeCoverageData::fromXdebugWithoutPathCoverage([]);
         $files    = $this->getCoverageFiles();
 
-        if (is_file($files['coverage'])) {
+        if (file_exists($files['coverage'])) {
             $buffer = @file_get_contents($files['coverage']);
 
             if ($buffer !== false) {

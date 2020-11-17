@@ -13,6 +13,7 @@
         "bensampo/laravel-enum": "^3.0",
         "brian2694/laravel-toastr": "^5.54",
         "components/flag-icon-css": "^3.5",
+        "dompdf/dompdf": "^0.8.6",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "graylog2/gelf-php": "^1.5",
@@ -36,7 +37,7 @@
         "facade/ignition": "^2.3.6",
         "laravel/dusk": "^6.7",
         "nunomaduro/collision": "^5.0",
-        "phpunit/phpunit": "^9.0",
+        "phpunit/phpunit": "9.3",
         "roquie/laravel-dusk-select2": "^2.1"
     },
     "config": {

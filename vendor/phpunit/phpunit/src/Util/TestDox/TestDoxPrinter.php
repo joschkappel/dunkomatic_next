@@ -13,7 +13,6 @@ use const PHP_EOL;
 use function array_map;
 use function get_class;
 use function implode;
-use function method_exists;
 use function preg_split;
 use function trim;
 use PHPUnit\Framework\AssertionFailedError;

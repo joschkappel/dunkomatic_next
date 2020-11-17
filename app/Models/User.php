@@ -88,6 +88,16 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
         return $this->hasMany('App\Models\Message','author');
     }
 
+    // this is a recommended way to declare event handlers
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($user) { // before delete() method call this
+             $user->messages()->delete();
+             $user->member()->delete();
+        });
+    }
+
     public function scopeRegionadmin($query, $region)
     {
         return $query->where('region',$region)->where('regionadmin', true);
@@ -104,40 +114,56 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     {
       $directory = $this->user_region->league_folder;
       $llist = $this->member->leagues()->pluck('shortname')->implode('|');
-      $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
-        return (preg_match('('.$llist.')', $value) === 1);
-        //return (strpos($value,$llist[0]) !== false);
-      });
-      return count($reports);
+      if ($llist !=  ""){
+        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
+          return (preg_match('('.$llist.')', $value) === 1);
+          //return (strpos($value,$llist[0]) !== false);
+        });
+        return count($reports);
+      } else {
+        return 0;
+      }
     }
     public function getLeagueFilenamesAttribute()
     {
       $directory = $this->user_region->league_folder;
       $llist = $this->member->leagues()->pluck('shortname')->implode('|');
-      $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
-        return (preg_match('('.$llist.')', $value) === 1);
-        //return (strpos($value,$llist[0]) !== false);
-      });
-      return $reports;
+      if ($llist != ""){
+        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
+          return (preg_match('('.$llist.')', $value) === 1);
+          //return (strpos($value,$llist[0]) !== false);
+        });
+        return $reports;
+      } else {
+        return collect();
+      }
     }
     public function getClubFilecountAttribute()
     {
       $directory = $this->user_region->club_folder;
       $llist = $this->member->clubs()->pluck('shortname')->implode('|');
-      $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
-        return (preg_match('('.$llist.')', $value) === 1);
-        //return (strpos($value,$llist[0]) !== false);
-      });
-      return count($reports);
+      if ($llist != "" ){
+        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
+          return (preg_match('('.$llist.')', $value) === 1);
+          //return (strpos($value,$llist[0]) !== false);
+        });
+        return count($reports);
+      } else {
+        return 0;
+      }
     }
     public function getClubFilenamesAttribute()
     {
       $directory = $this->user_region->club_folder;
       $llist = $this->member->clubs()->pluck('shortname')->implode('|');
-      $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
-        return (preg_match('('.$llist.')', $value) === 1);
-        //return (strpos($value,$llist[0]) !== false);
-      });
-      return $reports;
+      if ($llist != ""){
+        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
+          return (preg_match('('.$llist.')', $value) === 1);
+          //return (strpos($value,$llist[0]) !== false);
+        });
+        return $reports;
+      } else {
+        return collect();
+      }
     }
 }

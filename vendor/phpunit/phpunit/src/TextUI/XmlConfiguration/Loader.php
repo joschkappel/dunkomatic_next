@@ -15,7 +15,7 @@ use function assert;
 use function defined;
 use function dirname;
 use function explode;
-use function is_file;
+use function file_exists;
 use function is_numeric;
 use function preg_match;
 use function stream_resolve_include_path;
@@ -35,7 +35,6 @@ use PHPUnit\TextUI\XmlConfiguration\CodeCoverage\CodeCoverage;
 use PHPUnit\TextUI\XmlConfiguration\CodeCoverage\Filter\Directory as FilterDirectory;
 use PHPUnit\TextUI\XmlConfiguration\CodeCoverage\Filter\DirectoryCollection as FilterDirectoryCollection;
 use PHPUnit\TextUI\XmlConfiguration\CodeCoverage\Report\Clover;
-use PHPUnit\TextUI\XmlConfiguration\CodeCoverage\Report\Cobertura;
 use PHPUnit\TextUI\XmlConfiguration\CodeCoverage\Report\Crap4j;
 use PHPUnit\TextUI\XmlConfiguration\CodeCoverage\Report\Html as CodeCoverageHtml;
 use PHPUnit\TextUI\XmlConfiguration\CodeCoverage\Report\Php as CodeCoveragePhp;
@@ -338,7 +337,7 @@ final class Loader
 
         $file = dirname($filename) . DIRECTORY_SEPARATOR . $path;
 
-        if ($useIncludePath && !is_file($file)) {
+        if ($useIncludePath && !file_exists($file)) {
             $includePathFile = stream_resolve_include_path($path);
 
             if ($includePathFile) {
@@ -388,7 +387,6 @@ final class Loader
             return $this->legacyCodeCoverage($filename, $xpath, $document);
         }
 
-        $cacheDirectory            = null;
         $pathCoverage              = false;
         $includeUncoveredFiles     = true;
         $processUncoveredFiles     = false;
@@ -398,14 +396,6 @@ final class Loader
         $element = $this->element($xpath, 'coverage');
 
         if ($element) {
-            $cacheDirectory = $this->getStringAttribute($element, 'cacheDirectory');
-
-            if ($cacheDirectory !== null) {
-                $cacheDirectory = new Directory(
-                    $this->toAbsolutePath($filename, $cacheDirectory)
-                );
-            }
-
             $pathCoverage = $this->getBooleanAttribute(
                 $element,
                 'pathCoverage',
@@ -415,7 +405,7 @@ final class Loader
             $includeUncoveredFiles = $this->getBooleanAttribute(
                 $element,
                 'includeUncoveredFiles',
-                true
+                false
             );
 
             $processUncoveredFiles = $this->getBooleanAttribute(
@@ -442,20 +432,6 @@ final class Loader
 
         if ($element) {
             $clover = new Clover(
-                new File(
-                    $this->toAbsolutePath(
-                        $filename,
-                        (string) $this->getStringAttribute($element, 'outputFile')
-                    )
-                )
-            );
-        }
-
-        $cobertura = null;
-        $element   = $this->element($xpath, 'coverage/report/cobertura');
-
-        if ($element) {
-            $cobertura = new Cobertura(
                 new File(
                     $this->toAbsolutePath(
                         $filename,
@@ -541,7 +517,6 @@ final class Loader
         }
 
         return new CodeCoverage(
-            $cacheDirectory,
             $this->readFilterDirectories($filename, $xpath, 'coverage/include/directory'),
             $this->readFilterFiles($filename, $xpath, 'coverage/include/file'),
             $this->readFilterDirectories($filename, $xpath, 'coverage/exclude/directory'),
@@ -552,7 +527,6 @@ final class Loader
             $ignoreDeprecatedCodeUnits,
             $disableCodeCoverageIgnore,
             $clover,
-            $cobertura,
             $crap4j,
             $html,
             $php,
@@ -599,13 +573,12 @@ final class Loader
             }
         }
 
-        $clover    = null;
-        $cobertura = null;
-        $crap4j    = null;
-        $html      = null;
-        $php       = null;
-        $text      = null;
-        $xml       = null;
+        $clover = null;
+        $crap4j = null;
+        $html   = null;
+        $php    = null;
+        $text   = null;
+        $xml    = null;
 
         foreach ($xpath->query('logging/log') as $log) {
             assert($log instanceof DOMElement);
@@ -622,13 +595,6 @@ final class Loader
             switch ($type) {
                 case 'coverage-clover':
                     $clover = new Clover(
-                        new File($target)
-                    );
-
-                    break;
-
-                case 'coverage-cobertura':
-                    $cobertura = new Cobertura(
                         new File($target)
                     );
 
@@ -677,7 +643,6 @@ final class Loader
         }
 
         return new CodeCoverage(
-            null,
             $this->readFilterDirectories($filename, $xpath, 'filter/whitelist/directory'),
             $this->readFilterFiles($filename, $xpath, 'filter/whitelist/file'),
             $this->readFilterDirectories($filename, $xpath, 'filter/whitelist/exclude/directory'),
@@ -688,7 +653,6 @@ final class Loader
             $ignoreDeprecatedCodeUnits,
             $disableCodeCoverageIgnore,
             $clover,
-            $cobertura,
             $crap4j,
             $html,
             $php,
@@ -1027,7 +991,7 @@ final class Loader
         }
 
         return new PHPUnit(
-            $this->getBooleanAttribute($document->documentElement, 'cacheResult', true),
+            $this->getBooleanAttribute($document->documentElement, 'cacheResult', false),
             $cacheResultFile,
             $this->getColumns($document),
             $this->getColors($document),

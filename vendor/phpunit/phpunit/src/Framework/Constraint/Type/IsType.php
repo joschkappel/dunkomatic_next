@@ -23,7 +23,10 @@ use function is_string;
 use function sprintf;
 
 /**
- * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ * Constraint that asserts that the value it is evaluated for is of a
+ * specified type.
+ *
+ * The expected value is passed in the constructor.
  */
 final class IsType extends Constraint
 {

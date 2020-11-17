@@ -31,7 +31,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Prophet;
 use ReflectionClass;
 use ReflectionException;
-use SebastianBergmann\CliParser\Parser as CliParser;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeUnit\CodeUnit;
 use SebastianBergmann\CodeUnitReverseLookup\Wizard;
@@ -55,9 +54,6 @@ use Symfony\Polyfill\Ctype\Ctype;
 use TheSeer\Tokenizer\Tokenizer;
 use Webmozart\Assert\Assert;
 
-/**
- * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
- */
 final class ExcludeList
 {
     /**
@@ -111,9 +107,6 @@ final class ExcludeList
 
         // phpunit/php-timer
         Timer::class => 1,
-
-        // sebastian/cli-parser
-        CliParser::class => 1,
 
         // sebastian/code-unit
         CodeUnit::class => 1,

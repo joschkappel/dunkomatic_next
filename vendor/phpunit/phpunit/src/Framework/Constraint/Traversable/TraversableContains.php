@@ -13,7 +13,8 @@ use function is_array;
 use function sprintf;
 
 /**
- * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ * Constraint that asserts that the Traversable it is applied to contains
+ * a given value.
  */
 abstract class TraversableContains extends Constraint
 {

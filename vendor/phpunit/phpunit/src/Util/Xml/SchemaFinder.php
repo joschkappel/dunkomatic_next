@@ -9,13 +9,13 @@
  */
 namespace PHPUnit\Util\Xml;
 
-use function defined;
 use function is_file;
 use function sprintf;
-use PHPUnit\Runner\Version;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
+ *
+ * @psalm-immutable
  */
 final class SchemaFinder
 {
@@ -24,10 +24,10 @@ final class SchemaFinder
      */
     public function find(string $version): string
     {
-        if ($version === Version::series()) {
-            $filename = $this->path() . 'phpunit.xsd';
+        if (defined('__PHPUNIT_PHAR_ROOT__')) {
+            $filename = __PHPUNIT_PHAR_ROOT__ . '/schema/' . $version . '.xsd';
         } else {
-            $filename = $this->path() . 'schema/' . $version . '.xsd';
+            $filename = __DIR__ . '/../../../schema/' . $version . '.xsd';
         }
 
         if (!is_file($filename)) {
@@ -40,14 +40,5 @@ final class SchemaFinder
         }
 
         return $filename;
-    }
-
-    private function path(): string
-    {
-        if (defined('__PHPUNIT_PHAR_ROOT__')) {
-            return __PHPUNIT_PHAR_ROOT__ . '/';
-        }
-
-        return __DIR__ . '/../../../';
     }
 }
