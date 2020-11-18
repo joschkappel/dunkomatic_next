@@ -20,7 +20,7 @@ return [
   'team_guest' => 'Gast',
   'gym_no' => 'Halle',
   'game_wday' => 'Tag',
-  'game_time' => 'Spielbeginn',
+  'game_time' => 'Beginn',
   'weekend' => 'Gesamtes Wochenende',
   'overlap' => 'Überschneidung',
   'homegame' => 'Heimspiel|Heimspiele',
@@ -28,4 +28,5 @@ return [
   'excel.import' => 'Import Exceldatei',
   'gametime_format' => 'H:i',
   'referee' => 'Schiri',
+  'team.gym' => 'Gegner und Hallen',
 ];

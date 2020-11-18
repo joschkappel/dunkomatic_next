@@ -11,6 +11,6 @@ return [
   'title.delete' => 'Lösche Spielhalle von Verein  ',
   'confirm.delete' => 'Wills Du diese Spielhalle wirklich löschen ?',
   'name' => 'Hallenname',
-  'no' => 'Hallennummer',
+  'no' => 'Halle Nr.',
 
 ];

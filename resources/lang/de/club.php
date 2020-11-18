@@ -9,7 +9,7 @@ return [
   'action.assign' => 'Verein für Runde :LEAGUE zulassen',
   'action.select' => 'Wähle einen Verein',
   'action.edit-homegame' => 'Heimspieltermine erfassen',
-  'action.import-homegame' => 'Heimspieltermine importieren',  
+  'action.import-homegame' => 'Heimspieltermine importieren',
   'confirm.delete' => 'Willst Du den Verein :CLUB mit :noteam Mannschaften, :nomember Mitarbeitern und :nogym Hallen wirklich löschen ?',
   'title.list' => 'Vereinsliste für Bezirk :REGION',
   'title.stats' => 'Vereinsstatistik für Bezirk :REGION',

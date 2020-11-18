@@ -87,16 +87,22 @@ class ClubLeagueGames implements FromView, WithTitle, WithMapping, ShouldAutoSiz
         //Log::info(print_r($clubs));
 
         // set rows
-        $this->r_h_1 = $this->r_t_1 + 1;
+        $this->r_h_1 = $this->r_t_1 + 2;
         $this->r_b_1_s = $this->r_h_1 + 1;
         $this->r_b_1_e = $this->r_h_1 + $games->count();
 
-        $this->r_t_2 = $this->r_b_1_e + 2;
-        $this->r_h_2 = $this->r_t_2 + 1;
-        $this->r_b_2_s = $this->r_h_2 + 1;
+        $this->r_t_2 = $this->r_b_1_e + 1;
+        $this->r_h_2 = $this->r_t_2 + 3;
+        $this->r_b_2_s = $this->r_h_2;
         $this->r_b_2_e = $this->r_h_2 + ( $clubs->count() + (2*$g) + (2*$t) );
 
-        return view('reports.game', ['games'=>$games,'clubs'=>$clubs,'league'=>$this->league]);
+        // Log::info($this->r_b_1_e);
+        // Log::info($this->r_t_2);
+        // Log::info($this->r_h_2);
+        // Log::info($this->r_b_2_s);
+        // Log::info($this->r_b_2_e);
+
+        return view('reports.game_league', ['games'=>$games,'clubs'=>$clubs,'league'=>$this->league, 'club'=>$this->club]);
     }
 
     /**
@@ -131,10 +137,48 @@ class ClubLeagueGames implements FromView, WithTitle, WithMapping, ShouldAutoSiz
                 // last column as letter value (e.g., D)
                 $last_column = Coordinate::stringFromColumnIndex(7);
 
+                // title setting (insert 2 rows before row 1)
+                $event->sheet->insertNewRowBefore(1, 2);
+                $event->sheet->insertNewRowBefore($this->r_b_1_e+1, 2);
+
+                // Set first row to height 20
+                $event->sheet->getDelegate()->getRowDimension($this->r_t_1)->setRowHeight(20);
+                $event->sheet->getDelegate()->getRowDimension($this->r_t_1+1)->setRowHeight(20);
+                $event->sheet->getDelegate()->getRowDimension($this->r_t_2+2)->setRowHeight(20);
+
+                // set title and date
+                $event->sheet->setCellValue('A1',$this->league->name);
+                $style_title = [
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_LEFT
+                    ],
+                    'font' => [
+                      'bold' => true,
+                      'size' => 16,
+                    ]
+                ];
+                $event->sheet->getStyle(sprintf('A%d:%s%d',$this->r_t_1, $last_column, $this->r_t_1))->applyFromArray($style_title);
+                $event->sheet->getStyle(sprintf('A%d:%s%d',$this->r_t_2+2, $last_column, $this->r_t_2+2))->applyFromArray($style_title);
+
+                $style_title = [
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_RIGHT
+                    ],
+                    'font' => [
+                      'bold' => true,
+                      'color' => ['rgb' => 'DC7633'],
+                      'size' => 10,
+                    ]
+                ];
+                $event->sheet->getStyle(sprintf('A%d:%s%d',$this->r_t_1+1, $last_column, $this->r_t_1+1))->applyFromArray($style_title);
+                $event->sheet->setCellValue('A2','Stand: '.Carbon::now()->locale( app()->getLocale())->isoFormat('llll'));
+                $event->sheet->setCellValue('A'.($this->r_t_2+2), __('game.team.gym'));
+
                 // merge cells for full-width
                 $event->sheet->mergeCells(sprintf('A%d:%s%d',$this->r_t_1, $last_column, $this->r_t_1));
-                $event->sheet->mergeCells(sprintf('A%d:%s%d',$this->r_t_2, $last_column, $this->r_t_2));
-
+                $event->sheet->mergeCells(sprintf('A%d:%s%d',$this->r_t_1+1, $last_column, $this->r_t_1+1));
+                $event->sheet->mergeCells(sprintf('A%d:%s%d',$this->r_t_2, $last_column, $this->r_t_2+1));
+                $event->sheet->mergeCells(sprintf('A%d:%s%d',$this->r_t_2+2, $last_column, $this->r_t_2+2));
 
                 // set up a style array for header formatting
                 $style_heading = [
@@ -148,9 +192,9 @@ class ClubLeagueGames implements FromView, WithTitle, WithMapping, ShouldAutoSiz
                         ]
                     ],
                     'font' => [
-                      'bold' => true,
+                      // 'bold' => true,
                       'color' => ['rgb' => 'FFFFFF'],
-                      'size' => 16,
+                      'size' => 14,
                     ],
                     'fill' => [
                       'fillType' => Fill::FILL_SOLID,
@@ -158,9 +202,50 @@ class ClubLeagueGames implements FromView, WithTitle, WithMapping, ShouldAutoSiz
                     ]
                 ];
 
-
                 // assign cell styles
                 $event->sheet->getStyle(sprintf('A%d:%s%d',$this->r_h_1, $last_column, $this->r_h_1))->applyFromArray($style_heading);
+                $style_title = [
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_LEFT
+                    ],
+                    'font' => [
+                      'bold' => true,
+                      'size' => 16,
+                    ]
+                ];
+
+                $cellRange = sprintf('A%d:%s%d',$this->r_b_1_s, $last_column, $this->r_b_1_e);
+                $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setSize(12);
+
+                $style_body2 = [
+                    'alignment' => [
+                        'wrapText' => true,
+                    ],
+                    'font' => [
+                      'size' => 12,
+                    ]
+                ];
+                $event->sheet->getStyle(sprintf('A%d:%s%d',$this->r_b_2_s, $last_column, $this->r_b_2_e))->applyFromArray($style_body2);
+
+
+                //merge cells for teams and gym details
+                for ($i = $this->r_b_2_s; $i <= $this->r_b_2_e; $i++){
+                  $event->sheet->mergeCells(sprintf('B%d:E%d',$i, $i));
+                  $event->sheet->mergeCells(sprintf('F%d:G%d',$i, $i));
+                }
+
+                $style_box = [
+                    'borders' => [
+                        'outline' => [
+                            'borderStyle' => Border::BORDER_THIN,
+                            'color' => ['rgb' => '000000'],
+                        ]
+                    ]
+                  ];
+                 $cellRange = sprintf('A%d:%s%d',$this->r_t_1, $last_column, $this->r_b_1_e);
+                 $event->sheet->getStyle($cellRange)->applyFromArray($style_box);
+                 $cellRange = sprintf('A%d:%s%d',$this->r_t_2, $last_column, $this->r_b_2_e);
+                 $event->sheet->getStyle($cellRange)->applyFromArray($style_box);
 
               }
         ];
