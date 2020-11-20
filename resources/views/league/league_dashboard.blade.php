@@ -198,6 +198,8 @@
           </button>
           <a href="{{ route('league.game.index',['language'=>app()->getLocale(), 'league' => $league ]) }}" class="btn btn-primary" >
           <i class="far fa-edit"></i> @lang('league.action.game.list')</a>
+          <a href="{{ route('cal.league',['language'=>app()->getLocale(), 'league' => $league ]) }}" class="btn btn-secondary" >
+          <i class="fas fa-calendar-alt"></i> iCAL</a>          
         </div>
         <!-- /.card-footer -->
       </div>

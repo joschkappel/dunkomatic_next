@@ -8,6 +8,8 @@ use App\Enums\ReportFileType;
 use App\Enums\ReportScope;
 
 use Maatwebsite\Excel\Facades\Excel;
+use App\Helpers\CalendarComposer;
+use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Support\Str;
 use App\Exports\LeagueGamesExport;
@@ -83,19 +85,21 @@ class GenerateLeagueGamesReport implements ShouldQueue
 
       foreach ( $this->region->fmt_league_reports->getFlags() as $rtype  ){
         switch ( $this->scope ){
-          case 'ALL':
+          case ReportScope::ms_all:
             if ($rtype->hasFlag(ReportFileType::PDF)){
-              Excel::store(new LeagueGamesExport($this->league->id), $this->rpt_name.'_all.'.$rtype->description, NULL, \Maatwebsite\Excel\Excel::MPDF );
+              Excel::store(new LeagueGamesExport($this->league->id, new ReportScope($this->scope)), $this->rpt_name, NULL, \Maatwebsite\Excel\Excel::MPDF );
+            } elseif ($rtype->hasFlag(ReportFileType::ICS)){
+              // do calendar files
+              $calendar = CalendarComposer::createLeagueCalendar($this->league);
+              if ($calendar != null){
+                Storage::put($this->rpt_name, $calendar->get());
+              }
             } else {
-              Excel::store(new LeagueGamesExport($this->league->id), $this->rpt_name.'_all.'.$rtype->description );
+              Excel::store(new LeagueGamesExport($this->league->id, new ReportScope($this->scope)), $this->rpt_name );
             }
             break;
         }
       }
-      if ($this->rtype->hasFlag(ReportFileType::PDF)){
-        Excel::store(new LeagueGamesExport($this->league->id, new ReportScope($this->scope)), $this->rpt_name, NULL, \Maatwebsite\Excel\Excel::MPDF );
-      } else {
-        Excel::store(new LeagueGamesExport($this->league->id, new ReportScope($this->scope)), $this->rpt_name );
-      }
+
     }
 }

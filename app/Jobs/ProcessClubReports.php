@@ -73,7 +73,7 @@ class ProcessClubReports implements ShouldQueue
             } elseif ($rtype->hasFlag(ReportFileType::CSV)){
               $rpt_jobs[] = new GenerateClubGamesReport($region, $c, $rtype, ReportScope::ss_club_all() );
               $rpt_jobs[] = new GenerateClubGamesReport($region, $c, $rtype, ReportScope::ss_club_home() );
-            } elseif ($rtype->hasFlag(ReportFileType::PDF) or $rtype->hasFlag(ReportFileType::HTML)){
+            } elseif ($rtype->hasFlag(ReportFileType::PDF) or $rtype->hasFlag(ReportFileType::HTML) or $rtype->hasFlag(ReportFileType::ICS)){
               $rpt_jobs[] = new GenerateClubGamesReport($region, $c, $rtype, ReportScope::ss_club_all() );
               $rpt_jobs[] = new GenerateClubGamesReport($region, $c, $rtype, ReportScope::ss_club_home() );
               $rpt_jobs[] = new GenerateClubGamesReport($region, $c, $rtype, ReportScope::ss_club_referee() );

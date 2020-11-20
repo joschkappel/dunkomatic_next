@@ -62,7 +62,6 @@ Route::group([
     Route::get('league/{league}/game/dt', 'LeagueGameController@datatable')->name('league.game.dt');
     Route::resource('league', 'LeagueController')->except('store','update','destroy');
     Route::resource('league.game', 'LeagueGameController')->shallow()->only(['index','create','edit']);
-    Route::get('report/league/{league}', 'ReportController@league_games')->name('report.league');
 
     Route::resource('member', 'MemberController')->only(['show']);
     Route::resource('club.membership', 'ClubMembershipController')->only(['index','create','edit']);
@@ -87,6 +86,9 @@ Route::group([
     Route::get('/message/user/{user}/dt', 'MessageController@list_user_dt')->name('message.user.dt');
     Route::get('/message/region/{region}/dt', 'MessageController@list_region_dt')->name('message.region.dt');
     Route::post('/message/{message}/send', 'MessageController@send')->name('message.send');
+
+    Route::get('/calendar/league/{league}', 'CalendarController@cal_league')->name('cal.league');
+    Route::get('/calendar/club/{club}', 'CalendarController@cal_club')->name('cal.club');
   });
 
 });

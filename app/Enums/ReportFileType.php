@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
  * @method static static XLS()
  * @method static static ODS()
  * @method static static CSV()
+ * @method static static ICS()
  */
 
 final class ReportFileType extends FlaggedEnum
@@ -23,6 +24,7 @@ final class ReportFileType extends FlaggedEnum
     const XLS =     1 << 3;
     const ODS =     1 << 4;
     const CSV =     1 << 5;
+    const ICS =     1 << 6;
 
     public static function getDescription($value): string
     {

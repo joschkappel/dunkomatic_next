@@ -9,6 +9,8 @@ use App\Enums\ReportFileType;
 use App\Enums\ReportScope;
 
 use Maatwebsite\Excel\Facades\Excel;
+use App\Helpers\CalendarComposer;
+use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Support\Str;
 use App\Exports\ClubGamesExport;
@@ -88,6 +90,25 @@ class GenerateClubGamesReport implements ShouldQueue
 
       if ($this->rtype->hasFlag(ReportFileType::PDF)){
         Excel::store(new ClubGamesExport($this->club->id, new ReportScope($this->scope), $this->league->id), $this->rpt_name, NULL, \Maatwebsite\Excel\Excel::MPDF );
+      } elseif ($this->rtype->hasFlag(ReportFileType::ICS)){
+        // do calendar files
+        switch ($this->scope) {
+          case ReportScope::ss_club_all:
+            $calendar = CalendarComposer::createClubCalendar($this->club);
+            break;
+          case ReportScope::ss_club_home:
+            $calendar = CalendarComposer::createClubHomeCalendar($this->club);
+            break;
+          case ReportScope::ss_club_league:
+            $calendar = CalendarComposer::createClubLeagueCalendar($this->club, $this->league);
+            break;
+          case ReportScope::ss_club_referee:
+            $calendar = CalendarComposer::createClubRefereeCalendar($this->club);
+            break;
+        }
+        if ($calendar != null){
+          Storage::put($this->rpt_name, $calendar->get());
+        }
       } else {
         Excel::store(new ClubGamesExport($this->club->id, new ReportScope($this->scope), (isset($this->league->id))?$this->league->id : NULL ), $this->rpt_name );
       }
