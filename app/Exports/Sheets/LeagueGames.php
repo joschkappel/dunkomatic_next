@@ -3,10 +3,11 @@
 namespace App\Exports\Sheets;
 
 use App\Models\Game;
-use App\Models\Club;
 use App\Models\League;
 use App\Models\Team;
+use App\Models\Club;
 use App\Models\Gym;
+use App\Enums\ReportScope;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithTitle;
@@ -14,19 +15,18 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use Maatwebsite\Excel\Events\AfterSheet;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
-class ClubLeagueGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
+class LeagueGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
 {
 
     protected $gdate = null;
-    protected $club;
     protected $league;
 
     protected $r_t_1 = 1;
@@ -38,11 +38,11 @@ class ClubLeagueGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
     protected $r_b_2_s;
     protected $r_b_2_e;
 
-    public function __construct(Club $club, League $league)
+    public function __construct(League $league, ReportScope $scope)
     {
-        $this->club = $club;
         $this->gdate = null;
         $this->league = $league;
+        $this->scope = $scope;
 
         Log::info('sheet for '.$this->league->name);
     }
@@ -52,16 +52,14 @@ class ClubLeagueGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
      */
     public function title(): string
     {
-        return 'Team ' . $this->league->shortname;
+      if ( $this->scope == ReportScope::ms_all()) {
+        return 'Rundenspielplan ' . $this->league->shortname;
+      }
     }
 
     public function view(): View
     {
         $games =  Game::where('league_id',$this->league->id)
-                      ->where( function($q) {
-                        $q->where('club_id_home',$this->club->id)
-                          ->orWhere('club_id_guest',$this->club->id);
-                        })
                       ->with('league')
                       ->orderBy('game_date','asc')
                       ->orderBy('game_time','asc')
@@ -85,24 +83,26 @@ class ClubLeagueGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
         //Log::info(print_r($guests));
         //Log::info(print_r($clubs));
 
+        $extra_date_rows = $games->pluck('game_date')->unique()->count();
         // set rows
         $this->r_h_1 = $this->r_t_1 + 2;
         $this->r_b_1_s = $this->r_h_1 + 1;
-        $this->r_b_1_e = $this->r_h_1 + $games->count();
+        $this->r_b_1_e = $this->r_h_1 + $games->count() + $extra_date_rows;
 
         $this->r_t_2 = $this->r_b_1_e + 1;
         $this->r_h_2 = $this->r_t_2 + 3;
         $this->r_b_2_s = $this->r_h_2;
         $this->r_b_2_e = $this->r_h_2 + ( $clubs->count() + (2*$g) + (2*$t) );
 
-        // Log::info($this->r_b_1_e);
-        // Log::info($this->r_t_2);
-        // Log::info($this->r_h_2);
-        // Log::info($this->r_b_2_s);
-        // Log::info($this->r_b_2_e);
+        Log::info($this->r_b_1_e);
+        Log::info($this->r_t_2);
+        Log::info($this->r_h_2);
+        Log::info($this->r_b_2_s);
+        Log::info($this->r_b_2_e);
 
-        return view('reports.game_club_league', ['games'=>$games,'clubs'=>$clubs,'league'=>$this->league, 'club'=>$this->club]);
+        return view('reports.game_league', ['games'=>$games,'clubs'=>$clubs,'league'=>$this->league, 'gdate'=>$this->gdate]);
     }
+
 
     public function registerEvents(): array
     {

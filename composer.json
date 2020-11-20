@@ -30,6 +30,7 @@
         "mpdf/mpdf": "^8.0",
         "owen-it/laravel-auditing": "^10.0",
         "predis/predis": "^1.0",
+        "spatie/icalendar-generator": "^1.0",
         "symfony/http-kernel": "^5.1.5",
         "yajra/laravel-datatables-oracle": "^9.10"
     },

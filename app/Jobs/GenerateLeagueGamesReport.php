@@ -5,9 +5,10 @@ namespace App\Jobs;
 use App\Models\League;
 use App\Models\Region;
 use App\Enums\ReportFileType;
-
+use App\Enums\ReportScope;
 
 use Maatwebsite\Excel\Facades\Excel;
+
 use Illuminate\Support\Str;
 use App\Exports\LeagueGamesExport;
 
@@ -18,32 +19,52 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class GenerateLeagueReport implements ShouldQueue
+class GenerateLeagueGamesReport implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private $export_folder;
-    private $rpt_name;
-    private $region;
-    private $scope;
-    private $league;
+    protected $export_folder;
+    protected $rpt_name;
+    protected $region;
+    protected $scope;
+    protected $league;
+    protected $rtype;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Region $region, League $league, $scope='ALL')
+    public function __construct(Region $region, League $league, ReportFileType $rtype, ReportScope $scope)
     {
         // set report scope
         $this->region = $region;
         $this->league = $league;
-        $this->scope = $scope;
+        $this->scope = $scope->value;
+        $this->rtype = $rtype;
 
         // make sure folders are there
         $this->export_folder = $region->league_folder;
-        $this->rpt_name = $this->export_folder.'/'.$this->league->shortname.'_games';
+        $this->rpt_name = $this->export_folder.'/'.$this->league->shortname;
 
+        switch ($this->scope) {
+          case ReportScope::ms_all:
+            $this->rpt_name .= '_games.';
+            break;
+          case ReportScope::ss_club_all:
+            $this->rpt_name .= '_games_all.';
+            break;
+          case ReportScope::ss_club_home:
+            $this->rpt_name .= '_games_home.';
+            break;
+          case ReportScope::ss_club_referee:
+            $this->rpt_name .= '_games_referee.';
+            break;
+          case ReportScope::ss_club_league:
+            $this->rpt_name .= '_'.$this->league->shortname.'_games.';
+            break;
+        }
+        $this->rpt_name .= $this->rtype->description;
     }
 
     /**
@@ -70,6 +91,11 @@ class GenerateLeagueReport implements ShouldQueue
             }
             break;
         }
+      }
+      if ($this->rtype->hasFlag(ReportFileType::PDF)){
+        Excel::store(new LeagueGamesExport($this->league->id, new ReportScope($this->scope)), $this->rpt_name, NULL, \Maatwebsite\Excel\Excel::MPDF );
+      } else {
+        Excel::store(new LeagueGamesExport($this->league->id, new ReportScope($this->scope)), $this->rpt_name );
       }
     }
 }

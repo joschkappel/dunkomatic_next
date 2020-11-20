@@ -38,7 +38,7 @@ class ProcessDbCleanup implements ShouldQueue
     {
       $aweekago = Carbon::today()->subDays(7)->toDateString();
       $amonthago = Carbon::today()->subDays(30)->toDateString();
-      
+
       // drop all outdated (one week) messages;
       $old_msgs = Message::whereDate('sent_at','<', $aweekago)->get();
       foreach ($old_msgs as $om){
@@ -55,7 +55,7 @@ class ProcessDbCleanup implements ShouldQueue
       }
 
       // drop all users (incl messages and members) that havent verfied their email since a month;
-      $old_users = User::whereDate('email_verified_at', null)->get()->whereDate('created_at','<', $amonthago)->get();
+      $old_users = User::whereNull('email_verified_at')->whereDate('created_at','<', $amonthago)->get();
       foreach ($old_users as $ou){
         Log::info('deleting user '.$ou->email);
         $ou->delete();

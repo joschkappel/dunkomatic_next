@@ -80,9 +80,9 @@ class Kernel extends ConsoleKernel
       // return true;
         switch ($frequency) {
           case JobFrequencyType::daily :
-            $schedule->job($job,'janitor')->daily();
+            //$schedule->job($job,'janitor')->daily();
             //$schedule->job($job,'janitor')->hourly();
-            //$schedule->job($job,'janitor')->everyFiveMinutes();
+            $schedule->job($job,'janitor')->everyFiveMinutes();
             break;
           case JobFrequencyType::weekly :
             $schedule->job($job,'janitor')->weekly();

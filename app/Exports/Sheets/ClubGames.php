@@ -5,10 +5,10 @@ namespace App\Exports\Sheets;
 use App\Models\Game;
 use App\Models\Club;
 use App\Models\League;
+use App\Enums\ReportScope;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -21,7 +21,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
-class ClubGames implements FromView, WithTitle, WithMapping, ShouldAutoSize, WithEvents
+class ClubGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
 {
 
     protected $gdate = null;
@@ -33,7 +33,7 @@ class ClubGames implements FromView, WithTitle, WithMapping, ShouldAutoSize, Wit
     protected $r_b_1_s;
     protected $r_b_1_e;
 
-    public function __construct(Club $club, $scope)
+    public function __construct(Club $club, ReportScope $scope)
     {
         $this->club = $club;
         $this->gdate = null;
@@ -47,23 +47,25 @@ class ClubGames implements FromView, WithTitle, WithMapping, ShouldAutoSize, Wit
      */
     public function title(): string
     {
-      if ( $this->scope == 'HOME') {
+      if ( $this->scope == ReportScope::ss_club_home()) {
         return 'Heimspielplan ' . $this->club->shortname;
-      } else {
+      } elseif ( $this->scope == ReportScope::ss_club_all()) {
         return 'Gesamtspielplan ' . $this->club->shortname;
+      } elseif ( $this->scope == ReportScope::ss_club_referee()) {
+        return 'Schiedsrichterplan ' . $this->club->shortname;
       }
     }
 
     public function view(): View
     {
-      if ($this->scope == 'HOME'){
+      if ($this->scope == ReportScope::ss_club_home()){
          $games =  Game::where('club_id_home',$this->club->id)
                       ->with('league','gym')
                       ->orderBy('game_date','asc')
                       ->orderBy('game_time','asc')
                       ->orderBy('game_no','asc')
                       ->get();
-      } else {
+      } elseif ($this->scope == ReportScope::ss_club_all()) {
         $games =  Game::where('club_id_home',$this->club->id)
                      ->orWhere('club_id_guest',$this->club->id)
                      ->with('league','gym')
@@ -71,40 +73,32 @@ class ClubGames implements FromView, WithTitle, WithMapping, ShouldAutoSize, Wit
                      ->orderBy('game_time','asc')
                      ->orderBy('game_no','asc')
                      ->get();
+      } elseif ($this->scope == ReportScope::ss_club_referee()) {
+        $club_id = $this->club->id;
+        $shortname = $this->club->shortname;
+        $games = Game::where( function ($query) use ($club_id) {
+                       $query->where('club_id_home',$club_id)
+                             ->where('referee_1','****');
+                     })
+                     ->orWhere( function ($query) use ($shortname) {
+                       $query->where('referee_1',$shortname)
+                             ->orWhere('referee_2',$shortname);
+                     })
+                     ->orderBy('game_date','asc')
+                     ->orderBy('game_time','asc')
+                     ->orderBy('game_no','asc')
+                     ->get();
+
       }
 
       $extra_date_rows = $games->pluck('game_date')->unique()->count();
-      Log::info($extra_date_rows);
+      //Log::info($extra_date_rows);
       // set rows
       $this->r_h_1 = $this->r_t_1 + 2;
       $this->r_b_1_s = $this->r_h_1 + 1;
       $this->r_b_1_e = $this->r_h_1 + $games->count() + $extra_date_rows;
 
       return view('reports.game_club', ['games'=>$games, 'club'=>$this->club, 'gdate'=>$this->gdate]);
-    }
-
-
-
-    /**
-    * @var Game $game
-    */
-    public function map($game): array
-    {
-        if ( $this->gdate != $game->game_date){
-          $this->gdate = $game->game_date;
-        } else {
-          $game->game_date = null;
-        };
-        return [
-            ($game->game_date == null) ? '' : $game->game_date->locale( app()->getLocale())->isoFormat('ddd L'),
-            Carbon::parse($game->game_time)->isoFormat('LT'),
-            $game->league->shortname,
-            $game->game_no,
-            $game->team_home,
-            $game->team_guest,
-            $game->gym->name,
-            implode(' / ',[$game->referee_1, $game->referee_2])
-        ];
     }
 
     public function registerEvents(): array
@@ -198,27 +192,6 @@ class ClubGames implements FromView, WithTitle, WithMapping, ShouldAutoSize, Wit
                 ];
                $event->sheet->getStyle($cellRange)->applyFromArray($style_box);
 
-                // // at row 1, insert 2 rows
-                // $event->sheet->insertNewRowBefore(1, 2);
-                //
-                //
-                // // assign cell values
-                // $event->sheet->setCellValue('A1','Top Triggers Report');
-                // $event->sheet->setCellValue('A2','SECURITY CLASSIFICATION - UNCLASSIFIED [Generator: Admin]');
-                // $event->sheet->setCellValue(sprintf('A%d',$this->r_b_1_e + 1),'SECURITY CLASSIFICATION - UNCLASSIFIED [Generated: ...]');
-                //
-                //
-                // // Apply array of styles to B2:G8 cell range
-                // $styleArray = [
-                //     'borders' => [
-                //         'outline' => [
-                //             'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
-                //             'color' => ['argb' => 'FFFF0000'],
-                //         ]
-                //     ]
-                // ];
-                // $event->sheet->getDelegate()->getStyle('B2:G8')->applyFromArray($styleArray);
-                //
             },
         ];
     }

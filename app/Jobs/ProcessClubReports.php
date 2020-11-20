@@ -4,7 +4,11 @@ namespace App\Jobs;
 
 use App\Models\Club;
 use App\Models\Region;
+use App\Models\League;
+use App\Models\Game;
 use App\Jobs\GenerateClubGamesReport;
+use App\Enums\ReportFileType;
+use App\Enums\ReportScope;
 use App\Enums\Role;
 use App\Notifications\ClubReportsAvailable;
 
@@ -61,22 +65,33 @@ class ProcessClubReports implements ShouldQueue
           // delete old files
           //Storage::delete(File::glob(storage_path().'/app/'.$this->region->club_folder.'/'.$c->shortname.'*'));
 
-          $batch = Bus::batch([
-            [
-              new GenerateClubGamesReport($region, $c, 'ALL' ),
-              new GenerateClubGamesReport($region, $c, 'HOME' ),
-              new GenerateClubGamesReport($region, $c, 'REFEREE' ),
-            ]
-          ])->then(function (Batch $batch) use ($c) {
+          // build list of report jobs based on format
+          $rpt_jobs = array();
+          foreach ( $this->region->fmt_club_reports->getFlags() as $rtype  ){
+            if ($rtype->hasFlag(ReportFileType::XLSX) or $rtype->hasFlag(ReportFileType::XLS) or $rtype->hasFlag(ReportFileType::ODS)){
+              $rpt_jobs[] = new GenerateClubGamesReport($region, $c, $rtype, ReportScope::ms_all() );
+            } elseif ($rtype->hasFlag(ReportFileType::CSV)){
+              $rpt_jobs[] = new GenerateClubGamesReport($region, $c, $rtype, ReportScope::ss_club_all() );
+              $rpt_jobs[] = new GenerateClubGamesReport($region, $c, $rtype, ReportScope::ss_club_home() );
+            } elseif ($rtype->hasFlag(ReportFileType::PDF) or $rtype->hasFlag(ReportFileType::HTML)){
+              $rpt_jobs[] = new GenerateClubGamesReport($region, $c, $rtype, ReportScope::ss_club_all() );
+              $rpt_jobs[] = new GenerateClubGamesReport($region, $c, $rtype, ReportScope::ss_club_home() );
+              $rpt_jobs[] = new GenerateClubGamesReport($region, $c, $rtype, ReportScope::ss_club_referee() );
+
+              $leagues = Game::where('club_id_home',$c->id)->with('league')->get()->pluck('league.id')->unique();
+              foreach ($leagues as $l){
+                $rpt_jobs[] = new GenerateClubGamesReport($region, $c, $rtype, ReportScope::ss_club_league(), League::find($l) );
+              }
+            }
+          };
+
+          $batch = Bus::batch($rpt_jobs)
+            ->then(function (Batch $batch) use ($c) {
               // All jobs completed successfully...
               if ($c->memberships()->isRole(Role::ClubLead)->exists()){
                 $clead = $c->memberships()->isRole(Role::ClubLead)->first()->member;
                 $clead->notify(new ClubReportsAvailable($c));
               }
-          })->catch(function (Batch $batch, Throwable $e) {
-              // First batch job failure detected...
-          })->finally(function (Batch $batch) {
-              // The batch has finished executing...
           })->name('Club Reports '.$c->shortname)
             ->onConnection('redis')
             ->onQueue('exports')

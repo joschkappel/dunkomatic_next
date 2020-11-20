@@ -32,7 +32,7 @@
          <td style="border: 1px solid #FFFFFF;padding: 3px 2px;">{{ Carbon\Carbon::parse($game->game_time)->isoFormat('LT')}}</td>
          @else
          <td style="border: 1px solid #FFFFFF;padding: 3px 2px;"></td>
-       @endif
+          @endif
          <td style="text-align: right;border: 1px solid #FFFFFF;padding: 3px 2px;">{{ $game->league->shortname }}</td>
          <td style="border: 1px solid #FFFFFF;padding: 3px 2px;">{{ $game->game_no }}</td>
          <td style="border: 1px solid #FFFFFF;padding: 3px 2px;">
