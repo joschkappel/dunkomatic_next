@@ -1,6 +1,7 @@
 /node_modules
 /public/hot
 /public/storage
+/storage/**/*.php
 /storage/*.key
 /vendor
 # !vendor/laravel/

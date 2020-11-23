@@ -2,6 +2,7 @@
 
 namespace Facebook\WebDriver\Remote;
 
+use Facebook\WebDriver\Exception\UnsupportedOperationException;
 use Facebook\WebDriver\Interactions\WebDriverActions;
 use Facebook\WebDriver\JavaScriptExecutor;
 use Facebook\WebDriver\WebDriver;
@@ -200,6 +201,25 @@ class RemoteWebDriver implements WebDriver, JavaScriptExecutor, WebDriverHasInpu
     }
 
     /**
+     * Create a new top-level browsing context.
+     *
+     * @return RemoteWebDriver The current instance.
+     */
+    public function newWindow()
+    {
+        if (!$this->isW3cCompliant) {
+            throw new UnsupportedOperationException('New window is only supported in W3C mode');
+        }
+
+        $response = $this->execute(DriverCommand::NEW_WINDOW, []);
+        $handle = $response['handle'];
+
+        $this->switchTo()->window($handle);
+
+        return $this;
+    }
+
+    /**
      * Find the first WebDriverElement using the given mechanism.
      *
      * @param WebDriverBy $by
@@ -298,6 +318,9 @@ class RemoteWebDriver implements WebDriver, JavaScriptExecutor, WebDriverHasInpu
 
     /**
      * Get all window handles available to the current session.
+     *
+     * Note: Do not use `end($driver->getWindowHandles())` to find the last open window, for proper solution see:
+     * https://github.com/php-webdriver/php-webdriver/wiki/Alert,-tabs,-frames,-iframes#switch-to-the-new-window
      *
      * @return array An array of string containing all available window handles.
      */
