@@ -6,6 +6,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 use Illuminate\Support\Facades\Log;
+use TestDatabaseSeeder;
+use App\Models\Region;
+use App\Models\User;
 
 class ClubFormTest extends TestCase
 {
@@ -18,10 +21,16 @@ class ClubFormTest extends TestCase
     public function test_club_form_validation($formInput, $formInputValue): void
     {
 
-      $this->followingRedirects()
-           ->post('club', [$formInput => $formInputValue])
-           //->assertSuccessful();
-           ->assertSessionHasErrors($formInput);
+      $this->seed(TestDatabaseSeeder::class);
+      $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
+      $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
+
+      $region = Region::where('code','HBVDA')->first();
+      $region_user = User::regionadmin($region->code)->first();
+      $response = $this->actingAs($region_user)
+           ->post('club', [$formInput => $formInputValue]);
+
+      $response->assertSessionHasErrors($formInput);
     }
 
     public function clubForm(): array
