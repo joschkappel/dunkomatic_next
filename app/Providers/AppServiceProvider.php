@@ -38,18 +38,18 @@ class AppServiceProvider extends ServiceProvider
     public function boot(Dispatcher $events)
     {
 
-           if (Schema::hasTable('settings')){
-            config([
-              'global' => Setting::all([
-                  'name','value'
-              ])
-              ->keyBy('name') // key every setting by its name
-              ->transform(function ($setting) {
-                   return $setting->value; // return only the value
-              })
-              ->toArray() // make it an array
-            ]);
-           };
+           // if (Schema::hasTable('settings')){
+           //  config([
+           //    'global' => Setting::all([
+           //        'name','value'
+           //    ])
+           //    ->keyBy('name') // key every setting by its name
+           //    ->transform(function ($setting) {
+           //         return $setting->value; // return only the value
+           //    })
+           //    ->toArray() // make it an array
+           //  ]);
+           // };
 
           $events->listen(BuildingMenu::class, function (BuildingMenu $event) {
                 $clubmenu = array();
