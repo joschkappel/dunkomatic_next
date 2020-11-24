@@ -3,7 +3,9 @@
 return [
   'region' => 'Bezirk|Bezirke',
   'action.edit' => 'Einstellungen für Bezirk ändern',
+  'action.create' => 'Lege einen neuen Bezirk an',
   'title.edit' => 'Einstellungen für Bezirk :REGION ändern',
+  'title.list' => 'Bezirke',
   'game_slot' => 'Minimum Dauer eines Spiels (in Minuten)',
   'job.noleads' => 'Prüfung auf Vereine und Runden ohne Leiter',
   'job.emails' => 'Prüfung auf valide Email-Adressen',
@@ -12,5 +14,6 @@ return [
   'job.league_reports' => 'Erzeuge Rundenlisten',
   'job.club_reports' => 'Erzeuge Vereinslisten',
   'name' =>  'Name',
-  'code' => 'Abkürzung'
+  'code' => 'Abkürzung',
+  'hq' => 'Gehört zu',
 ];

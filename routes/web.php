@@ -33,15 +33,17 @@ Route::group([
     Route::get('/home', 'HomeController@home')->name('home')->middleware('auth')->middleware('verified')->middleware('approved');
     Route::get('/approval', 'HomeController@approval')->name('approval');
 
-    Route::get('/user/new', 'UserController@index_new')->name('admin.user.index.new')->middleware('auth')->middleware('regionadmin');
-    Route::get('/user/dt', 'UserController@datatable')->name('admin.user.dt')->middleware('auth')->middleware('regionadmin');
-    Route::post('/user/{user_id}/approve', 'UserController@approve')->name('admin.user.approve')->middleware('auth')->middleware('regionadmin');
-    Route::get('/user/{user}/edit', 'UserController@edit')->name('admin.user.edit')->middleware('auth')->middleware('regionadmin');
-    Route::get('/user/{user}/show', 'UserController@show')->name('admin.user.show');
-    Route::get('/user', 'UserController@index')->name('admin.user.index')->middleware('auth')->middleware('regionadmin');
-    Route::get('/audit', 'AuditController@index')->name('admin.audit.index')->middleware('auth')->middleware('regionadmin');
-    Route::get('/audit/dt', 'AuditController@datatable')->name('admin.audit.dt')->middleware('auth')->middleware('regionadmin');
-    Route::get('/region/{region}', 'RegionController@edit')->name('region.edit')->middleware('regionadmin');
+    Route::get('user/new', 'UserController@index_new')->name('admin.user.index.new')->middleware('auth')->middleware('regionadmin');
+    Route::get('user/dt', 'UserController@datatable')->name('admin.user.dt')->middleware('auth')->middleware('regionadmin');
+    Route::post('user/{user_id}/approve', 'UserController@approve')->name('admin.user.approve')->middleware('auth')->middleware('regionadmin');
+    Route::get('user/{user}/edit', 'UserController@edit')->name('admin.user.edit')->middleware('auth')->middleware('regionadmin');
+    Route::get('user/{user}/show', 'UserController@show')->name('admin.user.show');
+    Route::get('user', 'UserController@index')->name('admin.user.index')->middleware('auth')->middleware('regionadmin');
+    Route::get('audit', 'AuditController@index')->name('admin.audit.index')->middleware('auth')->middleware('regionadmin');
+    Route::get('audit/dt', 'AuditController@datatable')->name('admin.audit.dt')->middleware('auth')->middleware('regionadmin');
+    Route::get('region/{region}', 'RegionController@edit')->name('region.edit')->middleware('regionadmin');
+    Route::get('region', 'RegionController@index')->name('region.index');
+    Route::get('region/list/dt', 'RegionController@list_dt')->name('region.list.dt');
 
     Route::get('club/index_stats', 'ClubController@index_stats')->name('club.index_stats');
     Route::get('club/{id}/list', 'ClubController@dashboard')->name('club.dashboard');
@@ -83,25 +85,26 @@ Route::group([
     Route::resource('schedule', 'ScheduleController')->only('index','create','edit');
 
     Route::resource('message', 'MessageController')->only('index','create','edit');
-    Route::get('/message/user/{user}/dt', 'MessageController@list_user_dt')->name('message.user.dt');
-    Route::get('/message/region/{region}/dt', 'MessageController@list_region_dt')->name('message.region.dt');
-    Route::post('/message/{message}/send', 'MessageController@send')->name('message.send');
+    Route::get('message/user/{user}/dt', 'MessageController@list_user_dt')->name('message.user.dt');
+    Route::get('message/region/{region}/dt', 'MessageController@list_region_dt')->name('message.region.dt');
+    Route::post('message/{message}/send', 'MessageController@send')->name('message.send');
 
-    Route::get('/calendar/league/{league}', 'CalendarController@cal_league')->name('cal.league');
-    Route::get('/calendar/club/{club}', 'CalendarController@cal_club')->name('cal.club');
+    Route::get('calendar/league/{league}', 'CalendarController@cal_league')->name('cal.league');
+    Route::get('calendar/club/{club}', 'CalendarController@cal_club')->name('cal.club');
   });
 
 });
 
 Route::middleware(['auth'])->group(function () {
   // APIs , no locale or language required !
-  Route::redirect('/home', '/de/home');
-  Route::delete('/user/{user}', 'UserController@destroy')->name('admin.user.destroy')->middleware('auth')->middleware('regionadmin');
-  Route::post('/user/{user}/block', 'UserController@block')->name('admin.user.block')->middleware('auth')->middleware('regionadmin');
-  Route::put('/user/{user_id}', 'UserController@update')->name('admin.user.update')->middleware('auth');
-  Route::put('/user/{user}/allowance', 'UserController@allowance')->name('admin.user.allowance')->middleware('auth')->middleware('regionadmin');
-  Route::put('/member/{member}', 'MemberController@update')->name('member.update');
-  Route::put('/region/{region}', 'RegionController@update')->name('region.update')->middleware('auth')->middleware('regionadmin');
+  Route::redirect('home', '/de/home');
+  Route::delete('user/{user}', 'UserController@destroy')->name('admin.user.destroy')->middleware('auth')->middleware('regionadmin');
+  Route::post('user/{user}/block', 'UserController@block')->name('admin.user.block')->middleware('auth')->middleware('regionadmin');
+  Route::put('user/{user_id}', 'UserController@update')->name('admin.user.update')->middleware('auth');
+  Route::put('user/{user}/allowance', 'UserController@allowance')->name('admin.user.allowance')->middleware('auth')->middleware('regionadmin');
+  Route::put('member/{member}', 'MemberController@update')->name('member.update');
+  Route::put('region/{region}', 'RegionController@update')->name('region.update')->middleware('auth')->middleware('regionadmin');
+  Route::post('region', 'RegionController@create')->name('region.create')->middleware('auth')->middleware('regionadmin');
 
   Route::get('club/region/sb', 'ClubController@sb_region')->name('club.sb.region');
   Route::get('club/list_stats', 'ClubController@list_stats')->name('club.list_stats');

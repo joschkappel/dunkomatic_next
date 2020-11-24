@@ -203,6 +203,13 @@ class AppServiceProvider extends ServiceProvider
                       'text'  => __('Settings'),
                       'icon'  => 'fas fa-cog',
                       'url' => route('region.edit', ['language'=>app()->getLocale(),'region'=>Auth::user()->user_region->id]),
+                      'can' => 'edit-region'
+                    ],
+                    [
+                      'text'  => __('Regions'),
+                      'icon'  => 'fas fa-globe-europe',
+                      'url' => route('region.index', ['language'=>app()->getLocale()]),
+                      'can' => 'manage-regions'
                     ],
                   ]
                 ]);

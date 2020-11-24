@@ -4,6 +4,10 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Enums\Role;
+use App\Models\User;
+use App\Models\Member;
+
+use Bouncer;
 
 class UsersTableSeeder extends Seeder
 {
@@ -27,6 +31,10 @@ class UsersTableSeeder extends Seeder
         ]);
         DB::table('members')->insert(['lastname'=>'admin','email1'=>'admin@gmail.com','user_id'=>$uid]);
 
+        Bouncer::allow('superadmin')->everything();
+        Bouncer::assign('superadmin')->to(User::find($uid));
+
+
         $uid = DB::table('users')->insertGetId([
           'name' => 'region',
           'user_old' => 'admin',
@@ -39,6 +47,8 @@ class UsersTableSeeder extends Seeder
           'regionadmin' => true
         ]);
         DB::table('members')->insert(['lastname'=>'region','email1'=>'region@gmail.com','user_id'=>$uid]);
+        Bouncer::allow('admin')->to('edit-region');
+        Bouncer::assign('admin')->to(User::find($uid));        
 
         $uid = DB::table('users')->insertGetId([
           'name' => 'user',
@@ -54,6 +64,8 @@ class UsersTableSeeder extends Seeder
         DB::table('members')->insert(['lastname'=>'user','email1'=>'user@gmail.com','user_id'=>$uid]);
         DB::table('memberships')->insert(['member_id'=>$uid,'role_id'=>Role::User,'membershipable_id'=>25,'membershipable_type'=>'App\Models\Club' ]);
         DB::table('memberships')->insert(['member_id'=>$uid,'role_id'=>Role::User,'membershipable_id'=>26,'membershipable_type'=>'App\Models\Club' ]);
+
+
 
         // NO OLD USER MIGRATION !!
         // {

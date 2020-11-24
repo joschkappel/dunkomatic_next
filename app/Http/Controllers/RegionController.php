@@ -13,6 +13,9 @@ use App\Enums\ReportFileType;
 use App\Models\Region;
 use App\Models\User;
 
+use Carbon\Carbon;
+use Datatables;
+
 class RegionController extends Controller
 {
     /**
@@ -22,8 +25,29 @@ class RegionController extends Controller
      */
     public function index()
     {
-        //
+      Log::info('listing regions');
+      return view('admin.region_list');
     }
+
+    public function list_dt($language)
+    {
+      Log::info('at least i ma here');
+      $regions = Region::all();
+      Log::info('regions found:'.$regions->count());
+
+      $regionlist = datatables::of($regions);
+
+      return $regionlist
+        ->addIndexColumn()
+        ->editColumn('created_at', function ($r) use ($language) {
+                return Carbon::parse($r->created_at)->locale($language)->isoFormat('lll');
+            })
+        ->editColumn('updated_at', function ($r) use ($language) {
+                return Carbon::parse($r->updated_at)->locale($language)->isoFormat('lll');
+            })
+        ->make(true);
+    }
+
     public function admin_sb()
     {
       $regions = Region::query()->get();

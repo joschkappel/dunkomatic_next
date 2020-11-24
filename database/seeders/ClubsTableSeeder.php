@@ -4,6 +4,10 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
+use Bouncer;
+use App\Models\User;
+use App\Models\Club;
+
 class ClubsTableSeeder extends Seeder
 {
     /**
@@ -27,5 +31,6 @@ class ClubsTableSeeder extends Seeder
         ]);
 
       }
+
     }
 }

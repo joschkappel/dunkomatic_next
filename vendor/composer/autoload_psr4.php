@@ -47,6 +47,7 @@ return array(
     'Svg\\' => array($vendorDir . '/phenx/php-svg-lib/src/Svg'),
     'Spatie\\IcalendarGenerator\\' => array($vendorDir . '/spatie/icalendar-generator/src'),
     'Spatie\\Enum\\' => array($vendorDir . '/spatie/enum/src'),
+    'Silber\\Bouncer\\' => array($vendorDir . '/silber/bouncer/src'),
     'Ramsey\\Uuid\\' => array($vendorDir . '/ramsey/uuid/src'),
     'Ramsey\\Collection\\' => array($vendorDir . '/ramsey/collection/src'),
     'Psy\\' => array($vendorDir . '/psy/psysh/src'),

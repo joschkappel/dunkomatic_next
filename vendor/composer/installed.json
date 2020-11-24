@@ -6952,6 +6952,78 @@
         ]
     },
     {
+        "name": "silber/bouncer",
+        "version": "v1.0.0-rc.9",
+        "version_normalized": "1.0.0.0-RC9",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/JosephSilber/bouncer.git",
+            "reference": "05f030bb88d9a26d6cd9c580f883a0dd0d9c767f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/JosephSilber/bouncer/zipball/05f030bb88d9a26d6cd9c580f883a0dd0d9c767f",
+            "reference": "05f030bb88d9a26d6cd9c580f883a0dd0d9c767f",
+            "shasum": ""
+        },
+        "require": {
+            "illuminate/auth": "^6.0|^7.0|^8.0",
+            "illuminate/cache": "^6.0|^7.0|^8.0",
+            "illuminate/container": "^6.0|^7.0|^8.0",
+            "illuminate/contracts": "^6.0|^7.0|^8.0",
+            "illuminate/database": "^6.0|^7.0|^8.0",
+            "php": "^7.2"
+        },
+        "require-dev": {
+            "illuminate/console": "^6.0|^7.0|^8.0",
+            "illuminate/events": "^6.0|^7.0|^8.0",
+            "larapack/dd": "^1.1",
+            "phpunit/phpunit": "^8.0"
+        },
+        "suggest": {
+            "illuminate/console": "Allows running the bouncer:clean artisan command",
+            "illuminate/events": "Required for multi-tenancy support"
+        },
+        "time": "2020-09-08T15:47:38+00:00",
+        "type": "library",
+        "extra": {
+            "laravel": {
+                "providers": [
+                    "Silber\\Bouncer\\BouncerServiceProvider"
+                ],
+                "aliases": {
+                    "Bouncer": "Silber\\Bouncer\\BouncerFacade"
+                }
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Silber\\Bouncer\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Joseph Silber",
+                "email": "contact@josephsilber.com"
+            }
+        ],
+        "description": "Eloquent roles and abilities.",
+        "keywords": [
+            "abilities",
+            "acl",
+            "capabilities",
+            "eloquent",
+            "laravel",
+            "permissions",
+            "roles"
+        ]
+    },
+    {
         "name": "spatie/enum",
         "version": "2.3.8",
         "version_normalized": "2.3.8.0",

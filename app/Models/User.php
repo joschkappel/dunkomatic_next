@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 use App\Models\Member;
 use App\Notifications\VerifyEmail;
@@ -17,7 +18,7 @@ use App\Notifications\ResetPassword as ResetPasswordNotification;
 
 class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
 {
-    use Notifiable, HasFactory;
+    use Notifiable, HasFactory, HasRolesAndAbilities;
 
     /**
      * Send the email verification notification.
