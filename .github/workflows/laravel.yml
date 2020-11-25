@@ -24,18 +24,20 @@ jobs:
         cp tests/DuskTestCase.php.git tests/DuskTestCase.php
     - name: install dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --prefer-dist
-    - name: app key
-      run: |
-        php artisan key:generate
-        chmod -R 777 storage bootstrap/cache
     - name: Create Database
       run: |
         sudo systemctl start mysql
         mysql --user="root" --password="root" -e "CREATE DATABASE dunkomatic_test character set UTF8mb4 collate utf8mb4_bin;"
+    - name: app key
+      run: |
+        php artisan key:generate
+        chmod -R 777 storage bootstrap/cache        
     - name: Create Schema
       run: php artisan migrate
     - name: Seed static tables
       run: php artisan db:seed --class=TestDatabaseSeeder
+    - name: Run phpunit tests
+      run: vendor/phpunit/phpunit/phpunit
     - name: Prepare Chrome
       run: |
        cd ~
@@ -46,8 +48,6 @@ jobs:
        cd -
     - name: Upgrade Chrome Driver
       run: php artisan dusk:chrome-driver `/opt/google/chrome/chrome --version | cut -d " " -f3 | cut -d "." -f1`
-    - name: Run phpunit tests
-      run: vendor/phpunit/phpunit/phpunit
     - name: Start Chrome Driver
       run: ./vendor/laravel/dusk/bin/chromedriver-linux &
     - name: Create Schema
