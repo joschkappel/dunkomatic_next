@@ -3,16 +3,7 @@
 /public/storage
 /storage/**/*.php
 /storage/*.key
-#/vendor
-# !vendor/laravel/
-# vendor/laravel/*
-# !vendor/laravel/framework/
-# vendor/laravel/framework/*
-# !vendor/laravel/framework/src/
-# vendor/laravel/framework/src/*
-# !vendor/laravel/framework/src/Illuminate/
-# vendor/laravel/framework/src/Illuminate/*
-# !vendor/laravel/framework/src/Illuminate/Auth/
+/vendor
 
 .env
 .env.backup
