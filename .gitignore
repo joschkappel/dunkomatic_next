@@ -3,7 +3,7 @@
 /public/storage
 /storage/**/*.php
 /storage/*.key
-/vendor
+#/vendor
 # !vendor/laravel/
 # vendor/laravel/*
 # !vendor/laravel/framework/
