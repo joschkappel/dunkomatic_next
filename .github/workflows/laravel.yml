@@ -18,14 +18,9 @@ jobs:
       run: |
         cp .env.dusk.git .env
         cp tests/DuskTestCase.php.git tests/DuskTestCase.php
-    - name: Install Dependencies (PHP vendors)
-      #run: composer install -q --no-ansi --no-interaction --no-scripts  --no-progress --prefer-dist
-      run: composer install -q --no-ansi --no-interaction --no-scripts --prefer-dist
-    - name: Install Dependencies (PHP vendors)
-      #run: composer install -q --no-ansi --no-interaction --no-scripts  --no-progress --prefer-dist
-      run: composer update --no-ansi --no-interaction --prefer-dist      
-    # - name: Install NPM Dependencies
-    #   run: npm install
+        composer install -q --no-ansi --no-interaction --no-scripts --prefer-dist
+        php artisan key:generate
+        chmod -R 777 storage bootstrap/cache
     - name: Create Database
       run: |
         sudo systemctl start mysql
@@ -34,8 +29,6 @@ jobs:
       run: php artisan migrate
     - name: Seed static tables
       run: php artisan db:seed --class=TestDatabaseSeeder
-    - name: Generate key
-      run: php artisan key:generate
     - name: Prepare Chrome
       run: |
        cd ~
@@ -47,7 +40,7 @@ jobs:
     - name: Upgrade Chrome Driver
       run: php artisan dusk:chrome-driver `/opt/google/chrome/chrome --version | cut -d " " -f3 | cut -d "." -f1`
     - name: Run phpunit tests
-      run: php artisan test
+      run: vendor/phpunit/phpunit/phpunit
     - name: Start Chrome Driver
       run: ./vendor/laravel/dusk/bin/chromedriver-linux &
     - name: Create Schema
