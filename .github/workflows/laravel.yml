@@ -18,7 +18,12 @@ jobs:
       run: |
         cp .env.dusk.git .env
         cp tests/DuskTestCase.php.git tests/DuskTestCase.php
+    - name: install dependencies
+      run: |
         composer install -q --no-ansi --no-interaction --no-scripts --prefer-dist
+        composer show
+    - name: app key
+      run: |
         php artisan key:generate
         chmod -R 777 storage bootstrap/cache
     - name: Create Database
