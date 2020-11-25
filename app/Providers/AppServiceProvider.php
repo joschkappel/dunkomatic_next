@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Club;
 use App\Models\League;
@@ -37,19 +38,29 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(Dispatcher $events)
     {
+          try {
+                  DB::connection()->getPdo();
+                  if (DB::connection()->getDatabaseName()){
+                      Log::info('Yes! Successfully connected to the DB: ' . DB::connection()->getDatabaseName());
+                      if (Schema::hasTable('settings')){
+                       config([
+                         'global' => Setting::all([
+                             'name','value'
+                         ])
+                         ->keyBy('name') // key every setting by its name
+                         ->transform(function ($setting) {
+                              return $setting->value; // return only the value
+                         })
+                         ->toArray() // make it an array
+                       ]);
+                      };
 
-           // if (Schema::hasTable('settings')){
-           //  config([
-           //    'global' => Setting::all([
-           //        'name','value'
-           //    ])
-           //    ->keyBy('name') // key every setting by its name
-           //    ->transform(function ($setting) {
-           //         return $setting->value; // return only the value
-           //    })
-           //    ->toArray() // make it an array
-           //  ]);
-           // };
+                  } else {
+                      Log::warning("Could not find the database. Please check your configuration.");
+                  }
+               } catch (\Exception $e) {
+                  Log::warning("Could not open connection to database server.  Please check your configuration.");
+               }
 
           $events->listen(BuildingMenu::class, function (BuildingMenu $event) {
                 $clubmenu = array();

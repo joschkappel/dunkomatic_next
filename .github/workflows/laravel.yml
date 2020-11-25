@@ -12,10 +12,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Install Laravel
-      run: |
-        composer create-project --prefer-dist laravel/laravel dunkotest
-        cd dunkotest
     - name: get sourcees
       uses: actions/checkout@v2
     - name: Copy ENV Laravel Configuration for CI
@@ -25,8 +21,8 @@ jobs:
     - name: Install Dependencies (PHP vendors)
       #run: composer install -q --no-ansi --no-interaction --no-scripts  --no-progress --prefer-dist
       run: composer update --no-ansi --no-interaction --with-all-dependencies --prefer-stable --prefer-dist
-    # - name: Install NPM Dependencies
-      # run: npm install
+    - name: Install NPM Dependencies
+      run: npm install
     - name: Create Database
       run: |
         sudo systemctl start mysql
