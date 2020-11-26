@@ -14,6 +14,7 @@
         "brian2694/laravel-toastr": "^5.54",
         "components/flag-icon-css": "^3.5",
         "dompdf/dompdf": "^0.8.6",
+        "fakerphp/faker": "^1.12",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "graylog2/gelf-php": "^1.5",
@@ -37,7 +38,7 @@
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",
-        "laravel/dusk": "^6.7",
+        "laravel/dusk": "^6.9",
         "nunomaduro/collision": "^5.0",
         "phpunit/phpunit": "9.3",
         "roquie/laravel-dusk-select2": "^2.1"

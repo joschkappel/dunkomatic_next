@@ -1,8 +1,6 @@
 <?php
 
 namespace Tests\Browser\Pages\Club;
-
-use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Dusk\Browser;
 use Tests\Browser\Pages\Page;
 

@@ -95,6 +95,8 @@ Route::group([
 
 });
 
+Route::get('region/admin/sb', 'RegionController@admin_sb')->name('region.admin.sb');
+
 Route::middleware(['auth'])->group(function () {
   // APIs , no locale or language required !
   Route::redirect('home', '/de/home');
@@ -159,7 +161,6 @@ Route::middleware(['auth'])->group(function () {
   Route::get('schedule/region/sb', 'ScheduleController@sb_region')->name('schedule.sb.region');
   Route::get('schedule/size/{size}/sb', 'ScheduleController@sb_size')->name('schedule.sb.size');
   Route::resource('schedule', 'ScheduleController')->except('index','create','edit');
-  Route::get('region/admin/sb', 'RegionController@admin_sb')->name('region.admin.sb');
   Route::resource('message', 'MessageController')->except('index','create','edit');
 
   Route::get('file/exports/{season}/{region}/{type}/{file}', 'FileDownloadController@get_file')->name('file.get');

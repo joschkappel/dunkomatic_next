@@ -9,7 +9,6 @@ use App\Models\Member;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Browser\Pages\League\NewLeague;
 use Tests\Browser\Pages\League\EditLeague;
 use Database\Seeders\TestDatabaseSeeder;
@@ -25,7 +24,6 @@ class LeagueTest extends DuskTestCase
         $this->seed(TestDatabaseSeeder::class);
     }
 
-    use withFaker;
     /**
      * @test
      * @group league
@@ -54,7 +52,7 @@ class LeagueTest extends DuskTestCase
           $browser->visit(new EditLeague($league->id))
                   ->modify_league($league_code_new, $league_name_new)
                   ->screenshot('Geänderte_runde');
-                  
+
           $this->assertDatabaseHas('leagues', ['shortname' => $league_code_new]);
 
         });
