@@ -9,6 +9,7 @@ return [
   'action.delete' => 'Delete Role',
   'action.select' => 'Please select a role',
   'member.action.select' => 'Please select a member',
+  'member.action.create' => 'Define the member who runs this function',  
   'title.new' => 'Create a new role for :unittype :unitname',
   'title.edit' => 'Modify Details for Role :member',
   'title.delete' => 'Delete a role from ',

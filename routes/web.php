@@ -105,6 +105,7 @@ Route::middleware(['auth'])->group(function () {
   Route::put('user/{user_id}', 'UserController@update')->name('admin.user.update')->middleware('auth');
   Route::put('user/{user}/allowance', 'UserController@allowance')->name('admin.user.allowance')->middleware('auth')->middleware('regionadmin');
   Route::put('member/{member}', 'MemberController@update')->name('member.update');
+  Route::post('member', 'MemberController@store')->name('member.store');
   Route::put('region/{region}', 'RegionController@update')->name('region.update')->middleware('auth')->middleware('regionadmin');
   Route::post('region', 'RegionController@create')->name('region.create')->middleware('auth')->middleware('regionadmin');
 
@@ -143,6 +144,7 @@ Route::middleware(['auth'])->group(function () {
   Route::resource('club.team', 'ClubTeamController')->shallow()->except('index','create','edit');;
 
   Route::post('role/index', 'RoleController@index')->name('role.index');
+  Route::get('member/region/{region}', 'MemberController@list_region_sb')->name('member.region.sb');
 
   Route::get('scheme/{size}/list_piv', 'LeagueSchemeController@list_piv')->name('scheme.list_piv');
   Route::get('size/index', 'LeagueSizeController@index')->name('size.index');

@@ -36,7 +36,7 @@ jobs:
     - name: Seed static tables
       run: php artisan db:seed --class=TestDatabaseSeeder
     - name: Run phpunit tests
-      run: vendor/phpunit/phpunit/phpunit
+      run: php artisan test
     - name: Prepare Chrome
       run: |
        cd ~

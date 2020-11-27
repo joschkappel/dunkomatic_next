@@ -41,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
           try {
                   DB::connection()->getPdo();
                   if (DB::connection()->getDatabaseName()){
-                      Log::info('Yes! Successfully connected to the DB: ' . DB::connection()->getDatabaseName());
+                      // Log::info('Yes! Successfully connected to the DB: ' . DB::connection()->getDatabaseName());
                       if (Schema::hasTable('settings')){
                        config([
                          'global' => Setting::all([

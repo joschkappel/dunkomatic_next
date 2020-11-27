@@ -1,12 +1,9 @@
-<div class="modal fade right" id="modalDeleteMemberRole" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false">
+<div class="modal fade right" id="modalSelectMember" tabindex="-1" role="dialog" aria-labelledby="selectMemberModal" aria-hidden="true" data-backdrop="false">
     <div class="modal-dialog modal-side modal-bottom-right modal-notify modal-info" role="document">
         <!--Content-->
         <div class="modal-content">
             <!--Header-->
             <div class="modal-header bg-danger">
-                <p class="heading" id="dheader">@lang('role.title.delete')
-                <span id="unit_type"></span> <span id="unit_shortname"></span>
-                </p>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true" class="white-text">&times;</span>
                 </button>
@@ -15,23 +12,19 @@
             <!--Body-->
             <div class="modal-body">
                 <div class="card card-info">
-
-                    <form id="confirmDeleteMemberRole" class="form-horizontal" action="" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <input type="hidden" name="member_id" id="member_id" value="">
                         <div class="card-body">
-                            <p class="text-left">@lang('role.confirm.delete')</p>
-                            <h4 class="text-left text-danger">
-                            <span class="text-danger" id="role_name"></span> <span id="member_name"></span> </h4>
+                          <div class="form-group row">
+                            <label class="col-sm-2 col-form-label" for='selMember'>{{trans_choice('member.member',1)}}</label>
+                            <div class="col-sm-6">
+                              <select class="js-sel-member js-states form-control select2" name="selMember" id='selMember'></select>
+                            </div>
+                          </div>
                         </div>
                         <div class="card-footer">
                             <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-                                <button type="submit" class="btn btn-danger">{{__('Submit')}}</button>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
                             </div>
                         </div>
-                    </form>
-
                 </div>
             </div>
             <!--/.Content-->

@@ -119,7 +119,10 @@ class UserController extends Controller
       {
         //  DB::enableQueryLog(); // Enable query log
 
-          $users = User::where('region', Auth::user()->region)->whereNull('approved_at')->get();
+          $users = User::where('region', Auth::user()->region)
+                       ->whereNull('approved_at')
+                       ->whereNull('rejected_at')
+                       ->get();
         //  dd(DB::getQueryLog());
           return view('auth/users', compact('users'));
       }

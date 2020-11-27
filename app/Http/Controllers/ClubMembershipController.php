@@ -29,7 +29,7 @@ class ClubMembershipController extends Controller
       foreach($members as $member){
           $response[] = array(
                 "id"=>$member->id,
-                "text"=>$member->firstname.' '.$member->lastname
+                "text"=>$member->name
               );
       }
 
@@ -44,7 +44,8 @@ class ClubMembershipController extends Controller
      */
     public function create($language, Club $club)
     {
-      return view('member/membership_club_new', ['club' => $club]);
+      $members = $club->members()->get();
+      return view('member/membership_club_new', ['club' => $club, 'members' => $members]);
     }
 
     /**
@@ -59,41 +60,22 @@ class ClubMembershipController extends Controller
       Log::debug(print_r($request->all(),true));
 
       $data = $request->validate( [
-          'selMember' => 'nullable|exists:members,id',
+          'member_id' => 'required|exists:members,id',
           'selRole'   => 'required|array|min:1',
-          'function'  => 'max:40',
-          'firstname' => 'required|max:20',
-          'lastname' => 'required|max:60',
-          'zipcode' => 'required|max:10',
-          'city' => 'required|max:40',
-          'street' => 'required|max:40',
-          'mobile' => 'required_without:phone1|max:40',
-          'phone1' => 'required_without:mobile|max:40',
-          'phone2' => 'max:40',
-          'fax1' => 'max:40',
-          'fax2' => 'max:40',
-          'email1' => 'required|max:60|email:rfc,dns',
-          'email2' => 'nullable|max:60|email:rfc,dns',
+          'selRole.*' => ['required', new EnumValue(Role::class, false)],
+          'function'  => 'nullable|max:40',
       ]);
-
 
       Log::debug(print_r($data['selRole'],true));
 
-
-      if ( isset($data['selMember'])){
-        Log::info('use existing member '.$data['selMember']);
-        $member = Member::find($data['selMember']);
-      } else {
-        Log::info('create a new member');
-        $member = Member::create($data);
-      }
-
+      $member = Member::find($data['member_id']);
 
       foreach ( $data['selRole'] as $k => $role ){
         //Log::debug($role);
-        $new_mrole = Membership::create(['role_id' => $role, 'member_id' => $member->id ] );
-        //Log::debug(print_r($new_mrole,true));
-        $club->memberships()->save($new_mrole);
+        $new_mrole = Membership::create(['role_id' => $role,
+                                         'member_id' => $member->id,
+                                         'membershipable_id' => $club->id ,
+                                         'membershipable_type' => 'App\Models\Club']);
       }
 
       return redirect()->action(
@@ -113,10 +95,12 @@ class ClubMembershipController extends Controller
     {
       $data = Membership::with('member')->find($membership->id);
       $member = $data['member'];
-      $memberships = $data;
-      Log::debug(print_r($memberships,true));
+      $membership = $data;
+      Log::debug(print_r($membership,true));
+      $members = $club->members()->get();
+
       //Log::debug(print_r($member,true));
-      return view('member/membership_club_edit', ['member' => $member, 'member_roles' => $memberships, 'club' => $club]);
+      return view('member/membership_club_edit', ['member' => $member, 'membership' => $membership, 'club' => $club,'members' => $members]);
 
     }
 
@@ -128,49 +112,19 @@ class ClubMembershipController extends Controller
      * @param  \App\Member  $member
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Club $club, Member $membership)
+    public function update(Request $request, Club $club, Membership $membership)
     {
               $data = $request->validate( [
+                  'member_id' => 'required|exists:members,id',
                   'selRole'   => ['required', new EnumValue(Role::class, false)],
-                  'firstname' => 'required|max:20',
-                  'lastname' => 'required|max:60',
-                  'zipcode' => 'required|max:10',
-                  'city' => 'required|max:40',
-                  'street' => 'required|max:40',
-                  'mobile' => 'required_without:phone1|max:40',
-                  'phone1' => 'required_without:mobile|max:40',
-                  'phone2' => 'max:40',
-                  'fax1' => 'max:40',
-                  'fax2' => 'max:40',
-                  'email1' => 'required|max:60|email:rfc,dns',
-                  'email2' => 'nullable|max:60|email:rfc,dns',
+                  'function'  => 'nullable|max:40'
               ]);
-
-              $member = $membership;
 
               //Log::info(print_r($data, true));
               Log::debug(print_r($request->all(),true));
 
-
-              if ( $data['selRole'] != $request['old_role_id'] ){
-                // first delete all roles that are not in scope anymore
-                $check = Membership::where('member_id', $member->id)->whereAnd('role_id', $request['old_role_id'])->delete();
-                //Log::debug($role);
-                $new_mrole = Membership::updateOrCreate(['member_id' => $member->id,
-                                                         'role_id' => $data['selRole'],
-                                                          'membershipable_id' => $club->id,
-                                                          'membershipable_type' => 'App\Models\Club']);
-                //Log::debug(print_r($new_mrole,true));
-
-                //Log::debug(print_r($club,true));
-                $club->memberships()->save($new_mrole);
-
-              }
-
-              // eliminate non model props
-              unset($data['selRole']);
-
-              $check = Member::where('id', $member->id)->update($data);
+              $check = $membership->update(['member_id' => $data['member_id'],
+                                            'role_id' => $data['selRole']]);
               return redirect()->action(
                     'ClubController@dashboard', ['language'=>app()->getLocale(),'id' => $club->id]
               );
