@@ -8,11 +8,11 @@
             <!-- general form elements -->
             <div class="card card-info">
                 <div class="card-header">
-                    <h3 class="card-title"><?php echo app('translator')->get('role.title.new', ['unittype'=> trans_choice('club.club',1), 'unitname' => $club->shortname ]); ?></h3>
+                    <h3 class="card-title"><?php echo app('translator')->get('role.title.new', ['unittype'=> trans_choice('league.league',1), 'unitname'=> $league->shortname ]); ?></h3>
                 </div>
                 <!-- /.card-header -->
-                    <div class="card-body">
-                      <form id="newMembership" class="form-horizontal" action="<?php echo e(route('membership.club.store',['club' => $club ]), false); ?>" method="POST">
+                <div class="card-body">
+                  <form id="newMembership" class="form-horizontal" action="<?php echo e(route('membership.league.store',['league' => $league]), false); ?>" method="POST">
                         <?php echo method_field('POST'); ?>
                         <?php echo csrf_field(); ?>
                         <?php if($errors->any()): ?>
@@ -26,7 +26,6 @@
 
                             </div>
                         <?php endif; ?>
-
                         <div class="form-group row">
                           <label class="col-sm-4 col-form-label" for='selRole'><?php echo e(trans_choice('role.role',1), false); ?></label>
                           <div class="col-sm-6">
@@ -37,7 +36,7 @@ if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" multiple="multiple" name="selRole[]" id='selRole'></select>
+unset($__errorArgs, $__bag); ?>" multiple="multiple" name="selRole" id='selRole'></select>
                             <?php $__errorArgs = ['selRole'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -83,7 +82,7 @@ unset($__errorArgs, $__bag); ?>
                             <?php if($members->count() > 0): ?>
                             <div class="btn-group" role="group">
                               <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Select from Club
+                                Select from Leagues
                               </button>
                               <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                                 <?php $__currentLoopData = $members; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $m): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -100,14 +99,13 @@ unset($__errorArgs, $__bag); ?>
                           </div>
                         </div>
                         <?php echo $__env->make('member.includes.member_show', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-
                         <button type="submit" class="btn btn-info"><?php echo e(__('Submit'), false); ?></button>
                       </form>
                     </div>
+                  </div>
             </div>
-              </div>
-        <?php echo $__env->make('member.includes.member_new', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-        <?php echo $__env->make('member.includes.member_select', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+            <?php echo $__env->make('member.includes.member_new', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+            <?php echo $__env->make('member.includes.member_select', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
         </div>
     </div>
 </div>
@@ -154,9 +152,9 @@ unset($__errorArgs, $__bag); ?>
       $(".js-sel-role").select2({
           placeholder: "<?php echo app('translator')->get('role.action.select'); ?>...",
           theme: 'bootstrap4',
-          multiple: true,
+          multiple: false,
           allowClear: false,
-          minimumResultsForSearch: -1,
+          minimumResultsForSearch: 10,
           ajax: {
                   url: "<?php echo e(route('role.index'), false); ?>",
                   type: "POST",
@@ -164,7 +162,7 @@ unset($__errorArgs, $__bag); ?>
                   dataType: "json",
                   data: {
                        "_token": "<?php echo e(csrf_token(), false); ?>",
-                       "scope": 'ALL'
+                       "scope": 'LEAGUE'
                    },
                   processResults: function (response) {
                     return {
@@ -175,6 +173,33 @@ unset($__errorArgs, $__bag); ?>
                 }
       });
 
+      function matchStart(params, data) {
+        // If there are no search terms, return all of the data
+        if ($.trim(params.term) === '') {
+          return data;
+        }
+
+        // Do not display the item if there is no 'text' property
+        if (typeof data.text === 'undefined') {
+          return null;
+        }
+
+        // `params.term` should be the term that is used for searching
+        // `data.text` is the text that is displayed for the data object
+        if (data.text.indexOf(params.term) > -1) {
+          var modifiedData = $.extend({}, data, true);
+          modifiedData.text += ' (matched)';
+
+          // You can return modified objects from here
+          // This includes matching the `children` how you want in nested data sets
+          return modifiedData;
+        }
+
+        // Return `null` if the term should not be displayed
+        return null;
+
+      };
+
       $(".js-sel-member").select2({
           placeholder: "<?php echo app('translator')->get('role.member.action.select'); ?>...",
           theme: 'bootstrap4',
@@ -182,7 +207,7 @@ unset($__errorArgs, $__bag); ?>
           allowClear: true,
           minimumResultsForSearch: -1,
           ajax: {
-                  url: "<?php echo e(route('member.region.sb', ['region' => $club->region()->first()->id]), false); ?>",
+                  url: "<?php echo e(route('member.region.sb', ['region' => $league->region()->first()->id]), false); ?>",
                   type: "get",
                   delay: 250,
                   processResults: function (response) {
@@ -233,4 +258,4 @@ unset($__errorArgs, $__bag); ?>
 
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.page', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/dunkonxt/resources/views/member/membership_club_new.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.page', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/dunkonxt/resources/views/member/membership_league_new.blade.php ENDPATH**/ ?>

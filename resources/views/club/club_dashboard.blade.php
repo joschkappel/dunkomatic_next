@@ -45,7 +45,7 @@
         <!-- card MEMBERS -->
         <div class="card card-outline card-info collapsed-card">
           <div class="card-header">
-            <h4 class="card-title"><i class="fas fa-user-tie"></i> {{trans_choice('role.role', 2)}}  <span class="badge badge-pill badge-info">{{ count($member_roles) }}</span></h4>
+            <h4 class="card-title"><i class="fas fa-user-tie"></i> @lang('role.member')  <span class="badge badge-pill badge-info">{{ count($members) }}</span></h4>
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
               </button>
@@ -54,21 +54,21 @@
           </div>
           <!-- /.card-header -->
           <div class="card-body">
-            @foreach ($member_roles as $mrole )
-            <p><button type="button" id="deleteMemberrole" class="btn btn-outline-danger btn-sm" data-member-id="{{ $mrole->id }}"
-              data-role-id="{{ $mrole['pivot']->id }}"
-              data-member-name="{{ $mrole->firstname }} {{ $mrole->lastname }}"
-              data-role-name="{{ App\Enums\Role::getDescription($mrole['pivot']->role_id) }}"
-              data-club-sname="{{ $club->shortname }}" data-toggle="modal" data-target="#modalDeleteMemberRole"><i class="fa fa-trash"></i></button>
-            <a href="{{ route('club.membership.edit',[ 'language'=>app()->getLocale(),'membership' => $mrole['pivot']->id, 'club' => $club ]) }}" class=" px-2">
-                {{ App\Enums\Role::getDescription($mrole['pivot']->role_id) }} {{ $mrole['pivot']->function }} - {{ $mrole->firstname }} {{ $mrole->lastname }} <i class="fas fa-arrow-circle-right"></i>
-            </a></p>
+            @foreach ($members as $member )
+            <p><button type="button" id="deleteMember" class="btn btn-outline-danger btn-sm" data-member-id="{{ $member->id }}"
+              data-member-name="{{ $member->name }}"
+              data-club-sname="{{ $club->shortname }}" data-toggle="modal" data-target="#modalDeleteMember"><i class="fa fa-trash"></i></button>
+            <a href="{{ route('membership.club.edit',[ 'language'=>app()->getLocale(),'member' => $member, 'club' => $club ]) }}" class=" px-2">{{ $member->name }} <i class="fas fa-arrow-circle-right"></i></a>
+              @foreach ($member['memberships'] as $membership)
+                <span class="badge badge-secondary">{{ App\Enums\Role::getDescription($membership->role_id) }}</span>
+              @endforeach
+          </p>
             @endforeach
 
           </div>
           <!-- /.card-body -->
           <div class="card-footer">
-            <a href="{{ route('club.membership.create',[ 'language'=>app()->getLocale(), 'club' => $club ]) }}" class="btn btn-primary" >
+            <a href="{{ route('membership.club.create',[ 'language'=>app()->getLocale(), 'club' => $club ]) }}" class="btn btn-primary" >
             <i class="fas fa-plus-circle"></i>  @lang('role.action.create')
             </a>
           </div>
@@ -198,7 +198,7 @@
     <!-- all modals here -->
     @include('club/includes/assign_league')
     @include('club/includes/club_delete')
-    @include('member/includes/membership_delete')
+    @include('member/includes/member_delete')
     @include('team/includes/team_delete')
     @include('club/gym/includes/gym_delete')
     <!-- all modals above -->
@@ -237,15 +237,15 @@
          });
        });
     });
-    $("button#deleteMemberrole").click( function(){
+    $("button#deleteMember").click( function(){
        $('#member_id').val($(this).data('member-id'));
        $('#unit_shortname').html($(this).data('club-sname'));
        $('#unit_type').html('{{ trans_choice('club.club',1)}}');
        $('#role_name').html($(this).data('role-name'));
        $('#member_name').html($(this).data('member-name'));
-       var url = "{{ route('membership.destroy', ['language'=>app()->getLocale(), 'membership'=>':role:']) }}";
-       url = url.replace(':role:', $(this).data('role-id'));
-       $('#confirmDeleteMemberRole').attr('action', url);
+       var url = "{{ route('membership.club.destroy', ['club'=>$club, 'member'=>':member:']) }}";
+       url = url.replace(':member:', $(this).data('member-id'));
+       $('#confirmDeleteMember').attr('action', url);
        $('#modalDeleteMember').modal('show');
     });
     $("button#deleteTeam").click( function(){

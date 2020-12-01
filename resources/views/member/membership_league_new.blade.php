@@ -6,15 +6,15 @@
 <div class="container-fluid">
     <div class="row">
         <!-- left column -->
-        <div class="col-md-10">
+        <div class="col-md-6">
             <!-- general form elements -->
             <div class="card card-info">
                 <div class="card-header">
                     <h3 class="card-title">@lang('role.title.new', ['unittype'=> trans_choice('league.league',1), 'unitname'=> $league->shortname ])</h3>
                 </div>
                 <!-- /.card-header -->
-                <form class="form-horizontal" action="{{ route('league.membership.store',['league' => $league]) }}" method="POST">
-                    <div class="card-body">
+                <div class="card-body">
+                  <form id="newMembership" class="form-horizontal" action="{{ route('membership.league.store',['league' => $league]) }}" method="POST">
                         @method('POST')
                         @csrf
                         @if ($errors->any())
@@ -22,21 +22,63 @@
                            @lang('Please fix the following errors')
                         </div>
                         @endif
-
+                        @if (session('member'))
+                            <div class="alert alert-success">
+                              New Member created: {{ session('member')->name }}
+                            </div>
+                        @endif
                         <div class="form-group row">
-                          <label class="col-sm-2 col-form-label" for='selRole'>{{trans_choice('role.role',1)}}</label>
-                          <div class="col-sm-8">
-                            <select class="js-placeholder-multi js-states form-control select2  @error('selRole') is-invalid @enderror" multiple="multiple" name="selRole[]" id='selRole'></select>
+                          <label class="col-sm-4 col-form-label" for='selRole'>{{trans_choice('role.role',1)}}</label>
+                          <div class="col-sm-6">
+                            <select class="js-sel-role js-states form-control select2  @error('selRole') is-invalid @enderror" multiple="multiple" name="selRole" id='selRole'></select>
                             @error('selRole')
                             <div class="invalid-feedback">PLs select at least one Role</div>
                             @enderror
                           </div>
                         </div>
-                        @include('member.includes.member_new')
+                        <div class="form-group row">
+                          <label for="function" class="col-sm-4 col-form-label">@lang('role.function')</label>
+                          <div class="col-sm-6">
+                              <input type="text" class="form-control @error('function') is-invalid @enderror" id="function" name="function" placeholder="@lang('role.function')" value="{{ old('function') }}">
+                              @error('function')
+                              <div class="invalid-feedback">{{ $message }}</div>
+                              @enderror
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label for="function" class="col-sm-4 col-form-label">@lang('role.member.action.create')</label>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-sm-10">
+                          <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                            <button type="button" id="btnCreateMember" class="btn btn-secondary" form="#" data-target="#createMember" data-toggle="collapse">Create New</button>
+                            @if ($members->count() > 0)
+                            <div class="btn-group" role="group">
+                              <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Select from Leagues
+                              </button>
+                              <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                @foreach ($members as $m)
+                                  <a class="dropdown-item" href="#" onclick="show_member({{$m->id}},'{{$m->name}}','{{$m->street}}','{{$m->zipcode}}','{{$m->city}}','{{$m->email1}}','{{$m->phone1}}'); return false">{{ $m->name }}</a>
+                                @endforeach
+                              </div>
+                            </div>
+                            @endif
+                            <button type="button" id="btnSelectMember" class="btn btn-secondary">Select from Region</button>
+                            @if (!session('member'))
+                            <button type="button" id="btnClear" class="btn btn-secondary">Clear</button>
+                          @endif
+                          </div>
+                          </div>
+                        </div>
+                        @include('member.includes.member_show')
                         <button type="submit" class="btn btn-info">{{__('Submit')}}</button>
+                      </form>
                     </div>
-                </form>
+                  </div>
             </div>
+            @include('member.includes.member_new')
+            @include('member.includes.member_select')
         </div>
     </div>
 </div>
@@ -44,12 +86,46 @@
 
 @section('js')
 <script>
-    $(function() {
+    function show_member(id, name, street, zipcode, city, email1, mobile) {
+      $('#mname').val(name);
+      $('#mstreet').val(street);
+      $('#mzipcode').val(zipcode);
+      $('#mcity').val(city);
+      $('#memail1').val(email1);
+      $('#mmobile').val(mobile);
+      $('#member_id').val(id);
+    }
 
-      $(".js-placeholder-multi").select2({
+    $(function() {
+      @if ($errors->err_member->any())
+      $("#createMember").collapse("toggle");
+      @endif
+
+      @if (session('member'))
+       show_member( {{ session('member')->id }},
+                    '{{ session('member')->name }}',
+                    '{{ session('member')->street }}',
+                    '{{ session('member')->zipcode }}',
+                    '{{ session('member')->city }}',
+                    '{{ session('member')->email1 }}',
+                    '{{ session('member')->mobile }}');
+      @endif
+
+      $("button#btnSelectMember").click( function(){
+         show_member('','','','','','','','');
+         $('#modalSelectMember').modal('show');
+      });
+      $("button#btnCreateMember").click( function(){
+         show_member('','','','','','','','');
+      });
+      $("button#btnClear").click( function(){
+         show_member('','','','','','','','');
+         $("#createMember").collapse("hide");
+      });
+      $(".js-sel-role").select2({
           placeholder: "@lang('role.action.select')...",
           theme: 'bootstrap4',
-          multiple: true,
+          multiple: false,
           allowClear: false,
           minimumResultsForSearch: 10,
           ajax: {
@@ -95,16 +171,16 @@
         // Return `null` if the term should not be displayed
         return null;
 
-      }
+      };
 
-      $(".js-placeholder-single").select2({
+      $(".js-sel-member").select2({
           placeholder: "@lang('role.member.action.select')...",
           theme: 'bootstrap4',
           multiple: false,
           allowClear: true,
           minimumResultsForSearch: -1,
           ajax: {
-                  url: "{{ route('league.membership.index', ['language'=>app()->getLocale(), 'league' => $league->id]) }}",
+                  url: "{{ route('member.region.sb', ['region' => $league->region()->first()->id]) }}",
                   type: "get",
                   delay: 250,
                   processResults: function (response) {
@@ -127,41 +203,25 @@
                 });
 
                 console.log(selVals);
-                var url = "{{ route('member.show', ['language'=>app()->getLocale(), 'member'=>':member:'])}}";
+                var url = "{{ route('member.show', ['language'=>app()->getLocale(), 'member'=>':member:']) }}";
                 url = url.replace(':member:', selVals[0].id);
                 $.ajax({
                   type: 'GET',
                   url: url,
                   success: function (data) {
-                    $('#firstname').val(data.firstname);
-                    $('#lastname').val(data.lastname);
-                    $('#stree').val(data.stree);
-                    $('#zipcode').val(data.zipcode);
-                    $('#city').val(data.city);
-                    $('#mobile').val(data.mobile);
-                    $('#phone1').val(data.phone1);
-                    $('#fax1').val(data.fax1);
-                    $('#email1').val(data.email1);
-                    $('#phone2').val(data.phone2);
-                    $('#fax2').val(data.fax2);
-                    $('#email2').val(data.email2);
+                    show_member(data.id,
+                                data.firstname+' '+data.lastname,
+                                data.street,
+                                data.zipcode,
+                                data.city,
+                                data.email1,
+                                data.mobile);
                   },
                 });
             });
 
       $('#selMember').on('select2:unselect select2:clear', function(e) {
-        $('#firstname').val('');
-        $('#lastname').val('');
-        $('#stree').val('');
-        $('#zipcode').val('');
-        $('#city').val('');
-        $('#mobile').val('');
-        $('#phone1').val('');
-        $('#fax1').val('');
-        $('#email1').val('');
-        $('#phone2').val('');
-        $('#fax2').val('');
-        $('#email2').val('');
+          show_member('','','','','','','','');
       });
 
     });

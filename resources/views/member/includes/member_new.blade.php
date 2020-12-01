@@ -1,7 +1,11 @@
 <div class="col-md-4">
   <div class="card card-primary collapse" id="createMember">
     <div class="card-header">
+      @if (isset($club))
         <h3 class="card-title">@lang('role.title.new', ['unittype'=> trans_choice('club.club',1), 'unitname' => $club->shortname ])</h3>
+      @else
+        <h3 class="card-title">@lang('role.title.new', ['unittype'=> trans_choice('league.league',1), 'unitname' => $league->shortname ])</h3>
+      @endif
     </div>
     <!-- /.card-header -->
       <div class="card-body">

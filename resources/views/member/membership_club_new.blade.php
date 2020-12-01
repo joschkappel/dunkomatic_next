@@ -14,7 +14,7 @@
                 </div>
                 <!-- /.card-header -->
                     <div class="card-body">
-                      <form id="newMembership" class="form-horizontal" action="{{ route('club.membership.store',['club' => $club]) }}" method="POST">
+                      <form id="newMembership" class="form-horizontal" action="{{ route('membership.club.store',['club' => $club ]) }}" method="POST">
                         @method('POST')
                         @csrf
                         @if ($errors->any())
@@ -27,7 +27,6 @@
                               New Member created: {{ session('member')->name }}
                             </div>
                         @endif
-
                         <div class="form-group row">
                           <label class="col-sm-4 col-form-label" for='selRole'>{{trans_choice('role.role',1)}}</label>
                           <div class="col-sm-6">

@@ -14,10 +14,9 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                  <form id="editMembership" class="form-horizontal" action="{{ route('club.membership.update',['membership' => $membership, 'club' => $club]) }}" method="POST">
+                  <form id="editMembership" class="form-horizontal" action="{{ route('membership.club.update',['club' => $club, 'member' => $member]) }}" method="POST">
                         @method('PUT')
                         @csrf
-                        <input type="hidden" name="old_role_id" value="{{ $membership->role_id }}">
                         @if ($errors->any())
                         <div class="alert alert-danger" role="alert">
                            @lang('Please fix the following errors')
@@ -31,8 +30,10 @@
                         <div class="form-group row">
                           <label class="col-sm-4 col-form-label" for='selRole'>{{trans_choice('role.role',1)}}</label>
                           <div class="col-sm-6">
-                            <select class='js-sel-role js-states form-control select2 @error('selRole') is-invalid @enderror' name="selRole" id='selRole'>
-                               <option value="{{ $membership->role_id }}" selected>{{ App\Enums\Role::getDescription($membership->role_id) }}</option>
+                            <select class='js-sel-role js-states form-control select2 @error('selRole') is-invalid @enderror' name="selRole[]" id='selRole'>
+                             @foreach ($membership as $mship)
+                               <option value="{{ $mship->role_id }}" >{{ App\Enums\Role::getDescription($mship->role_id) }}</option>
+                             @endforeach
                             </select>
                             @error('selRole')
                             <div class="invalid-feedback">PLs select at least one Role</div>
@@ -114,13 +115,13 @@
                     '{{ session('member_mod')->email1 }}',
                     '{{ session('member_mod')->mobile }}');
       @else
-      show_member( {{ $member->id }},
-                   '{{ $member->name }}',
-                   '{{ $member->street }}',
-                   '{{ $member->zipcode }}',
-                   '{{ $member->city }}',
-                   '{{ $member->email1 }}',
-                   '{{ $member->mobile }}');
+        show_member( {{ $member->id }},
+                     '{{ $member->name }}',
+                     '{{ $member->street }}',
+                     '{{ $member->zipcode }}',
+                     '{{ $member->city }}',
+                     '{{ $member->email1 }}',
+                     '{{ $member->mobile }}');
       @endif
 
       $("button#btnSelectMember").click( function(){
@@ -140,7 +141,7 @@
       $(".js-sel-role").select2({
           placeholder: "@lang('role.action.select')...",
           theme: 'bootstrap4',
-          multiple: false,
+          multiple: true,
           allowClear: false,
           minimumResultsForSearch: -1,
           ajax: {
@@ -160,6 +161,8 @@
                   cache: true
                 }
       });
+      $("#selRole").val({{ collect($membership->pluck('role_id'))  }} ).change();
+
       $(".js-sel-member").select2({
           placeholder: "@lang('role.member.action.select')...",
           theme: 'bootstrap4',

@@ -24,27 +24,15 @@ class LeagueMembershipController extends Controller
      */
     public function index($language, League $league)
     {
-      Log::debug(print_r($league->region,true));
-      $clublist = Club::where('region', $league->region)->with('memberships')->get();
-      Log::debug('got clubs '.print_r(count($clublist),true));
-
-      $mroles = array();
-      foreach( $clublist as $club){
-        foreach( $club->memberships as $mr){
-          $mroles[] = $mr->id;
-        }
-      }
-
-      Log::debug('got memberships '.print_r(count($mroles),true));
-      $members = Member::whereIn('id', $mroles)->orderBy('lastname','ASC','firstname','ASC')->get();
-      Log::debug('got members '.count($members));
+      $members = $league->members()->get();
+      //Log::debug('got members '.count($members));
 
       $response = array();
 
       foreach($members as $member){
           $response[] = array(
                 "id"=>$member->id,
-                "text"=>$member->lastname.', '.$member->firstname
+                "text"=>$member->name
               );
       }
 
@@ -59,7 +47,14 @@ class LeagueMembershipController extends Controller
      */
     public function create($language, League $league)
     {
-      return view('member/membership_league_new', ['league' => $league]);
+      $region_leagues = League::leagueregion($league->region)->get();
+
+      $members = collect();
+      foreach ($region_leagues as $l){
+        $members = $members->merge($l->members()->get());
+      }
+
+      return view('member/membership_league_new', ['league' => $league,  'members' => $members->unique()->sortBy('lastname')]);
     }
 
     /**
@@ -71,48 +66,21 @@ class LeagueMembershipController extends Controller
      */
     public function store(Request $request, League $league)
     {
-      Log::debug(print_r($request->all(),true));
-
       $data = $request->validate( [
-          'selMember' => 'nullable|exists:members,id',
-          'selRole'   => 'required|array|min:1',
-          'function'  => 'max:40',
-          'firstname' => 'required|max:20',
-          'lastname' => 'required|max:60',
-          'zipcode' => 'required|max:10',
-          'city' => 'required|max:40',
-          'street' => 'required|max:40',
-          'mobile' => 'required_without:phone1|max:40',
-          'phone1' => 'required_without:mobile|max:40',
-          'phone2' => 'max:40',
-          'fax1' => 'max:40',
-          'fax2' => 'max:40',
-          'email1' => 'required|max:60|email:rfc,dns',
-          'email2' => 'nullable|max:60|email:rfc,dns',
+          'member_id' => 'required|exists:members,id',
+          'selRole' => ['required', new EnumValue(Role::class, false)],
+          'function'  => 'nullable|max:40',
       ]);
 
       Log::debug(print_r($data['selRole'],true));
 
-      if ( isset($data['selMember'])){
-        Log::info('use existing member '.$data['selMember']);
-        $member = Member::find($data['selMember']);
-      } else {
-        Log::info('create a new member');
-        $member = Member::create($data);
-      }
+      $member = Member::find($data['member_id']);
 
-      foreach ( $data['selRole'] as $k => $role ){
-        //Log::debug($role);
-        $new_mrole = Membership::create(['role_id' => $role,
-                                         'member_id' => $member->id,
-                                         'membershipable_id' => $league->id ,
-                                         'membershipable_type' => 'App\Models\League']);
-        //Log::debug(print_r($new_mrole,true));
-        //$league->memberships()->save($new_mrole);
-      }
+      $new_mrole = $league->memberships()->create(['role_id' => $data['selRole'],
+                                         'member_id' => $member->id]);
 
       return redirect()->action(
-            'LeagueController@dashboard', ['language'=>app()->getLocale(),'id' => $league->id]
+            'LeagueController@dashboard', ['language'=>app()->getLocale(),'league' => $league]
       );
     }
 
@@ -135,14 +103,18 @@ class LeagueMembershipController extends Controller
      * @param  \App\Membership  $membership
      * @return \Illuminate\Http\Response
      */
-    public function edit($language, League $league, Membership $membership)
+    public function edit($language, League $league, Member $member )
     {
-      $data = Membership::with('member')->find($membership->id);
-      $member = $data['member'];
-      $memberships = $data;
+      $memberships = $league->memberships()->where('member_id', $member->id)->get();
       Log::debug(print_r($memberships,true));
+      $region_leagues = League::leagueregion($league->region)->get();
+      $members = collect();
+      foreach ($region_leagues as $l){
+        $members = $members->merge($l->members()->get());
+      }
+
       //Log::debug(print_r($member,true));
-      return view('member/membership_league_edit', ['member' => $member, 'member_roles' => $memberships, 'league' => $league]);
+      return view('member/membership_league_edit', ['member' => $member, 'membership' => $memberships, 'league' => $league,'members' => $members->unique()->sort()]);
 
     }
 
@@ -151,38 +123,52 @@ class LeagueMembershipController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\League  $league
-     * @param  \App\Member  $member
+     * @param  \App\Models\Member  $member
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, League $league, Member $membership)
+    public function update(Request $request, League $league, Member $member)
     {
       Log::debug(print_r($request->all(),true));
       $data = $request->validate( [
-          'firstname' => 'required|max:20',
-          'lastname' => 'required|max:60',
-          'zipcode' => 'required|max:10',
-          'city' => 'required|max:40',
-          'street' => 'required|max:40',
-          'mobile' => 'required_without:phone1|max:40',
-          'phone1' => 'required_without:mobile|max:40',
-          'phone2' => 'max:40',
-          'fax1' => 'max:40',
-          'fax2' => 'max:40',
-          'email1' => 'required|max:60|email:rfc,dns',
-          'email2' => 'nullable|max:60|email:rfc,dns',
+        'member_id' => 'required|exists:members,id',
+        'selRole' => ['required', new EnumValue(Role::class, false)],
+        'function'  => 'nullable|max:40',
       ]);
 
-      $member = $membership;
+      $member_new = Member::find($data['member_id']);
 
-      //Log::info(print_r($data, true));
+      // delete current membership
+      $league->memberships()->where('member_id',$member->id)->delete();
 
-      // eliminate non model props
-      unset($data['old_role_id']);
+      // create new membership
+      $new_mrole = $league->memberships()->create(['role_id' => $data['selRole'],
+                                         'member_id' => $member_new->id]);
 
-      $check = Member::where('id', $member->id)->update($data);
       return redirect()->action(
-            'LeagueController@dashboard', ['language'=>app()->getLocale(), 'id' => $league->id]
+            'LeagueController@dashboard', ['language'=>app()->getLocale(), 'league' => $league->id]
       );
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\League $league
+     * @param  \App\Member  $member
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(League $league, Member $member)
+    {
+        // Log::debug(print_r($membership,true));
+        // delete all league related memberships
+        $league->memberships()->where('member_id',$member->id)->delete();
+
+        // now check if there are any other memberships for this member
+        if ( $member->memberships()->count() == 0){
+          // none, delete member as well
+          $member->delete();
+        }
+
+        return redirect()->back();
     }
 
 }

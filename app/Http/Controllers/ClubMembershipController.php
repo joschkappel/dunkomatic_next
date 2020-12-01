@@ -72,14 +72,16 @@ class ClubMembershipController extends Controller
 
       foreach ( $data['selRole'] as $k => $role ){
         //Log::debug($role);
-        $new_mrole = Membership::create(['role_id' => $role,
-                                         'member_id' => $member->id,
-                                         'membershipable_id' => $club->id ,
-                                         'membershipable_type' => 'App\Models\Club']);
+        $new_mrole = $club->memberships()->create(['role_id' => $role,
+                                         'member_id' => $member->id]);
+        // $new_mrole = Membership::create(['role_id' => $role,
+        //                                  'member_id' => $member->id,
+        //                                  'membershipable_id' => $club->id ,
+        //                                  'membershipable_type' => 'App\Models\Club']);
       }
 
       return redirect()->action(
-            'ClubController@dashboard', ['language' => app()->getLocale(), 'id' => $club->id]
+            'ClubController@dashboard', ['language' => app()->getLocale(), 'club' => $club]
       );
     }
 
@@ -91,16 +93,14 @@ class ClubMembershipController extends Controller
      * @param  \App\Membership  $membership
      * @return \Illuminate\Http\Response
      */
-    public function edit($language, Club $club, Membership $membership)
+    public function edit($language, Club $club, Member $member)
     {
-      $data = Membership::with('member')->find($membership->id);
-      $member = $data['member'];
-      $membership = $data;
-      Log::debug(print_r($membership,true));
+      $memberships = $club->memberships()->where('member_id', $member->id)->get();
+      Log::debug(print_r($memberships,true));
       $members = $club->members()->get();
 
       //Log::debug(print_r($member,true));
-      return view('member/membership_club_edit', ['member' => $member, 'membership' => $membership, 'club' => $club,'members' => $members]);
+      return view('member/membership_club_edit', ['member' => $member, 'membership' => $memberships, 'club' => $club,'members' => $members]);
 
     }
 
@@ -109,25 +109,56 @@ class ClubMembershipController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Club  $club
-     * @param  \App\Member  $member
+     * @param  \App\Models\Member  $member
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Club $club, Membership $membership)
+    public function update(Request $request, Club $club, Member $member)
     {
               $data = $request->validate( [
-                  'member_id' => 'required|exists:members,id',
-                  'selRole'   => ['required', new EnumValue(Role::class, false)],
-                  'function'  => 'nullable|max:40'
+                'member_id' => 'required|exists:members,id',
+                'selRole'   => 'required|array|min:1',
+                'selRole.*' => ['required', new EnumValue(Role::class, false)],
+                'function'  => 'nullable|max:40',
               ]);
 
               //Log::info(print_r($data, true));
               Log::debug(print_r($request->all(),true));
+              $member_new = Member::find($data['member_id']);
 
-              $check = $membership->update(['member_id' => $data['member_id'],
-                                            'role_id' => $data['selRole']]);
+              // delete current roles
+              $club->memberships()->where('member_id',$member->id)->delete();
+
+              foreach ( $data['selRole'] as $k => $role ){
+                //Log::debug($role);
+                $new_mrole = $club->memberships()->create(['role_id' => $role,
+                                                 'member_id' => $member_new->id]);
+              }
+
               return redirect()->action(
-                    'ClubController@dashboard', ['language'=>app()->getLocale(),'id' => $club->id]
+                    'ClubController@dashboard', ['language'=>app()->getLocale(),'club' => $club->id]
               );
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Club $club
+     * @param  \App\Member  $member
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Club $club, Member $member)
+    {
+        // Log::debug(print_r($membership,true));
+        // delete all club related memberships
+        $club->memberships()->where('member_id',$member->id)->delete();
+
+        // now check if there are any other memberships for this member
+        if ( $member->memberships()->count() == 0){
+          // none, delete member as well
+          $member->delete();
+        }
+
+        return redirect()->back();
     }
 
 }

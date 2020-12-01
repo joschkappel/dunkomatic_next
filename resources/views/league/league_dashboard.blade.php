@@ -129,7 +129,7 @@
       <!-- card MEMBERS -->
       <div class="card card-outline card-secondary collapsed-card">
         <div class="card-header ">
-          <h4 class="card-title"><i class="fas fa-user-tie"></i> {{trans_choice('role.role',2)}}  <span class="badge badge-pill badge-info">{{ count($member_roles) }}</span></h4>
+          <h4 class="card-title"><i class="fas fa-user-tie"></i> {{trans_choice('role.role',2)}}  <span class="badge badge-pill badge-info">{{ count($members) }}</span></h4>
           <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
             </button>
@@ -138,22 +138,22 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-          @foreach ($member_roles as $mrole )
-          <p><button type="button" id="deleteMemberrole" class="btn btn-outline-danger btn-sm" data-member-id="{{ $mrole->id }}"
-            data-role-id="{{ $mrole['pivot']->id }}"
-            data-member-name="{{ $mrole->firstname }} {{ $mrole->lastname }}"
-            data-role-name="{{ App\Enums\Role::getDescription($mrole['pivot']->role_id) }}"
-            data-league-sname="{{ $league->shortname }}" data-toggle="modal" data-target="#modalDeleteMemberRole"><i class="fa fa-trash"></i></button>
-          <a href="{{ route('league.membership.edit',['language'=>app()->getLocale(), 'membership' => $mrole['pivot']->id, 'league' => $league ]) }}" class=" px-2">
-              {{App\Enums\Role::getDescription($mrole['pivot']->role_id) }} {{ $mrole['pivot']->function }} - {{ $mrole->firstname }} {{ $mrole->lastname }} <i class="fas fa-arrow-circle-right"></i>
-          </a></p>
+          @foreach ($members as $member )
+          <p><button type="button" id="deleteMember" class="btn btn-outline-danger btn-sm" data-member-id="{{ $member->id }}"
+            data-member-name="{{ $member->name }}"
+            data-league-sname="{{ $league->shortname }}" data-toggle="modal" data-target="#modalDeleteMember"><i class="fa fa-trash"></i></button>
+          <a href="{{ route('membership.league.edit',['language'=>app()->getLocale(), 'member' => $member, 'league' => $league ]) }}" class=" px-2">{{ $member->name }} <i class="fas fa-arrow-circle-right"></i></a>
+            @foreach ($member['memberships'] as $membership)
+              <span class="badge badge-secondary">{{ App\Enums\Role::getDescription($membership->role_id) }}</span>
+            @endforeach
+          </p>
           @endforeach
 
 
         </div>
         <!-- /.card-body -->
         <div class="card-footer">
-          <a href="{{ route('league.membership.create',['language'=>app()->getLocale(), 'league' => $league ])}}" class="btn btn-outline-secondary" >
+          <a href="{{ route('membership.league.create',['language'=>app()->getLocale(), 'league' => $league ])}}" class="btn btn-outline-secondary" >
           <i class="fas fa-plus-circle"></i>  @lang('role.action.create')
           </a>
         </div>
@@ -199,14 +199,14 @@
           <a href="{{ route('league.game.index',['language'=>app()->getLocale(), 'league' => $league ]) }}" class="btn btn-primary" >
           <i class="far fa-edit"></i> @lang('league.action.game.list')</a>
           <a href="{{ route('cal.league',['language'=>app()->getLocale(), 'league' => $league ]) }}" class="btn btn-secondary" >
-          <i class="fas fa-calendar-alt"></i> iCAL</a>          
+          <i class="fas fa-calendar-alt"></i> iCAL</a>
         </div>
         <!-- /.card-footer -->
       </div>
       <!-- /.card -->
       <!-- all modals here -->
       @include('league/includes/assign_club')
-      @include('member/includes/membership_delete')
+      @include('member/includes/member_delete')
       @include('league/includes/withdraw_team')
       @include('league/includes/inject_team')
       <!-- all modals above -->
@@ -270,15 +270,15 @@
         $('#modalInjectTeam').modal('show');
      });
 
-     $("button#deleteMemberrole").click( function(){
+     $("button#deleteMember").click( function(){
         $('#member_id').val($(this).data('member-id'));
         $('#unit_type').html('{{ trans_choice('league.league',1)}}');
         $('#unit_shortname').html($(this).data('league-sname'));
         $('#role_name').html($(this).data('role-name'));
         $('#member_name').html($(this).data('member-name'));
-        var url = "{{ route('membership.destroy', ['language'=>app()->getLocale(), 'membership'=>':role:' ])}}";
-        url = url.replace(':role:', $(this).data('role-id'));
-        $('#confirmDeleteMemberRole').attr('action', url);
+        var url = "{{ route('membership.league.destroy', ['league'=>$league, 'member'=>':member:' ])}}";
+        url = url.replace(':member:', $(this).data('member-id'));
+        $('#confirmDeleteMember').attr('action', url);
         $('#modalDeleteMember').modal('show');
      });
 

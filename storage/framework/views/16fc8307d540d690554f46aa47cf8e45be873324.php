@@ -12,10 +12,9 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                  <form id="editMembership" class="form-horizontal" action="<?php echo e(route('club.membership.update',['membership' => $membership, 'club' => $club]), false); ?>" method="POST">
+                  <form id="editMembership" class="form-horizontal" action="<?php echo e(route('membership.club.update',['club' => $club, 'member' => $member]), false); ?>" method="POST">
                         <?php echo method_field('PUT'); ?>
                         <?php echo csrf_field(); ?>
-                        <input type="hidden" name="old_role_id" value="<?php echo e($membership->role_id, false); ?>">
                         <?php if($errors->any()): ?>
                         <div class="alert alert-danger" role="alert">
                            <?php echo app('translator')->get('Please fix the following errors'); ?>
@@ -37,8 +36,10 @@ if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>' name="selRole" id='selRole'>
-                               <option value="<?php echo e($membership->role_id, false); ?>" selected><?php echo e(App\Enums\Role::getDescription($membership->role_id), false); ?></option>
+unset($__errorArgs, $__bag); ?>' name="selRole[]" id='selRole'>
+                             <?php $__currentLoopData = $membership; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $mship): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                               <option value="<?php echo e($mship->role_id, false); ?>" ><?php echo e(App\Enums\Role::getDescription($mship->role_id), false); ?></option>
+                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                             <?php $__errorArgs = ['selRole'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -141,13 +142,13 @@ unset($__errorArgs, $__bag); ?>
                     '<?php echo e(session('member_mod')->email1, false); ?>',
                     '<?php echo e(session('member_mod')->mobile, false); ?>');
       <?php else: ?>
-      show_member( <?php echo e($member->id, false); ?>,
-                   '<?php echo e($member->name, false); ?>',
-                   '<?php echo e($member->street, false); ?>',
-                   '<?php echo e($member->zipcode, false); ?>',
-                   '<?php echo e($member->city, false); ?>',
-                   '<?php echo e($member->email1, false); ?>',
-                   '<?php echo e($member->mobile, false); ?>');
+        show_member( <?php echo e($member->id, false); ?>,
+                     '<?php echo e($member->name, false); ?>',
+                     '<?php echo e($member->street, false); ?>',
+                     '<?php echo e($member->zipcode, false); ?>',
+                     '<?php echo e($member->city, false); ?>',
+                     '<?php echo e($member->email1, false); ?>',
+                     '<?php echo e($member->mobile, false); ?>');
       <?php endif; ?>
 
       $("button#btnSelectMember").click( function(){
@@ -167,7 +168,7 @@ unset($__errorArgs, $__bag); ?>
       $(".js-sel-role").select2({
           placeholder: "<?php echo app('translator')->get('role.action.select'); ?>...",
           theme: 'bootstrap4',
-          multiple: false,
+          multiple: true,
           allowClear: false,
           minimumResultsForSearch: -1,
           ajax: {
@@ -187,6 +188,8 @@ unset($__errorArgs, $__bag); ?>
                   cache: true
                 }
       });
+      $("#selRole").val(<?php echo e(collect($membership->pluck('role_id')), false); ?> ).change();
+
       $(".js-sel-member").select2({
           placeholder: "<?php echo app('translator')->get('role.member.action.select'); ?>...",
           theme: 'bootstrap4',

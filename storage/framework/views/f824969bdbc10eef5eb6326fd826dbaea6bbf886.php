@@ -35,7 +35,7 @@
         <!-- card MEMBERS -->
         <div class="card card-outline card-info collapsed-card">
           <div class="card-header">
-            <h4 class="card-title"><i class="fas fa-user-tie"></i> <?php echo e(trans_choice('role.role', 2), false); ?>  <span class="badge badge-pill badge-info"><?php echo e(count($member_roles), false); ?></span></h4>
+            <h4 class="card-title"><i class="fas fa-user-tie"></i> <?php echo app('translator')->get('role.member'); ?>  <span class="badge badge-pill badge-info"><?php echo e(count($members), false); ?></span></h4>
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
               </button>
@@ -44,21 +44,21 @@
           </div>
           <!-- /.card-header -->
           <div class="card-body">
-            <?php $__currentLoopData = $member_roles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $mrole): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-            <p><button type="button" id="deleteMemberrole" class="btn btn-outline-danger btn-sm" data-member-id="<?php echo e($mrole->id, false); ?>"
-              data-role-id="<?php echo e($mrole['pivot']->id, false); ?>"
-              data-member-name="<?php echo e($mrole->firstname, false); ?> <?php echo e($mrole->lastname, false); ?>"
-              data-role-name="<?php echo e(App\Enums\Role::getDescription($mrole['pivot']->role_id), false); ?>"
-              data-club-sname="<?php echo e($club->shortname, false); ?>" data-toggle="modal" data-target="#modalDeleteMemberRole"><i class="fa fa-trash"></i></button>
-            <a href="<?php echo e(route('club.membership.edit',[ 'language'=>app()->getLocale(),'membership' => $mrole['pivot']->id, 'club' => $club ]), false); ?>" class=" px-2">
-                <?php echo e(App\Enums\Role::getDescription($mrole['pivot']->role_id), false); ?> <?php echo e($mrole['pivot']->function, false); ?> - <?php echo e($mrole->firstname, false); ?> <?php echo e($mrole->lastname, false); ?> <i class="fas fa-arrow-circle-right"></i>
-            </a></p>
+            <?php $__currentLoopData = $members; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $member): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <p><button type="button" id="deleteMember" class="btn btn-outline-danger btn-sm" data-member-id="<?php echo e($member->id, false); ?>"
+              data-member-name="<?php echo e($member->name, false); ?>"
+              data-club-sname="<?php echo e($club->shortname, false); ?>" data-toggle="modal" data-target="#modalDeleteMember"><i class="fa fa-trash"></i></button>
+            <a href="<?php echo e(route('membership.club.edit',[ 'language'=>app()->getLocale(),'member' => $member, 'club' => $club ]), false); ?>" class=" px-2"><?php echo e($member->name, false); ?> <i class="fas fa-arrow-circle-right"></i></a>
+              <?php $__currentLoopData = $member['memberships']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $membership): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <span class="badge badge-secondary"><?php echo e(App\Enums\Role::getDescription($membership->role_id), false); ?></span>
+              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+          </p>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
           </div>
           <!-- /.card-body -->
           <div class="card-footer">
-            <a href="<?php echo e(route('club.membership.create',[ 'language'=>app()->getLocale(), 'club' => $club ]), false); ?>" class="btn btn-primary" >
+            <a href="<?php echo e(route('membership.club.create',[ 'language'=>app()->getLocale(), 'club' => $club ]), false); ?>" class="btn btn-primary" >
             <i class="fas fa-plus-circle"></i>  <?php echo app('translator')->get('role.action.create'); ?>
             </a>
           </div>
@@ -188,7 +188,7 @@
     <!-- all modals here -->
     <?php echo $__env->make('club/includes/assign_league', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
     <?php echo $__env->make('club/includes/club_delete', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-    <?php echo $__env->make('member/includes/membership_delete', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+    <?php echo $__env->make('member/includes/member_delete', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
     <?php echo $__env->make('team/includes/team_delete', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
     <?php echo $__env->make('club/gym/includes/gym_delete', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
     <!-- all modals above -->
@@ -227,15 +227,15 @@
          });
        });
     });
-    $("button#deleteMemberrole").click( function(){
+    $("button#deleteMember").click( function(){
        $('#member_id').val($(this).data('member-id'));
        $('#unit_shortname').html($(this).data('club-sname'));
        $('#unit_type').html('<?php echo e(trans_choice('club.club',1), false); ?>');
        $('#role_name').html($(this).data('role-name'));
        $('#member_name').html($(this).data('member-name'));
-       var url = "<?php echo e(route('membership.destroy', ['language'=>app()->getLocale(), 'membership'=>':role:']), false); ?>";
-       url = url.replace(':role:', $(this).data('role-id'));
-       $('#confirmDeleteMemberRole').attr('action', url);
+       var url = "<?php echo e(route('membership.club.destroy', ['club'=>$club, 'member'=>':member:']), false); ?>";
+       url = url.replace(':member:', $(this).data('member-id'));
+       $('#confirmDeleteMember').attr('action', url);
        $('#modalDeleteMember').modal('show');
     });
     $("button#deleteTeam").click( function(){

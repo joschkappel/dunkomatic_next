@@ -8,46 +8,32 @@
             <!-- general form elements -->
             <div class="card card-info">
                 <div class="card-header">
-                    <h3 class="card-title"><?php echo app('translator')->get('role.title.new', ['unittype'=> trans_choice('club.club',1), 'unitname' => $club->shortname ]); ?></h3>
+                    <h3 class="card-title"><?php echo app('translator')->get('role.title.edit', ['member'=> $member->firstname.' '.$member->lastname] ); ?></h3>
                 </div>
                 <!-- /.card-header -->
-                    <div class="card-body">
-                      <form id="newMembership" class="form-horizontal" action="<?php echo e(route('membership.club.store',['club' => $club ]), false); ?>" method="POST">
-                        <?php echo method_field('POST'); ?>
+                <div class="card-body">
+                  <form id="editMembership" class="form-horizontal" action="<?php echo e(route('membership.league.update',['league' => $league, 'member' => $member]), false); ?>" method="POST">
+                        <?php echo method_field('PUT'); ?>
                         <?php echo csrf_field(); ?>
                         <?php if($errors->any()): ?>
                         <div class="alert alert-danger" role="alert">
                            <?php echo app('translator')->get('Please fix the following errors'); ?>
                         </div>
                         <?php endif; ?>
-                        <?php if(session('member')): ?>
+                        <?php if(session('member_mod')): ?>
                             <div class="alert alert-success">
-                              New Member created: <?php echo e(session('member')->name, false); ?>
+                              Member updated: <?php echo e(session('member_mod')->name, false); ?>
 
                             </div>
                         <?php endif; ?>
-
                         <div class="form-group row">
                           <label class="col-sm-4 col-form-label" for='selRole'><?php echo e(trans_choice('role.role',1), false); ?></label>
                           <div class="col-sm-6">
-                            <select class="js-sel-role js-states form-control select2  <?php $__errorArgs = ['selRole'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>" multiple="multiple" name="selRole[]" id='selRole'></select>
-                            <?php $__errorArgs = ['selRole'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                            <div class="invalid-feedback">PLs select at least one Role</div>
-                            <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
+                            <select class='js-sel-role js-states form-control select2 '  name="selRole" id='selRole'>
+                               <?php $__currentLoopData = $membership; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $mship): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                               <option value="<?php echo e($mship->role_id, false); ?>" selected><?php echo e(App\Enums\Role::getDescription($mship->role_id), false); ?></option>
+                              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </select>
                           </div>
                         </div>
                         <div class="form-group row">
@@ -79,11 +65,11 @@ unset($__errorArgs, $__bag); ?>
                         <div class="form-group row">
                           <div class="col-sm-10">
                           <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                            <button type="button" id="btnCreateMember" class="btn btn-secondary" form="#" data-target="#createMember" data-toggle="collapse">Create New</button>
+                            <button type="button" id="btnUpdateMember" class="btn btn-secondary" form="#" data-target="#updateMember" data-toggle="collapse">Modify Member</button>
                             <?php if($members->count() > 0): ?>
                             <div class="btn-group" role="group">
                               <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Select from Club
+                                Select from League
                               </button>
                               <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                                 <?php $__currentLoopData = $members; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $m): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -93,7 +79,7 @@ unset($__errorArgs, $__bag); ?>
                             </div>
                             <?php endif; ?>
                             <button type="button" id="btnSelectMember" class="btn btn-secondary">Select from Region</button>
-                            <?php if(!session('member')): ?>
+                            <?php if(!session('member_mod')): ?>
                             <button type="button" id="btnClear" class="btn btn-secondary">Clear</button>
                           <?php endif; ?>
                           </div>
@@ -104,13 +90,13 @@ unset($__errorArgs, $__bag); ?>
                         <button type="submit" class="btn btn-info"><?php echo e(__('Submit'), false); ?></button>
                       </form>
                     </div>
+                </div>
+                  </div>
+            <?php echo $__env->make('member.includes.member_edit', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+            <?php echo $__env->make('member.includes.member_select', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             </div>
-              </div>
-        <?php echo $__env->make('member.includes.member_new', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-        <?php echo $__env->make('member.includes.member_select', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
         </div>
     </div>
-</div>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('js'); ?>
@@ -127,45 +113,56 @@ unset($__errorArgs, $__bag); ?>
 
     $(function() {
       <?php if($errors->err_member->any()): ?>
-      $("#createMember").collapse("toggle");
+        $("#updateMember").collapse("toggle");
       <?php endif; ?>
 
-      <?php if(session('member')): ?>
-       show_member( <?php echo e(session('member')->id, false); ?>,
-                    '<?php echo e(session('member')->name, false); ?>',
-                    '<?php echo e(session('member')->street, false); ?>',
-                    '<?php echo e(session('member')->zipcode, false); ?>',
-                    '<?php echo e(session('member')->city, false); ?>',
-                    '<?php echo e(session('member')->email1, false); ?>',
-                    '<?php echo e(session('member')->mobile, false); ?>');
+      <?php if(session('member_mod')): ?>
+       show_member( <?php echo e(session('member_mod')->id, false); ?>,
+                    '<?php echo e(session('member_mod')->name, false); ?>',
+                    '<?php echo e(session('member_mod')->street, false); ?>',
+                    '<?php echo e(session('member_mod')->zipcode, false); ?>',
+                    '<?php echo e(session('member_mod')->city, false); ?>',
+                    '<?php echo e(session('member_mod')->email1, false); ?>',
+                    '<?php echo e(session('member_mod')->mobile, false); ?>');
+      <?php else: ?>
+        show_member( <?php echo e($member->id, false); ?>,
+                     '<?php echo e($member->name, false); ?>',
+                     '<?php echo e($member->street, false); ?>',
+                     '<?php echo e($member->zipcode, false); ?>',
+                     '<?php echo e($member->city, false); ?>',
+                     '<?php echo e($member->email1, false); ?>',
+                     '<?php echo e($member->mobile, false); ?>');
       <?php endif; ?>
 
       $("button#btnSelectMember").click( function(){
-         show_member('','','','','','','','');
          $('#modalSelectMember').modal('show');
       });
-      $("button#btnCreateMember").click( function(){
-         show_member('','','','','','','','');
-      });
       $("button#btnClear").click( function(){
-         show_member('','','','','','','','');
-         $("#createMember").collapse("hide");
+        show_member( <?php echo e($member->id, false); ?>,
+                     '<?php echo e($member->name, false); ?>',
+                     '<?php echo e($member->street, false); ?>',
+                     '<?php echo e($member->zipcode, false); ?>',
+                     '<?php echo e($member->city, false); ?>',
+                     '<?php echo e($member->email1, false); ?>',
+                     '<?php echo e($member->mobile, false); ?>');
+         $("#updateMember").collapse("hide");
       });
+
       $(".js-sel-role").select2({
           placeholder: "<?php echo app('translator')->get('role.action.select'); ?>...",
           theme: 'bootstrap4',
-          multiple: true,
+          multiple: false,
           allowClear: false,
           minimumResultsForSearch: -1,
           ajax: {
                   url: "<?php echo e(route('role.index'), false); ?>",
                   type: "POST",
-                  delay: 250,
                   dataType: "json",
                   data: {
                        "_token": "<?php echo e(csrf_token(), false); ?>",
-                       "scope": 'ALL'
+                       "scope": 'LEAGUE'
                    },
+                  delay: 250,
                   processResults: function (response) {
                     return {
                       results: response
@@ -174,7 +171,6 @@ unset($__errorArgs, $__bag); ?>
                   cache: true
                 }
       });
-
       $(".js-sel-member").select2({
           placeholder: "<?php echo app('translator')->get('role.member.action.select'); ?>...",
           theme: 'bootstrap4',
@@ -182,7 +178,7 @@ unset($__errorArgs, $__bag); ?>
           allowClear: true,
           minimumResultsForSearch: -1,
           ajax: {
-                  url: "<?php echo e(route('member.region.sb', ['region' => $club->region()->first()->id]), false); ?>",
+                  url: "<?php echo e(route('member.region.sb', ['region' => $league->region()->first()->id]), false); ?>",
                   type: "get",
                   delay: 250,
                   processResults: function (response) {
@@ -226,6 +222,7 @@ unset($__errorArgs, $__bag); ?>
           show_member('','','','','','','','');
       });
 
+
     });
 
 </script>
@@ -233,4 +230,4 @@ unset($__errorArgs, $__bag); ?>
 
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.page', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/dunkonxt/resources/views/member/membership_club_new.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.page', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/dunkonxt/resources/views/member/membership_league_edit.blade.php ENDPATH**/ ?>

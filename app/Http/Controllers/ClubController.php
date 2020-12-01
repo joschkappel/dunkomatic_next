@@ -49,7 +49,7 @@ class ClubController extends Controller
         ->addIndexColumn()
         ->rawColumns(['shortname'])
         ->editColumn('shortname', function ($data) {
-            return '<a href="' . route('club.dashboard', ['language'=>app()->getLocale(),'id'=>$data->id]) .'">'.$data->shortname.'</a>';
+            return '<a href="' . route('club.dashboard', ['language'=>app()->getLocale(),'club'=>$data->id]) .'">'.$data->shortname.'</a>';
             })
         ->make(true);
 
@@ -69,7 +69,7 @@ class ClubController extends Controller
 
           if (count($clublist)>1) {
             return redirect()->action(
-                'ClubController@dashboard', ['language'=>app()->getLocale(),'id' => $clublist[0]]
+                'ClubController@dashboard', ['language'=>app()->getLocale(),'club' => $clublist[0]]
             );
           } else {
             return back();
@@ -82,34 +82,26 @@ class ClubController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function dashboard( $language, $id )
+    public function dashboard( $language, Club $club )
     {
-        //
-          Log::debug('id is - '.$id);
-          if ( $id ){
-            $data['club'] =  Club::find(intval($id));
-            $club =   $data['club'];
+          $data['club'] =  Club::find($club->id);
+          $club =   $data['club'];
 
-            if ($data['club']){
-              $data['gyms'] = $data['club']->gyms()->get();
-              $data['teams'] = $data['club']->teams()->with('league')->get();
-              $data['member_roles'] = $data['club']->members()->get();
-            //  Log::debug(print_r($data['member_roles'],true));
-              $data['games_home'] = $data['club']->games_home()->get();
-              //Log::debug(print_r($data['games_home'],true ));
+          $data['gyms'] = $data['club']->gyms()->get();
+          $data['teams'] = $data['club']->teams()->with('league')->get();
+          //$data['members'] = $data['club']->members()->get();
+          $data['members'] = Member::whereIn('id',Club::find($club->id)->members()->pluck('member_id'))->with('memberships')->get();
+          $data['games_home'] = $data['club']->games_home()->get();
+          //Log::debug(print_r($data['games_home'],true ));
 
-              $directory = Auth::user()->user_region->club_folder;
-              $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($club){
-                return (strpos($value,$club->shortname) !== false);
-              });
+          $directory = Auth::user()->user_region->club_folder;
+          $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($club){
+            return (strpos($value,$club->shortname) !== false);
+          });
 
-              Log::debug(print_r($reports,true));
-              $data['files'] = $reports;
-              return view('club/club_dashboard', $data);
-            }
-          }
-
-          return view('welcome');
+          Log::debug(print_r($reports,true));
+          $data['files'] = $reports;
+          return view('club/club_dashboard', $data);
 
     }
     /**
@@ -135,7 +127,7 @@ class ClubController extends Controller
                   return $user->created_at->format('d.m.Y H:i');
               })
           ->editColumn('shortname', function ($data) {
-              return '<a href="' . route('club.dashboard', ['language'=>app()->getLocale(),'id'=>$data->id]) .'">'.$data->shortname.'</a>';
+              return '<a href="' . route('club.dashboard', ['language'=>app()->getLocale(),'club'=>$data->id]) .'">'.$data->shortname.'</a>';
               })
           ->make(true);
     }

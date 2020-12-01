@@ -7,6 +7,8 @@ use App\Models\LeagueClub;
 use App\Models\Team;
 use App\Models\Club;
 use App\Models\Game;
+use App\Models\Member;
+
 
 use App\Enums\LeagueAgeType;
 use App\Enums\LeagueGenderType;
@@ -43,7 +45,7 @@ class LeagueController extends Controller
 
         if (count($leaguelist)>1) {
           return redirect()->action(
-            'LeagueController@dashboard', ['id' => $leaguelist[0]]
+            'LeagueController@dashboard', ['league' => $leaguelist[0]]
           );
         } else {
           return back();
@@ -81,7 +83,7 @@ class LeagueController extends Controller
         ->addIndexColumn()
         ->rawColumns(['shortname','reg_rel'])
         ->editColumn('shortname', function ($data) {
-            return '<a href="' . route('league.dashboard', ['language'=>app()->getLocale(),'id'=>$data->id]) .'">'.$data->shortname.'</a>';
+            return '<a href="' . route('league.dashboard', ['language'=>app()->getLocale(),'league'=>$data->id]) .'">'.$data->shortname.'</a>';
             })
         ->addColumn('reg_rel', function($data){
               if ($data->clubs_count!=0){
@@ -122,7 +124,7 @@ class LeagueController extends Controller
                   return $user->created_at->format('d.m.Y H:i');
               })
           ->editColumn('shortname', function ($data) {
-              return '<a href="' . route('league.dashboard', ['language'=>app()->getLocale(),'id'=>$data->id]) .'">'.$data->shortname.'</a>';
+              return '<a href="' . route('league.dashboard', ['language'=>app()->getLocale(),'league'=>$data->id]) .'">'.$data->shortname.'</a>';
               })
           ->make(true);
     }
@@ -205,67 +207,60 @@ class LeagueController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function dashboard( $language, $id )
+    public function dashboard( $language, League $league )
     {
-        //
 
-          if ( $id ){
-            $league =  League::find(intval($id));
-            $data['league'] = $league;
+        $data['league'] = League::find($league->id);
+        $league =   $data['league'];
 
-            if ($data['league']){
-              // get assigned clubs
-              $clubs = $league->clubs()->get();
-              $data['clubs'] = $clubs;
-              $data['member_roles'] = $data['league']->members()->get();
+        // get assigned clubs
+        $clubs = $league->clubs()->get();
+        $data['clubs'] = $clubs;
+        $data['members'] = Member::whereIn('id',League::find($league->id)->members()->pluck('member_id'))->with('memberships')->get();
 
-              $assigned_club = array();
-              foreach($clubs as $club){
-                  //Log::debug(print_r($club['pivot'],true));
-                  $assigned_club[$club['pivot']->league_no] = array(
-                        "club_id"=>$club->id,
-                        "shortname"=>$club->shortname,
-                        "league_char"=>$club['pivot']->league_char,
-                        "league_id"=>$club['pivot']->league_id
-                      );
-              }
-              $data['assigned_clubs'] = $assigned_club;
-              $data['games'] = $data['league']->games()->get();
+        $assigned_club = array();
+        foreach($clubs as $club){
+            //Log::debug(print_r($club['pivot'],true));
+            $assigned_club[$club['pivot']->league_no] = array(
+                  "club_id"=>$club->id,
+                  "shortname"=>$club->shortname,
+                  "league_char"=>$club['pivot']->league_char,
+                  "league_id"=>$club['pivot']->league_id
+                );
+        }
+        $data['assigned_clubs'] = $assigned_club;
+        $data['games'] = $data['league']->games()->get();
 
 
-              //Log::debug(print_r($assigned_club, true));
-              //Log::debug(print_r($data['clubs'], true));
+        //Log::debug(print_r($assigned_club, true));
+        //Log::debug(print_r($data['clubs'], true));
 
-              // get assigned Teams
-              $teams = $league->teams()->with('club')->get();
-              //$data['teams'] = $teams;
+        // get assigned Teams
+        $teams = $league->teams()->with('club')->get();
+        //$data['teams'] = $teams;
 
-              //Log::debug(print_r($teams,true));
-              $assigned_team = array();
-              foreach($teams as $team){
-                  $assigned_team[$team->league_no] = array(
-                        "team_id"=>$team->id,
-                        "shortname"=>$team['club']->shortname,
-                        "team_no"=>$team->team_no,
-                        "league_char"=>$team->league_char,
-                        "league_no"=>$team->league_no
-                      );
-              }
-              $data['assigned_teams'] = $assigned_team;
-              //Log::debug(print_r($assigned_team,true));
-              $directory =   $directory = Auth::user()->user_region->league_folder;
-              $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($league){
-                return (strpos($value,$league->shortname) !== false);
-              });
+        //Log::debug(print_r($teams,true));
+        $assigned_team = array();
+        foreach($teams as $team){
+            $assigned_team[$team->league_no] = array(
+                  "team_id"=>$team->id,
+                  "shortname"=>$team['club']->shortname,
+                  "team_no"=>$team->team_no,
+                  "league_char"=>$team->league_char,
+                  "league_no"=>$team->league_no
+                );
+        }
+        $data['assigned_teams'] = $assigned_team;
+        //Log::debug(print_r($assigned_team,true));
+        $directory =   $directory = Auth::user()->user_region->league_folder;
+        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($league){
+          return (strpos($value,$league->shortname) !== false);
+        });
 
-              //Log::debug(print_r($reports,true));
-              $data['files'] = $reports;
+        //Log::debug(print_r($reports,true));
+        $data['files'] = $reports;
 
-              return view('league/league_dashboard', $data);
-            }
-          }
-
-          return view('welcome');
+        return view('league/league_dashboard', $data);
 
     }
 
@@ -398,7 +393,7 @@ class LeagueController extends Controller
 
       Log::debug('ready to update league:'.print_r($data, true));
       $check = League::find($league->id)->update($data);
-      return redirect()->route('league.dashboard',['language'=>app()->getLocale(), 'id'=>$league]);
+      return redirect()->route('league.dashboard',['language'=>app()->getLocale(), 'league'=>$league]);
     }
 
     /**
@@ -488,7 +483,7 @@ class LeagueController extends Controller
                 }
               }
            }
-           return redirect()->route('league.dashboard', ['language'=>app()->getLocale(), 'id' => $league ]);
+           return redirect()->route('league.dashboard', ['language'=>app()->getLocale(), 'league' => $league ]);
        }
 
 }
