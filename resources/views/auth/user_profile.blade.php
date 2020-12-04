@@ -1,5 +1,7 @@
 @extends('layouts.page')
 
+@section('plugins.Select2', true)
+
 @section('content')
 <div class="container-fluid">
     <div class="row">
@@ -11,8 +13,8 @@
                     <h3 class="card-title">@lang('auth.title.edit')</h3>
                 </div>
                 <!-- /.card-header -->
-                <form class="form-horizontal" action="{{ route('admin.user.update', ['user_id' => Auth::user()->id]) }}" method="POST">
-                    <div class="card-body">
+                <div class="card-body">
+                  <form class="form-horizontal" action="{{ route('admin.user.update', ['user_id' => Auth::user()->id]) }}" method="POST">
                         <input type="hidden" name="_method" value="PUT">
                         @csrf
                         @method('PUT')
@@ -40,30 +42,18 @@
                             </div>
                         </div>
                         <button type="submit" class="btn btn-info">{{__('Submit')}}</button>
-                    </div>
-                </form>
+                      </form>
+                  </div>
             </div>
-            <!-- general form elements -->
-            <div class="card card-info">
-                <div class="card-header">
-                    <h3 class="card-title">@lang('role.title.edit', ['member'=> $member->firstname.' '.$member->lastname] )</h3>
-                </div>
-                <!-- /.card-header -->
-                <form class="form-horizontal" action="{{ route('member.update', $member)}}" method="POST">
-                    <div class="card-body">
-                        @method('PUT')
-                        @csrf
-                        @if ($errors->any())
-                        <div class="alert alert-danger" role="alert">
-                           @lang('Please fix the following errors')
-                        </div>
-                        @endif
-                            @include('member.includes.member_edit')
-                        <button type="submit" class="btn btn-info">{{__('Submit')}}</button>
-                    </div>
-                </form>
-            </div>
+          </div>
+          @include('member.includes.member_edit')
         </div>
     </div>
 </div>
 @endsection
+
+@section('js')
+<script>
+    $("#updateMember").collapse("toggle");
+</script>
+@stop

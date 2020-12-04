@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Bouncer;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -26,7 +27,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::define('admin-only', function ($user) {
-              return (($user->regionadmin) or ($user->admin));
+              return (($user->isRegionadmin) or ($user->isA('superadmin')));
           });
     }
 }

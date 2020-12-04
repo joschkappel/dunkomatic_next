@@ -57,7 +57,7 @@ class RegionController extends Controller
 
       foreach($regions as $region){
           Log::debug(print_r($region,true));
-          if ( User::regionadmin($region->code)->exists()) {
+          if ( $region->regionadmin()->exists() ) {
             $response[] = array(
                   "id"=>$region->id,
                   "text"=>$region->name

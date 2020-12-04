@@ -8,7 +8,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-use App\Models\User;
 use App\Models\Club;
 use App\Models\Member;
 use App\Models\Region;
@@ -34,8 +33,8 @@ class EmailValidation implements ShouldQueue
     public function __construct(Region $region)
     {
         $this->region = $region;
-        $region_user = User::regionAdmin($this->region->code)->with('member')->first();
-        $this->region_admin = Member::find($region_user['member']->id)->first();
+//        $region_user = User::regionAdmin($this->region->code)->with('member')->first();
+        $this->region_admin = $region->regionadmin()->first();
 
     }
 

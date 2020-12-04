@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
+
 use Closure;
 
 class CheckRegionAdmin
@@ -15,7 +17,7 @@ class CheckRegionAdmin
      */
     public function handle($request, Closure $next)
     {
-        if (!auth()->user()->regionadmin) {
+        if (! auth()->user()->isRegionadmin ) {
           return redirect()->route('home',app()->getLocale());
         }
         return $next($request);

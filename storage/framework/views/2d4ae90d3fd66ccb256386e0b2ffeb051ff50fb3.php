@@ -1,3 +1,4 @@
+<?php $__env->startSection('plugins.ICheck',true); ?>
 <?php $__env->startSection('plugins.Select2', true); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -26,7 +27,6 @@
 
                             </div>
                         <?php endif; ?>
-
                         <div class="form-group row">
                           <label class="col-sm-4 col-form-label" for='selRole'><?php echo e(trans_choice('role.role',1), false); ?></label>
                           <div class="col-sm-6">

@@ -28,8 +28,6 @@ class CreateMembersTable extends Migration
             $table->string('fax1', 40)->nullable();
             $table->string('fax2', 40)->nullable();
             $table->timestamps();
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->foreign('user_id')->references('id')->on('users');
         });
 
     }

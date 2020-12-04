@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 use App\Models\Member;
+use App\Models\Region;
 use App\Notifications\VerifyEmail;
 use App\Notifications\ResetPassword as ResetPasswordNotification;
 
@@ -47,8 +48,8 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
      * @var array
      */
     protected $fillable = [
-        'id','name', 'email', 'password','region','admin','regionadmin','approved_at','rejected_at','reason_join','reason_reject',
-        'club_ids','league_ids','email_verified_at'
+        'id','name', 'email', 'password','region','approved_at','rejected_at','reason_join','reason_reject',
+        'email_verified_at'
     ];
 
     /**
@@ -77,7 +78,7 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
      */
     public function member()
     {
-        return $this->hasOne('App\Models\Member');
+        return $this->belongsTo(Member::class);
     }
 
     public function user_region()
@@ -95,14 +96,9 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
 
         static::deleting(function($user) { // before delete() method call this
              $user->messages()->delete();
-             $user->member()->delete();
         });
     }
 
-    public function scopeRegionadmin($query, $region)
-    {
-        return $query->where('region',$region)->where('regionadmin', true);
-    }
     public function scopeRegion($query, $region)
     {
         return $query->where('region',$region);
@@ -111,6 +107,15 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     {
         return $query->first()->member->memberships()->isRole($role)->exists();
     }
+
+    /*
+    * is this user admin of a region ( has regionlead membership ) ?
+    */
+    public function getIsRegionadminAttribute()
+    {
+        return $this->member->memberships()->isRegionAdmin($this->user_region->id)->exists();
+    }
+
     public function getLeagueFilecountAttribute()
     {
       $directory = $this->user_region->league_folder;

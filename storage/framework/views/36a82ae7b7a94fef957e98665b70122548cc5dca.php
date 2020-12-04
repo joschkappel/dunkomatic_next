@@ -1,3 +1,5 @@
+<?php $__env->startSection('plugins.Select2', true); ?>
+
 <?php $__env->startSection('content'); ?>
 <div class="container-fluid">
     <div class="row">
@@ -9,8 +11,8 @@
                     <h3 class="card-title"><?php echo app('translator')->get('auth.title.edit'); ?></h3>
                 </div>
                 <!-- /.card-header -->
-                <form class="form-horizontal" action="<?php echo e(route('admin.user.update', ['user_id' => Auth::user()->id]), false); ?>" method="POST">
-                    <div class="card-body">
+                <div class="card-body">
+                  <form class="form-horizontal" action="<?php echo e(route('admin.user.update', ['user_id' => Auth::user()->id]), false); ?>" method="POST">
                         <input type="hidden" name="_method" value="PUT">
                         <?php echo csrf_field(); ?>
                         <?php echo method_field('PUT'); ?>
@@ -66,32 +68,20 @@ unset($__errorArgs, $__bag); ?>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-info"><?php echo e(__('Submit'), false); ?></button>
-                    </div>
-                </form>
+                      </form>
+                  </div>
             </div>
-            <!-- general form elements -->
-            <div class="card card-info">
-                <div class="card-header">
-                    <h3 class="card-title"><?php echo app('translator')->get('role.title.edit', ['member'=> $member->firstname.' '.$member->lastname] ); ?></h3>
-                </div>
-                <!-- /.card-header -->
-                <form class="form-horizontal" action="<?php echo e(route('member.update', $member), false); ?>" method="POST">
-                    <div class="card-body">
-                        <?php echo method_field('PUT'); ?>
-                        <?php echo csrf_field(); ?>
-                        <?php if($errors->any()): ?>
-                        <div class="alert alert-danger" role="alert">
-                           <?php echo app('translator')->get('Please fix the following errors'); ?>
-                        </div>
-                        <?php endif; ?>
-                            <?php echo $__env->make('member.includes.member_edit', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-                        <button type="submit" class="btn btn-info"><?php echo e(__('Submit'), false); ?></button>
-                    </div>
-                </form>
-            </div>
+          </div>
+          <?php echo $__env->make('member.includes.member_edit', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
         </div>
     </div>
 </div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('js'); ?>
+<script>
+    $("#updateMember").collapse("toggle");
+</script>
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layouts.page', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/dunkonxt/resources/views/auth/user_profile.blade.php ENDPATH**/ ?>

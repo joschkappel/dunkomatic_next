@@ -14,7 +14,6 @@ use App\Models\Club;
 use App\Models\League;
 use App\Models\Member;
 use App\Enums\Role;
-use App\Models\User;
 
 use App\Notifications\MissingLead;
 
@@ -33,8 +32,7 @@ class MissingLeadCheck implements ShouldQueue
     public function __construct(Region $region)
     {
       $this->region = $region;
-      $region_user = User::regionAdmin($this->region->code)->with('member')->first();
-      $this->region_admin = Member::find($region_user['member']->id)->first();
+      $this->region_admin = $region->regionadmin()->first();
     }
 
     /**

@@ -31,7 +31,7 @@ return [
     'title.delete'                => 'Delete user account',
     'title.block'                => 'Block user account',
     'confirm.delete'               => 'Do you really want to delete this user account ?',
-    'confirm.block'                => 'Do you really want to block this user account ?',    
+    'confirm.block'                => 'Do you really want to block this user account ?',
     'reason_reject'               => 'Reason for rejection',
     'reason_join'                 => 'Why do you want access ?',
     'complete.profile'            => 'Please complete your user profile data',
@@ -39,4 +39,5 @@ return [
     'action.complete.profile'     => 'Profile completion',
     'user.clubs'                  => 'Authorized for clubs',
     'user.leagues'                => 'Authorized for leagues',
+    'user'                       => 'User',
 ];

@@ -1,11 +1,7 @@
 <div class="col-md-4">
   <div class="card card-primary collapse" id="updateMember">
     <div class="card-header">
-      <?php if(isset($club)): ?>
-        <h3 class="card-title"><?php echo app('translator')->get('role.title.edit', ['unittype'=> trans_choice('club.club',1), 'unitname' => $club->shortname ]); ?></h3>
-      <?php else: ?>
-        <h3 class="card-title"><?php echo app('translator')->get('role.title.edit', ['unittype'=> trans_choice('league.league',1), 'unitname' => $league->shortname ]); ?></h3>
-      <?php endif; ?>
+      <h3 class="card-title"><?php echo app('translator')->get('role.title.edit', ['member'=> $member->name ]); ?></h3>
     </div>
     <!-- /.card-header -->
       <div class="card-body">
@@ -292,6 +288,13 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
                   </div>
+              </div>
+              <div class="form-group  clearfix">
+                <div class="icheck-info d-inline">
+                  <input type="checkbox" id="user_account" name="user_account"
+                  <?php if($member->user()->exists() ): ?> checked <?php endif; ?>>
+                  <label for="user_account" ><?php echo app('translator')->get('role.user.account'); ?></label>
+                </div>
               </div>
               <!--/.Content-->
               <button type="submit" class="btn btn-info"><?php echo e(__('Submit'), false); ?></button>

@@ -1,5 +1,6 @@
 @extends('layouts.page')
 
+@section('plugins.ICheck',true)
 @section('plugins.Select2', true)
 
 @section('content')
@@ -81,7 +82,7 @@
                       </form>
                     </div>
                 </div>
-                  </div>
+            </div>
             @include('member.includes.member_edit')
             @include('member.includes.member_select')
             </div>

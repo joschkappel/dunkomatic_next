@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 
 use App\Models\Message;
 use App\Models\User;
+use App\Models\Region;
 use App\Models\Club;
 use App\Models\League;
 use App\Models\Member;
@@ -74,7 +75,7 @@ class ProcessCustomMessages implements ShouldQueue
           $members = Member::whereHas('memberships', function ($query) use($leagues) { $query->isRole(Role::LeagueLead)->whereIn('membershipable_id',$leagues); })->get(['email1','firstname','lastname']);
           $drop_mail = true;
         } else if ($role->is( Role::Admin )){
-          $users = User::regionAdmin($d->region)->get();
+          $users = Region::where('code',$d->region)->first()->regionadmin->first()->user()->get();
           foreach ($users as $u){
             $u->notify(new CustomDbMessage($this->message));
           }

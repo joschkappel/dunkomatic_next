@@ -3,8 +3,10 @@
     <div class="card-header">
       <?php if(isset($club)): ?>
         <h3 class="card-title"><?php echo app('translator')->get('role.title.new', ['unittype'=> trans_choice('club.club',1), 'unitname' => $club->shortname ]); ?></h3>
-      <?php else: ?>
+      <?php elseif(isset($league)): ?>
         <h3 class="card-title"><?php echo app('translator')->get('role.title.new', ['unittype'=> trans_choice('league.league',1), 'unitname' => $league->shortname ]); ?></h3>
+      <?php else: ?>
+        <h3 class="card-title"><?php echo app('translator')->get('role.title.new', ['unittype'=> @lang('auth.user'), 'unitname' => '' ]); ?></h3>        
       <?php endif; ?>
     </div>
     <!-- /.card-header -->
@@ -16,6 +18,11 @@
               <div class="alert alert-danger" role="alert">
                  <?php echo app('translator')->get('Please fix the following errors'); ?>
               </div>
+              <?php endif; ?>
+              <?php if(isset($club)): ?>
+                <input type="hidden" id="club_id" name="club_id" value="<?php echo e($club->id, false); ?>"></input>
+              <?php else: ?>
+                <input type="hidden" id="league_id" name="leauge_id" value="<?php echo e($league->id, false); ?>"></input>
               <?php endif; ?>
               <div class="form-group row">
                   <div class="col-sm-6">
@@ -292,6 +299,12 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
                   </div>
+              </div>
+              <div class="form-group  clearfix">
+                <div class="icheck-info d-inline">
+                  <input type="checkbox" id="user_account" name="user_account" >
+                  <label for="user_account" ><?php echo app('translator')->get('role.user.account'); ?></label>
+                </div>
               </div>
               <!--/.Content-->
               <button type="submit" class="btn btn-info"><?php echo e(__('Submit'), false); ?></button>

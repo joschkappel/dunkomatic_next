@@ -16,7 +16,7 @@ class CreateMembershipsTable extends Migration
         Schema::create('memberships', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('member_id');
-            $table->foreign('member_id')->references('id')->on('members');
+            $table->foreign('member_id')->references('id')->on('members')->onDelete('cascade');
             $table->unsignedInteger('role_id');
             $table->morphs('membershipable');
             $table->string('function',40)->nullable();

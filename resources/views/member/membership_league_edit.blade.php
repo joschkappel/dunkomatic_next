@@ -1,5 +1,6 @@
 @extends('layouts.page')
 
+@section('plugins.ICheck',true)
 @section('plugins.Select2', true)
 
 @section('content')

@@ -1,11 +1,7 @@
 <div class="col-md-4">
   <div class="card card-primary collapse" id="updateMember">
     <div class="card-header">
-      @if (isset($club))
-        <h3 class="card-title">@lang('role.title.edit', ['unittype'=> trans_choice('club.club',1), 'unitname' => $club->shortname ])</h3>
-      @else
-        <h3 class="card-title">@lang('role.title.edit', ['unittype'=> trans_choice('league.league',1), 'unitname' => $league->shortname ])</h3>
-      @endif
+      <h3 class="card-title">@lang('role.title.edit', ['member'=> $member->name ])</h3>
     </div>
     <!-- /.card-header -->
       <div class="card-body">
@@ -124,6 +120,13 @@
                       <div class="invalid-feedback">{{ $message }}</div>
                       @enderror
                   </div>
+              </div>
+              <div class="form-group  clearfix">
+                <div class="icheck-info d-inline">
+                  <input type="checkbox" id="user_account" name="user_account"
+                  @if ($member->user()->exists() ) checked @endif>
+                  <label for="user_account" >@lang('role.user.account')</label>
+                </div>
               </div>
               <!--/.Content-->
               <button type="submit" class="btn btn-info">{{__('Submit')}}</button>

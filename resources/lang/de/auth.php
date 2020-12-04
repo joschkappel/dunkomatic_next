@@ -39,5 +39,5 @@ return [
     'profile'                     => 'Profil',
     'user.clubs'                  => 'Authorisierte Vereine',
     'user.leagues'                => 'Authorisierte Runden',
-
+    'user'                       => 'Benutzer',
 ];

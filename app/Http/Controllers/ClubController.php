@@ -61,21 +61,7 @@ class ClubController extends Controller
      */
     public function index()
     {
-        if ( Auth::user()->regionadmin )  {
-          return view('club/club_list');
-        } else {
-
-          $clublist = explode( ",", Auth::user()->club_ids);
-
-          if (count($clublist)>1) {
-            return redirect()->action(
-                'ClubController@dashboard', ['language'=>app()->getLocale(),'club' => $clublist[0]]
-            );
-          } else {
-            return back();
-          }
-
-        }
+        return view('club/club_list');
     }
     /**
      * Display a dashboard

@@ -3,8 +3,10 @@
     <div class="card-header">
       @if (isset($club))
         <h3 class="card-title">@lang('role.title.new', ['unittype'=> trans_choice('club.club',1), 'unitname' => $club->shortname ])</h3>
-      @else
+      @elseif (isset($league))
         <h3 class="card-title">@lang('role.title.new', ['unittype'=> trans_choice('league.league',1), 'unitname' => $league->shortname ])</h3>
+      @else
+        <h3 class="card-title">@lang('role.title.new', ['unittype'=> @lang('auth.user'), 'unitname' => '' ])</h3>        
       @endif
     </div>
     <!-- /.card-header -->
@@ -16,6 +18,11 @@
               <div class="alert alert-danger" role="alert">
                  @lang('Please fix the following errors')
               </div>
+              @endif
+              @if (isset($club))
+                <input type="hidden" id="club_id" name="club_id" value="{{ $club->id}}"></input>
+              @else
+                <input type="hidden" id="league_id" name="leauge_id" value="{{ $league->id}}"></input>
               @endif
               <div class="form-group row">
                   <div class="col-sm-6">
@@ -124,6 +131,12 @@
                       <div class="invalid-feedback">{{ $message }}</div>
                       @enderror
                   </div>
+              </div>
+              <div class="form-group  clearfix">
+                <div class="icheck-info d-inline">
+                  <input type="checkbox" id="user_account" name="user_account" >
+                  <label for="user_account" >@lang('role.user.account')</label>
+                </div>
               </div>
               <!--/.Content-->
               <button type="submit" class="btn btn-info">{{__('Submit')}}</button>

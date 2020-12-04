@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\DB;
 
 use App\Models\Region;
 use App\Models\Club;
-use App\Models\User;
 use App\Models\Member;
 
 class GameOverlaps implements ShouldQueue
@@ -31,8 +30,7 @@ class GameOverlaps implements ShouldQueue
     public function __construct(Region $region)
     {
       $this->region = $region;
-      $region_user = User::regionAdmin($this->region->code)->with('member')->first();
-      $this->region_admin = Member::find($region_user['member']->id)->first();
+      $this->region_admin = $region->regionadmin()->first();
     }
 
     /**

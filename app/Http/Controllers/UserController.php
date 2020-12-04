@@ -130,6 +130,7 @@ class UserController extends Controller
   public function show($language, User $user)
       {
         $member = $user->member()->first();
+        Log::debug(print_r($member,true));
 
         return view('auth/user_profile', ['user'=>$user, 'member'=>$member]);
       }

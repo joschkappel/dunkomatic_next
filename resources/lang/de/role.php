@@ -26,4 +26,5 @@ return [
   'email2' => 'Alternative eMail',
   'fax1' => 'Faxnummer',
   'fax2' => 'Alternative Nr.',
+  'user.account' => 'Benutzerkonto anlegen'
 ];

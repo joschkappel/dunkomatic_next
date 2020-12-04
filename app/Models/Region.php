@@ -4,6 +4,7 @@ namespace App\Models;
 
 use BenSampo\Enum\Traits\CastsEnums;
 use App\Enums\ReportFileType;
+use App\Enums\Role;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -34,6 +35,21 @@ class Region extends Model
   public function users()
   {
       return $this->hasMany('App\Models\User','region','code');
+  }
+  public function memberships()
+  {
+      return $this->morphMany('App\Models\Membership', 'membershipable');
+  }
+
+  public function members()
+  {
+      return $this->morphToMany('App\Models\Member', 'membershipable', 'memberships', 'membershipable_id', 'member_id' )->withPivot('role_id','function','id');
+      // test: Club::find(261)->members()->withPivot('role_id','function')->get();
+  }
+
+  public function regionadmin()
+  {
+      return $this->members()->with('memberships')->where('memberships.role_id', Role::RegionLead);
   }
 
   public function getClubFolderAttribute()

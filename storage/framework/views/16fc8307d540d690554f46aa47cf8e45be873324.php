@@ -1,3 +1,4 @@
+<?php $__env->startSection('plugins.ICheck',true); ?>
 <?php $__env->startSection('plugins.Select2', true); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -108,7 +109,7 @@ unset($__errorArgs, $__bag); ?>
                       </form>
                     </div>
                 </div>
-                  </div>
+            </div>
             <?php echo $__env->make('member.includes.member_edit', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             <?php echo $__env->make('member.includes.member_select', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             </div>

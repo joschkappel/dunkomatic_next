@@ -16,7 +16,6 @@ use App\Jobs\GameOverlaps;
 use App\Jobs\GameNotScheduled;
 
 use App\Models\Region;
-use App\Models\User;
 use App\Enums\JobFrequencyType;
 
 class Kernel extends ConsoleKernel
@@ -46,7 +45,7 @@ class Kernel extends ConsoleKernel
         $regions = Region::all();
 
         foreach ($regions as $r){
-          if (User::regionAdmin($r->code)->exists()){
+          if ( $r->regionadmin()->exists()){
               $this->scheduleRegionTask($schedule, new GameOverlaps($r), $r->job_game_overlaps);
               $this->scheduleRegionTask($schedule, new GameNotScheduled($r), $r->job_game_notime);
               $this->scheduleRegionTask($schedule, new MissingLeadCheck($r), $r->job_noleads);

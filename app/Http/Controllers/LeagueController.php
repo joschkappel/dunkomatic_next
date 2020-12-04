@@ -37,20 +37,7 @@ class LeagueController extends Controller
      */
     public function index()
     {
-      if ( Auth::user()->regionadmin )  {
         return view('league/league_list');
-      } else {
-
-        $leaguelist = explode( ",", Auth::user()->league_ids);
-
-        if (count($leaguelist)>1) {
-          return redirect()->action(
-            'LeagueController@dashboard', ['league' => $leaguelist[0]]
-          );
-        } else {
-          return back();
-        }
-      }
     }
 
     public function index_stats()

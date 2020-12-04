@@ -68,7 +68,7 @@ class AppServiceProvider extends ServiceProvider
                 $clubmenu['icon_color'] = 'orange';
                 $clubmenu['icon'] = 'fas fa-basketball-ball';
 
-                if (Auth::user()->regionadmin) {
+                if (Auth::user()->isRegionadmin) {
                     $smenu['text'] = __('club.menu.list');
                     $smenu['url']  = route('club.index', app()->getLocale());
                     $smenu['icon_color'] = 'orange';
@@ -77,7 +77,7 @@ class AppServiceProvider extends ServiceProvider
                 } else {
                     foreach (Auth::user()->member()->first()->clubs()->get() as $c) {
                         $smenu['text'] = $c->shortname;
-                        $smenu['url']  = route('club.dashboard', ['language'=>app()->getLocale(), 'id'=>$c->id ]);
+                        $smenu['url']  = route('club.dashboard', ['language'=>app()->getLocale(), 'club'=>$c ]);
                         $smenu['icon_color'] = 'orange';
                         $smenu['icon'] =  'fas fa-list';
                         $clubmenu['submenu'][] = $smenu;
@@ -96,7 +96,7 @@ class AppServiceProvider extends ServiceProvider
                 $leaguemenu['icon_color'] = 'yellow';
                 $leaguemenu['icon'] = 'fas fa-trophy';
 
-                if (Auth::user()->regionadmin) {
+                if (Auth::user()->isRegionadmin) {
                     $smenu['text'] = __('league.menu.list');
                     $smenu['url']  = route('league.index', app()->getLocale());
                     $smenu['icon_color'] = 'yellow';
@@ -105,7 +105,7 @@ class AppServiceProvider extends ServiceProvider
                 } else {
                     foreach (Auth::user()->member()->first()->leagues()->get() as $l) {
                         $smenu['text'] = $l->shortname;
-                        $smenu['url']  = route('league.dashboard', ['language'=>app()->getLocale(), 'id'=>$l->id ]);
+                        $smenu['url']  = route('league.dashboard', ['language'=>app()->getLocale(), 'league'=>$l ]);
                         $smenu['icon_color'] = 'yellow';
                         $smenu['icon'] =  'fas fa-list';
                         $leaguemenu['submenu'][] = $smenu;
