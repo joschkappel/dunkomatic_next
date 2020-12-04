@@ -2,7 +2,7 @@
 
 namespace Tests\Browser;
 
-use App\Models\User;
+use App\Models\Region;
 use App\Models\Member;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
@@ -30,7 +30,9 @@ class LanguageTest extends DuskTestCase
      */
     public function testLanguageSwitch()
     {
-        $u = User::regionadmin('HBVDA')->first();
+        $r = Region::where('code','HBVDA')->first();
+        $u = $r->regionadmin->first()->user()->first();
+
         $this->browse(function ($browser) use ($u) {
 
             $browser->loginAs($u)->visit('/de/home')

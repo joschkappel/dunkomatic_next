@@ -2,7 +2,7 @@
 
 namespace Tests\Browser;
 
-use App\Models\User;
+use App\Models\Region;
 use App\Models\Club;
 use App\Models\Member;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -31,7 +31,8 @@ class ClubTest extends DuskTestCase
      */
     public function create_club()
     {
-        $u = User::regionadmin('HBVDA')->first();
+        $r = Region::where('code','HBVDA')->first();
+        $u = $r->regionadmin->first()->user()->first();
         $club_no = '1234567';
         $club_no_new = '1122334';
         $club_name = 'VVV';

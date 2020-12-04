@@ -2,7 +2,7 @@
 
 namespace Tests\Browser;
 
-use App\Models\User;
+use App\Models\Region;
 use App\Models\Schedule;
 use App\Models\League;
 use App\Models\Member;
@@ -31,7 +31,9 @@ class LeagueTest extends DuskTestCase
      */
     public function create_league()
     {
-        $u = User::regionadmin('HBVDA')->first();
+
+        $r = Region::where('code','HBVDA')->first();
+        $u = $r->regionadmin->first()->user()->first();
         $league_code = 'LSX';
         $league_code_new = 'LSY';
         $league_name = 'Runde XXX';

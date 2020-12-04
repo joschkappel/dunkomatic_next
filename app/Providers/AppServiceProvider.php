@@ -167,6 +167,18 @@ class AppServiceProvider extends ServiceProvider
                 };
 
                 $event->menu->add([
+                  'text' => session('region_code'),
+                  'topnav_right' => true,
+                  'route' => ['home', ['language' => app()->getLocale()]],
+                ]);
+
+                $event->menu->add([
+                  'text' => __('season').' '.config('global.season'),
+                  'topnav' => true,
+                  'route' => ['home', ['language' => app()->getLocale()]],
+                ]);
+
+                $event->menu->add([
                   'icon' => 'flag-icon flag-icon-'.$icon_locale,
                   'text' => strtoupper(App::getLocale()),
                   'topnav_right' => true,
