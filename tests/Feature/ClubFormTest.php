@@ -26,7 +26,7 @@ class ClubFormTest extends TestCase
       $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
 
       $region = Region::where('code','HBVDA')->first();
-      $region_user = User::regionadmin($region->code)->first();
+      $region_user = $region->regionadmin->first()->user()->first();
       $response = $this->actingAs($region_user)
            ->post('club', [$formInput => $formInputValue]);
 

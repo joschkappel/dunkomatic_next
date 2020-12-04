@@ -30,7 +30,7 @@ class RegistrationTest extends TestCase
          $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
 
          $region = Region::where('code','HBVDA')->first();
-         $region_admin = User::regionadmin($region->code)->first();
+         $region_admin = $region->regionadmin->first()->user()->first();
 
          Notification::fake();
          Notification::assertNothingSent();

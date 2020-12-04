@@ -32,7 +32,7 @@ class LoginTest extends TestCase
          $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
 
          $region = Region::where('code','HBVDA')->first();
-         $region_user = User::regionadmin($region->code)->first();
+         $region_user = $region->regionadmin->first()->user()->first();
 
          $response = $this->actingAs($region_user)->get('/de/login');
 
@@ -46,7 +46,7 @@ class LoginTest extends TestCase
        $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
 
        $region = Region::where('code','HBVDA')->first();
-       $region_user = User::regionadmin($region->code)->first();
+       $region_user = $region->regionadmin->first()->user()->first();
 
          $response = $this->post('/de/login', [
              'email' => $region_user->email,
@@ -63,7 +63,7 @@ class LoginTest extends TestCase
        $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
 
        $region = Region::where('code','HBVDA')->first();
-       $region_user = User::regionadmin($region->code)->first();
+       $region_user = $region->regionadmin->first()->user()->first();
 
          $response = $this->from('/de/login')->post('/de/login', [
              'email' => $region_user->email,

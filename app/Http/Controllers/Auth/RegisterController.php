@@ -80,7 +80,7 @@ class RegisterController extends Controller
             'region' => $region->code,
             'reason_join' => $data['reason_join']
       ]);
-      $radmin = $region->regionadmin()->first();
+      $radmin = $region->regionadmin->first()->user()->first();
 
       if ( $radmin !== null ) {
           Log::debug(print_r($radmin,true));

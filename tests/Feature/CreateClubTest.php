@@ -28,7 +28,7 @@ class CreateClubTest extends TestCase
       $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
 
       $region = Region::where('code','HBVDA')->first();
-      $region_user = User::regionadmin($region->code)->first();
+      $region_user = $region->regionadmin->first()->user()->first();
 
       $response = $this->actingAs($region_user)
                         ->post('club', [
@@ -57,7 +57,7 @@ class CreateClubTest extends TestCase
       $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
 
       $region = Region::where('code','HBVDA')->first();
-      $region_user = User::regionadmin($region->code)->first();
+      $region_user = $region->regionadmin->first()->user()->first();
 
       $response = $this->actingAs($region_user)
                         ->post('club', [
@@ -81,7 +81,7 @@ class CreateClubTest extends TestCase
       $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
 
       $region = Region::where('code','HBVDA')->first();
-      $region_user = User::regionadmin($region->code)->first();
+      $region_user = $region->regionadmin->first()->user()->first();
 
       $this->withoutExceptionHandling();
 
@@ -123,7 +123,7 @@ class CreateClubTest extends TestCase
       $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
 
       $region = Region::where('code','HBVDA')->first();
-      $region_user = User::regionadmin($region->code)->first();
+      $region_user = $region->regionadmin->first()->user()->first();
 
       try {
         $response = $this->actingAs($region_user)
@@ -173,7 +173,7 @@ class CreateClubTest extends TestCase
       $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
 
       $region = Region::where('code','HBVDA')->first();
-      $region_user = User::regionadmin($region->code)->first();
+      $region_user = $region->regionadmin->first()->user()->first();
 
       $response = $this->actingAs($region_user)
                         ->post('club', [
