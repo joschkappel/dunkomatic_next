@@ -23,9 +23,9 @@ return [
   'confirm.event.delete' => 'Do you really want to delete all events ?',
   'confirm.delete' => 'Do you really want to delete this schedule? ',
   'title.scheme.list' => 'League-Scheme List',
-  'title.list' => 'List of Schedules for Region :REGION',
-  'title.calendar' => 'Calendar View for Schedules of Region :REGION',
-  'title.compare' => 'Compare Schedules of Region :REGION',
+  'title.list' => 'List of Schedules for :region',
+  'title.calendar' => 'Calendar View for Schedules of :Region',
+  'title.compare' => 'Compare Schedules of :Region',
   'include.events' => 'Including all ',
   'game_day' => 'Gameday / Home-Guest',
   'size' => 'Number of Teams',
@@ -39,5 +39,5 @@ return [
   'event.unit.day' => 'Days',
   'event.unit.week' => 'Weeks',
   'event.unit.month' => 'Months',
-  'event.unit.year' => 'Years'  
+  'event.unit.year' => 'Years'
 ];

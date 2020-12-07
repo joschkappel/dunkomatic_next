@@ -12,10 +12,10 @@
             <!-- general form elements -->
             <div class="card card-info">
                 <div class="card-header">
-                    <h3 class="card-title">@lang('message.title.new', ['region' => Auth::user()->region ])</h3>
+                    <h3 class="card-title">@lang('message.title.new', ['region' => session('cur_region')->name ])</h3>
                 </div>
                 <!-- /.card-header -->
-                <form class="form-horizontal" action="{{ route('message.store') }}" method="post">
+                <form class="form-horizontal" action="{{ route('message.store',['region'=>session('cur_region')->id]) }}" method="post">
                     <div class="card-body">
                         @csrf
                         @if ($errors->any())
@@ -24,7 +24,6 @@
                         </div>
                         @endif
                         <input type="hidden" class="form-control" id="author" name="author" value="{{ Auth::user()->id }}">
-                        <input type="hidden" class="form-control" id="region_id" name="dest.region_id" value="{{ Auth::user()->region }}">
                         <div class="form-group row">
                             <label for="title" class="col-sm-4 col-form-label">@lang('message.title')</label>
                             <div class="col-sm-6">

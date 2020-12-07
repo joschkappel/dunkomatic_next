@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Club;
 use App\Models\League;
 use App\Models\Setting;
+use App\Models\Region;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -70,7 +71,7 @@ class AppServiceProvider extends ServiceProvider
 
                 if (Auth::user()->isRegionadmin) {
                     $smenu['text'] = __('club.menu.list');
-                    $smenu['url']  = route('club.index', app()->getLocale());
+                    $smenu['url']  = route('club.index', ['language'=>app()->getLocale()]);
                     $smenu['icon_color'] = 'orange';
                     $smenu['icon'] =  'fas fa-list';
                     $clubmenu['submenu'][] = $smenu;
@@ -160,23 +161,33 @@ class AppServiceProvider extends ServiceProvider
                   ]);
                 };
 
-                if (App::getLocale() == 'en') {
-                    $icon_locale = 'gb';
-                } else {
-                    $icon_locale = App::getLocale();
-                };
-
-                $event->menu->add([
-                  'text' => session('region_code'),
-                  'topnav_right' => true,
-                  'route' => ['home', ['language' => app()->getLocale()]],
-                ]);
-
                 $event->menu->add([
                   'text' => __('season').' '.config('global.season'),
                   'topnav' => true,
                   'route' => ['home', ['language' => app()->getLocale()]],
                 ]);
+
+
+                $regionmenu = array();
+                $regionmenu['text'] = session('cur_region',Auth::user()->user_region)->name;
+                $regionmenu['icon'] = 'fas fa-globe-europe';
+                $regionmenu['topnav_right'] = true;
+
+                $regions = Region::all();
+
+                foreach ( $regions as $r ){
+                  $rs['text'] = $r->name;
+                  $rs['url'] = route('region.set',['region' => $r->id]);
+                  $regionmenu['submenu'][] = $rs;
+                }
+
+                $event->menu->add($regionmenu);
+
+                if (App::getLocale() == 'en') {
+                    $icon_locale = 'gb';
+                } else {
+                    $icon_locale = App::getLocale();
+                };
 
                 $event->menu->add([
                   'icon' => 'flag-icon flag-icon-'.$icon_locale,
@@ -225,7 +236,7 @@ class AppServiceProvider extends ServiceProvider
                     [
                       'text'  => __('Settings'),
                       'icon'  => 'fas fa-cog',
-                      'url' => route('region.edit', ['language'=>app()->getLocale(),'region'=>Auth::user()->user_region->id]),
+                      'url' => route('region.edit', ['language'=>app()->getLocale(),'region'=>session('cur_region',Auth::user()->user_region)->id]),
                       'can' => 'edit-region'
                     ],
                     [

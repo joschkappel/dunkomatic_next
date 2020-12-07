@@ -1,21 +1,19 @@
-@extends('layouts.page')
+<?php $__env->startSection('plugins.FullCalendar',true); ?>
 
-@section('plugins.FullCalendar',true)
+<?php $__env->startSection('content'); ?>
 
-@section('content')
-
-  <h3>@lang('schedule.title.calendar', ['region' => session('cur_region')->name ])</h3>
+  <h3><?php echo app('translator')->get('schedule.title.calendar', ['region' => session('cur_region')->name ]); ?></h3>
 
   <div id='calendar'></div>
-@stop
+<?php $__env->stopSection(); ?>
 
-@section('js')
+<?php $__env->startSection('js'); ?>
   <script>
         document.addEventListener('DOMContentLoaded', function() {
           var calendarEl = document.getElementById('calendar');
           var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'listYear',
-                locale: '{{app()->getLocale()}}',
+                locale: '<?php echo e(app()->getLocale(), false); ?>',
                 themeSystem: 'bootstrap',
                 headerToolbar: {
                       left: 'prev,next today',
@@ -33,7 +31,7 @@
                   startTime: '9:00', // a start time (10am in this example)
                   endTime: '20:00', // an end time (6pm in this example)
                 }],
-                events: '{{ route('schedule_event.list-cal', ['region'=>session('cur_region')->id])}}',
+                events: '<?php echo e(route('schedule_event.list-cal', ['region'=>session('cur_region')->id]), false); ?>',
                 eventColor: 'green',
                 eventTextColor: 'white',
                 slotLabelFormat: {
@@ -48,4 +46,6 @@
   </script>
 
 
-@stop
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.page', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/dunkonxt/resources/views/schedule/scheduleevent_cal.blade.php ENDPATH**/ ?>

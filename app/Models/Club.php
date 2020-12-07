@@ -4,6 +4,9 @@ namespace App\Models;
 
 use App\Models\User;
 use App\Models\Region;
+use App\Models\Gym;
+use App\Models\Team;
+
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Support\Facades\Auth;
@@ -28,7 +31,7 @@ class Club extends Model implements Auditable
 
   public function gyms()
   {
-      return $this->hasMany('App\Models\Gym');
+      return $this->hasMany(Gym::class);
   }
 
   public function leagues()
@@ -38,7 +41,7 @@ class Club extends Model implements Auditable
 
   public function teams()
   {
-      return $this->hasMany('App\Models\Team');
+      return $this->hasMany(Team::class);
   }
 
   public function memberships()

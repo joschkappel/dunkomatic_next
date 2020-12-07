@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Club;
+
 use Illuminate\Database\Eloquent\Model;
 
 class Gym extends Model
@@ -12,6 +14,6 @@ class Gym extends Model
 
   public function club()
   {
-      return $this->belongsTo('App\Models\Club');
+      return $this->belongsTo(Club::class);
   }
 }

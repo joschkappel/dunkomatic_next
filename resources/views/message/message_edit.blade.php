@@ -12,10 +12,10 @@
             <!-- general form elements -->
             <div class="card card-info">
                 <div class="card-header">
-                    <h3 class="card-title">@lang('message.title.edit', ['region' => Auth::user()->region ])</h3>
+                    <h3 class="card-title">@lang('message.title.edit', ['region' => session('cur_region')->name ])</h3>
                 </div>
                 <!-- /.card-header -->
-                <form class="form-horizontal" action="{{ route('message.update',['message'=>$message['message']]) }}" method="post">
+                <form class="form-horizontal" action="{{ route('message.update',['message'=>$message['message'],'region'=>session('cur_region')->id]) }}" method="post">
                     <div class="card-body">
                         @csrf
                         @method('PUT')

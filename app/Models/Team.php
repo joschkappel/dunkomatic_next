@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Club;
+use App\Models\League;
+
 class Team extends Model
 {
   protected $fillable = [
@@ -14,12 +17,12 @@ class Team extends Model
 
   public function club()
   {
-      return $this->belongsTo('App\Models\Club');
+      return $this->belongsTo(Club::class);
   }
 
   public function league()
   {
-      return $this->belongsTo('App\Models\League');
+      return $this->belongsTo(League::class);
   }
 
   public function games_home()

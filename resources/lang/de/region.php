@@ -4,7 +4,7 @@ return [
   'region' => 'Bezirk|Bezirke',
   'action.edit' => 'Einstellungen für Bezirk ändern',
   'action.create' => 'Lege einen neuen Bezirk an',
-  'title.edit' => 'Einstellungen für Bezirk :REGION ändern',
+  'title.edit' => 'Einstellungen für :Region ändern',
   'title.list' => 'Bezirke',
   'game_slot' => 'Minimum Dauer eines Spiels (in Minuten)',
   'job.noleads' => 'Prüfung auf Vereine und Runden ohne Leiter',

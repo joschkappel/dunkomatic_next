@@ -10,7 +10,7 @@
             <!-- general form elements -->
             <div class="card card-info">
                 <div class="card-header bg-secondary">
-                    <h3 class="card-title">@lang('region.title.edit', ['region' => Auth::user()->region ])</h3>
+                    <h3 class="card-title">@lang('region.title.edit', ['region' => session('cur_region')->name ])</h3>
                 </div>
                 <!-- /.card-header -->
                 <form class="form-horizontal" action="{{ route('region.update',['region'=>$region]) }}" method="post">

@@ -16,7 +16,7 @@
               <div class="col-12">
                 <div class="card">
                   <div class="card-header bg-secondary">
-                      <h3 class="card-title"><?php echo app('translator')->get('league.title.list', ['region' => Auth::user()->region ]); ?></h3>
+                      <h3 class="card-title"><?php echo app('translator')->get('league.title.list', ['region' =>session('cur_region')->name ]); ?></h3>
                   </div>
                   <!-- /.card-header -->
 
@@ -58,7 +58,7 @@
                language: { "url": "<?php echo e(URL::asset('vendor/datatables-plugins/i18n/English.json'), false); ?>" },
                <?php endif; ?>
                order: [[1,'asc']],
-               ajax: '<?php echo e(route('league.list'), false); ?>',
+               ajax: '<?php echo e(route('league.list', ['region' => session('cur_region')->id ]), false); ?>',
                columns: [
                         { data: 'id', name: 'id', visible: false },
                         { data: 'shortname', name: 'shortname' },

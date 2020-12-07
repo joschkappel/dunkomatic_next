@@ -31,9 +31,9 @@ class ScheduleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function sb_region()
+    public function sb_region(Region $region)
     {
-      $user_region = array( Auth::user()->region );
+      $user_region = array( $region->code );
 
 
       $schedules = Schedule::query()->whereIn('region_id', $user_region)->orderBy('name','ASC')->get();
@@ -81,19 +81,18 @@ class ScheduleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function list()
+    public function list(Region $region)
     {
-        $user_region = Auth::user()->region;
 //        $region = Region::find($user_region);
 //        $hq_region = $region->hq;
 
 //        if (isset($hq_region)){
 //          $user_region = array( $user_region, $hq_region);
 //        } else {
-          $user_region = array( $user_region );
+          $user_region = array( $region->code );
 //        }
 
-        $schedule = Schedule::query()->whereIn('region_id', $user_region)->with('size')->withCount('events')->get();
+        $schedule = Schedule::whereIn('region_id', $user_region)->with('size')->withCount('events')->get();
 
         $stlist = datatables::of($schedule);
 

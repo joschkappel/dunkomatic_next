@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ScheduleEvent;
 use App\Models\Schedule;
+use App\Models\Region;
 use Illuminate\Http\Request;
 use Datatables;
 use Illuminate\Support\Facades\Log;
@@ -131,11 +132,14 @@ class ScheduleEventController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function list_cal()
+    public function list_cal(Region $region)
     {
         Log::info('getting schedule events');
         // pass scheduled events back to calendar
-        $data = ScheduleEvent::query()->get();
+        $user_region = array( $region->code );
+        $schedule_ids = Schedule::whereIn('region_id', $user_region)->pluck('id');
+
+        $data = ScheduleEvent::whereIn('schedule_id', $schedule_ids)->get();
         Log::debug('found schedule events: '.count($data));
 
         $eventlist = array();

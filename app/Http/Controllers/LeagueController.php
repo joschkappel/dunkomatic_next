@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\League;
+use App\Models\Region;
 use App\Models\LeagueClub;
 use App\Models\Team;
 use App\Models\Club;
@@ -49,10 +50,10 @@ class LeagueController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function list_stats()
+    public function list_stats(Region $region)
     {
 
-      $leagues = League::userRegion()
+      $leagues = League::leagueRegion($region->code)
                   ->with('schedule')
                   ->withCount(['clubs','teams','games',
                                      'games_notime' => function (Builder $query) {
@@ -95,10 +96,10 @@ class LeagueController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function list()
+    public function list(Region $region)
     {
         //
-        $leaguelist = datatables::of(League::userRegion()->with('schedule'));
+        $leaguelist = datatables::of(League::leagueRegion($region->code)->with('schedule'));
 
         return $leaguelist
           ->addIndexColumn()

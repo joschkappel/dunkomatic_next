@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Message;
 use App\Models\User;
+use App\Models\Region;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -108,6 +109,8 @@ class MessageController extends Controller
     public function store(Request $request)
     {
         Log::debug(print_r($request->all(),true));
+        $region = Region::find($request->region);
+        Log::debug(print_r($region,true));
         $data = $request->validate( [
             'title' => 'required|string|max:20',
             'body' => 'required|string',
@@ -115,14 +118,11 @@ class MessageController extends Controller
             'salutation' => 'required|string',
             'send_at' => 'required|date|after:today',
             'author' => 'required|exists:users,id',
-            'dest_region_id' => 'required|max:5|exists:regions,code',
             'dest_to.*' => ['required', new EnumValue(Role::class, false)],
             'dest_cc.*' => [ new EnumValue(Role::class, false)],
         ]);
 
         Log::info(print_r($data, true));
-        $region = $data['dest_region_id'];
-        unset($data['dest_region_id']);
 
         if ( isset($data['dest_to'])) {
           $dest_tos = $data['dest_to'];
@@ -144,14 +144,14 @@ class MessageController extends Controller
         foreach ($dest_tos as $d){
           $dest = $msg->destinations()->create([
               'scope' => $d,
-              'region' => $region,
+              'region' => $region->code,
               'type' => new MessageType( MessageType::to),
           ]);
         }
         foreach ($dest_ccs as $d){
           $dest = $msg->destinations()->create([
               'scope' => $d,
-              'region' => $region,
+              'region' => $region->code,
               'type' => new MessageType( MessageType::cc),
           ]);
         }
@@ -204,7 +204,7 @@ class MessageController extends Controller
      * @param  \App\Models\Message  $message
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Message $message)
+    public function update(Request $request, Message $message, Region $region)
     {
       Log::debug(print_r($request->all(),true));
       $data = $request->validate( [
@@ -214,17 +214,16 @@ class MessageController extends Controller
           'salutation' => 'required|string',
           'send_at' => 'date|after:today',
           'author' => 'required|exists:users,id',
-          'dest_region_id' => 'required|max:5|exists:regions,code',
           'dest_to.*' => ['required', new EnumValue(Role::class, false)],
           'dest_cc.*' => [ new EnumValue(Role::class, false)],
       ]);
 
       Log::info(print_r($data, true));
+      Log::info(print_r($region, true));
 
       $message->destinations()->delete();
 
-      $region = $data['dest_region_id'];
-      unset($data['dest_region_id']);
+      $region = Region::find($request->region);
 
       if ( isset($data['dest_to'])) {
         $dest_tos = $data['dest_to'];
@@ -246,14 +245,14 @@ class MessageController extends Controller
       foreach ($dest_tos as $d){
         $dest = $message->destinations()->create([
             'scope' => $d,
-            'region' => $region,
+            'region' => $region->code,
             'type' => new MessageType( MessageType::to),
         ]);
       }
       foreach ($dest_ccs as $d){
         $dest = $message->destinations()->create([
             'scope' => $d,
-            'region' => $region,
+            'region' => $region->code,
             'type' => new MessageType( MessageType::cc),
         ]);
       }

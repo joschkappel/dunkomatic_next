@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Club;
+use App\Models\Region;
 use App\Models\Gym;
 use App\Models\Member;
 
@@ -30,10 +31,10 @@ class ClubController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function list_stats()
+    public function list_stats(Region $region)
     {
 
-      $clubs = Club::userRegion()->withCount(['leagues','teams','games_home',
+      $clubs = Club::clubRegion($region->code)->withCount(['leagues','teams','games_home',
                                      'games_home_notime' => function (Builder $query) {
                                           $query->whereNull('game_time');},
                                      'games_home_noshow' => function (Builder $query) {
@@ -95,9 +96,9 @@ class ClubController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function list()
+    public function list(Region $region)
     {
-        $clublist = datatables::of(Club::userRegion());
+        $clublist = datatables::of(Club::clubRegion($region->code));
 
         return $clublist
           ->addIndexColumn()
@@ -126,7 +127,7 @@ class ClubController extends Controller
     public function sb_region()
     {
 
-      $clubs = Club::query()->userRegion( Auth::user()->region )->orderBy('shortname','ASC')->get();
+      $clubs = Club::query()->userRegion( )->orderBy('shortname','ASC')->get();
 
       Log::debug('got clubs '.count($clubs));
       $response = array();

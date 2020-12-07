@@ -23,10 +23,7 @@
                         <div class="form-group row">
                             <label for="region" class="col-sm-4 col-form-label">@lang('club.region')</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control @error('region') is-invalid @enderror" id="region" name="region" placeholder="@lang('club.region')" value="{{ $club->region}}">
-                                @error('region')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <input type="text" readonly class="form-control @error('region') is-invalid @enderror" id="region" name="region" placeholder="@lang('club.region')" value="{{ $club->region}}">
                             </div>
                         </div>
                         <div class="form-group row">

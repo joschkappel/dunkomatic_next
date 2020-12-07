@@ -6,11 +6,12 @@
             <!-- general form elements -->
             <div class="card card-info">
                 <div class="card-header">
-                    <h3 class="card-title"><?php echo app('translator')->get('club.title.new', ['region' =>session('cur_region')->name ]); ?></h3>
+                    <h3 class="card-title"><?php echo app('translator')->get('club.title.edit', ['club'=>$club->shortname]); ?></h3>
                 </div>
                 <!-- /.card-header -->
-                <form class="form-horizontal" action="<?php echo e(route('club.store'), false); ?>" method="post">
+                <form class="form-horizontal" action="<?php echo e(route('club.update',['language'=>app()->getLocale(),'club' => $club]), false); ?>" method="POST">
                     <div class="card-body">
+                        <input type="hidden" name="_method" value="PUT">
                         <?php echo csrf_field(); ?>
                         <?php if($errors->any()): ?>
                         <div class="alert alert-danger" role="alert">
@@ -27,7 +28,7 @@ if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" id="region" name="region" value="<?php echo e(session('cur_region')->code, false); ?>">
+unset($__errorArgs, $__bag); ?>" id="region" name="region" placeholder="<?php echo app('translator')->get('club.region'); ?>" value="<?php echo e($club->region, false); ?>">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -40,7 +41,7 @@ if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" id="club_no" name="club_no" placeholder="<?php echo app('translator')->get('club.club_no'); ?>" value="0614...">
+unset($__errorArgs, $__bag); ?>" id="club_no" name="club_no" placeholder="<?php echo app('translator')->get('club.club_no'); ?>" value="<?php echo e($club->club_no, false); ?>">
                                 <?php $__errorArgs = ['club_no'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -63,7 +64,7 @@ if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" id="shortname" name="shortname" placeholder="<?php echo app('translator')->get('club.shortname'); ?>" value="<?php echo e(old('shortname'), false); ?>">
+unset($__errorArgs, $__bag); ?>" id="shortname" name="shortname" placeholder="<?php echo app('translator')->get('club.shortname'); ?>" value="<?php echo e($club->shortname, false); ?>">
                                 <?php $__errorArgs = ['shortname'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -76,8 +77,8 @@ endif;
 unset($__errorArgs, $__bag); ?>
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <label for="name" class="col-sm-4 col-form-label">Name</label>
+                        <div class="form-group row ">
+                            <label for="name" class="col-sm-4 col-form-label"><?php echo app('translator')->get('club.name'); ?></label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control <?php $__errorArgs = ['name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -86,7 +87,7 @@ if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" id="name" name="name" placeholder="<?php echo app('translator')->get('club.name'); ?>" value="<?php echo e(old('name'), false); ?>">
+unset($__errorArgs, $__bag); ?>" id="name" name="name" placeholder="<?php echo app('translator')->get('club.name'); ?>" value="<?php echo e($club->name, false); ?>">
                                 <?php $__errorArgs = ['name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -99,8 +100,8 @@ endif;
 unset($__errorArgs, $__bag); ?>
                             </div>
                         </div>
-                        <div class="form-group row" >
-                            <label class="col-sm-4 col-form-label" for="url">URL</label>
+                        <div class="form-group row">
+                            <label for="url" class="col-sm-4 col-form-label">URL</label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control <?php $__errorArgs = ['url'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -109,7 +110,7 @@ if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" id="url" name="url" placeholder="URL" value="<?php echo e(old('url'), false); ?>">
+unset($__errorArgs, $__bag); ?>" id="url" name="url" placeholder="URL" value="<?php echo e($club->url, false); ?>">
                                 <?php $__errorArgs = ['url'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -122,18 +123,13 @@ endif;
 unset($__errorArgs, $__bag); ?>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-footer">
-                        <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-                            <button type="submit" class="btn btn-primary"><?php echo e(__('Submit'), false); ?></button>
-                        </div>
+                        <button type="submit" class="btn btn-info"><?php echo e(__('Submit'), false); ?></button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.page', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/dunkonxt/resources/views/club/club_new.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.page', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/dunkonxt/resources/views/club/club_edit.blade.php ENDPATH**/ ?>

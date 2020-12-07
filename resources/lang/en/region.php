@@ -4,7 +4,7 @@ return [
   'region' => 'Region|Regions',
   'action.edit' => 'Modify settings',
   'action.create' => 'Create Region',
-  'title.edit' => 'Modify settings for region :REGION',
+  'title.edit' => 'Modify settings for :Region',
   'title.list' => 'Regions',
   'game_slot' => 'Minimum timeslot for a game (in minutes)',
   'job.noleads' => 'Check for missing clubs and league-admins',

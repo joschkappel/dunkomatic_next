@@ -17,7 +17,7 @@
               <div class="col-12">
                 <div class="card">
                   <div class="card-header bg-secondary">
-                      <h3 class="card-title">@lang('league.title.list', ['region' => Auth::user()->region ])</h3>
+                      <h3 class="card-title">@lang('league.title.list', ['region' =>session('cur_region')->name ])</h3>
                   </div>
                   <!-- /.card-header -->
 
@@ -59,7 +59,7 @@
                language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/English.json')}}" },
                @endif
                order: [[1,'asc']],
-               ajax: '{{ route('league.list') }}',
+               ajax: '{{ route('league.list', ['region' => session('cur_region')->id ]) }}',
                columns: [
                         { data: 'id', name: 'id', visible: false },
                         { data: 'shortname', name: 'shortname' },

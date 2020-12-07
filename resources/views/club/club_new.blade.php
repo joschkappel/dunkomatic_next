@@ -8,7 +8,7 @@
             <!-- general form elements -->
             <div class="card card-info">
                 <div class="card-header">
-                    <h3 class="card-title">@lang('club.title.new', ['region' => Auth::user()->region ])</h3>
+                    <h3 class="card-title">@lang('club.title.new', ['region' =>session('cur_region')->name ])</h3>
                 </div>
                 <!-- /.card-header -->
                 <form class="form-horizontal" action="{{ route('club.store') }}" method="post">
@@ -22,10 +22,7 @@
                         <div class="form-group row">
                             <label for="region" class="col-sm-4 col-form-label">@lang('club.region')</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control @error('region') is-invalid @enderror" id="region" name="region" placeholder="@lang('club.region')" value="HBVDA">
-                                @error('region')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <input type="text" readonly class="form-control @error('region') is-invalid @enderror" id="region" name="region" value="{{session('cur_region')->code}}">
                             </div>
                         </div>
                         <div class="form-group row">

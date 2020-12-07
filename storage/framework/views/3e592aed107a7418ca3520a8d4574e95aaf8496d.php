@@ -10,18 +10,20 @@
             <!-- general form elements -->
             <div class="card card-info">
                 <div class="card-header">
-                    <h3 class="card-title"><?php echo app('translator')->get('message.title.new', ['region' => session('cur_region')->name ]); ?></h3>
+                    <h3 class="card-title"><?php echo app('translator')->get('message.title.edit', ['region' => session('cur_region')->name ]); ?></h3>
                 </div>
                 <!-- /.card-header -->
-                <form class="form-horizontal" action="<?php echo e(route('message.store',['region'=>session('cur_region')->id]), false); ?>" method="post">
+                <form class="form-horizontal" action="<?php echo e(route('message.update',['message'=>$message['message'],'region'=>session('cur_region')->id]), false); ?>" method="post">
                     <div class="card-body">
                         <?php echo csrf_field(); ?>
+                        <?php echo method_field('PUT'); ?>
                         <?php if($errors->any()): ?>
                         <div class="alert alert-danger" role="alert">
                             <?php echo app('translator')->get('Please fix the following errors'); ?>
                         </div>
                         <?php endif; ?>
                         <input type="hidden" class="form-control" id="author" name="author" value="<?php echo e(Auth::user()->id, false); ?>">
+                        <input type="hidden" class="form-control" id="region_id" name="dest.region_id" value="<?php echo e(Auth::user()->region, false); ?>">
                         <div class="form-group row">
                             <label for="title" class="col-sm-4 col-form-label"><?php echo app('translator')->get('message.title'); ?></label>
                             <div class="col-sm-6">
@@ -32,7 +34,7 @@ if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" id="title" name="title" placeholder="<?php echo app('translator')->get('message.title'); ?>" value="<?php echo e(old('title'), false); ?>">
+unset($__errorArgs, $__bag); ?>" id="title" name="title" placeholder="<?php echo app('translator')->get('message.title'); ?>" value="<?php echo e((old('title')!='') ? old('title') : $message['message']->title, false); ?>">
                                 <?php $__errorArgs = ['title'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -101,7 +103,7 @@ if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" name="salutation" id="salutation"></textarea>
+unset($__errorArgs, $__bag); ?>" name="salutation" id="salutation" ></textarea>
                               <?php $__errorArgs = ['salutation'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -154,7 +156,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>' id='selDestTo' name="dest_to[]">
                                  <?php $__currentLoopData = $scopetype; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $st): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                   <option value="<?php echo e($st->value, false); ?>" ><?php echo e($st->description, false); ?></option>
+                                   <option value="<?php echo e($st->value, false); ?>"><?php echo e($st->description, false); ?></option>
                                  <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                               </select>
                               <?php $__errorArgs = ["dest_to"];
@@ -181,7 +183,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>' id='selDestCc' name="dest_cc[]">
                                  <?php $__currentLoopData = $scopetype; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $st): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                   <option value="<?php echo e($st->value, false); ?>" ><?php echo e($st->description, false); ?></option>
+                                   <option value="<?php echo e($st->value, false); ?>"><?php echo e($st->description, false); ?></option>
                                  <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                               </select>
                               <?php $__errorArgs = ["dest_cc"];
@@ -225,30 +227,39 @@ unset($__errorArgs, $__bag); ?>
             ['color', ['color']],
             ['para', ['ul', 'ol', 'paragraph']],
             ['table', ['table']],
-            ['insert', ['link']],
-            ['view', ['fullscreen', 'codeview', 'help']],
+            ['view', ['fullscreen', 'help']],
           ],
         });
 
+        var content = <?php echo (old('body')!='') ? old('body') : json_encode($message['message']->body); ?>
+
+        $('#summernote').summernote('code',content);
+
+        $("#greeting").val('<?php echo e((old('greeting')!='') ? old('greeting') : $message['message']->greeting, false); ?>');
+        $("#salutation").val('<?php echo e((old('salutation')!='') ? old('salutation') : $message['message']->salutation, false); ?>');
         $("#selDestTo").select2({
             theme: 'bootstrap4',
             multiple: true,
             allowClear: false,
         });
-
+        $("#selDestTo").val(<?php echo e(json_encode(Arr::flatten($message['dest_to'])), false); ?> ).change();
         $("#selDestCc").select2({
             theme: 'bootstrap4',
             multiple: true,
             allowClear: false,
         });
+        $("#selDestCc").val(<?php echo e(json_encode(Arr::flatten($message['dest_cc'])), false); ?> ).change();
+
 
         moment.locale('<?php echo e(app()->getLocale(), false); ?>');
+
+        var send_at = '<?php echo e((old('send_at')!='') ? old('send_at') : $message['message']->send_at, false); ?>';
+        var m_send_at = moment(send_at);
 
         $('#send_at').datetimepicker({
             format: 'L',
             locale: '<?php echo e(app()->getLocale(), false); ?>',
-            defaultDate: moment().add(1, 'd').format('L'),
-            minDate: moment().add(1, 'd').format('L'),
+            defaultDate: m_send_at.format('L')
         });
 
       });
@@ -257,4 +268,4 @@ unset($__errorArgs, $__bag); ?>
 
 <?php $__env->stopPush(); ?>
 
-<?php echo $__env->make('layouts.page', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/dunkonxt/resources/views/message/message_new.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.page', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/dunkonxt/resources/views/message/message_edit.blade.php ENDPATH**/ ?>

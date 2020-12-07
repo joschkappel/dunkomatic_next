@@ -29,6 +29,14 @@ class RegionController extends Controller
       return view('admin.region_list');
     }
 
+    public function set_region(Region $region)
+    {
+      session(['cur_region' => $region]);
+
+      return redirect()->route('home', app()->getLocale());
+    }
+
+
     public function list_dt($language)
     {
       Log::info('at least i ma here');
