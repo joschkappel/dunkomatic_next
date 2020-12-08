@@ -45,7 +45,7 @@ class UsersTableSeeder extends Seeder
           'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
           'member_id' => $mid
         ]);
-        DB::table('memberships')->insert(['member_id'=>$mid,'role_id'=>Role::RegionLead,'membershipable_id'=>Region::where('code','HBVDA')->first()->id,'membershipable_type'=> Region::class ]);
+        DB::table('memberships')->insert(['member_id'=>$mid,'role_id'=>Role::RegionLead,'membership_id'=>Region::where('code','HBVDA')->first()->id,'membership_type'=> Region::class ]);
 
         Bouncer::allow('admin')->to('edit-region');
         Bouncer::assign('admin')->to(User::find($uid));
@@ -63,8 +63,8 @@ class UsersTableSeeder extends Seeder
           'member_id' => $mid
         ]);
 
-        DB::table('memberships')->insert(['member_id'=>$mid,'role_id'=>Role::User,'membershipable_id'=>25,'membershipable_type'=>'App\Models\Club' ]);
-        DB::table('memberships')->insert(['member_id'=>$mid,'role_id'=>Role::User,'membershipable_id'=>26,'membershipable_type'=>'App\Models\Club' ]);
+        DB::table('memberships')->insert(['member_id'=>$mid,'role_id'=>Role::User,'membership_id'=>25,'membership_type'=>'App\Models\Club' ]);
+        DB::table('memberships')->insert(['member_id'=>$mid,'role_id'=>Role::User,'membership_id'=>26,'membership_type'=>'App\Models\Club' ]);
 
 
 

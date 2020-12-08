@@ -6,6 +6,9 @@ use App\Models\User;
 use App\Models\Club;
 use App\Models\League;
 use App\Models\Region;
+use App\Enums\Role;
+use App\Models\Membership;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -46,7 +49,7 @@ class Member extends Model
 
   public function memberships()
   {
-      return $this->hasMany('App\Models\Membership');
+      return $this->hasMany(Membership::class);
   }
 
   /**
@@ -58,18 +61,29 @@ class Member extends Model
   }
   public function clubs()
   {
-      return $this->morphedByMany(Club::class, 'membershipable', 'memberships',  'member_id', 'membershipable_id' )->withPivot('role_id','function','id');
+      return $this->morphedByMany(Club::class, 'membership' )->withPivot('role_id','function');
       // test: Member::find(261)->clubs()->get();
   }
+
   public function leagues()
   {
-      return $this->morphedByMany(League::class, 'membershipable', 'memberships',  'member_id', 'membershipable_id' )->withPivot('role_id','function','id');
+      return $this->morphedByMany(League::class, 'membership' )->withPivot('role_id','function');
 
   }
+
+  // public function memberships()
+  // {
+  //   return $this->hasMany(Membership::class);
+  // }
+
   public function region()
   {
-      return $this->morphedByMany(Region::class, 'membershipable', 'memberships',  'member_id', 'membershipable_id' )->withPivot('role_id','function','id');
+      return $this->morphedByMany(Region::class, 'membership' )->withPivot('role_id','function');
 
+  }
+  public function getIsRegionAdminAttribute()
+  {
+    return $this->region()->wherePivot('role_id', Role::RegionLead)->exists();
   }
 
   /**

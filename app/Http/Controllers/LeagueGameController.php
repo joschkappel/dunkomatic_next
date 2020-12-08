@@ -141,7 +141,7 @@ class LeagueGameController extends Controller
 
         foreach ($clublist as $c){
           $club = Club::find($c);
-          $member = $club->memberships()->isRole(Role::ClubLead)->first()->member;
+          $member = $club->members()->wherePivot('role_id',Role::ClubLead)->first();
 
           if (isset($member)){
             $member->notify(new LeagueGamesGenerated($league, $club, Auth::user()->name, $member->name ));

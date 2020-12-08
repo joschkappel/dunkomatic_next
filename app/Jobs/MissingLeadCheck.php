@@ -49,7 +49,7 @@ class MissingLeadCheck implements ShouldQueue
 
       $clubs = $this->region->clubs()->get();
       foreach ($clubs as $c){
-        if (!$c->memberships()->isRole(Role::ClubLead)->exists()){
+        if (!$c->memberIsA(Role::ClubLead)){
           $clubs_nolead[] = $c->shortname;
           // Log::debug('lead missing for '.$c->shortname);
         }
@@ -57,7 +57,7 @@ class MissingLeadCheck implements ShouldQueue
 
       $leagues = $this->region->leagues()->get();
       foreach ($leagues as $l){
-        if (!$l->memberships()->isRole(Role::LeagueLead)->exists()){
+        if (!$l->memberIsA(Role::LeagueLead)){
           $leagues_nolead[] = $l->shortname;
           // Log::debug('lead missing for '.$l->shortname);
         }

@@ -66,13 +66,21 @@ class ProcessCustomMessages implements ShouldQueue
           // get in scope clubs
           $clubs = $d->region->clubs()->pluck('id');
           // get all club admim members
-          $members = Member::whereHas('memberships', function ($query) use($clubs,$role){ $query->isRole($role)->whereIn('membershipable_id',$clubs); })->get(['email1','firstname','lastname']);
+          //$members = Member::whereHas('memberships', function ($query) use($clubs,$role){ $query->isRole($role)->whereIn('membershipable_id',$clubs); })->get(['email1','firstname','lastname']);
+          $members = array();
+          foreach ($clubs as $c){
+            $members[] = Club::find($c)->members()->wherePivot('role_id', $role)->get(['email1','firstname','lastname']);
+          }
           $drop_mail = true;
         } else if ($role->is(Role::LeagueLead) ){
           // get in scope leagues
           $leagues = $d->region->leagues()->pluck('id');
           // get all club admim members
-          $members = Member::whereHas('memberships', function ($query) use($leagues) { $query->isRole(Role::LeagueLead)->whereIn('membershipable_id',$leagues); })->get(['email1','firstname','lastname']);
+          //$members = Member::whereHas('memberships', function ($query) use($leagues) { $query->isRole(Role::LeagueLead)->whereIn('membershipable_id',$leagues); })->get(['email1','firstname','lastname']);
+          $members = array();
+          foreach ($leagues as $l){
+            $members[] = League::find($l)->members()->wherePivot('role_id', Role::LeagueLead)->get(['email1','firstname','lastname']);
+          }
           $drop_mail = true;
         } else if ($role->is( Role::Admin )){
           $users = Region::where('code',$d->region)->first()->regionadmin->first()->user()->get();

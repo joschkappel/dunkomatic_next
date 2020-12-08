@@ -102,7 +102,7 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
 
     public function scopeIsRole($query, $role)
     {
-        return $query->first()->member->memberships()->isRole($role)->exists();
+        return $query->first()->member->memberships()->where('role_id', $role)->exists();
     }
 
     /*
@@ -110,7 +110,7 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     */
     public function getIsRegionadminAttribute()
     {
-        return $this->member->memberships()->isRegionAdmin($this->region_id)->exists();
+        return $this->member->isRegionAdmin;
     }
 
     public function getLeagueFilecountAttribute()

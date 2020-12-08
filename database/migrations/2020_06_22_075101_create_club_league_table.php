@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLeagueClubsTable extends Migration
+class CreateClubLeagueTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,7 @@ class CreateLeagueClubsTable extends Migration
      */
     public function up()
     {
-        Schema::create('league_clubs', function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create('club_league', function (Blueprint $table) {
             $table->unsignedInteger('league_id');
             $table->foreign('league_id')->references('id')->on('leagues');
             $table->unsignedInteger('club_id');
@@ -22,6 +21,8 @@ class CreateLeagueClubsTable extends Migration
             $table->char('league_char');
             $table->smallInteger('league_no');
             $table->timestamps();
+            $table->unique(['league_id','league_char']);
+            $table->unique(['league_id','league_no']);
         });
     }
 

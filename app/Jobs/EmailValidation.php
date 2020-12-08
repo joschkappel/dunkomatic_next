@@ -74,9 +74,9 @@ class EmailValidation implements ShouldQueue
         $msgs = array();
         $invalid_emails = array();
         $fails = false;
-        $club_lead = $c->memberships()->isRole(Role::ClubLead)->with('member')->first();
-        if (isset($club_lead['member'])){
-          $lead_member = Member::find($club_lead['member']->id);
+        $club_lead = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
+        if (isset($club_lead)){
+          $lead_member = $club_lead;
         } else {
           $lead_member = null;
         };

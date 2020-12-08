@@ -236,7 +236,7 @@ class UserController extends Controller
     } else {
       // delete only the user and detach from member
       $member = Member::find($user->member->id);
-      $member->memberships()->isRole(Role::User)->delete();
+      $member->wherePivot('role_id', Role::User)->delete();
       $member->detach($user);
     }
     $user->delete();

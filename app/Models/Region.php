@@ -8,6 +8,8 @@ use App\Enums\Role;
 use App\Models\Club;
 use App\Models\League;
 use App\Models\User;
+use App\Models\Member;
+use App\Models\Membership;
 use App\Models\Schedule;
 
 use Illuminate\Database\Eloquent\Model;
@@ -57,20 +59,20 @@ class Region extends Model
       return $this->hasMany('App\Models\MessageDestination','region','code');
   }
 
-  public function memberships()
-  {
-      return $this->morphMany('App\Models\Membership', 'membershipable');
-  }
-
   public function members()
   {
-      return $this->morphToMany('App\Models\Member', 'membershipable', 'memberships', 'membershipable_id', 'member_id' )->withPivot('role_id','function','id');
+      return $this->morphToMany(Member::class, 'membership')->withPivot('role_id','function','id');
       // test: Club::find(261)->members()->withPivot('role_id','function')->get();
+  }
+  
+  public function memberships()
+  {
+      return $this->morphMany(Membership::class, 'membership');
   }
 
   public function regionadmin()
   {
-      return $this->members()->with('memberships')->where('memberships.role_id', Role::RegionLead);
+      return $this->members()->wherePivot('role_id', Role::RegionLead);
   }
 
   public function getClubFolderAttribute()

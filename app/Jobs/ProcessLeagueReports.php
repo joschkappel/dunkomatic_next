@@ -71,8 +71,8 @@ class ProcessLeagueReports implements ShouldQueue
           $batch = Bus::batch($rpt_jobs)
            ->then(function (Batch $batch) use ($l) {
               // All jobs completed successfully...
-              if ($l->memberships()->isRole(Role::LeagueLead)->exists()){
-                $llead = $l->memberships()->isRole(Role::LeagueLead)->first()->member;
+              if ($l->memberIsA(Role::LeagueLead)){
+                $llead = $l->members()->wherePivot('role_id', Role::LeagueLead)->first();
 
                 $llead->notify(new LeagueReportsAvailable($l));
               }

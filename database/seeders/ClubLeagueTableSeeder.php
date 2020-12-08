@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class LeagueClubsTableSeeder extends Seeder
+class ClubLeagueTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -20,7 +20,7 @@ class LeagueClubsTableSeeder extends Seeder
 
         if ( $league->club_id_A and $league->club_id_A != 0   ){
           try {
-            DB::connection('dunknxt')->table('league_clubs')->insert([
+            DB::connection('dunknxt')->table('club_league')->insert([
               'league_id'     => $league->league_id,
               'club_id'       => $league->club_id_A,
               'league_char'   => 'A',
@@ -34,7 +34,7 @@ class LeagueClubsTableSeeder extends Seeder
 
         if ( $league->club_id_B and $league->club_id_B != 0   ){
           try {
-            DB::connection('dunknxt')->table('league_clubs')->insert([
+            DB::connection('dunknxt')->table('club_league')->insert([
               'league_id'     => $league->league_id,
               'club_id'       => $league->club_id_B,
               'league_char'   => 'B',
@@ -48,7 +48,7 @@ class LeagueClubsTableSeeder extends Seeder
 
         if ( $league->club_id_C and $league->club_id_C != 0   ){
           try {
-            DB::connection('dunknxt')->table('league_clubs')->insert([
+            DB::connection('dunknxt')->table('club_league')->insert([
               'league_id'     => $league->league_id,
               'club_id'       => $league->club_id_C,
               'league_char'   => 'C',
@@ -62,7 +62,7 @@ class LeagueClubsTableSeeder extends Seeder
 
         if ( $league->club_id_D and $league->club_id_D != 0   ){
           try {
-            DB::connection('dunknxt')->table('league_clubs')->insert([
+            DB::connection('dunknxt')->table('club_league')->insert([
               'league_id'     => $league->league_id,
               'club_id'       => $league->club_id_D,
               'league_char'   => 'D',
@@ -76,7 +76,7 @@ class LeagueClubsTableSeeder extends Seeder
 
         if ( $league->club_id_E and $league->club_id_E != 0   ){
           try {
-            DB::connection('dunknxt')->table('league_clubs')->insert([
+            DB::connection('dunknxt')->table('club_league')->insert([
               'league_id'     => $league->league_id,
               'club_id'       => $league->club_id_E,
               'league_char'   => 'E',
@@ -90,7 +90,7 @@ class LeagueClubsTableSeeder extends Seeder
 
         if ( $league->club_id_F and $league->club_id_F != 0   ){
           try {
-            DB::connection('dunknxt')->table('league_clubs')->insert([
+            DB::connection('dunknxt')->table('club_league')->insert([
               'league_id'     => $league->league_id,
               'club_id'       => $league->club_id_F,
               'league_char'   => 'F',
@@ -104,7 +104,7 @@ class LeagueClubsTableSeeder extends Seeder
 
         if ( $league->club_id_G and $league->club_id_G != 0   ){
           try {
-            DB::connection('dunknxt')->table('league_clubs')->insert([
+            DB::connection('dunknxt')->table('club_league')->insert([
               'league_id'     => $league->league_id,
               'club_id'       => $league->club_id_G,
               'league_char'   => 'G',
@@ -118,7 +118,7 @@ class LeagueClubsTableSeeder extends Seeder
 
         if ( $league->club_id_H and $league->club_id_H != 0   ){
           try {
-            DB::connection('dunknxt')->table('league_clubs')->insert([
+            DB::connection('dunknxt')->table('club_league')->insert([
               'league_id'     => $league->league_id,
               'club_id'       => $league->club_id_H,
               'league_char'   => 'H',
@@ -132,7 +132,7 @@ class LeagueClubsTableSeeder extends Seeder
 
         if ( $league->club_id_I and $league->club_id_I != 0   ){
           try {
-            DB::connection('dunknxt')->table('league_clubs')->insert([
+            DB::connection('dunknxt')->table('club_league')->insert([
               'league_id'     => $league->league_id,
               'club_id'       => $league->club_id_I,
               'league_char'   => 'I',
@@ -146,7 +146,7 @@ class LeagueClubsTableSeeder extends Seeder
 
         if ( $league->club_id_K and $league->club_id_K != 0   ){
           try {
-            DB::connection('dunknxt')->table('league_clubs')->insert([
+            DB::connection('dunknxt')->table('club_league')->insert([
               'league_id'     => $league->league_id,
               'club_id'       => $league->club_id_K,
               'league_char'   => 'K',
@@ -160,7 +160,7 @@ class LeagueClubsTableSeeder extends Seeder
 
         if ( $league->club_id_L and $league->club_id_L != 0   ){
           try {
-            DB::connection('dunknxt')->table('league_clubs')->insert([
+            DB::connection('dunknxt')->table('club_league')->insert([
               'league_id'     => $league->league_id,
               'club_id'       => $league->club_id_L,
               'league_char'   => 'L',
@@ -174,7 +174,7 @@ class LeagueClubsTableSeeder extends Seeder
 
         if ( $league->club_id_M and $league->club_id_M != 0   ){
           try {
-            DB::connection('dunknxt')->table('league_clubs')->insert([
+            DB::connection('dunknxt')->table('club_league')->insert([
               'league_id'     => $league->league_id,
               'club_id'       => $league->club_id_M,
               'league_char'   => 'M',
@@ -188,7 +188,7 @@ class LeagueClubsTableSeeder extends Seeder
 
         if ( $league->club_id_N and $league->club_id_N != 0   ){
           try {
-            DB::connection('dunknxt')->table('league_clubs')->insert([
+            DB::connection('dunknxt')->table('club_league')->insert([
               'league_id'     => $league->league_id,
               'club_id'       => $league->club_id_N,
               'league_char'   => 'N',
@@ -202,7 +202,7 @@ class LeagueClubsTableSeeder extends Seeder
 
         if ( $league->club_id_O and $league->club_id_O != 0   ){
           try {
-            DB::connection('dunknxt')->table('league_clubs')->insert([
+            DB::connection('dunknxt')->table('club_league')->insert([
               'league_id'     => $league->league_id,
               'club_id'       => $league->club_id_O,
               'league_char'   => 'O',

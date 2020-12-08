@@ -88,8 +88,8 @@ class ProcessClubReports implements ShouldQueue
           $batch = Bus::batch($rpt_jobs)
             ->then(function (Batch $batch) use ($c) {
               // All jobs completed successfully...
-              if ($c->memberships()->isRole(Role::ClubLead)->exists()){
-                $clead = $c->memberships()->isRole(Role::ClubLead)->first()->member;
+              if ($c->memberIsA(Role::ClubLead)){
+                $clead = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
                 $clead->notify(new ClubReportsAvailable($c));
               }
           })->name('Club Reports '.$c->shortname)

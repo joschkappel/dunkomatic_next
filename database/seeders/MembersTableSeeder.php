@@ -1,6 +1,9 @@
 <?php
 namespace Database\Seeders;
 
+use App\Models\Club;
+use App\Models\League;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -34,8 +37,8 @@ class MembersTableSeeder extends Seeder
 
         if ($row->club_id != 0){
           DB::connection('dunknxt')->table('memberships')->insert([
-            'membershipable_id'     => $row->club_id,
-            'membershipable_type'   => 'App\Models\Club',
+            'membership_id'     => $row->club_id,
+            'membership_type'   => Club::class,
             'member_id'     => $mem_id,
             'role_id'       => $row->member_role_id +1,
             'created_at'    => now()
@@ -45,8 +48,8 @@ class MembersTableSeeder extends Seeder
 
         if (($row->league_id != 0) and ($row->member_role_id == 2)) {
           DB::connection('dunknxt')->table('memberships')->insert([
-            'membershipable_id'     => $row->league_id,
-            'membershipable_type'   => 'App\Models\League',
+            'membership_id'     => $row->league_id,
+            'membership_type'   => League::class,
             'member_id'     => $mem_id,
             'role_id'       => $row->member_role_id +1,
             'function'      => $row->function,

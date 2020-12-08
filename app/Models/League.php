@@ -1,9 +1,14 @@
 <?php
 
 namespace App\Models;
+
 use App\Models\Game;
 use App\Models\User;
 use App\Models\Region;
+use App\Models\Club;
+use App\Models\Member;
+use App\Models\Membership;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -56,7 +61,7 @@ class League extends Model implements Auditable
 
   public function clubs()
   {
-      return $this->belongsToMany('App\Models\Club','league_clubs')->withPivot('league_char', 'league_no');;
+      return $this->belongsToMany(Club::class)->withPivot('league_char', 'league_no')->withTimestamps();
   }
 
   public function teams()
@@ -64,15 +69,15 @@ class League extends Model implements Auditable
       return $this->hasMany('App\Models\Team');
   }
 
-  public function memberships()
-  {
-      return $this->morphMany('App\Models\Membership', 'membershipable');
-  }
-
   public function members()
   {
-      return $this->morphToMany('App\Models\Member', 'membershipable', 'memberships', 'membershipable_id', 'member_id' )->withPivot('role_id','function','id');
+      return $this->morphToMany(Member::class, 'membership')->withPivot('role_id','function','id');
       // test: League::find(251)->members()->withpivot('role_id')->get();
+  }
+
+  public function memberships()
+  {
+      return $this->morphMany(Membership::class, 'membership');
   }
 
   public function games()
@@ -100,6 +105,10 @@ class League extends Model implements Auditable
   public function scopeIsGenerated($query)
   {
       return $query->whereNotNull('generated_at');
+  }
+  public function memberIsA($role_id)
+  {
+    return $this->members()->wherePivot('role_id', $role_id)->exists();
   }
   public function getFilecountAttribute()
   {

@@ -407,24 +407,21 @@ class LeagueController extends Controller
       * @param  \App\Models\League  $league
       * @return \Illuminate\Http\Response
       */
-      public function deassign_club(Request $request, $league_id, $club_id)
+      public function deassign_club(Request $request, League $league, Club $club)
       {
-          // Log::info(print_r($club_id, true));
-          // Log::info(print_r($league_id, true));
-          $league = League::find($league_id);
-          $club = Club::find($club_id);
-
           $check = False;
 
           if ($league){
-            $check = $league->clubs()->wherePivot('club_id','=',$club_id)->detach();
+            $check = $league->clubs()->detach($club->id);
             // deassign teams as well
-            $team = Team::where('club_id', $club_id)->where('league_id', $league_id)->first();
-            $check = $team->update(['league_id' => null, 'league_no' => null, 'league_char' => null]);
+            $team = Team::where('club_id', $club->id)->where('league_id', $league->id)->first();
+            if (isset($team)){
+              $check = $team->update(['league_id' => null, 'league_no' => null, 'league_char' => null]);
+            }
 
-            $member = $club->memberships()->isRole(Role::ClubLead)->first()->member;
+            $member = $club->members()->wherePivot('role_id', Role::ClubLead)->first();
 
-            if (isset($member)){
+            if ( (isset($member)) and (isset($team)) ){
               $member->notify(new ClubDeAssigned($league, $club, $team, Auth::user()->name, $member->name ));
               $user = $member->user;
               if (isset($user)){
@@ -442,12 +439,8 @@ class LeagueController extends Controller
        * @param  \App\Models\League  $league
        * @return \Illuminate\Http\Response
        */
-       public function assign_club(Request $request, $league )
+       public function assign_club(Request $request, League $league )
        {
-           Log::info(print_r($league, true));
-           // Log::info(print_r($request->input(), true));
-
-           $league = League::find($league);
            $check = False;
            $league_no = $request->input( 'item_id');
            $upperArr = config('dunkomatic.league_team_chars');
@@ -460,7 +453,7 @@ class LeagueController extends Controller
               ['league_no' => $league_no,
                'league_char' => $league_char ]);
               $club = Club::find($request->input('club_id'));
-              $member = $club->memberships()->isRole(Role::ClubLead)->first()->member;
+              $member = $club->members()->wherePivot('role_id', Role::ClubLead)->first();
 
               if (isset($member)){
                 $member->notify(new ClubAssigned($league, $club, Auth::user()->name, $member->name ));

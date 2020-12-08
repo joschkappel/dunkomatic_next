@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
           LeagueTeamSchemesTableSeeder::class,
           ScheduleEventsTableSeeder::class,
           LeaguesTableSeeder::class,
-          LeagueClubsTableSeeder::class,
+          ClubLeagueTableSeeder::class,
         ]);
 
         $this->call([

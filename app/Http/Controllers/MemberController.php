@@ -29,8 +29,8 @@ class MemberController extends Controller
       public function list_region_sb( Region $region)
       {
         Log::info('members for region '.$region->name);
-         $members = Membership::whereIn('membershipable_id', $region->clubs()->pluck('id'))
-                              ->where('membershipable_type','App\Models\Club')
+         $members = Membership::whereIn('membership_id', $region->clubs()->pluck('id'))
+                              ->where('membership_type',Club::class)
                               ->with('member')
                               ->get()
                               ->sortBy('member.lastname')

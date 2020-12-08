@@ -1,3 +1,4 @@
+<?php $__env->startSection('plugins.ICheck',true); ?>
 <?php $__env->startSection('plugins.Select2', true); ?>
 
 <?php $__env->startSection('content'); ?>

@@ -6,6 +6,9 @@ use App\Models\User;
 use App\Models\Region;
 use App\Models\Gym;
 use App\Models\Team;
+use App\Models\League;
+use App\Models\Member;
+use App\Models\Membership;
 
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -46,17 +49,17 @@ class Club extends Model implements Auditable
 
   public function leagues()
   {
-      return $this->belongsToMany('App\Models\League','league_clubs')->withPivot('league_char', 'league_no');;
+      return $this->belongsToMany(League::class)->withPivot('league_char', 'league_no')->withTimestamps();
   }
 
   public function memberships()
   {
-      return $this->morphMany('App\Models\Membership', 'membershipable');
+      return $this->morphMany(Membership::class,'membership');
   }
 
   public function members()
   {
-      return $this->morphToMany('App\Models\Member', 'membershipable', 'memberships', 'membershipable_id', 'member_id' )->withPivot('role_id','function','id');
+      return $this->morphToMany(Member::class, 'membership' )->withPivot('role_id','function');
       // test: Club::find(261)->members()->withPivot('role_id','function')->get();
   }
 
@@ -81,6 +84,10 @@ class Club extends Model implements Auditable
   public function scopeUserRegion($query)
   {
       return $query->where('region_id',Auth::user()->region->id);
+  }
+  public function memberIsA($role_id)
+  {
+    return $this->members()->wherePivot('role_id', $role_id)->exists();
   }
   public function getFilecountAttribute()
   {

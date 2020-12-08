@@ -17,8 +17,8 @@ class CreateMembershipsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('member_id');
             $table->foreign('member_id')->references('id')->on('members')->onDelete('cascade');
+            $table->morphs('membership');
             $table->unsignedInteger('role_id');
-            $table->morphs('membershipable');
             $table->string('function',40)->nullable();
             $table->timestamps();
         });
