@@ -25,15 +25,6 @@
                             </div>
                             @endif
                             <div class="form-group row">
-                                <label for="region" class="col-sm-4 col-form-label">@lang('club.region')</label>
-                                <div class="col-sm-6">
-                                    <input type="text" readonly class="form-control @error('region') is-invalid @enderror" id="region" name="region" placeholder="@lang('club.region')" value="{{ $league->region}}">
-                                    @error('region')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="form-group row">
                                 <label for="shortname" class="col-sm-4 col-form-label">@lang('league.shortname')</label>
                                 <div class="col-sm-6">
                                     <input type="text" class="form-control @error('shortname') is-invalid @enderror" id="shortname" name="shortname" placeholder="@lang('league.shortname')" value="{{ $league->shortname }}">
@@ -140,7 +131,7 @@
           allowClear: true,
           minimumResultsForSearch: -1,
           ajax: {
-                  url: "{{ route('schedule.sb.region')}}",
+                  url: "{{ route('schedule.sb.region', ['region' => $league->region_id])}}",
                   type: "get",
                   delay: 250,
                   processResults: function (response) {

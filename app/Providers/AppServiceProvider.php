@@ -169,7 +169,7 @@ class AppServiceProvider extends ServiceProvider
 
 
                 $regionmenu = array();
-                $regionmenu['text'] = session('cur_region',Auth::user()->user_region)->name;
+                $regionmenu['text'] = session('cur_region',Auth::user()->region)->name;
                 $regionmenu['icon'] = 'fas fa-globe-europe';
                 $regionmenu['topnav_right'] = true;
 
@@ -236,7 +236,7 @@ class AppServiceProvider extends ServiceProvider
                     [
                       'text'  => __('Settings'),
                       'icon'  => 'fas fa-cog',
-                      'url' => route('region.edit', ['language'=>app()->getLocale(),'region'=>session('cur_region',Auth::user()->user_region)->id]),
+                      'url' => route('region.edit', ['language'=>app()->getLocale(),'region'=>session('cur_region',Auth::user()->region)->id]),
                       'can' => 'edit-region'
                     ],
                     [

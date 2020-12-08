@@ -29,7 +29,6 @@
                <tr>
                   <th>Id</th>
                   <th>Name</th>
-                  <th><?php echo app('translator')->get('club.region'); ?></th>
                   <th>Eventcolor</th>
                   <th><?php echo app('translator')->get('schedule.color'); ?></th>
                   <th><?php echo app('translator')->get('schedule.size'); ?></th>
@@ -69,7 +68,6 @@
                  columns: [
                           { data: 'id', name: 'id', visible: false },
                           { data: 'name', name: 'name' },
-                          { data: 'region_id', name: 'region_id' },
                           { data: 'eventcolor', name: 'eventcolor', visible: false  },
                           { data: 'color', name: 'color', orderable: false, searchable: false },
                           { data: 'size.description', name: 'description'},

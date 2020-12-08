@@ -4,6 +4,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Enums\Role;
+use App\Models\Region;
 
 class TestUserSeeder extends Seeder
 {
@@ -21,7 +22,7 @@ class TestUserSeeder extends Seeder
           'email' => 'approved@gmail.com',
           'email_verified_at' => now(),
           'approved_at' => now(),
-          'region' => 'HBVDA',
+          'region_id' => Region::where('code','HBVDA')->first()->id,
           'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
           'member_id' => $uid
         ]);
@@ -34,7 +35,7 @@ class TestUserSeeder extends Seeder
           'email' => 'notapproved@gmail.com',
           'email_verified_at' => now(),
           'approved_at' => null,
-          'region' => 'HBVDA',
+          'region_id' => Region::where('code','HBVDA')->first()->id,
           'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
           'member_id' => $uid
         ]);

@@ -42,7 +42,7 @@ class GameNotScheduled implements ShouldQueue
     public function handle()
     {
       Log::info('job running: unscheduled games check for region '.$this->region->code);
-      $clubs = Club::clubRegion($this->region->code)->get();
+      $clubs = $this->region->clubs()->get();
 
       foreach ($clubs as $c){
          $select = 'SELECT distinct ga.id

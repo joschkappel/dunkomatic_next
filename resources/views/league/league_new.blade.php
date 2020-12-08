@@ -13,7 +13,7 @@
                 <!-- general form elements -->
                 <div class="card card-info">
                   <div class="card-header">
-                      <h3 class="card-title">@lang('league.title.new', ['region'=>Auth::user()->region ])</h3>
+                      <h3 class="card-title">@lang('league.title.new', ['region'=>session('cur_region')->code ])</h3>
                   </div>
                   <!-- /.card-header -->
                     <form class="form-horizontal" action="{{ route('league.store', app()->getLocale()) }}" method="post">
@@ -24,15 +24,7 @@
                                 @lang('Please fix the following errors')
                             </div>
                             @endif
-                            <div class="form-group row">
-                                <label for="region" class="col-sm-4 col-form-label">@lang('club.region')</label>
-                                <div class="col-sm-6">
-                                    <input type="text" readonly class="form-control @error('region') is-invalid @enderror" id="region" name="region" placeholder="@lang('club.region')" value="{{Auth::user()->region}}">
-                                    @error('region')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
+                            <input type="hidden" class="form-control id="region_id" name="region_id" value="{{session('cur_region')->id}}">
                             <div class="form-group row">
                                 <label for="shortname" class="col-sm-4 col-form-label">@lang('league.shortname')</label>
                                 <div class="col-sm-6">
@@ -136,7 +128,7 @@
           allowClear: true,
           minimumResultsForSearch: -1,
           ajax: {
-                  url: "{{ route('schedule.sb.region')}}",
+                  url: "{{ route('schedule.sb.region', ['region'=> session('cur_region')->id])}}",
                   type: "get",
                   delay: 250,
                   processResults: function (response) {

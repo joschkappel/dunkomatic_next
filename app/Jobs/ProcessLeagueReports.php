@@ -55,7 +55,7 @@ class ProcessLeagueReports implements ShouldQueue
     {
 
         // get all leagues with games
-        $leagues = League::leagueRegion($this->region->code)->get();
+        $leagues = $this->region->leagues()->get();
         $region = Region::find($this->region->id);
 
         foreach ($leagues as $l){

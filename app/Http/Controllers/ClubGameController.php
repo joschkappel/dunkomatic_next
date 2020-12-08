@@ -47,7 +47,7 @@ class ClubGameController extends Controller
         //                ->pluck('game_date');
 
         //get minimum game slot
-        $game_slot = Auth::user()->user_region->game_slot;
+        $game_slot = Auth::user()->region->game_slot;
         $min_slot = $game_slot - 1;
 
          $select = 'SELECT distinct ga.id

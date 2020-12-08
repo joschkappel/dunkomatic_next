@@ -28,8 +28,8 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
-            $table->string('region',5);
-            $table->foreign('region')->references('code')->on('regions');
+            $table->unsignedInteger('region_id');
+            $table->foreign('region_id')->references('id')->on('regions');
             $table->unsignedInteger('member_id')->nullable();
             $table->foreign('member_id')->references('id')->on('members')->onDelete('cascade');
         });

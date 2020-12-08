@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+use App\Models\Region;
+
 class Schedule extends Model
 {
   use HasFactory;
@@ -18,7 +20,7 @@ class Schedule extends Model
 
   public function region()
   {
-      return $this->belongsTo('App\Models\Region','region_id','id');
+      return $this->belongsTo(Region::class);
   }
 
   public function events()

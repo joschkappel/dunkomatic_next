@@ -64,13 +64,13 @@ class ProcessCustomMessages implements ShouldQueue
 
         if ($role->in([Role::ClubLead, Role::RefereeLead, Role::JuniorsLead, Role::GirlsLead, Role::RegionLead, Role::RegionTeam]) ){
           // get in scope clubs
-          $clubs = Club::clubRegion($d->region)->pluck('id');
+          $clubs = $d->region->clubs()->pluck('id');
           // get all club admim members
           $members = Member::whereHas('memberships', function ($query) use($clubs,$role){ $query->isRole($role)->whereIn('membershipable_id',$clubs); })->get(['email1','firstname','lastname']);
           $drop_mail = true;
         } else if ($role->is(Role::LeagueLead) ){
           // get in scope leagues
-          $leagues = League::leagueRegion($d->region)->pluck('id');
+          $leagues = $d->region->leagues()->pluck('id');
           // get all club admim members
           $members = Member::whereHas('memberships', function ($query) use($leagues) { $query->isRole(Role::LeagueLead)->whereIn('membershipable_id',$leagues); })->get(['email1','firstname','lastname']);
           $drop_mail = true;

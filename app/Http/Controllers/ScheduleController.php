@@ -33,10 +33,7 @@ class ScheduleController extends Controller
      */
     public function sb_region(Region $region)
     {
-      $user_region = array( $region->code );
-
-
-      $schedules = Schedule::query()->whereIn('region_id', $user_region)->orderBy('name','ASC')->get();
+      $schedules = $region->schedules()->orderBy('name','ASC')->get();
 
       Log::debug('got schedules '.count($schedules));
       $response = array();
@@ -58,11 +55,9 @@ class ScheduleController extends Controller
      */
     public function sb_size(LeagueTeamSize $size)
     {
-      $user_region = array( Auth::user()->region );
       Log::debug('SIZE :'.print_r($size,true));
 
-      $schedules = Schedule::has('events')->whereIn('region_id', $user_region)
-        ->where('size','=',$size->size)->orderBy('name','ASC')->get();
+      $schedules = session('cur_region')->schedules()->where('size','=',$size->size)->orderBy('name','ASC')->get();
 
       Log::debug('got schedules '.count($schedules));
       $response = array();
@@ -89,10 +84,9 @@ class ScheduleController extends Controller
 //        if (isset($hq_region)){
 //          $user_region = array( $user_region, $hq_region);
 //        } else {
-          $user_region = array( $region->code );
 //        }
 
-        $schedule = Schedule::whereIn('region_id', $user_region)->with('size')->withCount('events')->get();
+        $schedule = session('cur_region')->schedules()->with('size')->withCount('events')->get();
 
         $stlist = datatables::of($schedule);
 
@@ -127,7 +121,7 @@ class ScheduleController extends Controller
     public function create($language)
     {
       Log::info('create new schedule');
-      return view('schedule/schedule_new', ['region' => Auth::user()->region]);
+      return view('schedule/schedule_new', ['region' => session('cur_region')->code]);
     }
 
     /**
@@ -144,6 +138,9 @@ class ScheduleController extends Controller
           'eventcolor' => 'required',
           'size' => 'required|exists:league_team_sizes,size'
       ]);
+
+      $data['region_id'] = Region::where('code', $data['region_id'])->first()->id;
+
       $active = $request->input('active');
       if ( isset($active) and ( $active === 'on' )){
         $data['active'] = True;
@@ -195,7 +192,6 @@ class ScheduleController extends Controller
 
       $data = $request->validate( [
           'name' => 'required',
-          'region_id' => 'required',
           'eventcolor' => 'required'
       ]);
 

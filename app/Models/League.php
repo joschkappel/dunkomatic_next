@@ -25,7 +25,7 @@ class League extends Model implements Auditable
       ];
   }
   protected $fillable = [
-        'id','name','shortname','region','active','above_region','schedule_id','generated_at','age_type','gender_type'
+        'id','name','shortname','region_id','active','above_region','schedule_id','generated_at','age_type','gender_type'
   ];
   /**
    * The attributes that should be cast to native types.
@@ -46,7 +46,7 @@ class League extends Model implements Auditable
 
   public function region()
   {
-      return $this->belongsTo('App\Models\Region','region','code');
+      return $this->belongsTo(Region::class);
   }
 
   public function schedule()
@@ -95,11 +95,7 @@ class League extends Model implements Auditable
   }
   public function scopeUserRegion($query)
   {
-      return $query->where('region',Auth::user()->region);
-  }
-  public function scopeLeagueRegion($query, $region)
-  {
-      return $query->where('region', $region);
+      return $query->where('region_id',Auth::user()->region->id);
   }
   public function scopeIsGenerated($query)
   {
@@ -107,7 +103,7 @@ class League extends Model implements Auditable
   }
   public function getFilecountAttribute()
   {
-    $directory = Region::where('code',$this->region)->first()->league_folder;
+    $directory = $this->region->league_folder;
     $shortname = $this->shortname;
     $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname) {
       return (preg_match('('.$shortname.')', $value) === 1);
@@ -117,7 +113,7 @@ class League extends Model implements Auditable
   }
   public function getFilenamesAttribute()
   {
-    $directory = Region::where('code',$this->region)->first()->league_folder;
+    $directory = $this->region->league_folder;
     $shortname = $this->shortname;
 
     $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname) {

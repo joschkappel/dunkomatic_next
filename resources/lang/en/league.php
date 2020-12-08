@@ -22,4 +22,6 @@ return [
   'size'  => '# Teams',
   'above-region' => 'above region',
   'generated' => 'CLOSED',
+  'agetype' => 'Age class',
+  'gendertype' => 'Gender class'
 ];

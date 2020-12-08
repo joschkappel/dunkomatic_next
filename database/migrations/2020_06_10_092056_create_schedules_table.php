@@ -16,8 +16,8 @@ class CreateSchedulesTable extends Migration
         Schema::create('schedules', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('region_id',5)->nullable();
-            $table->foreign('region_id')->references('code')->on('regions');
+            $table->unsignedInteger('region_id');
+            $table->foreign('region_id')->references('id')->on('regions');
             $table->string('eventcolor')->default('green');
             $table->boolean('active')->default(True);
             $table->string('size');

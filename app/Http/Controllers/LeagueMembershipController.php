@@ -47,7 +47,7 @@ class LeagueMembershipController extends Controller
      */
     public function create($language, League $league)
     {
-      $region_leagues = League::leagueregion($league->region)->get();
+      $region_leagues = $league->region->leagues()->get();
 
       $members = collect();
       foreach ($region_leagues as $l){
@@ -107,7 +107,7 @@ class LeagueMembershipController extends Controller
     {
       $memberships = $league->memberships()->where('member_id', $member->id)->get();
       Log::debug(print_r($memberships,true));
-      $region_leagues = League::leagueregion($league->region)->get();
+      $region_leagues = $league->region->leagues()->get();
       $members = collect();
       foreach ($region_leagues as $l){
         $members = $members->merge($l->members()->get());

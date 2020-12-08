@@ -28,7 +28,6 @@
                   <th>Id</th>
                   <th>@lang('league.shortname')</th>
                   <th>@lang('league.name')</th>
-                  <th>@lang('club.region')</th>
                   <th>{{trans_choice('schedule.schedule',1)}}</th>
                   <th>{{__('Created at')}}</th>
                </tr>
@@ -64,7 +63,6 @@
                         { data: 'id', name: 'id', visible: false },
                         { data: 'shortname', name: 'shortname' },
                         { data: 'name', name: 'name' },
-                        { data: 'region', name: 'region' },
                         { data: 'schedule.name', name: 'name', defaultContent: ''},
                         { data: 'created_at', name: 'created_at'},
                      ]

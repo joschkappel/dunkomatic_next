@@ -5,6 +5,10 @@ namespace App\Models;
 use BenSampo\Enum\Traits\CastsEnums;
 use App\Enums\ReportFileType;
 use App\Enums\Role;
+use App\Models\Club;
+use App\Models\League;
+use App\Models\User;
+use App\Models\Schedule;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,15 +31,32 @@ class Region extends Model
       'fmt_club_reports' => ReportFileType::class
   ];
 
+  public function clubs()
+  {
+    return $this->hasMany(Club::class);
+  }
+
+  public function leagues()
+  {
+    return $this->hasMany(League::class);
+  }
+
+  public function users()
+  {
+      return $this->hasMany(User::class);
+  }
+
+  public function schedules()
+  {
+      return $this->hasMany(Schedule::class);
+  }
+
+
   public function messages()
   {
       return $this->hasMany('App\Models\MessageDestination','region','code');
   }
 
-  public function users()
-  {
-      return $this->hasMany('App\Models\User','region','code');
-  }
   public function memberships()
   {
       return $this->morphMany('App\Models\Membership', 'membershipable');

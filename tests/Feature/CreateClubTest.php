@@ -25,16 +25,16 @@ class CreateClubTest extends TestCase
 
       $this->seed(TestDatabaseSeeder::class);
       $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
-      $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
-
       $region = Region::where('code','HBVDA')->first();
+      $this->assertDatabaseHas('users', ['region_id' => $region->id]);
+
       $region_user = $region->regionadmin->first()->user()->first();
 
       $response = $this->actingAs($region_user)
                         ->post('club', [
                           'shortname' => 'TEST',
                           'name' => 'Test club',
-                          'region' => 'HBVDA',
+                          'region' => $region->code,
                           'club_no' => '9999',
                           'url' => 'http://example.com',
                       ]);
@@ -54,16 +54,16 @@ class CreateClubTest extends TestCase
 
       $this->seed(TestDatabaseSeeder::class);
       $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
-      $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
-
       $region = Region::where('code','HBVDA')->first();
+      $this->assertDatabaseHas('users', ['region_id' => $region->id]);
+
       $region_user = $region->regionadmin->first()->user()->first();
 
       $response = $this->actingAs($region_user)
                         ->post('club', [
                           'shortname' => 'test',
                           'name' => 'Test club',
-                          'region' => 'XXX',
+                          'region_id' => $region->id,
                           'club_no' => '',
                           'url' => 'xample.com',
                       ]);
@@ -78,9 +78,9 @@ class CreateClubTest extends TestCase
     {
       $this->seed(TestDatabaseSeeder::class);
       $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
-      $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
-
       $region = Region::where('code','HBVDA')->first();
+      $this->assertDatabaseHas('users', ['region_id' => $region->id]);
+
       $region_user = $region->regionadmin->first()->user()->first();
 
       $this->withoutExceptionHandling();
@@ -93,7 +93,7 @@ class CreateClubTest extends TestCase
                               ->post('club', [
                                 'shortname' => 'test',
                                 'name' => 'Test club',
-                                'region' => 'XXX',
+                                'region_id' => $region->id,
                                 'club_no' => '',
                                 'url' => $case,
                             ]);
@@ -120,9 +120,9 @@ class CreateClubTest extends TestCase
       $this->withoutExceptionHandling();
       $this->seed(TestDatabaseSeeder::class);
       $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
-      $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
-
       $region = Region::where('code','HBVDA')->first();
+      $this->assertDatabaseHas('users', ['region_id' => $region->id]);
+
       $region_user = $region->regionadmin->first()->user()->first();
 
       try {
@@ -130,7 +130,7 @@ class CreateClubTest extends TestCase
                           ->post('club', [
                             'shortname' => 'ts',
                             'name' => 'Test club',
-                            'region' => 'XXX',
+                            'region_id' => $region->id,
                             'club_no' => '9999',
                             'url' => 'http://google.com'
                         ]);
@@ -146,7 +146,7 @@ class CreateClubTest extends TestCase
                           ->post('club', [
                             'shortname' => 'toolong',
                             'name' => 'Test club',
-                            'region' => 'XXX',
+                            'region_id' => $region->id,
                             'club_no' => '9999',
                             'url' => 'http://google.com'
                         ]);
@@ -170,16 +170,17 @@ class CreateClubTest extends TestCase
 
       $this->seed(TestDatabaseSeeder::class);
       $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
-      $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
-
       $region = Region::where('code','HBVDA')->first();
+      $this->assertDatabaseHas('users', ['region_id' => $region->id]);
+
+
       $region_user = $region->regionadmin->first()->user()->first();
 
       $response = $this->actingAs($region_user)
                         ->post('club', [
                           'shortname' => 'TEST',
                           'name' => 'Test club',
-                          'region' => 'HBVDA',
+                          'region' => $region->code,
                           'club_no' => '9999',
                           'url' => 'http://example.com',
                       ]);

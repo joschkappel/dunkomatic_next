@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Bouncer;
 use App\Models\User;
 use App\Models\Club;
+use App\Models\Region;
 
 class ClubsTableSeeder extends Seeder
 {
@@ -22,7 +23,7 @@ class ClubsTableSeeder extends Seeder
       foreach ($old_club as $club) {
         DB::connection('dunknxt')->table('clubs')->insert([
           'shortname'     => $club->shortname,
-          'region'        => $club->region,
+          'region_id'        => Region::where('code', $club->region)->first()->id,
           'name'          => $club->name,
           'club_no'       => $club->club_no,
           'url'           => $club->club_url,

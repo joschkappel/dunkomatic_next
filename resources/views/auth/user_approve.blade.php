@@ -103,7 +103,7 @@
             allowClear: false,
             minimumResultsForSearch: 20,
             ajax: {
-                    url: "{{ route('club.sb.region')}}",
+                    url: "{{ route('club.sb.region', ['region'=>$user->region->id] )}}",
                     type: "get",
                     delay: 250,
                     processResults: function (response) {
@@ -121,7 +121,7 @@
             allowClear: false,
             minimumResultsForSearch: 20,
             ajax: {
-                    url: "{{ route('league.sb.region')}}",
+                    url: "{{ route('league.sb.region', ['region'=>$user->region->id] )}}",
                     type: "get",
                     delay: 250,
                     processResults: function (response) {

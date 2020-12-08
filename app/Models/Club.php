@@ -26,7 +26,7 @@ class Club extends Model implements Auditable
       ];
   }
   protected $fillable = [
-        'id','name','shortname','region','url','club_no','club_ids','league_ids'
+        'id','name','shortname','region_id','url','club_no'
   ];
 
   public function gyms()
@@ -34,14 +34,19 @@ class Club extends Model implements Auditable
       return $this->hasMany(Gym::class);
   }
 
-  public function leagues()
-  {
-      return $this->belongsToMany('App\Models\League','league_clubs')->withPivot('league_char', 'league_no');;
-  }
-
   public function teams()
   {
       return $this->hasMany(Team::class);
+  }
+
+  public function region()
+  {
+      return $this->belongsTo(Region::class);
+  }
+
+  public function leagues()
+  {
+      return $this->belongsToMany('App\Models\League','league_clubs')->withPivot('league_char', 'league_no');;
   }
 
   public function memberships()
@@ -55,10 +60,6 @@ class Club extends Model implements Auditable
       // test: Club::find(261)->members()->withPivot('role_id','function')->get();
   }
 
-  public function region()
-  {
-      return $this->belongsTo('App\Models\Region','region','code');
-  }
 
   public function games_home()
   {
@@ -79,15 +80,11 @@ class Club extends Model implements Auditable
   }
   public function scopeUserRegion($query)
   {
-      return $query->where('region',Auth::user()->region);
-  }
-  public function scopeClubRegion($query, $region)
-  {
-      return $query->where('region', $region);
+      return $query->where('region_id',Auth::user()->region->id);
   }
   public function getFilecountAttribute()
   {
-    $directory = Region::where('code',$this->region)->first()->club_folder;
+    $directory = $this->region->club_folder;
     $shortname = $this->shortname;
     $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname) {
       return (preg_match('('.$shortname.')', $value) === 1);
@@ -97,7 +94,7 @@ class Club extends Model implements Auditable
   }
   public function getFilenamesAttribute()
   {
-    $directory = Region::where('code',$this->region)->first()->club_folder;
+    $directory = $this->region->club_folder;
     $shortname = $this->shortname;
 
     $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname) {

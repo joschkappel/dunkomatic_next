@@ -23,9 +23,9 @@ class ClubFormTest extends TestCase
 
       $this->seed(TestDatabaseSeeder::class);
       $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
-      $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
-
       $region = Region::where('code','HBVDA')->first();
+      $this->assertDatabaseHas('users', ['region_id' => $region->id]);
+
       $region_user = $region->regionadmin->first()->user()->first();
       $response = $this->actingAs($region_user)
            ->post('club', [$formInput => $formInputValue]);
@@ -38,7 +38,7 @@ class ClubFormTest extends TestCase
             return [
                 'name' => ['name', ''],
                 'shortname' => ['shortname', 'ismu'],
-                'region' => ['region', 'XXX'],
+                'region_id' => ['region', 'XXX'],
                 'url' => ['url', 'lorem-ipsum'],
             ];
     }

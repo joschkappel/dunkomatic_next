@@ -85,10 +85,10 @@
                         <?php endif; ?>
                     </div>
                     <div class="input-group mb-3">
-                        <select class='sel-region js-states form-control select2' id='selRegion' name='region'>
+                        <select class='sel-region js-states form-control select2' id='selRegion' name='region_id'>
                       </select>
                       <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" data-select2-open="region">
+                        <button class="btn btn-default" type="button" data-select2-open="region_id">
                           <span class="fas fa-globe-europe"></span>
                         </button>
                       </span>

@@ -112,7 +112,7 @@ unset($__errorArgs, $__bag); ?>
             allowClear: false,
             minimumResultsForSearch: 20,
             ajax: {
-                    url: "<?php echo e(route('club.sb.region'), false); ?>",
+                    url: "<?php echo e(route('club.sb.region', ['region'=>session('cur_region')->id]), false); ?>",
                     type: "get",
                     delay: 250,
                     processResults: function (response) {

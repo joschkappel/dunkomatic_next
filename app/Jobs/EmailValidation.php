@@ -67,7 +67,7 @@ class EmailValidation implements ShouldQueue
 
 
       Log::info('job running: email validation for region '.$this->region->code);
-      $clubs = Club::clubRegion($this->region->code)->get();
+      $clubs = $this->region->clubs()->get();
 
       foreach ($clubs as $c){
         $members = $c->members()->get();

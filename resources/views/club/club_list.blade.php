@@ -31,7 +31,7 @@
                   <th>Id</th>
                   <th>@lang('club.shortname')</th>
                   <th>@lang('club.name')</th>
-                  <th>@lang('club.region')</th>
+                  <th>@lang('club.url')</th>
                   <th>{{__('Created at')}}</th>
                </tr>
             </thead>
@@ -61,7 +61,7 @@
                         { data: 'id', name: 'id', visible: false },
                         { data: 'shortname', name: 'shortname' },
                         { data: 'name', name: 'name' },
-                        { data: 'region', name: 'region' },
+                        { data: 'url', name: 'url' },
                         { data: 'created_at', name: 'created_at'},
                      ]
             });

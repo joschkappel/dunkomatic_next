@@ -52,7 +52,7 @@
           allowClear: false,
           minimumResultsForSearch: 5,
           ajax: {
-                  url: "{{ route('club.sb.region')}}",
+                  url: "{{ route('club.sb.region', ['region'=>session('cur_region')->id])}}",
                   type: "get",
                   delay: 250,
                   processResults: function (response) {

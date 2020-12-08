@@ -27,7 +27,6 @@
                   <th>Id</th>
                   <th><?php echo app('translator')->get('league.shortname'); ?></th>
                   <th><?php echo app('translator')->get('league.name'); ?></th>
-                  <th><?php echo app('translator')->get('club.region'); ?></th>
                   <th><?php echo e(trans_choice('schedule.schedule',1), false); ?></th>
                   <th><?php echo e(__('Created at'), false); ?></th>
                </tr>
@@ -63,7 +62,6 @@
                         { data: 'id', name: 'id', visible: false },
                         { data: 'shortname', name: 'shortname' },
                         { data: 'name', name: 'name' },
-                        { data: 'region', name: 'region' },
                         { data: 'schedule.name', name: 'name', defaultContent: ''},
                         { data: 'created_at', name: 'created_at'},
                      ]

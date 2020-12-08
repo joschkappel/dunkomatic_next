@@ -57,7 +57,7 @@ class ProcessClubReports implements ShouldQueue
     public function handle()
     {
         // get all clubs with games
-        $clubs = Club::clubRegion($this->region->code)->get();
+        $clubs = $this->region->clubs()->get();
         $region = Region::find($this->region->id);
 
         foreach ($clubs as $c){

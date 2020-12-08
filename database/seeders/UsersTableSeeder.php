@@ -26,7 +26,7 @@ class UsersTableSeeder extends Seeder
           'email' => 'admin@gmail.com',
           'email_verified_at' => now(),
           'approved_at' => now(),
-          'region' => 'HBV',
+          'region_id' => Region::where('code','HBV')->first()->id,
           'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
           'member_id' => $mid
         ]);
@@ -41,7 +41,7 @@ class UsersTableSeeder extends Seeder
           'email' => 'region@gmail.com',
           'email_verified_at' => now(),
           'approved_at' => now(),
-          'region' => 'HBVDA',
+          'region_id' => Region::where('code','HBVDA')->first()->id,
           'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
           'member_id' => $mid
         ]);
@@ -58,7 +58,7 @@ class UsersTableSeeder extends Seeder
           'email' => 'user@gmail.com',
           'email_verified_at' => now(),
           'approved_at' => now(),
-          'region' => 'HBVDA',
+          'region_id' => Region::where('code','HBVDA')->first()->id,
           'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
           'member_id' => $mid
         ]);

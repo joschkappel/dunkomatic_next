@@ -1,10 +1,10 @@
-<div class="modal fade right" id="modalAssignClub" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false">
+<div class="modal fade right" id="modalCloneEvents" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false">
     <div class="modal-dialog modal-side modal-bottom-right modal-notify modal-info" role="document">
         <!--Content-->
         <div class="modal-content">
             <!--Header-->
             <div class="modal-header bg-info">
-                <p class="heading"><?php echo app('translator')->get('club.action.assign', ['league'=>$league->shortname]); ?></p>
+                <p class="heading"><?php echo app('translator')->get('schedule.title.event.clone', ['schedule'=>$schedule->name]); ?></p>
 
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true" class="white-text">&times;</span>
@@ -15,17 +15,19 @@
             <div class="modal-body">
                 <div class="card card-info">
 
-                    <form class="form-horizontal" action="<?php echo e(route('league.assign-club', ['league'=>$league->id]), false); ?>" method="POST">
+                    <form class="form-horizontal" action="<?php echo e(route('schedule_event.clone'), false); ?>" method="POST">
                         <?php echo csrf_field(); ?>
                         <div class="card-body">
-                            <input type="hidden" name="item_id" id="itemid" value=""  />
-                            <div class="form-group row">
-                                <label for="selClub" class="col-sm-4 col-form-label"><?php echo e(trans_choice('club.club',1), false); ?></label>
-                                <div class="col-sm-6">
-                                  <select class='js-club-single js-states form-control select2' id='selClub' name='club_id'></select>
-                                </div>
-                            </div>
 
+                            <input type="hidden" name="schedule_id" value="<?php echo e($schedule->id, false); ?>">
+                            <input type="hidden" name="schedule_size" value="<?php echo e($schedule->size, false); ?>">
+                            <div class="form-group row ">
+                              <label class="col-sm-4 col-form-label" for='selSchedule'><?php echo e(trans_choice('schedule.schedule',1), false); ?></label>
+                              <div class="col-sm-6">
+                                <select class='js-schedule-single js-states form-control select2' id='selSchedule' name='clone_from_schedule'>
+                                </select>
+                              </div>
+                            </div>
                         </div>
                         <div class="card-footer">
                             <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
@@ -45,14 +47,14 @@
 
 <script>
     $(function() {
-
-      $(".js-club-single").select2({
-          placeholder: "<?php echo e(__('club.action.select'), false); ?>...",
+      $(".js-schedule-single").select2({
+          placeholder: "<?php echo app('translator')->get('schedule.action.select'); ?>...",
           theme: 'bootstrap4',
+          multiple: false,
           allowClear: false,
-          minimumResultsForSearch: 5,
+          minimumResultsForSearch: -1,
           ajax: {
-                  url: "<?php echo e(route('club.sb.region', ['region'=>session('cur_region')->id]), false); ?>",
+                  url: "<?php echo e(route('schedule.sb.size',['size' => $schedule->size]), false); ?>",
                   type: "get",
                   delay: 250,
                   processResults: function (response) {
@@ -63,10 +65,7 @@
                   cache: true
                 }
       });
-
-
-
     });
 </script>
 <?php $__env->stopPush(); ?>
-<?php /**PATH /var/www/dunkonxt/resources/views/league/includes/assign_club.blade.php ENDPATH**/ ?>
+<?php /**PATH /var/www/dunkonxt/resources/views/schedule/includes/clone_events.blade.php ENDPATH**/ ?>

@@ -25,6 +25,7 @@ return [
   'registered' => 'Gemeldete Vereine',
   'shortname' => 'Code',
   'name' => 'Name',
+  'url' => 'Link zur Homepage',
   'entitlement' => 'Zulassung',
   'entitled.no' => 'Kein Vereine zugelassen',
   'entitled.all' => 'Alle Vereine zugelassen',

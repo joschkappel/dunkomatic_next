@@ -25,6 +25,7 @@ return [
   'region' => 'Region',
   'shortname' => 'Code',
   'name' => 'Name',
+  'url' => 'to Homepage',  
   'entitlement' => 'Entitlement',
   'entitled.no' => 'No club assigned',
   'entitled.all' => 'All clubs assigned',

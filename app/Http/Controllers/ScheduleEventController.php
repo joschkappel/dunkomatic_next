@@ -136,8 +136,7 @@ class ScheduleEventController extends Controller
     {
         Log::info('getting schedule events');
         // pass scheduled events back to calendar
-        $user_region = array( $region->code );
-        $schedule_ids = Schedule::whereIn('region_id', $user_region)->pluck('id');
+        $schedule_ids = $region->schedules()->pluck('id');
 
         $data = ScheduleEvent::whereIn('schedule_id', $schedule_ids)->get();
         Log::debug('found schedule events: '.count($data));

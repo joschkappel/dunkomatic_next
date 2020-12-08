@@ -48,7 +48,7 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
      * @var array
      */
     protected $fillable = [
-        'id','name', 'email', 'password','region','approved_at','rejected_at','reason_join','reason_reject',
+        'id','name', 'email', 'password','region_id','approved_at','rejected_at','reason_join','reason_reject',
         'email_verified_at'
     ];
 
@@ -81,10 +81,11 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
         return $this->belongsTo(Member::class);
     }
 
-    public function user_region()
+    public function region()
     {
-        return $this->belongsTo('App\Models\Region','region','code');
+        return $this->belongsTo(Region::class);
     }
+
     public function messages()
     {
         return $this->hasMany('App\Models\Message','author');
@@ -99,10 +100,6 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
         });
     }
 
-    public function scopeRegion($query, $region)
-    {
-        return $query->where('region',$region);
-    }
     public function scopeIsRole($query, $role)
     {
         return $query->first()->member->memberships()->isRole($role)->exists();
@@ -113,12 +110,12 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     */
     public function getIsRegionadminAttribute()
     {
-        return $this->member->memberships()->isRegionAdmin($this->user_region->id)->exists();
+        return $this->member->memberships()->isRegionAdmin($this->region_id)->exists();
     }
 
     public function getLeagueFilecountAttribute()
     {
-      $directory = $this->user_region->league_folder;
+      $directory = $this->region->league_folder;
       $llist = $this->member->leagues()->pluck('shortname')->implode('|');
       if ($llist !=  ""){
         $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
@@ -132,7 +129,7 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     }
     public function getLeagueFilenamesAttribute()
     {
-      $directory = $this->user_region->league_folder;
+      $directory = $this->region->league_folder;
       $llist = $this->member->leagues()->pluck('shortname')->implode('|');
       if ($llist != ""){
         $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
@@ -146,7 +143,7 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     }
     public function getClubFilecountAttribute()
     {
-      $directory = $this->user_region->club_folder;
+      $directory = $this->region->club_folder;
       $llist = $this->member->clubs()->pluck('shortname')->implode('|');
       if ($llist != "" ){
         $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
@@ -160,7 +157,7 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     }
     public function getClubFilenamesAttribute()
     {
-      $directory = $this->user_region->club_folder;
+      $directory = $this->region->club_folder;
       $llist = $this->member->clubs()->pluck('shortname')->implode('|');
       if ($llist != ""){
         $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {

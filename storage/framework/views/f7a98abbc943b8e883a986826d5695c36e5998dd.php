@@ -30,7 +30,7 @@
                   <th>Id</th>
                   <th><?php echo app('translator')->get('club.shortname'); ?></th>
                   <th><?php echo app('translator')->get('club.name'); ?></th>
-                  <th><?php echo app('translator')->get('club.region'); ?></th>
+                  <th><?php echo app('translator')->get('club.url'); ?></th>
                   <th><?php echo e(__('Created at'), false); ?></th>
                </tr>
             </thead>
@@ -60,7 +60,7 @@
                         { data: 'id', name: 'id', visible: false },
                         { data: 'shortname', name: 'shortname' },
                         { data: 'name', name: 'name' },
-                        { data: 'region', name: 'region' },
+                        { data: 'url', name: 'url' },
                         { data: 'created_at', name: 'created_at'},
                      ]
             });

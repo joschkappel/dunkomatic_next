@@ -34,12 +34,13 @@ class ClubController extends Controller
     public function list_stats(Region $region)
     {
 
-      $clubs = Club::clubRegion($region->code)->withCount(['leagues','teams','games_home',
+      $clubs = $region->clubs()->withCount(['leagues','teams','games_home',
                                      'games_home_notime' => function (Builder $query) {
                                           $query->whereNull('game_time');},
                                      'games_home_noshow' => function (Builder $query) {
                                           $query->whereNull('team_id_guest');},
                           ])
+                        ->orderBy('shortname','ASC')
                         ->get();
 
       //Log::debug(print_r($leagues,true));
@@ -81,7 +82,7 @@ class ClubController extends Controller
           $data['games_home'] = $data['club']->games_home()->get();
           //Log::debug(print_r($data['games_home'],true ));
 
-          $directory = Auth::user()->user_region->club_folder;
+          $directory = Auth::user()->region->club_folder;
           $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($club){
             return (strpos($value,$club->shortname) !== false);
           });
@@ -98,7 +99,7 @@ class ClubController extends Controller
      */
     public function list(Region $region)
     {
-        $clublist = datatables::of(Club::clubRegion($region->code));
+        $clublist = datatables::of($region->clubs);
 
         return $clublist
           ->addIndexColumn()
@@ -109,12 +110,15 @@ class ClubController extends Controller
           //
           //         return $btn;
           // })
-          ->rawColumns(['shortname'])
+          ->rawColumns(['shortname','url'])
           ->editColumn('created_at', function ($user) {
                   return $user->created_at->format('d.m.Y H:i');
               })
           ->editColumn('shortname', function ($data) {
               return '<a href="' . route('club.dashboard', ['language'=>app()->getLocale(),'club'=>$data->id]) .'">'.$data->shortname.'</a>';
+              })
+          ->editColumn('url', function ($data) {
+              return '<a href="http://' . $data->url .'" target="_blank">'.$data->url.'</a>';
               })
           ->make(true);
     }
@@ -124,10 +128,10 @@ class ClubController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function sb_region()
+    public function sb_region(Region $region)
     {
 
-      $clubs = Club::query()->userRegion( )->orderBy('shortname','ASC')->get();
+      $clubs = $region->clubs()->orderBy('shortname','ASC')->get();
 
       Log::debug('got clubs '.count($clubs));
       $response = array();
@@ -176,6 +180,8 @@ class ClubController extends Controller
         ]);
 
         Log::info(print_r($data, true));
+        $data['region_id'] = Region::where('code',$data['region'])->first()->id;
+        unset($data['region']);
 
         $check = Club::create($data);
         return redirect()->route('club.index', ['language' => app()->getLocale()]);
@@ -244,12 +250,14 @@ class ClubController extends Controller
              'max:7'),
       ]);
 
+        $data['region_id'] = Region::where('code',$data['region'])->first()->id;
+        unset($data['region']);
         if(!$club->id){
            return redirect()->route('club.index', app()->getLocale() );
         }
 
         $check = Club::find($club->id)->update($data);
-        return redirect()->route('club.dashboard',['language'=>app()->getLocale(), 'id'=>$club]);
+        return redirect()->route('club.dashboard',['language'=>app()->getLocale(), 'club'=>$club]);
     }
 
     /**

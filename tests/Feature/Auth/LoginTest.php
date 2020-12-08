@@ -29,9 +29,10 @@ class LoginTest extends TestCase
      {
 
          $this->seed(TestDatabaseSeeder::class);
-         $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
-
+         $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
          $region = Region::where('code','HBVDA')->first();
+         $this->assertDatabaseHas('users', ['region_id' => $region->id]);
+
          $region_user = $region->regionadmin->first()->user()->first();
 
          $response = $this->actingAs($region_user)->get('/de/login');
@@ -43,9 +44,10 @@ class LoginTest extends TestCase
      public function test_user_can_login_with_correct_credentials()
      {
        $this->seed(TestDatabaseSeeder::class);
-       $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
-
+       $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
        $region = Region::where('code','HBVDA')->first();
+       $this->assertDatabaseHas('users', ['region_id' => $region->id]);
+
        $region_user = $region->regionadmin->first()->user()->first();
 
          $response = $this->post('/de/login', [
@@ -60,9 +62,10 @@ class LoginTest extends TestCase
      public function test_user_cannot_login_with_incorrect_password()
      {
        $this->seed(TestDatabaseSeeder::class);
-       $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
-
+       $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
        $region = Region::where('code','HBVDA')->first();
+       $this->assertDatabaseHas('users', ['region_id' => $region->id]);
+
        $region_user = $region->regionadmin->first()->user()->first();
 
          $response = $this->from('/de/login')->post('/de/login', [

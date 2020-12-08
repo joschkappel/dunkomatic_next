@@ -40,7 +40,7 @@ class LeagueTest extends DuskTestCase
         $league_name_new = 'Neue Runde XXX';
 
         Schedule::factory()->count(3)->create();
-        $schedule = Schedule::where('region_id','HBVDA')->first();
+        $schedule = Schedule::where('region_id',$r->id)->first();
         $this->assertDatabaseHas('schedules', ['id' => $schedule->id]);
 
         $this->browse(function ($browser) use ($u, $league_code, $league_code_new, $league_name, $league_name_new) {

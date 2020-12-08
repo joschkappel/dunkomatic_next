@@ -113,19 +113,20 @@ Route::middleware(['auth'])->group(function () {
   Route::put('region/{region}', 'RegionController@update')->name('region.update')->middleware('auth')->middleware('regionadmin');
   Route::post('region', 'RegionController@create')->name('region.create')->middleware('auth')->middleware('regionadmin');
 
-  Route::get('club/region/sb', 'ClubController@sb_region')->name('club.sb.region');
   Route::resource('club', 'ClubController')->only('store','update','destroy');
   Route::get('club/{club}/game/chart_home', 'ClubGameController@chart_home')->name('club.game.chart_home');
   Route::get('club/{club}/gym/{gym_no}', 'ClubGymController@show')->name('club.gym.show');
   Route::get('club/{club}/list/gym', 'ClubGymController@list_select4club')->name('gym.list_sel4club');
   Route::resource('club.gym', 'ClubGymController')->shallow()->only('store','update','destroy');
 
-  Route::group(['prefix' => '{region}', 'middleware' => 'setRegion'], function () {
+  Route::group(['prefix' => '{region}'], function () {
     Route::get('region/set', 'RegionController@set_region')->name('region.set');
     Route::get('club/list', 'ClubController@list')->name('club.list');
     Route::get('club/list_stats', 'ClubController@list_stats')->name('club.list_stats');
+    Route::get('club/region/sb', 'ClubController@sb_region')->name('club.sb.region');
     Route::get('league/list', 'LeagueController@list')->name('league.list');
     Route::get('league/list_stats', 'LeagueController@list_stats')->name('league.list_stats');
+    Route::get('league/region/sb', 'LeagueController@sb_region')->name('league.sb.region');
     Route::get('schedule/list', 'ScheduleController@list')->name('schedule.list');
     Route::get('schedule/region/sb', 'ScheduleController@sb_region')->name('schedule.sb.region');
     Route::get('schedule_event/list-cal', 'ScheduleEventController@list_cal')->name('schedule_event.list-cal');
@@ -133,7 +134,6 @@ Route::middleware(['auth'])->group(function () {
     Route::put('message/{message}', 'MessageController@update')->name('message.update');
   });
 
-  Route::get('league/region/sb', 'LeagueController@sb_region')->name('league.sb.region');
   Route::get('league/{league}/freechar/sb', 'LeagueController@selectbox_freechars')->name('league.sb_freechar');
   Route::get('league/club/{club}/sb', 'LeagueController@sb_club')->name('league.sb.club');
   Route::delete('league/{league}/club/{club}', 'LeagueController@deassign_club')->name('league.deassign-club');

@@ -56,7 +56,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'region' => ['required', 'exists:regions,id'],
+            'region_id' => ['required', 'exists:regions,id'],
             'reason_join' => ['required', 'string']
         ]);
     }
@@ -69,18 +69,14 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-      // get region shortcode
-      Log::debug($data['region']);
-      $region = Region::where('id',$data['region'])->first();
-
       $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'region' => $region->code,
+            'region_id' => $data['region_id'],
             'reason_join' => $data['reason_join']
       ]);
-      $radmin = $region->regionadmin->first()->user()->first();
+      $radmin = Region::find($data['region_id'])->regionadmin->first()->user()->first();
 
       if ( $radmin !== null ) {
           Log::debug(print_r($radmin,true));

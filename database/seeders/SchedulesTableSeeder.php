@@ -3,6 +3,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\Region;
 
 class SchedulesTableSeeder extends Seeder
 {
@@ -40,7 +41,7 @@ class SchedulesTableSeeder extends Seeder
           'id'     => $schedule->group_id,
           'name'   => $schedule->group_name,
           'active' => $active,
-          'region_id' => $region,
+          'region_id' => Region::where('code',$region)->first()->id,
           'size' => $size,
           'created_at' => now()
         ]);

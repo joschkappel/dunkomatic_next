@@ -28,7 +28,7 @@ if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" id="region" name="region" placeholder="<?php echo app('translator')->get('club.region'); ?>" value="<?php echo e($club->region, false); ?>">
+unset($__errorArgs, $__bag); ?>" id="region" name="region" placeholder="<?php echo app('translator')->get('club.region'); ?>" value="<?php echo e($club->region->code, false); ?>">
                             </div>
                         </div>
                         <div class="form-group row">

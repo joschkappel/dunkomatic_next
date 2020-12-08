@@ -22,5 +22,6 @@ return [
   'size'  => 'Anzahl Teams',
   'above-region' => 'Überbezirklich',
   'generated' => 'GESPERRT',
-
+  'agetype' => 'Altersklasse',
+  'gendertype' => 'Geschlect'
 ];

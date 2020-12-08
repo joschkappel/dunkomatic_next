@@ -4,6 +4,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
+use App\Models\Region;
+
 class LeaguesTableSeeder extends Seeder
 {
     /**
@@ -26,7 +28,7 @@ class LeaguesTableSeeder extends Seeder
         DB::connection('dunknxt')->table('leagues')->insert([
           'id'            => $league->league_id,
           'shortname'     => $league->shortname,
-          'region'        => $league->region,
+          'region_id'        => Region::where('code', $league->region)->first()->id,
           'name'          => $league->league_name,
           'schedule_id'   => $group_id,
           'active'        => $league->active,

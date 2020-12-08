@@ -27,9 +27,9 @@ class RegistrationTest extends TestCase
      {
          $this->seed(TestDatabaseSeeder::class);
          $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
-         $this->assertDatabaseHas('users', ['region' => 'HBVDA']);
-
          $region = Region::where('code','HBVDA')->first();
+         $this->assertDatabaseHas('users', ['region_id' => $region->id]);
+
          $region_admin = $region->regionadmin->first()->user()->first();
 
          Notification::fake();
@@ -46,7 +46,7 @@ class RegistrationTest extends TestCase
                            'password'=> 'password',
                            'password_confirmation'=> 'password',
                            'reason_join'=> 'am testing',
-                           'region' => $region->id
+                           'region_id' => $region->id
                          ])
                           ->assertStatus(200);
          $this->assertDatabaseHas('users', ['email' => 'test@gmail.com']);

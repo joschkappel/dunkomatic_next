@@ -53,7 +53,7 @@ class LeagueController extends Controller
     public function list_stats(Region $region)
     {
 
-      $leagues = League::leagueRegion($region->code)
+      $leagues = $region->leagues()
                   ->with('schedule')
                   ->withCount(['clubs','teams','games',
                                      'games_notime' => function (Builder $query) {
@@ -99,7 +99,7 @@ class LeagueController extends Controller
     public function list(Region $region)
     {
         //
-        $leaguelist = datatables::of(League::leagueRegion($region->code)->with('schedule'));
+        $leaguelist = datatables::of($region->leagues()->with('schedule'));
 
         return $leaguelist
           ->addIndexColumn()
@@ -122,10 +122,10 @@ class LeagueController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function sb_region()
+    public function sb_region(Region $region)
     {
 
-      $leagues = League::query()->userRegion( Auth::user()->region )->orderBy('name','ASC')->get();
+      $leagues = $region->leagues()->orderBy('shortname','ASC')->get();
 
       Log::debug('got leagues '.count($leagues));
       $response = array();
@@ -240,7 +240,7 @@ class LeagueController extends Controller
         }
         $data['assigned_teams'] = $assigned_team;
         //Log::debug(print_r($assigned_team,true));
-        $directory =   $directory = Auth::user()->user_region->league_folder;
+        $directory =   $directory = Auth::user()->region->league_folder;
         $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($league){
           return (strpos($value,$league->shortname) !== false);
         });
@@ -283,7 +283,7 @@ class LeagueController extends Controller
             'max:10' ),
           'schedule_id' => 'required|exists:schedules,id',
           'name' => 'required|max:255',
-          'region' => 'required|max:5|exists:regions,code',
+          'region_id' => 'required|max:5|exists:regions,id',
           'age_type' => ['required', new EnumValue(LeagueAgeType::class, false)],
           'gender_type' => ['required', new EnumValue(LeagueGenderType::class, false)],
 
@@ -360,7 +360,6 @@ class LeagueController extends Controller
             'max:10' ),
           'schedule_id' => 'required|exists:schedules,id',
           'name' => 'required|max:255',
-          'region' => 'required|max:5|exists:regions,code',
           'age_type' => ['required', new EnumValue(LeagueAgeType::class, false)],
           'gender_type' => ['required', new EnumValue(LeagueGenderType::class, false)],
       ]);

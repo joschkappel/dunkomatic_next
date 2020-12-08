@@ -15,8 +15,8 @@ class CreateLeaguesTable extends Migration
     {
         Schema::create('leagues', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('region',5);
-            $table->foreign('region')->references('code')->on('regions');
+            $table->unsignedInteger('region_id');
+            $table->foreign('region_id')->references('id')->on('regions');
             $table->char('shortname', 10)->unique();
             $table->text('name');
             $table->boolean('active')->default(True);

@@ -33,12 +33,6 @@
                             </div>
                         </div>
                         <div class="form-group row ">
-                          <label for="region_id" class="col-sm-4 col-form-label">@lang('club.region')</label>
-                          <div class="col-sm-6">
-                              <input type="text" class="form-control" readonly id="region_id" name="region_id" placeholder="@lang('club.region')" value="{{ $schedule->region_id}}">
-                            </div>
-                        </div>
-                        <div class="form-group row ">
                               <label for="eventcolor" class="col-sm-4 col-form-label">@lang('schedule.color')</label>
                               <div class="col-sm-6">
                                 <div id="cp2" class="input-group">
