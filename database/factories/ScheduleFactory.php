@@ -3,7 +3,9 @@
 namespace Database\Factories;
 
 use App\Models\Schedule;
+use App\Models\Region;
 use Illuminate\Database\Eloquent\Factories\Factory;
+
 
 class ScheduleFactory extends Factory
 {
@@ -24,7 +26,7 @@ class ScheduleFactory extends Factory
         return [
             'name' => $this->faker->name,
             'size' => 4,
-            'region_id' => 'HBVDA',
+            'region_id' => Region::where('code','HBVDA')->first()->id,
             'active' => True
         ];
     }
