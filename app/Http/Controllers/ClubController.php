@@ -35,10 +35,7 @@ class ClubController extends Controller
     {
 
       $clubs = $region->clubs()->withCount(['leagues','teams','games_home',
-                                     'games_home_notime' => function (Builder $query) {
-                                          $query->whereNull('game_time');},
-                                     'games_home_noshow' => function (Builder $query) {
-                                          $query->whereNull('team_id_guest');},
+                                     'games_home_notime','games_home_noshow'
                           ])
                         ->orderBy('shortname','ASC')
                         ->get();

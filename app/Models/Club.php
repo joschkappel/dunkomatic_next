@@ -9,6 +9,7 @@ use App\Models\Team;
 use App\Models\League;
 use App\Models\Member;
 use App\Models\Membership;
+use App\Models\Game;
 
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -66,20 +67,20 @@ class Club extends Model implements Auditable
 
   public function games_home()
   {
-      return $this->hasMany('App\Models\Game', 'club_id_home', 'id');
+      return $this->hasMany(Game::class, 'club_id_home', 'id');
   }
   public function games_home_notime()
   {
-      return $this->hasMany('App\Models\Game', 'club_id_home', 'id');
+      return $this->hasMany(Game::class, 'club_id_home', 'id')->whereNull('game_time');
   }
   public function games_home_noshow()
   {
-      return $this->hasMany('App\Models\Game', 'club_id_home', 'id');
+      return $this->hasMany(Game::class, 'club_id_home', 'id')->whereNull('team_id_guest');
   }
 
   public function games_guest()
   {
-      return $this->hasMany('App\Models\Game', 'club_id_guest', 'id');
+      return $this->hasMany(Game::class, 'club_id_guest', 'id');
   }
   public function scopeUserRegion($query)
   {

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Schedule;
+
 use Illuminate\Database\Eloquent\Model;
 
 class ScheduleEvent extends Model
@@ -14,6 +16,6 @@ class ScheduleEvent extends Model
 
   public function schedule()
   {
-      return $this->belongsTo('App\Models\Schedule','schedule_id');
+      return $this->belongsTo(Schedule::class);
   }
 }

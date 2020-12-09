@@ -90,7 +90,7 @@ class MemberController extends Controller
                 'name' => $member->name,
                 'email' => $member->email1,
                 'password' => Hash::make('password'),
-                'region' => Auth::user()->region,
+                'region_id' => session('cur_region')->id,
                 'reason_join' => 'Created as member by '.Auth::user()->name,
           ]);
 
@@ -137,7 +137,7 @@ class MemberController extends Controller
                   'name' => $member->name,
                   'email' => $member->email1,
                   'password' => Hash::make('password'),
-                  'region' => Auth::user()->region,
+                  'region_id' => session('cur_region')->id,
                   'reason_join' => 'Created as member by '.Auth::user()->name,
             ]);
 

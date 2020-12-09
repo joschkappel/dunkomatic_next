@@ -31,7 +31,7 @@ class UserController extends Controller
 
   public function datatable($language)
       {
-        $users = User::region(Auth::user()->region)->get();
+        $users = session('cur_region')->users()->get();
         //Log::debug(print_r($users,true));
         $userlist = datatables::of($users);
 
@@ -119,7 +119,7 @@ class UserController extends Controller
       {
         //  DB::enableQueryLog(); // Enable query log
 
-          $users = User::where('region', Auth::user()->region)
+          $users = session('cur_region')->users()
                        ->whereNull('approved_at')
                        ->whereNull('rejected_at')
                        ->get();

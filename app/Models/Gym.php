@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Club;
+use App\Models\Game;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,5 +16,10 @@ class Gym extends Model
   public function club()
   {
       return $this->belongsTo(Club::class);
+  }
+
+  public function games()
+  {
+      return $this->hasMany(Game::class);
   }
 }

@@ -8,6 +8,7 @@ use App\Models\Region;
 use App\Models\Club;
 use App\Models\Member;
 use App\Models\Membership;
+use App\Models\Schedule;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -56,7 +57,7 @@ class League extends Model implements Auditable
 
   public function schedule()
   {
-      return $this->belongsTo('App\Models\Schedule','schedule_id','id');
+      return $this->belongsTo(Schedule::class);
   }
 
   public function clubs()
@@ -82,21 +83,21 @@ class League extends Model implements Auditable
 
   public function games()
   {
-      return $this->hasMany('App\Models\Game');
+      return $this->hasMany(Game::class);
   }
 
   public function games_notime()
   {
-      return $this->hasMany('App\Models\Game');
+      return $this->hasMany(Game::class)->whereNull('game_time');
   }
 
   public function games_noshow()
   {
-      return $this->hasMany('App\Models\Game');
+      return $this->hasMany(Game::class)->whereNull('team_id_guest');
   }
   public function games_overlap()
   {
-      return $this->hasMany('App\Models\Game');
+      return $this->hasMany(Game::class);
   }
   public function scopeUserRegion($query)
   {

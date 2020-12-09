@@ -2,6 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Club;
+use App\Models\Gym;
+use App\Models\League;
+use App\Models\Team;
+
 use Illuminate\Database\Eloquent\Model;
 
 class Game extends Model
@@ -21,36 +26,32 @@ class Game extends Model
 
   public function club_home()
   {
-      return $this->belongsTo('App\Models\Club','club_id_home');
+      return $this->belongsTo(Club::class,'club_id_home');
   }
   public function gym()
   {
-      return $this->belongsTo('App\Models\Gym','gym_id');
+      return $this->belongsTo(Gym::class);
   }
 
   public function club_guest()
   {
-      return $this->belongsTo('App\Models\Club','club_id_guest');
+      return $this->belongsTo(Club::class,'club_id_guest');
   }
 
   public function league()
   {
-      return $this->belongsTo('App\Models\League','league_id');
+      return $this->belongsTo(League::class);
   }
 
   public function team_home()
   {
-      return $this->belongsTo('App\Models\Team','team_id_home');
+      return $this->belongsTo(Team::class,'team_id_home');
   }
 
   public function team_guest()
   {
-      return $this->belongsTo('App\Models\Team','team_id_guest');
+      return $this->belongsTo(Team::class,'team_id_guest');
   }
 
-  public function scopeNotime($query, $league)
-  {
-      return $query->where('league_id',$league)->whereNull('game_time');
-  }
 
 }

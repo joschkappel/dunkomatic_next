@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Models\Club;
 use App\Models\League;
+use App\Models\Game;
 
 class Team extends Model
 {
@@ -27,12 +28,12 @@ class Team extends Model
 
   public function games_home()
   {
-      return $this->hasMany('App\Models\Game','team_id_home');
+      return $this->hasMany(Game::class, 'team_id_home');
   }
 
   public function games_guest()
   {
-      return $this->hasMany('App\Models\Game','team_id_guest');
+      return $this->hasMany(Game::class,'team_id_guest');
   }
 
 }

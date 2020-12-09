@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Region;
+use App\Models\League;
+use App\Models\ScheduleEvent;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
-use App\Models\Region;
 
 class Schedule extends Model
 {
@@ -23,9 +25,14 @@ class Schedule extends Model
       return $this->belongsTo(Region::class);
   }
 
+  public function leagues()
+  {
+      return $this->hasMany(League::class);
+  }
+
   public function events()
   {
-      return $this->hasMany('App\Models\ScheduleEvent','schedule_id','id');
+      return $this->hasMany(ScheduleEvent::class);
   }
 
   public function size()

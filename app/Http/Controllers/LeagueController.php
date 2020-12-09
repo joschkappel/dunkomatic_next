@@ -56,10 +56,7 @@ class LeagueController extends Controller
       $leagues = $region->leagues()
                   ->with('schedule')
                   ->withCount(['clubs','teams','games',
-                                     'games_notime' => function (Builder $query) {
-                                          $query->whereNull('game_time');},
-                                     'games_noshow' => function (Builder $query) {
-                                          $query->whereNull('team_id_home')->orWhereNull('team_id_guest');},
+                               'games_notime','games_noshow'
                           ])
                         ->get();
 

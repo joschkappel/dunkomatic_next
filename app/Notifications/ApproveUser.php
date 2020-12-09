@@ -47,7 +47,7 @@ class ApproveUser extends Notification
         return (new MailMessage)
             ->subject('Dunkomatic Access Request Approval')
             ->greeting('Hello '. $this->new_user->name . ' !' )
-            ->line('Region admin for region ' . $this->radmin_user->region . ' has approved your access request.')
+            ->line('Region admin for region ' . $this->radmin_user->region->name . ' has approved your access request.')
             ->line('Make sure to verify your email and happy days with DUnkomatic !' );
     }
 
