@@ -63,11 +63,11 @@ class TeamController extends Controller
     public function freeteam_selectbox(League $league)
     {
         //Log::debug(print_r($league,true));
-        $free_teams = Team::whereNull('league_id')->orWhere(function($query) use($league)
+        $free_teams = session('cur_region')->teams()->whereNull('league_id')->orWhere(function($query) use($league)
           { $query->where('league_id', $league->id)
                   ->whereNull('league_no');
           })->with('club')->get();
-        //Log::debug(print_r($teams,true));
+        Log::debug(print_r($free_teams,true));
         $response = array();
 
         foreach ($free_teams as $t){
@@ -83,13 +83,12 @@ class TeamController extends Controller
     {
         Log::debug(print_r($request->all(),true));
         $league_no = $request->input('league_no');
-        $size = $league->load('schedule')->schedule['size'];
+        $size = $league->size;
         $chars = config('dunkomatic.league_team_chars');
         $upperArr = array_slice( $chars, 0, $size, true );
         $league_char = $upperArr[$league_no];
         // update team
-        $team_id = $request->input('team_id');
-        $team = Team::find($team_id);
+        $team = Team::find($request->input('team_id'));
         $team->update(['league_id'=>$league->id, 'league_no'=>$league_no, 'league_char'=>$league_char]);
 
         $used_char = $league->clubs()->pluck('league_char')->toArray();
@@ -98,21 +97,19 @@ class TeamController extends Controller
 
         $clubleague_char = array_shift( $free_char );
         $clubleague_no = array_search( $clubleague_char, $chars, false);
-        $league = League::find($league->id);
         $league->clubs()->attach($team->club_id,['league_no' =>$clubleague_no ,'league_char' => $clubleague_char ]);
 
         // are games still there ?
         // get size
         $league->load('schedule');
         // get scheme
-        $scheme = collect(LeagueTeamScheme::where('size', $league->schedule['size'])->get());
+        $scheme = $league->schedule->schemes()->get();
 
         // get schedule
-        $schedule = collect(ScheduleEvent::where('schedule_id', $league->schedule_id)->get());
-        $gdate_by_day = $schedule->pluck('game_date','game_day');
+        $gdate_by_day = $league->schedule->events()->pluck('game_date','game_day');
 
         // get teams
-        $teams = collect(Team::where('league_id',$league->id)->with('club')->get());
+        $teams = $league->teams()->with('club')->get();
 
 
         foreach ($scheme as $s){
@@ -127,7 +124,7 @@ class TeamController extends Controller
               $g = array();
               $g['league_id'] = $league->id;
               $g['game_no'] = $s->game_no;
-              $g['region'] = $league->region;
+              $g['region'] = $league->region->code;
               $g['game_plandate'] = $gday;
               if (isset($hteam['preferred_game_day'])){
                 $pref_gday = $hteam['preferred_game_day'] % 7;

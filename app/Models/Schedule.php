@@ -5,6 +5,9 @@ namespace App\Models;
 use App\Models\Region;
 use App\Models\League;
 use App\Models\ScheduleEvent;
+use App\Models\LeagueSize;
+use App\Models\LeagueSizeScheme;
+use App\Models\LeagueSizeChar;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +17,7 @@ class Schedule extends Model
   use HasFactory;
 
   protected $fillable = [
-        'id','name','region_id','eventcolor','active','size'
+        'id','name','region_id','eventcolor','active','league_size_id'
     ];
   protected $attributes = [
             'active' => false,
@@ -35,8 +38,17 @@ class Schedule extends Model
       return $this->hasMany(ScheduleEvent::class);
   }
 
-  public function size()
+  public function league_size()
   {
-      return $this->belongsTo('App\Models\LeagueTeamSize','size','size');
+      return $this->belongsTo(LeagueSize::class);
+  }
+
+  public function schemes()
+  {
+    return $this->hasMany(LeagueSizeScheme::class, 'league_size_id','league_size_id' );
+  }
+  public function chars()
+  {
+    return $this->hasMany(LeagueSizeChar::class, 'league_size_id','league_size_id' );
   }
 }

@@ -8,7 +8,7 @@ use App\Models\Team;
 use App\Models\Gym;
 use App\Models\Club;
 use App\Models\ScheduleEvent;
-use App\Models\LeagueTeamScheme;
+use App\Models\LeagueSizeScheme;
 use App\Enums\Role;
 
 use App\Notifications\LeagueGamesGenerated;
@@ -88,15 +88,13 @@ class LeagueGameController extends Controller
         // get size
         $league->load('schedule');
         // get scheme
-        $scheme = collect(LeagueTeamScheme::where('size', $league->schedule['size'])->get());
+        $scheme = $league->schedule->schemes()->get();
 
-        // get schedule
-        $schedule = collect(ScheduleEvent::where('schedule_id', $league->schedule_id)->get());
-        $gdate_by_day = $schedule->pluck('game_date','game_day');
+        // get game days and dates
+        $gdate_by_day = $league->schedule->events()->pluck('game_date','game_day');
 
         // get teams
-        $teams = collect(Team::where('league_id',$league->id)->with('club')->get());
-
+        $teams = $league->teams()->with('club')->get();
 
         foreach ($scheme as $s){
           $gday = $gdate_by_day[ $s->game_day ];
@@ -105,7 +103,7 @@ class LeagueGameController extends Controller
           $gteam = $teams->firstWhere('league_no', $s->team_guest);
 
           $g = array();
-          $g['region'] = $league->region;
+          $g['region'] = $league->region->code;
           $g['game_plandate'] = $gday;
           if (isset($hteam['preferred_game_day'])){
             $pref_gday = $hteam['preferred_game_day'] % 7;

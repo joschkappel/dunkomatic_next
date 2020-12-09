@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Member;
 use App\Models\Membership;
 use App\Models\Schedule;
+use App\Models\Team;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -36,6 +37,11 @@ class Region extends Model
   public function clubs()
   {
     return $this->hasMany(Club::class);
+  }
+
+  public function teams()
+  {
+    return $this->hasManyThrough(Team::class, Club::class);
   }
 
   public function leagues()
@@ -64,7 +70,7 @@ class Region extends Model
       return $this->morphToMany(Member::class, 'membership')->withPivot('role_id','function','id');
       // test: Club::find(261)->members()->withPivot('role_id','function')->get();
   }
-  
+
   public function memberships()
   {
       return $this->morphMany(Membership::class, 'membership');

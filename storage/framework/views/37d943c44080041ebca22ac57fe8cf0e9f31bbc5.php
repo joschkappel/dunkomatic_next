@@ -70,7 +70,7 @@
                           { data: 'name', name: 'name' },
                           { data: 'eventcolor', name: 'eventcolor', visible: false  },
                           { data: 'color', name: 'color', orderable: false, searchable: false },
-                          { data: 'size.description', name: 'description'},
+                          { data: 'league_size.description', name: 'description'},
                           { data: 'events', name: 'events'},
                           { data: 'active', name: 'active', searchable: false },
                           { data: 'created_at', name: 'created_at'},

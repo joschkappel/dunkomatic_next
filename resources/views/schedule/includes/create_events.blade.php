@@ -15,11 +15,9 @@
             <div class="modal-body">
                 <div class="card card-info">
 
-                    <form class="form-horizontal" action="{{ route('schedule_event.store') }}" method="POST">
+                    <form class="form-horizontal" action="{{ route('schedule_event.store', ['schedule'=>$schedule]) }}" method="POST">
                         @csrf
                         <div class="card-body">
-                            <input type="hidden" name="schedule_id" value="{{ $schedule->id }}">
-                            <input type="hidden" name="schedule_size" value="{{ $schedule->size }}">
                             <div class="form-group row ">
                                 <label for="startdate" class="col-sm-2 col-form-label">Start Date</label>
                                 <div class="col-sm-10">

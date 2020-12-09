@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Schedule;
 use App\Models\Region;
-use App\Models\LeagueTeamSize;
+use App\Models\LeagueSize;
 
 
 use Illuminate\Http\Request;
@@ -53,11 +53,15 @@ class ScheduleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function sb_size(LeagueTeamSize $size)
+    public function sb_size(Schedule $schedule, LeagueSize $league_size)
     {
-      Log::debug('SIZE :'.print_r($size,true));
+      Log::debug('SIZE :'.print_r($league_size,true));
 
-      $schedules = session('cur_region')->schedules()->where('size','=',$size->size)->orderBy('name','ASC')->get();
+      $schedules = session('cur_region')->schedules()
+                                        ->where('id','!=',$schedule->id)
+                                        ->where('league_size_id', $league_size->id)
+                                        ->orderBy('name','ASC')
+                                        ->get();
 
       Log::debug('got schedules '.count($schedules));
       $response = array();
@@ -86,7 +90,7 @@ class ScheduleController extends Controller
 //        } else {
 //        }
 
-        $schedule = session('cur_region')->schedules()->with('size')->withCount('events')->get();
+        $schedule = session('cur_region')->schedules()->with('league_size')->withCount('events')->get();
 
         $stlist = datatables::of($schedule);
 
@@ -121,7 +125,7 @@ class ScheduleController extends Controller
     public function create($language)
     {
       Log::info('create new schedule');
-      return view('schedule/schedule_new', ['region' => session('cur_region')->code]);
+      return view('schedule/schedule_new');
     }
 
     /**
@@ -134,12 +138,10 @@ class ScheduleController extends Controller
     {
       $data = $request->validate( [
           'name' => 'required',
-          'region_id' => 'required|exists:regions,code',
+          'region_id' => 'required|exists:regions,id',
           'eventcolor' => 'required',
-          'size' => 'required|exists:league_team_sizes,size'
+          'league_size_id' => 'required|exists:league_sizes,id'
       ]);
-
-      $data['region_id'] = Region::where('code', $data['region_id'])->first()->id;
 
       $active = $request->input('active');
       if ( isset($active) and ( $active === 'on' )){

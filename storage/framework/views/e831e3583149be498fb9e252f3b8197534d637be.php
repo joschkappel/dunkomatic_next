@@ -55,7 +55,7 @@
                   { data: 'id', name: 'id', visible: false },
                   { data: 'shortname', name: 'shortname' },
                   { data: 'name', name: 'name' },
-                  { data: 'schedule.size', name: 'size', defaultContent: ''},
+                  { data: 'schedule.league_size.size', name: 'size', defaultContent: ''},
                   { data: 'clubs_count', name: 'clubs_count'},
                   { data: 'teams_count', name: 'teams_count'},
                   { data: 'reg_rel', name: 'reg_rel'},

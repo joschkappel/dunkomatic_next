@@ -33,6 +33,6 @@ class CreateClubLeagueTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('league_clubs');
+        Schema::dropIfExists('club_league');
     }
 }

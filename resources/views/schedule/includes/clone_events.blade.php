@@ -15,12 +15,9 @@
             <div class="modal-body">
                 <div class="card card-info">
 
-                    <form class="form-horizontal" action="{{ route('schedule_event.clone') }}" method="POST">
+                    <form class="form-horizontal" action="{{ route('schedule_event.clone', ['schedule'=>$schedule]) }}" method="POST">
                         @csrf
                         <div class="card-body">
-
-                            <input type="hidden" name="schedule_id" value="{{ $schedule->id }}">
-                            <input type="hidden" name="schedule_size" value="{{ $schedule->size }}">
                             <div class="form-group row ">
                               <label class="col-sm-4 col-form-label" for='selSchedule'>{{trans_choice('schedule.schedule',1)}}</label>
                               <div class="col-sm-6">
@@ -54,7 +51,7 @@
           allowClear: false,
           minimumResultsForSearch: -1,
           ajax: {
-                  url: "{{ route('schedule.sb.size',['size' => $schedule->size])}}",
+                  url: "{{ route('schedule.sb.size',['schedule'=>$schedule,'league_size' => $schedule->league_size_id])}}",
                   type: "get",
                   delay: 250,
                   processResults: function (response) {

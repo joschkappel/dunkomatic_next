@@ -54,11 +54,10 @@ class LeagueController extends Controller
     {
 
       $leagues = $region->leagues()
-                  ->with('schedule')
-                  ->withCount(['clubs','teams','games',
-                               'games_notime','games_noshow'
-                          ])
-                        ->get();
+                         ->with('schedule.league_size')
+                         ->withCount(['clubs','teams','games',
+                                      'games_notime','games_noshow'])
+                         ->get();
 
       //Log::debug(print_r($leagues,true));
 
@@ -138,22 +137,18 @@ class LeagueController extends Controller
 
     public function selectbox_freechars(League $league)
     {
-      $size = $league->load('schedule')->schedule['size'];
+      $size = $league->size;
       $chars = config('dunkomatic.league_team_chars');
       $all_chars = array_slice( array_values($chars), 0, $size, true );
-      Log::debug(print_r($all_chars,true));
+      //Log::debug(print_r($all_chars,true));
 
-      //$clubs = $league->clubs()->get();
-      //$club_chars = $clubs->pluck('pivot.league_char')->toArray();
-      $teams = $league->teams()->get();
-      $team_chars = $teams->pluck('league_char')->toArray();
-
-      Log::debug(print_r($team_chars,true));
+      $team_chars = $league->teams()->pluck('league_char')->toArray();
+      //Log::debug(print_r($team_chars,true));
 
       $freechars = array_diff($all_chars,$team_chars);
+      Log::debug(print_r($freechars,true));
 
       foreach ($freechars as $key => $value){
-
         $response[] = array(
               "id"=>$key+1,
               "text"=>($key+1).' - '.$value
@@ -237,7 +232,7 @@ class LeagueController extends Controller
         }
         $data['assigned_teams'] = $assigned_team;
         //Log::debug(print_r($assigned_team,true));
-        $directory =   $directory = Auth::user()->region->league_folder;
+        $directory =   $directory = session('cur_region')->league_folder;
         $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($league){
           return (strpos($value,$league->shortname) !== false);
         });

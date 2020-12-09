@@ -33,6 +33,7 @@ class League extends Model implements Auditable
   protected $fillable = [
         'id','name','shortname','region_id','active','above_region','schedule_id','generated_at','age_type','gender_type'
   ];
+
   /**
    * The attributes that should be cast to native types.
    *
@@ -110,6 +111,10 @@ class League extends Model implements Auditable
   public function memberIsA($role_id)
   {
     return $this->members()->wherePivot('role_id', $role_id)->exists();
+  }
+  public function getSizeAttribute()
+  {
+    return $this->schedule->league_size->size;
   }
   public function getFilecountAttribute()
   {

@@ -7,6 +7,7 @@ return [
   'action.delete' => 'Delete League',
   'action.edit' => 'Modify League',
   'action.select' => 'Select a League',
+  'action.inject' => 'Add a team to league :LEAGUE',
   'action.game.list' => 'Games Schedule',
   'title.list' => 'Leaguelist for :region',
   'title.stats' => 'Leaguestatistics for :Region',

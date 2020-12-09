@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LeagueTeamSize;
+use App\Models\LeagueSize;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
@@ -17,13 +17,13 @@ class LeagueSizeController extends Controller
     public function index()
     {
 
-      $sizes = LeagueTeamSize::query()->orderBy('size', 'ASC')->get();
+      $sizes = LeagueSize::query()->orderBy('size', 'ASC')->get();
       Log::debug('got sizes '.count($sizes));
       $response = array();
 
       foreach($sizes as $size){
           $response[] = array(
-                "id"=>$size->size,
+                "id"=>$size->id,
                 "text"=>$size->description
               );
       }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLeagueTeamCharTable extends Migration
+class CreateLeagueSizeCharTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateLeagueTeamCharTable extends Migration
      */
     public function up()
     {
-        Schema::create('league_team_chars', function (Blueprint $table) {
+        Schema::create('league_size_chars', function (Blueprint $table) {
             $table->id();
-            $table->string('size',5);
-            $table->foreign('size')->references('size')->on('league_team_sizes');
+            $table->unsignedInteger('league_size_id');
+            $table->foreign('league_size_id')->references('id')->on('league_sizes');
             $table->string('team_char',2);
             $table->timestamps();
         });
@@ -29,6 +29,6 @@ class CreateLeagueTeamCharTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('league_team_chars');
+        Schema::dropIfExists('league_size_chars');
     }
 }

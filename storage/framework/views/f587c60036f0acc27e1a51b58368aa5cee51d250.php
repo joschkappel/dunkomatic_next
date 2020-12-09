@@ -15,9 +15,9 @@
             <div class="modal-body">
                 <div class="card card-info">
 
-                    <form class="form-horizontal" action="<?php echo e(route('schedule_event.list-destroy', $schedule->id ), false); ?>" method="POST">
+                    <form class="form-horizontal" action="<?php echo e(route('schedule_event.list-destroy', ['schedule'=>$schedule] ), false); ?>" method="POST">
                         <?php echo csrf_field(); ?>
-                        <input type="hidden" name="_method" value="DELETE">
+                        <?php echo method_field('DELETE'); ?>
                         <div class="card-body">
                             <?php echo app('translator')->get('schedule.confirm.event.delete'); ?>
                         </div>

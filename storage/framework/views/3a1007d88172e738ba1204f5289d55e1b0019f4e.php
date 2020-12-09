@@ -15,12 +15,9 @@
             <div class="modal-body">
                 <div class="card card-info">
 
-                    <form class="form-horizontal" action="<?php echo e(route('schedule_event.clone'), false); ?>" method="POST">
+                    <form class="form-horizontal" action="<?php echo e(route('schedule_event.clone', ['schedule'=>$schedule]), false); ?>" method="POST">
                         <?php echo csrf_field(); ?>
                         <div class="card-body">
-
-                            <input type="hidden" name="schedule_id" value="<?php echo e($schedule->id, false); ?>">
-                            <input type="hidden" name="schedule_size" value="<?php echo e($schedule->size, false); ?>">
                             <div class="form-group row ">
                               <label class="col-sm-4 col-form-label" for='selSchedule'><?php echo e(trans_choice('schedule.schedule',1), false); ?></label>
                               <div class="col-sm-6">
@@ -54,7 +51,7 @@
           allowClear: false,
           minimumResultsForSearch: -1,
           ajax: {
-                  url: "<?php echo e(route('schedule.sb.size',['size' => $schedule->size]), false); ?>",
+                  url: "<?php echo e(route('schedule.sb.size',['schedule'=>$schedule,'league_size' => $schedule->league_size_id]), false); ?>",
                   type: "get",
                   delay: 250,
                   processResults: function (response) {

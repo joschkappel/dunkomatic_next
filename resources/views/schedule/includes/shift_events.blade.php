@@ -15,11 +15,9 @@
             <div class="modal-body">
                 <div class="card card-info">
 
-                    <form class="form-horizontal" action="{{ route('schedule_event.shift') }}" method="POST">
+                    <form class="form-horizontal" action="{{ route('schedule_event.shift', ['schedule'=>$schedule]) }}" method="POST">
                         @csrf
                         <div class="card-body">
-                            <input type="hidden" name="schedule_id" value="{{ $schedule->id }}">
-                            <input type="hidden" name="schedule_size" value="{{ $schedule->size }}">
                             <div class="form-group row ">
                                 <label for="radios" class="col-sm-4 col-form-label">@lang('schedule.event.direction')</label>
                                 <div class="col-sm-6">

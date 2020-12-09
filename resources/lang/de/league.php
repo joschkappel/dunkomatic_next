@@ -7,6 +7,7 @@ return [
   'action.edit' => 'Rundendaten Ändern',
   'action.delete' => 'Runde Löschen',
   'action.select' => 'Wähle eine Runde',
+  'action.inject' => 'Füge ein Team in Runde :LEAGUE ein',
   'action.game.list' => 'Spielplan',
   'title.list' => 'Rundenliste für :Region',
   'title.stats' => 'Rundenstatistik für :Region',

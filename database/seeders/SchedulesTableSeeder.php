@@ -14,6 +14,8 @@ class SchedulesTableSeeder extends Seeder
      */
     public function run()
     {
+      $sizes = [ '4'=>2,'6'=>3,'8'=>4,'10'=>5,'12'=>6,'14'=>7,'2*4'=>9,'3*4'=>11,'2*6'=>10,'16'=>8 ];
+
       $old = DB::connection('dunkv1')->table('schedule_group')->get();
 
       foreach ($old as $schedule) {
@@ -33,8 +35,11 @@ class SchedulesTableSeeder extends Seeder
           if ( $size % 2 != 0){
             $size = "2*".(($osize / 4)+1);
           }
+          $newsize = $sizes[strval($size)];
+
         } else {
           $size = 0;
+          $newsize = 1;
         }
 
         DB::connection('dunknxt')->table('schedules')->insert([
@@ -42,7 +47,7 @@ class SchedulesTableSeeder extends Seeder
           'name'   => $schedule->group_name,
           'active' => $active,
           'region_id' => Region::where('code',$region)->first()->id,
-          'size' => $size,
+          'league_size_id' => $newsize,
           'created_at' => now()
         ]);
     }

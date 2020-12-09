@@ -15,9 +15,9 @@
             <div class="modal-body">
                 <div class="card card-info">
 
-                    <form class="form-horizontal" action="{{ route('schedule_event.list-destroy', $schedule->id ) }}" method="POST">
+                    <form class="form-horizontal" action="{{ route('schedule_event.list-destroy', ['schedule'=>$schedule] ) }}" method="POST">
                         @csrf
-                        <input type="hidden" name="_method" value="DELETE">
+                        @method('DELETE')
                         <div class="card-body">
                             @lang('schedule.confirm.event.delete')
                         </div>

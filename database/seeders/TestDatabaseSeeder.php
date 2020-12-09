@@ -18,8 +18,8 @@ class TestDatabaseSeeder extends Seeder
           RegionsTableSeeder::class,
           UsersTableSeeder::class,
           TestUserSeeder::class,
-          LeagueTeamSizesTableSeeder::class,
-          LeagueTeamCharsTableSeeder::class,
+          LeagueSizesTableSeeder::class,
+          LeagueSizeCharsTableSeeder::class,
         ]);
 
     }

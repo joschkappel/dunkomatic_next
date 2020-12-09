@@ -170,15 +170,16 @@ Route::middleware(['auth'])->group(function () {
   Route::get('size/index', 'LeagueSizeController@index')->name('size.index');
 
   Route::post('schedule_event/list-piv', 'ScheduleEventController@list_piv')->name('schedule_event.list-piv');
-  Route::get('schedule_event/list/{id}', 'ScheduleEventController@list')->name('schedule_event.list');
+  Route::get('schedule_event/{schedule}/list', 'ScheduleEventController@list')->name('schedule_event.list');
   Route::get('schedule_event/list-dt/{id}', 'ScheduleEventController@list_dt')->name('schedule_event.list-dt');
-  Route::post('schedule_event/shift', 'ScheduleEventController@shift')->name('schedule_event.shift');
-  Route::post('schedule_event/clone', 'ScheduleEventController@clone')->name('schedule_event.clone');
-  Route::delete('schedule_event/list-destroy/{id}', 'ScheduleEventController@list_destroy')->name('schedule_event.list-destroy');
-  Route::resource('schedule_event', 'ScheduleEventController');
+  Route::post('schedule_event/{schedule}/shift', 'ScheduleEventController@shift')->name('schedule_event.shift');
+  Route::post('schedule_event/{schedule}/clone', 'ScheduleEventController@clone')->name('schedule_event.clone');
+  Route::delete('schedule_event/{schedule}/destroy', 'ScheduleEventController@list_destroy')->name('schedule_event.list-destroy');
+  Route::post('schedule_event/{schedule}', 'ScheduleEventController@store')->name('schedule_event.store');
+  Route::resource('schedule_event', 'ScheduleEventController')->except('store');
 
   Route::delete('schedule/delete/{id}', 'ScheduleController@destroy')->name('schedule.delete');
-  Route::get('schedule/size/{size}/sb', 'ScheduleController@sb_size')->name('schedule.sb.size');
+  Route::get('schedule/{schedule}/size/{league_size}/sb', 'ScheduleController@sb_size')->name('schedule.sb.size');
   Route::resource('schedule', 'ScheduleController')->except('index','create','edit');
   Route::resource('message', 'MessageController')->except('index','create','edit');
 

@@ -32,12 +32,7 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="form-group row ">
-                          <label for="region_id" class="col-sm-4 col-form-label">@lang('club.region')</label>
-                          <div class="col-sm-6">
-                              <input type="text" class="form-control" readonly id="region_id" name="region_id" value="{{ $region  }}">
-                            </div>
-                        </div>
+                        <input type="hidden" class="form-control" readonly id="region_id" name="region_id" value="{{ session('cur_region')->id  }}">
                         <div class="form-group row ">
                               <label for="eventcolor" class="col-sm-4 col-form-label">@lang('schedule.color')</label>
                               <div class="col-sm-6">
@@ -56,7 +51,7 @@
                         <div class="form-group row ">
                               <label for='selSize' class="col-sm-4 col-form-label">@lang('schedule.size')</label>
                               <div class="col-sm-6">
-                                <select class='js-example-placeholder-single js-states form-control select2 @error('size') is-invalid @enderror' id='selSize' name="size"></select>
+                                <select class='js-example-placeholder-single js-states form-control select2 @error('size') is-invalid @enderror' id='selSize' name="league_size_id"></select>
                                 @error('size')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

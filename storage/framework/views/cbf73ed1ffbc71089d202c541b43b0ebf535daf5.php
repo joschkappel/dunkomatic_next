@@ -15,11 +15,9 @@
             <div class="modal-body">
                 <div class="card card-info">
 
-                    <form class="form-horizontal" action="<?php echo e(route('schedule_event.store'), false); ?>" method="POST">
+                    <form class="form-horizontal" action="<?php echo e(route('schedule_event.store', ['schedule'=>$schedule]), false); ?>" method="POST">
                         <?php echo csrf_field(); ?>
                         <div class="card-body">
-                            <input type="hidden" name="schedule_id" value="<?php echo e($schedule->id, false); ?>">
-                            <input type="hidden" name="schedule_size" value="<?php echo e($schedule->size, false); ?>">
                             <div class="form-group row ">
                                 <label for="startdate" class="col-sm-2 col-form-label">Start Date</label>
                                 <div class="col-sm-10">

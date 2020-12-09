@@ -44,12 +44,7 @@ endif;
 unset($__errorArgs, $__bag); ?>
                             </div>
                         </div>
-                        <div class="form-group row ">
-                          <label for="region_id" class="col-sm-4 col-form-label"><?php echo app('translator')->get('club.region'); ?></label>
-                          <div class="col-sm-6">
-                              <input type="text" class="form-control" readonly id="region_id" name="region_id" value="<?php echo e($region, false); ?>">
-                            </div>
-                        </div>
+                        <input type="hidden" class="form-control" readonly id="region_id" name="region_id" value="<?php echo e(session('cur_region')->id, false); ?>">
                         <div class="form-group row ">
                               <label for="eventcolor" class="col-sm-4 col-form-label"><?php echo app('translator')->get('schedule.color'); ?></label>
                               <div class="col-sm-6">
@@ -89,7 +84,7 @@ if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>' id='selSize' name="size"></select>
+unset($__errorArgs, $__bag); ?>' id='selSize' name="league_size_id"></select>
                                 <?php $__errorArgs = ['size'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :

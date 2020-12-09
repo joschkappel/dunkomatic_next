@@ -66,10 +66,10 @@ class ScheduleEventController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function list( $id )
+    public function list(Schedule $schedule )
     {
-      $data['schedule'] = Schedule::find($id);
-      $data['eventcount'] = ScheduleEvent::query()->where('schedule_id', $id)->count();
+      $data['schedule'] = $schedule;
+      $data['eventcount'] = $schedule->events()->count();
 
       return view('schedule/scheduleevent_list', $data);
     }
@@ -175,20 +175,13 @@ class ScheduleEventController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Schedule $schedule)
     {
         Log::debug($request->input());
 
         // check if 2* or 3* size)
-        $size = $request->input('schedule_size');
-        $pos = strpos($size, '*');
-        if ($pos === false ){
-          $repeat = 1;
-        } else {
-          $tokSize = explode('*', $size);
-          $size = $tokSize[1];
-          $repeat = $tokSize[0];
-        }
+        $size = $schedule->league_size->size;
+        $repeat = $schedule->league_size->iterations;
 
         $gamedays = ( ($size - 1) * 2 * $repeat);
         $startdate = CarbonImmutable::parse($request->input('startdate'));
@@ -200,14 +193,14 @@ class ScheduleEventController extends Controller
       //    Log::debug($i.' ->  '.$startweekend.' -> '.$gamedate->addWeeks($i-1)->startOfDay());
 
           $ev = new ScheduleEvent;
-          $ev->schedule_id = $request->input('schedule_id');
+          $ev->schedule_id = $schedule->id;
           $ev->game_day = $i;
           $ev->game_date = $gamedate->addWeeks($i-1)->startOfDay();
           $ev->full_weekend = true;
           $ev->save();
 
         }
-        return redirect()->action('ScheduleEventController@list', ['id' => $request->input('schedule_id')]);
+        return redirect()->action('ScheduleEventController@list', ['schedule' => $schedule]);
     }
 
 
@@ -217,18 +210,18 @@ class ScheduleEventController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function clone(Request $request)
+    public function clone(Request $request, Schedule $schedule)
     {
         Log::debug(print_r($request->all(),true));
-        $from_events = ScheduleEvent::where('schedule_id',$request['clone_from_schedule'])->get();
+        $from_events = Schedule::find($request['clone_from_schedule'])->events()->get();
 
         //Log::debug(print_r($from_events,true));
         foreach ($from_events as $from_event){
           $to_event = $from_event->replicate();
-          $to_event->schedule_id = $request['schedule_id'];
+          $to_event->schedule_id = $schedule->id;
           $to_event->save();
         }
-        return redirect()->action('ScheduleEventController@list', ['id' => $request['schedule_id']]);
+        return redirect()->action('ScheduleEventController@list', ['schedule' => $schedule]);
 
     }
 
@@ -238,17 +231,17 @@ class ScheduleEventController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function shift(Request $request)
+    public function shift(Request $request, Schedule $schedule)
     {
         Log::debug($request->input());
 
         if ( $request->input('direction') === '+'){
-          ScheduleEvent::where('schedule_id', $request->input('schedule_id'))->update(['game_date' => DB::raw('DATE_ADD(game_date, INTERVAL '.$request->input('unitRange').' '.$request->input('unit').')')]);
+          $schedule->events()->update(['game_date' => DB::raw('DATE_ADD(game_date, INTERVAL '.$request->input('unitRange').' '.$request->input('unit').')')]);
         } else {
-          ScheduleEvent::where('schedule_id', $request->input('schedule_id'))->update(['game_date' => DB::raw('DATE_SUB(game_date, INTERVAL '.$request->input('unitRange').' '.$request->input('unit').')')]);
+          $schedule->events()->update(['game_date' => DB::raw('DATE_SUB(game_date, INTERVAL '.$request->input('unitRange').' '.$request->input('unit').')')]);
         }
 
-        return redirect()->action('ScheduleEventController@list', ['id' => $request->input('schedule_id')]);
+        return redirect()->action('ScheduleEventController@list', ['schedule' => $schedule]);
     }
 
     /**
@@ -324,10 +317,10 @@ class ScheduleEventController extends Controller
      * @param  \App\Models\Schedule  $schedule
      * @return \Illuminate\Http\Response
      */
-    public function list_destroy($id)
+    public function list_destroy(Schedule $schedule)
     {
-      Log::info('deleting events for  '.print_r($id,true));
-      ScheduleEvent::where('schedule_id', $id)->delete();
-      return redirect()->action('ScheduleEventController@list', ['id' => $id]);
+      Log::info('deleting events for  '.print_r($schedule->id,true));
+      $schedule->events()->delete();
+      return redirect()->action('ScheduleEventController@list', ['schedule' => $schedule]);
     }
 }

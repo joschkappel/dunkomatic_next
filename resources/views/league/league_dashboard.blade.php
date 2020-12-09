@@ -17,13 +17,13 @@
                       <div class="col-sm-4 pd-2">
                         <ul class="list-group">
                           <li @if (count($assigned_clubs) == 0 ) class="list-group-item list-group-item-danger py-0"> @lang('club.entitled.no')
-                          @elseif (count($assigned_clubs) == $league->schedule['size'] )  class="list-group-item list-group-item-success py-0"> @lang('club.entitled.all')
-                          @else  class="list-group-item list-group-item-warning py-0"> @lang('club.entitled.some', [ 'entitled' => count($assigned_clubs), 'total' => $league->schedule['size']] )
+                          @elseif (count($assigned_clubs) == $league->size )  class="list-group-item list-group-item-success py-0"> @lang('club.entitled.all')
+                          @else  class="list-group-item list-group-item-warning py-0"> @lang('club.entitled.some', [ 'entitled' => count($assigned_clubs), 'total' => $league->size] )
                           @endif
                           </li>
                           <li @if (count($assigned_teams) == 0 ) class="list-group-item list-group-item-danger py-0"> @lang('team.registered.no')
-                          @elseif (count($assigned_teams) == $league->schedule['size'] ) class="list-group-item list-group-item-success py-0"> @lang('team.registered.all')
-                          @else class="list-group-item list-group-item-warning py-0"> @lang('team.registered.some', ['registered'=>count($assigned_teams), 'total'=>$league->schedule['size']])
+                          @elseif (count($assigned_teams) == $league->size ) class="list-group-item list-group-item-success py-0"> @lang('team.registered.all')
+                          @else class="list-group-item list-group-item-warning py-0"> @lang('team.registered.some', ['registered'=>count($assigned_teams), 'total'=>$league->size])
                           @endif
                           </li>
                           <li @if (count($games) == 0 ) class="list-group-item list-group-item-danger py-0"> @lang('game.created.no')
@@ -67,7 +67,7 @@
             <h4 class="card-title"><i class="fas fa-basketball-ball"></i> @lang('club.entitlement') / @lang('team.registration')
               <span class="badge badge-pill badge-info">{{ count($assigned_clubs) }}</span> /
               <span class="badge badge-pill badge-info">{{ count($assigned_teams) }}</span> /
-              <span class="badge badge-pill badge-info">{{ $league->schedule['size'] }}</span>
+              <span class="badge badge-pill badge-info">{{ $league->size }}</span>
             </h4>
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
@@ -89,7 +89,7 @@
                   </tr>
                </thead>
                <tbody>
-                 @for ($i = 1; $i <= $league->schedule['size']; $i++)
+                 @for ($i = 1; $i <= $league->size; $i++)
                  <tr>
                    @isset ( $assigned_clubs[$i] )
                      <td><span class="badge badge-pill badge-dark">{{ $i }}</span></td>
@@ -191,7 +191,7 @@
               @if (!$league->isGenerated) disabled @endif><i class="fa fa-trash"></i>  @lang('game.action.delete.noshow')
           </button>
           <button type="button" class="btn btn-outline-secondary" id="injectTeam"
-              @if ((!$league->isGenerated) or (count($assigned_teams) == $league->schedule['size'])) disabled @endif><i class="fa fa-trash"></i>  @lang('game.action.team.add')
+              @if ((!$league->isGenerated) or (count($assigned_teams) == $league->size)) disabled @endif><i class="fa fa-trash"></i>  @lang('game.action.team.add')
           </button>
           <button type="button" class="btn btn-outline-secondary" id="withdrawTeam"
               @if ((!$league->isGenerated) or (count($assigned_teams) == 0)) disabled @endif><i class="fa fa-trash"></i>  @lang('game.action.team.withdraw')
