@@ -25,7 +25,7 @@ class ScheduleFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
-            'size' => 4,
+            'league_size_id' => 1,
             'region_id' => Region::where('code','HBVDA')->first()->id,
             'active' => True
         ];
