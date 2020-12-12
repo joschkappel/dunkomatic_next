@@ -42,7 +42,9 @@
                             <label for='selLeague' class="col-sm-4 col-form-label">{{trans_choice('league.league',1)}}</label>
                             <div class="col-sm-6">
                                 <select class='js-teamno-placeholder-single js-states form-control select2 @error('league_id') /> is-invalid @enderror' id='selLeague' name="league_id">
-                                  <option  selected value="{{ $team->league_id }}">{{ $team->league['shortname'] }}</option>
+                                  @if ($team->league_id)
+                                    <option  selected value="{{ $team->league_id }}">{{ $team->league['shortname'] }}</option>
+                                  @endif
                                 </select>
                                 @error('league_id')
                                 <div class="invalid-feedback">{{ $message }}</div>

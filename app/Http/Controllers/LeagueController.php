@@ -135,18 +135,18 @@ class LeagueController extends Controller
       return Response::json($response);
     }
 
-    public function selectbox_freechars(League $league)
+    public function sb_freechars(League $league)
     {
-      $size = $league->size;
+      $size = $league->schedule->size;
       $chars = config('dunkomatic.league_team_chars');
       $all_chars = array_slice( array_values($chars), 0, $size, true );
-      //Log::debug(print_r($all_chars,true));
+      // Log::debug(print_r($all_chars,true));
 
       $team_chars = $league->teams()->pluck('league_char')->toArray();
-      //Log::debug(print_r($team_chars,true));
+      // Log::debug(print_r($team_chars,true));
 
       $freechars = array_diff($all_chars,$team_chars);
-      Log::debug(print_r($freechars,true));
+      // Log::debug(print_r($freechars,true));
 
       foreach ($freechars as $key => $value){
         $response[] = array(
@@ -154,6 +154,7 @@ class LeagueController extends Controller
               "text"=>($key+1).' - '.$value
             );
       }
+      Log::debug(print_r($response,true));
       return Response::json($response);
 
     }
@@ -165,11 +166,9 @@ class LeagueController extends Controller
      */
     public function sb_club(Club $club)
     {
-      Log::debug(print_r($club,true));
+      //Log::debug(print_r($club,true));
 
-      $leagues = League::whereHas('clubs', function($q) use ($club)
-                { $q->where('club_id', '=', $club->id);
-                })->get();
+      $leagues = $club->leagues()->orderBy('shortname','ASC')->get();
 
       Log::debug('got leagues '.count($leagues));
       $response = array();
@@ -191,6 +190,7 @@ class LeagueController extends Controller
     {
 
         $data['league'] = League::find($league->id);
+        Log::debug(print_r($data['league']->name));
         $league =   $data['league'];
 
         // get assigned clubs
@@ -252,7 +252,7 @@ class LeagueController extends Controller
     public function create()
     {
       Log::info('create new league');
-      return view('league/league_new', ['region' => Auth::user()->region,
+      return view('league/league_new', ['region' => session('cur_region'),
                                         'agetype' => LeagueAgeType::getInstances(),
                                         'gendertype' => LeagueGenderType::getInstances()]
                                       );

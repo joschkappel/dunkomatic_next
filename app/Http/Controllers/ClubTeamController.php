@@ -50,26 +50,12 @@ class ClubTeamController extends Controller
     {
       Log::debug(print_r($request->all(),true));
 
-      $data = $request->validate( [
-          'club_id' => 'required|exists:clubs,id',
-          'league_id' => 'nullable|exists:leagues,id',
-          'team_no' => 'required|integer|min:1|max:9',
-          'training_day'   => 'required|integer|min:1|max:5',
-          'training_time'  => 'required|string|size:5',
-          'preferred_game_day' => 'present|integer|min:1|max:7',
-          'preferred_game_time' => 'present|string|max:5',
-          'coach_name'  => 'required|string|max:40',
-          'coach_email' => 'present|email:rfc,dns',
-          'coach_phone1' => 'present|string|max:20',
-          'coach_phone2' => 'nullable|string|max:20',
-          'league_prev' => 'nullable|string|max:20',
-          'shirt_color' => 'required|string|max:20'
-      ]);
+      $data = $request->validate( Team::$createRules);
 
       $check = Team::create($data);
 
       return redirect()->action(
-              'ClubController@dashboard', ['language'=>app()->getLocale(), 'id' => $club->id]
+              'ClubController@dashboard', ['language'=>app()->getLocale(), 'club' => $club->id]
       );
     }
 
@@ -114,26 +100,13 @@ class ClubTeamController extends Controller
     {
         Log::debug(print_r($request->all(),true));
 
-        $data = $request->validate( [
-          'league_id' => 'nullable|exists:leagues,id',
-          'team_no' => 'required|integer|min:1|max:9',
-          'training_day'   => 'required|integer|min:1|max:5',
-          'training_time'  => 'required|string|size:5',
-          'preferred_game_day' => 'present|integer|min:1|max:7',
-          'preferred_game_time' => 'present|string|max:5',
-          'coach_name'  => 'required|string|max:40',
-          'coach_email' => 'present|email:rfc,dns',
-          'coach_phone1' => 'present|string|max:20',
-          'coach_phone2' => 'nullable|string|max:20',
-          'league_prev' => 'nullable|string|max:20',
-          'shirt_color' => 'required|string|max:20'
-        ]);
+        $data = $request->validate(Team::$updateRules);
 
         Log::debug(print_r($team,true));
         $check = Team::where('id', $team->id)->update($data);
 
         return redirect()->action(
-                'ClubController@dashboard', ['language'=>app()->getLocale(), 'id' => $team->club_id]
+                'ClubController@dashboard', ['language'=>app()->getLocale(), 'club' => $team->club_id]
         );
     }
 

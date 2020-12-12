@@ -17,11 +17,12 @@ use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Club extends Model implements Auditable
 {
-
-  use \OwenIt\Auditing\Auditable;
+  use \OwenIt\Auditing\Auditable, HasFactory;
+  
   public function generateTags(): array
   {
       return [

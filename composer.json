@@ -37,6 +37,7 @@
         "yajra/laravel-datatables-oracle": "^9.10"
     },
     "require-dev": {
+        "beyondcode/laravel-er-diagram-generator": "^1.5",
         "facade/ignition": "^2.3.6",
         "laravel/dusk": "^6.9",
         "nunomaduro/collision": "^5.0",

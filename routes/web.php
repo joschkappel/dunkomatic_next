@@ -134,7 +134,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('message/{message}', 'MessageController@update')->name('message.update');
   });
 
-  Route::get('league/{league}/freechar/sb', 'LeagueController@selectbox_freechars')->name('league.sb_freechar');
+  Route::get('league/{league}/freechar/sb', 'LeagueController@sb_freechars')->name('league.sb_freechar');
   Route::get('league/club/{club}/sb', 'LeagueController@sb_club')->name('league.sb.club');
   Route::delete('league/{league}/club/{club}', 'LeagueController@deassign_club')->name('league.deassign-club');
   Route::post('league/{league}/club', 'LeagueController@assign_club')->name('league.assign-club');

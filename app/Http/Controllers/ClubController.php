@@ -151,7 +151,7 @@ class ClubController extends Controller
     public function create()
     {
       Log::info('create new club');
-      return view('club/club_new', ['region' => Auth::user()->region]);
+      return view('club/club_new', ['region' => session('cur_region')]);
     }
 
     /**
@@ -267,7 +267,7 @@ class ClubController extends Controller
     public function destroy(Club $club)
     {
       Log::info(print_r($club->id, true));
-      $check = Club::where('id', $club->id)->delete();
+      $check = $club->delete();
 
       return Response::json($check);
     }
