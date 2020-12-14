@@ -1,47 +1,45 @@
-@extends('layouts.page')
+<?php $__env->startSection('plugins.Pace', true); ?>
 
-@section('plugins.Pace', true)
-
-@section('plugins.Select2', true)
-@section('plugins.Chartjs', true)
+<?php $__env->startSection('plugins.Select2', true); ?>
+<?php $__env->startSection('plugins.Chartjs', true); ?>
 
 
-@section('css')
-  <link href="{{ URL::asset('vendor/bootstrap-slider/css/bootstrap-slider.css') }}" rel="stylesheet">
+<?php $__env->startSection('css'); ?>
+  <link href="<?php echo e(URL::asset('vendor/bootstrap-slider/css/bootstrap-slider.css'), false); ?>" rel="stylesheet">
 
-@endsection
+<?php $__env->stopSection(); ?>
 
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">@lang('team.title.plan', ['club'=> $club->shortname ])</div>
+                    <div class="card-title"><?php echo app('translator')->get('team.title.plan', ['club'=> $club->shortname ]); ?></div>
                 </div>
                 <div class="card-body">
                     <form class="form-horizontal" id="teamLeaguePlanForm">
 
-                        @csrf
-                        <input type="hidden" name="club_id" value="{{ $club->id }}">
-                        @foreach ($teams as $team)
-                          @isset ($team['league']->size)
+                        <?php echo csrf_field(); ?>
+                        <input type="hidden" name="club_id" value="<?php echo e($club->id, false); ?>">
+                        <?php $__currentLoopData = $teams; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $team): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                          <?php if(isset($team['league']->size)): ?>
                             <div class="form-group row ">
-                              <label for="league{{$team['league']->id}}" class="col-sm-8 col-form-label">{{ $team['league']->shortname }}</label>
+                              <label for="league<?php echo e($team['league']->id, false); ?>" class="col-sm-8 col-form-label"><?php echo e($team['league']->shortname, false); ?></label>
                               <div class="col-sm-4">
-                                <select class="js-single-size form-control" name="selSize:{{$team['league']->id}}:{{$team->id}}" id='selSize'>
-                                    @for ( $i=1; $i <= $team['league']->size; $i++ )
-                                        <option @if ($team->league_char == $i) selected @endif value="{{ $i }}">{{ $i }}</option>
-                                    @endfor
+                                <select class="js-single-size form-control" name="selSize:<?php echo e($team['league']->id, false); ?>:<?php echo e($team->id, false); ?>" id='selSize'>
+                                    <?php for( $i=1; $i <= $team['league']->size; $i++ ): ?>
+                                        <option <?php if($team->league_char == $i): ?> selected <?php endif; ?> value="<?php echo e($i, false); ?>"><?php echo e($i, false); ?></option>
+                                    <?php endfor; ?>
                                 </select>
                                 </div>
                             </div>
-                          @endisset
-                        @endforeach
+                          <?php endif; ?>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-                            <button type="submit" name="refreshbtn" id="refreshbtn" class="btn btn-info">@lang('team.action.refresh-chart')</button>
-                            <button  name="savebtn" id="savebtn" class="btn btn-success">@lang('team.action.save-assignment')</button>
+                            <button type="submit" name="refreshbtn" id="refreshbtn" class="btn btn-info"><?php echo app('translator')->get('team.action.refresh-chart'); ?></button>
+                            <button  name="savebtn" id="savebtn" class="btn btn-success"><?php echo app('translator')->get('team.action.save-assignment'); ?></button>
                         </div>
                     </form>
 
@@ -51,48 +49,48 @@
                 <div class="card-body">
                     <form class="form-horizontal" id="teamLeagueOptForm">
                           <div class="form-group row ">
-                            <label for="radios" class="col-sm-2 ">@lang('team.game.perday')</label>
+                            <label for="radios" class="col-sm-2 "><?php echo app('translator')->get('team.game.perday'); ?></label>
 
                               <div class="col-sm-10">
                                   <label for="radio1" class="col-form-label radio-inline">
-                                      {{ Form::radio('optmode', 'min', true, ['id' => 'radio1']) }} @lang('team.game.perday.min')
+                                      <?php echo e(Form::radio('optmode', 'min', true, ['id' => 'radio1']), false); ?> <?php echo app('translator')->get('team.game.perday.min'); ?>
                                   </label>
                                   <label for="radio2" class="col-form-label radio-inline">
-                                      {{ Form::radio('optmode', 'max', false, ['id' => 'radio2']) }} @lang('team.game.perday.max')
+                                      <?php echo e(Form::radio('optmode', 'max', false, ['id' => 'radio2']), false); ?> <?php echo app('translator')->get('team.game.perday.max'); ?>
                                   </label>
                                   <label for="radio3" class="col-form-label radio-inline">
-                                      {{ Form::radio('optmode', 'day', false, ['id' => 'radio3']) }} @lang('team.game.perday.num')
+                                      <?php echo e(Form::radio('optmode', 'day', false, ['id' => 'radio3']), false); ?> <?php echo app('translator')->get('team.game.perday.num'); ?>
                                   </label>
                               </div>
                                 <div class="col-sm-10 slider-gray">
                                     <span class="text-info ml-2 mt-1 gperday"></span>
-                                    <input  type="text" name="gperday" id="gperday" value="" class="slider form-control" data-slider-value="1" data-slider-min="1" data-slider-max="{{ count($teams) }}" data-slider-step="1">
+                                    <input  type="text" name="gperday" id="gperday" value="" class="slider form-control" data-slider-value="1" data-slider-min="1" data-slider-max="<?php echo e(count($teams), false); ?>" data-slider-step="1">
                                   </div>
 
 
                           </div>
                           <div class="form-group row ">
                             <div class="col-sm-10 slider-gray">
-                                <label for="optRange">@lang('team.game.combination')</label>
+                                <label for="optRange"><?php echo app('translator')->get('team.game.combination'); ?></label>
                                 <span class="text-info ml-2 mt-1 optRangeSpan"></span>
                                 <input  type="text" id="optRange" value="0" class="slider form-control"  data-slider-min="0" data-slider-max="0" data-slider-step="1">
                               </div>
                           </div>
                         <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-                            <button  type="submit" class="btn btn-info " id="proposebtn" name="proposebtn">@lang('team.action.showon-chart')</button>
+                            <button  type="submit" class="btn btn-info " id="proposebtn" name="proposebtn"><?php echo app('translator')->get('team.action.showon-chart'); ?></button>
                         </div>
                     </form>
 
                 </div>
             </div>
         </div>
-        @include('team/includes/teamleague_chart')
+        <?php echo $__env->make('team/includes/teamleague_chart', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
     </div>
 </div>
-@stop
+<?php $__env->stopSection(); ?>
 
-@section('js')
-<script src="{{ URL::asset('vendor/bootstrap-slider/bootstrap-slider.js')}}"></script>
+<?php $__env->startSection('js'); ?>
+<script src="<?php echo e(URL::asset('vendor/bootstrap-slider/bootstrap-slider.js'), false); ?>"></script>
 
 <script >
     $(document).ajaxStart(function() { Pace.restart(); });
@@ -127,7 +125,7 @@
                               },
                               scaleLabel: {
                                 display: true,
-                                labelString: '@lang('team.game.perday.games')'
+                                labelString: '<?php echo app('translator')->get('team.game.perday.games'); ?>'
                               }
                           }],
                     xAxes: [{
@@ -150,7 +148,7 @@
             var data = $(this).serialize();
             $.ajax({
                 type: 'POST',
-                url: '{{ route('team.list-chart', app()->getLocale()) }}',
+                url: '<?php echo e(route('team.list-chart', app()->getLocale()), false); ?>',
                 data: data,
                 dataType: 'json',
                 success: function(response) {
@@ -224,7 +222,7 @@
               if (!check){
                 $.ajax({
                     type: 'POST',
-                    url: '{{ route('team.propose', app()->getLocale() )}}',
+                    url: '<?php echo e(route('team.propose', app()->getLocale() ), false); ?>',
                     data: data,
                     dataType: 'json',
                     success: function(response) {
@@ -246,7 +244,7 @@
           Pace.track(function () {
             $.ajax({
                 type: 'POST',
-                url: '{{ route('team.store-plan') }}',
+                url: '<?php echo e(route('team.store-plan'), false); ?>',
                 data: data,
                 dataType: 'json',
                 success: function(response) {
@@ -270,4 +268,6 @@
         });
     });
 </script>
-@stop
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.page', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/dunkonxt/resources/views/team/teamleague_dashboard.blade.php ENDPATH**/ ?>

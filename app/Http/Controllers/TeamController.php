@@ -19,16 +19,7 @@ use Illuminate\Support\Facades\DB;
 
 class TeamController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-    public function league_selectbox(League $league)
+    public function sb_league(League $league)
     {
         $teams =  $league->teams()->with('club')->get();
         //Log::debug(print_r($teams,true));
@@ -37,7 +28,7 @@ class TeamController extends Controller
         foreach ($teams as $t){
           $response[] = array(
                 "id"=>$t->id,
-                "text"=>$t['club']->shortname.''.$t->team_no
+                "text"=>$t['club']->shortname.$t->team_no
               );
         }
         return Response::json($response);
@@ -46,7 +37,11 @@ class TeamController extends Controller
     public function withdraw(Request $request, League $league)
     {
         Log::debug(print_r($request->all(),true));
-        $team = Team::findOrFail($request->input('team_id'));
+        $data = $request->validate( [
+            'team_id' => 'required|exists:teams,id',
+        ]);
+
+        $team = Team::findOrFail($data['team_id']);
 
         // Team: league_prev, league_id, league_char, league_no,
         $team->update(['league_prev'=>$league->shortname,'league_id'=>null,'league_char'=>null,'league_no'=>null]);
@@ -60,7 +55,7 @@ class TeamController extends Controller
 
     }
 
-    public function freeteam_selectbox(League $league)
+    public function sb_freeteam(League $league)
     {
         //Log::debug(print_r($league,true));
         $free_teams = session('cur_region')->teams()->whereNull('league_id')->orWhere(function($query) use($league)
@@ -73,7 +68,7 @@ class TeamController extends Controller
         foreach ($free_teams as $t){
           $response[] = array(
                 "id"=>$t->id,
-                "text"=>$t['club']->shortname.''.$t->team_no.' ('.$t->league_prev.')'
+                "text"=>$t['club']->shortname.$t->team_no.' ('.$t->league_prev.')'
               );
         }
         return Response::json($response);
@@ -82,13 +77,18 @@ class TeamController extends Controller
     public function inject(Request $request, League $league)
     {
         Log::debug(print_r($request->all(),true));
-        $league_no = $request->input('league_no');
+        $data = $request->validate( [
+            'league_no' => 'required|digits_between:1,16',
+            'team_id' => 'required|exists:teams,id'
+        ]);
+
+        $league_no = $data['league_no'];
         $size = $league->size;
         $chars = config('dunkomatic.league_team_chars');
         $upperArr = array_slice( $chars, 0, $size, true );
         $league_char = $upperArr[$league_no];
         // update team
-        $team = Team::find($request->input('team_id'));
+        $team = Team::find($data['team_id']);
         $team->update(['league_id'=>$league->id, 'league_no'=>$league_no, 'league_char'=>$league_char]);
 
         $used_char = $league->clubs()->pluck('league_char')->toArray();
@@ -164,26 +164,6 @@ class TeamController extends Controller
         return redirect()->back();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -195,7 +175,6 @@ class TeamController extends Controller
     {
       Log::info(print_r($request->input(), true));
       $upperArr = config('dunkomatic.league_team_chars');
-      $club_id = $request->input('club_id');
 
       foreach ($request->input() as $key => $league_no) {
         if ( strpos($key, 'sel') !== false ){
@@ -213,50 +192,6 @@ class TeamController extends Controller
       return Response::json($check);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Team  $team
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Team $team)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Team  $team
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Team $team)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Team  $team
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Team $team)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Team  $team
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Team $team)
-    {
-        //
-    }
 
     /**
      * Attach team to league
@@ -268,24 +203,28 @@ class TeamController extends Controller
      {
          Log::info(print_r($request->input(), true));
          // get data
-         $team_id = $request->input('team_id');
-         $league_id = $request->input('league_id');
-         $club_id = $request->input('club_id');
+         $data = $request->validate( [
+             'team_id' => 'required|exists:teams,id',
+             'club_id' => 'required|exists:clubs,id',
+             'league_id' => 'required|exists:leagues,id',
+             'league_no' => 'required|digits_between:1,16',
+         ]);
+
+         $team_id = $data['team_id'];
+         $league_id = $data['league_id'];
+         $club_id = $data['club_id'];
 
          $udata = array();
          $udata['league_id'] = $league_id;
-
-         if ( $request->input('league_no') !== null ){
-           $udata['league_no'] = $request->input('league_no');
-           $upperArr = config('dunkomatic.league_team_chars');
-           $udata['league_char'] = $upperArr[$request->input('league_no')];
-         }
+         $udata['league_no'] = $data['league_no'];
+         $upperArr = config('dunkomatic.league_team_chars');
+         $udata['league_char'] = $upperArr[$data['league_no']];
 
          Log::debug(print_r($udata,true));
          $team = Team::findOrFail($team_id);
          $team->update($udata);
 
-         return redirect()->route('club.dashboard', ['language'=>app()->getLocale(), 'id' => $club_id ]);
+         return redirect()->route('club.dashboard', ['language'=>app()->getLocale(), 'club' => $club_id ]);
      }
 
      /**
@@ -294,16 +233,20 @@ class TeamController extends Controller
       * @param  \App\Models\League  $league
       * @return \Illuminate\Http\Response
       */
-      public function pick_char(Request $request )
+      public function pick_char(Request $request, League $league )
       {
           Log::info(print_r($request->input(), true));
           // get data
-          $team_id = $request->input('team_id');
-          $league_id = $request->input('league_id');
-          $league_no = $request->input('league_no');
+          $data = $request->validate( [
+              'team_id' => 'required|exists:teams,id',
+              'league_no' => 'required|digits_between:1,16',
+          ]);
+
+          $team_id = $data['team_id'];
+          $league_no = $data['league_no'];
 
           $udata = array();
-          $udata['league_id'] = $league_id;
+          $udata['league_id'] = $league->id;
           $udata['league_no'] = $league_no;
           $upperArr = config('dunkomatic.league_team_chars');
           $udata['league_char'] = $upperArr[$league_no];
@@ -326,9 +269,15 @@ class TeamController extends Controller
       {
           Log::info(print_r($request->input(), true));
           // get data
-          $team_id = $request->input('team_id');
-          $league_id = $request->input('league_id');
-          $club_id = $request->input('club_id');
+          $data = $request->validate( [
+              'team_id' => 'required|exists:teams,id',
+              'club_id' => 'required|exists:clubs,id',
+              'league_id' => 'required|exists:leagues,id',
+          ]);
+
+          $team_id = $data['team_id'];
+          $league_id = $data['league_id'];
+          $club_id = $data['club_id'];
 
           Team::where('id', $team_id)->update( ['league_id' => null, 'league_no' => null, 'league_char' => null ]);
           $check = League::find($league_id)->clubs()->wherePivot('club_id','=',$club_id)->detach();
@@ -341,10 +290,10 @@ class TeamController extends Controller
       *
       * @return \Illuminate\Http\Response
       */
-     public function plan_leagues( $language, $club )
+     public function plan_leagues( $language, Club $club )
      {
-        $data['club'] =  Club::find(intval($club));
-        $data['teams'] = $data['club']->teams()->whereNotNull('league_id')->with('league.schedule')->get();
+        $data['club'] =  $club;
+        $data['teams'] = $data['club']->teams()->whereNotNull('league_id')->with('league')->get();
 
         return view('team/teamleague_dashboard', $data);
       }
@@ -366,9 +315,9 @@ class TeamController extends Controller
           }
         }
 
-        $select .= ', '.implode(' ,', $cols).' FROM league_team_schemes lts, schedule_events se  , leagues l , schedules s ';
+        $select .= ', '.implode(' ,', $cols).' FROM league_size_schemes lts, schedule_events se  , leagues l , schedules s ';
         $select .= ' WHERE l.id in ('.implode(' ,', $where).') ';
-        $select .= ' AND lts.size = s.size AND s.id = l.schedule_id AND se.schedule_id = l.schedule_id AND se.game_day = lts.game_day';
+        $select .= ' AND lts.id = s.league_size_id AND s.id = l.schedule_id AND se.schedule_id = l.schedule_id AND se.game_day = lts.game_day';
         $select .= ' GROUP BY se.game_date';
 
         Log::debug($select);
@@ -397,9 +346,9 @@ class TeamController extends Controller
            }
          }
 
-         $select .= ' FROM league_team_schemes lts, schedule_events se  , leagues l , schedules s ';
+         $select .= ' FROM league_size_schemes lts, schedule_events se  , leagues l , schedules s ';
          $select .= ' WHERE ('.implode(' OR ', $where).') ';
-         $select .= ' AND lts.size = s.size AND s.id = l.schedule_id AND se.schedule_id = l.schedule_id AND se.game_day = lts.game_day';
+         $select .= ' AND lts.id = s.league_size_id AND s.id = l.schedule_id AND se.schedule_id = l.schedule_id AND se.game_day = lts.game_day';
          $select .= " GROUP BY date_format(se.game_date, '%b-%d-%Y')";
 
          // Log::debug($select);
@@ -419,7 +368,7 @@ class TeamController extends Controller
             $variance = 0.0;
 
                     // calculating mean using array_sum() method
-            $average = array_sum($arr)/$num_of_elements;
+            $average = ($num_of_elements > 0 ) ? array_sum($arr)/$num_of_elements : 0;
 
             foreach($arr as $i)
             {
@@ -428,7 +377,9 @@ class TeamController extends Controller
                 $variance += pow(($i - $average), 2);
             }
 
-            return (float)sqrt($variance/$num_of_elements);
+            $sd = ($num_of_elements > 0) ? (float)sqrt($variance/$num_of_elements) : 0;
+            return $sd;
+
         }
 
         public function Cartesian_Product($data)
@@ -518,14 +469,12 @@ class TeamController extends Controller
 
           foreach ($request->all() as $key => $league_no) {
             if ( strpos($key, 'sel') !== false ){
-              $league_id = explode(':', $key)[1];
-              $schedule_id = League::select('schedule_id')->where('id', $league_id)->value('schedule_id');
+              $league = League::find(explode(':', $key)[1]);
 
-              $leagues['id'][] = $league_id;
+              $leagues['id'][] = $league->id;
               $leagues['team_no'][] = $league_no;
-              $leagues['schedule_id'][] = $schedule_id;
-              $size = Schedule::select('size')->where('id', $schedule_id)->value('size');
-              $leagues['size'][] = range(1, $size);
+              $leagues['schedule_id'][] = $league->schedule->id;
+              $leagues['size'][] = range(1, $league->size);
             }
           }
           Log::info('ref-data loaded - '.print_r(count($request->input())-4,true));
@@ -540,8 +489,8 @@ class TeamController extends Controller
           //Log::debug(print_r($combinations, true));
 
           $sel = "SELECT date(se.game_date) as gdate, l.id as glid, lts.team_home as ghome ";
-          $sel .= " FROM schedule_events se, schedules s, league_team_schemes lts, leagues l ";
-          $sel .= "WHERE se.schedule_id = s.id AND lts.size = s.size AND lts.game_day = se.game_day AND l.schedule_id = s.id  ";
+          $sel .= " FROM schedule_events se, schedules s, league_size_schemes lts, leagues l ";
+          $sel .= "WHERE se.schedule_id = s.id AND lts.id = s.league_size_id AND lts.game_day = se.game_day AND l.schedule_id = s.id  ";
           $sel .= "AND l.id in (".implode(',', $leagues['id']).")";
 
           $filtercomb = DB::select($sel);
@@ -564,7 +513,7 @@ class TeamController extends Controller
             //Log::debug(print_r($homies,true));
             $gdays = array_count_values(array_column($homies, 'gdate'));
           //  Log::debug(print_r($gdays,true));
-            $hdays_a[$i] = array_sum($gdays)/count($gdays);
+            $hdays_a[$i] = (count($gdays) > 0) ? array_sum($gdays)/count($gdays) : 0 ;
             $hdays_s[$i] = $this->Stand_Deviation($gdays);
             //Log::info('avg is :'.$avgday);
           }

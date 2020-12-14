@@ -16,13 +16,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use OwenIt\Auditing\Contracts\Auditable;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class League extends Model implements Auditable
 {
 
-  use \OwenIt\Auditing\Auditable;
+  use \OwenIt\Auditing\Auditable, hasFactory;
   public function generateTags(): array
   {
       return [

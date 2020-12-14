@@ -353,6 +353,58 @@ class LeagueControllerTest extends TestCase
        $response->assertStatus(200)
                 ->assertJson([]);
       }
+      /**
+       * assign_club
+       *
+       * @test
+       * @group league
+       * @group controller
+       *
+       * @return void
+       */
+      public function assign_club()
+      {
+
+        $league = $this->region->leagues()->first();
+        $club = $this->region->clubs()->first();
+
+        $response = $this->authenticated( )
+                          ->post(route('league.assign-club',['league'=>$league]),[
+                            'item_id' => 1,
+                            'club_id' => $club->id
+                          ]);
+
+        $response->assertStatus(302)
+                 ->assertSessionHasNoErrors()
+                 ->assertHeader('Location', route('league.dashboard',['language'=>'de', 'league'=>$league]));
+
+        $this->assertDatabaseHas('club_league', ['club_id'=>$club->id,'league_id'=>$league->id,'league_no'=>1]);
+
+      }
+      /**
+       * deassign_club
+       *
+       * @test
+       * @group league
+       * @group controller
+       *
+       * @return void
+       */
+      public function deassign_club()
+      {
+        //$this->withoutExceptionHandling();
+        $league = $this->region->leagues()->first();
+        $club = $league->clubs()->first();
+
+        $response = $this->authenticated( )
+                          ->delete(route('league.deassign-club',['league'=>$league, 'club'=>$club]));
+
+        $response->assertStatus(200)
+                 ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseMissing('club_league', ['club_id'=>$club->id,'league_id'=>$league->id,'league_no'=>1]);
+
+      }
     /**
      * destroy
      *

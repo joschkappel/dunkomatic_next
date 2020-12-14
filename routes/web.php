@@ -80,7 +80,6 @@ Route::group([
     Route::post('team/league/plan/pivot', 'TeamController@list_pivot')->name('team.list-piv');
     Route::post('team/league/plan/chart', 'TeamController@list_chart')->name('team.list-chart');
     Route::post('team/league/plan/propose', 'TeamController@propose_combination')->name('team.propose');
-    Route::post('team/league/plan/store', 'TeamController@store_plan')->name('team.store-plan');
     Route::resource('club.team', 'ClubTeamController')->shallow()->only('index','create','edit');;
 
     Route::get('schedule_event/calendar',function() { return view('schedule/scheduleevent_cal');})->name('schedule_event.cal');
@@ -116,7 +115,7 @@ Route::middleware(['auth'])->group(function () {
   Route::resource('club', 'ClubController')->only('store','update','destroy');
   Route::get('club/{club}/game/chart_home', 'ClubGameController@chart_home')->name('club.game.chart_home');
   Route::get('club/{club}/gym/{gym_no}', 'ClubGymController@show')->name('club.gym.show');
-  Route::get('club/{club}/list/gym', 'ClubGymController@list_select4club')->name('gym.list_sel4club');
+  Route::get('club/{club}/list/gym', 'ClubGymController@sb_club')->name('gym.sb.club');
   Route::resource('club.gym', 'ClubGymController')->shallow()->only('store','update','destroy');
 
   Route::group(['prefix' => '{region}'], function () {
@@ -154,12 +153,13 @@ Route::middleware(['auth'])->group(function () {
   Route::delete('league/{league}/team', 'TeamController@withdraw')->name('league.team.withdraw');
   Route::post('league/{league}/team', 'TeamController@inject')->name('league.team.inject');
   Route::post('league/{league}/char', 'TeamController@pick_char')->name('league.team.pickchar');
-  Route::get('league/{league}/team/sb', 'TeamController@league_selectbox')->name('league.team.sb');
+  Route::get('league/{league}/team/sb', 'TeamController@sb_league')->name('league.team.sb');
   Route::resource('league.game', 'LeagueGameController')->shallow()->except(['index','create','edit']);;
 
   Route::put('team/league', 'TeamController@assign_league')->name('team.assign-league');
   Route::delete('team/league', 'TeamController@deassign_league')->name('team.deassign-league');
-  Route::get('team/league/{league}/free/sb', 'TeamController@freeteam_selectbox')->name('team.free.sb');
+  Route::get('team/league/{league}/free/sb', 'TeamController@sb_freeteam')->name('team.free.sb');
+  Route::post('team/league/plan', 'TeamController@store_plan')->name('team.store-plan');
 
   Route::resource('club.team', 'ClubTeamController')->shallow()->except('index','create','edit');;
 

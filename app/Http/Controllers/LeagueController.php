@@ -421,6 +421,7 @@ class LeagueController extends Controller
               }
             }
           }
+          Log::debug(print_r(Response::json($check),true));
 
           return Response::json($check);
       }

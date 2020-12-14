@@ -47,6 +47,7 @@
                </thead>
                <tbody>
                @foreach ($club['teams'] as $t )
+                @isset($t['league'])
                  <tr>
                    <td hidden>{{ $t->league['id'] }}</td>
                    <td hidden>{{ $t->id }}</td>
@@ -68,6 +69,7 @@
                   <td>@if ($t['league']['schedule']['size'] <= 14) <i class="far fa-times-circle" style="color:gray"></i> @elseif ($t->league_no == 14) <i class="far fa-dot-circle fa-lg" style="color:green"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('O')) <i class="far fa-frown" style="color:red"></i> @endif</td>
                   <td>@if ($t['league']['schedule']['size'] <= 15) <i class="far fa-times-circle" style="color:gray"></i> @elseif ($t->league_no == 15) <i class="far fa-dot-circle fa-lg" style="color:green"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('P')) <i class="far fa-frown" style="color:red"></i> @endif</td>
                   <td>@if ($t['league']['schedule']['size'] <= 16) <i class="far fa-times-circle" style="color:gray"></i> @elseif ($t->league_no == 16) <i class="far fa-dot-circle fa-lg" style="color:green"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('Q')) <i class="far fa-frown" style="color:red"></i> @endif</td>
+                @endisset
               @endforeach
             </tbody>
          </table>
@@ -183,7 +185,9 @@
       selData['club_id'] = {!! json_encode($club->id) !!};
       selData['_token'] = "{{ csrf_token() }}";
       @foreach ($club['teams'] as $t )
+        @isset($t['league'])
         selData['selSize:'+ {!!$t['league']['id']!!}+':'+{!!$t['id']!!}] = {!!$t['league_no']!!};
+        @endisset
       @endforeach
       console.log(selData);
       var data = JSON.stringify(selData);

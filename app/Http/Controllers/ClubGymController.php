@@ -21,7 +21,7 @@ class ClubGymController extends Controller
         //
     }
 
-    public function list_select4club(Club $club)
+    public function sb_club(Club $club)
     {
       //Log::debug(print_r($club,true));
       $gyms = $club->gyms()->get();
@@ -68,7 +68,7 @@ class ClubGymController extends Controller
       ]);
 
       $check = Gym::create($data);
-      return redirect()->route('club.dashboard', ['language'=>app()->getLocale(),'id' => $club->id ]);
+      return redirect()->route('club.dashboard', ['language'=>app()->getLocale(),'club' => $club->id ]);
     }
 
     /**
@@ -130,7 +130,7 @@ class ClubGymController extends Controller
       ]);
 
       $check = gym::where('id', $gym->id)->update($data);
-      return redirect()->route('club.dashboard', ['language'=>app()->getLocale(), 'id' => $gym->club_id ]);
+      return redirect()->route('club.dashboard', ['language'=>app()->getLocale(), 'club' => $gym->club_id ]);
 
     }
 
@@ -146,6 +146,6 @@ class ClubGymController extends Controller
       Log::info('deleteing gym '.$gym->id);
       $check = Gym::where('id', $gym->id)->delete();
 
-      return redirect()->route('club.dashboard', ['language'=>app()->getLocale(), 'id' => $gym->club_id ]);
+      return redirect()->route('club.dashboard', ['language'=>app()->getLocale(), 'club' => $gym->club_id ]);
     }
 }
