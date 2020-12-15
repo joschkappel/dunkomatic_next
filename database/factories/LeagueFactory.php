@@ -28,7 +28,7 @@ class LeagueFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name,
+            'name' => $this->faker->words(2,true),
             'shortname' => $this->faker->regexify('[A-Z]{3}'),
             'region_id' => Region::where('code','HBVDA')->first()->id,
             'active' => True,

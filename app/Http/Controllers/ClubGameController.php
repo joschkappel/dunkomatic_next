@@ -21,16 +21,7 @@ use Illuminate\Support\Facades\Storage;
 
 class ClubGameController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @param  \App\Models\Club  $club
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Club $club)
-    {
-        //
-    }
+
     public function chart($language, Club $club)
     {
         return view('club/club_hgame_chart', ['club' => $club]);
@@ -176,75 +167,5 @@ class ClubGameController extends Controller
         return redirect()->route('club.edit.homegame', ['language'=>$language, 'club' => $club]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @param  \App\Models\Club  $club
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Club $club)
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Club  $club
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request, Club $club)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Club  $club
-     * @param  \App\Models\Game  $game
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Club $club, Game $game)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Club  $club
-     * @param  \App\Models\Game  $game
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Club $club, Game $game)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Club  $club
-     * @param  \App\Models\Game  $game
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Club $club, Game $game)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Club  $club
-     * @param  \App\Models\Game  $game
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Club $club, Game $game)
-    {
-        //
-    }
 }

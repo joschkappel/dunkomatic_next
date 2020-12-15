@@ -16,6 +16,10 @@ class ClubFactory extends Factory
      */
     protected $model = Club::class;
 
+    // generate full club
+    // Club::factory()->hasAttached( Member::factory()->count(3),['role_id'=>2])->hasTeams(6)->hasGyms(2)->create()
+    //
+    
     /**
      * Define the model's default state.
      *
@@ -24,7 +28,7 @@ class ClubFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name,
+            'name' => $this->faker->words(2,true),
             'shortname' => $this->faker->regexify('[A-Z]{4}'),
             'url' => $this->faker->url,
             'club_no' => $this->faker->randomNumber(7, true),

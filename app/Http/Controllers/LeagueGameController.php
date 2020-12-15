@@ -65,16 +65,6 @@ class LeagueGameController extends Controller
         Log::debug(print_r($glist,true));
         return $glist;
       }
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\Response
-     */
-    public function create(League $league)
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -152,30 +142,6 @@ class LeagueGameController extends Controller
         }
 
         return Response::json(['success' => 'all good'], 200);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\League  $league
-     * @param  \App\Models\Game  $game
-     * @return \Illuminate\Http\Response
-     */
-    public function show(League $league, Game $game)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\League  $league
-     * @param  \App\Models\Game  $game
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(League $league, Game $game)
-    {
-        //
     }
 
     /**

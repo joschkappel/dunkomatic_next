@@ -289,9 +289,9 @@ class LeagueControllerTest extends TestCase
       $response->assertStatus(200);
       $response->assertViewIs('league.league_dashboard');
       $response->assertViewHas('league',$league)
-               ->assertViewHas('clubs',$league->clubs()->get())
-               ->assertViewHas('members',null)
-               ->assertViewHas('games',$league->games()->get());
+               ->assertViewHas('clubs')
+               ->assertViewHas('members')
+               ->assertViewHas('games');
     }
     /**
      * sb_region

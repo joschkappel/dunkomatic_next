@@ -22,8 +22,13 @@ class MemberFactory extends Factory
     public function definition()
     {
         return [
-          'lastname' => $this->faker->name,
+          'lastname' => $this->faker->lastname,
           'email1' => $this->faker->unique()->safeEmail,
+          'firstname' => $this->faker->firstname,
+          'zipcode' => $this->faker->postcode,
+          'city' => $this->faker->city,
+          'street' => $this->faker->streetAddress,
+          'mobile' => $this->faker->phoneNumber,
         ];
     }
 }

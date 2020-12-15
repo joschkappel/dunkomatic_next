@@ -188,10 +188,7 @@ class LeagueController extends Controller
      */
     public function dashboard( $language, League $league )
     {
-
-        $data['league'] = League::find($league->id);
-        Log::debug(print_r($data['league']->name));
-        $league =   $data['league'];
+        $data['league'] = $league;
 
         // get assigned clubs
         $clubs = $league->clubs()->get();

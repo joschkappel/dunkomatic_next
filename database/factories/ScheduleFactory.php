@@ -24,7 +24,7 @@ class ScheduleFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name,
+            'name' => $this->faker->words(2,true),
             'league_size_id' => 2,
             'eventcolor' => $this->faker->hexColor(),
             'region_id' => Region::where('code','HBVDA')->first()->id,

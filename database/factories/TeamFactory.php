@@ -24,11 +24,11 @@ class TeamFactory extends Factory
     public function definition()
     {
         return [
-            'team_no' => $this->faker->randomDigitNot(0),
+            'team_no' => $this->faker->randomDigitNotNull(),
             'training_day'   => $this->faker->numberBetween(1,5),
-            'training_time'  => $this->faker->time('H:i'),
+            'training_time'  => $this->faker->time('H:').'30',
             'preferred_game_day' => $this->faker->numberBetween(1,7),
-            'preferred_game_time' => $this->faker->time('H:i'),
+            'preferred_game_time' => $this->faker->time('H:').'00',
             'coach_name'  => $this->faker->name(),
             'coach_email' => $this->faker->email(),
             'coach_phone1' => $this->faker->phoneNumber(),
