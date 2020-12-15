@@ -181,7 +181,7 @@
           allowClear: true,
           minimumResultsForSearch: -1,
           ajax: {
-                  url: "{{ route('member.region.sb', ['region' => $league->region()->first()->id]) }}",
+                  url: "{{ route('member.sb.region', ['region' => $league->region()->first()->id]) }}",
                   type: "get",
                   delay: 250,
                   processResults: function (response) {

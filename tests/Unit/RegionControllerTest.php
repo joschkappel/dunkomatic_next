@@ -26,10 +26,9 @@ class RegionControllerTest extends TestCase
     public function set_region()
     {
       $response = $this->authenticated()
-                        ->get($this->region->id.'/region/set');
+                        ->get(route('region.set', ['region'=>$this->region]));
 
-      $response->assertStatus(302)
-               ->assertHeader('Location', url('/de/home'))
+      $response->assertRedirect(route('home',['language'=>'de']))
                ->assertSessionHas('cur_region.code',$this->region->code);
     }
 
@@ -44,9 +43,10 @@ class RegionControllerTest extends TestCase
      */
     public function admin_sb()
     {
-      $response = $this->get('region/admin/sb');
+      $response = $this->get(route('region.admin.sb'));
 
-      $response->assertStatus(200)
+      $response->assertSessionHasNoErrors()
+               ->assertStatus(200)
                ->assertJson([['id'=>$this->region->id,'text'=>$this->region->name]]);
     }
 

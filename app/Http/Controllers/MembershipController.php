@@ -14,17 +14,6 @@ class MembershipController extends Controller
 {
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Membership  $memberRole
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Membership $memberRole)
-    {
-        //
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Membership  $memberRole

@@ -95,10 +95,8 @@ class LeagueControllerTest extends TestCase
                           'active' => True,
                           'above_region' => False
                       ]);
-      $response
-          ->assertStatus(302)
-          ->assertSessionHasNoErrors()
-          ->assertHeader('Location', route('league.index', ['language'=>'de']));
+      $response->assertRedirect(route('league.index', ['language'=>'de']))
+               ->assertSessionHasNoErrors();
 
       $this->assertDatabaseHas('leagues', ['name' => 'testleague']);
 

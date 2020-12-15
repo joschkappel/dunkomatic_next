@@ -64,7 +64,7 @@ class ClubMembershipController extends Controller
           'selRole'   => 'required|array|min:1',
           'selRole.*' => ['required', new EnumValue(Role::class, false)],
           'function'  => 'nullable|max:40',
-      ]);
+      ] );
 
       Log::debug(print_r($data['selRole'],true));
 
@@ -114,12 +114,12 @@ class ClubMembershipController extends Controller
      */
     public function update(Request $request, Club $club, Member $member)
     {
-              $data = $request->validate( [
-                'member_id' => 'required|exists:members,id',
-                'selRole'   => 'required|array|min:1',
-                'selRole.*' => ['required', new EnumValue(Role::class, false)],
-                'function'  => 'nullable|max:40',
-              ]);
+              $data = $request->validate([
+                  'member_id' => 'required|exists:members,id',
+                  'selRole'   => 'required|array|min:1',
+                  'selRole.*' => ['required', new EnumValue(Role::class, false)],
+                  'function'  => 'nullable|max:40',
+              ] );
 
               //Log::info(print_r($data, true));
               Log::debug(print_r($request->all(),true));

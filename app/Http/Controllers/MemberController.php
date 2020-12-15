@@ -26,7 +26,7 @@ class MemberController extends Controller
        *
        * @return \Illuminate\Http\Response
        */
-      public function list_region_sb( Region $region)
+      public function sb_region( Region $region)
       {
         Log::info('members for region '.$region->name);
          $members = Membership::whereIn('membership_id', $region->clubs()->pluck('id'))
@@ -64,20 +64,8 @@ class MemberController extends Controller
     public function store(Request $request)
     {
         Log::info(print_r($request->all(),true));
-        $data = Validator::make($request->all(), [
-            'firstname' => 'required|max:20',
-            'lastname' => 'required|max:60',
-            'zipcode' => 'required|max:10',
-            'city' => 'required|max:40',
-            'street' => 'required|max:40',
-            'mobile' => 'required_without:phone1|max:40',
-            'phone1' => 'required_without:mobile|max:40',
-            'phone2' => 'max:40',
-            'fax1' => 'max:40',
-            'fax2' => 'max:40',
-            'email1' => 'required|max:60|email:rfc,dns',
-            'email2' => 'nullable|max:60|email:rfc,dns',
-        ])->validateWithBag('err_member');
+        $data = Validator::make($request->all(), Member::$createRules)
+                          ->validateWithBag('err_member');
 
         $member = Member::create($data);
 
@@ -110,20 +98,8 @@ class MemberController extends Controller
     public function update(Request $request, Member $member)
     {
         Log::debug(print_r($request->all(),true));
-        $data = Validator::make($request->all(), [
-            'firstname' => 'required|max:20',
-            'lastname' => 'required|max:60',
-            'zipcode' => 'required|max:10',
-            'city' => 'required|max:40',
-            'street' => 'required|max:40',
-            'mobile' => 'required_without:phone1|max:40',
-            'phone1' => 'required_without:mobile|max:40',
-            'phone2' => 'max:40',
-            'fax1' => 'max:40',
-            'fax2' => 'max:40',
-            'email1' => 'required|max:60|email:rfc,dns',
-            'email2' => 'nullable|max:60|email:rfc,dns',
-        ])->validateWithBag('err_member');
+        $data = Validator::make($request->all(), Member::$createRules)
+                           ->validateWithBag('err_member');
 
         $member->update($data);
 

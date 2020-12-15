@@ -1,3 +1,4 @@
+<?php $__env->startSection('plugins.ICheck',true); ?>
 <?php $__env->startSection('plugins.Select2', true); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -207,7 +208,7 @@ unset($__errorArgs, $__bag); ?>
           allowClear: true,
           minimumResultsForSearch: -1,
           ajax: {
-                  url: "<?php echo e(route('member.region.sb', ['region' => $league->region()->first()->id]), false); ?>",
+                  url: "<?php echo e(route('member.sb.region', ['region' => $league->region()->first()->id]), false); ?>",
                   type: "get",
                   delay: 250,
                   processResults: function (response) {

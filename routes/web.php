@@ -164,7 +164,7 @@ Route::middleware(['auth'])->group(function () {
   Route::resource('club.team', 'ClubTeamController')->shallow()->except('index','create','edit');;
 
   Route::post('role/index', 'RoleController@index')->name('role.index');
-  Route::get('member/region/{region}', 'MemberController@list_region_sb')->name('member.region.sb');
+  Route::get('member/region/{region}', 'MemberController@sb_region')->name('member.sb.region');
 
   Route::get('scheme/{size}/list_piv', 'LeagueSchemeController@list_piv')->name('scheme.list_piv');
   Route::get('size/index', 'LeagueSizeController@index')->name('size.index');
@@ -179,7 +179,7 @@ Route::middleware(['auth'])->group(function () {
   Route::resource('schedule_event', 'ScheduleEventController')->except('store');
 
   Route::delete('schedule/delete/{id}', 'ScheduleController@destroy')->name('schedule.delete');
-  Route::get('schedule/{schedule}/size/sb', 'ScheduleController@sb_size')->name('schedule.sb.size');
+  Route::get('schedule/{schedule}/size/league_size}/sb', 'ScheduleController@sb_size')->name('schedule.sb.size');
   Route::resource('schedule', 'ScheduleController')->except('index','create','edit');
   Route::resource('message', 'MessageController')->except('index','create','edit');
 
