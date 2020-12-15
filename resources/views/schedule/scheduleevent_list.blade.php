@@ -85,16 +85,17 @@
         $('body').on('click', '#eventEditLink', function(){
             $('#game_day').val($(this).data('game-day'));
             console.log($(this).data('game-date'));
-            old_gamedate = moment($(this).data('game-date')).format('MM/DD/YYYY');
+            old_gamedate = moment($(this).data('game-date')).format('l');
             if ($(this).data('weekend')=='1'){
               $('input[name="full_weekend"]').attr('checked', true);
             } else {
               $('input[name="full_weekend"]').attr('checked', false);
             }
+            moment.locale("{{ app()->getLocale() }}");
             $('#game_date').datetimepicker({
                 format: 'L',
                 locale: '{{ app()->getLocale()}}',
-                defaultDate: $(this).data('game-date'),
+                defaultDate: moment($(this).data('game-date')).format('L'),
                 minDate: startDate,
                 maxDate: endDate,
             });

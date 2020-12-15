@@ -53,13 +53,12 @@ class ScheduleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function sb_size(Schedule $schedule, LeagueSize $league_size)
+    public function sb_size(Schedule $schedule)
     {
-      Log::debug('SIZE :'.print_r($league_size,true));
 
       $schedules = session('cur_region')->schedules()
                                         ->where('id','!=',$schedule->id)
-                                        ->where('league_size_id', $league_size->id)
+                                        ->where('league_size_id', $schedule->league_size_id)
                                         ->orderBy('name','ASC')
                                         ->get();
 
@@ -136,12 +135,7 @@ class ScheduleController extends Controller
      */
     public function store(Request $request)
     {
-      $data = $request->validate( [
-          'name' => 'required',
-          'region_id' => 'required|exists:regions,id',
-          'eventcolor' => 'required',
-          'league_size_id' => 'required|exists:league_sizes,id'
-      ]);
+      $data = $request->validate( Schedule::$createRules );
 
       $active = $request->input('active');
       if ( isset($active) and ( $active === 'on' )){
@@ -192,10 +186,7 @@ class ScheduleController extends Controller
     {
       Log::info('validating '.$schedule->id);
 
-      $data = $request->validate( [
-          'name' => 'required',
-          'eventcolor' => 'required'
-      ]);
+      $data = $request->validate( Schedule::$updateRules );
 
       $active = $request->input('active');
       if ( isset($active) and ( $active === 'on' )){

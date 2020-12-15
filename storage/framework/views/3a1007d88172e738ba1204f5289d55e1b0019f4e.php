@@ -51,7 +51,7 @@
           allowClear: false,
           minimumResultsForSearch: -1,
           ajax: {
-                  url: "<?php echo e(route('schedule.sb.size',['schedule'=>$schedule,'league_size' => $schedule->league_size_id]), false); ?>",
+                  url: "<?php echo e(route('schedule.sb.size',['schedule'=>$schedule]), false); ?>",
                   type: "get",
                   delay: 250,
                   processResults: function (response) {

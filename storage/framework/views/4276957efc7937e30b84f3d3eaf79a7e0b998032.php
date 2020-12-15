@@ -24,11 +24,10 @@
                               Please fix the following errors
                           </div>
                           <?php endif; ?>
-                          <input type="hidden" name="schedule_id" value="<?php echo e($schedule->id, false); ?>">
                           <div class="form-group row">
                               <label for="game_day" class="col-sm-2 col-form-label">Game Day</label>
                               <div class="col-sm-10">
-                                  <input type="text" readonly class="form-control" id="game_day" name="game_day"  value="">
+                                  <input type="text" readonly class="form-control" id="game_day" value="">
                               </div>
                           </div>
                           <div class="form-group row">

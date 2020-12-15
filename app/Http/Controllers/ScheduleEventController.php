@@ -116,9 +116,9 @@ class ScheduleEventController extends Controller
                 if ( $event->full_weekend){
                   $end = Carbon::parse($event->game_date);
                   $end = $end->addDays(1);
-                  return $event->game_date->format('D d.m.Y').' / '. $end->format('D d.m.Y').$warning;
+                  return $event->game_date->locale(app()->getLocale())->isoFormat('ddd l').' / '. $end->locale(app()->getLocale())->isoFormat('ddd l').$warning;
                 } else {
-                  return $event->game_date->format('D d.m.Y').$warning;
+                  return $event->game_date->locale(app()->getLocale())->isoFormat('ddd l').$warning;
                 }
 
             })
@@ -160,16 +160,6 @@ class ScheduleEventController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -178,13 +168,16 @@ class ScheduleEventController extends Controller
     public function store(Request $request, Schedule $schedule)
     {
         Log::debug($request->input());
+        $data = $request->validate([
+            'startdate' => 'required|date|after:'.Carbon::now()->addDays(30),
+          ]);
 
         // check if 2* or 3* size)
         $size = $schedule->league_size->size;
         $repeat = $schedule->league_size->iterations;
 
         $gamedays = ( ($size - 1) * 2 * $repeat);
-        $startdate = CarbonImmutable::parse($request->input('startdate'));
+        $startdate = CarbonImmutable::parse($data['startdate']);
         $startweekend = $startdate->endOfWeek(Carbon::SATURDAY);
         Log::info('need to create '.$gamedays.' events starting from '.$startdate.' / '.$startweekend);
 
@@ -213,7 +206,11 @@ class ScheduleEventController extends Controller
     public function clone(Request $request, Schedule $schedule)
     {
         Log::debug(print_r($request->all(),true));
-        $from_events = Schedule::find($request['clone_from_schedule'])->events()->get();
+        $data = $request->validate([
+            'clone_from_schedule' => 'required|exists:schedules,id',
+          ]);
+
+        $from_events = Schedule::find($data['clone_from_schedule'])->events()->get();
 
         //Log::debug(print_r($from_events,true));
         foreach ($from_events as $from_event){
@@ -234,36 +231,20 @@ class ScheduleEventController extends Controller
     public function shift(Request $request, Schedule $schedule)
     {
         Log::debug($request->input());
-
-        if ( $request->input('direction') === '+'){
-          $schedule->events()->update(['game_date' => DB::raw('DATE_ADD(game_date, INTERVAL '.$request->input('unitRange').' '.$request->input('unit').')')]);
+        $data = $request->validate([
+            'direction' => 'required|in:+,-',
+            'unit' => 'required|in:DAY,WEEK,MONTH,YEAR',
+            'unitRange' => 'required|integer|between:1,12'
+          ]);
+        Log::debug($data);
+        if ( $data['direction'] === '+'){
+          $schedule->events()->update(['game_date' => DB::raw('DATE_ADD(game_date, INTERVAL '.$data['unitRange'].' '.$data['unit'].')')]);
         } else {
-          $schedule->events()->update(['game_date' => DB::raw('DATE_SUB(game_date, INTERVAL '.$request->input('unitRange').' '.$request->input('unit').')')]);
+          $schedule->events()->update(['game_date' => DB::raw('DATE_SUB(game_date, INTERVAL '.$data['unitRange'].' '.$data['unit'].')')]);
         }
+        $schedule->refresh();
 
         return redirect()->action('ScheduleEventController@list', ['schedule' => $schedule]);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Schedule  $schedule
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Schedule $schedule)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Schedule  $schedule
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Schedule $schedule)
-    {
-        //
     }
 
     /**
@@ -278,37 +259,16 @@ class ScheduleEventController extends Controller
         Log::debug(print_r($request->all(),true));
 
         $data = $request->validate( [
-            'game_day' => 'required',
             'full_weekend' => 'required|boolean',
-            'game_date' => 'required|date',
+            'game_date' => 'required|date|after:'.Carbon::now(),
         ]);
 
-        $schedule_id = $request['schedule_id'];
-        Log::debug(print_r($schedule_event->id,true));
-        // eliminate non model props
-        unset($data['old_role_id']);
-        $data['game_date'] = CarbonImmutable::parse($request->input('game_date'));
-        // if ($data['full_weekend'] == '1'){
-        //   $data['full_weekend'] = true;
-        // } else {
-        //   $data['full_weekend'] = false;
-        // }
+        $data['game_date'] = CarbonImmutable::parse($data['game_date']);
 
         Log::debug(print_r($data,true));
         $check = ScheduleEvent::where('id', $schedule_event->id)->update($data);
         return redirect()->back();
 
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Schedule  $schedule
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Schedule $schedule)
-    {
-      ///
     }
 
     /**

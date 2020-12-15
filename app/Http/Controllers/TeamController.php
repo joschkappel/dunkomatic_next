@@ -78,7 +78,7 @@ class TeamController extends Controller
     {
         Log::debug(print_r($request->all(),true));
         $data = $request->validate( [
-            'league_no' => 'required|digits_between:1,16',
+            'league_no' => 'required|integer|between:1,16',
             'team_id' => 'required|exists:teams,id'
         ]);
 
@@ -207,7 +207,7 @@ class TeamController extends Controller
              'team_id' => 'required|exists:teams,id',
              'club_id' => 'required|exists:clubs,id',
              'league_id' => 'required|exists:leagues,id',
-             'league_no' => 'required|digits_between:1,16',
+             'league_no' => 'required|integer|between:1,16',
          ]);
 
          $team_id = $data['team_id'];
@@ -239,7 +239,7 @@ class TeamController extends Controller
           // get data
           $data = $request->validate( [
               'team_id' => 'required|exists:teams,id',
-              'league_no' => 'required|digits_between:1,16',
+              'league_no' => 'required|integer|between:1,16',
           ]);
 
           $team_id = $data['team_id'];

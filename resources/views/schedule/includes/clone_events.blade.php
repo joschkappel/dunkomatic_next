@@ -51,7 +51,7 @@
           allowClear: false,
           minimumResultsForSearch: -1,
           ajax: {
-                  url: "{{ route('schedule.sb.size',['schedule'=>$schedule,'league_size' => $schedule->league_size_id])}}",
+                  url: "{{ route('schedule.sb.size',['schedule'=>$schedule])}}",
                   type: "get",
                   delay: 250,
                   processResults: function (response) {

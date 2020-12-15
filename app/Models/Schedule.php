@@ -23,6 +23,18 @@ class Schedule extends Model
             'active' => false,
     ];
 
+  public static $createRules = [
+      'name' => 'required',
+      'region_id' => 'required|exists:regions,id',
+      'eventcolor' => 'required',
+      'league_size_id' => 'required|exists:league_sizes,id'
+  ];
+
+  public static $updateRules = [
+      'name' => 'required',
+      'eventcolor' => 'required'
+  ];
+
   public function region()
   {
       return $this->belongsTo(Region::class);
