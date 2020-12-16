@@ -133,34 +133,6 @@ class TeamControllerTest extends TestCase
       $this->assertDatabaseMissing('teams', ['league_no' => $team->league_no, 'league_id' => $league->id]);
     }
     /**
-     * withdraw
-     *
-     * @test
-     * @group team
-     * @group controller
-     *
-     * @return void
-     */
-    public function withdraw()
-    {
-      //$this->withoutExceptionHandling();
-      // create data:  1 club with 5 teams assigned to 1 league each
-      $club = Club::where('name','testteamclub')->first();
-      $league = League::where('name','testleague')->first();
-      $team = $league->teams->first();
-
-      $response = $this->authenticated()
-                        ->delete(route('league.team.withdraw',['league'=>$league]),[
-                          'team_id' => $team->id,
-                        ]);
-
-      $response
-          ->assertStatus(302)
-          ->assertSessionHasNoErrors();
-      //$response->dump();
-      $this->assertDatabaseMissing('teams', ['league_no' => $team->league_no, 'league_id' => $league->id]);
-    }
-    /**
      * inject
      *
      * @test
@@ -352,6 +324,33 @@ class TeamControllerTest extends TestCase
                   ->assertSessionHasNoErrors()
                   ->assertJson(['success'=>'all good']);
         }
+        /**
+         * withdraw
+         *
+         * @test
+         * @group team
+         * @group controller
+         *
+         * @return void
+         */
+        public function withdraw()
+        {
+          //$this->withoutExceptionHandling();
+          $club = Club::where('name','testteamclub')->first();
+          $league = League::where('name','testleague')->first();
+          $team = $league->teams->first();
+
+          $response = $this->authenticated()
+                            ->delete(route('league.team.withdraw',['league'=>$league]),[
+                              'team_id' => $team->id,
+                            ]);
+
+          $response
+              ->assertStatus(302)
+              ->assertSessionHasNoErrors();
+          //$response->dump();
+          $this->assertDatabaseMissing('teams', ['league_no' => $team->league_no, 'league_id' => $league->id]);
+        }        
         /**
          * db_cleanup
          *

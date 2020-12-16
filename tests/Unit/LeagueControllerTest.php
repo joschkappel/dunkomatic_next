@@ -424,5 +424,18 @@ class LeagueControllerTest extends TestCase
                ->assertSessionHasNoErrors();
       $this->assertDatabaseMissing('leagues', ['id'=>$league->id]);
     }
-
+    /**
+     * db_cleanup
+     *
+     * @test
+     * @group team
+     * @group controller
+     *
+     * @return void
+     */
+   public function db_cleanup()
+   {
+        /// clean up DB
+        $this->assertDatabaseCount('leagues', 0);
+   }
 }

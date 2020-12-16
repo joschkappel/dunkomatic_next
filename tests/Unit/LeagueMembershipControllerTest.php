@@ -218,4 +218,22 @@ class LeagueMembershipControllerTest extends TestCase
            ->assertDatabaseMissing('memberships', ['member_id' => $member->id])
            ->assertDatabaseCount('memberships', 3);
     }
+    /**
+     * db_cleanup
+     *
+     * @test
+     * @group team
+     * @group controller
+     *
+     * @return void
+     */
+   public function db_cleanup()
+   {
+        /// clean up DB
+        $league = League::where('name','testleague')->delete();
+        $member = Member::where('lastname','testmember')->delete();
+        $member2 = Member::where('lastname','testmember2')->delete();
+
+        $this->assertDatabaseCount('leagues', 0);
+   }
 }

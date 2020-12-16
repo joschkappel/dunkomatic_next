@@ -235,5 +235,23 @@ class ClubTeamControllerTest extends TestCase
 
       $this->assertDatabaseMissing('teams', ['id'=>$team->id]);
     }
+    /**
+     * db_cleanup
+     *
+     * @test
+     * @group team
+     * @group controller
+     *
+     * @return void
+     */
+   public function db_cleanup()
+   {
+        /// clean up DB
+        $club = Club::where('name','testclub')->first();
+        $club->teams()->delete();
+        $club->delete();
+        $this->assertDatabaseCount('clubs', 0)
+             ->assertDatabaseCount('teams', 0);
+   }
 
 }

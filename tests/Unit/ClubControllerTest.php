@@ -13,11 +13,6 @@ use Illuminate\Support\Facades\Log;
 class ClubControllerTest extends TestCase
 {
     use Authentication;
-    public static function tearDownAfterClass(): void
-    {
-
-        parent::tearDownAfterClass();
-    }
 
     /**
      * create
@@ -286,7 +281,7 @@ class ClubControllerTest extends TestCase
 
       //$response->dump();
       $response->assertStatus(200)
-               ->assertJson([['id'=>$club->id,'text'=>$club->shortname]]);
+               ->assertJsonFragment([['id'=>$club->id,'text'=>$club->shortname]]);
      }
     /**
      * destroy
@@ -309,5 +304,18 @@ class ClubControllerTest extends TestCase
                ->assertSessionHasNoErrors();
       $this->assertDatabaseMissing('clubs', ['id'=>$club->id]);
     }
-
+    /**
+     * db_cleanup
+     *
+     * @test
+     * @group team
+     * @group controller
+     *
+     * @return void
+     */
+   public function db_cleanup()
+   {
+        /// clean up DB
+        $this->assertDatabaseCount('clubs', 0);
+   }
 }
