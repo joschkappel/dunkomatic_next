@@ -185,7 +185,7 @@ class ScheduleControllerTest extends TestCase
 
       //$response->dump();
       $response->assertStatus(200)
-               ->assertJson([['id'=>$schedule->id,'text'=>$schedule->name]]);
+               ->assertJsonFragment([['id'=>$schedule->id,'text'=>$schedule->name]]);
      }
      /**
       * sb_size
@@ -207,7 +207,7 @@ class ScheduleControllerTest extends TestCase
 
        //$response->dump();
        $response->assertStatus(200)
-                ->assertJson([["id"=>$schedule2->id,"text"=>$schedule2->name]]);
+                ->assertJsonFragment([["id"=>$schedule2->id,"text"=>$schedule2->name]]);
     }
     /**
      * list
