@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Models\Region;
 use App\Models\Member;
+use App\Models\Membership;
 
 use Tests\TestCase;
 use Tests\Support\Authentication;
@@ -166,14 +167,21 @@ class MemberControllerTest extends TestCase
     public function sb_region()
     {
 
-      //$member = Member::where('lastname','testmember')->first();
+      $member = $members = Membership::whereIn('membership_id', $this->region->clubs()->pluck('id'))
+                           ->where('membership_type',Club::class)
+                           ->with('member')
+                           ->first();
       $response = $this->authenticated()
                         ->get(route('member.sb.region',['region'=>$this->region]));
 
       //$response->dump();
-      $response->assertStatus(200)
-               //->assertJson(["id"=>$member->id, "text"=>$member->name]);
-               ->assertJson([]);
+      $response->assertStatus(200);
+
+      if ($member){
+        $response->assertJsonFragment(["id"=>$member->id, "text"=>$member->name]);
+      } else {
+        $response->assertJson([]);
+      }
      }
 
 
