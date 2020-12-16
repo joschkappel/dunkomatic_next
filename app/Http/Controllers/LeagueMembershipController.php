@@ -162,6 +162,7 @@ class LeagueMembershipController extends Controller
         // delete all league related memberships
         $league->memberships()->where('member_id',$member->id)->delete();
 
+        $member->refresh();
         // now check if there are any other memberships for this member
         if ( $member->memberships()->count() == 0){
           // none, delete member as well

@@ -184,5 +184,25 @@ class MemberControllerTest extends TestCase
       }
      }
 
+     /**
+      * destroy
+      *
+      * @test
+      * @group member
+      * @group destroy
+      * @group controller
+      *
+      * @return void
+      */
+     public function destroy()
+     {
+       //$this->withoutExceptionHandling();
+       $member = Member::where('lastname','testmember2')->first();
+       $response = $this->authenticated( )
+                         ->delete(route('member.destroy',['member'=>$member]));
 
+       $response->assertStatus(200)
+                ->assertSessionHasNoErrors();
+       $this->assertDatabaseMissing('members', ['id'=>$member->id]);
+     }
 }

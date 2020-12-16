@@ -134,6 +134,17 @@ class MemberController extends Controller
         }
 
         return redirect()->back()->with('member_mod', $member);
-      }
+    }
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Member  $member
+     * @return \Illuminate\Http\Response
+     */
+     public function destroy(Member $member)
+     {
+         $check = $member->delete();
 
+         return Response::json($check);
+     }
 }

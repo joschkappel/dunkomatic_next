@@ -109,6 +109,7 @@ Route::middleware(['auth'])->group(function () {
   Route::put('user/{user}/allowance', 'UserController@allowance')->name('admin.user.allowance')->middleware('auth')->middleware('regionadmin');
   Route::put('member/{member}', 'MemberController@update')->name('member.update');
   Route::post('member', 'MemberController@store')->name('member.store');
+  Route::delete('member/{member}', 'MemberController@destroy')->name('member.destroy');  
   Route::put('region/{region}', 'RegionController@update')->name('region.update')->middleware('auth')->middleware('regionadmin');
   Route::post('region', 'RegionController@create')->name('region.create')->middleware('auth')->middleware('regionadmin');
 

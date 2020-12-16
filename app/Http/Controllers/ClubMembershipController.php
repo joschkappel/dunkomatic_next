@@ -151,7 +151,7 @@ class ClubMembershipController extends Controller
         // Log::debug(print_r($membership,true));
         // delete all club related memberships
         $club->memberships()->where('member_id',$member->id)->delete();
-
+        $member->refresh();
         // now check if there are any other memberships for this member
         if ( $member->memberships()->count() == 0){
           // none, delete member as well

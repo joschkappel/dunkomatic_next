@@ -378,12 +378,8 @@ class LeagueController extends Controller
      * @param  \App\Models\League  $league
      * @return \Illuminate\Http\Response
      */
-     public function destroy(Request $request, $id)
+     public function destroy(League $league)
      {
-         Log::info(print_r($id, true));
-
-         $league = League::find($id);
-
          $league->clubs()->detach();
          $check = $league->delete();
 

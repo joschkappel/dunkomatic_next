@@ -207,9 +207,14 @@ class ClubMembershipControllerTest extends TestCase
 
       $response->assertStatus(302)
                ->assertSessionHasNoErrors();
+      $response = $this->authenticated( )
+                       ->delete(route('membership.club.destroy', ['club'=>$club,'member'=>$member]));
 
-      $this->assertDatabaseMissing('memberships', ['member_id' => $member2->id])
-           ->assertDatabaseMissing('memberships', ['member_id' => $member->id])
-           ->assertDatabaseCount('memberships', 3);
+      $response->assertStatus(302)
+              ->assertSessionHasNoErrors();
+
+      $this->assertDatabaseMissing('memberships', ['member_id' => $member2->id]);
+      $this->assertDatabaseMissing('memberships', ['member_id' => $member->id]);
+      $this->assertDatabaseCount('memberships', 3);
     }
 }
