@@ -39,7 +39,7 @@ class TeamControllerTest extends TestCase
 
       //$response->dump();
       $response->assertStatus(200)
-               ->assertJson([['id'=>$team->id,'text'=>$club->shortname.$team->team_no]]);
+               ->assertJsonFragment([['id'=>$team->id,'text'=>$club->shortname.$team->team_no]]);
     }
     /**
      * sb_freeteam
@@ -52,21 +52,23 @@ class TeamControllerTest extends TestCase
      */
     public function sb_freeteam()
     {
-
-      // create data:  1 club with 5 teams assigned to 1 league each
       $club = Club::where('name','testteamclub')->first();
+      // add 3 more teams
+      Team::factory()->count(3)->create(['club_id' => $club->id]);
       $league = League::where('name','testleague')->first();
-      $team = $this->region->teams()->whereNull('league_id')->orWhere(function($query) use($league)
-        { $query->where('league_id', $league->id)
-                ->whereNull('league_no');
-        })->with('club')->first();
+      $team = $this->region->teams()->whereNull('league_id')->with('club')->first();
 
       $response = $this->authenticated()
                         ->get(route('team.free.sb',['league'=>$league]));
 
       //$response->dump();
-      $response->assertStatus(200)
-               ->assertJson([['id'=>$team->id,'text'=>$club->shortname.$team->team_no.' ('.$team->league_prev.')']]);
+      if ($team->count() > 0){
+        $response->assertStatus(200)
+                 ->assertJsonFragment([['id'=>$team->id,'text'=>$team->club->shortname.$team->team_no.' ('.$team->league_prev.')']]);
+      } else {
+        $response->assertStatus(200)
+                 ->assertJson([[]]);
+      }
     }
     /**
      * assign_league
