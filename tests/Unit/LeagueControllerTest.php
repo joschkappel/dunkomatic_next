@@ -436,6 +436,8 @@ class LeagueControllerTest extends TestCase
    public function db_cleanup()
    {
         /// clean up DB
-        $this->assertDatabaseCount('leagues', 0);
+        Club::whereNotNull('id')->delete();
+        $this->assertDatabaseCount('leagues', 0)
+             ->assertDatabaseCount('clubs', 0);
    }
 }
