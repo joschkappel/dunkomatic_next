@@ -56,7 +56,10 @@ class TeamControllerTest extends TestCase
       // create data:  1 club with 5 teams assigned to 1 league each
       $club = Club::where('name','testteamclub')->first();
       $league = League::where('name','testleague')->first();
-      $team = $club->teams->first();
+      $team = $this->region->teams()->whereNull('league_id')->orWhere(function($query) use($league)
+        { $query->where('league_id', $league->id)
+                ->whereNull('league_no');
+        })->with('club')->first();
 
       $response = $this->authenticated()
                         ->get(route('team.free.sb',['league'=>$league]));
@@ -347,4 +350,25 @@ class TeamControllerTest extends TestCase
                   ->assertSessionHasNoErrors()
                   ->assertJson(['success'=>'all good']);
         }
+        /**
+         * db_cleanup
+         *
+         * @test
+         * @group team
+         * @group controller
+         *
+         * @return void
+         */
+       public function db_cleanup()
+       {
+            /// clean up DB
+            $club = Club::where('name','testteamclub')->first();
+            $club->teams()->delete();
+            $club->leagues()->detach();
+            $club->delete();
+            $league = League::where('name','testleague')->delete();
+            $this->assertDatabaseCount('clubs', 0)
+                 ->assertDatabaseCount('teams', 0)
+                 ->assertDatabaseCount('leagues', 0);
+       }
 }
