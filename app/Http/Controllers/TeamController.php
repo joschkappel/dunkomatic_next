@@ -112,51 +112,53 @@ class TeamController extends Controller
         $teams = $league->teams()->with('club')->get();
 
 
-        foreach ($scheme as $s){
-          if (($s->team_home == $league_no) or ($s->team_guest == $league_no)){
+        if ($league->games()->exists()){
+          foreach ($scheme as $s){
+            if (($s->team_home == $league_no) or ($s->team_guest == $league_no)){
 
-            if (!$league->games()->where('game_no',$s->game_no)->exists()) {
+              if (!$league->games()->where('game_no',$s->game_no)->exists()) {
 
-              $gday = $gdate_by_day[ $s->game_day ];
-              $hteam = $teams->firstWhere('league_no', $s->team_home);
-              $gteam = $teams->firstWhere('league_no', $s->team_guest);
+                $gday = $gdate_by_day[ $s->game_day ];
+                $hteam = $teams->firstWhere('league_no', $s->team_home);
+                $gteam = $teams->firstWhere('league_no', $s->team_guest);
 
-              $g = array();
-              $g['league_id'] = $league->id;
-              $g['game_no'] = $s->game_no;
-              $g['region'] = $league->region->code;
-              $g['game_plandate'] = $gday;
-              if (isset($hteam['preferred_game_day'])){
-                $pref_gday = $hteam['preferred_game_day'] % 7;
-                $g['game_date'] = $gday->next($pref_gday);
+                $g = array();
+                $g['league_id'] = $league->id;
+                $g['game_no'] = $s->game_no;
+                $g['region'] = $league->region->code;
+                $g['game_plandate'] = $gday;
+                if (isset($hteam['preferred_game_day'])){
+                  $pref_gday = $hteam['preferred_game_day'] % 7;
+                  $g['game_date'] = $gday->next($pref_gday);
+                } else {
+                  $g['game_date'] = $gday;
+                };
+                $g['gym_no'] = "1";
+                $g['referee_1'] = "";
+                $g['referee_2'] = "";
+                $g['team_char_home'] = $s->team_home;
+                $g['team_char_guest'] = $s->team_guest;
+
+                if (isset($hteam)){
+                  $g['game_time'] = $hteam['preferred_game_time'];
+                  $g['club_id_home'] = $hteam['club']['id'];
+                  $g['team_id_home'] = $hteam['id'];
+                  $g['team_home'] = $hteam['club']['shortname'].$hteam['team_no'];
+                };
+
+                if ( isset($gteam)){
+                  $g['club_id_guest'] = $gteam['club']['id'];
+                  $g['team_id_guest'] = $gteam['id'];
+                  $g['team_guest'] = $gteam['club']['shortname'].$gteam['team_no'];
+                }
+
+                Log::debug('creating game no:'.$g['game_no']);
+                Game::create($g);
               } else {
-                $g['game_date'] = $gday;
-              };
-              $g['gym_no'] = "1";
-              $g['referee_1'] = "";
-              $g['referee_2'] = "";
-              $g['team_char_home'] = $s->team_home;
-              $g['team_char_guest'] = $s->team_guest;
-
-              if (isset($hteam)){
-                $g['game_time'] = $hteam['preferred_game_time'];
-                $g['club_id_home'] = $hteam['club']['id'];
-                $g['team_id_home'] = $hteam['id'];
-                $g['team_home'] = $hteam['club']['shortname'].$hteam['team_no'];
-              };
-
-              if ( isset($gteam)){
-                $g['club_id_guest'] = $gteam['club']['id'];
-                $g['team_id_guest'] = $gteam['id'];
-                $g['team_guest'] = $gteam['club']['shortname'].$gteam['team_no'];
+                $team->load('club');
+                $league->games()->where('game_no',$s->game_no)->where('team_char_home',$league_no)->update(['club_id_home'=>$team->club_id, 'team_id_home'=>$team->id, 'team_home'=>$team['club']->shortname.$team->team_no ]);
+                $league->games()->where('game_no',$s->game_no)->where('team_char_guest',$league_no)->update(['club_id_guest'=>$team->club_id, 'team_id_guest'=>$team->id, 'team_guest'=>$team['club']->shortname.$team->team_no ]);
               }
-
-              Log::debug('creating game no:'.$g['game_no']);
-              Game::create($g);
-            } else {
-              $team->load('club');
-              $league->games()->where('game_no',$s->game_no)->where('team_char_home',$league_no)->update(['club_id_home'=>$team->club_id, 'team_id_home'=>$team->id, 'team_home'=>$team['club']->shortname.$team->team_no ]);
-              $league->games()->where('game_no',$s->game_no)->where('team_char_guest',$league_no)->update(['club_id_guest'=>$team->club_id, 'team_id_guest'=>$team->id, 'team_guest'=>$team['club']->shortname.$team->team_no ]);
             }
           }
         }

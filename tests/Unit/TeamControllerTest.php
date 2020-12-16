@@ -178,10 +178,11 @@ class TeamControllerTest extends TestCase
                           'league_no' => 1,
                         ]);
 
+      // $response->dumpSession();
       $response
           ->assertStatus(302)
           ->assertSessionHasNoErrors();
-      //$response->dump();
+
       $this->assertDatabaseHas('teams', ['league_no' => 1, 'league_id' => $league->id]);
     }
     /**
