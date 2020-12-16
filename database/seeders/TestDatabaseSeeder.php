@@ -20,6 +20,7 @@ class TestDatabaseSeeder extends Seeder
           TestUserSeeder::class,
           LeagueSizesTableSeeder::class,
           LeagueSizeCharsTableSeeder::class,
+          LeagueSizeSchemesTableSeeder::class,
         ]);
 
     }

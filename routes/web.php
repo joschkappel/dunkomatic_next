@@ -74,7 +74,7 @@ Route::group([
 
     Route::resource('membership', 'MembershipController')->only(['show']);
 
-    Route::get('scheme/index', 'LeagueSchemeController@index')->name('scheme.index');
+    Route::get('scheme/index', 'LeagueSizeSchemeController@index')->name('scheme.index');
 
     Route::get('team/league/plan/{club}', 'TeamController@plan_leagues')->name('team.plan-leagues');
     Route::post('team/league/plan/pivot', 'TeamController@list_pivot')->name('team.list-piv');
@@ -166,7 +166,7 @@ Route::middleware(['auth'])->group(function () {
   Route::post('role/index', 'RoleController@index')->name('role.index');
   Route::get('member/region/{region}', 'MemberController@sb_region')->name('member.sb.region');
 
-  Route::get('scheme/{size}/list_piv', 'LeagueSchemeController@list_piv')->name('scheme.list_piv');
+  Route::get('scheme/{size}/list_piv', 'LeagueSizeSchemeController@list_piv')->name('scheme.list_piv');
   Route::get('size/index', 'LeagueSizeController@index')->name('size.index');
 
   Route::post('schedule_event/list-piv', 'ScheduleEventController@list_piv')->name('schedule_event.list-piv');

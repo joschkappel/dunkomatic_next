@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Log;
 class ClubControllerTest extends TestCase
 {
     use Authentication;
+    public static function tearDownAfterClass(): void
+    {
+
+        parent::tearDownAfterClass();
+    }
 
     /**
      * create

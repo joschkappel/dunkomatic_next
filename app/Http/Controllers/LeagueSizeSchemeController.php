@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LeagueTeamScheme;
+use App\Models\LeagueSizeScheme;
+use App\Models\LeagueSize;
 use Illuminate\Http\Request;
 use Datatables;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
 
-class LeagueSchemeController extends Controller
+class LeagueSizeSchemeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -21,9 +22,9 @@ class LeagueSchemeController extends Controller
       return view('league/league_scheme_list');
     }
 
-    public function list_piv( $size )
+    public function list_piv(LeagueSize $size )
     {
-        Log::debug('get league team scheme for '.$size.' teams');
+        Log::debug('get league team scheme for '.$size->description.' teams');
 
         //$scheme = datatables::of(LeagueTeamScheme::query()->where('size', '=', $size));
 
@@ -44,8 +45,8 @@ class LeagueSchemeController extends Controller
           max(case when team_home = '14' then team_guest else ' ' end) as '14',
           max(case when team_home = '15' then team_guest else ' ' end) as '15',
           max(case when team_home = '16' then team_guest else ' ' end) as '16'
-        from league_team_schemes
-        where size='".$size."'
+        from league_size_schemes
+        where league_size_id='".$size->id."'
         group by game_day"));
 
       //  Log::debug(print_r($test, true));
