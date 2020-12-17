@@ -260,7 +260,7 @@ class ScheduleEventController extends Controller
 
         $data = $request->validate( [
             'full_weekend' => 'required|boolean',
-            'game_date' => 'required|date|after:'.Carbon::now(),
+            'game_date' => 'required|date|after:today',
         ]);
 
         $data['game_date'] = CarbonImmutable::parse($data['game_date']);

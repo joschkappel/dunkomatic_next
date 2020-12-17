@@ -62,7 +62,7 @@ class LeagueGameController extends Controller
                              'default' => $game->gym_no);
             })
         ->make(true);
-        Log::debug(print_r($glist,true));
+        //Log::debug(print_r($glist,true));
         return $glist;
       }
 
@@ -101,7 +101,6 @@ class LeagueGameController extends Controller
           } else {
             $g['game_date'] = $gday;
           };
-          $g['gym_no'] = "1";
           $g['referee_1'] = "";
           $g['referee_2'] = "";
           $g['team_char_home'] = $s->team_home;
@@ -109,6 +108,8 @@ class LeagueGameController extends Controller
 
           if (isset($hteam)){
             $g['game_time'] = $hteam['preferred_game_time'];
+            $g['gym_no'] = Club::find($hteam['club']['id'])->gyms()->first()->gym_no;
+            $g['gym_id'] = Club::find($hteam['club']['id'])->gyms()->first()->id;
             $g['club_id_home'] = $hteam['club']['id'];
             $g['team_id_home'] = $hteam['id'];
             $g['team_home'] = $hteam['club']['shortname'].$hteam['team_no'];
@@ -156,16 +157,16 @@ class LeagueGameController extends Controller
     {
         //Log::debug(print_r($game, true));
         Log::debug(print_r($request->all(),true));
-        $game->game_time = Carbon::parse($request->game_time)->format('H:i');
-        $game->game_date = $request->game_date;
-        if ($request->gym_id ){
-          $gym = Gym::where('id',$request->gym_id )->get();
-          //Log::debug(print_r($gym,true));
-          $game->gym_no = $gym[0]->gym_no;
-          $game->gym_id = $gym[0]->id;
-        }
+        $data = $request->validate( [
+            'gym_id' => 'required|exists:gyms,id',
+            'gym_no' => 'required|integer|between:1,9',
+            'game_date' => 'required|date|after:today',
+            'game_time' => 'required|date_format:H:i'
+        ]);
+
+        $data['game_time'] = Carbon::parse($data['game_time'])->format('H:i');
         //Log::debug(print_r($game,true));
-        $game->save();
+        $game->update($data);
         return redirect()->back();
     }
 

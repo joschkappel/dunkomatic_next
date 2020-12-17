@@ -25,7 +25,7 @@ class GymFactory extends Factory
     {
         return [
             'name'  => $this->faker->words(3,true),
-            'gym_no' => $this->faker->randomDigitNotNull(),
+            'gym_no' => $this->faker->numberBetween(1, 7),
             'zip' => $this->faker->postcode,
             'city' => $this->faker->city,
             'street' => $this->faker->streetAddress,
