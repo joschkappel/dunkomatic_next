@@ -8,7 +8,6 @@ use App\Models\Gym;
 use App\Models\Member;
 
 use Illuminate\Http\Request;
-use App\Rules\Uppercase;
 use Illuminate\Validation\Rule;
 
 use Datatables;
@@ -162,19 +161,7 @@ class ClubController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validate( [
-            'shortname' => array(
-              'required',
-              'string',
-              'unique:clubs',
-              'max:4',
-              'min:4',
-              new Uppercase ),
-            'name' => 'required|max:255',
-            'url' => 'required|url|max:255',
-            'region' => 'required|max:5|exists:regions,code',
-            'club_no' => 'required|unique:clubs|max:7',
-        ]);
+        $data = $request->validate( Club::getCreateRules());
 
         Log::info(print_r($data, true));
         $data['region_id'] = Region::where('code',$data['region'])->first()->id;
@@ -231,20 +218,11 @@ class ClubController extends Controller
     {
 
       $data = $request->validate( [
-          'shortname' => array(
-            'required',
-            'string',
-            Rule::unique('clubs')->ignore($club->id),
-            'max:4',
-            'min:4',
-            new Uppercase ),
+          'shortname' => array('required','string', Rule::unique('clubs')->ignore($club->id),'max:4','min:4',new Uppercase ),
           'name' => 'required|max:255',
           'url' => 'required|url|max:255',
           'region' => 'required|max:5|exists:regions,code',
-          'club_no' => array(
-            'required',
-             Rule::unique('clubs')->ignore($club->id),
-             'max:7'),
+          'club_no' => array('required',Rule::unique('clubs')->ignore($club->id),'max:7'),
       ]);
 
         $data['region_id'] = Region::where('code',$data['region'])->first()->id;

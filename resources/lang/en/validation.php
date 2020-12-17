@@ -118,7 +118,8 @@ return [
     'url' => 'The :attribute format is invalid.',
     'uuid' => 'The :attribute must be a valid UUID.',
     'uppercase' => 'The :attribute must be uppercase.',
-
+    'gameminute'  => 'Games must start at quarter hours (00, 15, 30 or 45).',
+    'gamehour'    => 'Games must start between 8:00 and 22:00.',
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
@@ -160,7 +161,7 @@ return [
       'city'  => 'City',
       'street' => 'Street',
       'zipcode' => 'ZIPcode',
-      'zip' => 'ZIPcode',      
+      'zip' => 'ZIPcode',
       'gym_no' => 'Gym Number',
     ],
 

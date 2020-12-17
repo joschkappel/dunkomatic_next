@@ -50,7 +50,7 @@ class ClubTeamController extends Controller
     {
       Log::debug(print_r($request->all(),true));
 
-      $data = $request->validate( Team::$createRules);
+      $data = $request->validate( Team::getCreateRules() );
 
       $check = Team::create($data);
 
@@ -100,7 +100,7 @@ class ClubTeamController extends Controller
     {
         Log::debug(print_r($request->all(),true));
 
-        $data = $request->validate(Team::$updateRules);
+        $data = $request->validate( Team::getUpdateRules() );
 
         Log::debug(print_r($team,true));
         $check = Team::where('id', $team->id)->update($data);

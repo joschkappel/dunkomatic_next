@@ -11,6 +11,8 @@ use App\Models\Member;
 use App\Models\Membership;
 use App\Models\Game;
 
+use App\Rules\Uppercase;
+
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Support\Facades\Auth;
@@ -22,7 +24,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Club extends Model implements Auditable
 {
   use \OwenIt\Auditing\Auditable, HasFactory;
-  
+
   public function generateTags(): array
   {
       return [
@@ -33,6 +35,17 @@ class Club extends Model implements Auditable
   protected $fillable = [
         'id','name','shortname','region_id','url','club_no'
   ];
+
+  public static function getCreateRules()
+  {
+    return  [
+        'shortname' => array('required','string','unique:clubs','max:4','min:4',new Uppercase ),
+        'name' => 'required|max:255',
+        'url' => 'required|url|max:255',
+        'region' => 'required|max:5|exists:regions,code',
+        'club_no' => 'required|unique:clubs|max:7',
+    ];
+  }
 
   public function gyms()
   {
