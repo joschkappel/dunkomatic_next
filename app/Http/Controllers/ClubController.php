@@ -9,6 +9,7 @@ use App\Models\Member;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Rules\Uppercase;
 
 use Datatables;
 use Illuminate\Support\Facades\Log;
