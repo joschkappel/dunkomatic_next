@@ -222,7 +222,7 @@ class LeagueMembershipControllerTest extends TestCase
      * db_cleanup
      *
      * @test
-     * @group team
+     * @group membership
      * @group controller
      *
      * @return void

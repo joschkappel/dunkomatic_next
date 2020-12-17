@@ -428,7 +428,7 @@ class LeagueControllerTest extends TestCase
      * db_cleanup
      *
      * @test
-     * @group team
+     * @group league
      * @group controller
      *
      * @return void

@@ -12,7 +12,7 @@ use App\Models\Game;
 class Team extends Model
 {
   use HasFactory;
-  
+
   protected $fillable = [
         'id','league_char','league_no','team_no','league_id','club_id','changeable', 'league_prev',
         'training_day', 'training_time', 'preferred_game_day', 'preferred_game_time',
@@ -24,9 +24,9 @@ class Team extends Model
     'league_id' => 'nullable|exists:leagues,id',
     'team_no' => 'required|integer|min:1|max:9',
     'training_day'   => 'required|integer|min:1|max:5',
-    'training_time'  => 'required|string|size:5',
+    'training_time'  => 'required|date_format:H:i',
     'preferred_game_day' => 'present|integer|min:1|max:7',
-    'preferred_game_time' => 'present|string|max:5',
+    'preferred_game_time' => 'present|date_format:H:i',
     'coach_name'  => 'required|string|max:40',
     'coach_email' => 'present|email:rfc,dns',
     'coach_phone1' => 'present|string|max:20',

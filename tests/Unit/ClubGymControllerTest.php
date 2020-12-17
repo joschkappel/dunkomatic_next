@@ -249,7 +249,7 @@ class ClubGymControllerTest extends TestCase
      * db_cleanup
      *
      * @test
-     * @group team
+     * @group gym
      * @group controller
      *
      * @return void

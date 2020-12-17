@@ -308,7 +308,7 @@ class ClubControllerTest extends TestCase
      * db_cleanup
      *
      * @test
-     * @group team
+     * @group club
      * @group controller
      *
      * @return void
