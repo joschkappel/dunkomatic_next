@@ -33,7 +33,6 @@
                   <th><?php echo app('translator')->get('schedule.color'); ?></th>
                   <th><?php echo app('translator')->get('schedule.size'); ?></th>
                   <th><?php echo app('translator')->get('schedule.events'); ?></th>
-                  <th><?php echo e(__('Active'), false); ?></th>
                   <th><?php echo e(__('Created at'), false); ?></th>
                   <th><?php echo e(__('Action'), false); ?></th>
                </tr>
@@ -72,7 +71,6 @@
                           { data: 'color', name: 'color', orderable: false, searchable: false },
                           { data: 'league_size.description', name: 'description'},
                           { data: 'events', name: 'events'},
-                          { data: 'active', name: 'active', searchable: false },
                           { data: 'created_at', name: 'created_at'},
                           { data: 'action', name: 'action', orderable: false, searchable: false},
                        ]

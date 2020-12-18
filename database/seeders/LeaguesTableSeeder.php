@@ -31,7 +31,6 @@ class LeaguesTableSeeder extends Seeder
           'region_id'        => Region::where('code', $league->region)->first()->id,
           'name'          => $league->league_name,
           'schedule_id'   => $group_id,
-          'active'        => $league->active,
           'above_region'  => $league->above_region,
           'created_at'    => now(),
         ]);

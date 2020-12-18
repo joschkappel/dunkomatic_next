@@ -34,7 +34,6 @@
                   <th>@lang('schedule.color')</th>
                   <th>@lang('schedule.size')</th>
                   <th>@lang('schedule.events')</th>
-                  <th>{{__('Active')}}</th>
                   <th>{{__('Created at')}}</th>
                   <th>{{__('Action')}}</th>
                </tr>
@@ -73,7 +72,6 @@
                           { data: 'color', name: 'color', orderable: false, searchable: false },
                           { data: 'league_size.description', name: 'description'},
                           { data: 'events', name: 'events'},
-                          { data: 'active', name: 'active', searchable: false },
                           { data: 'created_at', name: 'created_at'},
                           { data: 'action', name: 'action', orderable: false, searchable: false},
                        ]

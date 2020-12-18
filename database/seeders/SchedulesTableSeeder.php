@@ -20,10 +20,8 @@ class SchedulesTableSeeder extends Seeder
 
       foreach ($old as $schedule) {
         if ( strpos( $schedule->region, 'XXX' ) === false){
-          $active = True;
           $region = $schedule->region;
         } else {
-          $active = False;
           $region = str_replace('XXX', 'HBV', $schedule->region);
         }
 
@@ -45,7 +43,6 @@ class SchedulesTableSeeder extends Seeder
         DB::connection('dunknxt')->table('schedules')->insert([
           'id'     => $schedule->group_id,
           'name'   => $schedule->group_name,
-          'active' => $active,
           'region_id' => Region::where('code',$region)->first()->id,
           'league_size_id' => $newsize,
           'created_at' => now()

@@ -19,7 +19,6 @@ class CreateSchedulesTable extends Migration
             $table->unsignedInteger('region_id');
             $table->foreign('region_id')->references('id')->on('regions');
             $table->string('eventcolor')->default('green');
-            $table->boolean('active')->default(True);
             $table->unsignedInteger('league_size_id')->nullable();
             $table->foreign('league_size_id')->references('id')->on('league_sizes');
             $table->timestamps();

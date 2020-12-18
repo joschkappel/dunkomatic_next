@@ -138,13 +138,6 @@ unset($__errorArgs, $__bag); ?>
                                 <label for="above_region" ><?php echo app('translator')->get('league.above-region'); ?> ?</label>
                               </div>
                             </div>
-                            <div class="form-group  row ">
-                              <div class="icheck-info">
-                                <input type="checkbox" id="active" name="active"
-                                <?php if($league->active): ?> checked <?php endif; ?>>
-                                <label for="active"><?php echo e(__('Active'), false); ?> ?</label>
-                              </div>
-                            </div>
                         </div>
                         <div class="card-footer">
                             <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">

@@ -285,13 +285,6 @@ class LeagueController extends Controller
         $data['above_region'] = False;
       }
 
-      $active = $request->input('active');
-      if ( isset($active) and ( $active === 'on' )){
-        $data['active'] = True;
-      } else {
-        $data['active'] = False;
-      }
-
       Log::info(print_r($data, true));
 
       $check = League::create($data);
@@ -358,13 +351,6 @@ class LeagueController extends Controller
         $data['above_region'] = True;
       } else {
         $data['above_region'] = False;
-      }
-
-      $active = $request->input('active');
-      if ( isset($active) and ( $active === 'on' )){
-        $data['active'] = True;
-      } else {
-        $data['active'] = False;
       }
 
       Log::debug('ready to update league:'.print_r($data, true));

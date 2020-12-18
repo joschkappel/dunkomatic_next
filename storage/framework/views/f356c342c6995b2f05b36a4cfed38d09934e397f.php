@@ -97,12 +97,6 @@ endif;
 unset($__errorArgs, $__bag); ?>
                               </div>
                         </div>
-                        <div class="form-group row ">
-                          <div class="icheck-info">
-                            <input type="checkbox" id="active" name="active">
-                            <label for="active"><?php echo e(__('Active'), false); ?> ?</label>
-                          </div>
-                        </div>
                 </div>
                 <div class="card-footer">
                         <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">

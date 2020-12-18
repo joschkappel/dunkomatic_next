@@ -59,7 +59,6 @@ class LeagueControllerTest extends TestCase
                           'region_id' => $this->region->id,
                           'age_type' => LeagueAgeType::getRandomValue(),
                           'gender_type' => LeagueGenderType::getRandomValue(),
-                          'active' => True,
                           'above_region' => False
                       ]);
       $response
@@ -92,7 +91,6 @@ class LeagueControllerTest extends TestCase
                           'region_id' => $this->region->id,
                           'age_type' => LeagueAgeType::getRandomValue(),
                           'gender_type' => LeagueGenderType::getRandomValue(),
-                          'active' => True,
                           'above_region' => False
                       ]);
       $response->assertRedirect(route('league.index', ['language'=>'de']))
@@ -146,7 +144,6 @@ class LeagueControllerTest extends TestCase
                           'region_id' => $this->region->id,
                           'age_type' => $league->age_type,
                           'gender_type' => 200,
-                          'active' => True,
                           'above_region' => False
                         ]);
 
@@ -177,7 +174,6 @@ class LeagueControllerTest extends TestCase
                           'region_id' => $this->region->id,
                           'age_type' => $league->age_type,
                           'gender_type' => $league->gender_type,
-                          'active' => True,
                           'above_region' => False
                         ]);
 

@@ -31,7 +31,6 @@ class LeagueFactory extends Factory
             'name' => $this->faker->words(2,true),
             'shortname' => $this->faker->regexify('[A-Z]{3}'),
             'region_id' => Region::where('code','HBVDA')->first()->id,
-            'active' => True,
             'above_region' => False,
             'schedule_id' => Schedule::factory()->create()->id,
             'age_type' => LeagueAgeType::getRandomValue(),

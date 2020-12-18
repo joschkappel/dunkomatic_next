@@ -137,13 +137,6 @@ class ScheduleController extends Controller
     {
       $data = $request->validate( Schedule::$createRules );
 
-      $active = $request->input('active');
-      if ( isset($active) and ( $active === 'on' )){
-        $data['active'] = True;
-      } else {
-        $data['active'] = False;
-      }
-
       Log::debug(print_r($data, true));
 
       $check = Schedule::create($data);
@@ -187,13 +180,6 @@ class ScheduleController extends Controller
       Log::info('validating '.$schedule->id);
 
       $data = $request->validate( Schedule::$updateRules );
-
-      $active = $request->input('active');
-      if ( isset($active) and ( $active === 'on' )){
-        $data['active'] = True;
-      } else {
-        $data['active'] = False;
-      }
 
       $check = schedule::where('id', $schedule->id)->update($data);
       return redirect()->route('schedule.index', app()->getLocale());

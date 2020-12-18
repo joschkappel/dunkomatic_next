@@ -32,7 +32,7 @@ class League extends Model implements Auditable
       ];
   }
   protected $fillable = [
-        'id','name','shortname','region_id','active','above_region','schedule_id','generated_at','age_type','gender_type'
+        'id','name','shortname','region_id','above_region','schedule_id','generated_at','age_type','gender_type'
   ];
 
   /**

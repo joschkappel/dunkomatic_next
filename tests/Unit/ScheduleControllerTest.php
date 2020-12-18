@@ -65,7 +65,6 @@ class ScheduleControllerTest extends TestCase
                           'name' => 'testschedule',
                           'region_id' => $this->region->id,
 //                          'eventcolor' => $this->faker->hexColor(),
-                          'active' => 'on',
                       ]);
       $response
           ->assertStatus(302)
@@ -90,7 +89,6 @@ class ScheduleControllerTest extends TestCase
                           'region_id' => $this->region->id,
                           'eventcolor' => $this->faker->hexColor(),
                           'league_size_id' => 2,
-                          'active' => 'on',
                       ]);
       $response->assertSessionHasNoErrors()
                ->assertRedirect(route('schedule.index', ['language'=>'de']));
@@ -157,8 +155,7 @@ class ScheduleControllerTest extends TestCase
       $response = $this->authenticated( )
                         ->put(route('schedule.update',['schedule'=>$schedule]),[
                           'name' => 'testschedule2',
-                          'eventcolor' => $schedule->eventcolor,
-                          'active' => 'on'
+                          'eventcolor' => $schedule->eventcolor
                         ]);
 
       $schedule->refresh();

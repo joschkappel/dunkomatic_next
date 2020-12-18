@@ -85,13 +85,6 @@
                                 <label for="above_region" >@lang('league.above-region') ?</label>
                               </div>
                             </div>
-                            <div class="form-group  row ">
-                              <div class="icheck-info">
-                                <input type="checkbox" id="active" name="active"
-                                @if ($league->active) checked @endif>
-                                <label for="active">{{__('Active')}} ?</label>
-                              </div>
-                            </div>
                         </div>
                         <div class="card-footer">
                             <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">

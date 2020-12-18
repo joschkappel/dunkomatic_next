@@ -17,10 +17,7 @@ class Schedule extends Model
   use HasFactory;
 
   protected $fillable = [
-        'id','name','region_id','eventcolor','active','league_size_id'
-    ];
-  protected $attributes = [
-            'active' => false,
+        'id','name','region_id','eventcolor','league_size_id'
     ];
 
   public static $createRules = [

@@ -21,7 +21,6 @@ class CreateClubsTable extends Migration
             $table->text('name');
             $table->string('club_no');
             $table->string('url')->nullable();
-            $table->boolean('active')->default(True);
             $table->timestamps();
             $table->unique(['region_id','club_no']);
             $table->unique(['region_id','shortname']);
