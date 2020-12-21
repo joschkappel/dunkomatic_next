@@ -185,18 +185,12 @@ class ClubGymControllerTest extends TestCase
       $club = Club::where('name','testclub')->first();
       $gym = $club->gyms->first();
       $response = $this->authenticated()
-                        ->get(route('club.gym.show',['club'=>$club, 'gym_no'=>$gym->gym_no]));
+                        ->get(route('gym.sb.gym',['club'=>$club, 'gym'=>$gym]));
 
       //$response->dump();
       $response->assertStatus(200)
                ->assertJson([['id'=>$gym->id,'text'=>$gym->gym_no.' - '.$gym->name]]);
 
-     $response = $this->authenticated()
-                       ->get(route('club.gym.show',['club'=>$club, 'gym_no'=>'all']));
-
-     //$response->dump();
-     $response->assertStatus(200)
-              ->assertJson([['id'=>$gym->id,'text'=>$gym->gym_no.' - '.$gym->name]]);
      }
 
      /**

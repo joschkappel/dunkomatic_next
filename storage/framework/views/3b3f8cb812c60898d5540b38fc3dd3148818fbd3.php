@@ -143,8 +143,8 @@ unset($__errorArgs, $__bag); ?>
       $("#modalEditGamedate").on('show.bs.modal',  function (e) {
         var urlgyms = "<?php echo e(route('gym.sb.club',['club' => $club->id]), false); ?>";
         var gymSelect = $('#selGym');
-        var urlgym = "<?php echo e(route('club.gym.show',['club' => $club->id, 'gym_no' => ':gymno:']), false); ?>";
-        urlgym = urlgym.replace(':gymno:', $("#gym_no").val());
+        var urlgym = "<?php echo e(route('gym.sb.gym',['club' => $club->id, 'gym' => ':gymid:']), false); ?>";
+        urlgym = urlgym.replace(':gymid:', $("#gym_id").val());
 
         $("#selGym").select2({
             placeholder: "<?php echo e(__('gym.action.select'), false); ?>...",

@@ -224,6 +224,11 @@ class AppServiceProvider extends ServiceProvider
                       'url' => route('admin.user.index', app()->getLocale()),
                     ],
                     [
+                    'text'  => __('Manage Members'),
+                    'icon'  => 'fas fa-users',
+                    'url' => route('member.index', app()->getLocale()),
+                    ],
+                    [
                       'text'  => __('Audit Trail'),
                       'icon'  => 'fas fa-stream',
                       'url' => route('admin.audit.index', app()->getLocale()),

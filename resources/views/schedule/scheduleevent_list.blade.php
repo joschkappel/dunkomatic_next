@@ -64,7 +64,7 @@
        language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/English.json')}}" },
        @endif
        order: [[1,'asc']],
-       ajax: '{{ route('schedule_event.list-dt',$schedule->id) }}',
+       ajax: '{{ route('schedule_event.dt',$schedule) }}',
        columns: [
                 { data: 'id', name: 'id', visible: false },
                 { data: 'game_day_sort', name: 'game_day_sort', visible: false },
@@ -78,7 +78,7 @@
 
         var old_gamedate;
         let date = new Date();
-        let startDate = date.setDate(date.getDate() + 30);
+        let startDate = date.setDate(date.getDate() + 0);
         let endDate = date.setDate(date.getDate() + 365);
 
 
@@ -95,7 +95,7 @@
             $('#game_date').datetimepicker({
                 format: 'L',
                 locale: '{{ app()->getLocale()}}',
-                defaultDate: moment($(this).data('game-date')).format('L'),
+                defaultDate: moment($(this).data('game-date')).format('l'),
                 minDate: startDate,
                 maxDate: endDate,
             });

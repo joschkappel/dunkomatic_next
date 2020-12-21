@@ -37,7 +37,7 @@ class RegionController extends Controller
     }
 
 
-    public function list_dt($language)
+    public function datatable($language)
     {
       Log::info('at least i ma here');
       $regions = Region::all();

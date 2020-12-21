@@ -14,7 +14,7 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                  <form class="form-horizontal" action="{{ route('admin.user.update', ['user_id' => Auth::user()->id]) }}" method="POST">
+                  <form class="form-horizontal" action="{{ route('admin.user.update', ['user' => Auth::user()]) }}" method="POST">
                         <input type="hidden" name="_method" value="PUT">
                         @csrf
                         @method('PUT')

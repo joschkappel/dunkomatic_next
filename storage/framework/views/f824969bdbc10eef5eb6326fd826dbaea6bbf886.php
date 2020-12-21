@@ -50,7 +50,12 @@
               data-club-sname="<?php echo e($club->shortname, false); ?>" data-toggle="modal" data-target="#modalDeleteMember"><i class="fa fa-trash"></i></button>
             <a href="<?php echo e(route('membership.club.edit',[ 'language'=>app()->getLocale(),'member' => $member, 'club' => $club ]), false); ?>" class=" px-2"><?php echo e($member->name, false); ?> <i class="fas fa-arrow-circle-right"></i></a>
               <?php $__currentLoopData = $member['memberships']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $membership): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <span class="badge badge-secondary"><?php echo e(App\Enums\Role::getDescription($membership->role_id), false); ?></span>
+                <?php if(($membership->membership_type == 'App\Models\Club' ) and ($membership->membership_id == $club->id)): ?>
+                <span class="badge badge-primary">
+                <?php else: ?>
+                <span class="badge badge-secondary">
+                <?php endif; ?>
+                <?php echo e(App\Enums\Role::getDescription($membership->role_id), false); ?></span>
               <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
           </p>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

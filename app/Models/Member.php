@@ -99,7 +99,22 @@ class Member extends Model
   {
     return $this->region()->wherePivot('role_id', Role::RegionLead)->exists();
   }
-
+  public function getMemberOfClubsAttribute()
+  {
+    return $this->clubs()->wherePivotIn('role_id', [Role::ClubLead, Role::RefereeLead, Role::GirlsLead, Role::JuniorsLead])->pluck('shortname')->implode('-');
+  }
+  public function getMemberOfLeaguesAttribute()
+  {
+    return $this->leagues()->wherePivot('role_id', Role::LeagueLead)->pluck('shortname')->implode('-');
+  }
+  public function getMemberOfRegionAttribute()
+  {
+    return $this->region()->wherePivotIn('role_id', [Role::RegionLead, Role::RegionTeam])->pluck('code')->implode('-');
+  }
+  public function getIsUserAttribute()
+  {
+    return $this->user()->exists();
+  }
   /**
    * Route notifications for the mail channel.
    *

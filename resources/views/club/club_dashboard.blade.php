@@ -60,7 +60,12 @@
               data-club-sname="{{ $club->shortname }}" data-toggle="modal" data-target="#modalDeleteMember"><i class="fa fa-trash"></i></button>
             <a href="{{ route('membership.club.edit',[ 'language'=>app()->getLocale(),'member' => $member, 'club' => $club ]) }}" class=" px-2">{{ $member->name }} <i class="fas fa-arrow-circle-right"></i></a>
               @foreach ($member['memberships'] as $membership)
-                <span class="badge badge-secondary">{{ App\Enums\Role::getDescription($membership->role_id) }}</span>
+                @if (($membership->membership_type == 'App\Models\Club' ) and ($membership->membership_id == $club->id))
+                <span class="badge badge-primary">
+                @else
+                <span class="badge badge-secondary">
+                @endif
+                {{ App\Enums\Role::getDescription($membership->role_id) }}</span>
               @endforeach
           </p>
             @endforeach

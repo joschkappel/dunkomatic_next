@@ -38,7 +38,7 @@ class MessageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function list_user_dt($language, User $user)
+    public function datatable_user($language, User $user)
     {
       $msgs = $user->messages()->orderBy('updated_at','ASC')->get();
 
@@ -165,16 +165,6 @@ class MessageController extends Controller
         return redirect()->route('message.index', ['language' => app()->getLocale()]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Message  $message
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Message $message)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.

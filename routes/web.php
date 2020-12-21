@@ -43,10 +43,10 @@ Route::group([
     Route::get('audit/dt', 'AuditController@datatable')->name('admin.audit.dt')->middleware('auth')->middleware('regionadmin');
     Route::get('region/{region}', 'RegionController@edit')->name('region.edit')->middleware('regionadmin');
     Route::get('region', 'RegionController@index')->name('region.index');
-    Route::get('region/list/dt', 'RegionController@list_dt')->name('region.list.dt');
+    Route::get('region/dt', 'RegionController@datatable')->name('region.list.dt');
 
     Route::get('club/index_stats', 'ClubController@index_stats')->name('club.index_stats');
-    Route::get('club/{club}/list', 'ClubController@dashboard')->name('club.dashboard');
+    Route::get('club/{club}/dashboard', 'ClubController@dashboard')->name('club.dashboard');
     Route::get('club/{club}/game/home','ClubController@list_homegame')->name('club.list.homegame');
     Route::get('club/{club}/game/upload','ClubGameController@upload')->name('club.upload.homegame');
     Route::post('club/{club}/game/import','ClubGameController@import')->name('club.import.homegame');
@@ -58,19 +58,19 @@ Route::group([
     Route::resource('club.gym', 'ClubGymController')->shallow()->except('store','update','destroy','show');
 
     Route::get('league/index_stats', 'LeagueController@index_stats')->name('league.index_stats');
-    Route::get('league/{league}/list', 'LeagueController@dashboard')->name('league.dashboard');
+    Route::get('league/{league}/dashboard', 'LeagueController@dashboard')->name('league.dashboard');
     Route::get('league/{league}/game/dt', 'LeagueGameController@datatable')->name('league.game.dt');
     Route::resource('league', 'LeagueController')->except('store','update','destroy');
     Route::resource('league.game', 'LeagueGameController')->shallow()->only(['index','create','edit']);
 
-    Route::resource('member', 'MemberController')->only(['show']);
+    Route::get('member/{member}', 'MemberController@show')->name('member.show');
+    Route::get('member', 'MemberController@index')->name('member.index');
     Route::get('membership/club/{club}', 'ClubMembershipController@index')->name('membership.club.index');
     Route::get('membership/club/{club}/member', 'ClubMembershipController@create')->name('membership.club.create');
     Route::get('membership/club/{club}/member/{member}', 'ClubMembershipController@edit')->name('membership.club.edit');
     Route::get('membership/league/{league}', 'LeagueMembershipController@index')->name('membership.league.index');
     Route::get('membership/league/{league}/member', 'LeagueMembershipController@create')->name('membership.league.create');
     Route::get('membership/league/{league}/member/{member}', 'LeagueMembershipController@edit')->name('membership.league.edit');
-
 
     Route::resource('membership', 'MembershipController')->only(['show']);
 
@@ -88,8 +88,7 @@ Route::group([
     Route::resource('schedule', 'ScheduleController')->only('index','create','edit');
 
     Route::resource('message', 'MessageController')->only('index','create','edit');
-    Route::get('message/user/{user}/dt', 'MessageController@list_user_dt')->name('message.user.dt');
-    Route::get('message/region/{region}/dt', 'MessageController@list_region_dt')->name('message.region.dt');
+    Route::get('message/user/{user}/dt', 'MessageController@datatable_user')->name('message.user.dt');
     Route::post('message/{message}/send', 'MessageController@send')->name('message.send');
 
     Route::get('calendar/league/{league}', 'CalendarController@cal_league')->name('cal.league');
@@ -105,17 +104,17 @@ Route::middleware(['auth'])->group(function () {
   Route::redirect('home', '/de/home');
   Route::delete('user/{user}', 'UserController@destroy')->name('admin.user.destroy')->middleware('auth')->middleware('regionadmin');
   Route::post('user/{user}/block', 'UserController@block')->name('admin.user.block')->middleware('auth')->middleware('regionadmin');
-  Route::put('user/{user_id}', 'UserController@update')->name('admin.user.update')->middleware('auth');
+  Route::put('user/{user}', 'UserController@update')->name('admin.user.update')->middleware('auth');
   Route::put('user/{user}/allowance', 'UserController@allowance')->name('admin.user.allowance')->middleware('auth')->middleware('regionadmin');
   Route::put('member/{member}', 'MemberController@update')->name('member.update');
   Route::post('member', 'MemberController@store')->name('member.store');
-  Route::delete('member/{member}', 'MemberController@destroy')->name('member.destroy');  
+  Route::delete('member/{member}', 'MemberController@destroy')->name('member.destroy');
   Route::put('region/{region}', 'RegionController@update')->name('region.update')->middleware('auth')->middleware('regionadmin');
   Route::post('region', 'RegionController@create')->name('region.create')->middleware('auth')->middleware('regionadmin');
 
   Route::resource('club', 'ClubController')->only('store','update','destroy');
   Route::get('club/{club}/game/chart_home', 'ClubGameController@chart_home')->name('club.game.chart_home');
-  Route::get('club/{club}/gym/{gym_no}', 'ClubGymController@show')->name('club.gym.show');
+  Route::get('club/{club}/list/gym/{gym}', 'ClubGymController@sb_gym')->name('gym.sb.gym');
   Route::get('club/{club}/list/gym', 'ClubGymController@sb_club')->name('gym.sb.club');
   Route::resource('club.gym', 'ClubGymController')->shallow()->only('store','update','destroy');
 
@@ -132,6 +131,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('schedule_event/list-cal', 'ScheduleEventController@list_cal')->name('schedule_event.list-cal');
     Route::post('message', 'MessageController@store')->name('message.store');
     Route::put('message/{message}', 'MessageController@update')->name('message.update');
+    Route::get('member/datatable', 'MemberController@datatable')->name('member.datatable');
   });
 
   Route::get('league/{league}/freechar/sb', 'LeagueController@sb_freechars')->name('league.sb_freechar');
@@ -172,14 +172,13 @@ Route::middleware(['auth'])->group(function () {
 
   Route::post('schedule_event/list-piv', 'ScheduleEventController@list_piv')->name('schedule_event.list-piv');
   Route::get('schedule_event/{schedule}/list', 'ScheduleEventController@list')->name('schedule_event.list');
-  Route::get('schedule_event/list-dt/{id}', 'ScheduleEventController@list_dt')->name('schedule_event.list-dt');
+  Route::get('schedule_event/{schedule}/dt', 'ScheduleEventController@datatable')->name('schedule_event.dt');
   Route::post('schedule_event/{schedule}/shift', 'ScheduleEventController@shift')->name('schedule_event.shift');
   Route::post('schedule_event/{schedule}/clone', 'ScheduleEventController@clone')->name('schedule_event.clone');
   Route::delete('schedule_event/{schedule}/destroy', 'ScheduleEventController@list_destroy')->name('schedule_event.list-destroy');
   Route::post('schedule_event/{schedule}', 'ScheduleEventController@store')->name('schedule_event.store');
   Route::resource('schedule_event', 'ScheduleEventController')->except('store');
 
-  Route::delete('schedule/delete/{id}', 'ScheduleController@destroy')->name('schedule.delete');
   Route::get('schedule/{schedule}/size/league_size}/sb', 'ScheduleController@sb_size')->name('schedule.sb.size');
   Route::resource('schedule', 'ScheduleController')->except('index','create','edit');
   Route::resource('message', 'MessageController')->except('index','create','edit');

@@ -149,11 +149,11 @@ class UserController extends Controller
 
       }
 
-  public function update(Request $request, $user_id)
+  public function update(Request $request, User $user)
       {
 
           Log::debug(print_r($request->all(),true));
-          $user = User::findOrFail($user_id);
+          //$user = User::findOrFail($user_id);
           $data = $request->validate( [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user_id)]

@@ -197,7 +197,7 @@ class MessageControllerTest extends TestCase
      *
      * @return void
      */
-    public function list_user_dt()
+    public function datatable_user()
     {
       $msgs = $this->region_user->messages()->first();
       $response = $this->authenticated()

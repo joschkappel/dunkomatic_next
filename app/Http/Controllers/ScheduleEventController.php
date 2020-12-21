@@ -79,19 +79,19 @@ class ScheduleEventController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function list_dt( $id )
+    public function datatable(Schedule $schedule )
     {
       // get duplicate dates or overlaps ?
       $duplicates = DB::table('schedule_events')
                      ->select(DB::raw("game_date"))
-                     ->where('schedule_id', $id)
+                     ->where('schedule_id', $schedule->id)
                      ->groupBy('game_date')
                      ->havingRaw('COUNT(*) > ?', [1])
                      ->pluck('game_date');
 
       Log::debug(print_r($duplicates,true));
 
-      $events = ScheduleEvent::query()->where('schedule_id', $id)->orderBy('game_day','ASC')->get();
+      $events = $schedule->events()->orderBy('game_day','ASC')->get();
       $evlist = datatables::of($events);
 
       return $evlist
@@ -100,9 +100,13 @@ class ScheduleEventController extends Controller
           return $event->game_day;
         })
         ->editColumn('game_day', function($event){
-            return '<a href="#" id="eventEditLink" data-id="'.$event->id.
+            if (Carbon::parse($event->game_date) < Carbon::now()){
+               return   $event->game_day;
+            } else {
+              return '<a href="#" id="eventEditLink" data-id="'.$event->id.
                     '" data-game-day="'.$event->game_day.'" data-weekend="'.$event->full_weekend.'" data-game-date="'.$event->game_date.
                     '">'.$event->game_day.' <i class="fas fa-arrow-circle-right"></i></a>';
+            }
         })
         ->editColumn('created_at', function ($event) {
                 return $event->created_at->format('d.m.Y H:i');

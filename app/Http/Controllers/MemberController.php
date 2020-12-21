@@ -9,6 +9,7 @@ use App\Models\Club;
 use App\Models\User;
 use App\Enums\Role;
 
+use Datatables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +21,38 @@ use App\Notifications\ApproveUser;
 
 class MemberController extends Controller
 {
+
+      public function index()
+      {
+        return view('member/member_list');
+      }
+
+      public function datatable(Region $region )
+      {
+        $members = $region->clubs()->with('members')->get()->pluck('members.*.id')->flatten()->concat(
+                      $region->leagues()->with('members')->get()->pluck('members.*.id')->flatten()
+                    )->concat(
+                      $region->members->pluck('id')->flatten()
+                    )->unique();
+        $mlist = datatables::of(Member::whereIn('id', $members)->get());
+        return $mlist
+              ->addColumn('name', function ($data) {
+                      return $data->lastname.', '.$data->firstname;
+                  })
+              ->addColumn('clubs', function ($data) {
+                      return $data->memberofclubs;
+                  })
+              ->addColumn('leagues', function ($data) {
+                      return $data->memberofleagues;
+                  })
+              ->addColumn('regions', function ($data) {
+                      return $data->memberofregions;
+                  })
+              ->addColumn('user_account', function ($data) {
+                      return $data->isuser;
+                  })
+              ->make(True);
+      }
 
       /**
        * Display a listing of the resource.

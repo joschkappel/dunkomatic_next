@@ -78,15 +78,12 @@ class ClubGymController extends Controller
      * @param  \App\Models\Gym  $gym
      * @return \Illuminate\Http\Response
      */
-    public function show(Club $club, $gym_no)
+    public function sb_gym(Club $club, Gym $gym)
     {
         $gyms = array();
 
-        if ($gym_no != 'all'){
-          $gym = $club->gyms()->where('gym_no',$gym_no)->get();
-        } else {
-          $gym = $club->gyms()->get();
-        }
+        $gym = $club->gyms()->where('id',$gym->id)->get();
+
         foreach ($gym as $g){
           $gyms[] = array(
             "id"=> $g->id,
