@@ -1,8 +1,8 @@
 branch-defaults:
   master:
-    environment: DunkomaticNext-env
+    environment: dunkomaticnext-env
 environment-defaults:
-  DunkomaticNext-env:
+   dunkomaticnext-env:
     branch: null
     repository: null
 global:
