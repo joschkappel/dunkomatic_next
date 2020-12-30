@@ -17,6 +17,9 @@ use Illuminate\Http\Request;
 Route::get('/', function () {
     return redirect(app()->getLocale());
 });
+Route::get('/health', function () {
+    return 'OK';
+});
 
 Route::group([
   'prefix' => '{language}',
