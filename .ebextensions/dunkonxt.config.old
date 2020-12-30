@@ -1,4 +1,14 @@
 files:
+  "/tmp/install_composer.sh" :
+    mode:                "000755"
+    owner:               root
+    group:               root
+    content:             |
+      #! /bin/bash
+      curl -sS https://getcomposer.org/installer | php
+      mv composer.phar /usr/local/composer
+      ln -f /usr/local/composer /usr/bin/composer
+
   "/tmp/config_laravel.sh" :
     mode:                "000755"
     owner:               root
@@ -8,6 +18,7 @@ files:
       chown -R ec2-user /var/app/current/
       cd /var/app/current/
       cp .env.aws .env
+      # composer install -q --no-ansi --no-interaction --no-scripts --prefer-dist
       chmod -R 0777 storage
       chmod 777 storage/framework/cache
 
@@ -24,9 +35,12 @@ files:
       php artisan db:seed --class=TestDatabaseSeeder
 
 commands:
-  01_config_laravel_env:
+  01_install_composer:
+    command:             "sh /tmp/install_composer.sh"
+    ignoreErrors:        false
+  02_config_laravel_env:
     command:             "sh /tmp/config_laravel.sh"
     ignoreErrors:        false
-  02_prepare_db:
+  03_prepare_db:
     command:             "sh /tmp/prepare_db.sh"
     ignoreErrors:        false
