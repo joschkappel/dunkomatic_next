@@ -4,8 +4,8 @@ public/storage
 storage/*.key
 /vendor
 
-!.env.aws
-.env*
+#!.env.aws
+
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
