@@ -1,12 +1,12 @@
 branch-defaults:
   master:
-    environment: dunkomaticnext-env
+    environment: Dunkomatic2-env
 environment-defaults:
-   dunkomaticnext-env:
+   Dunkomatic2-env:
     branch: null
     repository: null
 global:
-  application_name: dunkomatic_next
+  application_name: dunkomatic2
   default_ec2_keyname: dunko-next
   default_platform: PHP 7.4 running on 64bit Amazon Linux 2
   default_region: eu-central-1
