@@ -4,8 +4,8 @@
 /storage/*.key
 /vendor
 
-#!.env.dusk.git
-#.env*
+!.env.dusk.git
+.env*
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml

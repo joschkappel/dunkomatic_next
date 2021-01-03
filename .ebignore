@@ -5,6 +5,7 @@
 /vendor
 
 #!.env.aws
+.env*
 
 .phpunit.result.cache
 Homestead.json
