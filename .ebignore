@@ -4,8 +4,8 @@
 /storage/*.key
 /vendor
 
-#!.env.aws
 .env*
+.gitignore
 
 .phpunit.result.cache
 Homestead.json
