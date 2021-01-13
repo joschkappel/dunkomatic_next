@@ -19,4 +19,5 @@ final class JobFrequencyType extends Enum implements LocalizedEnum
   const weekly = 2;
   const biweekly = 3;
   const monthly = 4;
+  // test
 }
