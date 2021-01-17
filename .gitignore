@@ -5,6 +5,7 @@
 /vendor
 
 !.env.dusk.git
+.aws
 .env*
 .phpunit.result.cache
 Homestead.json
