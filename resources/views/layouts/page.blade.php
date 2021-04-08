@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@inject('layoutHelper', \App\Helpers\LayoutHelper)
+@inject('layoutHelper', 'App\Helpers\LayoutHelper')
 
 @if($layoutHelper->isLayoutTopnavEnabled())
     @php( $def_container_class = 'container' )
