@@ -10,10 +10,11 @@
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
-        "axios": "^0.19",
+        "axios": ">=0.21.1",
         "bootstrap": "^4.5.3",
         "cross-env": "^7.0",
-        "elliptic": ">=6.5.3",
+        "elliptic": ">=6.5.4",
+        "is-svg": ">=4.2.2",
         "jquery": "^3.2",
         "laravel-mix": "^5.0.9",
         "lodash": "^4.17.20",
@@ -23,6 +24,7 @@
         "sass": "^1.27.0",
         "sass-loader": "^8.0.0",
         "serialize-javascript": ">=3.1.0",
+        "ssri": ">=8.0.1",
         "vue": "^2.5.17",
         "vue-template-compiler": "^2.6.12",
         "websocket-extensions": ">=0.1.4"
@@ -39,12 +41,14 @@
         "chartjs-plugin-colorschemes": "^0.4.0",
         "datatables.net-bs4": "^1.10.22",
         "datatables.net-buttons-bs4": "^1.6.5",
-        "elliptic": ">=6.5.3",
+        "elliptic": ">=6.5.4",
         "fullcalendar": "^5.3.2",
         "icheck-bootstrap": "^3.0.1",
         "ion-rangeslider": "^2.3.1",
+        "is-svg": ">=4.2.2",
         "node-forge": ">=0.10.0",
         "serialize-javascript": ">=3.1.0",
+        "ssri": ">=8.0.1",
         "websocket-extensions": ">=0.1.4"
     }
 }
