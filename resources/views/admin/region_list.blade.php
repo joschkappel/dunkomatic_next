@@ -46,14 +46,14 @@
 @section('js')
 <script>
          $(function() {
-               $('#table').DataTable({
+            $('#table').DataTable({
                processing: true,
                serverSide: true,
                responsive: true,
                @if (app()->getLocale() == 'de')
-               language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/German.json')}}" },
+                language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/German.json')}}" },
                @else
-               language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/English.json')}}" },
+                language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/English.json')}}" },
                @endif
                order: [[1,'asc']],
                ajax: '{{ route('region.list.dt', ['language'=>app()->getLocale()]) }}',

@@ -45,8 +45,9 @@ Route::group([
     Route::get('audit', 'AuditController@index')->name('admin.audit.index')->middleware('auth')->middleware('regionadmin');
     Route::get('audit/dt', 'AuditController@datatable')->name('admin.audit.dt')->middleware('auth')->middleware('regionadmin');
     Route::get('region/{region}', 'RegionController@edit')->name('region.edit')->middleware('regionadmin');
+    Route::get('regions/dt', 'RegionController@datatable')->name('region.list.dt');
     Route::get('region', 'RegionController@index')->name('region.index');
-    Route::get('region/dt', 'RegionController@datatable')->name('region.list.dt');
+
 
     Route::get('club/index_stats', 'ClubController@index_stats')->name('club.index_stats');
     Route::get('club/{club}/dashboard', 'ClubController@dashboard')->name('club.dashboard');

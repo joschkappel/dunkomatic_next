@@ -45,14 +45,14 @@
 <?php $__env->startSection('js'); ?>
 <script>
          $(function() {
-               $('#table').DataTable({
+            $('#table').DataTable({
                processing: true,
                serverSide: true,
                responsive: true,
                <?php if(app()->getLocale() == 'de'): ?>
-               language: { "url": "<?php echo e(URL::asset('vendor/datatables-plugins/i18n/German.json'), false); ?>" },
+                language: { "url": "<?php echo e(URL::asset('vendor/datatables-plugins/i18n/German.json'), false); ?>" },
                <?php else: ?>
-               language: { "url": "<?php echo e(URL::asset('vendor/datatables-plugins/i18n/English.json'), false); ?>" },
+                language: { "url": "<?php echo e(URL::asset('vendor/datatables-plugins/i18n/English.json'), false); ?>" },
                <?php endif; ?>
                order: [[1,'asc']],
                ajax: '<?php echo e(route('region.list.dt', ['language'=>app()->getLocale()]), false); ?>',

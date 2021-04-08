@@ -12,7 +12,7 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                  <form class="form-horizontal" action="<?php echo e(route('admin.user.update', ['user_id' => Auth::user()->id]), false); ?>" method="POST">
+                  <form class="form-horizontal" action="<?php echo e(route('admin.user.update', ['user' => Auth::user()]), false); ?>" method="POST">
                         <input type="hidden" name="_method" value="PUT">
                         <?php echo csrf_field(); ?>
                         <?php echo method_field('PUT'); ?>
