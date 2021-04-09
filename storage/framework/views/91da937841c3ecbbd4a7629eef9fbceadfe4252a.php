@@ -1,4 +1,4 @@
-<?php $layoutHelper = app('\App\Helpers\LayoutHelper'); ?>
+<?php $layoutHelper = app('App\Helpers\LayoutHelper'); ?>
 
 <?php if($layoutHelper->isLayoutTopnavEnabled()): ?>
     <?php ( $def_container_class = 'container' ); ?>

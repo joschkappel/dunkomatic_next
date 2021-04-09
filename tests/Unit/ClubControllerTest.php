@@ -29,7 +29,7 @@ class ClubControllerTest extends TestCase
       $response = $this->authenticated()
                         ->get(route('club.create',['language'=>'de']));
 
-      $response->dump();
+      // $response->dump();
       $response->assertStatus(200)
                ->assertViewIs('club.club_new')
                ->assertViewHas('region',$this->region);

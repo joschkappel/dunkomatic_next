@@ -127,6 +127,25 @@ class RegionControllerTest extends TestCase
 
     }
 
+    /**
+     * index
+     *
+     * @test
+     * @group region
+     * @group controller
+     *
+     * @return void
+     */
+    public function index()
+    {
+
+      $response = $this->authenticated()
+                        ->get(route('region.index',['language'=>'de']));
+
+      $response->assertStatus(200)
+               ->assertViewIs('admin.region_list');
+
+    }
 
 
 }

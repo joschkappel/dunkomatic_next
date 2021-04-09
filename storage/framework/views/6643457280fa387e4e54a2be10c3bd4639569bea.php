@@ -1,4 +1,4 @@
-<?php $layoutHelper = app('\App\Helpers\LayoutHelper'); ?>
+<?php $layoutHelper = app('App\Helpers\LayoutHelper'); ?>
 
 <?php ( $dashboard_url = View::getSection('dashboard_url') ?? config('dunkomatic.dashboard_url', 'home') ); ?>
 

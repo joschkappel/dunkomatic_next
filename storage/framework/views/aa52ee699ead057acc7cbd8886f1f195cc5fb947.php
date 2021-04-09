@@ -1,4 +1,4 @@
-<?php $menuItemHelper = app('\App\Helpers\MenuItemHelper'); ?>
+<?php $menuItemHelper = app('App\Helpers\MenuItemHelper'); ?>
 
 <?php if($menuItemHelper->isSubmenu($item)): ?>
 
