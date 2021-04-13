@@ -58,6 +58,7 @@
        processing: true,
        serverSide: true,
        responsive: true,
+       pageLength: 25,
        @if (app()->getLocale() == 'de')
        language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/German.json')}}" },
        @else
