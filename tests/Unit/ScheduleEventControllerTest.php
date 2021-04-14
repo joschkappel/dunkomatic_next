@@ -140,7 +140,8 @@ class ScheduleEventControllerTest extends TestCase
                         ->post(route('schedule_event.shift',['schedule'=>$schedule]), [
                           'direction' => '+',
                           'unit' => 'DAY',
-                          'unitRange' => 10
+                          'unitRange' => 10,
+                          'gamedayRange' => '1;3'
                       ]);
 
       $response->assertSessionHasNoErrors()
