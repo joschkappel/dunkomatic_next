@@ -22,12 +22,13 @@ return [
   'title.event.create' => 'Erzeuge Neue Termine für Rahmenterminplan :schedule',
   'title.event.edit' => 'Termin Ändern',
   'title.event.clone' => 'Kopiere Termine für Rahmenterminplan :schedule',
-  'title.event.shift' => 'Verschiebe alle Termine von Rahmenterminplan :schedule',
+  'title.event.shift' => ':SCHEDULE : Verschiebe die Termine eines oder mehrerer Spieltage',
   'title.event.delete' => 'Lösche alle Termine von Rahmenterminplan :schedule',
   'confirm.event.delete' => 'Willst Du alle Termine Löschen ?',
   'confirm.delete' => 'Willst Du diesen Rahmenterminplan wirklich löschen ? ',
   'include.events' => 'Inclusive aller ',
   'game_day' => 'Spieltag / Heim-Gast',
+  'game_day_short' => 'Spieltag|Spieltage',
   'size' => 'Anzahl Mannschaften',
   'color' => 'Farbe Kalendereintrag',
   'events' => 'Termine',
@@ -36,8 +37,9 @@ return [
   'event.backward' => 'in die Vergangenheit',
   'event.range' => 'Anzahl',
   'event.unit' => 'Zeiteinheit',
-  'event.unit.day' => 'Tage',
-  'event.unit.week' => 'Wochen',
-  'event.unit.month' => 'Monate',
-  'event.unit.year' => 'Jahre'
+  'event.unit.day' => 'Tag|Tage',
+  'event.unit.week' => 'Woche|Wochen',
+  'event.unit.month' => 'Monat|Monate',
+  'event.unit.year' => 'Jahr|Jahre',
+  'event.move' => 'Termin für Spieltag(e) #gamedayrange# um #unitcount# #unit# #direction# verschieben ?'
 ];

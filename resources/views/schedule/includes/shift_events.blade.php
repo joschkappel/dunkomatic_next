@@ -1,23 +1,36 @@
-<div class="modal fade right" id="modalShiftEvents" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false">
-    <div class="modal-dialog modal-side modal-bottom-right modal-notify modal-info" role="document">
-        <!--Content-->
-        <div class="modal-content">
-            <!--Header-->
-            <div class="modal-header bg-info">
-                <p class="heading">@lang('schedule.title.event.shift', ['schedule'=>$schedule->name])</p>
-
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true" class="white-text">&times;</span>
-                </button>
-            </div>
-
-            <!--Body-->
-            <div class="modal-body">
-                <div class="card card-info">
-
                     <form class="form-horizontal" action="{{ route('schedule_event.shift', ['schedule'=>$schedule]) }}" method="POST">
                         @csrf
                         <div class="card-body">
+                            <div class="form-group row ">
+                                <label for="gamedayRange" class="col-sm-4 col-form-label">{{ trans_choice('schedule.game_day_short',2)}}</label>
+                                <div class="col-sm-6">
+                                <input id="gamedayRange" type="text" name="gamedayRange" value="">
+                                </div>
+                              </div>
+                              <div class="form-group row ">
+                                <label for="unitRange" class="col-sm-4 col-form-label">@lang('schedule.event.range')</label>
+                                <div class="col-sm-6">
+                                    <input id="unitRange" type="text" name="unitRange" value="">
+                                </div>
+                              </div>
+
+                            <div class="form-group row">
+                                <label for="radios3" class="col-sm-4 col-form-label">@lang('schedule.event.unit')</label>
+                                <div class="col-sm-6">
+                                    <label for="radio10" class="col-form-label radio-inline">
+                                        {{ Form::radio('unit', 'DAY', true, ['id' => 'radio10']) }} {{ trans_choice('schedule.event.unit.day',2)}}
+                                    </label>
+                                    <label for="radio11" class="col-form-label radio-inline">
+                                        {{ Form::radio('unit', 'WEEK', false, ['id' => 'radio11']) }} {{ trans_choice('schedule.event.unit.week',2 )}}
+                                    </label>
+                                    <label for="radio12" class="col-form-label radio-inline">
+                                        {{ Form::radio('unit', 'MONTH', false, ['id' => 'radio12']) }} {{ trans_choice('schedule.event.unit.month',2)}}
+                                    </label>
+                                    <label for="radio13" class="col-form-label radio-inline">
+                                        {{ Form::radio('unit', 'YEAR', false, ['id' => 'radio13']) }} {{ trans_choice('schedule.event.unit.year',2)}}
+                                    </label>
+                                </div>
+                            </div>
                             <div class="form-group row ">
                                 <label for="radios" class="col-sm-4 col-form-label">@lang('schedule.event.direction')</label>
                                 <div class="col-sm-6">
@@ -27,35 +40,10 @@
                                     <label for="radio2" class="col-form-label radio-inline">
                                         {{ Form::radio('direction', '-', false, ['id' => 'radio2']) }} @lang('schedule.event.backward')
                                     </label>
-
                                 </div>
-                            </div>
-                            <div class="form-group row ">
-                              <label for="unitRange" class="col-sm-4 col-form-label">@lang('schedule.event.range')</label>
-                                <div class="col-sm-6">
-                                    <input name='unitRange' type="range" class="custom-range" min="1" max="12" id="unitRange">
-                                    <span class="font-weight-bold text-primary ml-2 mt-1 valueSpan"></span>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="radios3" class="col-sm-4 col-form-label">@lang('schedule.event.unit')</label>
-                                <div class="col-sm-6">
-                                    <label for="radio10" class="col-form-label radio-inline">
-                                        {{ Form::radio('unit', 'DAY', true, ['id' => 'radio10']) }} @lang('schedule.event.unit.day')
-                                    </label>
-                                    <label for="radio11" class="col-form-label radio-inline">
-                                        {{ Form::radio('unit', 'WEEK', false, ['id' => 'radio11']) }} @lang('schedule.event.unit.week')
-                                    </label>
-                                    <label for="radio12" class="col-form-label radio-inline">
-                                        {{ Form::radio('unit', 'MONTH', false, ['id' => 'radio12']) }} @lang('schedule.event.unit.month')
-                                    </label>
-                                    <label for="radio13" class="col-form-label radio-inline">
-                                        {{ Form::radio('unit', 'YEAR', false, ['id' => 'radio13']) }} @lang('schedule.event.unit.year')
-                                    </label>
-                                </div>
-
                             </div>
                             <div class="card-footer">
+                                <label id="actiontxt" class="col-sm-8 col-form-label text-danger"></label>
                                 <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
                                     <button type="submit" class="btn btn-info">{{__('Submit')}}</button>
                                 </div>
@@ -63,21 +51,100 @@
                         </div>
                     </form>
 
-                </div>
-            </div>
-        </div>
-        <!--/.Content-->
-    </div>
-</div>
-<!--Modal: modalRelatedContent-->
 
 @push('js')
 <script>
-    const $valueSpan = $('.valueSpan');
-    const $value = $('#unitRange');
-    $valueSpan.html($value.val());
-    $value.on('input change', () => {
-        $valueSpan.html($value.val());
+    var directionlabel = '{{  __('schedule.event.forward') }}';
+    var unitlabel = '{{  trans_choice('schedule.event.unit.day',1) }}';
+    var unitcountlabel = '1';
+    var gamedayrangelabel = '1 - {{$eventcount}}';
+
+    function setActionLabel(){
+        var labeltext = "{{ __('schedule.event.move') }}";
+        labeltext = labeltext.replace('#unit#', unitlabel)
+        labeltext = labeltext.replace('#unitcount#', unitcountlabel)
+        labeltext = labeltext.replace('#direction#', directionlabel)
+        labeltext = labeltext.replace('#gamedayrange#', gamedayrangelabel)
+
+        $("#actiontxt").text(labeltext);
+
+    }
+    setActionLabel();
+
+    $(document).on('change', 'input:radio[id^="radio"]', function (event) {
+        if (event.target.value == 'WEEK'){
+            if (unitcountlabel == '1'){
+                unitlabel = " {{  trans_choice('schedule.event.unit.week',1) }}";
+            } else {
+                unitlabel = " {{  trans_choice('schedule.event.unit.week',2) }}";
+            }
+        } else if (event.target.value == 'YEAR'){
+            if (unitcountlabel == '1'){
+                unitlabel = " {{  trans_choice('schedule.event.unit.year',1 ) }}";
+            } else {
+                unitlabel = " {{  trans_choice('schedule.event.unit.year',2 ) }}";
+            }
+        } else if (event.target.value == 'MONTH'){
+            if (unitcountlabel == '1'){
+                unitlabel = " {{  trans_choice('schedule.event.unit.month',1 ) }}";
+            } else {
+                unitlabel = " {{  trans_choice('schedule.event.unit.month',2 ) }}";
+            }
+        } else if (event.target.value == 'DAY'){
+            if (unitcountlabel == '1'){
+                unitlabel = " {{  trans_choice('schedule.event.unit.day',1 ) }}";
+            } else {
+                unitlabel = " {{  trans_choice('schedule.event.unit.day',2 ) }}";
+            }
+        } else if (event.target.value == '+'){
+            directionlabel = " {{  __('schedule.event.forward') }}";
+        } else if (event.target.value == '-'){
+            directionlabel = " {{  __('schedule.event.backward') }}";
+        }
+
+
+        $("#unitRange").data("ionRangeSlider").update({
+            postfix: unitlabel
+        });
+
+        setActionLabel();
     });
+
+    $('#unitRange').ionRangeSlider({
+      skin: "big",
+      min     : 1,
+      max     : 12,
+      from    : 1,
+      grid    : true,
+      step    : 1,
+      prettify: true,
+      postfix: " {{  trans_choice('schedule.event.unit.day',2) }}",
+      onFinish: function (data) {
+            unitcountlabel = data.from;
+            setActionLabel();
+        }
+    })
+
+    $('#gamedayRange').ionRangeSlider({
+      skin: "big",
+      min     : 1,
+      max     : {{ $eventcount }},
+      from    : 1,
+      to      :  {{ $eventcount }},
+      type    : 'double',
+      drag_interval: true,
+      grid    : true,
+      step    : 1,
+      prettify: true,
+      prefix: "{{ trans_choice('schedule.game_day_short',1) }} ",
+      onFinish: function (data) {
+            if (data.from == data.to){
+                gamedayrangelabel = data.from;
+            } else {
+                gamedayrangelabel = data.from + ' - '+data.to;
+            }
+            setActionLabel();
+        }
+    })
 </script>
 @endpush

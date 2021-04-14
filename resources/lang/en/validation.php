@@ -120,6 +120,7 @@ return [
     'uppercase' => 'The :attribute must be uppercase.',
     'gameminute'  => 'Games must start at quarter hours (00, 15, 30 or 45).',
     'gamehour'    => 'Games must start between 8:00 and 22:00.',
+    'sliderrange'  => ':attribute must be in range beween :min and :max',
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines

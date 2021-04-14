@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
 
+use App\Rules\SliderRange;
+
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 
@@ -238,13 +240,18 @@ class ScheduleEventController extends Controller
         $data = $request->validate([
             'direction' => 'required|in:+,-',
             'unit' => 'required|in:DAY,WEEK,MONTH,YEAR',
-            'unitRange' => 'required|integer|between:1,12'
+            'unitRange' => 'required|integer|between:1,12',
+            'gamedayRange' => array( 'required', new SliderRange(1, 10) ),
           ]);
         Log::debug($data);
+
+        $min_gameday = explode(";", $data['gamedayRange'])[0];
+        $max_gameday = explode(";", $data['gamedayRange'])[1];
+
         if ( $data['direction'] === '+'){
-          $schedule->events()->update(['game_date' => DB::raw('DATE_ADD(game_date, INTERVAL '.$data['unitRange'].' '.$data['unit'].')')]);
+          $schedule->events()->whereBetween('game_day', [$min_gameday, $max_gameday])->update(['game_date' => DB::raw('DATE_ADD(game_date, INTERVAL '.$data['unitRange'].' '.$data['unit'].')')]);
         } else {
-          $schedule->events()->update(['game_date' => DB::raw('DATE_SUB(game_date, INTERVAL '.$data['unitRange'].' '.$data['unit'].')')]);
+          $schedule->events()->whereBetween('game_day', [$min_gameday, $max_gameday])->update(['game_date' => DB::raw('DATE_SUB(game_date, INTERVAL '.$data['unitRange'].' '.$data['unit'].')')]);
         }
         $schedule->refresh();
 

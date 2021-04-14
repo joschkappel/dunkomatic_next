@@ -3,15 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Club;
-use App\Models\League;
 use App\Models\Member;
-use App\Models\Membership;
 
 use App\Enums\Role;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
@@ -143,7 +139,7 @@ class UserController extends Controller
             return view('auth/user_approve', compact('user'));
           } else {
             $user['clubs'] = $user->member->clubs()->pluck('clubs.id','clubs.shortname');
-            $user['leagues'] = $leagues = $user->member->leagues()->pluck('leagues.id','leagues.shortname');
+            $user['leagues'] = $user->member->leagues()->pluck('leagues.id','leagues.shortname');
             return view('auth/user_edit', ['user'=>$user]);
           }
 
@@ -156,7 +152,7 @@ class UserController extends Controller
           //$user = User::findOrFail($user_id);
           $data = $request->validate( [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user_id)]
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)]
           ]);
 
           $data['email_verified_at']=null;
@@ -192,9 +188,21 @@ class UserController extends Controller
 
           if ( $request->approved == 'on'){
             $user->update(['approved_at' => now()]);
-            // create the member witha  role = user
-            $member = new Member(['lastname'=> $user->name, 'email1'=>$user->email]);
-            $user->member()->create($member);
+
+            if ( Member::where('email1', $user->email)->exists() ){
+                // check if member with same email exists
+                if ( ! Member::where('email1', $user->email)->first()->is_user ){
+                    $member = Member::where('email1', $user->email)->first();
+                }
+            }
+
+            if ( ! isset($member) ){
+                // else create the member witha  role = user
+                $member = new Member(['lastname'=> $user->name, 'email1'=>$user->email]);
+                $member->save();
+            }
+            $user->member()->associate($member);
+            $user->save();
 
             if ( isset($data['club_ids']) ){
               $member->clubs()->attach($data['club_ids'], array('role_id' => Role::User));

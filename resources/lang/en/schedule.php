@@ -18,7 +18,7 @@ return [
   'title.event.create' => 'Create new Events for Schedule :schedule',
   'title.event.edit' => 'Modify Event',
   'title.event.clone' => 'Clone Events for Schedule :schedule',
-  'title.event.shift' => 'Shift all Events of Schedule :schedule',
+  'title.event.shift' => ':SCHEDULE : Shift Dates for one ore more Game Days',
   'title.event.delete' => 'Delete all Events of Schedule :schedule',
   'confirm.event.delete' => 'Do you really want to delete all events ?',
   'confirm.delete' => 'Do you really want to delete this schedule? ',
@@ -28,6 +28,7 @@ return [
   'title.compare' => 'Compare Schedules of :Region',
   'include.events' => 'Including all ',
   'game_day' => 'Gameday / Home-Guest',
+  'game_day_short' => 'Gameday|Gamedays',
   'size' => 'Number of Teams',
   'color' => 'Calendarentry Color',
   'events' => 'Events',
@@ -36,8 +37,9 @@ return [
   'event.backward' => 'back in Time',
   'event.range' => 'Shift by ',
   'event.unit' => 'Time Unit',
-  'event.unit.day' => 'Days',
-  'event.unit.week' => 'Weeks',
-  'event.unit.month' => 'Months',
-  'event.unit.year' => 'Years'
+  'event.unit.day' => 'Day|Days',
+  'event.unit.week' => 'Week|Weeks',
+  'event.unit.month' => 'Month|Months',
+  'event.unit.year' => 'Year|Years',
+  'event.move' => 'Move date for game day(s) #gamedayrange# by #unitcount# #unit# #direction# ?'
 ];

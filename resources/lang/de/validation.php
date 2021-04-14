@@ -117,8 +117,9 @@ return [
     'url'                  => 'Das :attribute-Format ist inkorrekt.',
     'uuid'                 => ':attribute muss eine gültige UUID sein.',
     'uppercase'            => ':attribute darf nur Großbuchstaben enthalten.',
-    'gameminute'            => 'Spielbeginn nur zur vollen Viertelstunde (00, 15, 30 oder 45).',
-    'gamehour'             => 'Spielbeginn muss zwischenn 8:00 und 22:00 Uhr sein',
+    'gameminute'           => 'Spielbeginn nur zur vollen Viertelstunde (00, 15, 30 oder 45).',
+    'gamehour'             => 'Spielbeginn muss zwischen 8:00 und 22:00 Uhr sein',
+    'sliderrange'          => ':attribute muss zwischen :min und :max liegen',
 
 
 
