@@ -25,11 +25,40 @@ return [
   |--------------------------------------------------------------------------
   | allowed characters for league schemes (A to Q without J) or 1-16
   |--------------------------------------------------------------------------
-  |
-  |
   */
-
   'league_team_chars' => array( 1 => 'A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','Q'),
+  /*
+  |--------------------------------------------------------------------------
+  | define coloring for leagues
+  | color => [  above_region ( 0=false, 1=true),
+  |             gender (0=male, 1=female, 2=mixed),
+  |             agetype (0=senior, 1=junior, 2=mini)
+  |           ]
+  |--------------------------------------------------------------------------
+  */
+  'league_colors' => array(
+      '000' => 'red',
+      '010' => 'pink',
+      '020' => 'purple',
+      '001' => 'deep purple',
+      '011' => 'indigo',
+      '021' => 'blue',
+      '002' => 'light blue',
+      '012' => 'cyan',
+      '022' => 'teal',
+      '100' => 'green',
+      '110' => 'light green',
+      '120' => 'lime',
+      '101' => 'yellow',
+      '111' => 'amber',
+      '121' => 'orange',
+      '102' => 'deep orange',
+      '112' => 'brown',
+      '122' => 'gray',
+      '0' => 'white',
+      '1' => 'white',
+  ),
+
   'report_folder_leagues' => 'runden',
   'report_folder_clubs' => 'vereine',
 

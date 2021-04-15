@@ -138,4 +138,13 @@ class League extends Model implements Auditable
     });
     return $reports;
   }
+  public function getColorAttribute()
+  {
+      $league_colors = config('dunkomatic.league_colors');
+      if (isset($league_colors[$this->above_region.$this->gender_type.$this->age_type])){
+          return $league_colors[$this->above_region.$this->gender_type.$this->age_type];
+      } else {
+          return $league_colors[$this->above_region];
+      }
+  }
 }

@@ -1,4 +1,4 @@
-<?php $__env->startSection('plugins.Slider',true); ?>
+<?php $__env->startSection('plugins.RangeSlider',true); ?>
 
 <?php $__env->startSection('content'); ?>
 <div class="container-fluid">
@@ -75,7 +75,7 @@
                         <div class="form-group row">
                             <label for="game_slot" class="col-sm-6 col-form-label"><?php echo app('translator')->get('region.game_slot'); ?></label>
                             <div class="col-sm-4">
-                              <input id="game_slot" name="game_slot" type="text" class="form-control" ></input>
+                              <input id="game_slot" name="game_slot" type="text" value="" ></input>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -135,13 +135,24 @@
 
   <script>
       $(function() {
-        var gameslotSlider = $("#game_slot").bootstrapSlider({
-          ticks: [60,75,90,105,120,135,150],
-          ticks_labels: ['60','75', '90','105', '120', '135','150'],
-          lock_to_ticks: true
+        var custom_values =  [60,75,90,105,120,135,150];
+        $("#game_slot").ionRangeSlider({
+            skin: "big",
+            min: custom_values.indexOf(60),
+            max: custom_values.indexOf(150),
+            grid: true,
+            step: 1,
+            prettify: true,
+            postfix: " minutes",
+            values: custom_values,
+            from:  custom_values.indexOf(120)
         });
 
-        gameslotSlider.bootstrapSlider('setValue', <?php echo e((old('game_slot')!='') ? old('game_slot') : $region->game_slot, false); ?>);
+        <?php if(old('game_slot')!=''): ?>
+        $("#game_slot").data("ionRangeSlider").update({ from:  custom_values.indexOf(<?php echo e(old('game_slot'), false); ?>) });
+        <?php else: ?>
+        $("#game_slot").data("ionRangeSlider").update({ from:  custom_values.indexOf(<?php echo e($region->game_slot, false); ?>) });
+        <?php endif; ?>
 
         $("#selNolead").select2({
             theme: 'bootstrap4',

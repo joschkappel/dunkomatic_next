@@ -3,7 +3,7 @@
 /public/storage
 /storage/*.key
 /vendor
-/storage/framework/views/*
+/storage/framework/views
 
 !.env.dusk.git
 .aws
