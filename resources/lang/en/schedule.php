@@ -41,5 +41,6 @@ return [
   'event.unit.week' => 'Week|Weeks',
   'event.unit.month' => 'Month|Months',
   'event.unit.year' => 'Year|Years',
-  'event.move' => 'Move date for game day(s) #gamedayrange# by #unitcount# #unit# #direction# ?'
+  'event.move' => 'Move date for game day(s) #gamedayrange# by #unitcount# #unit# #direction# ?',
+  'edit.size' => 'To modify the number of teams please delete all events first !',
 ];

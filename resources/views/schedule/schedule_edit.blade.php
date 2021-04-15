@@ -1,5 +1,6 @@
 @extends('layouts.page')
 
+@section('plugins.Select2', true)
 @section('plugins.ICheck',true)
 @section('plugins.Colorpicker',true)
 
@@ -30,6 +31,23 @@
                                 @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                            </div>
+                        </div>
+                        <div class="form-group row ">
+                            <label for='selSize' class="col-sm-4 col-form-label">@lang('schedule.size')</label>
+                            <div class="col-sm-6">
+                                @if ($schedule->events()->count() == 0)
+                                <select class='js-sizes js-states form-control select2 @error('size') is-invalid @enderror' id='selSize' name="league_size_id">
+                                @if ( $schedule->league_size_id )
+                                <option value="{{ $schedule->league_size_id }}" selected="selected">{{ $schedule->league_size['description'] }}</option>
+                                @endif
+                                </select>
+                                @error('size')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                @else
+                                <span class='text-info'>@lang('schedule.edit.size')</span>
+                                @endif
                             </div>
                         </div>
                         <div class="form-group row ">
@@ -66,5 +84,22 @@
   $(function() {
       $('#cp2').colorpicker();
   });
+  $(".js-sizes").select2({
+          placeholder: "@lang('schedule.action.size.select')...",
+          theme: 'bootstrap4',
+          allowClear: false,
+          minimumResultsForSearch: -1,
+          ajax: {
+                  url: "{{ url('size/index')}}",
+                  type: "get",
+                  delay: 250,
+                  processResults: function (response) {
+                    return {
+                      results: response
+                    };
+                  },
+                  cache: true
+                }
+      });
 </script>
 @endsection

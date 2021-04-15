@@ -41,5 +41,6 @@ return [
   'event.unit.week' => 'Woche|Wochen',
   'event.unit.month' => 'Monat|Monate',
   'event.unit.year' => 'Jahr|Jahre',
-  'event.move' => 'Termin für Spieltag(e) #gamedayrange# um #unitcount# #unit# #direction# verschieben ?'
+  'event.move' => 'Termin für Spieltag(e) #gamedayrange# um #unitcount# #unit# #direction# verschieben ?',
+  'edit.size' => 'Zum Ändern der Anzahl Mannschaften bitte erst alle Termine löschen !',
 ];

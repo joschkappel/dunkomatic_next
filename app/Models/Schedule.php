@@ -29,7 +29,8 @@ class Schedule extends Model
 
   public static $updateRules = [
       'name' => 'required',
-      'eventcolor' => 'required'
+      'eventcolor' => 'required',
+      'league_size_id' => 'required|exists:league_sizes,id'
   ];
 
   public function region()
