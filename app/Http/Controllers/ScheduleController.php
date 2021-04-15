@@ -91,7 +91,7 @@ class ScheduleController extends Controller
 
         $schedule = session('cur_region')->schedules()->with('league_size')->withCount('events')->get();
 
-        $stlist = datatables::of($schedule);
+        $stlist = datatables()::of($schedule);
 
         return $stlist
           ->addIndexColumn()

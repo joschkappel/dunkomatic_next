@@ -34,7 +34,7 @@ class MemberController extends Controller
                     )->concat(
                       $region->members->pluck('id')->flatten()
                     )->unique();
-        $mlist = datatables::of(Member::whereIn('id', $members)->get());
+        $mlist = datatables()::of(Member::whereIn('id', $members)->get());
         return $mlist
               ->addColumn('name', function ($data) {
                       return $data->lastname.', '.$data->firstname;

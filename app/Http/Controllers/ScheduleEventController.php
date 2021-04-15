@@ -94,7 +94,7 @@ class ScheduleEventController extends Controller
       Log::debug(print_r($duplicates,true));
 
       $events = $schedule->events()->orderBy('game_day','ASC')->get();
-      $evlist = datatables::of($events);
+      $evlist = datatables()::of($events);
 
       return $evlist
         ->rawColumns(['game_day','game_date'])

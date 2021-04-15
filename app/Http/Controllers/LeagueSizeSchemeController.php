@@ -26,7 +26,7 @@ class LeagueSizeSchemeController extends Controller
     {
         Log::debug('get league team scheme for '.$size->description.' teams');
 
-        //$scheme = datatables::of(LeagueTeamScheme::query()->where('size', '=', $size));
+        //$scheme = datatables()::of(LeagueTeamScheme::query()->where('size', '=', $size));
 
         $scheme = collect(DB::select("select game_day,
           max(case when team_home = '1' then team_guest else ' ' end) as '1',

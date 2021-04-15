@@ -29,7 +29,7 @@ class UserController extends Controller
       {
         $users = session('cur_region')->users()->get();
         //Log::debug(print_r($users,true));
-        $userlist = datatables::of($users);
+        $userlist = datatables()::of($users);
 
         return $userlist
           ->addIndexColumn()

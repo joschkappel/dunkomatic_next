@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\League;
 use App\Models\Region;
-use App\Models\LeagueClub;
 use App\Models\Team;
 use App\Models\Club;
-use App\Models\Game;
 use App\Models\Member;
 
 
@@ -23,11 +21,10 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Builder;
 
 use App\Notifications\ClubAssigned;
 use App\Notifications\ClubDeAssigned;
+use Yajra\DataTables\Facades\DataTables as FacadesDataTables;
 
 class LeagueController extends Controller
 {
@@ -61,7 +58,7 @@ class LeagueController extends Controller
 
       //Log::debug(print_r($leagues,true));
 
-      $leaguelist = datatables::of($leagues);
+      $leaguelist = datatables()::of($leagues);
 
       return $leaguelist
         ->addIndexColumn()
@@ -95,7 +92,7 @@ class LeagueController extends Controller
     public function list(Region $region)
     {
         //
-        $leaguelist = datatables::of($region->leagues()->with('schedule'));
+        $leaguelist = datatables()::of($region->leagues()->with('schedule'));
 
         return $leaguelist
           ->addIndexColumn()

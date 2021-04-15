@@ -43,7 +43,7 @@ class RegionController extends Controller
       $regions = Region::all();
       Log::info('regions found:'.$regions->count());
 
-      $regionlist = datatables::of($regions);
+      $regionlist = datatables()::of($regions);
 
       return $regionlist
         ->addIndexColumn()

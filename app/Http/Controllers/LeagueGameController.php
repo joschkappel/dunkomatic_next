@@ -38,7 +38,7 @@ class LeagueGameController extends Controller
     public function datatable($language, League $league)
     {
       $games = $league->games()->get();
-      $glist = datatables::of($games);
+      $glist = datatables()::of($games);
 
       $glist =  $glist
         ->rawColumns(['game_no.display'])

@@ -42,7 +42,7 @@ class ClubController extends Controller
 
       //Log::debug(print_r($leagues,true));
 
-      $clublist = datatables::of($clubs);
+      $clublist = datatables()::of($clubs);
 
       return $clublist
         ->addIndexColumn()
@@ -96,7 +96,7 @@ class ClubController extends Controller
      */
     public function list(Region $region)
     {
-        $clublist = datatables::of($region->clubs);
+        $clublist = datatables()::of($region->clubs);
 
         return $clublist
           ->addIndexColumn()

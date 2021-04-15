@@ -42,7 +42,7 @@ class MessageController extends Controller
     {
       $msgs = $user->messages()->orderBy('updated_at','ASC')->get();
 
-      $msglist = datatables::of($msgs);
+      $msglist = datatables()::of($msgs);
 
       return $msglist
         ->rawColumns(['send_at','sent_at', 'action_send', 'action','title','body'])

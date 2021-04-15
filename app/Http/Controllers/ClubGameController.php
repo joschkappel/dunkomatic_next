@@ -55,7 +55,7 @@ class ClubGameController extends Controller
 
         Log::debug('get home games for club '.$club->id);
         $games = Game::query()->where('club_id_home', $club->id)->with('league','gym')->get();
-        $glist = datatables::of($games);
+        $glist = datatables()::of($games);
 
         $glist =  $glist
           ->rawColumns(['game_no.display','duplicate'])
