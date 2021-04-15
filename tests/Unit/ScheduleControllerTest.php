@@ -155,7 +155,8 @@ class ScheduleControllerTest extends TestCase
       $response = $this->authenticated( )
                         ->put(route('schedule.update',['schedule'=>$schedule]),[
                           'name' => 'testschedule2',
-                          'eventcolor' => $schedule->eventcolor
+                          'eventcolor' => $schedule->eventcolor,
+                          'league_size_id' => 2,
                         ]);
 
       $schedule->refresh();
