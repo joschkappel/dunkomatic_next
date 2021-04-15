@@ -4,12 +4,7 @@
 
 @section('plugins.Select2', true)
 @section('plugins.Chartjs', true)
-
-
-@section('css')
-  <link href="{{ URL::asset('vendor/bootstrap-slider/css/bootstrap-slider.css') }}" rel="stylesheet">
-
-@endsection
+@section('plugins.RangeSlider',true)
 
 
 @section('content')
@@ -51,7 +46,6 @@
                 <div class="card-body">
                     <form class="form-horizontal" id="teamLeagueOptForm">
                           <div class="form-group row ">
-                            <label for="radios" class="col-sm-2 ">@lang('team.game.perday')</label>
 
                               <div class="col-sm-10">
                                   <label for="radio1" class="col-form-label radio-inline">
@@ -66,16 +60,15 @@
                               </div>
                                 <div class="col-sm-10 slider-gray">
                                     <span class="text-info ml-2 mt-1 gperday"></span>
-                                    <input  type="text" name="gperday" id="gperday" value="" class="slider form-control" data-slider-value="1" data-slider-min="1" data-slider-max="{{ count($teams) }}" data-slider-step="1">
+                                    <input  type="text" name="gperday" id="gperday" value="" class="slider form-control">
                                   </div>
 
 
                           </div>
                           <div class="form-group row ">
                             <div class="col-sm-10 slider-gray">
-                                <label for="optRange">@lang('team.game.combination')</label>
                                 <span class="text-info ml-2 mt-1 optRangeSpan"></span>
-                                <input  type="text" id="optRange" value="0" class="slider form-control"  data-slider-min="0" data-slider-max="0" data-slider-step="1">
+                                <input  type="text" id="optRange" name="optRange" value="" class="slider form-control">
                               </div>
                           </div>
                         <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
@@ -92,8 +85,6 @@
 @stop
 
 @section('js')
-<script src="{{ URL::asset('vendor/bootstrap-slider/bootstrap-slider.js')}}"></script>
-
 <script >
     $(document).ajaxStart(function() { Pace.restart(); });
 
@@ -104,8 +95,39 @@
             multiple: false,
             allowClear: false
         });
-        var mySlider = $("#optRange").bootstrapSlider();
-        var mySlider2 = $("#gperday").bootstrapSlider();
+        var mySlider = $("#optRange").ionRangeSlider({
+            skin: "big",
+            min: 0,
+            max: 0,
+            grid: true,
+            grid_snap: true,
+            step: 1,
+            prettify: true,
+            prefix: "Option ",
+            onFinish: function (data){
+                var selCombi = data.from;
+                var selIdx = selCombi -1 ;
+                leagues.forEach( function (item,idx){
+                    var selName = "selSize:"+item;
+                    var selVal = c_sel[selIdx][idx];
+                    elem = $("select[name^='"+selName+"']");
+                    $(elem).val(selVal).trigger("change");
+                });
+
+                $("#refreshbtn").click();
+            }
+        });
+
+        var mySlider2 = $("#gperday").ionRangeSlider({
+            skin: "big",
+            min: 1,
+            max: {{ count($teams) }},
+            grid: true,
+            grid_snap: true,
+            step: 1,
+            prettify: true,
+            postfix: " Spiele/Tag",
+        });
 
         var ctx = document.getElementById('myChart').getContext('2d');
         var myChart = new Chart(ctx, {
@@ -196,10 +218,9 @@
               return false;
             }
           }
-          mySlider.bootstrapSlider('setAttribute','max', c_sel.length);
-          mySlider.bootstrapSlider('setAttribute','min', 1);
-          mySlider.bootstrapSlider('setValue',1);
-          $(".optRangeSpan").html("1/"+c_sel.length);
+
+          $("#optRange").data("ionRangeSlider").update({ min: 1, max: c_sel.length});
+
           //set option 0 values:
           leagues.forEach( function (item,idx){
             var selName = "selSize:"+item;
@@ -255,19 +276,7 @@
           });
         });
 
-        $("#optRange").on('input change', () => {
-            var selCombi = $("#optRange").val();
-            $(".optRangeSpan").html(selCombi+"/"+c_sel.length);
-            var selIdx = selCombi -1 ;
-            leagues.forEach( function (item,idx){
-              var selName = "selSize:"+item;
-              var selVal = c_sel[selIdx][idx];
-              elem = $("select[name^='"+selName+"']");
-              $(elem).val(selVal).trigger("change");
-            });
 
-            $("#refreshbtn").click();
-        });
     });
 </script>
 @stop

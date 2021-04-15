@@ -1,6 +1,6 @@
 @extends('layouts.page')
 
-@section('plugins.Slider',true)
+@section('plugins.RangeSlider',true)
 
 @section('content')
 <div class="container-fluid">
@@ -77,7 +77,7 @@
                         <div class="form-group row">
                             <label for="game_slot" class="col-sm-6 col-form-label">@lang('region.game_slot')</label>
                             <div class="col-sm-4">
-                              <input id="game_slot" name="game_slot" type="text" class="form-control" ></input>
+                              <input id="game_slot" name="game_slot" type="text" value="" ></input>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -137,13 +137,24 @@
 
   <script>
       $(function() {
-        var gameslotSlider = $("#game_slot").bootstrapSlider({
-          ticks: [60,75,90,105,120,135,150],
-          ticks_labels: ['60','75', '90','105', '120', '135','150'],
-          lock_to_ticks: true
+        var custom_values =  [60,75,90,105,120,135,150];
+        $("#game_slot").ionRangeSlider({
+            skin: "big",
+            min: custom_values.indexOf(60),
+            max: custom_values.indexOf(150),
+            grid: true,
+            step: 1,
+            prettify: true,
+            postfix: " minutes",
+            values: custom_values,
+            from:  custom_values.indexOf(120)
         });
 
-        gameslotSlider.bootstrapSlider('setValue', {{ (old('game_slot')!='') ? old('game_slot') : $region->game_slot }});
+        @if (old('game_slot')!='')
+        $("#game_slot").data("ionRangeSlider").update({ from:  custom_values.indexOf({{ old('game_slot') }}) });
+        @else
+        $("#game_slot").data("ionRangeSlider").update({ from:  custom_values.indexOf({{ $region->game_slot }}) });
+        @endif
 
         $("#selNolead").select2({
             theme: 'bootstrap4',

@@ -67,22 +67,6 @@ return [
              ],
           ],
       ],
-      'Slider' => [
-        'name' => 'Slider',
-        'active' => true,
-        'files' => [
-          [
-            'type' => 'js',
-            'asset' => true,
-            'location' => 'vendor/bootstrap-slider/bootstrap-slider.min.js'
-          ],
-          [
-            'type' => 'css',
-            'asset' => true,
-            'location' => 'vendor/bootstrap-slider/css/bootstrap-slider.min.css'
-          ],
-        ]
-      ],
       'RangeSlider' => [
         'name' => 'RangeSlider',
         'active' => true,
