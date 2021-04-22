@@ -71,6 +71,8 @@ class TeamsTableSeeder extends Seeder
           'club_id'       => $team->club_id,
           'league_char'   => $league_char,
           'league_no'     => $league_no,
+          'preferred_league_char'   => $league_char,
+          'preferred_league_no'     => $league_no,
           'league_prev'   => $team->league_prev,
           'training_day'  => $tday,
           'training_time' => $team->training_time,

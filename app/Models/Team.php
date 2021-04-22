@@ -20,6 +20,7 @@ class Team extends Model
         'id','league_char','league_no','team_no','league_id','club_id','changeable', 'league_prev',
         'training_day', 'training_time', 'preferred_game_day', 'preferred_game_time',
         'coach_name', 'coach_phone1', 'coach_phone2', 'coach_email', 'shirt_color',
+        'preferred_league_char','preferred_league_no',
     ];
 
   public static function getCreateRules()

@@ -115,7 +115,11 @@ class League extends Model implements Auditable
   }
   public function getSizeAttribute()
   {
-    return $this->schedule->league_size->size;
+    if (isset($this->schedule)){
+        return $this->schedule->league_size->size;
+    } else {
+        return 0;
+    }
   }
   public function getFilecountAttribute()
   {

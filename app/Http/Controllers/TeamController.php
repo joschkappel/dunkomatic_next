@@ -5,15 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Team;
 use App\Models\Club;
 use App\Models\League;
-use App\Models\Schedule;
-use App\Models\ScheduleEvent;
-use App\Models\LeagueTeamScheme;
 use App\Models\Game;
 
-use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
 
@@ -184,8 +179,8 @@ class TeamController extends Controller
 
           // update team league character
           $team = Team::find($team_id);
-          $team->league_no = $league_no;
-          $team->league_char = $upperArr[ $league_no ];
+          $team->preferred_league_no = $league_no;
+          $team->preferred_league_char = $upperArr[ $league_no ];
 
           $check = $team->save();
         }
@@ -295,7 +290,8 @@ class TeamController extends Controller
      public function plan_leagues( $language, Club $club )
      {
         $data['club'] =  $club;
-        $data['teams'] = $data['club']->teams()->whereNotNull('league_id')->with('league')->get();
+        $teams = $data['club']->teams()->whereNotNull('league_id')->with('league')->get();
+        $data['teams'] = $teams->where('league.size','>',0)->sortBy('league.schedule_id');
 
         return view('team/teamleague_dashboard', $data);
       }
@@ -319,7 +315,7 @@ class TeamController extends Controller
 
         $select .= ', '.implode(' ,', $cols).' FROM league_size_schemes lts, schedule_events se  , leagues l , schedules s ';
         $select .= ' WHERE l.id in ('.implode(' ,', $where).') ';
-        $select .= ' AND lts.id = s.league_size_id AND s.id = l.schedule_id AND se.schedule_id = l.schedule_id AND se.game_day = lts.game_day';
+        $select .= ' AND lts.league_size_id = s.league_size_id AND s.id = l.schedule_id AND se.schedule_id = l.schedule_id AND se.game_day = lts.game_day';
         $select .= ' GROUP BY se.game_date';
 
         Log::debug($select);
@@ -350,7 +346,7 @@ class TeamController extends Controller
 
          $select .= ' FROM league_size_schemes lts, schedule_events se  , leagues l , schedules s ';
          $select .= ' WHERE ('.implode(' OR ', $where).') ';
-         $select .= ' AND lts.id = s.league_size_id AND s.id = l.schedule_id AND se.schedule_id = l.schedule_id AND se.game_day = lts.game_day';
+         $select .= ' AND lts.league_size_id = s.league_size_id AND s.id = l.schedule_id AND se.schedule_id = l.schedule_id AND se.game_day = lts.game_day';
          $select .= " GROUP BY date_format(se.game_date, '%b-%d-%Y')";
 
          // Log::debug($select);
@@ -361,30 +357,7 @@ class TeamController extends Controller
 
         }
 
-
-
-        public function Stand_Deviation($arr)
-        {
-            $num_of_elements = count($arr);
-
-            $variance = 0.0;
-
-                    // calculating mean using array_sum() method
-            $average = ($num_of_elements > 0 ) ? array_sum($arr)/$num_of_elements : 0;
-
-            foreach($arr as $i)
-            {
-                // sum of squares of differences between
-                            // all numbers and means.
-                $variance += pow(($i - $average), 2);
-            }
-
-            $sd = ($num_of_elements > 0) ? (float)sqrt($variance/$num_of_elements) : 0;
-            return $sd;
-
-        }
-
-        public function Cartesian_Product($data)
+        public function Cartesian_Product_old($data)
         {
           ini_set('memory_limit', '2G');
 
@@ -395,7 +368,7 @@ class TeamController extends Controller
           };
           Log::debug('dimension is: '.$dim);
           // limit to less than 100.000 combinations
-          while($dim > 200000){
+          while ($dim > 200000){
             $dim =1;
             for($i=0; $i < count($data); $i++){
               if (count($data[$i]) >2){
@@ -424,32 +397,78 @@ class TeamController extends Controller
           return $result;
         }
 
-        public function Cartesian_Product_sql($data){
-          ini_set('memory_limit', '2G');
-          $dim = count($data);
-          $cidx = range('A','Z');
+        public function build_comb($arr, $k)
+        {
+            if ($k == 0) {
+              return array(array());
+            }
 
-          $col = array();
-          $join = array();
-          $where = array();
+            if (count($arr) == 0) {
+              return array();
+            }
+            $head = $arr[0];
 
-          foreach ( $data as $idx => $size ){
-            $col[] = $cidx[$idx].".team_char AS '".$idx."' ";
-            $join[] = 'league_team_chars as '.$cidx[$idx];
-            $where[] = $cidx[$idx].'.size = '.count($size);
-          };
+            $combos = array();
+            $subcombos = $this->build_comb($arr, $k-1);
+            foreach ($subcombos as $subcombo) {
+              array_unshift($subcombo, $head);
+              $combos[] = $subcombo;
+            }
+            array_shift($arr);
+            $combos = array_merge($combos, $this->build_comb($arr, $k));
+            return $combos;
+        }
 
-          $sel = "SELECT ".implode(', ',$col);
-          $sel .= " FROM ".implode(' CROSS JOIN ',$join);
-          $sel .= " WHERE ".implode(' AND ',$where)." LIMIT 100000";
+        public function Cartesian_Product($data)
+        {
+            ini_set('memory_limit', '2G');
 
-          // SELECT a.team_char, b.team_char,c.team_char,d.team_char,e.team_char FROM league_team_chars as a CROSS JOIN league_team_chars as b CROSS JOIN league_team_chars as c CROSS JOIN league_team_chars as d CROSS JOIN league_team_chars as e
-          // WHERE a.size =4 and b.size=6 and c.size=8 and d.size=10 and e.size=12
-          Log::debug($sel);
-          $res = DB::select($sel);
+            // get total
+            $dim=1;
+            foreach($data as $vec){
+              $dim = $dim * count($vec);
+            };
+            // limit to less than 1000 combinations
+            while ($dim > 250000){
+            $dim =1;
+            for($i=0; $i < count($data); $i++){
+                  if (count($data[$i]) >2){
+                     array_pop( $data[$i] );
+                  };
+                  $dim = $dim * count($data[$i]);
+              }
+            }
 
-          return $res;
+            $result = array(array());
 
+            foreach ($data as $key => $values) {
+                $append = array();
+
+                foreach($result as $product) {
+                    foreach($values as $item) {
+                        // $product[$key] = $item;
+                        if ($key == 0){
+                            $productt[0] = $item;
+
+                        } else {
+                            $productt[0] = array_merge($product[0], $item);
+                        }
+                        $append[] = $productt;
+                    }
+                }
+
+                $result = $append;
+
+            }
+
+            // pick 1000 random combinations
+            if (count($result) > 5000){
+              $rand_keys = array_rand($result, 5000);
+              $result = array_intersect_key($result, array_flip($rand_keys));
+              $dim = 1000;
+            }
+
+            return $result;
         }
 
         /**
@@ -461,13 +480,13 @@ class TeamController extends Controller
         {
           Log::debug(print_r($request->input(), true));
           Log::info('starting');
-          // THIS WORKS ! but takes long if more than 4 leagues !!!!  combinations for 5 league are 100.000 !!!
-          // i.e. this takes 100.000  complex SQL calls !!! -> need to move to handle this in php
+
           $leagues = array();
           $leagues['id'] = array();
           $leagues['team_no'] = array();
           $leagues['schedule_id'] = array();
           $leagues['size'] = array();
+          $schedules = array();
 
           foreach ($request->all() as $key => $league_no) {
             if ( strpos($key, 'sel') !== false ){
@@ -477,86 +496,78 @@ class TeamController extends Controller
               $leagues['team_no'][] = $league_no;
               $leagues['schedule_id'][] = $league->schedule->id;
               $leagues['size'][] = range(1, $league->size);
+              if (isset($schedules[$league->schedule->id]['count'])){
+                $schedules[$league->schedule->id]['count'] += 1;
+              } else {
+                $schedules[$league->schedule->id]['count'] = 1;
+              }
+              $schedules[$league->schedule->id]['size'] = $league->size;
             }
           }
           Log::info('ref-data loaded - '.print_r(count($request->input())-4,true));
           //Log::debug(print_r($leagues, true));
 
+          $combos = array();
+          foreach ($schedules as $key => $sd){
+              $combos[] = $this->build_comb(range(1,$sd['size']), $sd['count']);
+          }
+
           // create an array with all combinations of team numbers
 
-          $data = $leagues['size'];
-
-          $combinations = $this->Cartesian_Product($data);
+          // $data = $leagues['size'];
+          // $combinations = $this->Cartesian_Product_old($data);
+          $combinations = $this->Cartesian_Product($combos);
           Log::info('combinations defined - '.count($combinations));
           //Log::debug(print_r($combinations, true));
 
           $sel = "SELECT date(se.game_date) as gdate, l.id as glid, lts.team_home as ghome ";
           $sel .= " FROM schedule_events se, schedules s, league_size_schemes lts, leagues l ";
-          $sel .= "WHERE se.schedule_id = s.id AND lts.id = s.league_size_id AND lts.game_day = se.game_day AND l.schedule_id = s.id  ";
+          $sel .= "WHERE se.schedule_id = s.id AND lts.league_size_id = s.league_size_id AND lts.game_day = se.game_day AND l.schedule_id = s.id  ";
           $sel .= "AND l.id in (".implode(',', $leagues['id']).")";
 
           $filtercomb = DB::select($sel);
-          Log::info('game days loaded and filtered - '.print_r(count($filtercomb),true));
+          $num_gdays = count($filtercomb);
+          Log::info('game days loaded and filtered - '.print_r($num_gdays,true));
 
-          // now get averages
-          $hdays_a = array();
-          $hdays_s = array();
+          // holds combinations for a given number of games/day
+          $hdays_c = array();
+          for ($i=1; $i<=count($leagues['id']);$i++){
+              $hdays_c[$i] = array();
+          }
 
-          for ($i = 0; $i < count($combinations); $i++) {
+          foreach ($combinations as $i => $c) {
             $homies = $filtercomb;
             for ($j = 0; $j < count($leagues['id']); $j++ ) {
-              $homies = array_filter($homies, function ($v) use ($leagues, $combinations,$i, $j) {
+              $homies = array_filter($homies, function ($v) use ($leagues, $c,$i, $j) {
                   if ($v->glid == $leagues['id'][$j] ) {
-                    if ($v->ghome == $combinations[$i][$j])
+                    if ($v->ghome == $c[0][$j])
                       { return true; } else { return false; };
                   } else { return true; };
                 });
             }
             //Log::debug(print_r($homies,true));
             $gdays = array_count_values(array_column($homies, 'gdate'));
-          //  Log::debug(print_r($gdays,true));
-            $hdays_a[$i] = (count($gdays) > 0) ? array_sum($gdays)/count($gdays) : 0 ;
-            $hdays_s[$i] = $this->Stand_Deviation($gdays);
+            //  Log::debug(print_r($gdays,true));
+            $day_histogram = array_count_values($gdays);
+            foreach ($day_histogram as $d => $c){
+                $hdays_c[$d][$i] = $c ;
+            }
             //Log::info('avg is :'.$avgday);
           }
-          Log::debug('stats done - '.print_r(count($hdays_a),true));
+          Log::debug('stats done - '.print_r(count($hdays_c),true));
 
           //get the combinations for min/max games/day
+          $teams =  count($leagues['id']);
 
+          // prepare combination to show in the UI
+          $option_size = 20;
 
-          $min_keys = array_slice(array_keys($hdays_a,min($hdays_a)),0,10,true);
-          $min_c = array_intersect_key($combinations, array_flip($min_keys));
-          $resp['c_min'] = array_values($min_c);
-
-          $max_keys = array_slice(array_keys($hdays_a,max($hdays_a)),0,10,true);
-          $max_c = array_intersect_key($combinations, array_flip($max_keys));
-          $resp['c_max'] = array_values($max_c);
-
-          // get the avergade variance
-          $avgvar = array_sum($hdays_s)/count($hdays_s);
-
-          // do days 1-5 by default
-          for ($i=1; $i <= 5; $i++){
-            // get values closest to an exact avg
-            $remain = array_filter($hdays_a, function ($v, $k) use ($i, $hdays_s, $avgvar) {
-                if (( $v < $i + $hdays_s[$k] ) and ( $v > $i - $hdays_s[$k] ) and ( $hdays_s[$k] < $avgvar ))
-                  { return true; } else { return false; };
-            }, ARRAY_FILTER_USE_BOTH);
-            $keys = array_slice(array_keys($remain),0,10,true);
-            $c = array_intersect_key($combinations, array_flip($keys));
+          for ($i=1; $i <= $teams; $i++){
+            //$keys = array_slice(array_keys($hdays_c[$i],max($hdays_c[$i])),0,$option_size,true);
+            arsort($hdays_c[$i]);
+            $keys = array_slice($hdays_c[$i],0,$option_size,true);
+            $c = array_intersect_key($combinations, $keys);
             $resp['c_day'][$i] = array_values($c);
-          }
-
-          // get values closest to an exact avg
-          $gperday = $request->input('gperday');
-          if ( $gperday > 5){
-            $remain = array_filter($hdays_a, function ($v, $k) use ($gperday, $hdays_s, $avgvar) {
-                if (( $v < $gperday+$hdays_s[$k] ) and ( $v > $gperday-$hdays_s[$k] ) and ( $hdays_s[$k] < $avgvar))
-                  { return true; } else { return false; };
-            }, ARRAY_FILTER_USE_BOTH);
-            $keys = array_slice(array_keys($remain),0,10,true);
-            $c = array_intersect_key($combinations, array_flip($keys));
-            $resp['c_day'][$gperday] = array_values($c);
           }
 
           $resp['leagues'] = $leagues['id'];

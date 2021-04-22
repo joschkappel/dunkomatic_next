@@ -22,6 +22,8 @@ class CreateTeamsTable extends Migration
             $table->foreign('club_id')->references('id')->on('clubs');
             $table->char('league_char')->nullable();
             $table->smallInteger('league_no')->nullable();
+            $table->char('preferred_league_char')->nullable();
+            $table->smallInteger('preferred_league_no')->nullable();
             $table->char('league_prev')->nullable();
             $table->smallInteger('training_day')->nullable();
             $table->time('training_time')->nullable();
