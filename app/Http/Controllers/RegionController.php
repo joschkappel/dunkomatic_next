@@ -124,9 +124,15 @@ class RegionController extends Controller
             'fmt_club_reports.*' => ['required', new EnumValue(ReportFileType::class, false)],
             'fmt_club_reports' => 'required|array|min:1',
             'fmt_league_reports.*' => ['required', new EnumValue(ReportFileType::class, false)],
+            'pickchar_enabled' => 'sometimes|required|in:on'
         ]);
 
         Log::debug(print_r($data,true));
+        if ( isset($data['pickchar_enabled']) and ( $data['pickchar_enabled'] === 'on' )){
+          $data['pickchar_enabled'] = True;
+        } else {
+          $data['pickchar_enabled'] = False;
+        }
 
         $check = Region::find($region->id)->update($data);
         return redirect()->route('home',['language'=>app()->getLocale()]);

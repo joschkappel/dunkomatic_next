@@ -24,5 +24,6 @@ return [
   'above-region' => 'above region',
   'generated' => 'CLOSED',
   'agetype' => 'Age class',
-  'gendertype' => 'Gender class'
+  'gendertype' => 'Gender class',
+  'pickchar_enabled' => 'League character picking enbaled',
 ];

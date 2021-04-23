@@ -1,6 +1,7 @@
 @extends('layouts.page')
 
 @section('plugins.RangeSlider',true)
+@section('plugins.ICheck',true)
 
 @section('content')
 <div class="container-fluid">
@@ -118,6 +119,16 @@
                                     <option value="{{ $ft->value }}">{{ $ft->description }}</option>
                                 @endforeach
                               </select>
+                            </div>
+                        </div>
+                        <div class="form-group  row clearfix">
+                            <label for="pickchar_enabled" class="col-sm-6 col-form-label"></label>
+                            <div class="col-sm-4">
+                            <div class="icheck-primary d-inline">
+                              <input type="checkbox" id="pickchar_enabled" name="pickchar_enabled"
+                              @if ($region->pickchar_enabled) checked @endif>
+                              <label for="pickchar_enabled" >@lang('league.pickchar_enabled')</label>
+                            </div>
                             </div>
                         </div>
                     <div class="card-footer">

@@ -26,7 +26,7 @@ class Region extends Model
       'id','code','name', 'hq', 'job_game_overlaps', 'game_slot',
       'job_game_notime', 'job_noleads', 'job_email_valid',
       'job_league_reports', 'job_club_reports','job_exports',
-      'fmt_league_reports', 'fmt_club_reports'
+      'fmt_league_reports', 'fmt_club_reports', 'pickchar_enabled'
   ];
 
   protected $casts = [

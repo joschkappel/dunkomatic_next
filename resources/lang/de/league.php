@@ -24,5 +24,6 @@ return [
   'above-region' => 'Überbezirklich',
   'generated' => 'GESPERRT',
   'agetype' => 'Altersklasse',
-  'gendertype' => 'Geschlect'
+  'gendertype' => 'Geschlect',
+  'pickchar_enabled' => 'Ziffernwahl freigegeben',
 ];

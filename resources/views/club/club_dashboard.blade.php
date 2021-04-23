@@ -127,8 +127,10 @@
             <i class="fas fa-plus-circle"></i> @lang('team.action.create')</a>
             <a href="{{ route('team.plan-leagues',[ 'language'=>app()->getLocale(),'club' => $club ]) }}" class="btn btn-primary" >
             <i class="fas fa-map"></i>  @lang('team.action.plan.season')</a>
+            @if ($club->region->pickchar_enabled)
             <a href="{{ route('club.team.pickchar',[ 'language'=>app()->getLocale(),'club' => $club ]) }}" class="btn btn-primary" >
             <i class="fas fa-edit"></i>  @lang('pick chars')</a>
+            @endif
           </div>
           <!-- /.card-footer -->
         </div>
