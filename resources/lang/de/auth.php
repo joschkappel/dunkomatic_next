@@ -40,4 +40,5 @@ return [
     'user.clubs'                  => 'Authorisierte Vereine',
     'user.leagues'                => 'Authorisierte Runden',
     'user'                       => 'Benutzer',
+    'member_found'              => 'Es existiert ein Mitglied mit gleicher email:',
 ];
