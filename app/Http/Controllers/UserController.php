@@ -136,7 +136,14 @@ class UserController extends Controller
           //$user = User::findOrFail($user_id);
 
           if ( $user->approved_at == null){
-            return view('auth/user_approve', compact('user'));
+            // check if user is linked to a member
+            $member = Member::where('email1', $user->email)->orWhere('email2', $user->email)->first();
+            if ( isset($member)){
+                $member['clubs'] = $member->clubs()->get()->implode('shortname',', ');
+                $member['leagues'] = $member->leagues()->get()->implode('shortname',', ');
+            }
+
+            return view('auth/user_approve', ['user'=>$user, 'member'=>$member] );
           } else {
             $user['clubs'] = $user->member->clubs()->pluck('clubs.id','clubs.shortname');
             $user['leagues'] = $user->member->leagues()->pluck('leagues.id','leagues.shortname');
@@ -184,19 +191,15 @@ class UserController extends Controller
               'league_ids' => Rule::requiredIf(function () use ($request) {
                               return (($request->approved == 'on') and (!isset($request->club_ids)));
                               }),
+              'member_id' => 'sometimes|required|exists:members,id'
           ]);
 
           if ( $request->approved == 'on'){
             $user->update(['approved_at' => now()]);
 
-            if ( Member::where('email1', $user->email)->exists() ){
-                // check if member with same email exists
-                if ( ! Member::where('email1', $user->email)->first()->is_user ){
-                    $member = Member::where('email1', $user->email)->first();
-                }
-            }
-
-            if ( ! isset($member) ){
+            if ( isset($data['member_id']) ){
+                $member = Member::find($data['member_id']);
+            } else {
                 // else create the member witha  role = user
                 $member = new Member(['lastname'=> $user->name, 'email1'=>$user->email]);
                 $member->save();
