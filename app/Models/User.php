@@ -16,10 +16,21 @@ use App\Models\Member;
 use App\Models\Region;
 use App\Notifications\VerifyEmail;
 use App\Notifications\ResetPassword as ResetPasswordNotification;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 
-class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
+class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword, HasLocalePreference
 {
     use Notifiable, HasFactory, HasRolesAndAbilities;
+
+    /**
+     * Get the user's preferred locale.
+     *
+     * @return string
+     */
+    public function preferredLocale()
+    {
+        return $this->locale;
+    }
 
     /**
      * Send the email verification notification.
@@ -49,7 +60,7 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
      */
     protected $fillable = [
         'id','name', 'email', 'password','region_id','approved_at','rejected_at','reason_join','reason_reject',
-        'email_verified_at'
+        'email_verified_at', 'locale'
     ];
 
     /**

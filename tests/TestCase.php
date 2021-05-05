@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 abstract class TestCase extends BaseTestCase
 {
 
-    use CreatesApplication, MigrateFreshSeedOnce;
+    use CreatesApplication, Authentication, MigrateFreshSeedOnce;
 
     /**
      * Boot the testing helper traits.

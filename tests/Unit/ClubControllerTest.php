@@ -3,12 +3,9 @@
 namespace Tests\Unit;
 
 use App\Models\Club;
-use App\Models\Region;
-use App\Models\User;
 
 use Tests\TestCase;
 use Tests\Support\Authentication;
-use Illuminate\Support\Facades\Log;
 
 class ClubControllerTest extends TestCase
 {

@@ -14,7 +14,6 @@ use Illuminate\Validation\Rule;
 
 use App\Notifications\RejectUser;
 use App\Notifications\ApproveUser;
-use Datatables;
 use Carbon\Carbon;
 
 
@@ -157,15 +156,23 @@ class UserController extends Controller
 
           Log::debug(print_r($request->all(),true));
           //$user = User::findOrFail($user_id);
+          $old_email = $user->email;
+
           $data = $request->validate( [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)]
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'locale' => ['required', 'string', 'max:2', ]
           ]);
 
-          $data['email_verified_at']=null;
+          if ( $data['email'] != $old_email){
+            $data['email_verified_at']=null;
+          }
+
           Log::debug(print_r($data,true));
-          $check = $user->update($data);
-          if ( $data['email']){
+          $user->update($data);
+          \App::setLocale($data['locale']);
+
+          if ( $data['email'] != $old_email){
             $user->sendEmailVerificationNotification();
             //Auth::logout();
             $request->session()->invalidate();
@@ -173,7 +180,7 @@ class UserController extends Controller
 
           }
 
-          return redirect()->back();
+          return redirect()->route('home', app()->getLocale());
       }
 
   public function approve(Request $request)

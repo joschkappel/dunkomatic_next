@@ -18,18 +18,15 @@ class Membership extends Model
   {
       return $this->belongsTo(Member::class);
   }
-  //
-  // public function scopeIsRole($query, $role_id)
-  // {
-  //   $query->where('role_id', $role_id);
-  // }
-  // public function scopeIsRegionAdmin($query, $region_id)
-  // {
-  //   $query->where('role_id', Role::RegionLead)->where('membershipable_id',$region_id)->where('membershipable_type', Region::class);
-  // }
-  // public function scopeIsNotRole($query, $role_id)
-  // {
-  //   $query->where('role_id', '!=', $role_id);
-  // }
+
+  public function scopeIsRole($query, $role_id)
+  {
+    $query->where('role_id', $role_id);
+  }
+
+  public function scopeIsNotRole($query, $role_id)
+  {
+    $query->where('role_id', '!=', $role_id);
+  }
 
 }

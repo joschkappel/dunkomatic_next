@@ -3,10 +3,8 @@
 namespace Tests\Feature\Auth;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Log;
 
 use App\Models\User;
 use App\Models\Region;
@@ -17,7 +15,7 @@ use TestDatabaseSeeder;
 
 class RegistrationTest extends TestCase
 {
-     use RefreshDatabase;
+     // use RefreshDatabase;
 
      /**
       * @test
@@ -25,7 +23,7 @@ class RegistrationTest extends TestCase
       */
      public function user_registers()
      {
-         $this->seed(TestDatabaseSeeder::class);
+         // $this->seed(TestDatabaseSeeder::class);
          $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
          $region = Region::where('code','HBVDA')->first();
          $this->assertDatabaseHas('users', ['region_id' => $region->id]);

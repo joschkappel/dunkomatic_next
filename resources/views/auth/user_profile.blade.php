@@ -41,6 +41,15 @@
                                 @enderror
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label for="selLocale" class="col-sm-4 col-form-label">prferred language</label>
+                            <div class="col-sm-4">
+                              <select class='js-sel-locale js-states form-control select2' id='selLocale' name="locale">
+                                 <option @if (Auth::user()->locale == 'en') selected @endif value="en">{{__('english')}}</option>
+                                 <option @if (Auth::user()->locale == 'de') selected @endif value="de">{{__('deutsch')}}</option>
+                              </select>
+                            </div>
+                        </div>
                         <button type="submit" class="btn btn-info">{{__('Submit')}}</button>
                       </form>
                   </div>
@@ -55,5 +64,28 @@
 @section('js')
 <script>
     $("#updateMember").collapse("toggle");
+
+    function formatLocale (locale) {
+
+        var country = locale.id;
+        if (country == "en"){
+            country = 'gb';
+        }
+        var $locale = $(
+            '<span class="flag-icon flag-icon-'+country+'"></span><span> '+locale.text+'</span></span>'
+        );
+
+        // Use .text() instead of HTML string concatenation to avoid script injection issues
+        //$locale.find("span").text(locale.text);
+
+        return $locale;
+    };
+
+    $("#selLocale").select2({
+            theme: 'bootstrap4',
+            multiple: false,
+            allowClear: false,
+            templateSelection: formatLocale
+        });
 </script>
 @stop
