@@ -12,8 +12,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
-use App\Models\Club;
-use App\Models\League;
 use App\Models\Setting;
 use App\Models\Region;
 
@@ -26,9 +24,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-      if ($this->app->isLocal()) {
-          $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
-          $this->app->register(TelescopeServiceProvider::class);
+      if ($this->app->environment('local')) {
+        $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+        $this->app->register(TelescopeServiceProvider::class);
       }
     }
 
@@ -40,7 +38,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(Dispatcher $events)
     {
           try {
-                  DB::connection()->getPdo();
+                  $pdo = DB::connection()->getPdo();
                   if (DB::connection()->getDatabaseName()){
                       // Log::info('Yes! Successfully connected to the DB: ' . DB::connection()->getDatabaseName());
                       if (Schema::hasTable('settings')){

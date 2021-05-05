@@ -25,6 +25,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('rejected_at')->nullable();
             $table->string('reason_join')->nullable();
             $table->string('reason_reject')->nullable();
+            $table->string('locale')->default(app()->getLocale());
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

@@ -3,9 +3,7 @@
 namespace Tests\Feature\Auth;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use App\Models\User;
 use App\Models\Region;
 
 use TestDatabaseSeeder;
@@ -13,7 +11,7 @@ use TestDatabaseSeeder;
 class LoginTest extends TestCase
 {
 
-     use RefreshDatabase;
+     // use RefreshDatabase;
 
     /** @test **/
      public function test_user_can_view_a_login_form()
@@ -28,7 +26,6 @@ class LoginTest extends TestCase
      public function test_user_cannot_view_a_login_form_when_authenticated()
      {
 
-         $this->seed(TestDatabaseSeeder::class);
          $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
          $region = Region::where('code','HBVDA')->first();
          $this->assertDatabaseHas('users', ['region_id' => $region->id]);
@@ -43,7 +40,6 @@ class LoginTest extends TestCase
     /** @test **/
      public function test_user_can_login_with_correct_credentials()
      {
-       $this->seed(TestDatabaseSeeder::class);
        $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
        $region = Region::where('code','HBVDA')->first();
        $this->assertDatabaseHas('users', ['region_id' => $region->id]);
@@ -61,7 +57,6 @@ class LoginTest extends TestCase
 
      public function test_user_cannot_login_with_incorrect_password()
      {
-       $this->seed(TestDatabaseSeeder::class);
        $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
        $region = Region::where('code','HBVDA')->first();
        $this->assertDatabaseHas('users', ['region_id' => $region->id]);
