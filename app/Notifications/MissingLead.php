@@ -47,11 +47,11 @@ class MissingLead extends Notification
     {
         $mail = (new MailMessage)
                     ->level('error')
-                    ->subject('Missing Admins')
-                    ->greeting('Dear '.$notifiable->name);
+                    ->subject( __('notifications.missinglead.subject'))
+                    ->greeting( __('notifications.user.greeting', ['username' => $notifiable->name]) );
 
         if (count($this->clubs) > 0){
-          $mail = $mail->line('CLubs without any Admin:');
+          $mail = $mail->line( __('notifications.missinglead.line1'));
           foreach ($this->clubs as $c){
             $mail = $mail->line($c);
           }
@@ -59,7 +59,7 @@ class MissingLead extends Notification
 
         if (count($this->leagues)>0){
           $mail = $mail->line('')
-                       ->line('Leagues without any Admin: ');
+                       ->line(__('notifications.missinglead.line2'));
           foreach ($this->leagues as $l){
             $mail = $mail->line($l);
           }

@@ -53,12 +53,13 @@ class InvalidEmail extends Notification
         $mail = (new MailMessage)
                     ->cc($this->cc->email1)
                     ->level('error')
-                    ->subject('Invalid email addresses')
-                    ->greeting('Dear '.$notifiable->name );
+                    ->subject( __('notifications.invalidemail.subject') )
+                    ->greeting( __('notifications.user.greeting', ['username'=>$notifiable->name]) )
+                    ->line(__('notifications.invalidemail.line'));
         foreach ($this->emaillist as $l){
           $mail = $mail->line($l);
         };
-        $mail = $mail->action('Update members',route('club.dashboard', ['language'=>app()->getLocale(), 'id'=>$this->club->id]));
+        $mail = $mail->action(__('notifications.invalidemail.action'),route('club.dashboard', ['language'=>app()->getLocale(), 'id'=>$this->club->id]));
 
         return $mail;
     }

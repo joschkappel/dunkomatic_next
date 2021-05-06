@@ -44,8 +44,11 @@ class NewUser extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->line('New user has registered with email ' . $this->new_user->email)
-            ->action('Approve user', route('admin.user.edit', ['language'=>app()->getLocale(), 'user'=>$this->new_user->id]));
+            ->level('info')
+            ->subject( __('notifications.newuser.subject'))
+            ->greeting( __('notifications.regionadmin.greeting'))
+            ->line( __('notifications.newuser.line', ['email' => $this->new_user->email]))
+            ->action( __('notifications.newuser.action'), route('admin.user.edit', ['language'=>app()->getLocale(), 'user'=>$this->new_user->id]));
     }
 
     /**

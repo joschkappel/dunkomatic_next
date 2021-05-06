@@ -45,11 +45,12 @@ class RejectUser extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Dunkomatic Access Request Rejection')
-            ->greeting('Hello '. $this->new_user->name . ' !' )
-            ->line('Region admin for region ' . $this->radmin_user->region . ' has rejected your access request.')
-            ->line('Reason for rejection:  ' . $this->new_user->reason_reject )
-            ->line('In case of questions pls email to  ' . $this->radmin_user->email );
+            ->subject( __('notifications.rejectuser.subject') )
+            ->greeting( __('notifications.user.greeting', ['username' => $this->new_user->name]) )
+            ->line( __('notifications.rejectuser.line1',
+                ['region' => $this->radmin_user->region->name.' ('.$this->radmin_user->region->code.') ',
+                 'reason' => $this->new_user->reason_reject]) )
+            ->line( __('notifications.rejectuser.line2', ['email' => $this->radmin_user->email]) );
     }
 
     /**

@@ -61,11 +61,11 @@ class ClubDeAssigned extends Notification
     {
       return (new MailMessage)
                   ->level('info')
-                  ->subject('Team de-assigned from league '.$this->league->shortname)
-                  ->greeting('Dear '.$this->receiver_name)
-                  ->line('Your team '.$this->club->shortname.$this->team->team_no.' has been removed from league '.$this->league->name.'.')
-                  ->line('In case of questions pls check with the league lead')
-                  ->salutation('BR your league-lead '.$this->sender_name);
+                  ->subject( __('notifications.clubdeassigned.subject', ['league'=>$this->league->shortname]) )
+                  ->greeting( __('notifications.user.greeting', ['username'=>$this->receiver_name]) )
+                  ->line( __('notifications.clubdeassigned.line1', ['team'=>$this->club->shortname.$this->team->team_no, 'league'=>$this->league->name]) )
+                  ->line( __('notifications.clubdeassigned.line2') )
+                  ->salutation( __('notifications.league.salutation', ['leaguelead'=>$this->sender_name]) );
     }
 
     /**
@@ -76,14 +76,14 @@ class ClubDeAssigned extends Notification
      */
     public function toArray($notifiable)
     {
-      $lines =  '<p>Your team '.$this->club->shortname.$this->team->team_no.' has been removed from league <b>'.$this->league->name.'</b>.</p>';
-      $lines .= '<p>In case of questions pls check with the league lead.</p>';
+      $lines =  '<p>'.__('notifications.clubdeassigned.line1', ['team'=>$this->club->shortname.$this->team->team_no, 'league'=>$this->league->name]).'</p>';
+      $lines .= '<p>'.__('notifications.clubdeassigned.line2').'</p>';
 
       return [
-          'subject' => 'Team de-assigned from league '.$this->league->shortname,
-          'greeting' => 'Dear '.$this->receiver_name,
+          'subject' => __('notifications.clubdeassigned.subject', ['league'=>$this->league->shortname]),
+          'greeting' => __('notifications.user.greeting', ['username'=>$this->receiver_name]),
           'lines' => $lines,
-          'salutation' => 'BR your league-lead '.$this->sender_name,
+          'salutation' => __('notifications.league.salutation', ['leaguelead'=>$this->sender_name]),
       ];
     }
 }

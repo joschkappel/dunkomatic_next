@@ -6,7 +6,6 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\URL;
 
 class VerifyEmail extends Notification
@@ -51,10 +50,10 @@ class VerifyEmail extends Notification
         }
 
         return (new MailMessage)
-            ->subject(Lang::get('Verify TESTING Email Address'))
-            ->line(Lang::get('Please click the button below to verify your email address.'))
-            ->action(Lang::get('Verify Email Address'), $verificationUrl)
-            ->line(Lang::get('If you did not create an account, no further action is required.'));
+            ->subject( __('notifications.verifyemail.subject') )
+            ->line( __('notifications.verifyemail.line1'))
+            ->action( __('notifications.verifyemail.action'), $verificationUrl)
+            ->line( __('notifications.verifyemail.line2'));
     }
 
     /**

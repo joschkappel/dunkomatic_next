@@ -47,11 +47,10 @@ class LeagueReportsAvailable extends Notification
     {
         return (new MailMessage)
                     ->level('info')
-                    ->subject('League reports available: '.$this->league->shortname)
-                    ->greeting('Dear '.$notifiable->name)
-                    ->line('The game reports for league '.$this->league->name.' have been generated and are ready for you to download.')
-                    ->action('Download League Reports', route('league_archive.get', $this->league ) )
-                    ->salutation('Thank you for using DunkOmatic !');
+                    ->subject( __('notifications.leaguerptavail.subject' ,['league' => $this->league->shortname]) )
+                    ->greeting( __('notifications.user.greeting', ['username' => $notifiable->name]))
+                    ->line( __('notifications.leaguerptavail.line', ['league' => $this->league->name]) )
+                    ->action( __('notifications.leaguerptavail.action') , route('league_archive.get', $this->league ) );
     }
 
 }

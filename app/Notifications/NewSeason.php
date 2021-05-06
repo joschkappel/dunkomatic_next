@@ -48,12 +48,11 @@ class NewSeason extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject('New Season Start')
-                    ->greeting('Dear '.$notifiable->name)
-                    ->line('The new season '.$this->season.' has been kicked off in DunkOmatic.')
-                    ->line('Some work and fun is ahead of you.')
-                    ->line('Stay tuned and watch your messabe board or inbox')
-                    ->salutation('BR DunkObot');
+                    ->subject( __('notifications.newseason.subject'))
+                    ->greeting( __('notifications.user.greeting', ['username' => $notifiable->name]) )
+                    ->line( __('notifications.newseason.line1', [ 'season' => $this->season ]) )
+                    ->line( __('notifications.newseason.line2') )
+                    ->line( __('notifications.newseason.line3') );
     }
 
     /**
@@ -64,15 +63,14 @@ class NewSeason extends Notification
      */
     public function toArray($notifiable)
     {
-      $lines =  '<p>The new season <b>'.$this->season.'</b> has been kicked off in DunkOmatic.</p>';
-      $lines .= '<p>Some work and fun is ahead of you. </p>';
-      $lines .= '<p class="text-info">Please watch your message board or inbox.</p>';
+      $lines =  '<p>'.__('notifications.newseason.line1', [ 'season' => $this->season ]).'</p>';
+      $lines .= '<p>'.__('notifications.newseason.line2').' </p>';
+      $lines .= '<p class="text-info">'.__('notifications.newseason.line3').'</p>';
 
       return [
-          'subject' => 'New Season Start',
-          'greeting' => 'Dear '.$notifiable->name,
-          'lines' => $lines,
-          'salutation' => 'BR DunkObot',
+          'subject' => __('notifications.newseason.subject'),
+          'greeting' => __('notifications.user.greeting', ['username' => $notifiable->name]),
+          'lines' => $lines
       ];
     }
 }
