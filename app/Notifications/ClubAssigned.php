@@ -58,13 +58,12 @@ class ClubAssigned extends Notification
     {
         return (new MailMessage)
                     ->level('success')
-                    ->subject('Club assigned to league '.$this->league->shortname)
-                    ->greeting('Dear '.$this->receiver_name)
-                    ->line('Your club has been assigned to league '.$this->league->name.'.')
-                    ->line('You are ready to register a team with the league now.')
-                    ->action('Register Team', route('club.dashboard', ['language'=>app()->getLocale(), 'club'=>$this->club->id]))
-                    ->line('Thank you for using DunkOmatic !')
-                    ->salutation('BR your league-lead '.$this->sender_name);
+                    ->subject( __('notifications.clubassigned.subject', ['league'=>$this->league->shortname]) )
+                    ->greeting( __('notifications.user.greeting', ['username'=>$this->receiver_name]) )
+                    ->line( __('notifications.clubassigned.line1', ['league'=>$this->league->name]) )
+                    ->line( __('notifications.clubassigned.line2') )
+                    ->action( __('notifications.clubassigned.action'), route('club.dashboard', ['language'=>app()->getLocale(), 'club'=>$this->club->id]))
+                    ->salutation( __('notifications.league.salutation', ['leaguelead'=>$this->sender_name]) );
     }
 
     /**
@@ -75,15 +74,15 @@ class ClubAssigned extends Notification
      */
     public function toArray($notifiable)
     {
-        $lines =  '<p>Your club has been assigned to league <b>'.$this->league->name.'</b>.</p>';
-        $lines .= '<p>You are ready to register a team with the league now.</p>';
-        $lines .= '<p><a href="'.url(route('club.dashboard', ['language'=>app()->getLocale(), 'id'=>$this->club->id])).'">Register Team</a></p>';
+        $lines =  '<p>'.__('notifications.clubassigned.line1', ['league'=>$this->league->name]).'</p>';
+        $lines .= '<p>'.__('notifications.clubassigned.line2').'</p>';
+        $lines .= '<p><a href="'.url(route('club.dashboard', ['language'=>app()->getLocale(), 'id'=>$this->club->id])).'">'.__('notifications.clubassigned.action').'</a></p>';
 
         return [
-            'subject' => 'Club assigned to league '.$this->league->shortname,
-            'greeting' => 'Dear '.$this->receiver_name,
+            'subject' => __('notifications.clubassigned.subject', ['league'=>$this->league->shortname]),
+            'greeting' => __('notifications.user.greeting', ['username'=>$this->receiver_name]),
             'lines' => $lines,
-            'salutation' => 'BR your league-lead '.$this->sender_name,
+            'salutation' => __('notifications.league.salutation', ['leaguelead'=>$this->sender_name]),
         ];
     }
 }

@@ -58,13 +58,12 @@ class LeagueGamesGenerated extends Notification
     {
         return (new MailMessage)
                     ->level('info')
-                    ->subject('League games generated: '.$this->league->shortname)
-                    ->greeting('Dear '.$this->receiver_name)
-                    ->line('The games for league '.$this->league->name.' have been generated and are ready for you ')
-                    ->line('to check or edit your home game dates and start times.')
-                    ->action('Edit Homegames', route('club.list.homegame',['language'=>app()->getLocale(), 'club' => $this->club ]) )
-                    ->line('Thank you for using DunkOmatic !')
-                    ->salutation('BR your league-lead '.$this->sender_name);
+                    ->subject( __('notifications.leaguegamesgen.subject', ['league'=>$this->league->shortname]) )
+                    ->greeting( __('notifications.user.greeting', ['username'=>$this->receiver_name]) )
+                    ->line( __('notifications.leaguegamesgen.line1', ['league'=>$this->league->name]) )
+                    ->line( __('notifications.leaguegamesgen.line2') )
+                    ->action( __('notifications.leaguegamesgen.action'), route('club.list.homegame',['language'=>app()->getLocale(), 'club' => $this->club ]) )
+                    ->salutation( __('notifications.league.salutation', ['leaguelead'=>$this->sender_name]) );
     }
 
     /**
@@ -75,15 +74,16 @@ class LeagueGamesGenerated extends Notification
      */
     public function toArray($notifiable)
     {
-      $lines =  '<p>The games for league <b>'.$this->league->name.'</b> have been generated and are ready for you to check or edit your home games dates and start times.</p>';
-      $lines .= '<p><a href="'.url( route('club.list.homegame',['language'=>app()->getLocale(), 'club' => $this->club ])).'">Edit Homegames</a></p>';
-      $lines .= '<p><a href="'.url( route('club.game.chart',['language'=>app()->getLocale(), 'club' => $this->club ])).'">Homegame Overview</a></p>';
+      $lines =  '<p>'.__('notifications.leaguegamesgen.line1', ['league'=>$this->league->name]).'</p>';
+      $lines .= '<p>'.__('notifications.leaguegamesgen.line2').'</p>';
+      $lines .= '<p><a href="'.url( route('club.list.homegame',['language'=>app()->getLocale(), 'club' => $this->club ])).'">'.__('notifications.leaguegamesgen.action').'</a></p>';
+      $lines .= '<p><a href="'.url( route('club.game.chart',['language'=>app()->getLocale(), 'club' => $this->club ])).'">'.__('notifications.leaguegamesgen.action2').'</a></p>';
 
       return [
-          'subject' => 'League games generated: '.$this->league->shortname,
-          'greeting' => '',
+          'subject' => __('notifications.leaguegamesgen.subject', ['league'=>$this->league->shortname]),
+          'greeting' => __('notifications.user.greeting', ['username'=>$this->receiver_name]),
           'lines' => $lines,
-          'salutation' => ''
+          'salutation' =>  __('notifications.league.salutation', ['leaguelead'=>$this->sender_name])
       ];
     }
 }

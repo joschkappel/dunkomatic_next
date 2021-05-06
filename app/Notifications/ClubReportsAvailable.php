@@ -47,11 +47,10 @@ class ClubReportsAvailable extends Notification
     {
         return (new MailMessage)
                     ->level('info')
-                    ->subject('Club reports available: '.$this->club->shortname)
-                    ->greeting('Dear '.$notifiable->name)
-                    ->line('The game reports for your club '.$this->club->name.' have been generated and are ready for you to download.')
-                    ->action('Download Club Reports', route('club_archive.get', $this->club ) )
-                    ->salutation('Thank you for using DunkOmatic !');
+                    ->subject( __('notifications.clubrptavail.subject', ['club'=>$this->club->shortname]) )
+                    ->greeting( __('notifications.user.greeting', ['username'=>$notifiable->name]) )
+                    ->line( __('notifications.clubrptavail.line', ['club'=>$this->club->name]) )
+                    ->action( __('notifications.clubrptavail.action'), route('club_archive.get', $this->club ) );
     }
 
 }

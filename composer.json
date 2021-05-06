@@ -21,7 +21,7 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "itsjavi/bootstrap-colorpicker": "^3.2",
         "laravel-admin-ext/daterangepicker": "^1.0",
-        "laravel/framework": "^8.0",
+        "laravel/framework": "8.40.0",
         "laravel/telescope": "^4.3",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",

@@ -45,10 +45,10 @@ class ApproveUser extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Dunkomatic Access Request Approval')
-            ->greeting('Hello '. $this->new_user->name . ' !' )
-            ->line('Region admin for region ' . $this->radmin_user->region->name . ' has approved your access request.')
-            ->line('Make sure to verify your email and happy days with DUnkomatic !' );
+            ->subject( __('notifications.approveuser.subject') )
+            ->greeting( __('notifications.user.greeting', ['username' => $this->new_user->name]) )
+            ->line( __('notifications.approveuser.line1', ['region'=>$this->radmin_user->region->name]) )
+            ->line( __('notifications.approveuser.line2' ));
     }
 
     /**
