@@ -68,4 +68,10 @@ return [
     'clubdeassigned.line1'  =>  'Your team :TEAM has been removed from league :LEAGUE.',
     'clubdeassigned.line2'  =>  'In case of any questions please check with the league admin.',
 
+    'charpickenabled.subject1'  =>  ':REGION League Character Ballot Season :season :mode',
+    'charpickenabled.line1' =>  'The region admin :region has :mode thie ballot to pick team characters for the season :season.',
+    'charpickenabled.line2' =>  'To pick the characters for your teams click the button below',
+    'charpickenabled.open'  =>  'opened',
+    'charpickenabled.closed'    =>  'closed',
+    'charpickenabled.action'    =>  'Char Picking',
 ];

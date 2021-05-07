@@ -68,4 +68,10 @@ return [
     'clubdeassigned.line1'  =>  'Deine Mannschaft :TEAM wurde von der Spielrunde :LEAGUE zurückgezogen.',
     'clubdeassigned.line2'  =>  'Für alle Fragen kontaktiere bitte die Staffelleitung.',
 
+    'charpickenabled.subject'  =>  ':REGION Ziffernwahl Saison :season :mode',
+    'charpickenabled.line1' =>  'Die Bezirksleitung :region hat die Ziffernwahl für die Saison :season :mode.',
+    'charpickenabled.line2' =>  'Zur Ziffernwahl für Ihre gemeldeten Mannschaften bitte unten Klicken.',
+    'charpickenabled.open'  =>  'geöffnet',
+    'charpickenabled.closed'    =>  'beendet',
+    'charpickenabled.action'    =>  'Ziffernwahl',
 ];

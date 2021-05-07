@@ -11,7 +11,8 @@ use App\Enums\JobFrequencyType;
 use App\Enums\ReportFileType;
 
 use App\Models\Region;
-use App\Models\User;
+use App\Enums\Role;
+use App\Notifications\CharPickingEnabled;
 
 use Carbon\Carbon;
 use Datatables;
@@ -111,6 +112,8 @@ class RegionController extends Controller
     public function update(Request $request, Region $region)
     {
         Log::debug(print_r($request->all(),true));
+        $old_charpick = $region->pickchar_enabled;
+
         $data = $request->validate( [
             'name' => 'required|max:40',
             'game_slot' => 'required|integer|in:60,75,90,105,120,135,150',
@@ -135,6 +138,19 @@ class RegionController extends Controller
         }
 
         $check = Region::find($region->id)->update($data);
+
+        // send out notifications
+        if ($old_charpick != $data['pickchar_enabled']){
+            $clubs = $region->clubs()->get();
+            foreach ($clubs as $c){
+                if ($c->memberIsA(Role::ClubLead)){
+                    $clead = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
+                    $clead->notify(new CharPickingEnabled($c, $data['pickchar_enabled'], config('global.season')));
+                }
+            }
+        }
+
+
         return redirect()->route('home',['language'=>app()->getLocale()]);
     }
 

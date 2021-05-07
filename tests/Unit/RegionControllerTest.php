@@ -2,13 +2,16 @@
 
 namespace Tests\Unit;
 
-use App\Models\Region;
 use App\Enums\JobFrequencyType;
 use App\Enums\ReportFileType;
-
+use App\Notifications\CharPickingEnabled;
 use Tests\TestCase;
 use Tests\Support\Authentication;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
+use App\Enums\Role;
+use App\Models\Club;
+use App\Models\Member;
+
 
 class RegionControllerTest extends TestCase
 {
@@ -147,5 +150,74 @@ class RegionControllerTest extends TestCase
 
     }
 
+    /**
+     * enable char picking notifications
+     *
+     * @test
+     * @group region
+     * @group controller
+     *
+     * @return void
+     */
+    public function charpick_enabling()
+    {
+        // enable and check that notificatons are sent
+        Club::factory()->hasAttached( Member::factory()->count(1),['role_id'=>Role::ClubLead()])->create(['name'=>'testclub', 'region_id'=>$this->region->id]);
+        $club = Club::where('name','testclub')->first();
+
+        Notification::fake();
+        Notification::assertNothingSent();
+
+        $response = $this->authenticated()
+                        ->put(route('region.update',['region'=>$this->region]),[
+                                    'name' => 'HBVDAupdated',
+                                    'game_slot' => 150,
+                                    'job_noleads' => JobFrequencyType::getRandomValue(),
+                                    'job_game_notime' => JobFrequencyType::getRandomValue(),
+                                    'job_game_overlaps' => JobFrequencyType::getRandomValue(),
+                                    'job_email_valid' => JobFrequencyType::getRandomValue(),
+                                    'job_league_reports' => JobFrequencyType::getRandomValue(),
+                                    'job_club_reports' => JobFrequencyType::getRandomValue(),
+                                    'fmt_club_reports' => [ReportFileType::getRandomValue()],
+                                    'fmt_league_reports' =>[ReportFileType::getRandomValue(),ReportFileType::getRandomValue()],
+                                    'pickchar_enabled' => 'on'
+                                    ]);
+
+        // $response->dumpHeaders();
+        $response->assertStatus(302)
+                ->assertHeader('Location', route('home',['language'=>'de']));
+
+
+        $club = $this->region->clubs()->first();
+        $user = $club->members()->wherePivot('role_id', Role::ClubLead)->first();
+
+        Notification::assertSentTo(
+            [$user], CharPickingEnabled::class
+        );
+
+        // disbale and check that notifications are sent
+        $response = $this->authenticated()
+                        ->put(route('region.update',['region'=>$this->region]),[
+                                    'name' => 'HBVDAupdated',
+                                    'game_slot' => 150,
+                                    'job_noleads' => JobFrequencyType::getRandomValue(),
+                                    'job_game_notime' => JobFrequencyType::getRandomValue(),
+                                    'job_game_overlaps' => JobFrequencyType::getRandomValue(),
+                                    'job_email_valid' => JobFrequencyType::getRandomValue(),
+                                    'job_league_reports' => JobFrequencyType::getRandomValue(),
+                                    'job_club_reports' => JobFrequencyType::getRandomValue(),
+                                    'fmt_club_reports' => [ReportFileType::getRandomValue()],
+                                    'fmt_league_reports' =>[ReportFileType::getRandomValue(),ReportFileType::getRandomValue()],
+                                    'pickchar_enabled' => 'on'
+                                    ]);
+        Notification::assertSentTo(
+            [$user], CharPickingEnabled::class
+        );
+
+        // clean up club and member
+        $user->delete();
+        $club->delete();
+
+    }
 
 }

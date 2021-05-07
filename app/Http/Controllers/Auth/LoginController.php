@@ -7,6 +7,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\App;
 
 class LoginController extends Controller
 {
@@ -48,7 +49,7 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
-        \App::setLocale($user->locale);
+        App::setLocale($user->locale);
     }
     /**
      * Get the post login redirect path.
