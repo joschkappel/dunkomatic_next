@@ -9,6 +9,7 @@ return [
     'remember_me'                 => 'Angemeldet bleiben',
     'register'                    => 'Registrieren',
     'register_a_new_membership'   => 'Ein neues Konto registrieren',
+    'language'                    => 'Gewünschte Sprache',
     'i_forgot_my_password'        => 'Ich habe mein Passwort vergessen',
     'i_already_have_a_membership' => 'Ich bin bereits registriert',
     'sign_in'                     => 'Anmelden',

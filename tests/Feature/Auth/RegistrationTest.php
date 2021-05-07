@@ -44,7 +44,8 @@ class RegistrationTest extends TestCase
                            'password'=> 'password',
                            'password_confirmation'=> 'password',
                            'reason_join'=> 'am testing',
-                           'region_id' => $region->id
+                           'region_id' => $region->id,
+                           'locale' => 'de'
                          ])
                           ->assertStatus(200);
          $this->assertDatabaseHas('users', ['email' => 'test@gmail.com']);

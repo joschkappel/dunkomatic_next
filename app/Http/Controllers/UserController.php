@@ -41,11 +41,11 @@ class UserController extends Controller
                        data-user-name="'.$data->name.'" data-toggle="modal" data-target="#modalDeleteUser" ><i class="fa fa-trash"></i></button>';
                   return $btn;
           })
-          ->editColumn('name', function ($userlist) {
+          ->editColumn('name', function ($userlist) use($language) {
               if ($userlist->approved_at == null) {
                 return '<i class="fas fa-exclamation-triangle text-warning"></i>  '.$userlist->name;
               } else {
-                return '<a href="' . route('admin.user.edit', ['language'=>app()->getLocale(),'user'=>$userlist->id]) .'">'.$userlist->name.'</a>';
+                return '<a href="' . route('admin.user.edit', ['language'=>$language, 'user'=>$userlist->id]) .'">'.$userlist->name.'</a>';
               };
               })
           ->addColumn('clubs', function ($userlist) {

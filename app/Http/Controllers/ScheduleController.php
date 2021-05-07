@@ -4,14 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Schedule;
 use App\Models\Region;
-use App\Models\LeagueSize;
 
 
 use Illuminate\Http\Request;
 use Datatables;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Response;
 
 class ScheduleController extends Controller
@@ -111,7 +109,7 @@ class ScheduleController extends Controller
                   return $user->created_at->format('d.m.Y H:i');
               })
           ->editColumn('name', function ($data) {
-              return '<a href="' . route('schedule.edit', ['language'=>app()->getLocale(), 'schedule' =>$data->id]) .'">'.$data->name.' <i class="fas fa-arrow-circle-right"></i></a>';
+              return '<a href="' . route('schedule.edit', ['language'=>Auth::user()->locale, 'schedule' =>$data->id]) .'">'.$data->name.' <i class="fas fa-arrow-circle-right"></i></a>';
               })
           ->make(true);
     }

@@ -203,7 +203,7 @@ class MessageControllerTest extends TestCase
       $response = $this->authenticated()
                         ->get(route('message.user.dt',['language'=>'de','user'=>$this->region_user]));
 
-//      $response->dump();
+     //  $response->dump();
       $response->assertStatus(200)
                ->assertJsonPath('data.*.salutation', [$msgs->salutation]);
     }

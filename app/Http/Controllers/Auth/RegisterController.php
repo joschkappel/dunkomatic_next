@@ -57,7 +57,8 @@ class RegisterController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'region_id' => ['required', 'exists:regions,id'],
-            'reason_join' => ['required', 'string']
+            'reason_join' => ['required', 'string'],
+            'locale' => ['required', 'string', 'max:2']
         ]);
     }
 
@@ -74,7 +75,8 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'region_id' => $data['region_id'],
-            'reason_join' => $data['reason_join']
+            'reason_join' => $data['reason_join'],
+            'locale' => $data['locale']
       ]);
       $radmin = Region::find($data['region_id'])->regionadmin->first()->user()->first();
 
@@ -84,6 +86,7 @@ class RegisterController extends Controller
       } else {
           Log::error('is null');
       }
+
       return $user;
     }
 }

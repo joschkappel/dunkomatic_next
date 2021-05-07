@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -36,5 +38,34 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+    /**
+     * The user has been authenticated.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function authenticated(Request $request, $user)
+    {
+        \App::setLocale($user->locale);
+    }
+    /**
+     * Get the post login redirect path.
+     *
+     * @return string
+     */
+    protected function redirectPath()
+    {
+        if (method_exists($this, 'redirectTo')) {
+            return $this->redirectTo();
+        }
+
+        if (Auth::check()){
+            $returnPath = '/'.Auth::user()->locale.'/'.$this->redirectTo;
+        } else {
+            $returnPath = '/'.app()->getLocale().'/'.$this->redirectTo;
+        }
+        return $returnPath;
     }
 }

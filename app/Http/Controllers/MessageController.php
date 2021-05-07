@@ -59,11 +59,11 @@ class MessageController extends Controller
             return $btn;
           };
         })
-        ->editColumn('title', function($msg){
+        ->editColumn('title', function($msg) use ($language) {
           if (( isset($msg->sent_at) and ($msg->sent_at) < now() )){
             return $msg->title;
           } else {
-            return '<a href="' . route('message.edit', ['language'=>app()->getLocale(), 'message' =>$msg->id]) .'">'.$msg->title.' <i class="fas fa-arrow-circle-right"></i></a>';
+            return '<a href="' . route('message.edit', ['language'=>$language, 'message' =>$msg->id]) .'">'.$msg->title.' <i class="fas fa-arrow-circle-right"></i></a>';
           }
         })
         ->editColumn('updated_at', function ($msg) use ($language) {
