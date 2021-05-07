@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Club;
 use App\Models\Region;
-use App\Models\Gym;
 use App\Models\Member;
 
 use Illuminate\Http\Request;
@@ -15,9 +14,7 @@ use Datatables;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class ClubController extends Controller
 {
@@ -48,7 +45,7 @@ class ClubController extends Controller
         ->addIndexColumn()
         ->rawColumns(['shortname'])
         ->editColumn('shortname', function ($data) {
-            return '<a href="' . route('club.dashboard', ['language'=>app()->getLocale(),'club'=>$data->id]) .'">'.$data->shortname.'</a>';
+            return '<a href="' . route('club.dashboard', ['language'=>Auth::user()->locale,'club'=>$data->id]) .'">'.$data->shortname.'</a>';
             })
         ->make(true);
 
@@ -112,7 +109,7 @@ class ClubController extends Controller
                   return $user->created_at->format('d.m.Y H:i');
               })
           ->editColumn('shortname', function ($data) {
-              return '<a href="' . route('club.dashboard', ['language'=>app()->getLocale(),'club'=>$data->id]) .'">'.$data->shortname.'</a>';
+              return '<a href="' . route('club.dashboard', ['language'=>Auth::user()->locale,'club'=>$data->id]) .'">'.$data->shortname.'</a>';
               })
           ->editColumn('url', function ($data) {
               return '<a href="http://' . $data->url .'" target="_blank">'.$data->url.'</a>';

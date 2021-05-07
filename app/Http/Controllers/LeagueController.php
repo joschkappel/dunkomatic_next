@@ -24,7 +24,6 @@ use Illuminate\Support\Facades\Storage;
 
 use App\Notifications\ClubAssigned;
 use App\Notifications\ClubDeAssigned;
-use Yajra\DataTables\Facades\DataTables as FacadesDataTables;
 
 class LeagueController extends Controller
 {
@@ -64,7 +63,7 @@ class LeagueController extends Controller
         ->addIndexColumn()
         ->rawColumns(['shortname','reg_rel'])
         ->editColumn('shortname', function ($data) {
-            return '<a href="' . route('league.dashboard', ['language'=>app()->getLocale(),'league'=>$data->id]) .'">'.$data->shortname.'</a>';
+            return '<a href="' . route('league.dashboard', ['language'=>Auth::user()->locale,'league'=>$data->id]) .'">'.$data->shortname.'</a>';
             })
         ->addColumn('reg_rel', function($data){
               if ($data->clubs_count!=0){
@@ -105,7 +104,7 @@ class LeagueController extends Controller
                   return $user->created_at->format('d.m.Y H:i');
               })
           ->editColumn('shortname', function ($data) {
-              return '<a href="' . route('league.dashboard', ['language'=>app()->getLocale(),'league'=>$data->id]) .'">'.$data->shortname.'</a>';
+              return '<a href="' . route('league.dashboard', ['language'=>Auth::user()->locale,'league'=>$data->id]) .'">'.$data->shortname.'</a>';
               })
           ->make(true);
     }

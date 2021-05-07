@@ -51,7 +51,7 @@ class LoginTest extends TestCase
              'password' => 'password',
          ]);
 
-         $response->assertRedirect('/home');
+         $response->assertRedirect('/de/home');
          $this->assertAuthenticatedAs($region_user);
      }
 

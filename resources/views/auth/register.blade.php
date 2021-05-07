@@ -108,6 +108,17 @@
                             </div>
                         @endif
                     </div>
+                    <div class="input-group mb-3">
+                      <select class='sel-locale js-states form-control select2' id='selLocale' name='locale'>
+                        <option @if ( app()->getLocale() == 'en') selected @endif value="en">{{__('english')}}</option>
+                        <option @if ( app()->getLocale() == 'de') selected @endif value="de">{{__('deutsch')}}</option>
+                      </select>
+                      <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" data-select2-open="locale">
+                          <span class="fas fa-language"></span>
+                        </button>
+                      </span>
+                    </div>
                     <button type="submit" class="btn btn-primary btn-block btn-flat">
                         {{ __('auth.register') }}
                     </button>
@@ -124,29 +135,45 @@
 
 @section('app_js')
 
-    @stack('js')
+@stack('js')
     <script>
-      $(document).ready(function(){
+        $(document).ready(function(){
 
-          $("#selRegion").select2({
-              multiple: false,
-              theme: 'bootstrap4',
-              allowClear: false,
-              minimumResultsForSearch: 10,
-              placeholder: "{{__('club.region')}}",
-              ajax: {
-                      url: "{{ route('region.admin.sb')}}",
-                      type: "get",
-                      delay: 250,
-                      processResults: function (response) {
-                        return {
-                          results: response
-                        };
-                      },
-                      cache: true
+            $("#selRegion").select2({
+                multiple: false,
+                theme: 'bootstrap4',
+                allowClear: false,
+                minimumResultsForSearch: 10,
+                placeholder: "{{__('club.region')}}",
+                ajax: {
+                    url: "{{ route('region.admin.sb')}}",
+                    type: "get",
+                    delay: 250,
+                    processResults: function (response) {
+                        return { results: response };
+                        },
+                    cache: true
                     }
-          });
+            });
+
+            function formatLocale (locale) {
+                var country = locale.id;
+                if (country == "en"){
+                    country = 'gb';
+                }
+                var $locale = $(
+                    '<span class="flag-icon flag-icon-'+country+'"></span><span> '+locale.text+'</span></span>'
+                );
+                return $locale;
+            };
+
+            $("#selLocale").select2({
+                multiple: false,
+                theme: 'bootstrap4',
+                allowClear: false,
+                templateSelection: formatLocale
+            });
         });
     </script>
-    @yield('js')
+@yield('js')
 @stop

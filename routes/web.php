@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -106,6 +107,7 @@ Route::get('region/admin/sb', 'RegionController@admin_sb')->name('region.admin.s
 Route::middleware(['auth'])->group(function () {
   // APIs , no locale or language required !
   Route::redirect('home', '/de/home');
+
   Route::delete('user/{user}', 'UserController@destroy')->name('admin.user.destroy')->middleware('auth')->middleware('regionadmin');
   Route::post('user/{user}/block', 'UserController@block')->name('admin.user.block')->middleware('auth')->middleware('regionadmin');
   Route::put('user/{user}', 'UserController@update')->name('admin.user.update')->middleware('auth');

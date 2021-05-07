@@ -47,7 +47,8 @@ class RegistrationTest extends TestCase
             'password'=> 'password',
             'password_confirmation'=> 'password',
             'reason_join'=> 'registration test 1',
-            'region_id' => $region->id
+            'region_id' => $region->id,
+            'locale' => 'de'
           ]));
 
         $response->assertStatus(302);
@@ -302,7 +303,7 @@ class RegistrationTest extends TestCase
     /**
      * index 1 new user
      *
-     * @test
+     * @//test
      * @group user
      * @group controller
      *
