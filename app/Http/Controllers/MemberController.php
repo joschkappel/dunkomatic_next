@@ -35,7 +35,9 @@ class MemberController extends Controller
                       $region->members->pluck('id')->flatten()
                     )->unique();
         $mlist = datatables()::of(Member::whereIn('id', $members)->get());
+
         return $mlist
+              ->rawColumns(['user_account'])
               ->addColumn('name', function ($data) {
                       return $data->lastname.', '.$data->firstname;
                   })
@@ -45,11 +47,10 @@ class MemberController extends Controller
               ->addColumn('leagues', function ($data) {
                       return $data->memberofleagues;
                   })
-              ->addColumn('regions', function ($data) {
-                      return $data->memberofregions;
-                  })
               ->addColumn('user_account', function ($data) {
-                      return $data->isuser;
+                      if ($data->isuser){
+                        return '<i class="fas fa-user text-info"> </i> ';
+                      };
                   })
               ->make(True);
       }

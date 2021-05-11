@@ -22,11 +22,7 @@
         "type": "php",
         "request": "launch",
         "port": 9000,
-        "hostname": "localhost",
-        "pathMappings": {
-            //  "/var/www/dunkonxt": "/Users/jochenkappel/Projects/Basket/dunkonxt",
-
-            }
+        // "hostname": "localhost"
         }
     ]
 }

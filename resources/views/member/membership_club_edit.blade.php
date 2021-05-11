@@ -33,7 +33,11 @@
                           <div class="col-sm-6">
                             <select class='js-sel-role js-states form-control select2 @error('selRole') is-invalid @enderror' name="selRole[]" id='selRole'>
                              @foreach ($membership as $mship)
-                               <option value="{{ $mship->role_id }}" >{{ App\Enums\Role::getDescription($mship->role_id) }}</option>
+                               @if ($mship->role_id == App\Enums\Role::User )
+                                <option value="{{ $mship->role_id }}">{{ App\Enums\Role::getDescription($mship->role_id) }}</option> 
+                               @else
+                                <option value="{{ $mship->role_id }}">{{ App\Enums\Role::getDescription($mship->role_id) }}</option>
+                               @endif
                              @endforeach
                             </select>
                             @error('selRole')
@@ -90,6 +94,10 @@
     </div>
 @endsection
 
+@section('css')
+<link href="{{URL::asset('css/select2_addon.css')}}" rel="stylesheet">
+@endsection
+
 @section('js')
 <script>
     function show_member(id, name, street, zipcode, city, email1, mobile) {
@@ -144,7 +152,6 @@
           theme: 'bootstrap4',
           multiple: true,
           allowClear: false,
-          minimumResultsForSearch: -1,
           ajax: {
                   url: "{{ route('role.index')}}",
                   type: "POST",
