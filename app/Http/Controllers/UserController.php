@@ -50,14 +50,14 @@ class UserController extends Controller
               })
           ->addColumn('clubs', function ($userlist) {
               if ( $userlist->member != null ){
-                  return $userlist->member()->first()->clubs()->pluck('shortname')->implode(', ');
+                  return $userlist->member()->first()->member_of_clubs;
               } else {
                   return '';
               }
               })
           ->addColumn('leagues', function ($userlist) {
               if ( $userlist->member != null ){
-                  return $userlist->member()->first()->leagues()->pluck('shortname')->implode(', ');
+                  return $userlist->member()->first()->member_of_leagues;
                 } else {
                   return '';
                 }
@@ -138,8 +138,8 @@ class UserController extends Controller
             // check if user is linked to a member
             $member = Member::where('email1', $user->email)->orWhere('email2', $user->email)->first();
             if ( isset($member)){
-                $member['clubs'] = $member->clubs()->get()->implode('shortname',', ');
-                $member['leagues'] = $member->leagues()->get()->implode('shortname',', ');
+                $member['clubs'] = $member->clubs()->get()->unique()->implode('shortname',', ');
+                $member['leagues'] = $member->leagues()->get()->unique()->implode('shortname',', ');
             }
 
             return view('auth/user_approve', ['user'=>$user, 'member'=>$member] );
@@ -206,8 +206,8 @@ class UserController extends Controller
 
             if ( isset($data['member_id']) ){
                 $member = Member::find($data['member_id']);
-                $data['club_ids'] = $member->clubs()->get(['clubs.id']);
-                $data['league_ids'] = $member->leagues()->get(['leagues.id']);
+                $data['club_ids'] = $member->clubs()->get(['clubs.id'])->unique();
+                $data['league_ids'] = $member->leagues()->get(['leagues.id'])->unique();
             } else {
                 // else create the member witha  role = user
                 $member = new Member(['lastname'=> $user->name, 'email1'=>$user->email]);
