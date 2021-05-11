@@ -28,10 +28,18 @@ class RoleController extends Controller
       $response = array();
 
       foreach($roles as $role){
-          $response[] = array(
-                "id"=>$role->value,
-                "text"=>$role->description
-              );
+          if ($role->is(Role::User)){
+            $response[] = array(
+                  "id"=>$role->value,
+                  "text"=>$role->description,
+                  "disabled"=>true
+                );
+          } else {
+            $response[] = array(
+              "id"=>$role->value,
+              "text"=>$role->description,
+            );        
+          }
       }
 
       return Response::json($response);

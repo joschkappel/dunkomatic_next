@@ -13,6 +13,7 @@ return [
   'title.new' => 'Create a new role for :unittype :unitname',
   'title.edit' => 'Modify Details for Role :member',
   'title.delete' => 'Delete a role from ',
+  'member.title.list' => 'Member List',
   'confirm.delete' => 'Do you really want to delete this role ?',
   'firstname' => 'Firstname',
   'lastname' => 'Lastname',

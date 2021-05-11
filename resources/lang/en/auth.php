@@ -42,4 +42,5 @@ return [
     'user.leagues'                => 'Authorized for leagues',
     'user'                       => 'User',
     'member_found'              => 'A member with this email already exists: ',
+    'user.account'              => 'Useraccount',
 ];

@@ -193,10 +193,10 @@ class UserController extends Controller
           $data = $request->validate( [
               'reason_reject' =>  'exclude_if:approved,"on"|required|string',
               'club_ids' => Rule::requiredIf(function () use ($request) {
-                              return (($request->approved == 'on') and (!isset($request->league_ids)));
+                              return (($request->approved == 'on') and (!isset($request->league_ids)) and (!isset($request->member_id)) );
                               }),
               'league_ids' => Rule::requiredIf(function () use ($request) {
-                              return (($request->approved == 'on') and (!isset($request->club_ids)));
+                              return (($request->approved == 'on') and (!isset($request->club_ids)) and (!isset($request->member_id)) );
                               }),
               'member_id' => 'sometimes|required|exists:members,id'
           ]);
@@ -206,6 +206,8 @@ class UserController extends Controller
 
             if ( isset($data['member_id']) ){
                 $member = Member::find($data['member_id']);
+                $data['club_ids'] = $member->clubs()->get(['clubs.id']);
+                $data['league_ids'] = $member->leagues()->get(['leagues.id']);
             } else {
                 // else create the member witha  role = user
                 $member = new Member(['lastname'=> $user->name, 'email1'=>$user->email]);
@@ -254,8 +256,7 @@ class UserController extends Controller
     } else {
       // delete only the user and detach from member
       $member = Member::find($user->member->id);
-      $member->wherePivot('role_id', Role::User)->delete();
-      $member->detach($user);
+      $member->memberships()->where('role_id', Role::User)->delete();
     }
     $user->delete();
     return redirect()->route('admin.user.index', app()->getLocale());
