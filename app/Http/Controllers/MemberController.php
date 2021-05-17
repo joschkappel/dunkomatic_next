@@ -48,8 +48,8 @@ class MemberController extends Controller
                       return $data->memberofleagues;
                   })
               ->addColumn('user_account', function ($data) {
-                      if ($data->isuser){
-                        return '<i class="fas fa-user text-info"> </i> ';
+                      if ($data->isuser and !$data->user->isregionadmin){
+                        return '<a href="' . route('admin.user.edit', ['language'=>app()->getLocale(), 'user'=>$data->user->id]) .'"><i class="fas fa-user text-info"></i></a>';
                       };
                   })
               ->make(True);
