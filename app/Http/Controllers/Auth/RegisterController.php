@@ -4,13 +4,18 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
+
 use App\Models\User;
 use App\Models\Region;
+use App\Models\Member;
+use App\Enums\Role;
+
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use App\Notifications\NewUser;
+use Illuminate\Support\Facades\Crypt;
 
 class RegisterController extends Controller
 {
@@ -58,7 +63,8 @@ class RegisterController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'region_id' => ['required', 'exists:regions,id'],
             'reason_join' => ['required', 'string'],
-            'locale' => ['required', 'string', 'max:2']
+            'locale' => ['required', 'string', 'max:2'],
+            'invited_by' => ['sometimes']
         ]);
     }
 
@@ -80,13 +86,39 @@ class RegisterController extends Controller
       ]);
       $radmin = Region::find($data['region_id'])->regionadmin->first()->user()->first();
 
-      if ( $radmin !== null ) {
-          Log::debug(print_r($radmin,true));
-          $radmin->notify(new NewUser($user));
+      if (isset($data['invited_by']) and (Crypt::decryptString( $data['invited_by'] ) == $data['email'])){
+
+          $user->update(['approved_at'=>now()]);
+          $member = Member::where('email1', $data['email'])->orWhere('email2',$data['email'])->first();
+          $member->user()->save($user);
+          $clubs = $member->clubs->unique()->pluck('id');
+          foreach ($clubs as $c) {
+              $member->clubs()->attach([$c], array('role_id' => Role::User));    
+          }
+          $leagues = $member->leagues->unique()->pluck('id');
+          foreach ($leagues as $l) {
+              $member->leagues()->attach([$l], array('role_id' => Role::User));    
+          }
+
       } else {
-          Log::error('is null');
+        if ( $radmin !== null ) {
+            Log::debug(print_r($radmin,true));
+            $radmin->notify(new NewUser($user));
+        } else {
+            Log::error('is null');
+        }
       }
 
       return $user;
     }
+
+    /**
+     * Show the application registration form for invited users.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showRegistrationFormInvited($language, Member $member, User $inviting_user, $invited_by)
+    {
+        return view('auth.register_invited',['language'=>$language, 'member'=>$member, 'user'=>$inviting_user, 'invited_by'=>$invited_by]);
+    }    
 }

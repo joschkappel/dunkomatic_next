@@ -74,10 +74,6 @@ class ClubMembershipController extends Controller
         //Log::debug($role);
         $new_mrole = $club->memberships()->create(['role_id' => $role,
                                          'member_id' => $member->id]);
-        // $new_mrole = Membership::create(['role_id' => $role,
-        //                                  'member_id' => $member->id,
-        //                                  'membershipable_id' => $club->id ,
-        //                                  'membershipable_type' => 'App\Models\Club']);
       }
 
       return redirect()->action(

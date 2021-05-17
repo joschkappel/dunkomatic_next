@@ -74,4 +74,9 @@ return [
     'charpickenabled.open'  =>  'geöffnet',
     'charpickenabled.closed'    =>  'beendet',
     'charpickenabled.action'    =>  'Ziffernwahl',
+
+    'inviteuser.subject'    => 'Einladung für DunkoMatic',
+    'inviteuser.action' =>  'Als Benutzer Registrieren',
+    'inviteuser.line1'  =>  ':sendername hat Dich als Benutzer für DunkOMatic eingeladen.',
+    'inviteuser.line2'  =>  'Mit betätigen des Knopfes kannst Du Dich als Benutzer registrieren.',
 ];

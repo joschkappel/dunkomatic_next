@@ -101,11 +101,11 @@ class Member extends Model
   }
   public function getMemberOfClubsAttribute()
   {
-    return $this->clubs()->wherePivotIn('role_id', [Role::ClubLead, Role::RefereeLead, Role::GirlsLead, Role::JuniorsLead])->pluck('shortname')->implode(', ');
+    return $this->clubs()->wherePivotIn('role_id', [Role::ClubLead, Role::RefereeLead, Role::GirlsLead, Role::JuniorsLead])->pluck('shortname')->unique()->implode(', ');
   }
   public function getMemberOfLeaguesAttribute()
   {
-    return $this->leagues()->wherePivot('role_id', Role::LeagueLead)->pluck('shortname')->implode(', ');
+    return $this->leagues()->wherePivot('role_id', Role::LeagueLead)->pluck('shortname')->unique()->implode(', ');
   }
   public function getMemberOfRegionAttribute()
   {

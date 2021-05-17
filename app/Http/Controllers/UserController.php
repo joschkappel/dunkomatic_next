@@ -50,14 +50,14 @@ class UserController extends Controller
               })
           ->addColumn('clubs', function ($userlist) {
               if ( $userlist->member != null ){
-                  return $userlist->member()->first()->clubs()->pluck('shortname')->implode(', ');
+                  return $userlist->member()->first()->clubs()->pluck('shortname')->unique()->implode(', ');
               } else {
                   return '';
               }
               })
           ->addColumn('leagues', function ($userlist) {
               if ( $userlist->member != null ){
-                  return $userlist->member()->first()->leagues()->pluck('shortname')->implode(', ');
+                  return $userlist->member()->first()->leagues()->pluck('shortname')->unique()->implode(', ');
                 } else {
                   return '';
                 }
@@ -238,8 +238,9 @@ class UserController extends Controller
     //$u = User::find($user);
 
     $member = Member::find($user->member->id);
-    $member->memberships()->delete();
+    $member->clubs()->wherePivot('role_id', Role::User )->detach();
     $member->clubs()->attach($request['club_ids'], array('role_id' => Role::User));
+    $member->leagues()->wherePivot('role_id', Role::User )->detach();
     $member->leagues()->attach($request['league_ids'], array('role_id' => Role::User));
 
     return redirect()->route('admin.user.index', app()->getLocale());

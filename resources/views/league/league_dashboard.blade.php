@@ -143,6 +143,9 @@
             data-member-name="{{ $member->name }}"
             data-league-sname="{{ $league->shortname }}" data-toggle="modal" data-target="#modalDeleteMember"><i class="fa fa-trash"></i></button>
           <a href="{{ route('membership.league.edit',['language'=>app()->getLocale(), 'member' => $member, 'league' => $league ]) }}" class=" px-2">{{ $member->name }} <i class="fas fa-arrow-circle-right"></i></a>
+            @if (! $member->is_user)
+            <a href="{{ route('member.invite',[ 'member' => $member]) }}"><i class="fas fa-user-plus"></i></a>
+            @endif          
             @foreach ($member['memberships'] as $membership)
               <span class="badge badge-secondary">{{ App\Enums\Role::getDescription($membership->role_id) }}</span>
             @endforeach

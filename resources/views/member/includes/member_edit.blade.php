@@ -121,13 +121,6 @@
                       @enderror
                   </div>
               </div>
-              <div class="form-group  clearfix">
-                <div class="icheck-info d-inline">
-                  <input type="checkbox" id="user_account" name="user_account"
-                  @if ($member->user()->exists() ) checked disabled @endif>
-                  <label for="user_account" >@lang('role.user.account')</label>
-                </div>
-              </div>
               <!--/.Content-->
               <button type="submit" class="btn btn-info">{{__('Submit')}}</button>
           </form>
