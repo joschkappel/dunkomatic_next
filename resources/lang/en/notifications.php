@@ -74,4 +74,10 @@ return [
     'charpickenabled.open'  =>  'opened',
     'charpickenabled.closed'    =>  'closed',
     'charpickenabled.action'    =>  'Char Picking',
+
+    'inviteuser.subject'    => 'DunkoMatic User Invitation',
+    'inviteuser.action' =>  'User Registration',
+    'inviteuser.line1'  =>  ':sendername has invited you as user of DunkOMatic.',
+    'inviteuser.line2'  =>  'Click the button below to get to the registration page.',
+
 ];

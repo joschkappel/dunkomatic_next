@@ -33,9 +33,12 @@ Route::group([
 
   Auth::routes(['verify' => true]);
 
+  Route::get('/register_invited/{member}/{inviting_user}/{invited_by}', 'Auth\RegisterController@showRegistrationFormInvited')->name('register.invited');
+
   Route::middleware(['auth'])->group(function () {
     Route::get('/home', 'HomeController@home')->name('home')->middleware('auth')->middleware('verified')->middleware('approved');
     Route::get('/approval', 'HomeController@approval')->name('approval');
+
 
     Route::get('user/new', 'UserController@index_new')->name('admin.user.index.new')->middleware('auth')->middleware('regionadmin');
     Route::get('user/dt', 'UserController@datatable')->name('admin.user.dt')->middleware('auth')->middleware('regionadmin');
@@ -114,6 +117,7 @@ Route::middleware(['auth'])->group(function () {
   Route::put('user/{user}/allowance', 'UserController@allowance')->name('admin.user.allowance')->middleware('auth')->middleware('regionadmin');
   Route::put('member/{member}', 'MemberController@update')->name('member.update');
   Route::post('member', 'MemberController@store')->name('member.store');
+  Route::get('member/{member}/invite', 'MemberController@invite')->name('member.invite');
   Route::delete('member/{member}', 'MemberController@destroy')->name('member.destroy');
   Route::put('region/{region}', 'RegionController@update')->name('region.update')->middleware('auth')->middleware('regionadmin');
   Route::post('region', 'RegionController@create')->name('region.create')->middleware('auth')->middleware('regionadmin');

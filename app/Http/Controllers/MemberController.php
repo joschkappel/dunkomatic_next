@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Hash;
 
 use App\Notifications\ApproveUser;
+use App\Notifications\InviteUser;
 
 class MemberController extends Controller
 {
@@ -103,28 +104,6 @@ class MemberController extends Controller
 
         $member = Member::create($data);
 
-        // check user account creation
-        if ($request->input('user_account') == 'on')
-        {
-          Log::info('user account required');
-          // create user account (status approved, email needs to be verified)
-          $user = User::create([
-                'name' => $member->name,
-                'email' => $member->email1,
-                'password' => Hash::make('password'),
-                'region_id' => session('cur_region')->id,
-                'reason_join' => 'Created as member by '.Auth::user()->name,
-          ]);
-
-          $member->user()->save($user);
-          if ( isset( $request['club_id']) ){
-            $member->clubs()->attach([$request->input('club_id')], array('role_id' => Role::User));
-          } elseif ( isset( $request['league_id']) ) {
-            $member->leagues()->attach([$request->input('league_id')], array('role_id' => Role::User));
-          }
-          $user->notify(new ApproveUser(Auth::user(), $user));
-
-        }
         return redirect()->back()->with('member', $member);
 
       }
@@ -137,37 +116,18 @@ class MemberController extends Controller
 
         $member->update($data);
 
-        // check user account creation
-        if ($request['user_account'] == 'on')
-        {
-          if (!$member->user()->exists() ) {
-            Log::info('user account required');
-            // create user account (status approved, email needs to be verified)
-            $user = User::create([
-                  'name' => $member->name,
-                  'email' => $member->email1,
-                  'password' => Hash::make('password'),
-                  'region_id' => session('cur_region')->id,
-                  'reason_join' => 'Created as member by '.Auth::user()->name,
-            ]);
-
-            $member->user()->save($user);
-            if ( isset( $request['club_id']) ){
-              $member->clubs()->attach([$request->input('club_id')], array('role_id' => Role::User));
-            } elseif ( isset( $request['league_id']) ) {
-              $member->leagues()->attach([$request->input('league_id')], array('role_id' => Role::User));
-            }
-            $user->notify(new ApproveUser(Auth::user(), $user));
-
-          }
-        } else {
-          if ($member->user()->exists() ) {
-            Log::debug('remove user account');
-            $member->user()->delete();
-          }
-        }
-
         return redirect()->back()->with('member_mod', $member);
+    }
+    /**
+     * send a user registration invite to this member
+     *
+     * @param  \App\Models\Member  $member
+     * @return \Illuminate\Http\Response
+     */
+    public function invite(Member $member)
+    {
+      $member->notify(new InviteUser(Auth::user()));
+      return redirect()->back();
     }
     /**
      * Remove the specified resource from storage.
@@ -181,4 +141,5 @@ class MemberController extends Controller
 
          return Response::json($check);
      }
+
 }
