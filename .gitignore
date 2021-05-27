@@ -4,6 +4,7 @@
 /storage/*.key
 /vendor
 /storage/framework/views
+/tests/PerfTests/results
 
 !.env.dusk.git
 .aws
