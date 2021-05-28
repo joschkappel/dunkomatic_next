@@ -22,6 +22,9 @@ class TestDatabaseSeeder extends Seeder
           LeagueSizeCharsTableSeeder::class,
           LeagueSizeSchemesTableSeeder::class,
         ]);
-
+        $this->call([
+            TestClubsSeeder::class,
+            TestLeaguesSeeder::class,
+          ]);
     }
 }

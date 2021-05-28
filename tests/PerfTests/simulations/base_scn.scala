@@ -74,8 +74,8 @@ class BaseScn extends Simulation {
         .exec(http("Post User Login") // Here's an example of a POST request
             .post("/de/login")
             .headers(header_authorized)
-            .formParam("_token", "${csrf_token}") 
-            .formParam("email", "user@gmail.com") 
+            .formParam("_token", "${csrf_token}")
+            .formParam("email", "user@gmail.com")
             .formParam("password", "password")
             .check(status.is(200))
         )
@@ -91,6 +91,10 @@ class BaseScn extends Simulation {
     }
 
     object ClubList {
+        val r = scala.util.Random
+        val rClub = r.between(1,40)
+        val rTeam = r.between(1,216)
+
         val clublist = exec(http("Get ClubStatistics")
             .get("/de/club/index_stats")
             .check(css("input[type=hidden name=_token]", "value").saveAs("csrf_token"))
@@ -104,21 +108,25 @@ class BaseScn extends Simulation {
             )
             .pause(2.seconds, 6.seconds)
             .exec(http("Get ClubDashboard")
-            .get("/de/club/26/dashboard")
+            .get(s"/de/club/$rClub/dashboard")
             .check(css("input[type=hidden name=_token]", "value").saveAs("csrf_token"))
             .check(status.is(200))
             )
             .pause(2.seconds, 6.seconds)
             .exec(http("Get Team")
-            .get("/de/team/293/edit")
+            .get(s"/de/team/$rTeam/edit")
             .check(css("input[type=hidden name=_token]", "value").saveAs("csrf_token"))
             .check(status.is(200))
-            )            
+            )
     }
 
     object MemberUpdate {
+        val r = scala.util.Random
+        val rClub = r.between(1,40)
+        val rMember = rClub * 4 + r.between(2,5)
+
         val memberupd = exec(http("Edit Member")
-            .get("/de/membership/club/26/member/9")
+            .get(s"/de/membership/club/$rClub/member/$rMember")
             .check(css("input[type=hidden name=_token]", "value").saveAs("csrf_token"))
             .check(css("input[type=text id=firstname]", "value").saveAs("firstname"))
             .check(css("input[type=text id=email1]", "value").saveAs("email1"))
@@ -126,7 +134,7 @@ class BaseScn extends Simulation {
             )
             .pause(2.seconds, 5.seconds)
             .exec(http("Update Member")
-            .put("/member/9")
+            .put(s"/member/$rMember")
             .formParam("_token", "${csrf_token}")
             .formParam("firstname", "${firstname}")
             .formParam("lastname", "lastname")
@@ -141,6 +149,9 @@ class BaseScn extends Simulation {
     }
 
     object LeagueList {
+        val r = scala.util.Random
+        val rLeague = r.between(1,20)
+
         val leaguelist = exec(http("Get LeagueStatistics")
                 .get("/de/league/index_stats")
                 .check(css("input[type=hidden name=_token]", "value").saveAs("csrf_token"))
@@ -154,10 +165,10 @@ class BaseScn extends Simulation {
             )
             .pause(2.seconds, 10.seconds)
             .exec(http("Get LeagueDashboard")
-                .get("/de/league/9/dashboard")
+                .get(s"/de/league/$rLeague/dashboard")
                 .check(css("input[type=hidden name=_token]", "value").saveAs("csrf_token"))
                 .check(status.is(200))
-            )            
+            )
     }
 
     val clubs = scenario("Clubs").exec(UserLogin.userlogin, ClubList.clublist, MemberUpdate.memberupd, Logout.logout)
