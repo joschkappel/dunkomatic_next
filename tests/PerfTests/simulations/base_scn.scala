@@ -23,6 +23,7 @@ import scala.concurrent.duration._
 class BaseScn extends Simulation {
 
     val base_url = "http://dunkomatic_next.test"
+    // val base_url = "http://h2941512.stratoserver.net"
 
     val httpProtocol = http
         .baseUrl(base_url) // Here is the root for all relative URLs

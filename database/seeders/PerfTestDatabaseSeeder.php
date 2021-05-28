@@ -3,7 +3,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
-class TestDatabaseSeeder extends Seeder
+class PerfTestDatabaseSeeder extends Seeder
 {
     /**
      * Seed the application's database.
@@ -22,5 +22,9 @@ class TestDatabaseSeeder extends Seeder
           LeagueSizeCharsTableSeeder::class,
           LeagueSizeSchemesTableSeeder::class,
         ]);
+        $this->call([
+            TestClubsSeeder::class,
+            TestLeaguesSeeder::class,
+          ]);
     }
 }
