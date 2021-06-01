@@ -83,16 +83,18 @@ class ProcessCustomMessages implements ShouldQueue
           }
           $drop_mail = true;
         } else if ($role->is( Role::Admin )){
-          $users = Region::where('code',$d->region)->first()->regionadmin->first()->user()->get();
+          $users = Region::where('id',$d->region)->first()->regionadmin->first()->user()->get();
           foreach ($users as $u){
             $u->notify(new CustomDbMessage($this->message));
           }
+          $to_roles[] = Role::getDescription($role).' '.Region::find($d->region_id)->code;
         } else if ($role->is(Role::User) ){
           Log::info('will create user notifications in DB');
-          $users = User::region($d->region)->get();
+          $users = User::where('region_id',$d->region_id)->get();
           foreach ($users as $u){
             $u->notify(new CustomDbMessage($this->message));
           }
+          $to_roles[] = Role::getDescription($role).' '.Region::find($d->region_id)->code;
         }
 
         if ($drop_mail) {
@@ -105,10 +107,10 @@ class ProcessCustomMessages implements ShouldQueue
           }
           if ( $d->type == MessageType::to ) {
             $to_list = array_merge($to_list, $adrlist);
-            $to_roles[] = Role::getDescription($role).' '.$d->region;
+            $to_roles[] = Role::getDescription($role).' '.Region::find($d->region_id)->code;
           } else {
             $cc_list = array_merge($cc_list, $adrlist);
-            $cc_roles[] = Role::getDescription($role).' '.$d->region;
+            $cc_roles[] = Role::getDescription($role).' '.Region::find($d->region_id)->code;
           }
         }
       }
@@ -123,7 +125,10 @@ class ProcessCustomMessages implements ShouldQueue
       $this->message->update(['sent_at'=>Carbon::today()]);
       $author = User::where('id',$this->message->author)->first();
 
-      $msg = 'Message send to '.implode(', ', $to_roles).'. With copy to '.implode(', ', $cc_roles);
+      $msg = 'Message send to '.implode(', ', $to_roles);
+      if (count($cc_roles)>0){
+          $msg .= ', with copy to '.implode(', ', $cc_roles);
+      }
       $author->notify(new AppActionMessage('Message '.$this->message->title.' sent', $msg));
 
     }

@@ -10,12 +10,12 @@ class MessageDestination extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id','scope','type', 'region', 'message_id'
+        'id','scope','type', 'region_id', 'message_id'
     ];
 
     public function region()
     {
-        return $this->belongsTo('App\Models\Region','region','code');
+        return $this->belongsTo('App\Models\Region','region_id','id');
     }
 
     public function message()

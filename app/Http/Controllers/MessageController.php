@@ -144,14 +144,14 @@ class MessageController extends Controller
         foreach ($dest_tos as $d){
           $dest = $msg->destinations()->create([
               'scope' => $d,
-              'region' => $region->code,
+              'region_id' => $region->id,
               'type' => new MessageType( MessageType::to),
           ]);
         }
         foreach ($dest_ccs as $d){
           $dest = $msg->destinations()->create([
               'scope' => $d,
-              'region' => $region->code,
+              'region_id' => $region->id,
               'type' => new MessageType( MessageType::cc),
           ]);
         }
@@ -235,14 +235,14 @@ class MessageController extends Controller
       foreach ($dest_tos as $d){
         $dest = $message->destinations()->create([
             'scope' => $d,
-            'region' => $region->code,
+            'region_id' => $region->id,
             'type' => new MessageType( MessageType::to),
         ]);
       }
       foreach ($dest_ccs as $d){
         $dest = $message->destinations()->create([
             'scope' => $d,
-            'region' => $region->code,
+            'region_id' => $region->id,
             'type' => new MessageType( MessageType::cc),
         ]);
       }
