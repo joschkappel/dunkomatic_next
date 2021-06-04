@@ -145,7 +145,7 @@
           <a href="{{ route('membership.league.edit',['language'=>app()->getLocale(), 'member' => $member, 'league' => $league ]) }}" class=" px-2">{{ $member->name }} <i class="fas fa-arrow-circle-right"></i></a>
             @if (! $member->is_user)
             <a href="{{ route('member.invite',[ 'member' => $member]) }}"><i class="fas fa-user-plus"></i></a>
-            @endif          
+            @endif
             @foreach ($member['memberships'] as $membership)
               <span class="badge badge-secondary">{{ App\Enums\Role::getDescription($membership->role_id) }}</span>
             @endforeach
@@ -181,6 +181,7 @@
                <a href="{{ route('file.get', ['season'=>$fname[1], 'region'=>$fname[2], 'type'=> $fname[3],'file'=>$fname[4] ] )}}" class="list-group-item list-group-item-action list-group-item-info"> {{ basename($f) }}</a>
           @endforeach
         </div>
+
         </div>
         <!-- /.card-body -->
         <div class="card-footer">
@@ -204,6 +205,8 @@
           <a href="{{ route('cal.league',['language'=>app()->getLocale(), 'league' => $league ]) }}" class="btn btn-secondary" >
           <i class="fas fa-calendar-alt"></i> iCAL</a>
         </div>
+        <img class="card-img-bottom" src="{{asset('img/'.config('dunkomatic.grafics.league', 'oops.jpg'))}}" class="card-img" alt="...">
+
         <!-- /.card-footer -->
       </div>
       <!-- /.card -->
@@ -214,8 +217,7 @@
       @include('league/includes/inject_team')
       <!-- all modals above -->
     </div>
-    <!-- ./deck -->
-</div>
+
 </div>
 @stop
 

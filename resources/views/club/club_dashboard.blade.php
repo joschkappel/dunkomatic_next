@@ -203,8 +203,7 @@
         <!-- /.card-footer -->
       </div>
       <!-- /.card -->
-    </div>
-    <!-- ./deck -->
+
     <!-- all modals here -->
     @include('club/includes/assign_league')
     @include('club/includes/club_delete')
@@ -212,8 +211,17 @@
     @include('team/includes/team_delete')
     @include('club/gym/includes/gym_delete')
     <!-- all modals above -->
-</div>
-</div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-sm-4">
+            <div class="card border-secondary bg-secondary text-white">
+                <img src="{{asset('img/'.config('dunkomatic.grafics.club', 'oops.jpg'))}}" class="card-img" alt="...">
+                <div class="card-img-overlay">
+                </div>
+            </div>
+        </div>
+    </div>
 @stop
 
 @section('js')

@@ -21,7 +21,9 @@ return [
   'laravel_mix_js_path' => 'js/app.js',
 
   'grafics' => array(
-      'welcome' => 'pexels-wallace-chuck-2834916.jpg',
+      'welcome' => 'welcome.jpg',
+      'club'    => 'club.jpg',
+      'league'    => 'league.jpg',
   ),
 
 
