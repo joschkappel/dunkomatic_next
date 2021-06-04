@@ -34,7 +34,8 @@
 
         {{-- Content Wrapper --}}
         <div class="content-wrapper {{ config('menu.classes_content_wrapper') ?? '' }}"
-             style="background-image:url('{{asset('img/oie_212057CAFhwXIo.jpg')}}');background-position:center;background-repeat:no-repeat;background-size:cover;">
+             {{-- style="background-image:url('{{asset('img/oie_212057CAFhwXIo.jpg')}}');background-position:center;background-repeat:no-repeat;background-size:cover;"> --}}
+             >
 
             {{-- Content Header --}}
             <div class="content-header">

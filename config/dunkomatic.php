@@ -20,6 +20,11 @@ return [
   'laravel_mix_css_path' => 'css/app.css',
   'laravel_mix_js_path' => 'js/app.js',
 
+  'grafics' => array(
+      'welcome' => 'pexels-wallace-chuck-2834916.jpg',
+  ),
+
+
 
   /*
   |--------------------------------------------------------------------------

@@ -32,7 +32,8 @@
 
         
         <div class="content-wrapper <?php echo e(config('menu.classes_content_wrapper') ?? '', false); ?>"
-             style="background-image:url('<?php echo e(asset('img/oie_212057CAFhwXIo.jpg'), false); ?>');background-position:center;background-repeat:no-repeat;background-size:cover;">
+             
+             >
 
             
             <div class="content-header">
