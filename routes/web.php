@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return redirect(app()->getLocale());
-});
+})->name('start');
 Route::get('/health', function () {
     return 'OK';
 });

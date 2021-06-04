@@ -11,126 +11,141 @@
 
 @php( $login_url = View::getSection('login_url') ?? config('dunkomatic.login_url', 'login') )
 @php( $register_url = View::getSection('register_url') ?? config('dunkomatic.register_url', 'register') )
-@php( $dashboard_url = View::getSection('dashboard_url') ?? config('dunkomatic.dashboard_url', 'home') )
+@php( $dashboard_url = View::getSection('dashboard_url') ?? config('dunkomatic.dashboard_url', 'start') )
 
 @php( $login_url = $login_url ? route($login_url, app()->getLocale()) : '' )
 @php( $register_url = $register_url ? route($register_url, app()->getLocale()) : '' )
-@php( $dashboard_url = $dashboard_url ? route($dashboard_url,app()->getLocale()) : '' )
+@php( $dashboard_url = $dashboard_url ? route('start') : '' )
 
 @section('body')
-    <div class="register-box">
-        <div class="register-logo">
-            <a href="{{ $dashboard_url }}">{!! config('menu.logo') !!}</a>
+<div class="container-fluid">
+    <div class="row justify-content-between">
+        <div class="col-6 col-md-4 align-self-start">
+            <div class="card border-secondary bg-secondary text-white">
+                <img src="{{asset('img/'.config('dunkomatic.grafics.welcome', 'oops.jpg'))}}" class="card-img" alt="...">
+                <div class="card-img-overlay">
+                </div>
+            </div>
         </div>
-        <div class="card">
-            <div class="card-body register-card-body">
-                <p class="login-box-msg">{{ __('auth.register_message') }}</p>
-                <form action="{{ $register_url }}" method="post">
-                    {{ csrf_field() }}
+        <div class="col-6 align-self-center">
 
-                    <div class="input-group mb-3">
-                        <input type="text" name="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" value="{{ old('name') }}"
-                               placeholder="{{ __('auth.full_name') }}" autofocus>
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-user"></span>
-                            </div>
-                        </div>
+            <div class="register-box center">
+                <div class="register-logo">
+                    <a href="{{ $dashboard_url }}">{!! config('menu.logo') !!}</a>
+                </div>
+                <div class="card">
+                    <div class="card-body register-card-body">
+                        <p class="login-box-msg">{{ __('auth.register_message') }}</p>
+                        <form action="{{ $register_url }}" method="post">
+                            {{ csrf_field() }}
 
-                        @if ($errors->has('name'))
-                            <div class="invalid-feedback">
-                                <strong>{{ $errors->first('name') }}</strong>
+                            <div class="input-group mb-3">
+                                <input type="text" name="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" value="{{ old('name') }}"
+                                        placeholder="{{ __('auth.full_name') }}" autofocus>
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-user"></span>
+                                    </div>
+                                </div>
+
+                                @if ($errors->has('name'))
+                                    <div class="invalid-feedback">
+                                        <strong>{{ $errors->first('name') }}</strong>
+                                    </div>
+                                @endif
                             </div>
-                        @endif
-                    </div>
-                    <div class="input-group mb-3">
-                        <input type="email" name="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" value="{{ old('email') }}"
-                               placeholder="{{ __('auth.email') }}">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
+                            <div class="input-group mb-3">
+                                <input type="email" name="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" value="{{ old('email') }}"
+                                        placeholder="{{ __('auth.email') }}">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-envelope"></span>
+                                    </div>
+                                </div>
+                                @if ($errors->has('email'))
+                                    <div class="invalid-feedback">
+                                        <strong>{{ $errors->first('email') }}</strong>
+                                    </div>
+                                @endif
                             </div>
-                        </div>
-                        @if ($errors->has('email'))
-                            <div class="invalid-feedback">
-                                <strong>{{ $errors->first('email') }}</strong>
+                            <div class="input-group mb-3">
+                                <input type="password" name="password" class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}"
+                                        placeholder="{{ __('auth.password') }}">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-lock"></span>
+                                    </div>
+                                </div>
+                                @if ($errors->has('password'))
+                                    <div class="invalid-feedback">
+                                        <strong>{{ $errors->first('password') }}</strong>
+                                    </div>
+                                @endif
                             </div>
-                        @endif
-                    </div>
-                    <div class="input-group mb-3">
-                        <input type="password" name="password" class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}"
-                               placeholder="{{ __('auth.password') }}">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
+                            <div class="input-group mb-3">
+                                <input type="password" name="password_confirmation" class="form-control {{ $errors->has('password_confirmation') ? 'is-invalid' : '' }}"
+                                        placeholder="{{ __('auth.retype_password') }}">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-lock"></span>
+                                    </div>
+                                </div>
+                                @if ($errors->has('password_confirmation'))
+                                    <div class="invalid-feedback">
+                                        <strong>{{ $errors->first('password_confirmation') }}</strong>
+                                    </div>
+                                @endif
                             </div>
-                        </div>
-                        @if ($errors->has('password'))
-                            <div class="invalid-feedback">
-                                <strong>{{ $errors->first('password') }}</strong>
+                            <div class="input-group mb-3">
+                                <select class='sel-region js-states form-control select2' id='selRegion' name='region_id'>
+                                </select>
+                                <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" data-select2-open="region_id">
+                                    <span class="fas fa-globe-europe"></span>
+                                </button>
+                                </span>
                             </div>
-                        @endif
-                    </div>
-                    <div class="input-group mb-3">
-                        <input type="password" name="password_confirmation" class="form-control {{ $errors->has('password_confirmation') ? 'is-invalid' : '' }}"
-                               placeholder="{{ __('auth.retype_password') }}">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
+                            <div class="input-group mb-3">
+                                <input type="input" name="reason_join" class="form-control {{ $errors->has('reason_join') ? 'is-invalid' : '' }}" value="{{ old('reason_join') }}"
+                                        placeholder="{{ __('auth.reason_join') }}">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="far fa-question-circle"></span>
+                                    </div>
+                                </div>
+                                @if ($errors->has('reason_join'))
+                                    <div class="invalid-feedback">
+                                        <strong>{{ $errors->first('reason_join') }}</strong>
+                                    </div>
+                                @endif
                             </div>
-                        </div>
-                        @if ($errors->has('password_confirmation'))
-                            <div class="invalid-feedback">
-                                <strong>{{ $errors->first('password_confirmation') }}</strong>
+                            <div class="input-group mb-3">
+                                <select class='sel-locale js-states form-control select2' id='selLocale' name='locale'>
+                                <option @if ( app()->getLocale() == 'en') selected @endif value="en">{{__('english')}}</option>
+                                <option @if ( app()->getLocale() == 'de') selected @endif value="de">{{__('deutsch')}}</option>
+                                </select>
+                                <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" data-select2-open="locale">
+                                    <span class="fas fa-language"></span>
+                                </button>
+                                </span>
                             </div>
-                        @endif
-                    </div>
-                    <div class="input-group mb-3">
-                        <select class='sel-region js-states form-control select2' id='selRegion' name='region_id'>
-                      </select>
-                      <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" data-select2-open="region_id">
-                          <span class="fas fa-globe-europe"></span>
-                        </button>
-                      </span>
-                    </div>
-                    <div class="input-group mb-3">
-                        <input type="input" name="reason_join" class="form-control {{ $errors->has('reason_join') ? 'is-invalid' : '' }}" value="{{ old('reason_join') }}"
-                               placeholder="{{ __('auth.reason_join') }}">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="far fa-question-circle"></span>
-                            </div>
-                        </div>
-                        @if ($errors->has('reason_join'))
-                            <div class="invalid-feedback">
-                                <strong>{{ $errors->first('reason_join') }}</strong>
-                            </div>
-                        @endif
-                    </div>
-                    <div class="input-group mb-3">
-                      <select class='sel-locale js-states form-control select2' id='selLocale' name='locale'>
-                        <option @if ( app()->getLocale() == 'en') selected @endif value="en">{{__('english')}}</option>
-                        <option @if ( app()->getLocale() == 'de') selected @endif value="de">{{__('deutsch')}}</option>
-                      </select>
-                      <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" data-select2-open="locale">
-                          <span class="fas fa-language"></span>
-                        </button>
-                      </span>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block btn-flat">
-                        {{ __('auth.register') }}
-                    </button>
-                </form>
-                <p class="mt-2 mb-1">
-                    <a href="{{ $login_url }}">
-                        {{ __('auth.i_already_have_a_membership') }}
-                    </a>
-                </p>
-            </div><!-- /.card-body -->
-        </div><!-- /.card -->
-    </div><!-- /.register-box -->
+                            <button type="submit" class="btn btn-primary btn-block btn-flat">
+                                {{ __('auth.register') }}
+                            </button>
+                        </form>
+                        <p class="mt-2 mb-1">
+                            <a href="{{ $login_url }}">
+                                {{ __('auth.i_already_have_a_membership') }}
+                            </a>
+                        </p>
+                    </div><!-- /.card-body -->
+                </div><!-- /.card -->
+            </div><!-- /.register-box -->
+        </div>
+    </div>
+</div>
+
 @stop
 
 @section('app_js')
