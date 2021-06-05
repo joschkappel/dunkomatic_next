@@ -26,4 +26,8 @@ class Gym extends Model
   {
       return $this->hasMany(Game::class);
   }
+  public function getAddressAttribute()
+  {
+     return "{$this->street}, {$this->zip} {$this->city}";
+  }
 }

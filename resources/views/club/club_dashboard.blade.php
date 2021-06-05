@@ -159,7 +159,9 @@
             data-gym-name="{{ $gym->gym_no }} - {{ $gym->name }}"
             data-club-sname="{{ $club->shortname }}" data-toggle="modal" data-target="#modalDeleteGym"><i class="fa fa-trash"></i></button>
             <a href="{{ route('gym.edit',['language'=>app()->getLocale(), 'gym' => $gym ]) }}" class=" px-2">
-              {{ $gym->gym_no }} - {{ $gym->name }} <i class="fas fa-arrow-circle-right"></i>
+              {{ $gym->gym_no }} - {{ $gym->name }} <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="{{config('dunkomatic.maps_uri')}}{{ urlencode($gym->address) }}" class=" px-4" target="_blank">
+            <i class="fas fa-map-marked-alt"></i>
           </a></p>
           @endforeach
         </div>

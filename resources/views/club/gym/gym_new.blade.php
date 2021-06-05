@@ -66,12 +66,34 @@
                                 @enderror
                             </div>
                         </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
 
-                        <button type="submit" class="btn btn-info">{{__('Submit')}}</button>
+                            <button type="submit" class="btn btn-info">{{__('Submit')}}</button>
+                            <button type="button" id="adrval" class="btn btn-info">{{ __('gym.action.validate_adr')}}</button>
+
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+@endsection
+
+@section('js')
+<script>
+  $(function() {
+    $("button#adrval").click( function(){
+       var street = $('#street').val();
+       var city = $('#city').val();
+       var zip = $('#zip').val();
+
+       var uri= "{{ config('dunkomatic.maps_uri') }}"+street+', '+zip+' '+city;
+       var res = encodeURI(uri);
+       window.open(res, "_blank");
+    });
+  });
+</script>
 @endsection
