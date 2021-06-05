@@ -26,7 +26,7 @@ return [
       'league'    => 'league.jpg',
   ),
 
-
+  'maps_uri' => 'https://www.google.com/maps/place/',
 
   /*
   |--------------------------------------------------------------------------

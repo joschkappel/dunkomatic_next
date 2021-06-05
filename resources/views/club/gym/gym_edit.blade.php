@@ -21,7 +21,7 @@
                         </div>
                         @endif
                         <div class="form-group row ">
-                            <label for="title" class="col-sm-4 col-form-label">@lang('gym.no')</label>
+                            <label for="gym_no" class="col-sm-4 col-form-label">@lang('gym.no')</label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control @error('gym_no') is-invalid @enderror" id="gym_no" name="gym_no" placeholder="@lang('gym.no')" value="{{ old('gym_no', $gym->gym_no ) }}">
                                 @error('gym_no')
@@ -31,7 +31,7 @@
                         </div>
 
                         <div class="form-group row ">
-                            <label for="title" class="col-sm-4 col-form-label">@lang('gym.name')</label>
+                            <label for="name" class="col-sm-4 col-form-label">@lang('gym.name')</label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="@lang('gym.name')" value="{{ $gym->name }}">
                                 @error('name')
@@ -40,7 +40,7 @@
                             </div>
                         </div>
                         <div class="form-group row ">
-                            <label for="title" class="col-sm-4 col-form-label">@lang('role.zipcode')</label>
+                            <label for="zip" class="col-sm-4 col-form-label">@lang('role.zipcode')</label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control @error('zip') is-invalid @enderror" id="zip" name="zip" placeholder="@lang('role.zipcode')" value="{{ old('zip', $gym->zip) }}">
                                 @error('zip')
@@ -49,7 +49,7 @@
                             </div>
                         </div>
                         <div class="form-group row ">
-                            <label for="title" class="col-sm-4 col-form-label">@lang('role.city')</label>
+                            <label for="city" class="col-sm-4 col-form-label">@lang('role.city')</label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control @error('city') is-invalid @enderror" id="city" name="city" placeholder="@lang('role.city')" value="{{ $gym->city }}">
                                 @error('city')
@@ -58,7 +58,7 @@
                             </div>
                         </div>
                         <div class="form-group row ">
-                            <label for="title" class="col-sm-4 col-form-label">@lang('role.street')</label>
+                            <label for="street" class="col-sm-4 col-form-label">@lang('role.street')</label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control @error('street') is-invalid @enderror" id="street" name="street" placeholder="@lang('role.street')" value="{{ $gym->street }}">
                                 @error('street')
@@ -68,7 +68,8 @@
                         </div>
                         <div class="card-footer">
                             <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-                                <button type="submit" class="btn btn-info">{{__('Submit')}}</button>
+                                <button type="submit" class="btn btn-primary">{{__('Submit')}}</button>
+                                <button type="button" id="adrval" class="btn btn-info">{{ __('gym.action.validate_adr')}}</button>
                             </div>
                         </div>
                     </div>
@@ -77,4 +78,20 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('js')
+<script>
+  $(function() {
+    $("button#adrval").click( function(){
+       var street = $('#street').val();
+       var city = $('#city').val();
+       var zip = $('#zip').val();
+
+       var uri= "{{ config('dunkomatic.maps_uri') }}"+street+', '+zip+' '+city;
+       var res = encodeURI(uri);
+       window.open(res, "_blank");
+    });
+  });
+</script>
 @endsection
