@@ -7,6 +7,8 @@ use App\Models\Gym;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Validation\Rule;
+
 
 class ClubGymController extends Controller
 {
@@ -46,7 +48,8 @@ class ClubGymController extends Controller
      */
     public function create($language, Club $club)
     {
-      return view('club/gym/gym_new', ['club' => $club]);
+      $allowed_gymno = config('dunkomatic.allowed_gym_nos');
+      return view('club/gym/gym_new', ['club' => $club, 'allowed_gymno' => $allowed_gymno]);
     }
 
     /**
@@ -58,9 +61,16 @@ class ClubGymController extends Controller
      */
     public function store(Request $request, Club $club)
     {
+      $club_id = $request['club_id'];
+      $gym_no = $request['gym_no'];
+
       $data = $request->validate( [
           'club_id' => 'required|exists:clubs,id',
-          'gym_no' => 'required',
+          'gym_no' => ['required',
+                        Rule::unique('gyms')->where(function ($query) use ($club_id, $gym_no) {
+                            return $query->where('club_id', $club_id)
+                                         ->where('gym_no', $gym_no);
+                        }),],
           'name' => 'required|max:64',
           'zip' => 'required|max:10',
           'street' => 'required|max:40',
@@ -105,21 +115,29 @@ class ClubGymController extends Controller
     {
       Log::debug('editing gym '.$gym->id);
       $gym->load('club');
-      return view('club/gym/gym_edit', ['gym' => $gym]);
+      $allowed_gymno = config('dunkomatic.allowed_gym_nos');
+
+      return view('club/gym/gym_edit', ['gym' => $gym, 'allowed_gymno' => $allowed_gymno]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Club  $club
      * @param  \App\Models\Gym  $gym
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Club $club, Gym $gym)
+    public function update(Request $request, Gym $gym)
     {
+      $gym_no = $request['gym_no'];
+      $club_id = $gym->club_id;
+
       $data = $request->validate( [
-          'gym_no' => 'required',
+        'gym_no' => ['required',
+                        Rule::unique('gyms')->where(function ($query) use ($club_id, $gym_no) {
+                            return $query->where('club_id', $club_id)
+                                        ->where('gym_no', $gym_no);
+                        })->ignore($gym->id),],
           'name' => 'required|max:64',
           'zip' => 'required|max:10',
           'street' => 'required|max:40',
