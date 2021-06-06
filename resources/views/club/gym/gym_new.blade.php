@@ -1,5 +1,7 @@
 @extends('layouts.page')
 
+@section('plugins.Select2', true)
+
 @section('content')
 <div class="container-fluid">
     <div class="row">
@@ -20,14 +22,18 @@
                         </div>
                         @endif
                         <input type="hidden" name="club_id" value="{{ $club->id}}">
-                        <div class="form-group row ">
-                            <label for="title" class="col-sm-4 col-form-label">@lang('gym.no')</label>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for='selGymno'>@lang('gym.no')</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control @error('gym_no') is-invalid @enderror" id="gym_no" name="gym_no" placeholder="@lang('gym.no')" value="{{ old('gym_no')}}">
-                                @error('gym_no')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                              <select class="js-sel-gymno js-states form-control select2  @error('gym_no') is-invalid @enderror" name="gym_no" id='gym_no'>
+                              @foreach ( array_diff($allowed_gymno, $club->gyms->pluck('gym_no')->toarray()) as $gymno )
+                                <option value="{{$gymno}}">{{$gymno}}</option>
+                              @endforeach
+                              </select>
+                              @error('gym_no')
+                              <div class="invalid-feedback">{{ $message }}</div>
+                              @enderror
+                          </div>
                         </div>
 
                         <div class="form-group row ">
@@ -94,6 +100,13 @@
        var res = encodeURI(uri);
        window.open(res, "_blank");
     });
+
+    $(".js-sel-gymno").select2({
+          placeholder: "@lang('gym.no')...",
+          theme: 'bootstrap4',
+          multiple: false,
+          allowClear: false,
+      });
   });
 </script>
 @endsection
