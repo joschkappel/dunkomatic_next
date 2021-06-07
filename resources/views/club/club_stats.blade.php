@@ -21,9 +21,10 @@
                <tr>
                   <th>Id</th>
                   <th>@lang('club.shortname')</th>
-                  <th>Name</th>
-                  <th>@lang('league.entitled')</th>
+                  <th>@lang('club.name')</th>
+                  <th>{{ trans_choice('team.team',2)}}</th>
                   <th>@lang('team.registered')</th>
+                  <th>% {{__('Registered')}}</th>
                   <th>{{ __('Total Games')}}</th>
                   <th>{{ __('Games No Time')}}</th>
                   <th>{{ __('Games No Teams')}}</th>
@@ -57,8 +58,9 @@
                   { data: 'id', name: 'id', visible: false },
                   { data: 'shortname', name: 'shortname' },
                   { data: 'name', name: 'name' },
-                  { data: 'leagues_count', name: 'leagues_count'},
                   { data: 'teams_count', name: 'teams_count'},
+                  { data: 'registered_teams_count', name: 'registere_teams_count'},
+                  { data: 'reg_rel', name: 'reg_rel'},
                   { data: 'games_home_count', name: 'games_home_count'},
                   { data: 'games_home_notime_count', name: 'games_home_notime_count'},
                   { data: 'games_home_noshow_count', name: 'games_home_noshow_count'},

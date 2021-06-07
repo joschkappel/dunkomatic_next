@@ -10,8 +10,39 @@
               <!-- small card CLUB -->
               <div class="small-box bg-gray">
                   <div class="inner">
-                      <h3>{{ $club->shortname }}</h3>
-                      <h5>{{ $club->name }}</h5>
+                      <div class="row">
+                        <div class="col-sm-8 pd-2">
+                            <h3>{{ $club->shortname }}</h3>
+                            <h5>{{ $club->name }}</h5>
+                        </div>
+                        <div class="col-sm-4 pd-2">
+                            <ul class="list-group">
+                              <li @if (count($leagues) == 0 ) class="list-group-item list-group-item-danger py-0"> @lang('club.entitled.no')
+                              @elseif (count($leagues) == count($teams) )  class="list-group-item list-group-item-success py-0"> @lang('club.entitled.all')
+                              @else  class="list-group-item list-group-item-warning py-0"> @lang('club.entitled.some', [ 'entitled' => count($leagues), 'total' => count($teams)] )
+                              @endif
+                              </li>
+                              <li @if ( $registered_teams == 0 ) class="list-group-item list-group-item-danger py-0"> @lang('team.registered.no')
+                              @elseif ($registered_teams == count($teams) ) class="list-group-item list-group-item-success py-0"> @lang('team.registered.all')
+                              @else class="list-group-item list-group-item-warning py-0"> @lang('team.registered.some', ['registered'=>$registered_teams, 'total'=>count($teams)])
+                              @endif
+                              </li>
+                              @if (count($games_home) >0 )
+                              <li @if ( $games_home_notime == 0 ) class="list-group-item list-group-item-success py-0"> @lang('club.game_notime.no')
+                                @elseif ($games_home_notime == count($games_home) ) class="list-group-item list-group-item-danger py-0"> @lang('club.game_notime.all')
+                                @else class="list-group-item list-group-item-warning py-0"> @lang('club.game_notime.some', ['notime'=>$games_home_notime, 'total'=>count($games_home)])
+                                @endif
+                              </li>
+                              <li @if ( $games_home_noshow == 0 ) class="list-group-item list-group-item-success py-0"> @lang('club.game_noshow.no')
+                                @elseif ($games_home_noshow == count($games_home) ) class="list-group-item list-group-item-danger py-0"> @lang('club.game_noshow.all')
+                                @else class="list-group-item list-group-item-warning py-0"> @lang('club.game_noshow.some', ['noshow'=>$games_home_noshow, 'total'=>count($games_home)])
+                                @endif
+                              </li>
+                              @endif
+
+                            </ul>
+                        </div>
+                      </div>
                   </div>
                   <div class="icon">
                       <i class="fas fa-basketball-ball"></i>

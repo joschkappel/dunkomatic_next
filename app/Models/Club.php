@@ -78,7 +78,10 @@ class Club extends Model implements Auditable
       // test: Club::find(261)->members()->withPivot('role_id','function')->get();
   }
 
-
+  public function registered_teams()
+  {
+      return $this->hasMany(Team::class)->whereNotNull('league_id');
+  }
   public function games_home()
   {
       return $this->hasMany(Game::class, 'club_id_home', 'id');

@@ -13,7 +13,7 @@
                       <div class="col-sm-8 pd-2">
                         <h3>{{ $league->shortname }}</h3>
                         <h5>{{ $league->name }} </h5>
-                    </div>
+                      </div>
                       <div class="col-sm-4 pd-2">
                         <ul class="list-group">
                           <li @if (count($assigned_clubs) == 0 ) class="list-group-item list-group-item-danger py-0"> @lang('club.entitled.no')

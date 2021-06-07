@@ -25,10 +25,15 @@ return [
   'region' => 'Region',
   'shortname' => 'Code',
   'name' => 'Name',
-  'url' => 'to Homepage',  
+  'url' => 'to Homepage',
   'entitlement' => 'Entitlement',
   'entitled.no' => 'No club assigned',
   'entitled.all' => 'All clubs assigned',
   'entitled.some' => ':entitled out of :total clubs assigned',
-
+  'game_notime.some' => ':notime out of :total unscheduled Games',
+  'game_notime.no' => 'ALL Games are scheduled',
+  'game_notime.all' => 'NO Game scheduled',
+  'game_noshow.some' => ':noshow out of :total Games without guest',
+  'game_noshow.no' => 'All games with guest',
+  'game_noshow.all' => 'All games without guest',
 ];
