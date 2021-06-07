@@ -30,4 +30,10 @@ return [
   'entitled.no' => 'Kein Vereine zugelassen',
   'entitled.all' => 'Alle Vereine zugelassen',
   'entitled.some' => ':entitled von :total Vereinen zugelassen',
+  'game_notime.some' => ':notime von :total Heimspielen ohne Termin',
+  'game_notime.no' => 'Alle Heimspiele MIT Termin',
+  'game_notime.all' => 'Alle Heimspiele OHNE Termin',
+  'game_noshow.some' => ':noshow von :total Heimspielen ohne Gegner',
+  'game_noshow.no' =>  'Alle Heimspiele finden statt',
+  'game_noshow.all' => 'Alle Heimspiele ohne Gegner',
 ];

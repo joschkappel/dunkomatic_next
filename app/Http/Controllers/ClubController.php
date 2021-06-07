@@ -31,7 +31,7 @@ class ClubController extends Controller
     public function list_stats(Region $region)
     {
 
-      $clubs = $region->clubs()->withCount(['leagues','teams','games_home',
+      $clubs = $region->clubs()->withCount(['leagues','teams','registered_teams','games_home',
                                      'games_home_notime','games_home_noshow'
                           ])
                         ->orderBy('shortname','ASC')
@@ -43,10 +43,24 @@ class ClubController extends Controller
 
       return $clublist
         ->addIndexColumn()
-        ->rawColumns(['shortname'])
+        ->rawColumns(['shortname','reg_rel'])
         ->editColumn('shortname', function ($data) {
             return '<a href="' . route('club.dashboard', ['language'=>Auth::user()->locale,'club'=>$data->id]) .'">'.$data->shortname.'</a>';
             })
+        ->addColumn('reg_rel', function($data){
+            if ($data->teams_count!=0){
+                $reg_rel = round(($data->leagues_count * 100)/$data->teams_count);
+            } else {
+                $reg_rel = 0;
+            }
+            if ($reg_rel >= 100){
+                return '<div class="bg-success text-center">'.$reg_rel.'</div>';
+            } else if ($reg_rel <= 50){
+                return '<div class="bg-danger text-center">'.$reg_rel.'</div>';
+            } else {
+                return '<div class="bg-warning text-center">'.$reg_rel.'</div>';
+            }
+        })
         ->make(true);
 
     }
@@ -66,14 +80,17 @@ class ClubController extends Controller
      */
     public function dashboard( $language, Club $club )
     {
-          $data['club'] =  Club::find($club->id);
-          $club =   $data['club'];
+          $data['club'] = $club;
 
           $data['gyms'] = $data['club']->gyms()->get();
           $data['teams'] = $data['club']->teams()->with('league')->get();
+          $data['leagues'] = $data['club']->leagues()->get();
           //$data['members'] = $data['club']->members()->get();
           $data['members'] = Member::whereIn('id',Club::find($club->id)->members()->pluck('member_id'))->with('memberships')->get();
           $data['games_home'] = $data['club']->games_home()->get();
+          $data['registered_teams'] = $data['club']->registered_teams()->count();
+          $data['games_home_notime'] = $data['club']->games_home_notime()->count();
+          $data['games_home_noshow'] = $data['club']->games_home_noshow()->count();
           //Log::debug(print_r($data['games_home'],true ));
 
           $directory = Auth::user()->region->club_folder;
