@@ -79,6 +79,8 @@ Route::group([
     Route::get('membership/league/{league}', 'LeagueMembershipController@index')->name('membership.league.index');
     Route::get('membership/league/{league}/member', 'LeagueMembershipController@create')->name('membership.league.create');
     Route::get('membership/league/{league}/member/{member}', 'LeagueMembershipController@edit')->name('membership.league.edit');
+    Route::get('membership/region/{region}/member', 'RegionMembershipController@create')->name('membership.region.create');
+    Route::get('membership/region/{region}/member/{member}', 'RegionMembershipController@edit')->name('membership.region.edit');
 
     Route::resource('membership', 'MembershipController')->only(['show']);
 
@@ -156,6 +158,10 @@ Route::middleware(['auth'])->group(function () {
   Route::post('membership/league/{league}/member', 'LeagueMembershipController@store')->name('membership.league.store');
   Route::put('membership/league/{league}/member/{member}', 'LeagueMembershipController@update')->name('membership.league.update');
   Route::delete('membership/league/{league}/member/{member}', 'LeagueMembershipController@destroy')->name('membership.league.destroy');
+  Route::post('membership/region/{region}/member', 'RegionMembershipController@store')->name('membership.region.store');
+  Route::put('membership/region/{region}/member/{member}', 'RegionMembershipController@update')->name('membership.region.update');
+  Route::delete('membership/region/{region}/member/{member}', 'RegionMembershipController@destroy')->name('membership.region.destroy');
+
 
   Route::resource('membership', 'MembershipController')->only(['destroy']);
 

@@ -20,6 +20,8 @@ class RoleController extends Controller
 
       if ( isset($request->scope) and ($request->scope == 'LEAGUE')){
         $roles[] = Role::coerce('LeagueLead');
+      } elseif ( isset($request->scope) and ($request->scope == 'REGION')){
+        $roles[] = Role::coerce('RegionLead');
       } else {
         $roles = Role::getInstances();
       };
@@ -38,7 +40,7 @@ class RoleController extends Controller
             $response[] = array(
               "id"=>$role->value,
               "text"=>$role->description,
-            );        
+            );
           }
       }
 

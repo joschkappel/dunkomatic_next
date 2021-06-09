@@ -5,8 +5,10 @@
         <h3 class="card-title">@lang('role.title.new', ['unittype'=> trans_choice('club.club',1), 'unitname' => $club->shortname ])</h3>
       @elseif (isset($league))
         <h3 class="card-title">@lang('role.title.new', ['unittype'=> trans_choice('league.league',1), 'unitname' => $league->shortname ])</h3>
+      @elseif (isset($region))
+        <h3 class="card-title">@lang('role.title.new', ['unittype'=> trans_choice('region.region',1), 'unitname' => $region->name ])</h3>
       @else
-        <h3 class="card-title">@lang('role.title.new', ['unittype'=> @lang('auth.user'), 'unitname' => '' ])</h3>        
+        <h3 class="card-title">@lang('role.title.new', ['unittype'=> @lang('auth.user'), 'unitname' => '' ])</h3>
       @endif
     </div>
     <!-- /.card-header -->
@@ -21,8 +23,10 @@
               @endif
               @if (isset($club))
                 <input type="hidden" id="club_id" name="club_id" value="{{ $club->id}}"></input>
-              @else
-                <input type="hidden" id="league_id" name="leauge_id" value="{{ $league->id}}"></input>
+              @elseif (isset($league))
+                <input type="hidden" id="league_id" name="league_id" value="{{ $league->id}}"></input>
+              @elseif (isset($region))
+                <input type="hidden" id="region_id" name="region_id" value="{{ $region->id}}"></input>
               @endif
               <div class="form-group row">
                   <div class="col-sm-6">

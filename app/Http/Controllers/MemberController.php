@@ -6,8 +6,7 @@ use App\Models\Member;
 use App\Models\Membership;
 use App\Models\Region;
 use App\Models\Club;
-use App\Models\User;
-use App\Enums\Role;
+
 
 use Datatables;
 use Illuminate\Http\Request;
@@ -64,7 +63,17 @@ class MemberController extends Controller
       public function sb_region( Region $region)
       {
         Log::info('members for region '.$region->name);
-         $members = Membership::whereIn('membership_id', $region->clubs()->pluck('id'))
+
+        if ($region->hq == null){
+            $m_ids = collect();
+            foreach ( $region->childRegions as $r){
+                $m_ids = $m_ids->merge($r->clubs()->pluck('id'));
+            };
+        } else {
+            $m_ids = $region->clubs()->pluck('id');
+        }
+
+        $members = Membership::whereIn('membership_id', $m_ids)
                               ->where('membership_type',Club::class)
                               ->with('member')
                               ->get()
