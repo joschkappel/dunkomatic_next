@@ -31,6 +31,7 @@
                   <th>@lang('region.code')</th>
                   <th>@lang('region.name')</th>
                   <th>@lang('region.hq')</th>
+                  <th>{{ App\Enums\Role::RegionLead()->description  }}</th>
                   <th>{{__('Created at')}}</th>
                   <th>{{__('Updated at')}}</th>
                </tr>
@@ -62,6 +63,7 @@
                         { data: 'code', name: 'code' },
                         { data: 'name', name: 'name' },
                         { data: 'hq', name: 'hq' },
+                        { data: 'regionadmin', name: 'regionadmin' },
                         { data: 'created_at', name: 'created_at'},
                         { data: 'updated_at', name: 'updated_at'},
                      ]

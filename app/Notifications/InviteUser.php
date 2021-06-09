@@ -47,7 +47,12 @@ class InviteUser extends Notification
      */
     public function toMail($notifiable)
     {
-        $sender = $this->sender->member->name . ' (' . Role::fromValue($this->sender->member->memberships->first()->role_id)->description . ' von ' . $this->sender->member->region->first()->name . ') ';
+        if ( $this->sender->member->memberships->count() >0 ){
+            $sender = $this->sender->member->name . ' (' . Role::fromValue($this->sender->member->memberships->first()->role_id)->description . ' von ' . $this->sender->member->region->first()->name . ') ';
+        } else {
+            $sender = $this->sender->name ;
+        }
+
         return (new MailMessage)
             ->level('info')
             ->subject( __('notifications.inviteuser.subject'))

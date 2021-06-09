@@ -7,7 +7,6 @@ use App\Enums\ReportFileType;
 use App\Enums\Role;
 use App\Models\Club;
 use App\Models\League;
-use App\Models\User;
 use App\Models\Member;
 use App\Models\Membership;
 use App\Models\Schedule;
@@ -59,6 +58,14 @@ class Region extends Model
       return $this->hasMany(Schedule::class);
   }
 
+  public function childRegions()
+  {
+      return $this->hasMany('App\Models\Region', 'hq', 'code');
+  }
+  public function parentRegion()
+  {
+      return $this->belongsTo('Region', 'hq', 'code');
+  }
 
   public function messages()
   {
