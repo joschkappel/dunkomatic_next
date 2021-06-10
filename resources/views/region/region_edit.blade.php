@@ -14,7 +14,7 @@
                     <h3 class="card-title">@lang('region.title.edit', ['region' => session('cur_region')->name ])</h3>
                 </div>
                 <!-- /.card-header -->
-                <form class="form-horizontal" action="{{ route('region.update',['region'=>$region]) }}" method="post">
+                <form class="form-horizontal" action="{{ route('region.update_details',['region'=>$region]) }}" method="post">
                     <div class="card-body">
                         @csrf
                         @method('PUT')

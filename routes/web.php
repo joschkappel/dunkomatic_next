@@ -48,9 +48,11 @@ Route::group([
     Route::get('user', 'UserController@index')->name('admin.user.index')->middleware('auth')->middleware('regionadmin');
     Route::get('audit', 'AuditController@index')->name('admin.audit.index')->middleware('auth')->middleware('regionadmin');
     Route::get('audit/dt', 'AuditController@datatable')->name('admin.audit.dt')->middleware('auth')->middleware('regionadmin');
-    Route::get('region/{region}', 'RegionController@edit')->name('region.edit')->middleware('regionadmin');
+
+    Route::resource('region', 'RegionController')->except('store','update','destroy')->middleware('can:manage-regions','regionadmin');
+    // Route::get('region/{region}', 'RegionController@edit')->name('region.edit')->middleware('regionadmin');
     Route::get('regions/dt', 'RegionController@datatable')->name('region.list.dt');
-    Route::get('region', 'RegionController@index')->name('region.index');
+    // Route::get('region', 'RegionController@index')->name('region.index');
 
 
     Route::get('club/index_stats', 'ClubController@index_stats')->name('club.index_stats');
@@ -113,16 +115,19 @@ Route::middleware(['auth'])->group(function () {
   // APIs , no locale or language required !
   Route::redirect('home', '/de/home');
 
-  Route::delete('user/{user}', 'UserController@destroy')->name('admin.user.destroy')->middleware('auth')->middleware('regionadmin');
-  Route::post('user/{user}/block', 'UserController@block')->name('admin.user.block')->middleware('auth')->middleware('regionadmin');
-  Route::put('user/{user}', 'UserController@update')->name('admin.user.update')->middleware('auth');
-  Route::put('user/{user}/allowance', 'UserController@allowance')->name('admin.user.allowance')->middleware('auth')->middleware('regionadmin');
+  Route::resource('region', 'RegionController')->only('store','update','destroy');
+  Route::get('region/hq/sb', 'RegionController@hq_sb')->name('region.hq.sb');
+
+  Route::delete('user/{user}', 'UserController@destroy')->name('admin.user.destroy')->middleware('regionadmin');
+  Route::post('user/{user}/block', 'UserController@block')->name('admin.user.block')->middleware('regionadmin');
+  Route::put('user/{user}', 'UserController@update')->name('admin.user.update');
+  Route::put('user/{user}/allowance', 'UserController@allowance')->name('admin.user.allowance')->middleware('regionadmin');
   Route::put('member/{member}', 'MemberController@update')->name('member.update');
   Route::post('member', 'MemberController@store')->name('member.store');
   Route::get('member/{member}/invite', 'MemberController@invite')->name('member.invite');
   Route::delete('member/{member}', 'MemberController@destroy')->name('member.destroy');
-  Route::put('region/{region}', 'RegionController@update')->name('region.update')->middleware('auth')->middleware('regionadmin');
-  Route::post('region', 'RegionController@create')->name('region.create')->middleware('auth')->middleware('regionadmin');
+  Route::put('region/{region}/details', 'RegionController@update_details')->name('region.update_details')->middleware('regionadmin');
+  // Route::post('region', 'RegionController@create')->name('region.create')->middleware('auth')->middleware('regionadmin');
 
   Route::resource('club', 'ClubController')->only('store','update','destroy');
   Route::get('club/{club}/game/chart_home', 'ClubGameController@chart_home')->name('club.game.chart_home');

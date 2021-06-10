@@ -6,6 +6,7 @@ return [
   'action.create' => 'Lege einen neuen Bezirk an',
   'title.edit' => 'Einstellungen für :Region ändern',
   'title.list' => 'Bezirke',
+  'title.create' => 'Lege einen neuen Bezirk an',
   'game_slot' => 'Minimum Dauer eines Spiels (in Minuten)',
   'job.noleads' => 'Prüfung auf Vereine und Runden ohne Leiter',
   'job.emails' => 'Prüfung auf valide Email-Adressen',
