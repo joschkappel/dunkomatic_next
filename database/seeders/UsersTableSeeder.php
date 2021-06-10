@@ -5,10 +5,9 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Enums\Role;
 use App\Models\User;
-use App\Models\Member;
 use App\Models\Region;
-
 use Bouncer;
+
 
 class UsersTableSeeder extends Seeder
 {
@@ -31,7 +30,6 @@ class UsersTableSeeder extends Seeder
           'member_id' => $mid
         ]);
 
-        Bouncer::allow('superadmin')->everything();
         Bouncer::assign('superadmin')->to(User::find($uid));
 
         $mid = DB::table('members')->insertGetId(['lastname'=>'region','email1'=>'region@gmail.com']);
@@ -47,8 +45,7 @@ class UsersTableSeeder extends Seeder
         ]);
         DB::table('memberships')->insert(['member_id'=>$mid,'role_id'=>Role::RegionLead,'membership_id'=>Region::where('code','HBVDA')->first()->id,'membership_type'=> Region::class ]);
 
-        Bouncer::allow('admin')->to('edit-region');
-        Bouncer::assign('admin')->to(User::find($uid));
+        Bouncer::assign('regionadmin')->to(User::find($uid));
 
 
         $mid = DB::table('members')->insertGetId(['lastname'=>'user','email1'=>'user@gmail.com']);
@@ -66,7 +63,7 @@ class UsersTableSeeder extends Seeder
         DB::table('memberships')->insert(['member_id'=>$mid,'role_id'=>Role::User,'membership_id'=>25,'membership_type'=>'App\Models\Club' ]);
         DB::table('memberships')->insert(['member_id'=>$mid,'role_id'=>Role::User,'membership_id'=>26,'membership_type'=>'App\Models\Club' ]);
 
-
+        Bouncer::assign('user')->to(User::find($uid));
 
         // NO OLD USER MIGRATION !!
     }

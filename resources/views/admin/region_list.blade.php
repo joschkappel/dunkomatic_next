@@ -33,12 +33,15 @@
                   <th>@lang('region.hq')</th>
                   <th>{{ App\Enums\Role::RegionLead()->description  }}</th>
                   <th>{{__('Created at')}}</th>
-                  <th>{{__('Updated at')}}</th>
+                  <th>{{__('Action')}}</th>
                </tr>
             </thead>
          </table>
           </div>
           <!-- /.card-body -->
+        <!-- all modals here -->
+        @include('admin/includes/region_delete')
+        <!-- all modals above -->
         </div>
       </div>
     </div>
@@ -65,9 +68,19 @@
                         { data: 'hq', name: 'hq' },
                         { data: 'regionadmin', name: 'regionadmin' },
                         { data: 'created_at', name: 'created_at'},
-                        { data: 'updated_at', name: 'updated_at'},
+                        { data: 'action', name: 'action', orderable: false, searchable: false},
                      ]
             });
+
+            $(document).on('click', '#deleteRegion', function () {
+              $('#region_id').val($(this).data('region-id'));
+              $('#region_name').html($(this).data('region-name'));
+              var url = "{{ route('region.destroy', ['region'=>':regionid:'])}}";
+              url = url.replace(':regionid:',$(this).data('region-id') );
+              $('#confirmDeleteRegion').attr('action', url);
+              $('#modalDeleteRegion').modal('show');
+           });
+
          });
 
 

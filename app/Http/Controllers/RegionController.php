@@ -31,6 +31,37 @@ class RegionController extends Controller
       return view('admin.region_list');
     }
 
+    public function create()
+    {
+      Log::info('new region');
+      return view('admin.region_new');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $data = $request->validate( [
+            'region_id' => 'sometimes|exists:regions,id',
+            'name' => 'required',
+            'code'  => 'required',
+        ]);
+
+        Log::info(print_r($data, true));
+        if ( isset($data['region_id']) ){
+            $data['hq'] = Region::find($data['region_id'])->code;
+            unset($data['region_id']);
+        }
+
+        $check = Region::create($data);
+        return redirect()->route('region.index', ['language' => app()->getLocale()]);
+
+    }
+
     public function set_region(Region $region)
     {
       session(['cur_region' => $region]);
@@ -49,7 +80,16 @@ class RegionController extends Controller
 
       return $regionlist
         ->addIndexColumn()
-        ->rawColumns(['regionadmin'])
+        ->rawColumns(['regionadmin','action'])
+        ->addColumn('action', function($r){
+            if ( ($r->clubs->count()==0) and ($r->leagues->count()==0) and ($r->childregions->count()==0)  ){
+                return '<button type="button" id="deleteRegion" name="deleteRegion" class="btn btn-outline-danger btn-sm" data-region-id="'.$r->id.'"
+                        data-region-name="'.$r->name.'" data-toggle="modal" data-target="#modalDeleteRegion"><i class="fa fa-trash"></i></button>';
+
+            } else {
+                return '';
+            }
+        })
         ->editColumn('created_at', function ($r) use ($language) {
                 return Carbon::parse($r->created_at)->locale($language)->isoFormat('lll');
             })
@@ -59,10 +99,7 @@ class RegionController extends Controller
         ->editColumn('regionadmin', function ($r) use ($language) {
             if ($r->regionadmin()->exists()){
                 $admin = '<a href="'. route('membership.region.edit', ['language'=>Auth::user()->locale,'region'=>$r->id, 'member'=>$r->regionadmin()->first()->id]) .'">'.$r->regionadmin()->first()->firstname.' '.$r->regionadmin()->first()->lastname.'</a>';
-/*                 if (! $r->regionadmin()->first()->is_user){
-                    $admin .= '   <a href="'. route('member.invite',[ 'member' => $r->regionadmin()->first()->id]) .'"><i class="fas fa-user-plus"></i></a>';
-                }
- */            } else {
+            } else {
                 $admin = '<a href="'. route('membership.region.create', ['language'=>Auth::user()->locale,'region'=>$r->id]) .'"><i class="fas fa-user-tie"></i></a>';
             }
             return $admin;
@@ -91,7 +128,24 @@ class RegionController extends Controller
       return Response::json($response);
     }
 
+    public function hq_sb()
+    {
+      $regions = Region::whereNull('hq')->get();
 
+      Log::debug('got regions '.count($regions));
+      $response = array();
+
+      foreach($regions as $region){
+        Log::debug(print_r($region,true));
+        $response[] = array(
+                "id"=>$region->id,
+                "text"=>$region->name
+           );
+      }
+      Log::debug(print_r($response,true));
+
+      return Response::json($response);
+    }
     /**
      * Display the specified resource.
      *
@@ -122,7 +176,7 @@ class RegionController extends Controller
      * @param  \App\Region  $region
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Region $region)
+    public function update_details(Request $request, Region $region)
     {
         Log::debug(print_r($request->all(),true));
         $old_charpick = $region->pickchar_enabled;
@@ -167,5 +221,24 @@ class RegionController extends Controller
         return redirect()->route('home',['language'=>app()->getLocale()]);
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  Region $region
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Region $region)
+    {
+        Log::debug('about to delete region '.$region->name);
+
+        $region->users()->delete();
+        $region->schedules()->delete();
+        // $region->messages()->delete();
+        $region->members()->delete();
+        $region->memberships()->delete();
+        $region->delete();
+
+        return redirect()->route('region.index', app()->getLocale());
+    }
 
 }

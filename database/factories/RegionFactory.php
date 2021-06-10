@@ -21,7 +21,6 @@ class RegionFactory extends Factory
     return [
         'name' => 'Bezirk Darmstadt',
         'code' => 'HBVDA',
-        'hq' => '',
         'created_at' => now()
     ];
   }

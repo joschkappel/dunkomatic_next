@@ -15,7 +15,7 @@ class RegionsTableSeeder extends Seeder
     public function run()
     {
         DB::table('regions')->insert([
-          ['code' => 'HBV', 'name' => 'Hessischer Basketball Verband', 'hq' => '', 'created_at' => Carbon::now()],
+          ['code' => 'HBV', 'name' => 'Hessischer Basketball Verband', 'hq' => null, 'created_at' => Carbon::now()],
           ['code' => 'HBVDA', 'name' => 'Bezirk Darmstadt','hq' => 'HBV', 'created_at' => Carbon::now()],
           ['code' => 'HBVF', 'name' => 'Bezirk Frankfurt','hq' => 'HBV', 'created_at' => Carbon::now()],
           ['code' => 'HBVKS', 'name' => 'Bezirk Kassel','hq' => 'HBV', 'created_at' => Carbon::now()],

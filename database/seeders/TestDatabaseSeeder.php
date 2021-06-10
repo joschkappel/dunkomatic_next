@@ -14,6 +14,7 @@ class TestDatabaseSeeder extends Seeder
     {
         // $this->call(UsersTableSeeder::class);
         $this->call([
+          BouncerSeeder::class,
           SettingsTableSeeder::class,
           RegionsTableSeeder::class,
           UsersTableSeeder::class,
