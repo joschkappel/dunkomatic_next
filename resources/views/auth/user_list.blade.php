@@ -22,6 +22,7 @@
                   <th>Id</th>
                   <th>@lang('auth.full_name')</th>
                   <th>@lang('auth.email')</th>
+                  <th>@lang('auth.user.roles')</th>
                   <th>@lang('auth.user.clubs')</th>
                   <th>@lang('auth.user.leagues')</th>
                   <th>{{__('Created at')}}</th>
@@ -61,6 +62,7 @@
                         { data: 'id', name: 'id', visible: false },
                         { data: 'name', name: 'name' },
                         { data: 'email', name: 'email' },
+                        { data: 'roles', name: 'roles' },
                         { data: 'clubs', name: 'clubs' },
                         { data: 'leagues', name: 'leagues' },
                         { data: {

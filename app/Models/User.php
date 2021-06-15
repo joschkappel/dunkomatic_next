@@ -121,7 +121,7 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     */
     public function getIsRegionadminAttribute()
     {
-        return $this->member->isRegionAdmin;
+       return $this->member->isRegionAdmin;
     }
 
     public function getLeagueFilecountAttribute()

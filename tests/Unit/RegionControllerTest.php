@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Enums\Role;
 use App\Models\Club;
 use App\Models\Member;
-
+use App\Models\User;
 
 class RegionControllerTest extends TestCase
 {
@@ -28,6 +28,7 @@ class RegionControllerTest extends TestCase
      */
     public function set_region()
     {
+
       $response = $this->authenticated()
                         ->get(route('region.set', ['region'=>$this->region]));
 
@@ -65,7 +66,8 @@ class RegionControllerTest extends TestCase
     public function edit()
     {
     //  $this->withoutExceptionHandling();
-      $response = $this->authenticated()
+      $user = User::where('name','admin')->first();
+      $response = $this->authenticated($user)
                        ->get(route('region.edit',['language'=>'de', 'region'=>$this->region]));
 
       $response->assertStatus(200);
@@ -85,7 +87,7 @@ class RegionControllerTest extends TestCase
     {
       //$this->withoutExceptionHandling();
       $response = $this->authenticated()
-                       ->put(route('region.update',['region'=>$this->region]),[
+                       ->put(route('region.update_details',['region'=>$this->region]),[
                          'name' => 'HBVDAupdated2',
                          'game_slot' => 200,
                        ]);
@@ -110,7 +112,7 @@ class RegionControllerTest extends TestCase
     {
       //$this->withoutExceptionHandling();
       $response = $this->authenticated()
-                       ->put(route('region.update',['region'=>$this->region]),[
+                       ->put(route('region.update_details',['region'=>$this->region]),[
                          'name' => 'HBVDAupdated',
                          'game_slot' => 150,
                          'job_noleads' => JobFrequencyType::getRandomValue(),
@@ -142,7 +144,8 @@ class RegionControllerTest extends TestCase
     public function index()
     {
 
-      $response = $this->authenticated()
+      $user = User::where('name','admin')->first();
+      $response = $this->authenticated($user)
                         ->get(route('region.index',['language'=>'de']));
 
       $response->assertStatus(200)
@@ -169,7 +172,7 @@ class RegionControllerTest extends TestCase
         Notification::assertNothingSent();
 
         $response = $this->authenticated()
-                        ->put(route('region.update',['region'=>$this->region]),[
+                        ->put(route('region.update_details',['region'=>$this->region]),[
                                     'name' => 'HBVDAupdated',
                                     'game_slot' => 150,
                                     'job_noleads' => JobFrequencyType::getRandomValue(),
@@ -197,7 +200,7 @@ class RegionControllerTest extends TestCase
 
         // disbale and check that notifications are sent
         $response = $this->authenticated()
-                        ->put(route('region.update',['region'=>$this->region]),[
+                        ->put(route('region.update_details',['region'=>$this->region]),[
                                     'name' => 'HBVDAupdated',
                                     'game_slot' => 150,
                                     'job_noleads' => JobFrequencyType::getRandomValue(),

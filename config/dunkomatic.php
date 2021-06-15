@@ -24,6 +24,10 @@ return [
       'welcome' => 'welcome.jpg',
       'club'    => 'club.jpg',
       'league'    => 'league.jpg',
+      '403'     => '403_forbidden.jpg',
+      '404'     => '404_not_found.jpg',
+      '503'     => '503_service_unavailable.jpg',
+      '419'     => '419_timeout.jpg'
   ),
 
   'maps_uri' => 'https://www.google.com/maps/place/',

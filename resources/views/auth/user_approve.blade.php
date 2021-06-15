@@ -20,9 +20,6 @@
                         @csrf
                         @method('POST')
                         <input type="hidden" name="user_id" value="{{ $user->id}}">
-                        @isset($member)
-                        <input type="hidden" name="member_id" value="{{ $member->id}}">
-                        @endisset
                         @if ($errors->any())
                         <div class="alert alert-danger" role="alert">
                             @lang('Please fix the following errors')
@@ -54,30 +51,30 @@
                         <div class="form-group row ">
                             <label for='selClubs' class="col-sm-4 col-form-label">{{ trans_choice('club.club',2)}}</label>
                             <div class="col-sm-6">
-                                @empty($member)
+                                @empty($abilities->clubs)
                                     <select class='js-clubs-placeholder-single js-states form-control select2 @error('club_ids') /> is-invalid @enderror' id='selClubs' name="club_ids[]">
                                     </select>
                                     @error('club_ids')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 @endempty
-                                @isset($member)
-                                    <input type="input" readonly class="form-control" id="clubs" value="{{ $member->clubs  }}">
+                                @isset($abilities->clubs)
+                                    <input type="input" readonly class="form-control" id="clubs" value="{{ $abilities->clubs  }}">
                                 @endisset
                             </div>
                         </div>
                         <div class="form-group row ">
                             <label for='selLeagues' class="col-sm-4 col-form-label">{{ trans_choice('league.league',2)}}</label>
                             <div class="col-sm-6">
-                                @empty($member)
+                                @empty($abilities->leagues)
                                     <select class='js-leagues-placeholder-single js-states form-control select2 @error('league_ids') /> is-invalid @enderror' id='selLeagues' name="league_ids[]">
                                     </select>
                                     @error('league_ids')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 @endempty
-                                @isset($member)
-                                     <input type="input" readonly class="form-control" id="leagues" value="{{ $member->leagues }}">
+                                @isset($abilities->leagues)
+                                     <input type="input" readonly class="form-control" id="leagues" value="{{ $abilities->leagues }}">
                                 @endisset
                             </div>
                         </div>

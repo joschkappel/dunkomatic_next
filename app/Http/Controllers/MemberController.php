@@ -135,7 +135,7 @@ class MemberController extends Controller
      */
     public function invite(Member $member)
     {
-      $member->notify(new InviteUser(Auth::user()));
+      $member->notify(new InviteUser(Auth::user(), Auth::user()->region));
       return redirect()->back();
     }
     /**

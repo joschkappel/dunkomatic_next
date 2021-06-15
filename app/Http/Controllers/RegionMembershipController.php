@@ -50,12 +50,12 @@ class RegionMembershipController extends Controller
 
       $member = Member::find($data['member_id']);
 
-      $new_mrole = $region->memberships()->create(['role_id' => $data['selRole'],
-                                         'member_id' => $member->id]);
+      $region->memberships()->create(['role_id' => $data['selRole'],
+                                       'member_id' => $member->id]);
 
       // invite to join as user
       if (! $member->is_user ){
-        $member->notify(new InviteUser(Auth::user()));
+        $member->notify(new InviteUser(Auth::user(), $region));
       }
 
       return redirect()->action(
@@ -121,7 +121,7 @@ class RegionMembershipController extends Controller
 
       // invite to join as user
       if (! $member_new->is_user ){
-        $member_new->notify(new InviteUser(Auth::user()));
+        $member_new->notify(new InviteUser(Auth::user(), $region));
       }
 
       return redirect()->action(

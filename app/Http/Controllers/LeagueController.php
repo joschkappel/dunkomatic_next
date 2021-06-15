@@ -13,6 +13,7 @@ use App\Enums\LeagueAgeType;
 use App\Enums\LeagueGenderType;
 use App\Enums\Role;
 use BenSampo\Enum\Rules\EnumValue;
+use Bouncer;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -104,7 +105,11 @@ class LeagueController extends Controller
                   return $user->created_at->format('d.m.Y H:i');
               })
           ->editColumn('shortname', function ($data) {
-              return '<a href="' . route('league.dashboard', ['language'=>Auth::user()->locale,'league'=>$data->id]) .'">'.$data->shortname.'</a>';
+              if ( ( Bouncer::can('manage', $data)) or ( Auth::user()->isA('regionadmin'))){
+                return '<a href="' . route('league.dashboard', ['language'=>Auth::user()->locale,'league'=>$data->id]) .'">'.$data->shortname.'</a>';
+              } else {
+                return '<a href="' . route('league.briefing', ['language'=>Auth::user()->locale,'league'=>$data->id]) .'" class="text-info">'.$data->shortname.'</a>';
+              }
               })
           ->make(true);
     }

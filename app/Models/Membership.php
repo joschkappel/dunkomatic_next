@@ -3,9 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphPivot;
-use App\Enums\Role;
-use App\Models\Region;
 use App\Models\Member;
 
 class Membership extends Model
@@ -28,5 +25,6 @@ class Membership extends Model
   {
     $query->where('role_id', '!=', $role_id);
   }
+
 
 }

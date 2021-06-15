@@ -11,6 +11,7 @@ use Illuminate\Validation\Rule;
 use App\Rules\Uppercase;
 
 use Datatables;
+use Bouncer;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
@@ -126,8 +127,12 @@ class ClubController extends Controller
                   return $user->created_at->format('d.m.Y H:i');
               })
           ->editColumn('shortname', function ($data) {
-              return '<a href="' . route('club.dashboard', ['language'=>Auth::user()->locale,'club'=>$data->id]) .'">'.$data->shortname.'</a>';
-              })
+                if ( ( Bouncer::can('manage', $data)) or ( Auth::user()->isA('regionadmin'))){
+                    return '<a href="' . route('club.dashboard', ['language'=>Auth::user()->locale,'club'=>$data->id]) .'">'.$data->shortname.'</a>';
+                } else {
+                    return '<a href="' . route('club.briefing', ['language'=>Auth::user()->locale,'club'=>$data->id]) .'" class="text-info">'.$data->shortname.'</a>';
+                }
+                })
           ->editColumn('url', function ($data) {
               return '<a href="http://' . $data->url .'" target="_blank">'.$data->url.'</a>';
               })
