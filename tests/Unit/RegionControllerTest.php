@@ -65,9 +65,9 @@ class RegionControllerTest extends TestCase
      */
     public function edit()
     {
+      $sadmin = User::where('name','admin')->first();
     //  $this->withoutExceptionHandling();
-      $user = User::where('name','admin')->first();
-      $response = $this->authenticated($user)
+      $response = $this->authenticated($sadmin)
                        ->get(route('region.edit',['language'=>'de', 'region'=>$this->region]));
 
       $response->assertStatus(200);
@@ -144,8 +144,8 @@ class RegionControllerTest extends TestCase
     public function index()
     {
 
-      $user = User::where('name','admin')->first();
-      $response = $this->authenticated($user)
+      $sadmin = User::where('name','admin')->first();
+      $response = $this->authenticated($sadmin)
                         ->get(route('region.index',['language'=>'de']));
 
       $response->assertStatus(200)
