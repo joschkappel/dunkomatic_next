@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Bouncer;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 
@@ -76,36 +77,61 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-      $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'region_id' => $data['region_id'],
-            'reason_join' => $data['reason_join'],
-            'locale' => $data['locale']
-      ]);
-      $radmin = Region::find($data['region_id'])->regionadmin->first()->user()->first();
+        $user = User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+                'region_id' => $data['region_id'],
+                'reason_join' => $data['reason_join'],
+                'locale' => $data['locale']
+        ]);
+
+        $member = Member::where('email1', $user->email)->orWhere('email2', $user->email)->first();
+        if (isset($member)){
+            // link user and member
+            $member->user()->save($user);
+            // RBAC - set access to clubs
+            $clubs = $member->clubs->unique();
+            foreach ($clubs as $c) {
+                Bouncer::allow($user)->to('manage', $c);
+            }
+            // RBAC - set access to league
+            $leagues = $member->leagues->unique();
+            foreach ($leagues as $l) {
+                Bouncer::allow($user)->to('manage', $l);
+            }
+            // RBAC - set access to region
+            $regions = $member->region;
+            foreach ($regions as $r) {
+                Bouncer::allow($user)->to('manage', $r);
+            }
+
+            //RBAC - set user role
+            if ($user->isregionadmin){
+                Bouncer::assign('regionadmin')->to($user);
+            } elseif ($user->isrole(Role::ClubLead())){
+                Bouncer::assign('clubadmin')->to($user);
+            } elseif ($user->isrole(Role::LeagueLead())){
+                Bouncer::assign('leagueadmin')->to($user);
+            } else {
+                Bouncer::assign('user')->to($user);
+            }
+
+        } else {
+            // RBAC set guest role
+            Bouncer::assign('guest')->to($user);
+        }
 
       if (isset($data['invited_by']) and (Crypt::decryptString( $data['invited_by'] ) == $data['email'])){
-
+          // invited users are auto-approved
           $user->update(['approved_at'=>now()]);
-          $member = Member::where('email1', $data['email'])->orWhere('email2',$data['email'])->first();
-          $member->user()->save($user);
-          $clubs = $member->clubs->unique()->pluck('id');
-          foreach ($clubs as $c) {
-              $member->clubs()->attach([$c], array('role_id' => Role::User));    
-          }
-          $leagues = $member->leagues->unique()->pluck('id');
-          foreach ($leagues as $l) {
-              $member->leagues()->attach([$l], array('role_id' => Role::User));    
-          }
-
       } else {
-        if ( $radmin !== null ) {
-            Log::debug(print_r($radmin,true));
+
+        if ( Region::find($data['region_id'])->regionadmin->first()->user->exists() ) {
+            $radmin = Region::find($data['region_id'])->regionadmin->first()->user()->first();
             $radmin->notify(new NewUser($user));
         } else {
-            Log::error('is null');
+            Log::error('regionadmin is null');
         }
       }
 
@@ -117,8 +143,8 @@ class RegisterController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function showRegistrationFormInvited($language, Member $member, User $inviting_user, $invited_by)
+    public function showRegistrationFormInvited($language, Member $member, Region $region, User $inviting_user, $invited_by)
     {
-        return view('auth.register_invited',['language'=>$language, 'member'=>$member, 'user'=>$inviting_user, 'invited_by'=>$invited_by]);
-    }    
+        return view('auth.register_invited',['language'=>$language, 'member'=>$member, 'user'=>$inviting_user, 'invited_by'=>$invited_by, 'region'=>$region]);
+    }
 }

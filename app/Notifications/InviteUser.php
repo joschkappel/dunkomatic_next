@@ -3,11 +3,10 @@
 namespace App\Notifications;
 
 use App\Models\User;
-use App\Models\Club;
 use App\Enums\Role;
+use App\Models\Region;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Crypt;
@@ -23,9 +22,10 @@ class InviteUser extends Notification
      *
      * @return void
      */
-    public function __construct(User $sender)
+    public function __construct(User $sender, Region $region)
     {
         $this->sender = $sender;
+        $this->invite_to_region = $region;
     }
 
     /**
@@ -59,7 +59,11 @@ class InviteUser extends Notification
             ->greeting( __('notifications.user.greeting', ['username'=>$notifiable->name]))
             ->line( __('notifications.inviteuser.line1', ['sendername'=>$sender]))
             ->line( __('notifications.inviteuser.line2'))
-            ->action( __('notifications.inviteuser.action'), route('register.invited', ['language'=>app()->getLocale(), 'member' => $notifiable, 'inviting_user'=>$this->sender, 'invited_by'=>Crypt::encryptString($notifiable->email1)]));
+            ->action( __('notifications.inviteuser.action'), route('register.invited', ['language'=>app()->getLocale(),
+                                                                                         'member' => $notifiable,
+                                                                                         'inviting_user'=>$this->sender,
+                                                                                         'region'=> $this->invite_to_region,
+                                                                                         'invited_by'=>Crypt::encryptString($notifiable->email1)]));
     }
 
     /**

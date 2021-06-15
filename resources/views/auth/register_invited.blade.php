@@ -72,8 +72,8 @@
                         @endif
                     </div>
                     <div class="input-group mb-3">
-                      <input class="form-control" value="{{ $user->region->name }}" readonly>
-                      <input hidden name="region_id" class="form-control" value="{{ $user->region->id }}" >
+                      <input class="form-control" value="{{ $region->name }}" readonly>
+                      <input hidden name="region_id" class="form-control" value="{{ $region->id }}" >
                       <span class="input-group-btn">
                         <button class="btn btn-default" type="button" data-select2-open="region_id">
                           <span class="fas fa-globe-europe"></span>

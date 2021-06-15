@@ -13,7 +13,6 @@ use App\Models\Club;
 use App\Models\Member;
 use App\Models\User;
 
-
 class RegionControllerTest extends TestCase
 {
     use Authentication;
@@ -29,6 +28,7 @@ class RegionControllerTest extends TestCase
      */
     public function set_region()
     {
+
       $response = $this->authenticated()
                         ->get(route('region.set', ['region'=>$this->region]));
 
@@ -200,7 +200,7 @@ class RegionControllerTest extends TestCase
 
         // disbale and check that notifications are sent
         $response = $this->authenticated()
-                        ->put(route('region.update',['region'=>$this->region]),[
+                        ->put(route('region.update_details',['region'=>$this->region]),[
                                     'name' => 'HBVDAupdated',
                                     'game_slot' => 150,
                                     'job_noleads' => JobFrequencyType::getRandomValue(),

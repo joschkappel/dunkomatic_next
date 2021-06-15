@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\DB;
 
 use App\Models\Setting;
 use App\Models\Region;
+use App\Models\Club;
+use App\Models\League;
+
+use Bouncer;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -71,15 +75,20 @@ class AppServiceProvider extends ServiceProvider
                 $smenu['url']  = route('club.index', ['language'=>app()->getLocale()]);
                 $smenu['icon_color'] = 'orange';
                 $smenu['icon'] =  'fas fa-list';
-                $smenu['can'] = 'manage-clubs';
+                $smenu['can'] = 'view-clubs';
                 $clubmenu['submenu'][] = $smenu;
 
-                foreach (Auth::user()->member()->first()->clubs()->get()->unique() as $c) {
+                $allowed_clubs = Club::whereIn('id', Auth::user()->getAbilities()->where('entity_type', Club::class)->pluck('entity_id'))->get();
+                foreach ($allowed_clubs as $c) {
                     $smenu['text'] = $c->shortname;
-                    $smenu['url']  = route('club.dashboard', ['language'=>app()->getLocale(), 'club'=>$c ]);
+                    if (Bouncer::can('manage-clubs')){
+                        $smenu['url']  = route('club.dashboard', ['language'=>app()->getLocale(), 'club'=>$c ]);
+                    } else {
+                        $smenu['url']  = route('club.briefing', ['language'=>app()->getLocale(), 'club'=>$c ]);
+                    }
                     $smenu['icon_color'] = 'orange';
                     $smenu['icon'] =  'fas fa-list';
-                    $smenu['can'] = 'manage-clubs';
+                    unset($smenu['can']);
                     $clubmenu['submenu'][] = $smenu;
                 };
 
@@ -100,15 +109,20 @@ class AppServiceProvider extends ServiceProvider
                 $smenu['url']  = route('league.index', app()->getLocale());
                 $smenu['icon_color'] = 'yellow';
                 $smenu['icon'] =  'fas fa-list';
-                $smenu['can'] = 'manage-leagues';
+                $smenu['can'] = 'view-leagues';
                 $leaguemenu['submenu'][] = $smenu;
 
-                foreach (Auth::user()->member()->first()->leagues()->get()->unique() as $l) {
+                $allowed_leagues = League::whereIn('id', Auth::user()->getAbilities()->where('entity_type', League::class)->pluck('entity_id'))->get();
+                foreach ($allowed_leagues as $l) {
                     $smenu['text'] = $l->shortname;
-                    $smenu['url']  = route('league.dashboard', ['language'=>app()->getLocale(), 'league'=>$l ]);
+                    if ( Bouncer::can('manage-leagues')){
+                        $smenu['url']  = route('league.dashboard', ['language'=>app()->getLocale(), 'league'=>$l ]);
+                    } else {
+                        $smenu['url']  = route('league.briefing', ['language'=>app()->getLocale(), 'league'=>$l ]);
+                    }
                     $smenu['icon_color'] = 'yellow';
                     $smenu['icon'] =  'fas fa-list';
-                    $smenu['can'] = 'manage-leagues';
+                    unset($smenu['can']);
                     $leaguemenu['submenu'][] = $smenu;
                  };
 
@@ -140,12 +154,12 @@ class AppServiceProvider extends ServiceProvider
                       'text' => __('Calendar'),
                       'url'  => route('schedule_event.cal', app()->getLocale()),
                       'icon' => 'fas fa-calendar-alt',
-                      'can'  => 'ro-schedules',
+                      'can'  => 'view-schedules',
                     ],[
                       'text' => __('Compare'),
                       'url'  => route('schedule.index_piv', app()->getLocale()),
                       'icon' => 'fas fa-calendar-week',
-                      'can'  => 'ro-schedules',
+                      'can'  => 'view-schedules',
                     ]
                   ]
                 ]);
@@ -161,7 +175,7 @@ class AppServiceProvider extends ServiceProvider
                     'route' => ['user_archive.get', ['user' => Auth::user()->id]],
                     'label'       => $all_files,
                     'label_color' => 'info',
-                    'can'  => ['ro-clubs','ro-leagues'],
+                    'can'  => ['view-clubs','view-leagues'],
                   ]);
                 };
 
@@ -180,9 +194,11 @@ class AppServiceProvider extends ServiceProvider
                 $regions = Region::all();
 
                 foreach ( $regions as $r ){
-                  $rs['text'] = $r->name;
-                  $rs['url'] = route('region.set',['region' => $r->id]);
-                  $regionmenu['submenu'][] = $rs;
+                    if ((Auth::user()->isA('regionadmin','superadmin')) or (Auth::user()->region->name == $r->name)){
+                        $rs['text'] = $r->name;
+                        $rs['url'] = route('region.set',['region' => $r->id]);
+                        $regionmenu['submenu'][] = $rs;
+                    }
                 }
 
                 $event->menu->add($regionmenu);
@@ -254,7 +270,7 @@ class AppServiceProvider extends ServiceProvider
                       'text'  => __('Regions'),
                       'icon'  => 'fas fa-globe-europe',
                       'url' => route('region.index', ['language'=>app()->getLocale()]),
-                      'can' => 'manage-regions'
+                      'can' => 'view-regions'
                     ],
                   ]
                 ]);

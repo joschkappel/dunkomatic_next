@@ -118,7 +118,7 @@ class RegistrationTest extends TestCase
     {
         // create a fake club
         Club::factory()->create(['name'=>'testclub']);
-        $club = Club::where('name','testclub')->first();
+        $club = Club::where('name','testclub')->pluck('id')->toarray();
 
         $region = Region::where('code','HBVDA')->first();
         $region_admin = $region->regionadmin->first()->user()->first();
@@ -134,7 +134,7 @@ class RegistrationTest extends TestCase
                                     'language' => 'de',
                                     'approved' => 'on',
                                     'user_id' => $user->id,
-                                    'club_ids' => $club->id
+                                    'club_ids' => $club
         ]));
         $response->assertStatus(200)
                  ->assertViewIs('auth.users');

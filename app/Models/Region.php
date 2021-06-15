@@ -66,7 +66,14 @@ class Region extends Model
   {
       return $this->belongsTo('Region', 'hq', 'code');
   }
-
+  public function getIsTopLevelAttribute()
+  {
+      return ($this->childRegions->count() > 0);
+  }
+  public function getIsBaseLevelAttribute()
+  {
+      return ($this->childRegions->count() == 0);
+  }
   public function messages()
   {
       return $this->hasMany('App\Models\MessageDestination','region','code');

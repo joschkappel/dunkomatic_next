@@ -5,6 +5,9 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Region;
+use App\Models\User;
+use App\Models\Club;
+use Bouncer;
 
 class ClubsTableSeeder extends Seeder
 {
@@ -29,6 +32,11 @@ class ClubsTableSeeder extends Seeder
         ]);
 
       }
+
+      $uid = User::where('name','user')->first();
+      Bouncer::allow($uid)->to('manage', Club::find(25));
+      Bouncer::allow($uid)->to('manage', Club::find(26));
+
 
     }
 }
