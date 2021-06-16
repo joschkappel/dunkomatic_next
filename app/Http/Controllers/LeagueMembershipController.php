@@ -70,6 +70,7 @@ class LeagueMembershipController extends Controller
           'member_id' => 'required|exists:members,id',
           'selRole' => ['required', new EnumValue(Role::class, false)],
           'function'  => 'nullable|max:40',
+          'email'     => 'nullable|max:60|email:rfc,dns',
       ]);
 
       Log::debug(print_r($data['selRole'],true));
@@ -133,6 +134,7 @@ class LeagueMembershipController extends Controller
         'member_id' => 'required|exists:members,id',
         'selRole' => ['required', new EnumValue(Role::class, false)],
         'function'  => 'nullable|max:40',
+        'email'     => 'nullable|max:60|email:rfc,dns',
       ]);
 
       $member_new = Member::find($data['member_id']);
@@ -142,7 +144,9 @@ class LeagueMembershipController extends Controller
 
       // create new membership
       $new_mrole = $league->memberships()->create(['role_id' => $data['selRole'],
-                                         'member_id' => $member_new->id]);
+                                         'member_id' => $member_new->id,
+                                         'function' => $data['function'],
+                                         'email' => $data['email']]);
 
       return redirect()->action(
             'LeagueController@dashboard', ['language'=>app()->getLocale(), 'league' => $league->id]

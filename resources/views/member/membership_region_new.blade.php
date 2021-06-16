@@ -49,6 +49,16 @@
                           </div>
                         </div>
                         <div class="form-group row">
+                            <label for="email" class="col-sm-4 col-form-label">@lang('role.email1')</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control @error('email','err_member') is-invalid @enderror"
+                                  id="email" name="email" placeholder="@lang('role.email1')" value="{{ old('email') }}"></input>
+                                @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-group row">
                           <label for="function" class="col-sm-4 col-form-label">@lang('role.member.action.create')</label>
                         </div>
                         <div class="form-group row">
