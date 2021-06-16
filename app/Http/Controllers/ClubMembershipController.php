@@ -64,6 +64,7 @@ class ClubMembershipController extends Controller
           'selRole'   => 'required|array|min:1',
           'selRole.*' => ['required', new EnumValue(Role::class, false)],
           'function'  => 'nullable|max:40',
+          'email'     => 'nullable|max:60|email:rfc,dns'
       ] );
 
       Log::debug(print_r($data['selRole'],true));
@@ -115,6 +116,7 @@ class ClubMembershipController extends Controller
                   'selRole'   => 'required|array|min:1',
                   'selRole.*' => ['required', new EnumValue(Role::class, false)],
                   'function'  => 'nullable|max:40',
+                  'email'     => 'nullable|max:60|email:rfc,dns'
               ] );
 
               //Log::info(print_r($data, true));

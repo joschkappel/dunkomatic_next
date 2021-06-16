@@ -34,7 +34,7 @@
                             <select class='js-sel-role js-states form-control select2 @error('selRole') is-invalid @enderror' name="selRole[]" id='selRole'>
                              @foreach ($membership as $mship)
                                @if ($mship->role_id == App\Enums\Role::User )
-                                <option value="{{ $mship->role_id }}">{{ App\Enums\Role::getDescription($mship->role_id) }}</option> 
+                                <option value="{{ $mship->role_id }}">{{ App\Enums\Role::getDescription($mship->role_id) }}</option>
                                @else
                                 <option value="{{ $mship->role_id }}">{{ App\Enums\Role::getDescription($mship->role_id) }}</option>
                                @endif
@@ -53,6 +53,16 @@
                               <div class="invalid-feedback">{{ $message }}</div>
                               @enderror
                           </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="email" class="col-sm-4 col-form-label">@lang('role.email1')</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control @error('email','err_member') is-invalid @enderror"
+                                  id="email" name="email" placeholder="@lang('role.email1')" value="{{ old('email') }}"></input>
+                                @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
                         <div class="form-group row">
                           <label for="function" class="col-sm-4 col-form-label">@lang('role.member.action.create')</label>

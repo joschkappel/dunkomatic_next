@@ -7,8 +7,12 @@
         <div class="col-md-6">
             <!-- general form elements -->
             <div class="card card-info">
-                <div class="card-header">
+                <div class="card-header container-fluid" id="clubnew">
+ 
                     <h3 class="card-title">@lang('club.title.new', ['region' =>session('cur_region')->name ])</h3>
+                    <button type="button" class="close" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <!-- /.card-header -->
                 <form class="form-horizontal" action="{{ route('club.store') }}" method="post">
@@ -73,4 +77,11 @@
     </div>
 </div>
 
+@endsection
+@section('js')
+<script>
+ $('.close').click(function(){
+     location.href = "{{ URL::previous() }}";
+    })
+</script>
 @endsection

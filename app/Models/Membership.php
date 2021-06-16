@@ -8,7 +8,7 @@ use App\Models\Member;
 class Membership extends Model
 {
   protected $fillable = [
-        'id','member_id','role_id','function','membership_id','membership_type'
+        'id','member_id','role_id','function','email', 'membership_id','membership_type'
     ];
 
   public function member()

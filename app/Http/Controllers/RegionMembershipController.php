@@ -44,6 +44,7 @@ class RegionMembershipController extends Controller
           'member_id' => 'required|exists:members,id',
           'selRole' => ['required', new EnumValue(Role::class, false)],
           'function'  => 'nullable|max:40',
+          'email'     => 'nullable|max:60|email:rfc,dns',
       ]);
 
       Log::debug(print_r($data['selRole'],true));
@@ -108,6 +109,7 @@ class RegionMembershipController extends Controller
         'member_id' => 'required|exists:members,id',
         'selRole' => ['required', new EnumValue(Role::class, false)],
         'function'  => 'nullable|max:40',
+        'email'     => 'nullable|max:60|email:rfc,dns',
       ]);
 
       $member_new = Member::find($data['member_id']);
