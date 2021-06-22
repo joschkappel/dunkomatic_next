@@ -36,4 +36,5 @@ return [
   'game_noshow.some' => ':noshow von :total Heimspielen ohne Gegner',
   'game_noshow.no' =>  'Alle Heimspiele finden statt',
   'game_noshow.all' => 'Alle Heimspiele ohne Gegner',
+  'member.action.create' => 'Neuer Vereinsmitarbeiter',
 ];

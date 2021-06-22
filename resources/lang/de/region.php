@@ -17,4 +17,5 @@ return [
   'name' =>  'Name',
   'code' => 'Abkürzung',
   'hq' => 'Gehört zu',
+  'member.action.create' => 'Neue Bezirksmitarbeiter',
 ];

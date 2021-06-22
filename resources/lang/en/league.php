@@ -26,4 +26,5 @@ return [
   'agetype' => 'Age class',
   'gendertype' => 'Gender class',
   'pickchar_enabled' => 'League character picking enbaled',
+  'member.action.create' => 'New Member',
 ];

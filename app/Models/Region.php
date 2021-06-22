@@ -11,6 +11,7 @@ use App\Models\Member;
 use App\Models\Membership;
 use App\Models\Schedule;
 use App\Models\Team;
+use App\Models\Gym;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -41,6 +42,10 @@ class Region extends Model
   public function teams()
   {
     return $this->hasManyThrough(Team::class, Club::class);
+  }
+  public function gyms()
+  {
+    return $this->hasManyThrough(Gym::class, Club::class);
   }
 
   public function leagues()

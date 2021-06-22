@@ -10,6 +10,7 @@
             <div class="small-box bg-gray">
                   <div class="inner">
                     <div class="row">
+                    <input type="hidden" id="entitytype" value="App\Models\League">
                       <div class="col-sm-8 pd-2">
                         <h3>{{ $league->shortname }}</h3>
                         <h5>{{ $league->name }} </h5>
@@ -142,12 +143,20 @@
           <p><button type="button" id="deleteMember" class="btn btn-outline-danger btn-sm" data-member-id="{{ $member->id }}"
             data-member-name="{{ $member->name }}"
             data-league-sname="{{ $league->shortname }}" data-toggle="modal" data-target="#modalDeleteMember"><i class="fa fa-trash"></i></button>
-          <a href="{{ route('membership.league.edit',['language'=>app()->getLocale(), 'member' => $member, 'league' => $league ]) }}" class=" px-2">{{ $member->name }} <i class="fas fa-arrow-circle-right"></i></a>
+          <a href="{{ route('member.edit',['language'=>app()->getLocale(), 'member' => $member ]) }}" class=" px-2">{{ $member->name }} <i class="fas fa-arrow-circle-right"></i></a>
             @if (! $member->is_user)
             <a href="{{ route('member.invite',[ 'member' => $member]) }}"><i class="fas fa-user-plus"></i></a>
             @endif
+            <button type="button" id="addMembership" class="btn btn-outline-primary btn-sm" data-member-id="{{ $member->id }}"
+              data-league-id="{{ $league->id }}" data-toggle="modal" data-target="#modalLeagueMembershipAdd"><i class="fas fa-user-tag"></i></button>            
             @foreach ($member['memberships'] as $membership)
-              <span class="badge badge-secondary">{{ App\Enums\Role::getDescription($membership->role_id) }}</span>
+                @if (($membership->membership_type == 'App\Models\League' ) and ($membership->membership_id == $league->id))
+                <button type="button" id="modMembership" class="btn btn-outline-primary btn-sm" data-membership-id="{{ $membership->id }}" 
+                data-function="{{ $membership->function }}" data-email="{{ $membership->email }}" data-role="{{ App\Enums\Role::getDescription($membership->role_id) }}" 
+                data-toggle="modal" data-target="#modalLeagueMembershipMod">{{ App\Enums\Role::getDescription($membership->role_id) }}</button>
+                @else
+                <span class="badge badge-secondary">{{ App\Enums\Role::getDescription($membership->role_id) }}</span>
+                @endif
             @endforeach
           </p>
           @endforeach
@@ -215,6 +224,8 @@
       @include('member/includes/member_delete')
       @include('league/includes/withdraw_team')
       @include('league/includes/inject_team')
+      @include('member/includes/membership_add')
+      @include('member/includes/membership_modify')      
       <!-- all modals above -->
     </div>
 
@@ -274,6 +285,25 @@
      $("button#injectTeam").click( function(){
         $('#modalInjectTeam').modal('show');
      });
+    $("button#addMembership").click( function(){
+      var url = "{{ route('membership.league.add', ['league'=>':leagueid:', 'member'=>':memberid:'])}}";
+      url = url.replace(':memberid:', $(this).data('member-id'));
+      url = url.replace(':leagueid:', $(this).data('league-id'));
+      $('#addClubMembership').attr('action', url);
+      $('#modalAddMembership').modal('show');
+    });
+    $("button#modMembership").click( function(){
+      var url = "{{ route('membership.update', ['membership'=>':membershipid:'])}}";
+      url = url.replace(':membershipid:', $(this).data('membership-id'));
+      var url2 = "{{ route('membership.destroy', ['membership'=>':membershipid:'])}}";
+      url2= url2.replace(':membershipid:', $(this).data('membership-id'));
+      $('#modmemfunction').val($(this).data('function'));
+      $('#modmememail').val($(this).data('email'));
+      $('#modmemrole').val($(this).data('role'));
+      $('#frmModMembership').attr('action', url);
+      $('#hidDelUrl').val( url2);
+      $('#modalMembershipMod').modal('show');
+    });     
 
      $("button#deleteMember").click( function(){
         $('#member_id').val($(this).data('member-id'));

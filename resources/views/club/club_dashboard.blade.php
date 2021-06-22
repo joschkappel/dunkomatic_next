@@ -11,6 +11,7 @@
               <div class="small-box bg-gray">
                   <div class="inner">
                       <div class="row">
+                      <input type="hidden" id="entitytype" value="App\Models\Club">
                         <div class="col-sm-8 pd-2">
                             <h3>{{ $club->shortname }}</h3>
                             <h5>{{ $club->name }}</h5>
@@ -89,17 +90,20 @@
             <p><button type="button" id="deleteMember" class="btn btn-outline-danger btn-sm" data-member-id="{{ $member->id }}"
               data-member-name="{{ $member->name }}"
               data-club-sname="{{ $club->shortname }}" data-toggle="modal" data-target="#modalDeleteMember"><i class="fa fa-trash"></i></button>
-            <a href="{{ route('membership.club.edit',[ 'language'=>app()->getLocale(),'member' => $member, 'club' => $club ]) }}" class=" px-2">{{ $member->name }} <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="{{ route('member.edit',[ 'language'=>app()->getLocale(),'member' => $member ]) }}" class=" px-2">{{ $member->name }} <i class="fas fa-arrow-circle-right"></i></a>
             @if (! $member->is_user)
-            <a href="{{ route('member.invite',[ 'member' => $member]) }}"><i class="fas fa-user-plus"></i></a>
+            <a href="{{ route('member.invite',[ 'member' => $member]) }}" type="button" class="btn btn-outline-primary btn-sm"><i class="far fa-paper-plane"></i></a>
             @endif
+            <button type="button" id="addMembership" class="btn btn-outline-primary btn-sm" data-member-id="{{ $member->id }}"
+              data-club-id="{{ $club->id }}" data-toggle="modal" data-target="#modalClubMembershipAdd"><i class="fas fa-user-tag"></i></button>
               @foreach ($member['memberships'] as $membership)
                 @if (($membership->membership_type == 'App\Models\Club' ) and ($membership->membership_id == $club->id))
-                <span class="badge badge-primary">
+                <button type="button" id="modMembership" class="btn btn-outline-primary btn-sm" data-membership-id="{{ $membership->id }}" 
+                data-function="{{ $membership->function }}" data-email="{{ $membership->email }}" data-role="{{ App\Enums\Role::getDescription($membership->role_id) }}" 
+                data-toggle="modal" data-target="#modalClubMembershipMod">{{ App\Enums\Role::getDescription($membership->role_id) }}</button>
                 @else
-                <span class="badge badge-secondary">
+                <span class="badge badge-secondary">{{ App\Enums\Role::getDescription($membership->role_id) }}</span>
                 @endif
-                {{ App\Enums\Role::getDescription($membership->role_id) }}</span>
               @endforeach
           </p>
             @endforeach
@@ -108,7 +112,7 @@
           <!-- /.card-body -->
           <div class="card-footer">
             <a href="{{ route('membership.club.create',[ 'language'=>app()->getLocale(), 'club' => $club ]) }}" class="btn btn-primary" >
-            <i class="fas fa-plus-circle"></i>  @lang('role.action.create')
+            <i class="fas fa-plus-circle"></i>  @lang('club.member.action.create')
             </a>
           </div>
           <!-- /.card-footer -->
@@ -243,6 +247,9 @@
     @include('member/includes/member_delete')
     @include('team/includes/team_delete')
     @include('club/gym/includes/gym_delete')
+    @include('member/includes/membership_add')
+    @include('member/includes/membership_modify')
+    {{-- @include('member/includes/membership_club_modify') --}}
     <!-- all modals above -->
         </div>
     </div>
@@ -260,6 +267,25 @@
 @section('js')
 <script>
   $(function() {
+    $("button#addMembership").click( function(){
+       var url = "{{ route('membership.club.add', ['club'=>':clubid:', 'member'=>':memberid:'])}}";
+       url = url.replace(':memberid:', $(this).data('member-id'));
+       url = url.replace(':clubid:', $(this).data('club-id'));
+       $('#addClubMembership').attr('action', url);
+       $('#modalAddMembership').modal('show');
+    });
+    $("button#modMembership").click( function(){
+       var url = "{{ route('membership.update', ['membership'=>':membershipid:'])}}";
+       url = url.replace(':membershipid:', $(this).data('membership-id'));
+       var url2 = "{{ route('membership.destroy', ['membership'=>':membershipid:'])}}";
+       url2= url2.replace(':membershipid:', $(this).data('membership-id'));
+       $('#modmemfunction').val($(this).data('function'));
+       $('#modmememail').val($(this).data('email'));
+       $('#modmemrole').val($(this).data('role'));
+       $('#frmModMembership').attr('action', url);
+       $('#hidDelUrl').val( url2);
+       $('#modalMembershipMod').modal('show');
+    });
     $("button#assignLeague").click( function(){
        $('#team_id').val($(this).data('team-id'));
        $('#club_id').val($(this).data('club-id'));
@@ -274,7 +300,6 @@
          $.ajax({
              type: 'POST',
              url: "{{ route('team.deassign-league' )}}",
-             type: "POST",
              dataType: 'json',
              data: {
                club_id: club_id,

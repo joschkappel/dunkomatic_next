@@ -5,11 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Region;
 use App\Models\Member;
 
-use App\Notifications\InviteUser;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 
 use BenSampo\Enum\Rules\EnumValue;
 use App\Enums\Role;
@@ -28,71 +25,35 @@ class RegionMembershipController extends Controller
 
         $members = $region->members()->get();
 
-      return view('member/membership_region_new', ['region' => $region,  'members' => $members->unique()->sortBy('lastname')]);
+        return view('member/member_new', ['entity' => $region,  'entity_type' => Region::class]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Region  $region
+     * @param  \App\Models\Member  $member
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Region $region)
+    public function add(Request $request, Region $region, Member $member)
     {
-      $data = $request->validate( [
-          'member_id' => 'required|exists:members,id',
-          'selRole' => ['required', new EnumValue(Role::class, false)],
-          'function'  => 'nullable|max:40',
-          'email'     => 'nullable|max:60|email:rfc,dns',
-      ]);
+        $data = $request->validate([
+            'selRole' => ['required', new EnumValue(Role::class, false)],
+            'function'  => 'nullable|max:40',
+            'email'     => 'nullable|max:60|email:rfc,dns',
+            ]);
 
-      Log::debug(print_r($data['selRole'],true));
+         // create a new membership
+         $region->memberships()->create(['role_id' => $data['selRole'],
+                                        'member_id' => $member->id,
+                                        'function' => $data['function'],
+                                          'email' => $data['email']
+                                        ]);
 
-      $member = Member::find($data['member_id']);
-
-      $region->memberships()->create(['role_id' => $data['selRole'],
-                                       'member_id' => $member->id]);
-
-      // invite to join as user
-      if (! $member->is_user ){
-        $member->notify(new InviteUser(Auth::user(), $region));
-      }
-
-      return redirect()->action(
-            'RegionController@index', ['language'=>app()->getLocale(),'region' => $region]
-      );
+         return redirect()->back();
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Region  $region
-     * @param  \App\Member  $member
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Region $region, Member $member)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Region  $region
-     * @param  \App\Membership  $membership
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($language, Region $region, Member $member )
-    {
-      $memberships = $region->memberships()->where('member_id', $member->id)->get();
-      Log::debug(print_r($memberships,true));
-      $members = $region->members()->get();
-
-      //Log::debug(print_r($member,true));
-      return view('member/membership_region_edit', ['member' => $member, 'membership' => $memberships, 'region' => $region,'members' => $members->unique()->sort()]);
-
-    }
 
     /**
      * Update the specified resource in storage.
@@ -107,23 +68,20 @@ class RegionMembershipController extends Controller
       Log::debug(print_r($request->all(),true));
       $data = $request->validate( [
         'member_id' => 'required|exists:members,id',
-        'selRole' => ['required', new EnumValue(Role::class, false)],
-        'function'  => 'nullable|max:40',
-        'email'     => 'nullable|max:60|email:rfc,dns',
       ]);
 
+      // get all current memberships
+      $mships = $member->memberships->where('membership_type', Region::class)->where('membership_id', $region->id);
       $member_new = Member::find($data['member_id']);
 
-      // delete current membership
-      $region->memberships()->where('member_id',$member->id)->delete();
+      foreach ( $mships as $ms ){
+        //Log::debug($role);
+        $ms->update(['member_id' => $member_new->id]);
+      }
 
-      // create new membership
-      $new_mrole = $region->memberships()->create(['role_id' => $data['selRole'],
-                                         'member_id' => $member_new->id]);
-
-      // invite to join as user
-      if (! $member_new->is_user ){
-        $member_new->notify(new InviteUser(Auth::user(), $region));
+      // check if old member is w/out memberships, if so delete
+      if ( $member_new->memberships->count() == 0 ){
+        $member_new->delete();
       }
 
       return redirect()->action(

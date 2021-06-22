@@ -36,4 +36,5 @@ return [
   'game_noshow.some' => ':noshow out of :total Games without guest',
   'game_noshow.no' => 'All games with guest',
   'game_noshow.all' => 'All games without guest',
+  'member.action.create' => 'New Member',
 ];

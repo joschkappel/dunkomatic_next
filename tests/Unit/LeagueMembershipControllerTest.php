@@ -2,15 +2,12 @@
 
 namespace Tests\Unit;
 
-use App\Models\Region;
 use App\Models\Member;
-use App\Models\Membership;
 use App\Models\League;
 use App\Enums\Role;
 
 use Tests\TestCase;
 use Tests\Support\Authentication;
-use Illuminate\Support\Facades\Log;
 
 class LeagueMembershipControllerTest extends TestCase
 {
@@ -28,15 +25,14 @@ class LeagueMembershipControllerTest extends TestCase
     public function create()
     {
       $league = League::factory()->create(['name'=>'testleague']);
-      $member = Member::factory()->create(['lastname'=>'testmember']);
 
       $response = $this->authenticated( )
                         ->get(route('membership.league.create',['language'=>'de', 'league'=>$league]));
 
       $response->assertStatus(200)
-               ->assertViewIs('member.membership_league_new')
-               ->assertViewHas('league',$league)
-               ->assertViewHas('members');
+               ->assertViewIs('member.member_new')
+               ->assertViewHas('entity',$league)
+               ->assertViewHas('entity_type', League::class);
 
     }
     /**
@@ -51,17 +47,28 @@ class LeagueMembershipControllerTest extends TestCase
     public function store_notok()
     {
       $league = League::where('name','testleague')->first();
-      $member = Member::where('lastname','testmember')->first();
 
       $response = $this->authenticated( )
-                        ->post(route('membership.league.store', ['league'=>$league]), [
-                          'member_id' => $member->id,
+                        ->post(route('member.store'), [
+                          'member_id' => null,
+                          'firstname' => 'testfirstname',
+                          'lastname' => 'testmember',
+                          'zipcode' => '1111',
+                          'city' => 'testcity',
+                          'street' => 'anystreet',
+                          'mobile' => '123456',
+                          'phone1' => '123456',
+                          'email1' => '12345',
+                          'entity_id' => $league->id,
+                          'entity_type' => League::class,
+                          'function' => null,
+                          'email' => null,                               
                       ]);
       $response
           ->assertStatus(302)
-          ->assertSessionHasErrors(['selRole']);
+          ->assertSessionHasErrors(['role_id','email1']);
 
-      $this->assertDatabaseMissing('memberships', ['member_id' => $member->id]);
+      $this->assertDatabaseMissing('members', ['lastname' => 'testmember']);
     }
     /**
      * store OK
@@ -75,44 +82,34 @@ class LeagueMembershipControllerTest extends TestCase
     public function store_ok()
     {
       $league = League::where('name','testleague')->first();
-      $member = Member::where('lastname','testmember')->first();
 
       $response = $this->authenticated( )
-                        ->post(route('membership.league.store', ['league'=>$league]), [
-                          'member_id' => $member->id,
-                          'selRole' => Role::getRandomValue()
+                        ->post(route('member.store'), [
+                          'member_id' => null,
+                          'role_id' => Role::getRandomValue(),
+                          'firstname' => 'testfirstname',
+                          'lastname' => 'testmember',
+                          'zipcode' => '1111',
+                          'city' => 'testcity',
+                          'street' => 'anystreet',
+                          'mobile' => '123456',
+                          'phone1' => '123456',
+                          'email1' => 'testlastname@gmail.com',
+                          'entity_id' => $league->id,
+                          'entity_type' => League::class,
+                          'function' => null,
+                          'email' => null,
                       ]);
       $response->assertRedirect(route('league.dashboard', ['language'=>'de','league'=>$league]))
                ->assertSessionHasNoErrors();
 
-      $this->assertDatabaseHas('memberships', ['member_id' => $member->id])
-           ->assertDatabaseCount('memberships', 4);
-    }
-    /**
-     * edit
-     *
-     * @test
-     * @group membership
-     * @group controller
-     *
-     * @return void
-     */
-    public function edit()
-    {
-      $league = League::where('name','testleague')->first();
       $member = Member::where('lastname','testmember')->first();
 
-      $response = $this->authenticated( )
-                        ->get(route('membership.league.edit',['language'=>'de',
-                                           'league'=>$league, 'member'=>$member]));
-
-      $response->assertStatus(200)
-               ->assertViewIs('member.membership_league_edit')
-               ->assertViewHas('league',$league)
-               ->assertViewHas('members')
-               ->assertViewHas('member',$member);
-//               ->assertViewHas('memberships');
+      $this->assertDatabaseHas('members', ['id' => $member->id])
+          ->assertDatabaseHas('memberships', ['member_id' => $member->id])
+          ->assertDatabaseCount('memberships', 4);
     }
+
     /**
      * update NOT OK
      *
@@ -126,18 +123,24 @@ class LeagueMembershipControllerTest extends TestCase
     {
       $league = League::where('name','testleague')->first();
       $member = Member::where('lastname','testmember')->first();
-      $member2 = Member::factory()->create(['lastname'=>'testmember2']);
 
       $response = $this->authenticated( )
-                        ->put(route('membership.league.update', ['league'=>$league,'member'=>$member]), [
-                          'member_id' => $member2->id,
+                        ->put(route('member.update', ['member'=>$member]), [
+                                    'firstname' => $member->firstname,
+                                    'lastname' => 'testmember2',
+                                    'zipcode' => $member->zipcode,
+                                    'city' => $member->city,
+                                    'street' => $member->street,
+                                    'mobile' => $member->mobile,
+                                    'backto' => url(route('league.dashboard', ['league'=>$league, 'language'=>'de'])),
                       ]);
       $response
           ->assertStatus(302)
-          ->assertSessionHasErrors(['selRole']);
+          ->assertSessionHasErrors(['email1']);
 
-      $this->assertDatabaseHas('memberships', ['member_id' => $member->id])
-           ->assertDatabaseMissing('memberships', ['member_id' => $member2->id]);
+      $this->assertDatabaseHas('members', ['id' => $member->id])
+        ->assertDatabaseHas('memberships', ['member_id' => $member->id])
+        ->assertDatabaseCount('memberships', 4);
     }
     /**
      * update OK
@@ -152,23 +155,29 @@ class LeagueMembershipControllerTest extends TestCase
     {
       $league = League::where('name','testleague')->first();
       $member = Member::where('lastname','testmember')->first();
-      $member2 = Member::where('lastname','testmember2')->first();
 
       $response = $this->authenticated( )
-                        ->put(route('membership.league.update', ['league'=>$league,'member'=>$member]), [
-                          'member_id' => $member2->id,
-                          'selRole' => Role::getRandomValue(),
+                        ->put(route('member.update', ['member'=>$member]), [
+                                  'firstname' => $member->firstname,
+                                  'lastname' => 'testmember2',
+                                  'zipcode' => $member->zipcode,
+                                  'city' => $member->city,
+                                  'street' => $member->street,
+                                  'mobile' => $member->mobile,
+                                  'email1' => 'test2@gmail.com',
+                                  'backto' => url(route('league.dashboard', ['league'=>$league, 'language'=>'de'])),    
                       ]);
 
       $response->assertRedirect(route('league.dashboard', ['language'=>'de','league'=>$league]))
                ->assertSessionHasNoErrors();
 
-      $this->assertDatabaseHas('memberships', ['member_id' => $member2->id])
-           ->assertDatabaseMissing('memberships', ['member_id' => $member->id])
-           ->assertDatabaseCount('memberships', 4);
+      $this->assertDatabaseHas('members', ['lastname' => 'testmember2'])
+          ->assertDatabaseHas('memberships', ['member_id' => $member->id])
+          ->assertDatabaseCount('memberships', 4);
     }
-    /**
-     * index
+
+   /**
+     * add NOT OK
      *
      * @test
      * @group membership
@@ -176,17 +185,106 @@ class LeagueMembershipControllerTest extends TestCase
      *
      * @return void
      */
-    public function index()
+    public function add_notok()
     {
       $league = League::where('name','testleague')->first();
-      $member = $league->members()->first();
-      $response = $this->authenticated( )
-                        ->get(route('membership.league.index',['language'=>'de', 'league'=>$league]));
+      $member = Member::where('lastname','testmember2')->first();
 
-      //$response->dump();
-      $response->assertStatus(200)
-               ->assertJson([['id'=>$member->id,'text'=>$member->name]]);
-     }
+      $response = $this->authenticated( )
+                        ->post(route('membership.league.add', ['league'=>$league, 'member'=>$member]), [
+                          'function' => 'function',
+                          'email' => 'email'
+                      ]);
+      $response
+          ->assertStatus(302)
+          ->assertSessionHasErrors(['email', 'selRole']);
+
+      $this->assertDatabaseHas('members', ['id' => $member->id])
+        ->assertDatabaseHas('memberships', ['member_id' => $member->id])
+        ->assertDatabaseCount('memberships', 4);
+
+    }
+
+   /**
+     * add  OK
+     *
+     * @test
+     * @group membership
+     * @group controller
+     *
+     * @return void
+     */    
+    public function add_ok()
+    {
+      $league = League::where('name','testleague')->first();
+      $member = Member::where('lastname','testmember2')->first();
+
+      $response = $this->authenticated( )
+                        ->post(route('membership.league.add', ['league'=>$league, 'member'=>$member]), [
+                          'selRole' => Role::getRandomValue(),
+                          'function' => 'function',
+                          'email' => 'email@gmail.com'
+                      ]);
+      $response
+          ->assertStatus(302)
+          ->assertSessionHasNoErrors();
+
+      $this->assertDatabaseHas('members', ['id' => $member->id])
+        ->assertDatabaseHas('memberships', ['member_id' => $member->id])
+        ->assertDatabaseCount('memberships', 5);
+    }
+   /**
+     * update mship NOT OK
+     *
+     * @test
+     * @group membership
+     * @group controller
+     *
+     * @return void
+     */
+    public function update_mship_notok()
+    {
+      $member = Member::where('lastname','testmember2')->first();
+      $membership = $member->memberships->first();
+
+      $response = $this->authenticated( )
+                        ->put(route('membership.update', ['membership'=>$membership]), [
+                          'email' => '1234',
+                      ]);
+      $response
+          ->assertStatus(302)
+          ->assertSessionHasErrors(['email']);
+
+      $this->assertDatabaseHas('members', ['id' => $member->id])
+            ->assertDatabaseHas('memberships', ['member_id' => $member->id])
+            ->assertDatabaseCount('memberships', 5);
+    }    
+/**
+     * update mship OK
+     *
+     * @test
+     * @group membership
+     * @group controller
+     *
+     * @return void
+     */
+    public function update_mship_ok()
+    {
+      $member = Member::where('lastname','testmember2')->first();
+      $membership = $member->memberships->first();
+
+      $response = $this->authenticated( )
+                        ->put(route('membership.update', ['membership'=>$membership]), [
+                          'email' => 'mship@gmail.com',
+                      ]);
+      $response
+          ->assertStatus(302)
+          ->assertSessionHasNoErrors();
+
+      $this->assertDatabaseHas('members', ['id' => $member->id])
+            ->assertDatabaseHas('memberships', ['member_id' => $member->id])
+            ->assertDatabaseCount('memberships', 5);
+    }     
     /**
      * destroy
      *
@@ -199,7 +297,6 @@ class LeagueMembershipControllerTest extends TestCase
     public function destroy()
     {
       $league = League::where('name','testleague')->first();
-      $member = Member::where('lastname','testmember')->first();
       $member2 = Member::where('lastname','testmember2')->first();
 
       $response = $this->authenticated( )
@@ -207,16 +304,10 @@ class LeagueMembershipControllerTest extends TestCase
 
       $response->assertStatus(302)
                ->assertSessionHasNoErrors();
-
-      $response = $this->authenticated( )
-                         ->delete(route('membership.league.destroy', ['league'=>$league,'member'=>$member]));
-
-      $response->assertStatus(302)
-                ->assertSessionHasNoErrors();
-
-      $this->assertDatabaseMissing('memberships', ['member_id' => $member2->id])
-           ->assertDatabaseMissing('memberships', ['member_id' => $member->id])
-           ->assertDatabaseCount('memberships', 3);
+      
+      $this->assertDatabaseMissing('members', ['id' => $member2->id])
+          ->assertDatabaseMissing('memberships', ['member_id' => $member2->id])
+          ->assertDatabaseCount('memberships', 3);
     }
     /**
      * db_cleanup
@@ -235,5 +326,6 @@ class LeagueMembershipControllerTest extends TestCase
         $member2 = Member::where('lastname','testmember2')->delete();
 
         $this->assertDatabaseCount('leagues', 0);
+        $this->assertDatabaseCount('members', 5);
    }
 }

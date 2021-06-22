@@ -24,6 +24,7 @@ return [
       'welcome' => 'welcome.jpg',
       'club'    => 'club.jpg',
       'league'    => 'league.jpg',
+      'region'    => 'region.jpg',
       '403'     => '403_forbidden.jpg',
       '404'     => '404_not_found.jpg',
       '503'     => '503_service_unavailable.jpg',
@@ -288,6 +289,27 @@ return [
               ],
           ],
       ],
+      'DatatableSelect' => [
+        'name' => 'DatatableSelect',
+        'active' => true,
+        'files' => [
+            [
+                'type' => 'css',
+                'asset' => true,
+                'location' => 'vendor/datatables-plugins/select/css/select.bootstrap4.min.css',
+            ],
+            [
+                'type' => 'js',
+                'asset' => true,
+                'location' => 'vendor/datatables-plugins/select/js/dataTables.select.min.js',
+            ],
+            [
+                'type' => 'js',
+                'asset' => true,
+                'location' => 'vendor/datatables-plugins/select/js/select.bootstrap4.min.js',
+            ],
+        ],
+    ],      
       'Select2' => [
           'name' => 'Select2',
           'active' => true,

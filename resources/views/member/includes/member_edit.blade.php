@@ -21,8 +21,6 @@
                       <div class="invalid-feedback">{{ $message }}</div>
                       @enderror
                   </div>
-              </div>
-              <div class="form-group row">
                   <div class="col-sm-6">
                       <input type="text" class="form-control @error('lastname','err_member') is-invalid @enderror"
                         id="lastname" name="lastname" placeholder="@lang('role.lastname')" value="{{ old('lastname') ? old('lastname') : $member->lastname }}"></input>

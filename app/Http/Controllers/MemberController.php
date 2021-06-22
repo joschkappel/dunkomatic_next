@@ -5,18 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Member;
 use App\Models\Membership;
 use App\Models\Region;
+use App\Models\League;
 use App\Models\Club;
-
+use BenSampo\Enum\Rules\EnumValue;
+use App\Enums\Role;
 
 use Datatables;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Hash;
 
-use App\Notifications\ApproveUser;
 use App\Notifications\InviteUser;
 
 class MemberController extends Controller
@@ -108,24 +109,104 @@ class MemberController extends Controller
     public function store(Request $request)
     {
         Log::info(print_r($request->all(),true));
-        $data = Validator::make($request->all(), Member::$createRules)
-                          ->validateWithBag('err_member');
+        $data = $request->validate([
+          'member_id' => 'nullable|exists:members,id',
+          'firstname' => 'required|max:20',
+          'lastname' => 'required|max:60',
+          'zipcode' => 'required|max:10',
+          'city' => 'required|max:40',
+          'street' => 'required|max:40',
+          'mobile' => 'required_without:phone1|max:40',
+          'phone1' => 'required_without:mobile|max:40',
+          'phone2' => 'max:40',
+          'fax1' => 'max:40',
+          'fax2' => 'max:40',
+          'email1' => 'required|max:60|email:rfc,dns',
+          'email2' => 'nullable|max:60|email:rfc,dns',
+          'role_id' => ['required', new EnumValue(Role::class, false)],
+          'function'  => 'nullable|max:40',
+          'email'     => 'nullable|max:60|email:rfc,dns',
+          ]);
 
-        $member = Member::create($data);
+        $member_id = $data['member_id'];
+        unset($data['member_id']);
+        $mship = [];
+        $mship['role_id'] = $data['role_id'];
+        unset($data['role_id']);
+        $mship['function'] = $data['function'];
+        unset($data['function']);
+        $mship['email'] = $data['email'];
+        unset($data['email']);
 
-        return redirect()->back()->with('member', $member);
+        if ( ($member_id == null) or (! Member::find($member_id)->exists()) ){
+          $member = Member::create($data);
+        } else {
+          $member = Member::find($member_id);
+        }
+        $member_id = $member->id;
+        $mship['member_id'] = $member_id;
+
+        $entity_type = $request['entity_type'];
+        $entity_id = $request['entity_id'];
+        if ($entity_type == Club::class){
+          $club = Club::find($entity_id);
+          $club->memberships()->create($mship);
+          return redirect()->route('club.dashboard', ['language' => app()->getLocale(), 'club' => $club]);
+        } elseif ($entity_type == League::class){
+          $league = League::find($entity_id);
+          $league->memberships()->create($mship);
+          return redirect()->route('league.dashboard', ['language' => app()->getLocale(), 'league' => $league]);
+        } elseif ($entity_type == Region::class){        
+          $region = Region::find($entity_id);
+          $region->memberships()->create($mship);
+          // auto-invite rgeion admin
+          if ( $mship['role_id'] = Role::RegionLead()){
+            $member->notify(new InviteUser(Auth::user(), Auth::user()->region));
+          }
+          return redirect()->route('region.index', ['language' => app()->getLocale()]);
+        } else {
+          return redirect()->back();
+        }
 
       }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Member  $member
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($language, Member $member)
+    {
+      //Log::debug(print_r($member,true));
+      return view('member/member_edit', ['member' => $member, 'backto' => URL::previous()]);
+
+    }
 
     public function update(Request $request, Member $member)
     {
         Log::debug(print_r($request->all(),true));
-        $data = Validator::make($request->all(), Member::$createRules)
-                           ->validateWithBag('err_member');
+        $backto = $request['backto'];
+        unset($request['backto']);
+        // $data = Validator::make($request->all(), Member::$createRules);
+        $data = $request->validate([
+          'firstname' => 'required|max:20',
+          'lastname' => 'required|max:60',
+          'zipcode' => 'required|max:10',
+          'city' => 'required|max:40',
+          'street' => 'required|max:40',
+          'mobile' => 'required_without:phone1|max:40',
+          'phone1' => 'required_without:mobile|max:40',
+          'phone2' => 'max:40',
+          'fax1' => 'max:40',
+          'fax2' => 'max:40',
+          'email1' => 'required|max:60|email:rfc,dns',
+          'email2' => 'nullable|max:60|email:rfc,dns',
+          ]);
 
         $member->update($data);
 
-        return redirect()->back()->with('member_mod', $member);
+        return redirect($backto);
     }
     /**
      * send a user registration invite to this member

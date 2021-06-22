@@ -32,8 +32,10 @@
                   <th>@lang('region.name')</th>
                   <th>@lang('region.hq')</th>
                   <th>{{ App\Enums\Role::RegionLead()->description  }}</th>
-                  <th>{{__('Created at')}}</th>
-                  <th>{{__('Action')}}</th>
+                  <th>{{ trans_choice('club.club',2)}}</th>
+                  <th>{{ trans_choice('team.team',2)}}</th>
+                  <th>{{ trans_choice('gym.gym',2)}}</th>
+                  <th>{{ trans_choice('league.league',2)}}</th>
                </tr>
             </thead>
          </table>
@@ -67,8 +69,10 @@
                         { data: 'name', name: 'name' },
                         { data: 'hq', name: 'hq' },
                         { data: 'regionadmin', name: 'regionadmin' },
-                        { data: 'created_at', name: 'created_at'},
-                        { data: 'action', name: 'action', orderable: false, searchable: false},
+                        { data: 'clubs_count', name: 'clubs' },
+                        { data: 'teams_count', name: 'teams' },
+                        { data: 'gyms_count', name: 'gyms' },
+                        { data: 'leagues_count', name: 'leagues' },
                      ]
             });
 

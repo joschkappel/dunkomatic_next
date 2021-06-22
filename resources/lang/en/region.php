@@ -17,4 +17,5 @@ return [
   'name' =>  'Name',
   'code' => 'Code',
   'hq' => 'Part of',
+  'member.action.create' => 'New Member',
 ];

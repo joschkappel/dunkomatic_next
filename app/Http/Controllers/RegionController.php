@@ -12,6 +12,7 @@ use App\Enums\ReportFileType;
 
 use App\Models\Region;
 use App\Enums\Role;
+use App\Models\Member;
 use App\Notifications\CharPickingEnabled;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,6 +31,21 @@ class RegionController extends Controller
       Log::info('listing regions');
       return view('admin.region_list');
     }
+
+    /**
+     * Display a dashboard
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function dashboard( $language, Region $region )
+    {
+          $data['region'] = Region::withCount('clubs','gyms','teams','leagues','childRegions')->find($region->id);
+          $data['members'] = Member::whereIn('id', $region->members()->pluck('member_id'))->with('memberships')->get();
+
+          return view('admin/region_dashboard', $data);
+
+    }
+
 
     public function create()
     {
@@ -73,34 +89,22 @@ class RegionController extends Controller
     public function datatable($language)
     {
       Log::info('at least i ma here');
-      $regions = Region::with('regionadmin')->get();
+      $regions = Region::with('regionadmin')->withCount('clubs','leagues','teams','gyms')->get();
       Log::info('regions found:'.$regions->count());
 
       $regionlist = datatables()::of($regions);
 
       return $regionlist
         ->addIndexColumn()
-        ->rawColumns(['regionadmin','action'])
-        ->addColumn('action', function($r){
-            if ( ($r->clubs->count()==0) and ($r->leagues->count()==0) and ($r->childregions->count()==0)  ){
-                return '<button type="button" id="deleteRegion" name="deleteRegion" class="btn btn-outline-danger btn-sm" data-region-id="'.$r->id.'"
-                        data-region-name="'.$r->name.'" data-toggle="modal" data-target="#modalDeleteRegion"><i class="fa fa-trash"></i></button>';
-
-            } else {
-                return '';
-            }
-        })
-        ->editColumn('created_at', function ($r) use ($language) {
-                return Carbon::parse($r->created_at)->locale($language)->isoFormat('lll');
-            })
-        ->editColumn('updated_at', function ($r) use ($language) {
-                return Carbon::parse($r->updated_at)->locale($language)->isoFormat('lll');
-            })
+        ->rawColumns(['regionadmin','code'])
+        ->editColumn('code', function ($data) {
+            return '<a href="' . route('region.dashboard', ['language'=>Auth::user()->locale,'region'=>$data->id]) .'">'.$data->code.'</a>';
+            })        
         ->editColumn('regionadmin', function ($r) use ($language) {
             if ($r->regionadmin()->exists()){
-                $admin = '<a href="'. route('membership.region.edit', ['language'=>Auth::user()->locale,'region'=>$r->id, 'member'=>$r->regionadmin()->first()->id]) .'">'.$r->regionadmin()->first()->firstname.' '.$r->regionadmin()->first()->lastname.'</a>';
+                $admin = $r->regionadmin()->first()->firstname.' '.$r->regionadmin()->first()->lastname;
             } else {
-                $admin = '<a href="'. route('membership.region.create', ['language'=>Auth::user()->locale,'region'=>$r->id]) .'"><i class="fas fa-user-tie"></i></a>';
+                $admin = '<a href="'. route('membership.region.create', ['language'=>Auth::user()->locale,'region'=>$r->id]) .'"><i class="fas fa-plus-circle"></i></a>';
             }
             return $admin;
         })

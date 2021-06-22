@@ -20,6 +20,7 @@ function pearson_correlation($x,$y){
 
 $array_x = array(5,3,6,7,4,2,9,5);
 $array_y = array(4,3,4,8,3,2,10,5);
+// $array_y = array(1,2,1,2,1,3,1,22);
 $pearson = pearson_correlation($array_x,$array_y);
 echo $pearson;
 ?>

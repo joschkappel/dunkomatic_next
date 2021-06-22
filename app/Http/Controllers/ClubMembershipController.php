@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Club;
 use App\Models\Member;
-use App\Models\Membership;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
@@ -44,62 +43,35 @@ class ClubMembershipController extends Controller
      */
     public function create($language, Club $club)
     {
-      $members = $club->members()->get();
-      return view('member/membership_club_new', ['club' => $club, 'members' => $members]);
+      return view('member/member_new', ['entity' => $club, 'entity_type' => Club::class ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Club  $club
+     * @param  \App\Models\Member  $member
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Club $club)
+    public function add(Request $request, Club $club, Member $member)
     {
-      Log::debug(print_r($request->all(),true));
+        $data = $request->validate([
+            'selRole' => ['required', new EnumValue(Role::class, false)],
+            'function'  => 'nullable|max:40',
+            'email'     => 'nullable|max:60|email:rfc,dns',
+            ]);
 
-      $data = $request->validate( [
-          'member_id' => 'required|exists:members,id',
-          'selRole'   => 'required|array|min:1',
-          'selRole.*' => ['required', new EnumValue(Role::class, false)],
-          'function'  => 'nullable|max:40',
-          'email'     => 'nullable|max:60|email:rfc,dns'
-      ] );
+         // create a new membership
+         $club->memberships()->create(['role_id' => $data['selRole'],
+                                        'member_id' => $member->id,
+                                        'function' => $data['function'],
+                                        'email' => $data['email']
+                                        ]);
 
-      Log::debug(print_r($data['selRole'],true));
-
-      $member = Member::find($data['member_id']);
-
-      foreach ( $data['selRole'] as $k => $role ){
-        //Log::debug($role);
-        $new_mrole = $club->memberships()->create(['role_id' => $role,
-                                         'member_id' => $member->id]);
-      }
-
-      return redirect()->action(
-            'ClubController@dashboard', ['language' => app()->getLocale(), 'club' => $club]
-      );
+         return redirect()->back();
     }
 
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Club  $club
-     * @param  \App\Membership  $membership
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($language, Club $club, Member $member)
-    {
-      $memberships = $club->memberships()->where('member_id', $member->id)->get();
-      Log::debug(print_r($memberships,true));
-      $members = $club->members()->get();
-
-      //Log::debug(print_r($member,true));
-      return view('member/membership_club_edit', ['member' => $member, 'membership' => $memberships, 'club' => $club,'members' => $members]);
-
-    }
 
     /**
      * Update the specified resource in storage.
@@ -112,24 +84,21 @@ class ClubMembershipController extends Controller
     public function update(Request $request, Club $club, Member $member)
     {
               $data = $request->validate([
-                  'member_id' => 'required|exists:members,id',
-                  'selRole'   => 'required|array|min:1',
-                  'selRole.*' => ['required', new EnumValue(Role::class, false)],
-                  'function'  => 'nullable|max:40',
-                  'email'     => 'nullable|max:60|email:rfc,dns'
+                  'member_id' => 'required|exists:members,id'
               ] );
 
-              //Log::info(print_r($data, true));
-              Log::debug(print_r($request->all(),true));
+              // get all current memberships
+              $mships = $member->memberships->where('membership_type', Club::class)->where('membership_id', $club->id);
               $member_new = Member::find($data['member_id']);
 
-              // delete current roles
-              $club->memberships()->where('member_id',$member->id)->delete();
-
-              foreach ( $data['selRole'] as $k => $role ){
+              foreach ( $mships as $ms ){
                 //Log::debug($role);
-                $new_mrole = $club->memberships()->create(['role_id' => $role,
-                                                 'member_id' => $member_new->id]);
+                $ms->update(['member_id' => $member_new->id]);
+              }
+
+              // check if old member is w/out memberships, if so delete
+              if ( $member_new->memberships->count() == 0 ){
+                $member_new->delete();
               }
 
               return redirect()->action(

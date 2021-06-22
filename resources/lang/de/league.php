@@ -26,4 +26,5 @@ return [
   'agetype' => 'Altersklasse',
   'gendertype' => 'Geschlect',
   'pickchar_enabled' => 'Ziffernwahl freigegeben',
+  'member.action.create' => 'Neuer Rundenmitarbeiter',
 ];

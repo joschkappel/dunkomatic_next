@@ -53,6 +53,7 @@ Route::group([
     // Route::get('region/{region}', 'RegionController@edit')->name('region.edit')->middleware('regionadmin');
     Route::get('regions/dt', 'RegionController@datatable')->name('region.list.dt');
     // Route::get('region', 'RegionController@index')->name('region.index');
+    Route::get('region/{region}/dashboard', 'RegionController@dashboard')->name('region.dashboard');
 
 
     Route::get('club/index_stats', 'ClubController@index_stats')->name('club.index_stats');
@@ -75,17 +76,13 @@ Route::group([
     Route::resource('league', 'LeagueController')->except('store','update','destroy');
     Route::resource('league.game', 'LeagueGameController')->shallow()->only(['index','create','edit']);
 
-    Route::get('member/{member}', 'MemberController@show')->name('member.show');
+    Route::get('member/{member}/show', 'MemberController@show')->name('member.show');
+    Route::get('member/{member}', 'MemberController@edit')->name('member.edit');
     Route::get('member', 'MemberController@index')->name('member.index');
-    Route::get('membership/club/{club}', 'ClubMembershipController@index')->name('membership.club.index');
+    
     Route::get('membership/club/{club}/member', 'ClubMembershipController@create')->name('membership.club.create');
-    Route::get('membership/club/{club}/member/{member}', 'ClubMembershipController@edit')->name('membership.club.edit');
-    Route::get('membership/league/{league}', 'LeagueMembershipController@index')->name('membership.league.index');
     Route::get('membership/league/{league}/member', 'LeagueMembershipController@create')->name('membership.league.create');
-    Route::get('membership/league/{league}/member/{member}', 'LeagueMembershipController@edit')->name('membership.league.edit');
     Route::get('membership/region/{region}/member', 'RegionMembershipController@create')->name('membership.region.create');
-    Route::get('membership/region/{region}/member/{member}', 'RegionMembershipController@edit')->name('membership.region.edit');
-
     Route::resource('membership', 'MembershipController')->only(['show']);
 
     Route::get('scheme/index', 'LeagueSizeSchemeController@index')->name('scheme.index');
@@ -124,10 +121,12 @@ Route::middleware(['auth'])->group(function () {
   Route::post('user/{user}/block', 'UserController@block')->name('admin.user.block')->middleware('can:manage-users');
   Route::put('user/{user}', 'UserController@update')->name('admin.user.update');
   Route::put('user/{user}/allowance', 'UserController@allowance')->name('admin.user.allowance')->middleware('can:manage-users');
+  
   Route::put('member/{member}', 'MemberController@update')->name('member.update');
   Route::post('member', 'MemberController@store')->name('member.store');
   Route::get('member/{member}/invite', 'MemberController@invite')->name('member.invite');
   Route::delete('member/{member}', 'MemberController@destroy')->name('member.destroy');
+
   Route::put('region/{region}/details', 'RegionController@update_details')->name('region.update_details')->middleware('can:update-regions');
   // Route::post('region', 'RegionController@create')->name('region.create')->middleware('auth')->middleware('regionadmin');
 
@@ -159,18 +158,16 @@ Route::middleware(['auth'])->group(function () {
   Route::post('league/{league}/club', 'LeagueController@assign_club')->name('league.assign-club');
   Route::resource('league', 'LeagueController')->only('store','update','destroy')->middleware('can:manage-leagues');
 
-  Route::post('membership/club/{club}/member', 'ClubMembershipController@store')->name('membership.club.store');
-  Route::put('membership/club/{club}/member/{member}', 'ClubMembershipController@update')->name('membership.club.update');
+  Route::post('membership/club/{club}/member/{member}', 'ClubMembershipController@add')->name('membership.club.add');
   Route::delete('membership/club/{club}/member/{member}', 'ClubMembershipController@destroy')->name('membership.club.destroy');
-  Route::post('membership/league/{league}/member', 'LeagueMembershipController@store')->name('membership.league.store');
-  Route::put('membership/league/{league}/member/{member}', 'LeagueMembershipController@update')->name('membership.league.update');
+  Route::post('membership/league/{league}/member/{member}', 'LeagueMembershipController@add')->name('membership.league.add');
   Route::delete('membership/league/{league}/member/{member}', 'LeagueMembershipController@destroy')->name('membership.league.destroy');
-  Route::post('membership/region/{region}/member', 'RegionMembershipController@store')->name('membership.region.store');
-  Route::put('membership/region/{region}/member/{member}', 'RegionMembershipController@update')->name('membership.region.update');
+  Route::post('membership/region/{region}/member/{member}', 'RegionMembershipController@add')->name('membership.region.add');
   Route::delete('membership/region/{region}/member/{member}', 'RegionMembershipController@destroy')->name('membership.region.destroy');
-
-
-  Route::resource('membership', 'MembershipController')->only(['destroy']);
+  Route::put('membership/{membership}', 'MembershipController@update')->name('membership.update');
+  Route::delete('membership/{membership}', 'MembershipController@destroy')->name('membership.destroy');
+  Route::post('membership', 'MembershipController@store')->name('membership.store');
+  
 
   Route::delete('league/{league}/game', 'LeagueGameController@destroy_game')->name('league.game.destroy');
   Route::delete('league/{league}/game/noshow', 'LeagueGameController@destroy_noshow_game')->name('league.game.destroy_noshow');
