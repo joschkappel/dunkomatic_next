@@ -2,9 +2,10 @@
 
 namespace Tests\Unit;
 
-use App\Models\Region;
 use App\Models\Member;
 use App\Models\Membership;
+use App\Enums\Role;
+use App\Models\Club;
 
 use Tests\TestCase;
 use Tests\Support\Authentication;
@@ -37,7 +38,7 @@ class MemberControllerTest extends TestCase
                       ]);
       $response->assertStatus(302)
                //->assertSessionHasNoErrors();
-               ->assertSessionHasErrorsIn('err_member',['zipcode','email1']);
+               ->assertSessionHasErrors(['zipcode','email1']);
 
       $this->assertDatabaseMissing('members', ['lastname' => 'testmember']);
 
@@ -53,6 +54,9 @@ class MemberControllerTest extends TestCase
      */
     public function store_ok()
     {
+      Club::factory()->create(['name'=>'testclub']);
+      $club = Club::where('name','testclub')->first();
+
       $response = $this->authenticated()
                         ->post(route('member.store'), [
                           'firstname' => 'firstname',
@@ -62,14 +66,18 @@ class MemberControllerTest extends TestCase
                           'street' => 'street',
                           'mobile' => 'mobileno',
                           'email1' => 'testmember@gmail.com',
+                          'role_id' => Role::ClubLead(),
+                          'entity_type' => Club::class,
+                          'entity_id' => $club->id,
+                          'member_id' => null,
+                          'function' => '',
+                          'email' => '',
                       ]);
 
       $member = Member::where('lastname','testmember')->first();
 
       $response->assertStatus(302)
-               ->assertSessionHasNoErrors()
-               ->assertSessionHas('member.lastname', $member->lastname);
-
+               ->assertSessionHasNoErrors();
 
       $this->assertDatabaseHas('members', ['lastname' => 'testmember']);
 
@@ -99,7 +107,7 @@ class MemberControllerTest extends TestCase
                       ]);
       $response->assertStatus(302)
                //->assertSessionHasNoErrors();
-               ->assertSessionHasErrorsIn('err_member',['zipcode','email1']);
+               ->assertSessionHasErrors(['zipcode','email1']);
 
       $this->assertDatabaseMissing('members', ['lastname' => 'testmember2']);
       $this->assertDatabaseHas('members', ['lastname' => 'testmember']);
@@ -127,6 +135,7 @@ class MemberControllerTest extends TestCase
                           'street' => 'street',
                           'mobile' => 'mobileno',
                           'email1' => 'testmember2@gmail.com',
+                          'backto' => url(route('member.index', ['language'=>'de']))
                       ]);
       $response->assertStatus(302)
                ->assertSessionHasNoErrors();
@@ -167,10 +176,11 @@ class MemberControllerTest extends TestCase
     public function sb_region()
     {
 
-      $member = $members = Membership::whereIn('membership_id', $this->region->clubs()->pluck('id'))
+      $mship = Membership::whereIn('membership_id', $this->region->clubs()->pluck('id'))
                            ->where('membership_type',Club::class)
                            ->with('member')
                            ->first();
+      $member = $mship->member;
       $response = $this->authenticated()
                         ->get(route('member.sb.region',['region'=>$this->region]));
 
@@ -205,4 +215,19 @@ class MemberControllerTest extends TestCase
                 ->assertSessionHasNoErrors();
        $this->assertDatabaseMissing('members', ['id'=>$member->id]);
      }
+     /**
+      * cleanup
+      *
+      * @test
+      * @group member
+      * @group db_cleanup
+      * @group controller
+      *
+      * @return void
+      */
+      public function db_cleanup()
+      {
+        Club::where('name','testclub')->delete();
+        
+      }     
 }

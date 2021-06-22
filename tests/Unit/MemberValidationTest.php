@@ -26,7 +26,7 @@ class MemberValidationTest extends TestCase
       $response = $this->authenticated()
            ->post(route('member.store'), [$formInput => $formInputValue]);
 
-      $response->assertSessionHasErrorsIn('err_member', $formInput);
+      $response->assertSessionHasErrors($formInput);
     }
 
     public function memberForm(): array

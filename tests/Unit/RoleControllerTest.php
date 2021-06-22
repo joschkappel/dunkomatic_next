@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Models\Region;
+use App\Models\League;
 use App\Enums\Role;
 
 use Tests\TestCase;
@@ -40,7 +40,7 @@ class RoleControllerTest extends TestCase
                ->assertJson($roles);
 
        $response = $this->authenticated()
-                        ->post(route('role.index',['scope'=>'LEAGUE']));
+                        ->post(route('role.index',['scope'=>League::class]));
        $l[] = Role::coerce('LeagueLead');
        $roles = array();
        foreach($l as $role){
