@@ -21,11 +21,9 @@ return [
   'zipcode' => 'Zipcode',
   'city' => 'City',
   'mobile' => 'Mobile phone no',
-  'phone1' => 'Fixed line no',
-  'phone2' => 'Alternative phone no',
+  'phone' => 'Fixed line no',
   'email1' => 'eMail address',
   'email2' => 'Alternative eMail',
-  'fax1' => 'Fax no',
-  'fax2' => 'Alternative fax no',
+  'fax' => 'Fax no',
   'user.account' => 'User account'
 ];

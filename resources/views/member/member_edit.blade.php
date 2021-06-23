@@ -77,18 +77,9 @@
               </div>
               <div class="form-group row">
                   <div class="col-sm-6">
-                      <input type="text" class="form-control @error('phone1','err_member') is-invalid @enderror"
-                        id="phone1" name="phone1" placeholder="@lang('role.phone1')" value="{{ old('phone1') ? old('phone1') : $member->phone1 }}"></input>
-                      @error('phone1','err_member')
-                      <div class="invalid-feedback">{{ $message }}</div>
-                      @enderror
-                  </div>
-              </div>
-              <div class="form-group row">
-                  <div class="col-sm-6">
-                      <input type="text" class="form-control @error('phone2','err_member') is-invalid @enderror"
-                        id="phone2" name="phone2" placeholder="@lang('role.phone2')" value="{{ old('phone2') ? old('phone2') : $member->phone2 }}"></input>
-                      @error('phone2','err_member')
+                      <input type="text" class="form-control @error('phone','err_member') is-invalid @enderror"
+                        id="phone" name="phone" placeholder="@lang('role.phone')" value="{{ old('phone') ? old('phone') : $member->phone }}"></input>
+                      @error('phone','err_member')
                       <div class="invalid-feedback">{{ $message }}</div>
                       @enderror
                   </div>
@@ -113,18 +104,9 @@
               </div>
               <div class="form-group row">
                   <div class="col-sm-6">
-                      <input type="text" class="form-control @error('fax1','err_member') is-invalid @enderror"
-                        id="fax1" name="fax1" placeholder="@lang('role.fax1')" value="{{ old('fax1') ? old('fax1') : $member->fax1 }}"></input>
-                      @error('fax1','err_member')
-                      <div class="invalid-feedback">{{ $message }}</div>
-                      @enderror
-                  </div>
-              </div>
-              <div class="form-group row">
-                  <div class="col-sm-6">
-                      <input type="text" class="form-control @error('fax2','err_member') is-invalid @enderror"
-                        id="fax2" name="fax2" placeholder="@lang('role.fax2')" value="{{ old('fax2') ? old('fax2') : $member->fax2 }}"></input>
-                      @error('fax2','err_member')
+                      <input type="text" class="form-control @error('fax','err_member') is-invalid @enderror"
+                        id="fax" name="fax" placeholder="@lang('role.fax')" value="{{ old('fax') ? old('fax') : $member->fax }}"></input>
+                      @error('fax','err_member')
                       <div class="invalid-feedback">{{ $message }}</div>
                       @enderror
                   </div>

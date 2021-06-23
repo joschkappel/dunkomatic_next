@@ -20,13 +20,11 @@ class CreateMembersTable extends Migration
             $table->string('city', 40)->nullable();;
             $table->string('zipcode', 10)->nullable();;
             $table->string('street', 40)->nullable();;
-            $table->string('phone1', 40)->nullable();
-            $table->string('phone2', 40)->nullable();
+            $table->string('phone', 40)->nullable();
             $table->string('mobile', 40)->nullable();
             $table->string('email1');
             $table->string('email2')->nullable();
-            $table->string('fax1', 40)->nullable();
-            $table->string('fax2', 40)->nullable();
+            $table->string('fax', 40)->nullable();
             $table->timestamps();
         });
 
