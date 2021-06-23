@@ -275,7 +275,7 @@ class ClubController extends Controller
           $ms->delete();
       }
 
-      $check = $club->delete();
+      $club->delete();
 
       return redirect()->route('club.index', ['language'=> app()->getLocale()]);
     }

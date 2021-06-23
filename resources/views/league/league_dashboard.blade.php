@@ -43,6 +43,11 @@
                   <a href="{{ route('league.edit',['language'=>app()->getLocale(),'league' => $league ]) }}" class="small-box-footer">
                       @lang('league.action.edit') <i class="fas fa-arrow-circle-right"></i>
                   </a>
+                  @if (count($games) == 0 )
+                  <a id="deleteLeague" href="#" data-toggle="modal" data-target="#modalDeleteLeague" class="small-box-footer" dusk="btn-delete">
+                      @lang('league.action.delete') <i class="fa fa-trash"></i>
+                  </a>
+                  @endif
               </div>
             </div>
     </div>
@@ -221,6 +226,7 @@
       <!-- /.card -->
       <!-- all modals here -->
       @include('league/includes/assign_club')
+      @include('league/includes/league_delete')
       @include('member/includes/member_delete')
       @include('league/includes/withdraw_team')
       @include('league/includes/inject_team')
@@ -366,6 +372,11 @@
                        console.log('Error:', data);
                    }
                });
+        });
+        $("#deleteLeague").click( function(){
+          var url = "{{ route('league.destroy', ['league'=>$league])}}";
+          $('#confirmDeleteLeague').attr('action', url);
+          $('#modalDeleteLeague').modal('show');
         });
   });
 </script>
