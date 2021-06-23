@@ -64,19 +64,9 @@ class MembershipController extends Controller
      */
     public function destroy( Membership $membership)
     {
-        // Log::debug(print_r($membership,true));
-        $member = Member::find($membership->member_id);
-        // Log::debug(print_r($member,true));
         // delete role
-        $check = Membership::where('id', $membership->id)->delete();
-
-        // get left roles for member
-        $other_roles = $member->memberships()->get();
-        Log::debug(print_r(count($other_roles),true));
-        if ( count($other_roles) == 0){
-          // delete member as well
-          Member::find($membership->member_id)->delete();
-        }
+        $membership->delete();
+        Log::info('membership deleted');
 
         return true;
     }

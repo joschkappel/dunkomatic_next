@@ -9,6 +9,8 @@ use App\Models\Region;
 use App\Enums\Role;
 use Bouncer;
 
+use Illuminate\Support\Facades\Log;
+
 class MembershipObserver
 {
     /**
@@ -77,6 +79,14 @@ class MembershipObserver
                     Bouncer::retract('leagueadmin')->from($u);
                 }
             }
+        }
+
+        $member = $membership->member;
+        Log::info('member checked');
+        if ( $member->memberships->count() == 0){
+            // none, delete member as well
+            $member->delete();
+            Log::info('member '.$member->id.' deleted');
         }
 
     }

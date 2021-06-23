@@ -98,15 +98,12 @@ class RegionMembershipController extends Controller
      */
     public function destroy(Region $region, Member $member)
     {
-        // Log::debug(print_r($membership,true));
-        // delete all league related memberships
         $region->memberships()->where('member_id',$member->id)->delete();
 
-        $member->refresh();
-        // now check if there are any other memberships for this member
-        if ( $member->memberships()->count() == 0){
-          // none, delete member as well
-          $member->delete();
+        $mships = $region->memberships()->where('member_id',$member->id)->get();
+        foreach ($mships as $ms){
+          $ms->delete();
+          Log::info('membership '.$ms->id.' deleted');
         }
 
         return redirect()->back();

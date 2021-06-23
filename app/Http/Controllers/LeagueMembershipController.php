@@ -121,15 +121,10 @@ class LeagueMembershipController extends Controller
      */
     public function destroy(League $league, Member $member)
     {
-        // Log::debug(print_r($membership,true));
-        // delete all league related memberships
-        $league->memberships()->where('member_id',$member->id)->delete();
-
-        $member->refresh();
-        // now check if there are any other memberships for this member
-        if ( $member->memberships()->count() == 0){
-          // none, delete member as well
-          $member->delete();
+        $mships = $league->memberships()->where('member_id',$member->id)->get();
+        foreach ($mships as $ms){
+          $ms->delete();
+          Log::info('membership deleted');
         }
 
         return redirect()->back();

@@ -298,7 +298,7 @@ class ClubControllerTest extends TestCase
       $response = $this->authenticated()
                         ->delete(route('club.destroy',['club'=>$club]));
 
-      $response->assertStatus(200)
+      $response->assertStatus(302)
                ->assertSessionHasNoErrors();
       $this->assertDatabaseMissing('clubs', ['id'=>$club->id]);
     }

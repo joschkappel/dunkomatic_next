@@ -159,7 +159,7 @@ class ClubGymController extends Controller
     public function destroy(  Gym $gym)
     {
       Log::info('deleteing gym '.$gym->id);
-      $check = Gym::where('id', $gym->id)->delete();
+      $check = $gym->delete();
 
       return redirect()->route('club.dashboard', ['language'=>app()->getLocale(), 'club' => $gym->club_id ]);
     }

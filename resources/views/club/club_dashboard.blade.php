@@ -51,9 +51,11 @@
                   <a href="{{ route('club.edit',['language'=> app()->getLocale(),'club' => $club ]) }}" class="small-box-footer" dusk="btn-edit">
                       @lang('club.action.edit') <i class="fas fa-arrow-circle-right"></i>
                   </a>
+                  @if (count($games_home) == 0 )
                   <a id="deleteClub" href="#" data-toggle="modal" data-target="#modalDeleteClub" class="small-box-footer" dusk="btn-delete">
                       @lang('club.action.delete') <i class="fa fa-trash"></i>
                   </a>
+                  @endif
               </div>
             </div>
         {{-- <div class="col-sm-6">
