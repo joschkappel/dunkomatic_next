@@ -18,6 +18,8 @@ return [
   'title.delete' => 'Delete a Club',
   'title.gamehome.edit' => 'Edit Start Date and Time for Home Games',
   'title.gamehome.import' => 'Upload Home Game File',
+  'title.membership.add'  => 'Add new role for member',
+  'title.membership.mod'  => 'Modify oder Delete role of a member',
   'menu.list' => 'Clublist',
   'menu.stats' => 'Statistics',
   'registered' => 'Registered Clubs',

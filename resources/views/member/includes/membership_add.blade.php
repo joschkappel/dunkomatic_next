@@ -1,4 +1,5 @@
-<div class="modal fade right" id="modalAddMembership" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false">
+<div class="modal fade right" id="modalAddMembership" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true" data-backdrop="false">
     <div class="modal-dialog modal-side modal-bottom-right modal-notify modal-info" role="document">
         <!--Content-->
         <div class="modal-content">
@@ -20,35 +21,41 @@
                         @csrf
                         <div class="card-body">
                             <div class="form-group row">
-                                <label for="selRole" class="col-sm-4 col-form-label">{{ trans_choice('role.role',1)}}</label>
-                                <div class="col-sm-6">
-                                  <select class='js-role-single js-states form-control select2' id='selRole' name='selRole'></select>
+                                <div class="col-sm-8">
+                                    <select class='js-role-single js-states form-control select2 @error('selRole') is-invalid @enderror' id='selRole'
+                                        name='selRole'></select>
+                                    @error('selRole')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror                                        
                                 </div>
                             </div>
                             <div class="form-group row">
-                          <label for="function" class="col-sm-4 col-form-label">@lang('role.function')</label>
-                          <div class="col-sm-6">
-                              <input type="text" class="form-control @error('function') is-invalid @enderror" id="function" name="function" placeholder="@lang('role.function')" value="{{ old('function') }}">
-                              @error('function')
-                              <div class="invalid-feedback">{{ $message }}</div>
-                              @enderror
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="email" class="col-sm-4 col-form-label">@lang('role.email1')</label>
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control @error('email','err_member') is-invalid @enderror"
-                                  id="email" name="email" placeholder="@lang('role.email1')" value="{{ old('email') }}"></input>
-                                @error('email')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control @error('function') is-invalid @enderror"
+                                        id="function" name="function" placeholder="@lang('role.function')"
+                                        value="{{ old('function') }}">
+                                    @error('function')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
-                        </div>     
+                            <div class="form-group row">
+                                <div class="col-sm-8">
+                                    <input type="text"
+                                        class="form-control @error('email') is-invalid @enderror"
+                                        id="email" name="email" placeholder="@lang('role.email1')"
+                                        value="{{ old('email') }}"></input>
+                                    @error('email')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
 
                         </div>
                         <div class="card-footer">
-                            <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-                                <button type="submit" class="btn btn-info">{{ __('Submit')}}</button>
+                            <div class="btn-toolbar justify-content-between" role="toolbar"
+                                aria-label="Toolbar with button groups">
+                                <button type="submit" class="btn btn-info">{{ __('Submit') }}</button>
                             </div>
                         </div>
                     </form>
@@ -62,31 +69,30 @@
 <!--Modal: modalRelatedContent-->
 @push('js')
 
-<script>
-    $(function() {
-      $(".js-role-single").select2({
-        placeholder: "@lang('role.action.select')...",
-          theme: 'bootstrap4',
-          multiple: false,
-          allowClear: false,
-          ajax: {
-                  url: "{{ route('role.index')}}",
-                  type: "POST",
-                  delay: 250,
-                  dataType: "json",
-                  data: {
-                       "_token": "{{ csrf_token() }}",
-                       "scope": $('#entitytype').val()
-                   },
-                  processResults: function (response) {
-                    return {
-                      results: response
-                    };
-                  },
-                  cache: true
+    <script>
+        $(function() {
+            $(".js-role-single").select2({
+                placeholder: "@lang('role.action.select')...",
+                theme: 'bootstrap4',
+                multiple: false,
+                allowClear: false,
+                ajax: {
+                    url: "{{ route('role.index') }}",
+                    type: "POST",
+                    delay: 250,
+                    dataType: "json",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "scope": $('#entitytype').val()
+                    },
+                    processResults: function(response) {
+                        return {
+                            results: response
+                        };
+                    },
+                    cache: true
                 }
-      });
-    });
-
-</script>
+            });
+        });
+    </script>
 @endpush
