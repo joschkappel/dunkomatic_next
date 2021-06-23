@@ -99,7 +99,7 @@ class ClubController extends Controller
             return (strpos($value,$club->shortname) !== false);
           });
 
-          Log::debug(print_r($reports,true));
+          //Log::debug(print_r($reports,true));
           $data['files'] = $reports;
           return view('club/club_dashboard', $data);
 
@@ -265,8 +265,18 @@ class ClubController extends Controller
     public function destroy(Club $club)
     {
       Log::info(print_r($club->id, true));
+      // delete all dependent items
+
+      $club->teams()->delete();
+      $club->gyms()->delete();
+      $club->leagues()->detach();
+      $mships = $club->memberships()->get();
+      foreach ($mships as $ms){
+          $ms->delete();
+      }
+
       $check = $club->delete();
 
-      return Response::json($check);
+      return redirect()->route('club.index', ['language'=> app()->getLocale()]);
     }
 }
