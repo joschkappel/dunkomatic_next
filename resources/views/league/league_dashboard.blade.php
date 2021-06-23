@@ -150,7 +150,7 @@
             data-league-sname="{{ $league->shortname }}" data-toggle="modal" data-target="#modalDeleteMember"><i class="fa fa-trash"></i></button>
           <a href="{{ route('member.edit',['language'=>app()->getLocale(), 'member' => $member ]) }}" class=" px-2">{{ $member->name }} <i class="fas fa-arrow-circle-right"></i></a>
             @if (! $member->is_user)
-            <a href="{{ route('member.invite',[ 'member' => $member]) }}"><i class="fas fa-user-plus"></i></a>
+            <a href="{{ route('member.invite',[ 'member' => $member]) }}" type="button" class="btn btn-outline-primary btn-sm"><i class="far fa-paper-plane"></i></a>
             @endif
             <button type="button" id="addMembership" class="btn btn-outline-primary btn-sm" data-member-id="{{ $member->id }}"
               data-league-id="{{ $league->id }}" data-toggle="modal" data-target="#modalLeagueMembershipAdd"><i class="fas fa-user-tag"></i></button>            

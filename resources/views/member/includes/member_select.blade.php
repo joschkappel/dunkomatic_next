@@ -3,7 +3,8 @@
         <!--Content-->
         <div class="modal-content">
             <!--Header-->
-            <div class="modal-header bg-danger">
+            <div class="modal-header bg-info">
+            <p class="heading" id="dheader">@lang('role.member.title.select')</p>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true" class="white-text">&times;</span>
                 </button>
@@ -14,15 +15,14 @@
                 <div class="card card-info">
                         <div class="card-body">
                           <div class="form-group row">
-                            <label class="col-sm-2 col-form-label" for='selMember'>{{trans_choice('member.member',1)}}</label>
-                            <div class="col-sm-6">
+                            <div class="col-sm-8">
                               <select class="js-sel-member js-states form-control select2" name="selMember" id='selMember'></select>
                             </div>
                           </div>
                         </div>
                         <div class="card-footer">
                             <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-                                <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">@lang('OK')</button>
                             </div>
                         </div>
                 </div>

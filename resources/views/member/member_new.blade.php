@@ -39,66 +39,64 @@
                         <div class="form-group row">
                           <div class="col-sm-10">
                           <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                            <button type="button" id="btnSelectMember" class="btn btn-secondary">Select from Region</button>
-                            <button type="button" id="btnClear" class="btn btn-secondary">Clear</button>
+                            <button type="button" id="btnSelectMember" class="btn btn-secondary">@lang('role.member.action.select')</button>
+                            <button type="button" id="btnClear" class="btn btn-secondary">@lang('Clear')</button>
                           </div>
                           </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-6">
-                                <input type="text" class="form-control @error('firstname','err_member') is-invalid @enderror"
+                                <input type="text" class="form-control @error('firstname') is-invalid @enderror"
                                   id="firstname" name="firstname" placeholder="@lang('role.firstname')" value="{{ old('firstname') }}"></input>
-                                @error('firstname','err_member')
+                                @error('firstname')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control @error('lastname','err_member') is-invalid @enderror"
+                                <input type="text" class="form-control @error('lastname') is-invalid @enderror"
                                   id="lastname" name="lastname" placeholder="@lang('role.lastname')" value="{{ old('lastname') }}"></input>
-                                @error('lastname','err_member')
+                                @error('lastname')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-6">
-                                <input type="text" class="form-control @error('street','err_member') is-invalid @enderror"
+                                <input type="text" class="form-control @error('street') is-invalid @enderror"
                                   id="street" name="street" placeholder="@lang('role.street')" value="{{ old('street')}}"></input>
-                                @error('street','err_member')
+                                @error('street')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-6">
-                                <input type="text" class="form-control @error('zipcode','err_member') is-invalid @enderror"
+                                <input type="text" class="form-control @error('zipcode') is-invalid @enderror"
                                   id="zipcode" name="zipcode" placeholder="@lang('role.zipcode')" value="{{ old('zipcode') }}"></input>
-                                @error('zipcode','err_member')
+                                @error('zipcode')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control @error('city','err_member') is-invalid @enderror"
+                                <input type="text" class="form-control @error('city') is-invalid @enderror"
                                   id="city" name="city" placeholder="@lang('role.city')" value="{{old('city') }}"></input>
-                                @error('city','err_member')
+                                @error('city')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-6">
-                                <input type="text" class="form-control @error('mobile','err_member') is-invalid @enderror"
+                                <input type="text" class="form-control @error('mobile') is-invalid @enderror"
                                   id="mobile" name="mobile" placeholder="@lang('role.mobile')" value="{{ old('mobile') }}"></input>
-                                @error('mobile','err_member')
+                                @error('mobile')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                        </div>
-                        <div class="form-group row">
                             <div class="col-sm-6">
-                                <input type="text" class="form-control @error('phone','err_member') is-invalid @enderror"
+                                <input type="text" class="form-control @error('phone') is-invalid @enderror"
                                   id="phone" name="phone" placeholder="@lang('role.phone')" value="{{ old('phone') }}"></input>
-                                @error('phone','err_member')
+                                @error('phone')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -106,25 +104,25 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-6">
-                                <input type="text" class="form-control @error('email1','err_member') is-invalid @enderror"
+                                <input type="text" class="form-control @error('email1') is-invalid @enderror"
                                   id="email1" name="email1" placeholder="@lang('role.email1')" value="{{ old('email1') }}"></input>
-                                @error('email1','err_member')
+                                @error('email1')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control @error('email2','err_member') is-invalid @enderror"
+                                <input type="text" class="form-control @error('email2') is-invalid @enderror"
                                   id="email2" name="email2" placeholder="@lang('role.email2')" value="{{ old('email2') }}"></input>
-                                @error('email2','err_member')
+                                @error('email2')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-6">
-                                <input type="text" class="form-control @error('fax','err_member') is-invalid @enderror"
+                                <input type="text" class="form-control @error('fax') is-invalid @enderror"
                                   id="fax" name="fax" placeholder="@lang('role.fax')" value="{{ old('fax') }}"></input>
-                                @error('fax','err_member')
+                                @error('fax')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -132,7 +130,6 @@
 
 
                         <div class="form-group row">
-                          <label class="col-sm-4 col-form-label" for='role_id'>{{trans_choice('role.role',1)}}</label>
                           <div class="col-sm-6">
                             <select class="js-sel-role js-states form-control select2  @error('role_id') is-invalid @enderror" name="role_id" id='role_id'></select>
                             @error('role_id')
@@ -141,18 +138,14 @@
                           </div>
                         </div>
                         <div class="form-group row">
-                          <label for="function" class="col-sm-4 col-form-label">@lang('role.function')</label>
                           <div class="col-sm-6">
                               <input type="text" class="form-control @error('function') is-invalid @enderror" id="function" name="function" placeholder="@lang('role.function')" value="{{ old('function') }}">
                               @error('function')
                               <div class="invalid-feedback">{{ $message }}</div>
                               @enderror
                           </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="email" class="col-sm-4 col-form-label">@lang('role.email1')</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control @error('email','err_member') is-invalid @enderror"
+                                <input type="text" class="form-control @error('email') is-invalid @enderror"
                                   id="email" name="email" placeholder="@lang('role.email1')" value="{{ old('email') }}"></input>
                                 @error('email')
                                 <div class="invalid-feedback">{{ $message }}</div>
