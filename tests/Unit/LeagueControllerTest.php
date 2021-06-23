@@ -416,7 +416,7 @@ class LeagueControllerTest extends TestCase
       $response = $this->authenticated( )
                         ->delete(route('league.destroy',['league'=>$league]));
 
-      $response->assertStatus(200)
+      $response->assertStatus(302)
                ->assertSessionHasNoErrors();
       $this->assertDatabaseMissing('leagues', ['id'=>$league->id]);
     }

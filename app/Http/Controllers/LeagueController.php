@@ -368,9 +368,18 @@ class LeagueController extends Controller
      public function destroy(League $league)
      {
          $league->clubs()->detach();
-         $check = $league->delete();
+         foreach ($league->teams as $t){
+            $t->league()->dissociate();
+            $t->save();
+         }
+         $mships = $league->memberships()->get();
+         foreach ($mships as $ms){
+             $ms->delete();
+         }
+   
+         $league->delete();
 
-         return Response::json($check);
+         return redirect()->route('league.index', ['language'=> app()->getLocale()]);
      }
 
      /**
