@@ -20,12 +20,10 @@ return [
   'street' => 'Straße/Hausnr.',
   'zipcode' => 'PLZ',
   'city' => 'Stadt',
-  'mobile' => 'Mobilnummer',
-  'phone1' => 'Telefonnr.',
-  'phone2' => 'Alternative Nr.',
+  'mobile' => 'Mobil-Nr.',
+  'phone' => 'Telefon-Nr.',
   'email1' => 'eMail Addresse',
   'email2' => 'Alternative eMail',
-  'fax1' => 'Faxnummer',
-  'fax2' => 'Alternative Nr.',
+  'fax' => 'Fax-Nr.',
   'user.account' => 'Benutzerkonto anlegen'
 ];

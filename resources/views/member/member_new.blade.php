@@ -96,19 +96,13 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-6">
-                                <input type="text" class="form-control @error('phone1','err_member') is-invalid @enderror"
-                                  id="phone1" name="phone1" placeholder="@lang('role.phone1')" value="{{ old('phone1') }}"></input>
-                                @error('phone1','err_member')
+                                <input type="text" class="form-control @error('phone','err_member') is-invalid @enderror"
+                                  id="phone" name="phone" placeholder="@lang('role.phone')" value="{{ old('phone') }}"></input>
+                                @error('phone','err_member')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control @error('phone2','err_member') is-invalid @enderror"
-                                  id="phone2" name="phone2" placeholder="@lang('role.phone2')" value="{{ old('phone2') }}"></input>
-                                @error('phone2','err_member')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-6">
@@ -128,16 +122,9 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-6">
-                                <input type="text" class="form-control @error('fax1','err_member') is-invalid @enderror"
-                                  id="fax1" name="fax1" placeholder="@lang('role.fax1')" value="{{ old('fax1') }}"></input>
-                                @error('fax1','err_member')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control @error('fax2','err_member') is-invalid @enderror"
-                                  id="fax2" name="fax2" placeholder="@lang('role.fax2')" value="{{ old('fax2') }}"></input>
-                                @error('fax2','err_member')
+                                <input type="text" class="form-control @error('fax','err_member') is-invalid @enderror"
+                                  id="fax" name="fax" placeholder="@lang('role.fax')" value="{{ old('fax') }}"></input>
+                                @error('fax','err_member')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -186,7 +173,7 @@
 
 @section('js')
 <script>
-    function show_member(id, firstname, lastname,  street, zipcode, city, email1, email2, mobile, phone1, phone2, fax1, fax2) {
+    function show_member(id, firstname, lastname,  street, zipcode, city, email1, email2, mobile, phone, fax) {
       $('#firstname').val(firstname);
       $('#lastname').val(lastname);
       $('#street').val(street);
@@ -195,10 +182,8 @@
       $('#email1').val(email1);
       $('#email2').val(email2);
       $('#mobile').val(mobile);
-      $('#phone1').val(phone1);
-      $('#phone2').val(phone2);
-      $('#fax1').val(fax1);
-      $('#fax2').val(fax2);
+      $('#phone').val(phone);
+      $('#fax').val(fax);
       $('#member_id').val(id);
     }
 
@@ -218,11 +203,11 @@
       @endif
 
       $("button#btnSelectMember").click( function(){
-         show_member('','','','','','','','','','','','','');
+         show_member('','','','','','','','','','','');
          $('#modalSelectMember').modal('show');
       });
       $("button#btnClear").click( function(){
-         show_member('','','','','','','','','','','','','');
+         show_member('','','','','','','','','','','');
       });
       $(".js-sel-role").select2({
           placeholder: "@lang('role.action.select')...",
@@ -296,17 +281,15 @@
                                 data.email1,
                                 data.email2,
                                 data.mobile,
-                                data.phone1,
-                                data.phone2,
-                                data.fax1,
-                                data.fax2
+                                data.phone,
+                                data.fax,
                                 );
                   },
                 });
             });
 
       $('#selMember').on('select2:unselect select2:clear', function(e) {
-          show_member('','','','','','','','','','','','','');
+          show_member('','','','','','','','','','','');
       });
 
     });

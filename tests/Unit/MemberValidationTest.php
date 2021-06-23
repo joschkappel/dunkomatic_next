@@ -38,7 +38,7 @@ class MemberValidationTest extends TestCase
                 'city missing' => ['city', ''],
                 'street missing' => ['street', ''],
                 'mobile missing' => ['mobile', ''],
-                'phone1 missing' => ['phone1', ''],
+                'phone missing' => ['phone', ''],
                 'email1 missing' => ['email1', ''],
                 'email1 no email' => ['email1', 'myemail'],
                 'email2 no email' => ['email2', 'myemail'],

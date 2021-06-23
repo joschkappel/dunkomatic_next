@@ -19,8 +19,8 @@ class Member extends Model
   use Notifiable, HasFactory;
 
   protected $fillable = [
-        'id','club_id','firstname','lastname','city','street', 'zipcode', 'phone1', 'phone2',
-        'fax1', 'fax2', 'mobile', 'email1', 'email2'
+        'id','club_id','firstname','lastname','city','street', 'zipcode', 'phone',
+        'fax', 'mobile', 'email1', 'email2'
     ];
 
   public static $createRules = [
@@ -29,11 +29,9 @@ class Member extends Model
       'zipcode' => 'required|max:10',
       'city' => 'required|max:40',
       'street' => 'required|max:40',
-      'mobile' => 'required_without:phone1|max:40',
-      'phone1' => 'required_without:mobile|max:40',
-      'phone2' => 'max:40',
-      'fax1' => 'max:40',
-      'fax2' => 'max:40',
+      'mobile' => 'required_without:phone|max:40',
+      'phone' => 'required_without:mobile|max:40',
+      'fax' => 'max:40',
       'email1' => 'required|max:60|email:rfc,dns',
       'email2' => 'nullable|max:60|email:rfc,dns',
   ];
@@ -47,7 +45,7 @@ class Member extends Model
   {
     if ( (($this->firstname == '') and ($this->lastname == '') )
           or ($this->email1 == '')
-          or (($this->mobile == '') and ($this->phone1 == ''))
+          or (($this->mobile == '') and ($this->phone == ''))
           or (($this->zipcode == '') and ($this->city == '') and ($this->street==''))
        ){
       return false;

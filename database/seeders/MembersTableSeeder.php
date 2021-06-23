@@ -33,13 +33,11 @@ class MembersTableSeeder extends Seeder
             'city'             => $row->city,
             'zipcode'          => $row->zip,
             'street'          => $row->street,
-            'phone1'          => $row->phone1,
-            'phone2'          => $row->phone2,
+            'phone'          => $row->phone1,
             'mobile'          => $row->mobile,
             'email1'          => $row->email,
             'email2'          => $row->email2,
-            'fax1'          => $row->fax1,
-            'fax2'          => $row->fax2,
+            'fax'          => $row->fax1,
             'created_at'    => now()
           ]);
         }
