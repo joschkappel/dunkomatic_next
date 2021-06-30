@@ -9,7 +9,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
+
+use App\Traits\LeagueFSM;
 
 use App\Models\Setting;
 use App\Models\Game;
@@ -22,7 +23,7 @@ use App\Notifications\NewSeason;
 
 class ProcessNewSeason implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, LeagueFSM;
 
     /**
      * Create a new job instance.
@@ -50,10 +51,7 @@ class ProcessNewSeason implements ShouldQueue
         // settings season
         Setting::where('name','season')->update(['value' => $next_season]);
 
-        // clear games
-        Game::truncate();
-
-        // reset leagues
+         // reset leagues
         $league = League::all();
 
         foreach ($league as $l){
@@ -61,15 +59,16 @@ class ProcessNewSeason implements ShouldQueue
           // League::find($l->id)->clubs()->delete();
 
           // reset teams
-          $teams = League::find($l->id)->teams;
-          foreach ($teams as $t){
+          foreach ($l->teams as $t){
             //Log::info('new season: reset team '.$l->shortname.' - '.$t->league_char);
             $t->update(['league_char' => null,
                         'league_no' => null,
                         'league_prev' => $l->shortname,
                         'league_id' => null ]);
           }
-          $l->update(['generate_at' => null]);
+
+          $this->open_assignment($l);
+          $l->games()->delete();
         }
 
         // clean up report folders

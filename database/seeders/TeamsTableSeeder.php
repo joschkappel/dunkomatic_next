@@ -1,8 +1,11 @@
 <?php
 namespace Database\Seeders;
 
+use App\Enums\LeagueState;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+
+use App\Models\League;
 
 class TeamsTableSeeder extends Seeder
 {
@@ -39,6 +42,9 @@ class TeamsTableSeeder extends Seeder
         }
         if ($team->league_id === 0){
           $team->league_id = null;
+          $registered = false;
+        } else {
+          $registered = true;
         }
 
         $upperArr = config('dunkomatic.league_team_chars');
@@ -46,9 +52,11 @@ class TeamsTableSeeder extends Seeder
         if ($team->league_char > 0){
           $league_char = $upperArr[$team->league_char];
           $league_no = $team->league_char;
+          $charpicked = true;
         } else {
           $league_char = null;
           $league_no = null;
+          $charpicked = false;
         }
 
         // old: dayof week:  1=sat, 2=sun, .....
@@ -87,6 +95,30 @@ class TeamsTableSeeder extends Seeder
           'created_at'    => now(),
           'id'            => $team->team_id
         ]);
-      }
+
+        $l = League::find($team->league_id);
+        if ($registered){
+          $l->registration_closed_at = now();
+          $l->assignment_closed_at = now();
+          $l->state = LeagueState::Freeze();
+          if ($charpicked){
+            $l->selection_closed_at = now();
+          } 
+        } else {
+            $l->state = LeagueState::Assignment();
+        }
+        if ($l->games->count() > 0){
+          if ( ($l->games_notime->count() == 0) and ($l->games_noshow->count() == 0) ){
+            $l->state = LeagueState::Live();
+            $l->scheduling_closed_at = now();
+            $l->generated_at = now();
+          } else {
+            $l->state = LeagueState::Scheduling();
+            $l->generated_at = now();
+          }
+        }
+        $l->save();
+        }
+
     }
 }

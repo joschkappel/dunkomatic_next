@@ -204,7 +204,6 @@ class TeamController extends Controller
              'team_id' => 'required|exists:teams,id',
              'club_id' => 'required|exists:clubs,id',
              'league_id' => 'required|exists:leagues,id',
-             'league_no' => 'required|integer|between:1,16',
          ]);
 
          $team_id = $data['team_id'];
@@ -213,9 +212,9 @@ class TeamController extends Controller
 
          $udata = array();
          $udata['league_id'] = $league_id;
-         $udata['league_no'] = $data['league_no'];
-         $upperArr = config('dunkomatic.league_team_chars');
-         $udata['league_char'] = $upperArr[$data['league_no']];
+         // $udata['league_no'] = $data['league_no'];
+         // $upperArr = config('dunkomatic.league_team_chars');
+         // $udata['league_char'] = $upperArr[$data['league_no']];
 
          Log::debug(print_r($udata,true));
          $team = Team::findOrFail($team_id);

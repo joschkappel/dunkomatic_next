@@ -91,8 +91,7 @@ class TeamControllerTest extends TestCase
                         ->put(route('team.assign-league'),[
                           'club_id' => $club->id,
                           'league_id' => $league->id,
-                          'team_id' => $team->id,
-                          'league_no' => 1,
+                          'team_id' => $team->id
                         ]);
 
       $response
@@ -100,7 +99,7 @@ class TeamControllerTest extends TestCase
           ->assertSessionHasNoErrors()
           ->assertHeader('Location', route('club.dashboard', ['language'=>'de','club'=>$club]));
       //$response->dump();
-      $this->assertDatabaseHas('teams', ['league_no' => 1, 'league_id' => $league->id]);
+      $this->assertDatabaseHas('teams', ['id' => $team->id, 'league_id' => $league->id]);
     }
     /**
      * deassign_league
@@ -130,7 +129,7 @@ class TeamControllerTest extends TestCase
           ->assertStatus(200)
           ->assertSessionHasNoErrors();
       //$response->dump();
-      $this->assertDatabaseMissing('teams', ['league_no' => $team->league_no, 'league_id' => $league->id]);
+      $this->assertDatabaseMissing('teams', ['id' => $team->id, 'league_id' => $league->id]);
     }
     /**
      * inject

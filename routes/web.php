@@ -70,6 +70,7 @@ Route::group([
     Route::resource('club.gym', 'ClubGymController')->shallow()->except('store','update','destroy','show');
 
     Route::get('league/index_stats', 'LeagueController@index_stats')->name('league.index_stats');
+    Route::get('league/manage', 'LeagueController@mgmt_dashboard')->name('league.mgmt_dashboard');
     Route::get('league/{league}/dashboard', 'LeagueController@dashboard')->name('league.dashboard');
     Route::get('league/{league}/briefing', 'LeagueController@briefing')->name('league.briefing');
     Route::get('league/{league}/game/dt', 'LeagueGameController@datatable')->name('league.game.dt');
@@ -134,6 +135,7 @@ Route::middleware(['auth'])->group(function () {
   Route::get('club/{club}/game/chart_home', 'ClubGameController@chart_home')->name('club.game.chart_home');
   Route::get('club/{club}/list/gym/{gym}', 'ClubGymController@sb_gym')->name('gym.sb.gym');
   Route::get('club/{club}/list/gym', 'ClubGymController@sb_club')->name('gym.sb.club');
+  Route::get('club/{club}/league/sb', 'ClubController@sb_league')->name('club.sb.league'); 
   Route::resource('club.gym', 'ClubGymController')->shallow()->only('store','update','destroy');
 
   Route::group(['prefix' => '{region}'], function () {
@@ -143,6 +145,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('club/region/sb', 'ClubController@sb_region')->name('club.sb.region');
     Route::get('league/list', 'LeagueController@list')->name('league.list');
     Route::get('league/list_stats', 'LeagueController@list_stats')->name('league.list_stats');
+    Route::get('league/club_assign/dt', 'LeagueController@club_assign_dt')->name('league.club_assign.dt');
+    Route::get('league/team_register/dt', 'LeagueController@team_register_dt')->name('league.team_register.dt');
     Route::get('league/region/sb', 'LeagueController@sb_region')->name('league.sb.region');
     Route::get('schedule/list', 'ScheduleController@list')->name('schedule.list');
     Route::get('schedule/region/sb', 'ScheduleController@sb_region')->name('schedule.sb.region');
@@ -153,9 +157,10 @@ Route::middleware(['auth'])->group(function () {
   });
 
   Route::get('league/{league}/freechar/sb', 'LeagueController@sb_freechars')->name('league.sb_freechar');
-  Route::get('league/club/{club}/sb', 'LeagueController@sb_club')->name('league.sb.club');
-  Route::delete('league/{league}/club/{club}', 'LeagueController@deassign_club')->name('league.deassign-club');
-  Route::post('league/{league}/club', 'LeagueController@assign_club')->name('league.assign-club');
+  Route::get('league/{league}/club/sb', 'LeagueController@sb_club')->name('league.sb.club');
+  Route::delete('league/{league}/club/{club}', 'LeagueController@deassign_club')->name('league.deassign-club')->middleware('can:manage-leagues');
+  Route::post('league/{league}/club', 'LeagueController@assign_clubs')->name('league.assign-clubs')->middleware('can:manage-leagues');
+  Route::post('league/{league}/state', 'LeagueStateController@change_state')->name('league.state.change')->middleware('can:manage-leagues');
   Route::resource('league', 'LeagueController')->only('store','update','destroy')->middleware('can:manage-leagues');
 
   Route::post('membership/club/{club}/member/{member}', 'ClubMembershipController@add')->name('membership.club.add');
@@ -174,7 +179,7 @@ Route::middleware(['auth'])->group(function () {
   Route::delete('league/{league}/team', 'TeamController@withdraw')->name('league.team.withdraw');
   Route::post('league/{league}/team', 'TeamController@inject')->name('league.team.inject');
   Route::post('league/{league}/char', 'TeamController@pick_char')->name('league.team.pickchar');
-  Route::get('league/{league}/team/sb', 'TeamController@sb_league')->name('league.team.sb');
+  Route::get('league/{league}/team/sb', 'TeamController@sb_league')->name('league.team.sb'); // ä move tp öeague controller
   Route::resource('league.game', 'LeagueGameController')->shallow()->except(['index','create','edit']);;
 
   Route::put('team/league', 'TeamController@assign_league')->name('team.assign-league');

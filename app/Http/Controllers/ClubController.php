@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\LeagueState;
 use App\Models\Club;
 use App\Models\Region;
 use App\Models\Member;
@@ -84,7 +85,7 @@ class ClubController extends Controller
           $data['club'] = $club;
 
           $data['gyms'] = $data['club']->gyms()->get();
-          $data['teams'] = $data['club']->teams()->with('league')->get();
+          $data['teams'] = $data['club']->teams()->with('league')->get()->sortBy('league.shortname');
           $data['leagues'] = $data['club']->leagues()->get();
           //$data['members'] = $data['club']->members()->get();
           $data['members'] = Member::whereIn('id',Club::find($club->id)->members()->pluck('member_id'))->with('memberships')->get();
@@ -162,6 +163,30 @@ class ClubController extends Controller
       return Response::json($response);
     }
 
+  /**
+   * Display a listing of the resource for selectboxes. leagues for club
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function sb_league(Club $club)
+  {
+    //Log::debug(print_r($club,true));
+
+    $leagues = $club->leagues()->orderBy('shortname', 'ASC')->get();
+
+    Log::debug('got leagues ' . count($leagues));
+    $response = array();
+
+    foreach ($leagues as $league) {
+      if ($league->state > LeagueState::Assignment()){
+        $response[] = array(
+          "id" => $league->id,
+          "text" => $league->shortname
+        );
+      }
+    }
+    return Response::json($response);
+  }    
     /**
      * Show the form for creating a new resource.
      *

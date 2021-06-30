@@ -35,7 +35,7 @@ class CreateGamesTable extends Migration
             $table->foreign('team_id_guest')->references('id')->on('teams');
             $table->string('team_guest',5)->nullable();
             $table->string('team_char_guest',2);
-            $table->string('gym_no',2);
+            $table->string('gym_no',2)->nullable();
             $table->unsignedInteger('gym_id')->nullable();
             $table->foreign('gym_id')->references('id')->on('gyms');
             $table->string('referee_1',4)->nullable();

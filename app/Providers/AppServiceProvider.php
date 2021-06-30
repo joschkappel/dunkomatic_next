@@ -132,8 +132,16 @@ class AppServiceProvider extends ServiceProvider
                 $smenu['icon'] =  'fas fa-chart-bar';
                 $smenu['can'] = 'manage-leagues';
                 $leaguemenu['submenu'][] = $smenu;
-                $event->menu->add($leaguemenu);
 
+                $smenu['text'] = "manage";
+                $smenu['url']  = route('league.mgmt_dashboard', app()->getLocale());
+                $smenu['icon_color'] = 'yellow';
+                $smenu['icon'] =  'fas fa-chart-bar';
+                $smenu['can'] = 'manage-leagues';
+                $leaguemenu['submenu'][] = $smenu;
+
+                $event->menu->add($leaguemenu);
+                
                 $event->menu->add([
                   'text' => trans_choice('schedule.scheme', 2),
                   'url'  => route('scheme.index', app()->getLocale()),

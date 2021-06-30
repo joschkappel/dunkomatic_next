@@ -148,7 +148,7 @@
                    @isset ( ($team->league['shortname']) )
                      <td><button id="deleteTeam" data-league-sname="{{$team->league['shortname']}}" data-team-id="{{ $team->id }}" data-team-no="{{ $team->team_no }}" data-club-sname="{{ $club->shortname }}" type="button" class="btn btn-outline-danger btn-sm "> <i class="fas fa-trash"></i> </button></td>
                      <td><a href="{{ route('team.edit', [ 'language'=>app()->getLocale(), 'team' =>$team->id] ) }}">{{$club->shortname}}{{ $team->team_no }}<i class="fas fa-arrow-circle-right"></i></a>
-                     <td><button type="button" class="btn btn-dark btn-sm " disabled>{{$team->league['shortname']}}-{{$team->league_char}}</button></td>
+                     <td><button type="button" class="btn btn-outline-dark btn-sm " disabled>{{$team->league['shortname']}}  <span class="badge badge-pill badge-dark"> {{$team->league_no ?? '?'}}</span></button></td>
                      <td><button id="deassignLeague" data-league-id="{{$team->league['id']}}" data-team-id="{{ $team->id }}" data-club-id="{{ $club->id }}" type="button" class="btn btn-outline-secondary btn-sm "> <i class="fas fa-unlink"></i> </button></td>
                    @endisset
                    @empty ( ($team->league['shortname']) )

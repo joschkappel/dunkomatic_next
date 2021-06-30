@@ -4,12 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Game;
 use App\Models\League;
-use App\Models\Team;
-use App\Models\Gym;
 use App\Models\Club;
-use App\Models\ScheduleEvent;
-use App\Models\LeagueSizeScheme;
 use App\Enums\Role;
+use App\Traits\LeagueFSM;
 
 use App\Notifications\LeagueGamesGenerated;
 
@@ -25,6 +22,8 @@ use Carbon\CarbonImmutable;
 
 class LeagueGameController extends Controller
 {
+    use LeagueFSM;
+
     /**
      * Display a listing of the resource.
      *
@@ -69,11 +68,10 @@ class LeagueGameController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\League  $league
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, League $league)
+    public function store(League $league)
     {
         // get size
         $league->load('schedule');
@@ -124,23 +122,7 @@ class LeagueGameController extends Controller
           //Log::debug(print_r($g, true));
           Game::updateOrCreate(['league_id' => $league->id, 'game_no' => $s->game_no], $g);
         }
-        League::find($league->id)->update(['generated_at' => now()]);
-
-        $clublist = $league->teams()->pluck('club_id');
-
-        foreach ($clublist as $c){
-          $club = Club::find($c);
-          $member = $club->members()->wherePivot('role_id',Role::ClubLead)->first();
-
-          if (isset($member)){
-            $member->notify(new LeagueGamesGenerated($league, $club, Auth::user()->name, $member->name ));
-            $user = $member->user;
-            if (isset($user)){
-              $user->notify(new LeagueGamesGenerated($league, $club, Auth::user()->name, $user->name ));
-            }
-          }
-
-        }
+        $this->generate($league);
 
         return Response::json(['success' => 'all good'], 200);
     }

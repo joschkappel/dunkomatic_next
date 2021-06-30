@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\LeagueState;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -24,7 +25,13 @@ class CreateLeaguesTable extends Migration
             $table->foreign('schedule_id')->references('id')->on('schedules');
             $table->unsignedInteger('age_type')->nullable();
             $table->unsignedInteger('gender_type')->nullable();
+            $table->unsignedInteger('state')->default(LeagueState::Assignment());
+            $table->timestamp('assignment_closed_at')->nullable();  
+            $table->timestamp('registration_closed_at')->nullable();
+            $table->timestamp('selection_opened_at')->nullable(); 
+            $table->timestamp('selection_closed_at')->nullable(); 
             $table->timestamp('generated_at')->nullable();
+            $table->timestamp('scheduling_closed_at')->nullable(); 
             $table->timestamps();
             //$table->unique('region','shortname');
         });
