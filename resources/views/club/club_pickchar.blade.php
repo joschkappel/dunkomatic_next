@@ -186,7 +186,9 @@
       selData['_token'] = "{{ csrf_token() }}";
       @foreach ($club['teams'] as $t )
         @isset($t['league'])
+        @isset($t['league_no'])
         selData['selSize:'+ {!!$t['league']['id']!!}+':'+{!!$t['id']!!}] = {!!$t['league_no']!!};
+        @endisset
         @endisset
       @endforeach
       console.log(selData);

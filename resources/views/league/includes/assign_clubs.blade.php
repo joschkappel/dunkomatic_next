@@ -1,10 +1,10 @@
-<div class="modal fade right" id="modalAssignClub" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false">
+<div class="modal fade right" id="modalAssignClubs" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false">
     <div class="modal-dialog modal-side modal-bottom-right modal-notify modal-info" role="document">
         <!--Content-->
         <div class="modal-content">
             <!--Header-->
             <div class="modal-header bg-info">
-                <p class="heading">@lang('club.action.assign', ['league'=>$league->shortname])</p>
+                <p class="heading">????</p>
 
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true" class="white-text">&times;</span>
@@ -15,7 +15,7 @@
             <div class="modal-body">
                 <div class="card card-info">
 
-                    <form class="form-horizontal" action="{{ route('league.assign-clubs', ['league'=>$league->id]) }}" method="POST">
+                    <form class="form-horizontal" id="frmAssignClubs" action="{{ route('league.assign-clubs', ['league'=>$league->id]) }}" method="POST">
                         @csrf
                         <div class="card-body">
                             <input type="hidden" name="item_id" id="itemid" value=""  />

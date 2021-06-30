@@ -2,8 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Enums\LeagueState;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+
+use App\Models\League;
 
 class ClubLeagueTableSeeder extends Seeder
 {
@@ -17,6 +20,7 @@ class ClubLeagueTableSeeder extends Seeder
       $old_league = DB::connection('dunkv1')->table('league')->get();
 
       foreach ($old_league as $league) {
+        $assigned = false;
 
         if ( $league->club_id_A and $league->club_id_A != 0   ){
           try {
@@ -27,6 +31,7 @@ class ClubLeagueTableSeeder extends Seeder
               'league_no'     => 1,
               'created_at'    => now(),
             ]);
+            $assigned = true;
           } catch (\Illuminate\Database\QueryException $e) {
             // bad luck;
           }
@@ -41,6 +46,7 @@ class ClubLeagueTableSeeder extends Seeder
               'league_no'     => 2,
               'created_at'    => now(),
             ]);
+            $assigned = true;
           } catch (\Illuminate\Database\QueryException $e) {
             // bad luck;
           }
@@ -55,6 +61,7 @@ class ClubLeagueTableSeeder extends Seeder
               'league_no'     => 3,
               'created_at'    => now(),
             ]);
+            $assigned = true;
           } catch (\Illuminate\Database\QueryException $e) {
             // bad luck;
           }
@@ -83,6 +90,7 @@ class ClubLeagueTableSeeder extends Seeder
               'league_no'     => 5,
               'created_at'    => now(),
             ]);
+            $assigned = true;
           } catch (\Illuminate\Database\QueryException $e) {
             // bad luck;
           }
@@ -97,6 +105,7 @@ class ClubLeagueTableSeeder extends Seeder
               'league_no'     => 6,
               'created_at'    => now(),
             ]);
+            $assigned = true;
           } catch (\Illuminate\Database\QueryException $e) {
             // bad luck;
           }
@@ -111,6 +120,7 @@ class ClubLeagueTableSeeder extends Seeder
               'league_no'     => 7,
               'created_at'    => now(),
             ]);
+            $assigned = true;
           } catch (\Illuminate\Database\QueryException $e) {
             // bad luck;
           }
@@ -125,6 +135,7 @@ class ClubLeagueTableSeeder extends Seeder
               'league_no'     => 8,
               'created_at'    => now(),
             ]);
+            $assigned = true;
           } catch (\Illuminate\Database\QueryException $e) {
             // bad luck;
           }
@@ -139,6 +150,7 @@ class ClubLeagueTableSeeder extends Seeder
               'league_no'     => 9,
               'created_at'    => now(),
             ]);
+            $assigned = true;
           } catch (\Illuminate\Database\QueryException $e) {
             // bad luck;
           }
@@ -153,6 +165,7 @@ class ClubLeagueTableSeeder extends Seeder
               'league_no'     => 10,
               'created_at'    => now(),
             ]);
+            $assigned = true;
           } catch (\Illuminate\Database\QueryException $e) {
             // bad luck;
           }
@@ -167,6 +180,7 @@ class ClubLeagueTableSeeder extends Seeder
               'league_no'     => 11,
               'created_at'    => now(),
             ]);
+            $assigned = true;
           } catch (\Illuminate\Database\QueryException $e) {
             // bad luck;
           }
@@ -181,6 +195,7 @@ class ClubLeagueTableSeeder extends Seeder
               'league_no'     => 12,
               'created_at'    => now(),
             ]);
+            $assigned = true;
           } catch (\Illuminate\Database\QueryException $e) {
             // bad luck;
           }
@@ -195,6 +210,7 @@ class ClubLeagueTableSeeder extends Seeder
               'league_no'     => 13,
               'created_at'    => now(),
             ]);
+            $assigned = true;
           } catch (\Illuminate\Database\QueryException $e) {
             // bad luck;
           }
@@ -209,9 +225,18 @@ class ClubLeagueTableSeeder extends Seeder
               'league_no'     => 14,
               'created_at'    => now(),
             ]);
+            $assigned = true;
           } catch (\Illuminate\Database\QueryException $e) {
             // bad luck;
           }
+        }
+
+        if ($assigned){
+          $l = League::find($league->league_id);
+          $l->assignment_closed_at = now();
+          $l->state = LeagueState::Registration();
+          $l->save();
+
         }
 
       }

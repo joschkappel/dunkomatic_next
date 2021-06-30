@@ -9,6 +9,7 @@ use App\Jobs\ProcessLeagueReports;
 use App\Jobs\ProcessClubReports;
 use App\Jobs\ProcessNewSeason;
 use App\Jobs\ProcessDbCleanup;
+use App\Jobs\ProcessLeagueStateChanges;
 
 use App\Jobs\EmailValidation;
 use App\Jobs\MissingLeadCheck;
@@ -52,6 +53,7 @@ class Kernel extends ConsoleKernel
               $this->scheduleRegionTask($schedule, new EmailValidation($r), $r->job_email_valid);
               $this->scheduleRegionTask($schedule, new ProcessLeagueReports($r), $r->job_league_reports);
               $this->scheduleRegionTask($schedule, new ProcessClubReports($r), $r->job_club_reports);
+              $this->scheduleRegionTask($schedule, new ProcessLeagueStateChanges($r), JobFrequencyType::daily);
           }
         }
     }
@@ -79,9 +81,9 @@ class Kernel extends ConsoleKernel
       // return true;
         switch ($frequency) {
           case JobFrequencyType::daily :
-            //$schedule->job($job,'janitor')->daily();
+            $schedule->job($job,'janitor')->daily();
             //$schedule->job($job,'janitor')->hourly();
-            $schedule->job($job,'janitor')->everyFiveMinutes();
+            //$schedule->job($job,'janitor')->everyFiveMinutes();
             break;
           case JobFrequencyType::weekly :
             $schedule->job($job,'janitor')->weekly();

@@ -27,12 +27,6 @@
                                   <select class='js-league-single js-states form-control select2' id='selLeague' name='league_id'></select>
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <label for="selChar" class="col-sm-4 col-form-label">{{ trans_choice('league.char',1)}}</label>
-                                <div class="col-sm-6">
-                                  <select class='js-freechar-single js-states form-control select2' id='selChar' name='league_no'></select>
-                                </div>
-                            </div>
                         </div>
                         <div class="card-footer">
                             <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
@@ -60,7 +54,7 @@
           allowClear: false,
           minimumResultsForSearch: -1,
           ajax: {
-                  url: "{{ route('league.sb.club',['club' => $club])}}",
+                  url: "{{ route('club.sb.league',['club' => $club])}}",
                   type: "get",
                   delay: 250,
                   processResults: function (response) {
@@ -72,36 +66,6 @@
                 }
       });
 
-
-      $(".js-freechar-single").select2({
-          placeholder: "{{ __('league.sb_freechar')}}...",
-          theme: 'bootstrap4',
-          allowClear: true,
-      });
-
-      $("#selLeague").on("select2:select", function (e) {
-        var data = e.params.data;
-        var url = "{{ route('league.sb_freechar', ':leagueid:')}}"
-        url = url.replace(':leagueid:', data['id']);
-        $('#selChar').val(null).trigger('change');
-        $(".js-freechar-single").select2({
-            placeholder: "{{ __('league.sb_freechar')}}...",
-            theme: 'bootstrap4',
-            allowClear: true,
-            ajax: {
-                    url: url,
-                    type: "get",
-                    delay: 250,
-                    processResults: function (response) {
-                      return {
-                        results: response
-                      };
-                    },
-                    cache: false
-                  }
-        });
-      });
-
-    });
+   });
 </script>
 @endpush

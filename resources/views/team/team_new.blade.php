@@ -215,7 +215,7 @@
             allowClear: true,
             minimumResultsForSearch: 20,
             ajax: {
-                    url: "{{ route('league.sb.club',['club' => $club])}}",
+                    url: "{{ route('club.sb.league',['club' => $club])}}",
                     type: "get",
                     delay: 250,
                     processResults: function (response) {

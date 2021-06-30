@@ -341,7 +341,7 @@ class LeagueControllerTest extends TestCase
        Club::factory()->count(3)->create();
        $club = $this->region->clubs()->first();
        $response = $this->authenticated( )
-                         ->get(route('league.sb.club',['club'=>$club]));
+                         ->get(route('club.sb.league',['club'=>$club]));
 
        //$response->dump();
        $response->assertStatus(200)
@@ -363,14 +363,12 @@ class LeagueControllerTest extends TestCase
         $club = $this->region->clubs()->first();
 
         $response = $this->authenticated( )
-                          ->post(route('league.assign-club',['league'=>$league]),[
-                            'item_id' => 1,
+                          ->post(route('league.assign-clubs',['league'=>$league]),[
                             'club_id' => $club->id
                           ]);
 
         $response->assertStatus(302)
-                 ->assertSessionHasNoErrors()
-                 ->assertHeader('Location', route('league.dashboard',['language'=>'de', 'league'=>$league]));
+                 ->assertSessionHasNoErrors();
 
         $this->assertDatabaseHas('club_league', ['club_id'=>$club->id,'league_id'=>$league->id,'league_no'=>1]);
 
