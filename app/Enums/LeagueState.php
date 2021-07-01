@@ -3,6 +3,7 @@
 namespace App\Enums;
 
 use BenSampo\Enum\Enum;
+use BenSampo\Enum\Contracts\LocalizedEnum;
 
 /**
  * @method static static Assignment()
@@ -12,7 +13,7 @@ use BenSampo\Enum\Enum;
  * @method static static Freeze()
  * @method static static Live()
  */
-final class LeagueState extends Enum
+final class LeagueState extends Enum implements LocalizedEnum
 {
     const Assignment =   0;
     const Registration =   1;

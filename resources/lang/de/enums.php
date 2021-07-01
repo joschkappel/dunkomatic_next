@@ -4,6 +4,7 @@ use App\Enums\LeagueAgeType;
 use App\Enums\LeagueGenderType;
 use App\Enums\Role;
 use App\Enums\JobFrequencyType;
+use App\Enums\LeagueState;
 
 return [
 
@@ -37,6 +38,15 @@ return [
       JobFrequencyType::weekly => 'wöchentlich',
       JobFrequencyType::biweekly => 'zweiwöchentlich',
       JobFrequencyType::monthly => 'monatlich'
+    ],
+
+    LeagueState::class => [
+      LeagueState::Assignment =>  'Bezirk ordnet Vereine zu',
+      LeagueState::Registration =>  'Verein meldet Mannschaften',
+      LeagueState::Selection =>   'Verein wählt Ziffern',
+      LeagueState::Scheduling => 'Vereine legt Heimspieltermine fest',
+      LeagueState::Live => 'Live',
+      LeagueState::Freeze => 'Wartet auf Freigabe',
     ]
 
 ];

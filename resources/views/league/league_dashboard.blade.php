@@ -11,30 +11,10 @@
                     <div class="inner">
                         <div class="row">
                             <input type="hidden" id="entitytype" value="App\Models\League">
-                            <div class="col-sm-4 pd-2">
+                            <div class="col-sm-6 pd-2">
                                 <h3>{{ $league->shortname }}</h3>
                                 <h5>{{ $league->name }} </h5>
                             </div>
-                            <div class="col-sm-4 pd-2">
-                                <ul class="list-group">
-                                    <li @if (count($assigned_clubs) == 0) class="list-group-item list-group-item-danger py-0"> @lang('club.entitled.no')
-                          @elseif (count($assigned_clubs) == $league->size )  class="list-group-item list-group-item-success py-0"> @lang('club.entitled.all')
-                          @else  class="list-group-item list-group-item-warning py-0"> @lang('club.entitled.some', [ 'entitled' => count($assigned_clubs), 'total' => $league->size] ) @endif </li>
-                                    <li @if (count($assigned_teams) == 0) class="list-group-item list-group-item-danger py-0"> @lang('team.registered.no')
-                          @elseif (count($assigned_teams) == $league->size ) class="list-group-item list-group-item-success py-0"> @lang('team.registered.all')
-                          @else class="list-group-item list-group-item-warning py-0"> @lang('team.registered.some', ['registered'=>count($assigned_teams), 'total'=>$league->size]) @endif </li>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="col-sm-4">
-                                <ul class="list-group">
-                                    <li @if (count($games) == 0) class="list-group-item list-group-item-danger py-0"> @lang('game.created.no')
-                          @else class="list-group-item list-group-item-success py-0"> @lang('game.created.some', ['total'=> count($games)]) @endif </li>
-                                    <li class="list-group-item list-group-item-warning py-0"> @lang('game.notstarted')
-                                    </li>
-                                </ul>
-                            </div>
-
                         </div>
                     </div>
                     <div class="icon">
@@ -52,6 +32,74 @@
                     @endif
                 </div>
             </div>
+            <div class="col-sm ">
+                <div class="info-box">
+                    @if ($league->isInState(App\Enums\LeagueState::Assignment()))
+                        <span class="info-box-icon bg-info"><i class="fas fa-battery-empty"></i></span>
+                    @elseif ($league->isInState(App\Enums\LeagueState::Registration()))
+                        <span class="info-box-icon bg-info"><i class="fas fa-battery-quarter"></i></span>
+                    @elseif ($league->isInState(App\Enums\LeagueState::Selection()))
+                        <span class="info-box-icon bg-info"><i class="fas fa-battery-half"></i></span>
+                    @elseif ($league->isInState(App\Enums\LeagueState::Scheduling()))
+                        <span class="info-box-icon bg-info"><i class="fas fa-battery-three-quarters"></i></span>
+                    @elseif ($league->isInState(App\Enums\LeagueState::Freeze()))
+                        <span class="info-box-icon bg-warning"><i class="fas fa-battery-half"></i></span>
+                    @elseif ($league->isInState(App\Enums\LeagueState::Live()))
+                        <span class="info-box-icon bg-success"><i class="fas fa-battery-full"></i></span>
+                    @endif
+                    <div class="info-box-content">
+                        <span class="info-box-text text-lg">Status</span>
+                        <span class="info-box-number">{{$league->state->description}}</span>
+                    </div>
+                </div>
+                <div class="info-box">
+                @if (count($assigned_clubs) == 0)
+                    <span class="info-box-icon bg-danger"><i class="fas fa-basketball-ball"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-lg">@lang('club.entitled.no')</span>
+                @elseif (count($assigned_clubs) == $league->size )                        
+                    <span class="info-box-icon bg-success"><i class="fas fa-basketball-ball"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-lg">@lang('club.entitled.all')</span>
+                @else
+                    <span class="info-box-icon bg-warning"><i class="fas fa-basketball-ball"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-lg">@lang('club.entitled.some', [ 'entitled' => count($assigned_clubs), 'total' => $league->size] )</span>
+                @endif
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm ">
+                <div class="info-box">
+                @if (count($assigned_teams) == 0)
+                    <span class="info-box-icon bg-danger"><i class="fas fa-users"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-lg">@lang('team.registered.no')</span>
+                @elseif (count($assigned_teams) == $league->size )
+                    <span class="info-box-icon bg-success"><i class="fas fa-users"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-lg">@lang('team.registered.all')</span>
+                @else
+                    <span class="info-box-icon bg-warning"><i class="fas fa-users"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-lg">@lang('team.registered.some', ['registered'=>count($assigned_teams), 'total'=>$league->size])</span>                
+                @endif
+                    </div>
+                </div>
+                <div class="info-box">
+                @if (count($games) == 0)
+                    <span class="info-box-icon bg-danger"><i class="fas fa-running"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-lg">@lang('game.created.no')</span>
+                @else
+                    <span class="info-box-icon bg-success"><i class="fas fa-running"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-lg">@lang('game.created.some', ['total'=> count($games)])</span>
+                @endif
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div><!-- /.container-fluid -->
 @stop
@@ -63,15 +111,7 @@
             <div class="col-sm-6 pd-2">
 
                 <!-- card CLS -->
-                <div class="card card-outline card-info " id="clubsCard">
-                    @if ($league->state->value > App\Enums\LeagueState::Assignment)
-                        <div class="ribbon-wrapper ribbon-lg">
-                            <div class="ribbon bg-warning text-lg">
-                                {{-- @lang('league.generated') --}}
-                                {{$league->state->description}}
-                            </div>
-                        </div>
-                    @endif
+                <div class="card card-outline card-dark " id="clubsCard">
                     <div class="card-header">
                         <h4 class="card-title"><i class="fas fa-basketball-ball"></i> @lang('club.entitlement') /
                             @lang('team.registration')
@@ -157,7 +197,7 @@
                 <!-- card MEMBERS -->
                 <div class="card card-outline card-secondary collapsed-card">
                     <div class="card-header ">
-                        <h4 class="card-title"><i class="fas fa-user-tie"></i> {{ trans_choice('role.role', 2) }} <span
+                        <h4 class="card-title"><i class="fas fa-user-tie"></i> {{ trans_choice('role.member', 2) }} <span
                                 class="badge badge-pill badge-info">{{ count($members) }}</span></h4>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -168,8 +208,10 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
+                        <ul  class="list-group list-group-flush">
                         @foreach ($members as $member)
-                            <p><button type="button" id="deleteMember" class="btn btn-outline-danger btn-sm"
+                            <li class="list-group-item ">
+                                <button type="button" id="deleteMember" class="btn btn-outline-danger btn-sm"
                                     data-member-id="{{ $member->id }}" data-member-name="{{ $member->name }}"
                                     data-league-sname="{{ $league->shortname }}" data-toggle="modal"
                                     data-target="#modalDeleteMember"><i class="fa fa-trash"></i></button>
@@ -197,8 +239,9 @@
                                             class="badge badge-secondary">{{ App\Enums\Role::getDescription($membership->role_id) }}</span>
                                     @endif
                                 @endforeach
-                            </p>
+                            </li>
                         @endforeach
+                        </ul>
 
 
                     </div>
@@ -251,9 +294,9 @@
                             class="btn btn-secondary">
                             <i class="fas fa-calendar-alt"></i> iCAL</a>
                     </div>
-                    <img class="card-img-bottom"
+{{--                     <img class="card-img-bottom"
                         src="{{ asset('img/' . config('dunkomatic.grafics.league', 'oops.jpg')) }}" class="card-img"
-                        alt="...">
+                        alt="..."> --}}
 
                     <!-- /.card-footer -->
                 </div>
