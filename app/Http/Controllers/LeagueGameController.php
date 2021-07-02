@@ -162,7 +162,8 @@ class LeagueGameController extends Controller
     public function destroy_game(League $league)
     {
         $league->games()->delete();
-        League::find($league->id)->update(['generated_at' => null]);
+        $this->destroy_games($league);
+        $league->refresh();
         return Response::json(['success' => 'all good'], 200);
     }
 

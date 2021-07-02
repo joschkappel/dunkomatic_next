@@ -58,10 +58,15 @@ return [
     'invalidemail.line'  =>  'The following club members registered an invalid eMail address:',
     'invalidemail.action'  =>  'Update eMail Adresses',
 
-    'clubassigned.subject'  =>  'Club Assigned',
-    'clubassigned.line1'  =>  'Your club has been assigned to league :league.',
-    'clubassigned.line2'  =>  'You are ready to register a team with the league now.',
-    'clubassigned.action'  =>  'Register Team',
+    'registerteams.subject'  =>  'Team Registration for League :LEAGUE',
+    'registerteams.line1'  =>  'Your club has been assigned to league :league.',
+    'registerteams.line2'  =>  'You are ready to register a team with the league now.',
+    'registerteams.action'  =>  'Register Team',
+    'selectleagueno.subject'  =>  'Pick Team numbers for League :LEAGUE',
+    'selectleagueno.line1'    =>  'All teams for League :league have been registered.',
+    'selectleagueno.line2'    =>  'Please pick a league number for your teams now.',
+    'selectleagueno.action'   =>  'League Number Selection',
+
     'league.salutation'  =>  'Best Regards, Your league admin :leaguelead',
 
     'clubdeassigned.subject'  =>  ':LEAGUE Team Removed',

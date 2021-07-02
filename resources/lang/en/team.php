@@ -27,6 +27,10 @@ return [
   'registered.no' => 'No team registered',
   'registered.all' => 'All teams registered',
   'registered.some' => ':registered out of :total teams registered',
+  'selected.no' => 'No league character selected',
+  'selected.all' => 'All league characters selected',
+  'selected.some' => ':selected out of :total league characters selected',
+
   'shirtcolor' => 'Color of Shirt',
   'coach' => 'Coach Name',
   'email' => 'Coach eMail',

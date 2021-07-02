@@ -27,6 +27,10 @@ return [
   'registered.no' => 'Keine Mannschaft gemeldet',
   'registered.all' => 'Alle Mannschaften gemeldet',
   'registered.some' => ':registered von :total Mannschaften gemeldet',
+  'selected.no' => 'Keine Ziffern gewählt',
+  'selected.all' => 'Alle Ziffern gewählt',
+  'selected.some' => ':selected von :total Ziffern gewählt',
+
   'shirtcolor' => 'Trikotfarbe',
   'coach' => 'Name des Trainers',
   'email' => 'eMail des Trainers',

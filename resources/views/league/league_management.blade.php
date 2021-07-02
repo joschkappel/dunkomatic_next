@@ -66,7 +66,8 @@
                                 <th>gender class</th>
                                 <th>assigned clubs</th>
                                 <th>registered teams</th>
-                                <th>action</th>
+                                <th>next action</th>
+                                <th>rollback action</th>
                             </tr>
                         </thead>
                     </table>
@@ -136,8 +137,12 @@
                         name: 'teams'
                     },
                     {
-                        data: 'action',
-                        name: 'action'
+                        data: 'nextaction',
+                        name: 'nextaction'
+                    },
+                    {
+                        data: 'rollbackaction',
+                        name: 'rollbackaction'
                     },
                 ]
             });
@@ -230,7 +235,26 @@
                         }
                     });
                 });            
-
+                $(document).on('click', "button#deleteGames", function() {
+                    var leagueid = $(this).data("league");
+                    var url = "{{ route('league.game.destroy', ['league' => ':leagueid:']) }}";
+                    url = url.replace(':leagueid:', leagueid);                    
+                    $.ajax({
+                        type: "POST",
+                        dataType: "json",
+                        data: {
+                            _method: "DELETE",
+                            _token: "{{ csrf_token() }}"
+                        },
+                        url: url,
+                        success: function(data) {
+                            location.reload()
+                        },
+                        error: function(data) {
+                            console.log('Error:', data);
+                        }
+                    });
+                });
         });
     </script>
 @stop

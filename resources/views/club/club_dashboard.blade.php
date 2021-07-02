@@ -36,7 +36,7 @@
             </div>
             <div class="col-sm ">
                 <div class="info-box">
-                @if (count($leagues) == 0) == 0)
+                @if (count($leagues) == 0) 
                     <span class="info-box-icon bg-danger"><i class="fas fa-trophy"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text text-lg">@lang('club.entitled.no')</span>
@@ -70,6 +70,23 @@
             </div>
             <div class="col-sm ">
                 <div class="info-box">
+                    @if ($selected_teams == 0)
+                        <span class="info-box-icon bg-danger"><i class="fas fa-battery-empty"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text text-lg">@lang('team.selected.no')</span>
+                    @elseif ($selected_teams == count($teams) )
+                        <span class="info-box-icon bg-success"><i class="fas fa-battery-full"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text text-lg">@lang('team.selected.all')</span>
+                    @else 
+                        <span class="info-box-icon bg-warning"><i class="fas fa-battery-half"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text text-lg">@lang('team.selected.some',['selected'=>$selected_teams, 'total'=>count($teams)])</span>
+                    @endif
+                    </div>
+                </div>
+
+                <div class="info-box">
                 @if ($games_home_notime == 0)
                     <span class="info-box-icon bg-success"><i class="far fa-clock"></i></span>
                     <div class="info-box-content">
@@ -85,22 +102,7 @@
                 @endif
                     </div>
                 </div>
-                <div class="info-box">
-                @if ($games_home_noshow == 0)
-                    <span class="info-box-icon bg-success"><i class="fas fa-running"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text text-lg">@lang('club.game_noshow.no')</span>
-                @elseif ($games_home_noshow == count($games_home) )
-                    <span class="info-box-icon bg-danger"><i class="fas fa-running"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text text-lg">@lang('club.game_noshow.all')</span>
-                @else
-                    <span class="info-box-icon bg-warning"><i class="fas fa-running"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text text-lg"> @lang('club.game_noshow.some', ['noshow'=>$games_home_noshow, 'total'=>count($games_home)])</span>
-                @endif                        
-                    </div>
-                </div>
+
             </div>
         </div>
     </div><!-- /.container-fluid -->
@@ -244,7 +246,7 @@
                         <a href="{{ route('team.plan-leagues', ['language' => app()->getLocale(), 'club' => $club]) }}"
                             class="btn btn-primary">
                             <i class="fas fa-map"></i> @lang('team.action.plan.season')</a>
-                        @if ($club->region->pickchar_enabled)
+                        @if ($club->leagues->where('state', App\Enums\LeagueState::Selection())->count() > 0)
                             <a href="{{ route('club.team.pickchar', ['language' => app()->getLocale(), 'club' => $club]) }}"
                                 class="btn btn-primary">
                                 <i class="fas fa-edit"></i> @lang('pick chars')</a>

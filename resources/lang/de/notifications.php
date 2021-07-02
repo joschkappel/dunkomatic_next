@@ -58,11 +58,20 @@ return [
     'invalidemail.line' =>  'Bei folgenden Vereinsmitarbeitern wurden fehlerhafte eMail Adressen angegeben:',
     'invalidemail.action'   =>  'eMail Adressen Korrigieren',
 
-    'clubassigned.subject'  =>  'Vereinsmeldung für :LEAGUE',
-    'clubassigned.line1'    =>  'Deine Vereinsmeldnug für Spielrunde :league wurde zugelassen.',
-    'clubassigned.line2'    =>  'Du kannst jetzt eine Mannschaft dieser Runde zuordnen.',
-    'clubassigned.action'   =>  'Mannschaft Melden',
+    'registerteams.subject'  =>  'Mannschaftsmeldung für Spielrunde :LEAGUE',
+    'registerteams.line1'    =>  'Dein Verein wurde zur Spielrunde :league zugelassen.',
+    'registerteams.line2'    =>  'Du kannst jetzt eine Mannschaft dieser Runde zuordnen.',
+    'registerteams.action'   =>  'Mannschaft Melden',
+    'selectleagueno.subject'  =>  'Ziffernwahl für Spielrunde :LEAGUE',
+    'selectleagueno.line1'    =>  'Alle Mannschaften für Spielrunde :league wurden gemeldet.',
+    'selectleagueno.line2'    =>  'Du kannst jetzt die Spielziffer für deine Mannschaften wählen.',
+    'selectleagueno.action'   =>  'Ziffernwahl',
+
+
     'league.salutation' =>  'Viele Grüße, Deine Staffelleitung :leaguelead',
+
+
+
 
     'clubdeassigned.subject'    =>  'Mannschaftslöschung :LEAGUE',
     'clubdeassigned.line1'  =>  'Deine Mannschaft :TEAM wurde von der Spielrunde :LEAGUE zurückgezogen.',

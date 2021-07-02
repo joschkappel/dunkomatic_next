@@ -80,6 +80,10 @@ class Club extends Model implements Auditable
     {
         return $this->hasMany(Team::class)->whereNotNull('league_id');
     }
+    public function selected_teams()
+    {
+        return $this->hasMany(Team::class)->whereNotNull('league_no');
+    }    
     public function games_home()
     {
         return $this->hasMany(Game::class, 'club_id_home', 'id');

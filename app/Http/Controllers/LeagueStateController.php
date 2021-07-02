@@ -34,9 +34,28 @@ class LeagueStateController extends Controller
             case LeagueStateChange::CloseAssignment():
                 $this->close_assignment($league);
                 break;
+            case LeagueStateChange::OpenAssignment():
+                $this->open_assignment($league);
+                break;                
             case LeagueStateChange::CloseScheduling():
                 $this->close_scheduling($league);
                 break;
+            case LeagueStateChange::OpenScheduling():
+                $this->open_scheduling($league);
+                break;                                
+            case LeagueStateChange::CloseRegistration():
+                $this->close_registration($league);
+                break;
+            case LeagueStateChange::OpenRegistration():
+                $this->open_registration($league);
+                break;                
+            case LeagueStateChange::CloseSelection():
+                $this->close_selection($league);
+                break;
+            case LeagueStateChange::OpenSelection():
+                $this->open_selection($league);
+                break;
+
         }
 
         $league->refresh();

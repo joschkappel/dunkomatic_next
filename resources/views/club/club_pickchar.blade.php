@@ -48,6 +48,7 @@
                <tbody>
                @foreach ($club['teams'] as $t )
                 @isset($t['league'])
+                @if ($t->league->state == App\Enums\LeagueState::Selection())
                  <tr>
                    <td hidden>{{ $t->league['id'] }}</td>
                    <td hidden>{{ $t->id }}</td>
@@ -69,6 +70,33 @@
                    <td> @if ($t->preferred_league_no == 14)<i class="fas fa-asterisk text-warning"></i>@endif @if ($t->league->size < 14) <i class="far fa-times-circle text-secondary"></i> @else @if ($t->league_no == 14) <i class="far fa-dot-circle fa-lg text-success"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('O')) <i class="far fa-frown text-danger"</i> @endif @endif</td>
                    <td> @if ($t->preferred_league_no == 15)<i class="fas fa-asterisk text-warning"></i>@endif @if ($t->league->size < 15) <i class="far fa-times-circle text-secondary"></i> @else @if ($t->league_no == 15) <i class="far fa-dot-circle fa-lg text-success"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('P')) <i class="far fa-frown text-danger"</i> @endif @endif</td>
                    <td> @if ($t->preferred_league_no == 16)<i class="fas fa-asterisk text-warning"></i>@endif @if ($t->league->size < 16) <i class="far fa-times-circle text-secondary"></i> @else @if ($t->league_no == 16) <i class="far fa-dot-circle fa-lg text-success"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('Q')) <i class="far fa-frown text-danger"</i> @endif @endif</td>
+                   <td></td>
+                 </tr>
+                @else 
+                 <tr>
+                   <td hidden>{{ $t->league['id'] }}</td>
+                   <td hidden>{{ $t->id }}</td>
+                   <td>{{ $t->league['shortname'] }}</td>
+                   <td>{{$t->team_no}}</td>
+                   <td></td>
+                   <td></td>
+                   <td></td>
+                   <td></td>
+                   <td></td>
+                   <td></td>
+                   <td></td>
+                   <td></td>
+                   <td></td>
+                   <td></td>
+                   <td></td>
+                   <td></td>
+                   <td></td>
+                   <td></td>
+                   <td></td>
+                   <td></td>
+                   <td>League not open for selection</td>
+                   </tr>
+                @endif
                 @endisset
               @endforeach
             </tbody>
