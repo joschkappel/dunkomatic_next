@@ -194,9 +194,7 @@ class RegionControllerTest extends TestCase
         $club = $this->region->clubs()->first();
         $user = $club->members()->wherePivot('role_id', Role::ClubLead)->first();
 
-        Notification::assertSentTo(
-            [$user], CharPickingEnabled::class
-        );
+        Notification::assertNothingSent();
 
         // disbale and check that notifications are sent
         $response = $this->authenticated()
@@ -213,9 +211,8 @@ class RegionControllerTest extends TestCase
                                     'fmt_league_reports' =>[ReportFileType::getRandomValue(),ReportFileType::getRandomValue()],
                                     'pickchar_enabled' => 'on'
                                     ]);
-        Notification::assertSentTo(
-            [$user], CharPickingEnabled::class
-        );
+        Notification::assertNothingSent();
+
 
         // clean up club and member
         $user->delete();

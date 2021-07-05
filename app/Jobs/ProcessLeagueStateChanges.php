@@ -44,19 +44,19 @@ class ProcessLeagueStateChanges implements ShouldQueue
         foreach ($leagues as $l){
             // check if all clubs are assigned
             if ($l->isInState( LeagueState::Assignment())){
-                if ( $l->clubs->count() == $l->size ){
+                if ( ( $l->clubs->count() == $l->size ) or ( $this->region->close_assignment_at < now()) ){
                     $this->close_assignment($l);
                 }
             } elseif ($l->isInState( LeagueState::Registration())){
-                if ( $l->clubs->count() == $l->teams->count() ){
+                if (( $l->clubs->count() == $l->teams->count() ) or ( $this->region->close_registration_at < now()) ){
                     $this->close_registration($l);
                 }
             } elseif ($l->isInState( LeagueState::Selection())){
-                if ( $l->teams->count() == $l->teams->whereNotNull('league_no')->count() ){
+                if ( ( $l->teams->count() == $l->teams->whereNotNull('league_no')->count() ) or ( $this->region->close_selection_at < now()) ){
                     $this->close_selection($l);
                 }
             } elseif ($l->isInState( LeagueState::Scheduling())){
-                if (( $l->games_notime->count() == 0 ) and ($l->games_noshow->count() == 0 )){
+                if ( (( $l->games_notime->count() == 0 ) and ($l->games_noshow->count() == 0 )) or ( $this->region->close_scheduling_at < now()) ){
                     $this->close_scheduling($l);
                 }
             }            

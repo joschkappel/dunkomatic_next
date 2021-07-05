@@ -26,12 +26,16 @@ class Region extends Model
       'id','code','name', 'hq', 'job_game_overlaps', 'game_slot',
       'job_game_notime', 'job_noleads', 'job_email_valid',
       'job_league_reports', 'job_club_reports','job_exports',
-      'fmt_league_reports', 'fmt_club_reports', 'pickchar_enabled'
+      'fmt_league_reports', 'fmt_club_reports', 
+      'close_assignment_at', 'close_registration_at',
+      'close_selection_at', 'close_scheduling_at'
   ];
+
+  protected $dates = ['close_assignment_at', 'close_registration_at', 'close_selection_at', 'close_scheduling_at'];
 
   protected $casts = [
       'fmt_league_reports' => ReportFileType::class,
-      'fmt_club_reports' => ReportFileType::class
+      'fmt_club_reports' => ReportFileType::class,
   ];
 
   public function clubs()
