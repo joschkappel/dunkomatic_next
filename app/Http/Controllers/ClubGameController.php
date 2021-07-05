@@ -60,7 +60,7 @@ class ClubGameController extends Controller
         $glist =  $glist
           ->rawColumns(['game_no.display','duplicate'])
           ->editColumn('game_time', function($game){
-            return Carbon::parse($game->game_time)->isoFormat('LT');
+            return ($game->game_time == null) ? '' :  Carbon::parse($game->game_time)->isoFormat('LT');
           })
           ->editColumn('game_no', function($game){
               $link = '<a href="#" id="gameEditLink" data-id="'.$game->id.
