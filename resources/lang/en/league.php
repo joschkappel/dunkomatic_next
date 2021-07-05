@@ -23,6 +23,7 @@ return [
   'shortname' => 'Code',
   'name' => 'Name',
   'size'  => '# Teams',
+  'state' => 'Status',
   'above-region' => 'above region',
   'generated' => 'CLOSED',
   'agetype' => 'Age class',

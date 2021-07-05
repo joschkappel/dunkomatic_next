@@ -55,8 +55,6 @@ Route::group([
     // Route::get('region', 'RegionController@index')->name('region.index');
     Route::get('region/{region}/dashboard', 'RegionController@dashboard')->name('region.dashboard');
 
-
-    Route::get('club/index_stats', 'ClubController@index_stats')->name('club.index_stats');
     Route::get('club/{club}/dashboard', 'ClubController@dashboard')->name('club.dashboard');
     Route::get('club/{club}/briefing', 'ClubController@briefing')->name('club.briefing');
     Route::get('club/{club}/game/home','ClubController@list_homegame')->name('club.list.homegame');
@@ -69,7 +67,6 @@ Route::group([
     Route::resource('club', 'ClubController')->except('store','update','destroy');
     Route::resource('club.gym', 'ClubGymController')->shallow()->except('store','update','destroy','show');
 
-    Route::get('league/index_stats', 'LeagueController@index_stats')->name('league.index_stats');
     Route::get('league/manage', 'LeagueController@mgmt_dashboard')->name('league.mgmt_dashboard');
     Route::get('league/{league}/dashboard', 'LeagueController@dashboard')->name('league.dashboard');
     Route::get('league/{league}/briefing', 'LeagueController@briefing')->name('league.briefing');
@@ -141,10 +138,8 @@ Route::middleware(['auth'])->group(function () {
   Route::group(['prefix' => '{region}'], function () {
     Route::get('region/set', 'RegionController@set_region')->name('region.set');
     Route::get('club/list', 'ClubController@list')->name('club.list');
-    Route::get('club/list_stats', 'ClubController@list_stats')->name('club.list_stats');
     Route::get('club/region/sb', 'ClubController@sb_region')->name('club.sb.region');
     Route::get('league/list', 'LeagueController@list')->name('league.list');
-    Route::get('league/list_stats', 'LeagueController@list_stats')->name('league.list_stats');
     Route::get('league/club_assign/dt', 'LeagueController@club_assign_dt')->name('league.club_assign.dt');
     Route::get('league/team_register/dt', 'LeagueController@team_register_dt')->name('league.team_register.dt');
     Route::get('league/region/sb', 'LeagueController@sb_region')->name('league.sb.region');

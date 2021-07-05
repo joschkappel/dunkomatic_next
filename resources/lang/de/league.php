@@ -23,6 +23,7 @@ return [
   'shortname' => 'Code',
   'name' => 'Name',
   'size'  => 'Anzahl Teams',
+  'state' => 'Status',
   'above-region' => 'Überbezirklich',
   'generated' => 'GESPERRT',
   'agetype' => 'Altersklasse',

@@ -180,6 +180,7 @@ class ClubControllerTest extends TestCase
                ->assertViewIs('club.club_list');
 
     }
+
     /**
      * list
      *
@@ -191,54 +192,18 @@ class ClubControllerTest extends TestCase
      */
     public function list()
     {
-      $response = $this->authenticated()
-                        ->get(route('club.list',['region'=>$this->region]));
-
-      //$response->dump();
-      $response->assertStatus(200)
-               ->assertJsonPath('data.*.name', ['testclub2']);
-    }
-    /**
-     * index_stats
-     *
-     * @test
-     * @group club
-     * @group controller
-     *
-     * @return void
-     */
-    public function index_stats()
-    {
-      $response = $this->authenticated()
-                        ->get(route('club.index_stats',['language'=>'de']));
-
-      $response->assertStatus(200)
-               ->assertViewIs('club.club_stats');
-
-    }
-    /**
-     * list_stats
-     *
-     * @test
-     * @group club
-     * @group controller
-     *
-     * @return void
-     */
-    public function list_stats()
-    {
       $clubs = $this->region->clubs()->withCount(['leagues','teams','games_home',
                                      'games_home_notime','games_home_noshow'
                           ])
                         ->orderBy('shortname','ASC')
                         ->get();
       $response = $this->authenticated()
-                        ->get(route('club.list_stats',['region'=>$this->region]));
+                        ->get(route('club.list',['region'=>$this->region]));
 
       //$response->dump();
       $response->assertStatus(200)
-               ->assertJsonPath('data.*.games_home_count', [0])
-               ->assertJsonPath('data.*.name', ['testclub2']);
+               ->assertJsonPath('data.*.games_home_count', [0]);
+               //->assertJsonPath('data.*.name', ['testclub2']);
     }
     /**
      * dashboard

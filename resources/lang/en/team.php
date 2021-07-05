@@ -3,7 +3,9 @@
 return [
   'team' => 'Team|Teams',
   'entitled' => 'Entitled Teams',
-  'registered' => 'Registered Teams',
+  'registered' => ' registered ',
+  'assigned' => ' assigned ',
+  'selected' => ' selected League No. ',
   'shortname' => 'Team',
   'no' => 'Team Number',
   'title.new' => 'New Team for Club :CLUB',

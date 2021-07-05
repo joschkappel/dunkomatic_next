@@ -5,15 +5,12 @@ namespace Tests\Unit;
 use App\Models\League;
 use App\Models\Schedule;
 use App\Models\Club;
-use App\Models\Team;
 
 use App\Enums\LeagueAgeType;
 use App\Enums\LeagueGenderType;
-use App\Enums\Role;
 
 use Tests\TestCase;
 use Tests\Support\Authentication;
-use Illuminate\Support\Facades\Log;
 
 class LeagueControllerTest extends TestCase
 {
@@ -184,6 +181,7 @@ class LeagueControllerTest extends TestCase
 
       $this->assertDatabaseHas('leagues', ['name'=>$league->name]);
     }
+
     /**
      * index
      *
@@ -213,42 +211,6 @@ class LeagueControllerTest extends TestCase
      */
     public function list()
     {
-      $response = $this->authenticated( )
-                       ->get(route('league.list',['region'=>$this->region]));
-
-      //$response->dump();
-      $response->assertStatus(200)
-               ->assertJsonPath('data.*.name', ['testleague2']);
-    }
-    /**
-     * index_stats
-     *
-     * @test
-     * @group league
-     * @group controller
-     *
-     * @return void
-     */
-    public function index_stats()
-    {
-      $response = $this->authenticated( )
-                        ->get(route('league.index_stats',['language'=>'de']));
-
-      $response->assertStatus(200)
-               ->assertViewIs('league.league_stats');
-
-    }
-    /**
-     * list_stats
-     *
-     * @test
-     * @group league
-     * @group controller
-     *
-     * @return void
-     */
-    public function list_stats()
-    {
       $leagues = $this->region->leagues()
                          ->with('schedule.league_size')
                          ->withCount(['clubs','teams','games',
@@ -256,14 +218,14 @@ class LeagueControllerTest extends TestCase
                          ->get();
 
       $response = $this->authenticated( )
-                        ->get(route('league.list_stats',['region'=>$this->region]));
+                        ->get(route('league.list',['region'=>$this->region]));
 
       //$response->dump();
       $response->assertStatus(200);
       $response->assertJsonPath('data.*.clubs_count', [0])
                ->assertJsonPath('data.*.teams_count', [0])
-               ->assertJsonPath('data.*.games_count', [0])
-               ->assertJsonPath('data.*.name', ['testleague2']);
+               ->assertJsonPath('data.*.games_count', [0]);
+               //->assertJsonPath('data.*.name', ['testleague2']);
     }
     /**
      * dashboard

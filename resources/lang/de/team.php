@@ -3,7 +3,9 @@
 return [
   'team' => 'Mannschaft|Mannschaften',
   'entitled' => 'Zugelassene ',
-  'registered' => 'Gemeldete ',
+  'registered' => ' gemeldet ',
+  'assigned' => ' zugelassen ',
+  'selected' => ' mit Ziffer',
   'shortname' => 'Mannschaft',
   'no' => 'Mannschaftsnummer',
   'title.modify' => 'Ändere Mannschaftsdaten von  :TEAM',
