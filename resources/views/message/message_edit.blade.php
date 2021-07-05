@@ -135,7 +135,7 @@
           ],
         });
 
-        var content = {!! (old('body')!='') ? old('body') : json_encode($message['message']->body) !!}
+        var content = '{!! (old('body')!='') ? old('body') : json_encode($message['message']->body) !!}';
         $('#summernote').summernote('code',content);
 
         $("#greeting").val('{{ (old('greeting')!='') ? old('greeting') : $message['message']->greeting }}');
@@ -156,13 +156,10 @@
 
         moment.locale('{{ app()->getLocale() }}');
 
-        var send_at = '{{ (old('send_at')!='') ? old('send_at') : $message['message']->send_at}}';
-        var m_send_at = moment(send_at);
-
         $('#send_at').datetimepicker({
             format: 'L',
             locale: '{{ app()->getLocale()}}',
-            defaultDate: m_send_at.format('L')
+            defaultDate: moment('{{ $message['message']->send_at }}').format('L')
         });
 
       });

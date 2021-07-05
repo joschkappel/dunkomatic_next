@@ -32,7 +32,10 @@ class CreateRegionsTable extends Migration
             $table->unsignedInteger('job_club_reports')->default(JobFrequencyType::never);
             $table->unsignedInteger('fmt_club_reports')->default(ReportFileType::HTML);
             $table->unsignedInteger('job_exports')->default(JobFrequencyType::never);
-            $table->boolean('pickchar_enabled')->default(false);
+            $table->date('close_assignment_at')->nullable();  
+            $table->date('close_registration_at')->nullable(); 
+            $table->date('close_selection_at')->nullable(); 
+            $table->date('close_scheduling_at')->nullable(); 
         });
     }
 

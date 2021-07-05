@@ -18,4 +18,8 @@ return [
   'code' => 'Code',
   'hq' => 'Part of',
   'member.action.create' => 'New Member',
+  'close_assignment' => 'End of Club Assignment',
+  'close_registration' => 'End of Team Registration',
+  'close_selection' => 'End of League Number Selection',
+  'close_scheduling' => 'End of Home Game Scheduling',
 ];

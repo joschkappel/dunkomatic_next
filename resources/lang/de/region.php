@@ -18,4 +18,8 @@ return [
   'code' => 'Abkürzung',
   'hq' => 'Gehört zu',
   'member.action.create' => 'Neue Bezirksmitarbeiter',
+  'close_assignment' => 'Ende Vereinszuordnung',
+  'close_registration' => 'Ende Mannschaftsmeldung',
+  'close_selection' => 'Ende Ziffernwahl',
+  'close_scheduling' => 'Ende Heimspieländerung',
 ];

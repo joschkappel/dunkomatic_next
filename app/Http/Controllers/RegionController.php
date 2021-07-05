@@ -183,7 +183,6 @@ class RegionController extends Controller
     public function update_details(Request $request, Region $region)
     {
         Log::debug(print_r($request->all(),true));
-        $old_charpick = $region->pickchar_enabled;
 
         $data = $request->validate( [
             'name' => 'required|max:40',
@@ -198,29 +197,15 @@ class RegionController extends Controller
             'fmt_club_reports.*' => ['required', new EnumValue(ReportFileType::class, false)],
             'fmt_club_reports' => 'required|array|min:1',
             'fmt_league_reports.*' => ['required', new EnumValue(ReportFileType::class, false)],
-            'pickchar_enabled' => 'sometimes|required|in:on'
+            'close_assignment_at' => 'sometimes|required|date|after:today',
+            'close_registration_at' => 'sometimes|required|date|after:close_assignment_at',
+            'close_selection_at' => 'sometimes|required|date|after:close_registration_at',
+            'close_scheduling_at' => 'sometimes|required|date|after:close_selection_at',
         ]);
 
         Log::debug(print_r($data,true));
-        if ( isset($data['pickchar_enabled']) and ( $data['pickchar_enabled'] === 'on' )){
-          $data['pickchar_enabled'] = True;
-        } else {
-          $data['pickchar_enabled'] = False;
-        }
 
         $check = Region::find($region->id)->update($data);
-
-        // send out notifications
-        if ($old_charpick != $data['pickchar_enabled']){
-            $clubs = $region->clubs()->get();
-            foreach ($clubs as $c){
-                if ($c->memberIsA(Role::ClubLead)){
-                    $clead = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
-                    $clead->notify(new CharPickingEnabled($c, $data['pickchar_enabled'], config('global.season')));
-                }
-            }
-        }
-
 
         return redirect()->route('home',['language'=>app()->getLocale()]);
     }
