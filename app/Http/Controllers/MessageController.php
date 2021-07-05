@@ -70,18 +70,10 @@ class MessageController extends Controller
                 return Carbon::parse($msg->updated_at)->locale( $language )->isoFormat('LLL');
             })
         ->editColumn('send_at', function ($msg) use ($language) {
-            if ($msg->send_at != null ){
-              return Carbon::parse($msg->send_at)->locale( $language )->isoFormat('L');
-            } else {
-              return null;
-            };
+            return ($msg->send_at == null ) ? null : Carbon::parse($msg->send_at)->locale( $language )->isoFormat('L');
             })
         ->editColumn('sent_at', function ($msg) use ($language) {
-            if ($msg->sent_at != null ){
-              return Carbon::parse($msg->sent_at)->locale( $language )->isoFormat('L');
-            } else {
-              return null;
-            }
+            return ($msg->sent_at == null ) ? null : Carbon::parse($msg->sent_at)->locale( $language )->isoFormat('L');
             })
         ->editColumn('body', function ($msg) {
               return  Str::substr($msg->body,0,20);
