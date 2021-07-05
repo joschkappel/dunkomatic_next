@@ -67,8 +67,17 @@ class League extends Model implements Auditable
 
     public function teams()
     {
-        return $this->hasMany('App\Models\Team');
+        return $this->hasMany(Team::class);
     }
+
+    public function registered_teams()
+    {
+        return $this->hasMany(Team::class)->whereNotNull('league_id');
+    }
+    public function selected_teams()
+    {
+        return $this->hasMany(Team::class)->whereNotNull('league_no');
+    } 
 
     public function members()
     {

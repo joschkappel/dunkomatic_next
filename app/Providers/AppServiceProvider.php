@@ -92,12 +92,6 @@ class AppServiceProvider extends ServiceProvider
                     $clubmenu['submenu'][] = $smenu;
                 };
 
-                $smenu['text'] = __('club.menu.stats');
-                $smenu['url']  = route('club.index_stats', app()->getLocale());
-                $smenu['icon_color'] = 'orange';
-                $smenu['icon'] =  'fas fa-chart-bar';
-                $smenu['can'] = 'manage-clubs';
-                $clubmenu['submenu'][] = $smenu;
                 $event->menu->add($clubmenu);
 
                 $leaguemenu = array();
@@ -125,13 +119,6 @@ class AppServiceProvider extends ServiceProvider
                     unset($smenu['can']);
                     $leaguemenu['submenu'][] = $smenu;
                  };
-
-                $smenu['text'] = __('league.menu.stats');
-                $smenu['url']  = route('league.index_stats', app()->getLocale());
-                $smenu['icon_color'] = 'yellow';
-                $smenu['icon'] =  'fas fa-chart-bar';
-                $smenu['can'] = 'manage-leagues';
-                $leaguemenu['submenu'][] = $smenu;
 
                 $smenu['text'] = "manage";
                 $smenu['url']  = route('league.mgmt_dashboard', app()->getLocale());

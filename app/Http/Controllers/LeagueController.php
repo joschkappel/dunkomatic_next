@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 use App\Notifications\ClubDeAssigned;
 
@@ -40,24 +41,21 @@ class LeagueController extends Controller
     return view('league/league_list');
   }
 
-  public function index_stats()
-  {
-    return view('league/league_stats');
-  }
   /**
    * Display a listing of the resource .
    *
    * @return \Illuminate\Http\Response
    */
-  public function list_stats(Region $region)
+  public function list(Region $region)
   {
 
     $leagues = $region->leagues()
       ->with('schedule.league_size')
       ->withCount([
-        'clubs', 'teams', 'games',
+        'clubs', 'teams', 'registered_teams','selected_teams','games',
         'games_notime', 'games_noshow'
       ])
+      ->orderBy('shortname','ASC')
       ->get();
 
     //Log::debug(print_r($leagues,true));
@@ -66,56 +64,85 @@ class LeagueController extends Controller
 
     return $leaguelist
       ->addIndexColumn()
-      ->rawColumns(['shortname', 'reg_rel'])
-      ->editColumn('shortname', function ($data) {
-        return '<a href="' . route('league.dashboard', ['language' => Auth::user()->locale, 'league' => $data->id]) . '">' . $data->shortname . '</a>';
+      ->rawColumns(['shortname.display','age_type.display','gender_type.display', 
+                    'assigned_rel.display', 'registered_rel.display', 
+                    'selected_rel.display','size.display','state'])
+      ->editColumn('shortname', function ($l) {
+        if ((Bouncer::can('manage', $l)) or (Auth::user()->isA('regionadmin'))) {
+          $link = '<a href="' . route('league.dashboard', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" >' . $l->shortname . '</a>';
+        } else {
+          $link = '<a href="' . route('league.briefing', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" class="text-info">' . $l->shortname . '</a>';
+        }
+        return array('display' =>$link, 'sort'=>$l->shortname);
       })
-      ->addColumn('reg_rel', function ($data) {
-        if ($data->clubs_count != 0) {
-          $reg_rel = round(($data->teams_count * 100) / $data->clubs_count);
+      ->editColumn('age_type', function ($l) {
+        return array('display'=>LeagueAgeType::getDescription($l->age_type), 'sort'=>$l->age_type);
+      })
+      ->editColumn('gender_type', function ($l) {
+        return array('display'=>LeagueGenderType::getDescription($l->gender_type), 'sort'=>$l->gender_type);
+      }) 
+      ->addColumn('size', function ($l){
+        if ($l->schedule()->exists()){
+          return ($l->size == null  ) ? array('display' =>null, 'sort'=>0) : array('display' =>$l->size, 'sort'=>$l->size);
         } else {
-          $reg_rel = 0;
+          return array('display' =>null, 'sort'=>0);
         }
-        if ($reg_rel >= 100) {
-          return '<div class="bg-success text-center">' . $reg_rel . '</div>';
-        } else if ($reg_rel <= 50) {
-          return '<div class="bg-danger text-center">' . $reg_rel . '</div>';
+      })
+      ->addColumn('assigned_rel', function($l){
+        if ($l->teams_count!=0){
+            $assigned_rel = round(($l->clubs_count * 100)/$l->teams_count);
         } else {
-          return '<div class="bg-warning text-center">' . $reg_rel . '</div>';
+            $assigned_rel = 0;
         }
+        $content = '<div class="progress" style="height: 20px;">
+        <div class="progress-bar bg-info" role="progressbar" style="width: '.$assigned_rel.'%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">'.$assigned_rel.'%</div>
+        </div>';
+        return array('display' =>$content, 'sort'=>$assigned_rel);
+      })
+      ->addColumn('registered_rel', function($l){
+        if ($l->teams_count!=0){
+            $registered_rel = round(($l->registered_teams_count * 100)/$l->teams_count);
+        } else {
+            $registered_rel = 0;
+        }
+        $content = '<div class="progress" style="height: 20px;">
+        <div class="progress-bar" role="progressbar" style="width: '.$registered_rel.'%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">'.$registered_rel.'%</div>
+        </div>';
+        return array('display' =>$content, 'sort'=>$registered_rel);
+      }) 
+      ->addColumn('selected_rel', function($l){
+        if ($l->teams_count!=0){
+            $selected_rel = round(($l->selected_teams_count * 100)/$l->teams_count);
+        } else {
+            $selected_rel = 0;
+        }
+        $content = '<div class="progress" style="height: 20px;">
+        <div class="progress-bar bg-success" role="progressbar" style="width: '.$selected_rel.'%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">'.$selected_rel.'%</div>
+        </div>';
+        return array('display' =>$content, 'sort'=>$selected_rel);
+      })         
+      ->editColumn('updated_at', function ($l) {
+        return ($l->updated_at==null) ? null : $l->updated_at->format('d.m.Y H:i');
+      })
+      ->editColumn('state', function ($l) {
+          if ($l->isInState(LeagueState::Assignment())){
+            $content = '<span class="badge badge-info"><i class="fas fa-battery-empty fa-lg"></i></span>';
+          } elseif ($l->isInState(LeagueState::Registration())) {
+            $content = '<span class="badge badge-info"><i class="fas fa-battery-quarter fa-lg"></i></span>';
+          } elseif ($l->isInState(LeagueState::Selection())) {
+            $content = '<span class="badge badge-info"><i class="fas fa-battery-half fa-lg"></i></span>';
+          } elseif ($l->isInState(LeagueState::Scheduling())) {
+            $content = '<span class="badge badge-info"><i class="fas fa-battery-three-quarters fa-lg"></i></span>';
+          } elseif ($l->isInState(LeagueState::Freeze())) {
+            $content = '<span class="badge badge-warning"><i class="fas fa-battery-half fa-lg"></i></span>';
+          } elseif ($l->isInState(LeagueState::Live())) {
+            $content = '<span class="badge badge-success"><i class="fas fa-battery-full fa-lg"></i></span>';
+          }
+          return $content;
       })
       ->make(true);
   }
 
-  /**
-   * Display a listing of the resource .
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function list(Region $region)
-  {
-    //
-    $leaguelist = datatables()::of($region->leagues()->with('schedule'));
-
-    return $leaguelist
-      ->addIndexColumn()
-      // ->addColumn('action', function($data){
-      //       $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$data->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteLeague"><i class="fa fa-fw fa-trash"></i>'.__('league.action.delete').'</a>';
-      //       return $btn;
-      // })
-      ->rawColumns(['shortname'])
-      ->editColumn('created_at', function ($user) {
-        return $user->created_at->format('d.m.Y H:i');
-      })
-      ->editColumn('shortname', function ($data) {
-        if ((Bouncer::can('manage', $data)) or (Auth::user()->isA('regionadmin'))) {
-          return '<a href="' . route('league.dashboard', ['language' => Auth::user()->locale, 'league' => $data->id]) . '">' . $data->shortname . '</a>';
-        } else {
-          return '<a href="' . route('league.briefing', ['language' => Auth::user()->locale, 'league' => $data->id]) . '" class="text-info">' . $data->shortname . '</a>';
-        }
-      })
-      ->make(true);
-  }
 
   /**
    * Display a listing of the resource for selectboxes. clubs for league

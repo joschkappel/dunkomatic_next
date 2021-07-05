@@ -17,23 +17,20 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ClubController extends Controller
 {
 
-    public function index_stats()
-    {
-      return view('club/club_stats');
-    }
     /**
      * Display a listing of the resource .
      *
      * @return \Illuminate\Http\Response
      */
-    public function list_stats(Region $region)
+    public function list(Region $region)
     {
 
-      $clubs = $region->clubs()->withCount(['leagues','teams','registered_teams','games_home',
+      $clubs = $region->clubs()->withCount(['leagues','teams','registered_teams','selected_teams','games_home',
                                      'games_home_notime','games_home_noshow'
                           ])
                         ->orderBy('shortname','ASC')
@@ -45,23 +42,50 @@ class ClubController extends Controller
 
       return $clublist
         ->addIndexColumn()
-        ->rawColumns(['shortname','reg_rel'])
+        ->rawColumns(['shortname.display','name.display', 'assigned_rel.display', 'registered_rel.display', 'selected_rel.display'])
         ->editColumn('shortname', function ($data) {
-            return '<a href="' . route('club.dashboard', ['language'=>Auth::user()->locale,'club'=>$data->id]) .'">'.$data->shortname.'</a>';
+            $link = '<a href="' . route('club.dashboard', ['language'=>Auth::user()->locale,'club'=>$data->id]) .'">'.$data->shortname.'</a>';
+            return array('display' =>$link, 'sort'=>$data->shortname);
             })
-        ->addColumn('reg_rel', function($data){
+        ->editColumn('name', function ($data){
+          $link = '<a href="http://' . $data->url .'" target="_blank">'.$data->name.'</a>';
+          return array('display' =>$link, 'sort'=>Str::slug($data->name,'-'));
+        })
+        ->addColumn('assigned_rel', function($data){
             if ($data->teams_count!=0){
-                $reg_rel = round(($data->leagues_count * 100)/$data->teams_count);
+                $assigned_rel = round(($data->leagues_count * 100)/$data->teams_count);
             } else {
-                $reg_rel = 0;
+                $assigned_rel = 0;
             }
-            if ($reg_rel >= 100){
-                return '<div class="bg-success text-center">'.$reg_rel.'</div>';
-            } else if ($reg_rel <= 50){
-                return '<div class="bg-danger text-center">'.$reg_rel.'</div>';
-            } else {
-                return '<div class="bg-warning text-center">'.$reg_rel.'</div>';
-            }
+            $content = '<div class="progress" style="height: 20px;">
+            <div class="progress-bar bg-info" role="progressbar" style="width: '.$assigned_rel.'%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">'.$assigned_rel.'%</div>
+            </div>';
+            return array('display' =>$content, 'sort'=>$assigned_rel);
+        })
+        ->addColumn('registered_rel', function($c){
+          if ($c->teams_count!=0){
+              $registered_rel = round(($c->registered_teams_count * 100)/$c->teams_count);
+          } else {
+              $registered_rel = 0;
+          }
+          $content = '<div class="progress" style="height: 20px;">
+          <div class="progress-bar" role="progressbar" style="width: '.$registered_rel.'%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">'.$registered_rel.'%</div>
+          </div>';
+          return array('display' =>$content, 'sort'=>$registered_rel);
+        }) 
+        ->addColumn('selected_rel', function($c){
+          if ($c->teams_count!=0){
+              $selected_rel = round(($c->selected_teams_count * 100)/$c->teams_count);
+          } else {
+              $selected_rel = 0;
+          }
+          $content = '<div class="progress" style="height: 20px;">
+          <div class="progress-bar bg-success" role="progressbar" style="width: '.$selected_rel.'%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">'.$selected_rel.'%</div>
+          </div>';
+          return array('display' =>$content, 'sort'=>$selected_rel);
+        })         
+        ->editColumn('updated_at', function ($c) {
+          return ($c->updated_at==null) ? null : $c->updated_at->format('d.m.Y H:i');
         })
         ->make(true);
 
@@ -105,40 +129,6 @@ class ClubController extends Controller
           $data['files'] = $reports;
           return view('club/club_dashboard', $data);
 
-    }
-    /**
-     * Display a listing of the resource .
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function list(Region $region)
-    {
-        $clublist = datatables()::of($region->clubs);
-
-        return $clublist
-          ->addIndexColumn()
-          // ->addColumn('action', function($data){
-          //        $editUrl = url('club/'.$data->id.'/list');
-          //         //                 $btn = '<a href="'.$editUrl.'"</a><button type="button" class="btn btn-secondary btn-sm"><i class="fa fa-edit"></i> Edit</button>';
-          //        $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$data->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteClub"><i class="fa fa-fw fa-trash"></i>'.__('club.action.delete').'</a>';
-          //
-          //         return $btn;
-          // })
-          ->rawColumns(['shortname','url'])
-          ->editColumn('created_at', function ($user) {
-                  return $user->created_at->format('d.m.Y H:i');
-              })
-          ->editColumn('shortname', function ($data) {
-                if ( ( Bouncer::can('manage', $data)) or ( Auth::user()->isA('regionadmin'))){
-                    return '<a href="' . route('club.dashboard', ['language'=>Auth::user()->locale,'club'=>$data->id]) .'">'.$data->shortname.'</a>';
-                } else {
-                    return '<a href="' . route('club.briefing', ['language'=>Auth::user()->locale,'club'=>$data->id]) .'" class="text-info">'.$data->shortname.'</a>';
-                }
-                })
-          ->editColumn('url', function ($data) {
-              return '<a href="http://' . $data->url .'" target="_blank">'.$data->url.'</a>';
-              })
-          ->make(true);
     }
 
     /**
