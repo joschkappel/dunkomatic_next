@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Game;
 use App\Models\League;
 use App\Models\Club;
-use App\Enums\Role;
+use App\Models\Gym;
 use App\Traits\LeagueFSM;
 
 use App\Notifications\LeagueGamesGenerated;
@@ -141,12 +141,14 @@ class LeagueGameController extends Controller
         Log::debug(print_r($request->all(),true));
         $data = $request->validate( [
             'gym_id' => 'required|exists:gyms,id',
-            'gym_no' => 'required|integer|between:1,9',
             'game_date' => 'required|date|after:today',
             'game_time' => 'required|date_format:H:i'
         ]);
 
         $data['game_time'] = Carbon::parse($data['game_time'])->format('H:i');
+
+        // Get GYM NO
+        $data['gym_no'] = Gym::find($data['gym_id'])->gym_no;
         //Log::debug(print_r($game,true));
         $game->update($data);
         return redirect()->back();

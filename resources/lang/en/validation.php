@@ -164,6 +164,10 @@ return [
       'zipcode' => 'ZIPcode',
       'zip' => 'ZIPcode',
       'gym_no' => 'Gym Number',
+      'close_assignment_at' => 'End of Club Assignment',
+      'close_registration_at' => 'End of Team Registration',
+      'close_selection_at' => 'End of Team League No Selection',
+      'close_scheduling_at' => 'End of Home Game Scheduling',
     ],
 
 ];

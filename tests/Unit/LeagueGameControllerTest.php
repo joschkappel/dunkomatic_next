@@ -87,7 +87,7 @@ class LeagueGameControllerTest extends TestCase
                         ]);
 
       $response->assertStatus(302)
-               ->assertSessionHasErrors(['gym_no','game_date']);;
+               ->assertSessionHasErrors(['game_date']);;
       //$response->dumpSession();
       $this->assertDatabaseMissing('games', ['id'=>$game->id,'gym_id'=>$gym->id]);
     }

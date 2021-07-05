@@ -166,6 +166,10 @@ return [
       'zipcode' => 'Postleitzahl',
       'zip' => 'Postleitzahl',
       'gym_no' => 'Hallennummer',
+      'close_assignment_at' => 'Ende Vereinszuordnung',
+      'close_registration_at' => 'Ende Mannschaftsmeldung',
+      'close_selection_at' => 'Ende Ziffernwahl',
+      'close_scheduling_at' => 'Ende Heimspieltermine',
 
     ],
 
