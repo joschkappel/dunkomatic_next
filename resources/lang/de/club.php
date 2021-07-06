@@ -25,6 +25,7 @@ return [
   'entitled' => 'Zugelassene Vereine',
   'region' => 'Bezirk',
   'registered' => 'Gemeldete Vereine',
+  'league.assigned' => 'Zulassung für :count Runden',
   'shortname' => 'Code',
   'name' => 'Name',
   'url' => 'Link zur Homepage',

@@ -16,7 +16,6 @@
                                 <h3>{{ $club->shortname }}</h3>
                                 <h5>{{ $club->name }}</h5>
                             </div>
-
                         </div>
                     </div>
                     <div class="icon">
@@ -36,36 +35,38 @@
             </div>
             <div class="col-sm ">
                 <div class="info-box">
-                @if (count($leagues) == 0) 
-                    <span class="info-box-icon bg-danger"><i class="fas fa-trophy"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text text-lg">@lang('club.entitled.no')</span>
-                @elseif (count($leagues) == count($teams) )     
-                    <span class="info-box-icon bg-success"><i class="fas fa-trophy"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text text-lg">@lang('club.entitled.all')</span>                   
-                @else
-                    <span class="info-box-icon bg-warning"><i class="fas fa-trophy"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text text-lg">@lang('club.entitled.some', [ 'entitled' => count($leagues), 'total' => count($teams)] )</span>                   
-                @endif
-                    </div>
+                    @if (count($leagues) == 0)
+                        <span class="info-box-icon bg-danger"><i class="fas fa-trophy"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text text-lg">@lang('club.entitled.no')</span>
+                    @elseif (count($leagues) == count($teams) )
+                        <span class="info-box-icon bg-success"><i class="fas fa-trophy"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text text-lg">@lang('club.entitled.all')</span>
+                    @else
+                        <span class="info-box-icon bg-warning"><i class="fas fa-trophy"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text text-lg">@lang('club.entitled.some', [ 'entitled' =>
+                                count($leagues), 'total' => count($teams)] )</span>
+                    @endif
+                        </div>
                 </div>
                 <div class="info-box">
-                @if ($registered_teams == 0)
-                    <span class="info-box-icon bg-danger"><i class="fas fa-users"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text text-lg">@lang('team.registered.no')</span>
-                @elseif ($registered_teams == count($teams) )
-                    <span class="info-box-icon bg-success"><i class="fas fa-users"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text text-lg">@lang('team.registered.all')</span>
-                @else
-                    <span class="info-box-icon bg-warning"><i class="fas fa-users"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text text-lg">@lang('team.registered.some', ['registered'=>$registered_teams, 'total'=>count($teams)])</span>
-                @endif                        
-                    </div>
+                    @if ($registered_teams == 0)
+                        <span class="info-box-icon bg-danger"><i class="fas fa-users"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text text-lg">@lang('team.registered.no')</span>
+                    @elseif ($registered_teams == count($teams) )
+                        <span class="info-box-icon bg-success"><i class="fas fa-users"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text text-lg">@lang('team.registered.all')</span>
+                    @else
+                        <span class="info-box-icon bg-warning"><i class="fas fa-users"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text text-lg">@lang('team.registered.some',
+                                ['registered'=>$registered_teams, 'total'=>count($teams)])</span>
+                    @endif
+                        </div>
                 </div>
             </div>
             <div class="col-sm ">
@@ -78,31 +79,52 @@
                         <span class="info-box-icon bg-success"><i class="fas fa-battery-full"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text text-lg">@lang('team.selected.all')</span>
-                    @else 
+                    @else
                         <span class="info-box-icon bg-warning"><i class="fas fa-battery-half"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text text-lg">@lang('team.selected.some',['selected'=>$selected_teams, 'total'=>count($teams)])</span>
+                            <span class="info-box-text text-lg">@lang('team.selected.some',['selected'=>$selected_teams,
+                                'total'=>count($teams)])</span>
                     @endif
-                    </div>
+                        </div>
                 </div>
-
                 <div class="info-box">
-                @if ($games_home_notime == 0)
-                    <span class="info-box-icon bg-success"><i class="far fa-clock"></i></span>
+                    @if ($games_home_notime == 0)
+                        <span class="info-box-icon bg-success"><i class="far fa-clock"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text text-lg">@lang('club.game_notime.no')</span>
+                    @elseif ($games_home_notime == count($games_home) )
+                        <span class="info-box-icon bg-danger"><i class="far fa-clock"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text text-lg">@lang('club.game_notime.all')</span>
+                    @else
+                        <span class="info-box-icon bg-warning"><i class="far fa-clock"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text text-lg">@lang('club.game_notime.some', ['notime'=>$games_home_notime,
+                                'total'=>count($games_home)])</span>
+                    @endif
+                        </div>
+                </div>
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-sm">
+                <div class="info-box ">
+                    <span class="info-box-icon bg-info"><i class="fas fa-file-signature"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text text-lg">@lang('club.game_notime.no')</span>
-                @elseif ($games_home_notime == count($games_home) )    
-                    <span class="info-box-icon bg-danger"><i class="far fa-clock"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text text-lg">@lang('club.game_notime.all')</span>                   
-                @else
-                    <span class="info-box-icon bg-warning"><i class="far fa-clock"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text text-lg">@lang('club.game_notime.some', ['notime'=>$games_home_notime, 'total'=>count($games_home)])</span>               
-                @endif
+                        <span class="info-box-text px-1 m-1">@lang('club.league.assigned',['count'=> $leagues->count() ])</span>
+                        <span class="info-box-text">
+                        <div class="btn-group btn-group-sm flex-wrap" role="group" aria-label="Assigned Leagues">
+                        @foreach ( $leagues as $l )
+                            @if ( $teams->pluck('league.shortname')->contains($l->shortname))
+                                <button type="button" class="btn btn-outline-info px-1 m-2">{{ $l->shortname }}</button>
+                            @else
+                                <button type="button" class="btn btn-outline-danger  px-1 m-2">{{ $l->shortname }}</button>                            
+                            @endif
+                        @endforeach
+                        </div>
+                        </span>
                     </div>
                 </div>
-
             </div>
         </div>
     </div><!-- /.container-fluid -->
@@ -127,39 +149,39 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                      <ul  class="list-group list-group-flush">
-                        @foreach ($members as $member)
-                            <li class="list-group-item ">
-                                <button type="button" id="deleteMember" class="btn btn-outline-danger btn-sm"
-                                    data-member-id="{{ $member->id }}" data-member-name="{{ $member->name }}"
-                                    data-club-sname="{{ $club->shortname }}" data-toggle="modal"
-                                    data-target="#modalDeleteMember"><i class="fa fa-trash"></i></button>
-                                <a href="{{ route('member.edit', ['language' => app()->getLocale(), 'member' => $member]) }}"
-                                    class=" px-2">{{ $member->name }} <i class="fas fa-arrow-circle-right"></i></a>
-                                @if (!$member->is_user)
-                                    <a href="{{ route('member.invite', ['member' => $member]) }}" type="button"
-                                        class="btn btn-outline-primary btn-sm"><i class="far fa-paper-plane"></i></a>
-                                @endif
-                                <button type="button" id="addMembership" class="btn btn-outline-primary btn-sm"
-                                    data-member-id="{{ $member->id }}" data-club-id="{{ $club->id }}"
-                                    data-toggle="modal" data-target="#modalClubMembershipAdd"><i
-                                        class="fas fa-user-tag"></i></button>
-                                @foreach ($member['memberships'] as $membership)
-                                    @if ($membership->membership_type == 'App\Models\Club' and $membership->membership_id == $club->id)
-                                        <button type="button" id="modMembership" class="btn btn-outline-primary btn-sm"
-                                            data-membership-id="{{ $membership->id }}"
-                                            data-function="{{ $membership->function }}"
-                                            data-email="{{ $membership->email }}"
-                                            data-role="{{ App\Enums\Role::getDescription($membership->role_id) }}"
-                                            data-toggle="modal"
-                                            data-target="#modalClubMembershipMod">{{ App\Enums\Role::getDescription($membership->role_id) }}</button>
-                                    @else
-                                        <span
-                                            class="badge badge-secondary">{{ App\Enums\Role::getDescription($membership->role_id) }}</span>
+                        <ul class="list-group list-group-flush">
+                            @foreach ($members as $member)
+                                <li class="list-group-item ">
+                                    <button type="button" id="deleteMember" class="btn btn-outline-danger btn-sm"
+                                        data-member-id="{{ $member->id }}" data-member-name="{{ $member->name }}"
+                                        data-club-sname="{{ $club->shortname }}" data-toggle="modal"
+                                        data-target="#modalDeleteMember"><i class="fa fa-trash"></i></button>
+                                    <a href="{{ route('member.edit', ['language' => app()->getLocale(), 'member' => $member]) }}"
+                                        class=" px-2">{{ $member->name }} <i class="fas fa-arrow-circle-right"></i></a>
+                                    @if (!$member->is_user)
+                                        <a href="{{ route('member.invite', ['member' => $member]) }}" type="button"
+                                            class="btn btn-outline-primary btn-sm"><i class="far fa-paper-plane"></i></a>
                                     @endif
-                                @endforeach
-                            </li>
-                        @endforeach
+                                    <button type="button" id="addMembership" class="btn btn-outline-primary btn-sm"
+                                        data-member-id="{{ $member->id }}" data-club-id="{{ $club->id }}"
+                                        data-toggle="modal" data-target="#modalClubMembershipAdd"><i
+                                            class="fas fa-user-tag"></i></button>
+                                    @foreach ($member['memberships'] as $membership)
+                                        @if ($membership->membership_type == 'App\Models\Club' and $membership->membership_id == $club->id)
+                                            <button type="button" id="modMembership" class="btn btn-outline-primary btn-sm"
+                                                data-membership-id="{{ $membership->id }}"
+                                                data-function="{{ $membership->function }}"
+                                                data-email="{{ $membership->email }}"
+                                                data-role="{{ App\Enums\Role::getDescription($membership->role_id) }}"
+                                                data-toggle="modal"
+                                                data-target="#modalClubMembershipMod">{{ App\Enums\Role::getDescription($membership->role_id) }}</button>
+                                        @else
+                                            <span
+                                                class="badge badge-secondary">{{ App\Enums\Role::getDescription($membership->role_id) }}</span>
+                                        @endif
+                                    @endforeach
+                                </li>
+                            @endforeach
                         </ul>
 
                     </div>
@@ -178,7 +200,7 @@
                     <div class="card-header ">
                         <h4 class="card-title"><i class="fas fa-users"></i> {{ trans_choice('team.team', 2) }} <span
                                 class="badge badge-pill badge-info">{{ count($teams) }}</span></h4>
-                        <div class="card-tools">                      
+                        <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
                                     class="fas fa-plus"></i>
                             </button>
@@ -311,7 +333,7 @@
                                     class="fas fa-plus"></i>
                             </button>
                         </div>
-                        <!-- /.card-tools -->                                        
+                        <!-- /.card-tools -->
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
@@ -350,7 +372,7 @@
                 <!-- all modals above -->
             </div>
         </div>
-{{--         <div class="row justify-content-center">
+        {{-- <div class="row justify-content-center">
             <div class="col-sm-4">
                 <div class="card border-secondary bg-secondary text-white">
                     <img src="{{ asset('img/' . config('dunkomatic.grafics.club', 'oops.jpg')) }}" class="card-img"
@@ -360,95 +382,95 @@
                 </div>
             </div>
         </div> --}}
-    @stop
+@stop
 
-    @section('js')
-        <script>
-            $(function() {
-                $("button#addMembership").click(function() {
-                    var url =
-                        "{{ route('membership.club.add', ['club' => ':clubid:', 'member' => ':memberid:']) }}";
-                    url = url.replace(':memberid:', $(this).data('member-id'));
-                    url = url.replace(':clubid:', $(this).data('club-id'));
-                    $('#addClubMembership').attr('action', url);
-                    $('#modalAddMembership').modal('show');
-                });
-                $("button#modMembership").click(function() {
-                    var url = "{{ route('membership.update', ['membership' => ':membershipid:']) }}";
-                    url = url.replace(':membershipid:', $(this).data('membership-id'));
-                    var url2 = "{{ route('membership.destroy', ['membership' => ':membershipid:']) }}";
-                    url2 = url2.replace(':membershipid:', $(this).data('membership-id'));
-                    $('#modmemfunction').val($(this).data('function'));
-                    $('#modmememail').val($(this).data('email'));
-                    $('#modmemrole').val($(this).data('role'));
-                    $('#frmModMembership').attr('action', url);
-                    $('#hidDelUrl').val(url2);
-                    $('#modalMembershipMod').modal('show');
-                });
-                $("button#assignLeague").click(function() {
-                    $('#team_id').val($(this).data('team-id'));
-                    $('#club_id').val($(this).data('club-id'));
-                    $('#modalAssignLeague').modal('show');
-                });
-                $("button#deassignLeague").click(function() {
-                    var team_id = $(this).data('team-id');
-                    var club_id = $(this).data('club-id');
-                    var league_id = $(this).data('league-id');
-                    Pace.restart();
-                    Pace.track(function() {
-                        $.ajax({
-                            type: 'POST',
-                            url: "{{ route('team.deassign-league') }}",
-                            dataType: 'json',
-                            data: {
-                                club_id: club_id,
-                                team_id: team_id,
-                                league_id: league_id,
-                                _token: "{{ csrf_token() }}",
-                                _method: 'DELETE'
-                            },
-                            success: function(response) {
-                                location.reload()
-                            },
-                        });
+@section('js')
+    <script>
+        $(function() {
+            $("button#addMembership").click(function() {
+                var url =
+                    "{{ route('membership.club.add', ['club' => ':clubid:', 'member' => ':memberid:']) }}";
+                url = url.replace(':memberid:', $(this).data('member-id'));
+                url = url.replace(':clubid:', $(this).data('club-id'));
+                $('#addClubMembership').attr('action', url);
+                $('#modalAddMembership').modal('show');
+            });
+            $("button#modMembership").click(function() {
+                var url = "{{ route('membership.update', ['membership' => ':membershipid:']) }}";
+                url = url.replace(':membershipid:', $(this).data('membership-id'));
+                var url2 = "{{ route('membership.destroy', ['membership' => ':membershipid:']) }}";
+                url2 = url2.replace(':membershipid:', $(this).data('membership-id'));
+                $('#modmemfunction').val($(this).data('function'));
+                $('#modmememail').val($(this).data('email'));
+                $('#modmemrole').val($(this).data('role'));
+                $('#frmModMembership').attr('action', url);
+                $('#hidDelUrl').val(url2);
+                $('#modalMembershipMod').modal('show');
+            });
+            $("button#assignLeague").click(function() {
+                $('#team_id').val($(this).data('team-id'));
+                $('#club_id').val($(this).data('club-id'));
+                $('#modalAssignLeague').modal('show');
+            });
+            $("button#deassignLeague").click(function() {
+                var team_id = $(this).data('team-id');
+                var club_id = $(this).data('club-id');
+                var league_id = $(this).data('league-id');
+                Pace.restart();
+                Pace.track(function() {
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ route('team.deassign-league') }}",
+                        dataType: 'json',
+                        data: {
+                            club_id: club_id,
+                            team_id: team_id,
+                            league_id: league_id,
+                            _token: "{{ csrf_token() }}",
+                            _method: 'DELETE'
+                        },
+                        success: function(response) {
+                            location.reload()
+                        },
                     });
                 });
-                $("button#deleteMember").click(function() {
-                    $('#member_id').val($(this).data('member-id'));
-                    $('#unit_shortname').html($(this).data('club-sname'));
-                    $('#unit_type').html('{{ trans_choice('club.club', 1) }}');
-                    $('#role_name').html($(this).data('role-name'));
-                    $('#member_name').html($(this).data('member-name'));
-                    var url =
-                    "{{ route('membership.club.destroy', ['club' => $club, 'member' => ':member:']) }}";
-                    url = url.replace(':member:', $(this).data('member-id'));
-                    $('#confirmDeleteMember').attr('action', url);
-                    $('#modalDeleteMember').modal('show');
-                });
-                $("button#deleteTeam").click(function() {
-                    $('#team_id').val($(this).data('team-id'));
-                    $('#club_shortname').html($(this).data('club-sname'));
-                    $('#league_shortname').html($(this).data('league-sname'));
-                    $('#team_name').html($(this).data('club-sname') + $(this).data('team-no'));
-                    var url = "{{ route('team.destroy', ['team' => ':team:']) }}";
-                    url = url.replace(':team:', $(this).data('team-id'))
-                    $('#confirmDeleteTeam').attr('action', url);
-                    $('#modalDeleteTeam').modal('show');
-                });
-                $("button#deleteGym").click(function() {
-                    $('#gym_id').val($(this).data('gym-id'));
-                    $('#club_shortname').html($(this).data('club-sname'));
-                    $('#gym_name').html($(this).data('gym-name'));
-                    var url = "{{ route('gym.destroy', ['gym' => ':gymid:']) }}";
-                    url = url.replace(':gymid:', $(this).data('gym-id'));
-                    $('#confirmDeleteGym').attr('action', url);
-                    $('#modalDeleteGym').modal('show');
-                });
-                $("#deleteClub").click(function() {
-                    var url = "{{ route('club.destroy', ['club' => $club]) }}";
-                    $('#confirmDeleteClub').attr('action', url);
-                    $('#modalDeleteClub').modal('show');
-                });
             });
-        </script>
-    @stop
+            $("button#deleteMember").click(function() {
+                $('#member_id').val($(this).data('member-id'));
+                $('#unit_shortname').html($(this).data('club-sname'));
+                $('#unit_type').html('{{ trans_choice('club.club', 1) }}');
+                $('#role_name').html($(this).data('role-name'));
+                $('#member_name').html($(this).data('member-name'));
+                var url =
+                    "{{ route('membership.club.destroy', ['club' => $club, 'member' => ':member:']) }}";
+                url = url.replace(':member:', $(this).data('member-id'));
+                $('#confirmDeleteMember').attr('action', url);
+                $('#modalDeleteMember').modal('show');
+            });
+            $("button#deleteTeam").click(function() {
+                $('#team_id').val($(this).data('team-id'));
+                $('#club_shortname').html($(this).data('club-sname'));
+                $('#league_shortname').html($(this).data('league-sname'));
+                $('#team_name').html($(this).data('club-sname') + $(this).data('team-no'));
+                var url = "{{ route('team.destroy', ['team' => ':team:']) }}";
+                url = url.replace(':team:', $(this).data('team-id'))
+                $('#confirmDeleteTeam').attr('action', url);
+                $('#modalDeleteTeam').modal('show');
+            });
+            $("button#deleteGym").click(function() {
+                $('#gym_id').val($(this).data('gym-id'));
+                $('#club_shortname').html($(this).data('club-sname'));
+                $('#gym_name').html($(this).data('gym-name'));
+                var url = "{{ route('gym.destroy', ['gym' => ':gymid:']) }}";
+                url = url.replace(':gymid:', $(this).data('gym-id'));
+                $('#confirmDeleteGym').attr('action', url);
+                $('#modalDeleteGym').modal('show');
+            });
+            $("#deleteClub").click(function() {
+                var url = "{{ route('club.destroy', ['club' => $club]) }}";
+                $('#confirmDeleteClub').attr('action', url);
+                $('#modalDeleteClub').modal('show');
+            });
+        });
+    </script>
+@stop
