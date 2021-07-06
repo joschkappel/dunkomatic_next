@@ -23,6 +23,7 @@ return [
   'menu.list' => 'Clublist',
   'menu.stats' => 'Statistics',
   'registered' => 'Registered Clubs',
+  'league.assigned' => 'Assigned to :count Leagues',
   'entitled' => 'Entitled Clubs',
   'region' => 'Region',
   'shortname' => 'Code',
