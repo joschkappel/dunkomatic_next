@@ -7,6 +7,7 @@ use App\Models\League;
 use App\Models\Club;
 use App\Models\Gym;
 use App\Traits\LeagueFSM;
+use App\Traits\GameManager;
 
 use App\Notifications\LeagueGamesGenerated;
 
@@ -22,7 +23,7 @@ use Carbon\CarbonImmutable;
 
 class LeagueGameController extends Controller
 {
-    use LeagueFSM;
+    use LeagueFSM, GameManager;
 
     /**
      * Display a listing of the resource.
@@ -73,56 +74,9 @@ class LeagueGameController extends Controller
      */
     public function store(League $league)
     {
-        // get size
-        $league->load('schedule');
-        // get scheme
-        $scheme = $league->schedule->schemes()->get();
 
-        // get game days and dates
-        $gdate_by_day = $league->schedule->events()->pluck('game_date','game_day');
-
-        // get teams
-        $teams = $league->teams()->with('club')->get();
-
-        foreach ($scheme as $s){
-          $gday = $gdate_by_day[ $s->game_day ];
-
-          $hteam = $teams->firstWhere('league_no', $s->team_home);
-          $gteam = $teams->firstWhere('league_no', $s->team_guest);
-
-          $g = array();
-          $g['region'] = $league->region->code;
-          $g['game_plandate'] = $gday;
-          if (isset($hteam['preferred_game_day'])){
-            $pref_gday = $hteam['preferred_game_day'] % 7;
-            $g['game_date'] = $gday->next($pref_gday);
-          } else {
-            $g['game_date'] = $gday;
-          };
-          $g['referee_1'] = "";
-          $g['referee_2'] = "";
-          $g['team_char_home'] = $s->team_home;
-          $g['team_char_guest'] = $s->team_guest;
-
-          if (isset($hteam)){
-            $g['game_time'] = $hteam['preferred_game_time'];
-            $g['gym_no'] = Club::find($hteam['club']['id'])->gyms()->first()->gym_no;
-            $g['gym_id'] = Club::find($hteam['club']['id'])->gyms()->first()->id;
-            $g['club_id_home'] = $hteam['club']['id'];
-            $g['team_id_home'] = $hteam['id'];
-            $g['team_home'] = $hteam['club']['shortname'].$hteam['team_no'];
-          };
-
-          if ( isset($gteam)){
-            $g['club_id_guest'] = $gteam['club']['id'];
-            $g['team_id_guest'] = $gteam['id'];
-            $g['team_guest'] = $gteam['club']['shortname'].$gteam['team_no'];
-          }
-
-          //Log::debug(print_r($g, true));
-          Game::updateOrCreate(['league_id' => $league->id, 'game_no' => $s->game_no], $g);
-        }
-        $this->generate($league);
+        $this->create_games($league);
+        $this->close_freeze($league);
 
         return Response::json(['success' => 'all good'], 200);
     }
@@ -164,7 +118,7 @@ class LeagueGameController extends Controller
     public function destroy_game(League $league)
     {
         $league->games()->delete();
-        $this->destroy_games($league);
+        $this->open_freeze($league);
         $league->refresh();
         return Response::json(['success' => 'all good'], 200);
     }

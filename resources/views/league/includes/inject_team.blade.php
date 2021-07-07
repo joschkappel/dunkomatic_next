@@ -19,14 +19,12 @@
                         @csrf
                         <div class="card-body">
                           <div class="form-group row">
-                              <label for="selChar" class="col-sm-4 col-form-label">{{ __('league.char')}}</label>
-                              <div class="col-sm-6">
+                              <div class="col-sm-8">
                                 <select class='js-freechar-single js-states form-control select2' id='selChar' name='league_no'></select>
                               </div>
                           </div>
                           <div class="form-group row">
-                              <label for="selFreeTeam" class="col-sm-4 col-form-label">{{ __('club.team')}}</label>
-                              <div class="col-sm-6">
+                              <div class="col-sm-8">
                                 <select class='js-team-single js-states form-control select2' id='selFreeTeam' name='team_id'></select>
                               </div>
                           </div>
@@ -74,7 +72,7 @@
           allowClear: false,
           minimumResultsForSearch: 5,
           ajax: {
-                  url: "{{ route('team.free.sb', $league->id)}}",
+                  url: "{{ route('team.free.sb', ['league' => $league->id])}}",
                   type: "get",
                   delay: 250,
                   processResults: function (response) {

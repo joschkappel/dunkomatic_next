@@ -50,9 +50,7 @@ Route::group([
     Route::get('audit/dt', 'AuditController@datatable')->name('admin.audit.dt')->middleware('auth')->middleware('can:manage-users');
 
     Route::resource('region', 'RegionController')->except('store','update','destroy')->middleware('can:manage-regions');
-    // Route::get('region/{region}', 'RegionController@edit')->name('region.edit')->middleware('regionadmin');
     Route::get('regions/dt', 'RegionController@datatable')->name('region.list.dt');
-    // Route::get('region', 'RegionController@index')->name('region.index');
     Route::get('region/{region}/dashboard', 'RegionController@dashboard')->name('region.dashboard');
 
     Route::get('club/{club}/dashboard', 'ClubController@dashboard')->name('club.dashboard');
@@ -63,6 +61,11 @@ Route::group([
     Route::get('club/{club}/game/list_home', 'ClubGameController@list_home')->name('club.game.list_home');
     Route::get('club/{club}/game/chart', 'ClubGameController@chart')->name('club.game.chart');
     Route::get('club/{club}/team/pickchar', 'ClubTeamController@pickchar')->name('club.team.pickchar');
+
+    Route::group(['prefix' => '{region}'], function () {
+      Route::get('league/club_assign/dt', 'LeagueController@club_assign_dt')->name('league.club_assign.dt');
+      Route::get('league/list', 'LeagueController@list')->name('league.list');
+    });
 
     Route::resource('club', 'ClubController')->except('store','update','destroy');
     Route::resource('club.gym', 'ClubGymController')->shallow()->except('store','update','destroy','show');
@@ -139,8 +142,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('region/set', 'RegionController@set_region')->name('region.set');
     Route::get('club/list', 'ClubController@list')->name('club.list');
     Route::get('club/region/sb', 'ClubController@sb_region')->name('club.sb.region');
-    Route::get('league/list', 'LeagueController@list')->name('league.list');
-    Route::get('league/club_assign/dt', 'LeagueController@club_assign_dt')->name('league.club_assign.dt');
     Route::get('league/team_register/dt', 'LeagueController@team_register_dt')->name('league.team_register.dt');
     Route::get('league/region/sb', 'LeagueController@sb_region')->name('league.sb.region');
     Route::get('schedule/list', 'ScheduleController@list')->name('schedule.list');

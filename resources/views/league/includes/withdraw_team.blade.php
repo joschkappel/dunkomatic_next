@@ -20,8 +20,7 @@
                         @method('delete')
                         <div class="card-body">
                             <div class="form-group row">
-                                <label for="selTeam" class="col-sm-4 col-form-label">{{ trans_choice('team.team',1)}}</label>
-                                <div class="col-sm-6">
+                                <div class="col-sm-8">
                                   <select class='js-example-placeholder-single js-states form-control select2' id='selTeam' name='team_id'></select>
                                 </div>
                             </div>

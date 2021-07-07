@@ -13,7 +13,8 @@ use BenSampo\Enum\Enum;
  * @method static static CloseSelection()
  * @method static static OpenScheduling()
  * @method static static CloseScheduling()
- * @method static static OpenLive()
+ * @method static static OpenFreeze()
+ * @method static static CloseFreeze()
  */
 
  final class LeagueStateChange extends Enum
@@ -26,5 +27,6 @@ use BenSampo\Enum\Enum;
     const CloseSelection    =  5;
     const OpenScheduling    =  6;
     const CloseScheduling    = 7;
-    const OpenLive          =  8;
+    const OpenFreeze          =  8;
+    const CloseFreeze          =  9;
 }

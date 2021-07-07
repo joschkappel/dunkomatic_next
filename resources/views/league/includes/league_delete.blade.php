@@ -21,7 +21,7 @@
                         @method('DELETE')
                         <div class="card-body">
                           <h4 class="text-left text-danger"><span>{{ $league->name }}</span> </h4>
-                          <p class="text-left">@lang('league.confirm.delete',['league'=>$league->shortname,'noteam'=>count($assigned_teams),'nomember'=>count($members)])</p>
+                          <p class="text-left">@lang('league.confirm.delete',['league'=>$league->shortname,'noteam'=>$league->state_count['registered'],'nomember'=>count($members)])</p>
                         </div>
                         <div class="card-footer">
                             <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">

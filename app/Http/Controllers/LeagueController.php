@@ -46,9 +46,11 @@ class LeagueController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function list(Region $region)
+  public function list($language, Region $region)
   {
 
+    app()->setLocale($language);
+    
     $leagues = $region->leagues()
       ->with('schedule.league_size')
       ->withCount([
@@ -199,7 +201,7 @@ class LeagueController extends Controller
 
   public function sb_freechars(League $league)
   {
-    $size = $league->schedule->size;
+    $size = $league->size;
     $chars = config('dunkomatic.league_team_chars');
     $all_chars = array_slice(array_values($chars), 0, $size, true);
     // Log::debug(print_r($all_chars,true));
@@ -231,20 +233,19 @@ class LeagueController extends Controller
     $data['league'] = $league;
 
     // get assigned clubs
-    $clubs = $league->clubs()->get();
+    $clubs = $league->clubs()->get()->sortBy('shortname');
     $data['clubs'] = $clubs;
     $data['members'] = Member::whereIn('id', League::find($league->id)->members()->pluck('member_id'))->with('memberships')->get();
 
     $assigned_club = array();
-    foreach ($clubs as $club) {
+    foreach ($clubs as $i => $club) {
       //Log::debug(print_r($club['pivot'],true));
-      $is_registered =
-        $assigned_club[$club['pivot']->league_no] = array(
+        $assigned_club[$i+1] = array(
           "club_id" => $club->id,
           "shortname" => $club->shortname,
-          "league_char" => $club['pivot']->league_char,
-          "league_id" => $club['pivot']->league_id,
-          "team_registered" => $league->teams()->with('club')->get()->pluck('club.shortname')->contains($club->shortname)
+          "league_id" => $league->id,
+          "team_registered" => $league->teams()->with('club')->get()->pluck('club.shortname')->contains($club->shortname),
+          "team_selected" => $league->teams()->whereNotNull('league_no')->with('club')->get()->pluck('club.shortname')->contains($club->shortname)
         );
     }
     $data['assigned_clubs'] = $assigned_club;
@@ -259,9 +260,9 @@ class LeagueController extends Controller
     //$data['teams'] = $teams;
 
     //Log::debug(print_r($teams,true));
-    $assigned_team = array();
-    foreach ($teams as $team) {
-      $assigned_team[$team->league_no] = array(
+    $selected_teams = array();
+    foreach ($teams as $i => $team) {
+      $selected_teams[$team->league_no] = array(
         "team_id" => $team->id,
         "shortname" => $team['club']->shortname,
         "team_no" => $team->team_no,
@@ -269,7 +270,7 @@ class LeagueController extends Controller
         "league_no" => $team->league_no
       );
     }
-    $data['assigned_teams'] = $assigned_team;
+    $data['selected_teams'] = $selected_teams;
     //Log::debug(print_r($assigned_team,true));
     $directory =   $directory = session('cur_region')->league_folder;
     $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($league) {
@@ -330,6 +331,7 @@ class LeagueController extends Controller
     } else {
       $data['above_region'] = False;
     }
+    $data['state'] = LeagueState::Assignment();
 
     Log::info(print_r($data, true));
 
@@ -527,7 +529,7 @@ class LeagueController extends Controller
    * league datatables club assignments
    *
    */
-  public function club_assign_dt(Region $region)
+  public function club_assign_dt($language, Region $region)
   {
 
 
@@ -536,36 +538,45 @@ class LeagueController extends Controller
     //Log::debug(print_r($leagues,true));
 
     $leaguelist = datatables()::of($leagues);
+    app()->setLocale($language);
 
     return $leaguelist
       ->addIndexColumn()
-      ->rawColumns(['shortname','nextaction','rollbackaction','clubs','teams'])
-      ->editColumn('shortname', function ($data) {
-        return '<a href="' . route('league.dashboard', ['language' => Auth::user()->locale, 'league' => $data->id]) . '">' . $data->shortname . '</a>';
+      ->rawColumns(['shortname.display','nextaction','rollbackaction','clubs','teams',
+                    'age_type.display', 'gender_type.display'])
+      ->editColumn('shortname', function ($l) {
+        if ((Bouncer::can('manage', $l)) or (Auth::user()->isA('regionadmin'))) {
+          $link = '<a href="' . route('league.dashboard', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" >' . $l->shortname . '</a>';
+        } else {
+          $link = '<a href="' . route('league.briefing', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" class="text-info">' . $l->shortname . '</a>';
+        }
+        return array('display' =>$link, 'sort'=>$l->shortname);
+      })      
+      ->editColumn('age_type', function ($l) {
+        return array('display'=>LeagueAgeType::getDescription($l->age_type), 'sort'=>$l->age_type);
       })
-      ->editColumn('age_type', function ($data) {
-        return LeagueAgeType::getDescription($data->age_type);
-      })
-      ->editColumn('gender_type', function ($data) {
-        return LeagueGenderType::getDescription($data->gender_type);
+      ->editColumn('gender_type', function ($l) {
+        return array('display'=>LeagueGenderType::getDescription($l->gender_type), 'sort'=>$l->gender_type);
       }) 
       ->addColumn('nextaction', function ($data) {
           $btn = '';
           if ($data->isInState( LeagueState::Assignment())){
             $btn = '<button type="button" class="btn btn-primary btn-sm" id="changeState" data-league="'.$data->id.'" 
-                    data-action="'.LeagueStateChange::CloseAssignment().'"><i class="fas fa-lock"></i> Close Assignment</button>';
+                    data-action="'.LeagueStateChange::CloseAssignment().'"><i class="fas fa-lock"> </i> '.__('league.action.close.assignment').'</button>';
+            $btn .= '<button type="button" class="btn btn-secondary btn-sm" id="assignClub" data-league="'.$data->id.'" 
+                    data-toggle="collapse" data-target="#collapseAssignment"><i class="fas fa-lock"> </i> Assign Clubs</button>';
           } elseif ($data->isInState( LeagueState::Registration())) {
             $btn = '<button type="button" class="btn btn-primary btn-sm" id="changeState" data-league="'.$data->id.'" 
-                    data-action="'.LeagueStateChange::CloseRegistration().'"><i class="fas fa-lock"></i> Close Registration</button>';
+                    data-action="'.LeagueStateChange::CloseRegistration().'"><i class="fas fa-lock"> </i> '.__('league.action.close.registration').'</button>';
           } elseif ($data->isInState( LeagueState::Selection())) {
             $btn = '<button type="button" class="btn btn-primary btn-sm" id="changeState" data-league="'.$data->id.'"
-                    data-action="'.LeagueStateChange::CloseSelection().'"><i class="fas fa-lock"></i> Close Selection</button>';
+                    data-action="'.LeagueStateChange::CloseSelection().'"><i class="fas fa-lock"> </i> '.__('league.action.close.selection').'</button>';
           } elseif ($data->isInState( LeagueState::Freeze())) {
-            $btn = '<button type="button" class="btn btn-primary btn-sm" id="createGames" data-league="'.$data->id.'"><i class="fas fa-plus-circle"></i> '. __('game.action.create').'
+            $btn = '<button type="button" class="btn btn-primary btn-sm" id="createGames" data-league="'.$data->id.'"><i class="fas fa-plus-circle"> </i> '. __('league.action.close.freeze').'
                     </button>';
           } elseif ($data->isInState( LeagueState::Scheduling())) {
             $btn = '<button type="button" class="btn btn-primary btn-sm" id="changeState" data-league="'.$data->id.'" 
-                    data-action="'.LeagueStateChange::CloseScheduling().'"><i class="fas fa-lock"></i> Close Scheduling</button>';
+                    data-action="'.LeagueStateChange::CloseScheduling().'"><i class="fas fa-lock"> </i> '.__('league.action.close.scheduling').'</button>';
           }
           return $btn;
       })
@@ -573,19 +584,19 @@ class LeagueController extends Controller
           $btn = '';
           if ($data->isInState( LeagueState::Registration())) {
             $btn .= '<button type="button" class="btn btn-outline-danger btn-sm" id="changeState" data-league="'.$data->id.'" 
-                    data-action="'.LeagueStateChange::OpenAssignment().'"><i class="fas fa-lock"></i> ReOpen Assignment</button>';
+                    data-action="'.LeagueStateChange::OpenAssignment().'"><i class="fas fa-lock"> </i> '.__('league.action.open.assignment').'</button>';
           } elseif ($data->isInState( LeagueState::Selection())) {
             $btn .= '<button type="button" class="btn btn-outline-danger btn-sm" id="changeState" data-league="'.$data->id.'" 
-                    data-action="'.LeagueStateChange::OpenRegistration().'"><i class="fas fa-lock"></i> ReOpen Registration</button>';        
+                    data-action="'.LeagueStateChange::OpenRegistration().'"><i class="fas fa-lock"> </i> '.__('league.action.open.registration').'</button>';        
           } elseif ($data->isInState( LeagueState::Freeze())) {
             $btn .= '<button type="button" class="btn btn-outline-danger btn-sm" id="changeState" data-league="'.$data->id.'" 
-                    data-action="'.LeagueStateChange::OpenSelection().'"><i class="fas fa-lock"></i> ReOpen Selection</button>';
+                    data-action="'.LeagueStateChange::OpenSelection().'"><i class="fas fa-lock"> </i> '.__('league.action.open.selection').'</button>';
           } elseif ($data->isInState( LeagueState::Scheduling())) {
-            $btn .= '<button type="button" class="btn btn-outline-danger btn-sm" id="deleteGames" data-league="'.$data->id.'"><i class="fas fa-minus-circle"></i> '. __('game.action.delete').'
+            $btn .= '<button type="button" class="btn btn-outline-danger btn-sm" id="deleteGames" data-league="'.$data->id.'"><i class="fas fa-minus-circle"> </i> '. __('league.action.open.freeze').'
                     </button>';
           } elseif ($data->isInState( LeagueState::Live())) {
             $btn .= '<button type="button" class="btn btn-outline-danger btn-sm" id="changeState" data-league="'.$data->id.'" 
-                    data-action="'.LeagueStateChange::OpenScheduling().'"><i class="fas fa-lock"></i> ReOpen Scheduling</button>';                
+                    data-action="'.LeagueStateChange::OpenScheduling().'"><i class="fas fa-lock"> </i> '.__('league.action.open.scheduling').'</button>';                
           }
           return $btn;
       })      

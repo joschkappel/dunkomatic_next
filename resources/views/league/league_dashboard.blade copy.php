@@ -49,60 +49,58 @@
                     @endif
                     <div class="info-box-content">
                         <span class="info-box-text text-lg">Status</span>
-                        <span class="info-box-number">{{ $league->state->description }}</span>
+                        <span class="info-box-number">{{$league->state->description}}</span>
                     </div>
                 </div>
                 <div class="info-box">
-                    @if (count($assigned_clubs) == 0)
-                        <span class="info-box-icon bg-danger"><i class="fas fa-basketball-ball"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text text-lg">@lang('club.entitled.no')</span>
-                        @elseif (count($assigned_clubs) == $league->size )
-                            <span class="info-box-icon bg-success"><i class="fas fa-basketball-ball"></i></span>
-                            <div class="info-box-content">
-                                <span class="info-box-text text-lg">@lang('club.entitled.all')</span>
-                            @else
-                                <span class="info-box-icon bg-warning"><i class="fas fa-basketball-ball"></i></span>
-                                <div class="info-box-content">
-                                    <span class="info-box-text text-lg">@lang('club.entitled.some', [ 'entitled' =>
-                                        count($assigned_clubs), 'total' => $league->size] )</span>
-                    @endif
+                @if (count($assigned_clubs) == 0)
+                    <span class="info-box-icon bg-danger"><i class="fas fa-basketball-ball"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-lg">@lang('club.entitled.no')</span>
+                @elseif (count($assigned_clubs) == $league->size )                        
+                    <span class="info-box-icon bg-success"><i class="fas fa-basketball-ball"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-lg">@lang('club.entitled.all')</span>
+                @else
+                    <span class="info-box-icon bg-warning"><i class="fas fa-basketball-ball"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-lg">@lang('club.entitled.some', [ 'entitled' => count($assigned_clubs), 'total' => $league->size] )</span>
+                @endif
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-sm ">
-            <div class="info-box">
-                @if ($league->state_count['registered'] == 0)
+            <div class="col-sm ">
+                <div class="info-box">
+                @if (count($registered_teams) == 0)
                     <span class="info-box-icon bg-danger"><i class="fas fa-users"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text text-lg">@lang('team.registered.no')</span>
-                    @elseif ($league->state_count['registered'] == $league->size )
-                        <span class="info-box-icon bg-success"><i class="fas fa-users"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text text-lg">@lang('team.registered.all')</span>
-                        @else
-                            <span class="info-box-icon bg-warning"><i class="fas fa-users"></i></span>
-                            <div class="info-box-content">
-                                <span class="info-box-text text-lg">@lang('team.registered.some',
-                                    ['registered'=>$league->state_count['registered'], 'total'=>$league->state_count['size']])</span>
+                @elseif (count($registered_teams) == $league->size )
+                    <span class="info-box-icon bg-success"><i class="fas fa-users"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-lg">@lang('team.registered.all')</span>
+                @else
+                    <span class="info-box-icon bg-warning"><i class="fas fa-users"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-lg">@lang('team.registered.some', ['registered'=>count($registered_teams), 'total'=>$league->size])</span>                
                 @endif
-            </div>
-        </div>
-        <div class="info-box">
-            @if (count($games) == 0)
-                <span class="info-box-icon bg-danger"><i class="fas fa-running"></i></span>
-                <div class="info-box-content">
-                    <span class="info-box-text text-lg">@lang('game.created.no')</span>
+                    </div>
+                </div>
+                <div class="info-box">
+                @if (count($games) == 0)
+                    <span class="info-box-icon bg-danger"><i class="fas fa-running"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-lg">@lang('game.created.no')</span>
                 @else
                     <span class="info-box-icon bg-success"><i class="fas fa-running"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text text-lg">@lang('game.created.some', ['total'=> count($games)])</span>
-            @endif
-        </div>
-    </div>
-    </div>
+                @endif
+                    </div>
+                </div>
+            </div>
 
-    </div>
+        </div>
     </div><!-- /.container-fluid -->
 @stop
 
@@ -110,19 +108,16 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-6 pd-2">
+            <div class="col-sm-6 pd-2">
 
-                <!-- card CLUB TEAM ASSIGNMENT -->
+                <!-- card CLS -->
                 <div class="card card-outline card-dark " id="clubsCard">
                     <div class="card-header">
-                        <h4 class="card-title"><i class="fas fa-basketball-ball pr-2"></i>{{ $league->state_count['size'] }} {{ trans_choice('team.team',2) }}: 
-                            <span
-                                class="badge badge-pill badge-info mr-2">{{ $league->state_count['assigned'] }}</span>@lang('league.state.assigned')
-                            -
-                            <span class="badge badge-pill badge-info mr-2">{{ $league->state_count['registered'] }}</span>
-                            @lang('league.state.registered') -
-                            <span
-                                class="badge badge-pill badge-info mr-2">{{ $league->state_count['charspicked'] }}</span>@lang('league.state.selected')
+                        <h4 class="card-title"><i class="fas fa-basketball-ball"></i> @lang('club.entitlement') /
+                            @lang('team.registration')
+                            <span class="badge badge-pill badge-info">{{ $league->state_count['assigned'] }}</span> /
+                            <span class="badge badge-pill badge-info">{{ $league->state_count['registered'] }}</span> /
+                            <span class="badge badge-pill badge-info">{{ $league->state_count['size'] }}</span>
                         </h4>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -133,86 +128,49 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <div class="row">
-                        <div class="col-md-6 m-3">
-                            <h5 class="sub-header">@lang('league.action.close.assignment')</h5>
-                            <div class="table-responsive-xs">
-                                <table class="table table-hover table-sm w-auto" id="table1">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th scope="col">@lang('team.action.de_assign')</th>
-                                            <th scope="col">@lang('league.state.registered')</th>
-                                            <th scope="col">@lang('league.state.selected')</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @for ($i = 1; $i <= $league->size; $i++)
-                                            <tr scope="row" >
-                                                @isset($assigned_clubs[$i])
-                                                    <td scope="row" class="text-center"><button id="deassignClub"
-                                                            data-id="{{ $assigned_clubs[$i]['club_id'] }}" type="button"
-                                                            class="btn btn-success btn-sm" @if ($league->state > App\Enums\LeagueState::Assignment()) disabled @endif>
-                                                            {{ $assigned_clubs[$i]['shortname'] }} </button>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        @if ($assigned_clubs[$i]['team_registered'])<i
-                                                                class="far fa-check-circle text-success"></i> @endif
-                                                    </td>
-                                                    <td class="text-center">
-                                                        @if ($assigned_clubs[$i]['team_selected'])
-                                                            <i class="far fa-check-circle text-success"></i>
-                                                        @endif
-                                                    </td>
-                                                @endisset
-                                                @empty($assigned_clubs[$i])
-                                                    @if ($league->isNotInState(App\Enums\LeagueState::Live()))
-                                                        <td><button type="button" id="assignClub"
-                                                                class="btn btn-outline-info btn-sm"
-                                                                data-itemid="{{ $i }}" data-toggle="modal"
-                                                                data-target="#modalAssignClub"><i class="fas fa-link"></i>
-                                                                @lang('league.action.assign')</button></td>
-                                                    @else <td></td>
-                                                    @endif
-                                                    <td></td>
-                                                    <td></td>
-                                                @endempty
-                                            </tr>
-                                        @endfor
-                                        {{-- @endfor --}}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="col-md-3 m-3">
-                            <h5 class="sub-header">@lang('league.action.close.registration')</h5>
-                            <div class="table-responsive-xs">
-                                <table class="table table-hover table-sm w-auto" id="table2">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th scope="col">{{ trans_choice('team.team',1) }}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @for ($i = 1; $i <= $league->size; $i++)
-                                            <tr scope="row" >
-                                                @isset($selected_teams[$i])
-                                                    <td class="text-left"><h6><span class="badge badge-pill badge-dark">{{ $i }}</span> {{ $selected_teams[$i]['shortname'] }} {{ $selected_teams[$i]['team_no'] }} </h6>
-                                                    </td>
-                                                @endisset
-                                                @empty($selected_teams[$i])
-                                                    <td><h6><span class="badge badge-pill badge-info">{{ $i }}</span> </h6>
-                                                    </td>
-                                                @endempty
-                                            </tr>
-                                        @endfor
-                                        {{-- @endfor --}}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                        <table width="100%" class="table table-hover table-bordered table-sm" id="table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>@lang('team.action.de_assign')</th>
+                                    <th></th>
+                                    <th>No</th>
+                                    <th>@lang('team.registered')</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for ($i = 1; $i <= $league->size; $i++)
+                                    <tr>
+                                        @isset($assigned_clubs[$i])
+                                            <td><button id="deassignClub" data-id="{{ $assigned_clubs[$i]['club_id'] }}"
+                                                    type="button" class="btn btn-success btn-sm" @if ($league->state > App\Enums\LeagueState::Assignment()) disabled @endif>
+                                                    {{ $assigned_clubs[$i]['shortname'] }} </button>
+                                                @if ($assigned_clubs[$i]['team_registered'])<i
+                                                        class="far fa-check-circle text-success"></i> @endif
+                                            </td>
+                                            <td></td>
+                                        @endisset
+                                        @empty($assigned_clubs[$i])
+                                           @if ($league->isNotInState(App\Enums\LeagueState::Live()))<td><button type="button" id="assignClub" class="btn btn-outline-info btn-sm" data-itemid="{{ $i }}" data-toggle="modal" data-target="#modalAssignClub"><i class="fas fa-link"></i> Assign</button></td>
+                                           @else <td></td>
+                                           @endif
+                                            <td></td>
+                                        @endempty
+                                        @isset($registered_teams[$i])
+                                            <td><span class="badge badge-pill badge-dark">{{ $i }}</span></td>
+                                            <td class="text-dark">{{ $registered_teams[$i]['shortname'] }}
+                                                {{ $registered_teams[$i]['team_no'] }}</td>
+                                        @endisset
+                                        @empty($registered_teams[$i])
+                                            <td><span class="badge badge-pill badge-info">{{ $i }}</span></td>
+                                            <td></td>
+                                        @endempty
+                                    </tr>
+                                @endfor
+                                {{-- @endfor --}}
+                            </tbody>
+                        </table>
 
-                    
-                        </div>
+
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer">
@@ -222,17 +180,15 @@
                                     class="fas fa-lock"></i> Close Assignment
                             </button>
                         @endif
-                        <button type="button" class="btn btn-outline-secondary" id="injectTeam" @if ($league->state_count['registered'] == $league->size) disabled @endif><i
-                                class="fa fa-trash"></i> @lang('game.action.team.add')
+                        <button type="button" class="btn btn-outline-secondary" id="injectTeam" @if ( count($registered_teams) == $league->size) disabled @endif><i class="fa fa-trash"></i> @lang('game.action.team.add')
                         </button>
-                        <button type="button" class="btn btn-outline-secondary" id="withdrawTeam" @if ($league->state_count['registered'] == 0) disabled @endif><i
-                                class="fa fa-trash"></i> @lang('game.action.team.withdraw')
+                        <button type="button" class="btn btn-outline-secondary" id="withdrawTeam" @if ( count($registered_teams) == 0) disabled @endif><i class="fa fa-trash"></i> @lang('game.action.team.withdraw')
                         </button>
 
                     </div>
                     <!-- /.card-footer -->
                 </div>
-                <!-- /.card CLUB TEAM ASSIGNMENT -->
+                <!-- /.card -->
 
 
             </div>
@@ -252,39 +208,39 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <ul class="list-group list-group-flush">
-                            @foreach ($members as $member)
-                                <li class="list-group-item ">
-                                    <button type="button" id="deleteMember" class="btn btn-outline-danger btn-sm"
-                                        data-member-id="{{ $member->id }}" data-member-name="{{ $member->name }}"
-                                        data-league-sname="{{ $league->shortname }}" data-toggle="modal"
-                                        data-target="#modalDeleteMember"><i class="fa fa-trash"></i></button>
-                                    <a href="{{ route('member.edit', ['language' => app()->getLocale(), 'member' => $member]) }}"
-                                        class=" px-2">{{ $member->name }} <i class="fas fa-arrow-circle-right"></i></a>
-                                    @if (!$member->is_user)
-                                        <a href="{{ route('member.invite', ['member' => $member]) }}" type="button"
-                                            class="btn btn-outline-primary btn-sm"><i class="far fa-paper-plane"></i></a>
+                        <ul  class="list-group list-group-flush">
+                        @foreach ($members as $member)
+                            <li class="list-group-item ">
+                                <button type="button" id="deleteMember" class="btn btn-outline-danger btn-sm"
+                                    data-member-id="{{ $member->id }}" data-member-name="{{ $member->name }}"
+                                    data-league-sname="{{ $league->shortname }}" data-toggle="modal"
+                                    data-target="#modalDeleteMember"><i class="fa fa-trash"></i></button>
+                                <a href="{{ route('member.edit', ['language' => app()->getLocale(), 'member' => $member]) }}"
+                                    class=" px-2">{{ $member->name }} <i class="fas fa-arrow-circle-right"></i></a>
+                                @if (!$member->is_user)
+                                    <a href="{{ route('member.invite', ['member' => $member]) }}" type="button"
+                                        class="btn btn-outline-primary btn-sm"><i class="far fa-paper-plane"></i></a>
+                                @endif
+                                <button type="button" id="addMembership" class="btn btn-outline-primary btn-sm"
+                                    data-member-id="{{ $member->id }}" data-league-id="{{ $league->id }}"
+                                    data-toggle="modal" data-target="#modalLeagueMembershipAdd"><i
+                                        class="fas fa-user-tag"></i></button>
+                                @foreach ($member['memberships'] as $membership)
+                                    @if ($membership->membership_type == 'App\Models\League' and $membership->membership_id == $league->id)
+                                        <button type="button" id="modMembership" class="btn btn-outline-primary btn-sm"
+                                            data-membership-id="{{ $membership->id }}"
+                                            data-function="{{ $membership->function }}"
+                                            data-email="{{ $membership->email }}"
+                                            data-role="{{ App\Enums\Role::getDescription($membership->role_id) }}"
+                                            data-toggle="modal"
+                                            data-target="#modalLeagueMembershipMod">{{ App\Enums\Role::getDescription($membership->role_id) }}</button>
+                                    @else
+                                        <span
+                                            class="badge badge-secondary">{{ App\Enums\Role::getDescription($membership->role_id) }}</span>
                                     @endif
-                                    <button type="button" id="addMembership" class="btn btn-outline-primary btn-sm"
-                                        data-member-id="{{ $member->id }}" data-league-id="{{ $league->id }}"
-                                        data-toggle="modal" data-target="#modalLeagueMembershipAdd"><i
-                                            class="fas fa-user-tag"></i></button>
-                                    @foreach ($member['memberships'] as $membership)
-                                        @if ($membership->membership_type == 'App\Models\League' and $membership->membership_id == $league->id)
-                                            <button type="button" id="modMembership" class="btn btn-outline-primary btn-sm"
-                                                data-membership-id="{{ $membership->id }}"
-                                                data-function="{{ $membership->function }}"
-                                                data-email="{{ $membership->email }}"
-                                                data-role="{{ App\Enums\Role::getDescription($membership->role_id) }}"
-                                                data-toggle="modal"
-                                                data-target="#modalLeagueMembershipMod">{{ App\Enums\Role::getDescription($membership->role_id) }}</button>
-                                        @else
-                                            <span
-                                                class="badge badge-secondary">{{ App\Enums\Role::getDescription($membership->role_id) }}</span>
-                                        @endif
-                                    @endforeach
-                                </li>
-                            @endforeach
+                                @endforeach
+                            </li>
+                        @endforeach
                         </ul>
 
 
@@ -325,9 +281,11 @@
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer">
-                        <button type="button" class="btn btn-outline-secondary" id="deleteGames" @if ($league->isNotInState(App\Enums\LeagueState::Live())) disabled @endif><i class="fa fa-trash"></i> @lang('game.action.delete')
+                        <button type="button" class="btn btn-outline-secondary" id="deleteGames" @if ($league->isNotInState(App\Enums\LeagueState::Live())) disabled @endif><i
+                                class="fa fa-trash"></i> @lang('game.action.delete')
                         </button>
-                        <button type="button" class="btn btn-outline-secondary" id="deleteNoshowGames" @if ($league->isNotInState(App\Enums\LeagueState::Scheduling())) disabled @endif><i class="fa fa-trash"></i> @lang('game.action.delete.noshow')
+                        <button type="button" class="btn btn-outline-secondary" id="deleteNoshowGames" @if ($league->isNotInState(App\Enums\LeagueState::Scheduling())) disabled @endif><i
+                                class="fa fa-trash"></i> @lang('game.action.delete.noshow')
                         </button>
                         <a href="{{ route('league.game.index', ['language' => app()->getLocale(), 'league' => $league]) }}"
                             class="btn btn-primary">
@@ -336,7 +294,7 @@
                             class="btn btn-secondary">
                             <i class="fas fa-calendar-alt"></i> iCAL</a>
                     </div>
-                    {{-- <img class="card-img-bottom"
+{{--                     <img class="card-img-bottom"
                         src="{{ asset('img/' . config('dunkomatic.grafics.league', 'oops.jpg')) }}" class="card-img"
                         alt="..."> --}}
 

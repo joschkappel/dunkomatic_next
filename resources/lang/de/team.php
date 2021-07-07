@@ -22,6 +22,7 @@ return [
   'action.save-assignment' => 'Wunschkombination Speichern',
   'action.refresh-chart' => 'Grafik aktualisieren',
   'action.showon-chart' => 'Zifferkombinationen erzeugen',
+  'action.select' => 'Lösche Mannschaft',
   'registration' => 'Meldungen',
   'unassigned' => 'nicht zugeordnet',
   'league.unassigned' => 'nicht zugeordnet (vorherige Runde: :LEAGUE)',
