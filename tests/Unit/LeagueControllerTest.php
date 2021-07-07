@@ -218,7 +218,7 @@ class LeagueControllerTest extends TestCase
                          ->get();
 
       $response = $this->authenticated( )
-                        ->get(route('league.list',['region'=>$this->region]));
+                        ->get(route('league.list',['language'=> 'de', 'region'=>$this->region]));
 
       //$response->dump();
       $response->assertStatus(200);

@@ -19,7 +19,7 @@ return [
   'action.edit' => 'Modify Team',
   'action.delete' => 'Delete Team',
   'action.plan.season' => 'Plan Season',
-  'action.de_assign' => 'Assign or Deassign',
+  'action.de_assign' => '(De-)Assign',
   'action.save-assignment' => 'Save Preferred Combination',
   'action.refresh-chart' => 'Refresh Chart',
   'action.showon-chart' => 'Create Combinations',

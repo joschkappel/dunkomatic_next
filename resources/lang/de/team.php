@@ -18,7 +18,7 @@ return [
   'action.edit' => 'Mannschaftsdaten ändern',
   'action.delete' => 'Mannschaft Löschen',
   'action.plan.season' => 'Saison Planen',
-  'action.de_assign' => 'Zuordnen oder Löschen',
+  'action.de_assign' => 'Vereine',
   'action.save-assignment' => 'Wunschkombination Speichern',
   'action.refresh-chart' => 'Grafik aktualisieren',
   'action.showon-chart' => 'Zifferkombinationen erzeugen',
