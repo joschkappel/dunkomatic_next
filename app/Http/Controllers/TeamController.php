@@ -6,6 +6,7 @@ use App\Models\Team;
 use App\Models\Club;
 use App\Models\League;
 use App\Models\Game;
+use App\Traits\GameManager;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -14,8 +15,9 @@ use Illuminate\Support\Facades\DB;
 
 class TeamController extends Controller
 {
-    public function sb_league(League $league)
-    {
+    use GameManager;
+
+    public function sb_league(League $league){
         $teams =  $league->teams()->with('club')->get();
         //Log::debug(print_r($teams,true));
         $response = array();
@@ -29,8 +31,7 @@ class TeamController extends Controller
         return Response::json($response);
     }
 
-    public function withdraw(Request $request, League $league)
-    {
+    public function withdraw(Request $request, League $league){
         Log::debug(print_r($request->all(),true));
         $data = $request->validate( [
             'team_id' => 'required|exists:teams,id',
@@ -86,77 +87,16 @@ class TeamController extends Controller
         $team = Team::find($data['team_id']);
         $team->update(['league_id'=>$league->id, 'league_no'=>$league_no, 'league_char'=>$league_char]);
 
-        $used_char = $league->clubs()->pluck('league_char')->toArray();
+        $used_char = $league->clubs->pluck('pivot.league_char')->toArray();
         $free_char = array_diff( $upperArr, $used_char);
         Log::debug(print_r($free_char,true));
 
         $clubleague_char = array_shift( $free_char );
         $clubleague_no = array_search( $clubleague_char, $chars, false);
+        $league->clubs()->detach($team->club_id); 
         $league->clubs()->attach($team->club_id,['league_no' =>$clubleague_no ,'league_char' => $clubleague_char ]);
 
-        // are games still there ?
-        // get size
-        $league->load('schedule');
-        // get scheme
-        $scheme = $league->schedule->schemes()->get();
-
-        // get schedule
-        $gdate_by_day = $league->schedule->events()->pluck('game_date','game_day');
-
-        // get teams
-        $teams = $league->teams()->with('club')->get();
-
-
-        if ($league->games()->exists()){
-          foreach ($scheme as $s){
-            if (($s->team_home == $league_no) or ($s->team_guest == $league_no)){
-
-              if (!$league->games()->where('game_no',$s->game_no)->exists()) {
-
-                $gday = $gdate_by_day[ $s->game_day ];
-                $hteam = $teams->firstWhere('league_no', $s->team_home);
-                $gteam = $teams->firstWhere('league_no', $s->team_guest);
-
-                $g = array();
-                $g['league_id'] = $league->id;
-                $g['game_no'] = $s->game_no;
-                $g['region'] = $league->region->code;
-                $g['game_plandate'] = $gday;
-                if (isset($hteam['preferred_game_day'])){
-                  $pref_gday = $hteam['preferred_game_day'] % 7;
-                  $g['game_date'] = $gday->next($pref_gday);
-                } else {
-                  $g['game_date'] = $gday;
-                };
-                $g['gym_no'] = "1";
-                $g['referee_1'] = "";
-                $g['referee_2'] = "";
-                $g['team_char_home'] = $s->team_home;
-                $g['team_char_guest'] = $s->team_guest;
-
-                if (isset($hteam)){
-                  $g['game_time'] = $hteam['preferred_game_time'];
-                  $g['club_id_home'] = $hteam['club']['id'];
-                  $g['team_id_home'] = $hteam['id'];
-                  $g['team_home'] = $hteam['club']['shortname'].$hteam['team_no'];
-                };
-
-                if ( isset($gteam)){
-                  $g['club_id_guest'] = $gteam['club']['id'];
-                  $g['team_id_guest'] = $gteam['id'];
-                  $g['team_guest'] = $gteam['club']['shortname'].$gteam['team_no'];
-                }
-
-                Log::debug('creating game no:'.$g['game_no']);
-                Game::create($g);
-              } else {
-                $team->load('club');
-                $league->games()->where('game_no',$s->game_no)->where('team_char_home',$league_no)->update(['club_id_home'=>$team->club_id, 'team_id_home'=>$team->id, 'team_home'=>$team['club']->shortname.$team->team_no ]);
-                $league->games()->where('game_no',$s->game_no)->where('team_char_guest',$league_no)->update(['club_id_guest'=>$team->club_id, 'team_id_guest'=>$team->id, 'team_guest'=>$team['club']->shortname.$team->team_no ]);
-              }
-            }
-          }
-        }
+        $this->inject_team_games($league, $team, $league_no);
 
         return redirect()->back();
     }

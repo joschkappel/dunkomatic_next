@@ -1,5 +1,7 @@
 {
   "Action": "Aktion",
+  "Next Action": "Nächste Aktion",
+  "Rollback Action": "Rückgängig",
   "Active": "Aktiv",
   "Clear": "Zurücksetzen",
   "OK": "OK",

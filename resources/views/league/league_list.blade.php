@@ -6,10 +6,8 @@
 
             <div class="row">
               <div class="col-12">
-                <div class="card">
-                  <div class="card-header">
-                    <h3 class="card-title">@lang('league.title.list', ['region' => session('cur_region')->name ])</h3>
-                  </div>
+                <div class="card card-secondary">
+                  <h4 class="card-header">@lang('league.title.list', ['region' => session('cur_region')->name ])</h4>
                   <!-- /.card-header -->
 
                   <div class="card-tools p-2">
@@ -55,7 +53,7 @@
          language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/English.json')}}" },
          @endif
          order: [[1,'asc']],
-         ajax: '{{ route('league.list', ['region'=>session('cur_region')->id]) }}',
+         ajax: '{{ route('league.list', ['language'=>app()->getLocale(),'region'=>session('cur_region')->id]) }}',
          columns: [
                   { data: 'id', name: 'id', visible: false },
                   { data:  {

@@ -24,7 +24,7 @@ return [
   'menu.stats' => 'Statistiken',
   'entitled' => 'Zugelassene Vereine',
   'region' => 'Bezirk',
-  'registered' => 'Gemeldete Vereine',
+  'registered' => 'Gemeldete Mannschaften',
   'league.assigned' => 'Zulassung für :count Runden',
   'shortname' => 'Code',
   'name' => 'Name',

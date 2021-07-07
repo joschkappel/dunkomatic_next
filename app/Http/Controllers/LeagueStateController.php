@@ -55,7 +55,12 @@ class LeagueStateController extends Controller
             case LeagueStateChange::OpenSelection():
                 $this->open_selection($league);
                 break;
-
+            case LeagueStateChange::CloseFreeze():
+                $this->close_freeze($league);
+                break;
+            case LeagueStateChange::OpenFreeze():
+                $this->open_freeze($league);
+                break;
         }
 
         $league->refresh();

@@ -15,6 +15,7 @@ return [
   'title.plan' => 'Plan team league assignment for :CLUB',
   'confirm.delete' => 'Do you really want to delete this team ?',
   'action.create' => 'New Team',
+  'action.select' => 'Select team to remove',
   'action.edit' => 'Modify Team',
   'action.delete' => 'Delete Team',
   'action.plan.season' => 'Plan Season',
