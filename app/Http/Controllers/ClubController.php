@@ -110,12 +110,12 @@ class ClubController extends Controller
 
           $data['gyms'] = $data['club']->gyms()->get();
           $data['teams'] = $data['club']->teams()->with('league')->get()->sortBy('league.shortname');
-          $data['leagues'] = $data['club']->leagues()->get();
+          $data['leagues'] = $data['club']->leagues()->get()->sortBy('shortname');
           //$data['members'] = $data['club']->members()->get();
           $data['members'] = Member::whereIn('id',Club::find($club->id)->members()->pluck('member_id'))->with('memberships')->get();
           $data['games_home'] = $data['club']->games_home()->get();
-          $data['registered_teams'] = $data['club']->registered_teams()->count();
-          $data['selected_teams'] = $data['club']->selected_teams()->count();
+          $data['registered_teams'] = $data['club']->registered_teams->pluck('league_id');
+          $data['selected_teams'] = $data['club']->selected_teams->pluck('league_id');
           $data['games_home_notime'] = $data['club']->games_home_notime()->count();
           $data['games_home_noshow'] = $data['club']->games_home_noshow()->count();
           //Log::debug(print_r($data['games_home'],true ));

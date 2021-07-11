@@ -34,17 +34,17 @@
             </div>
             <div class="col-sm ">
                 <div class="info-box">
-                    @if ($league->isInState(App\Enums\LeagueState::Assignment()))
+                    @if ($league->state->is(App\Enums\LeagueState::Assignment()))
                         <span class="info-box-icon bg-info"><i class="fas fa-battery-empty"></i></span>
-                    @elseif ($league->isInState(App\Enums\LeagueState::Registration()))
+                    @elseif ($league->state->is(App\Enums\LeagueState::Registration()))
                         <span class="info-box-icon bg-info"><i class="fas fa-battery-quarter"></i></span>
-                    @elseif ($league->isInState(App\Enums\LeagueState::Selection()))
+                    @elseif ($league->state->is(App\Enums\LeagueState::Selection()))
                         <span class="info-box-icon bg-info"><i class="fas fa-battery-half"></i></span>
-                    @elseif ($league->isInState(App\Enums\LeagueState::Scheduling()))
+                    @elseif ($league->state->is(App\Enums\LeagueState::Scheduling()))
                         <span class="info-box-icon bg-info"><i class="fas fa-battery-three-quarters"></i></span>
-                    @elseif ($league->isInState(App\Enums\LeagueState::Freeze()))
+                    @elseif ($league->state->is(App\Enums\LeagueState::Freeze()))
                         <span class="info-box-icon bg-warning"><i class="fas fa-battery-half"></i></span>
-                    @elseif ($league->isInState(App\Enums\LeagueState::Live()))
+                    @elseif ($league->state->is(App\Enums\LeagueState::Live()))
                         <span class="info-box-icon bg-success"><i class="fas fa-battery-full"></i></span>
                     @endif
                     <div class="info-box-content">
@@ -76,34 +76,36 @@
                     <span class="info-box-icon bg-danger"><i class="fas fa-users"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text text-lg">@lang('team.registered.no')</span>
-                    @elseif ($league->state_count['registered'] == $league->size )
-                        <span class="info-box-icon bg-success"><i class="fas fa-users"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text text-lg">@lang('team.registered.all')</span>
-                        @else
-                            <span class="info-box-icon bg-warning"><i class="fas fa-users"></i></span>
-                            <div class="info-box-content">
-                                <span class="info-box-text text-lg">@lang('team.registered.some',
-                                    ['registered'=>$league->state_count['registered'],
-                                    'total'=>$league->state_count['size']])</span>
+                    </div>
+                @elseif ($league->state_count['registered'] == $league->size )
+                    <span class="info-box-icon bg-success"><i class="fas fa-users"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-lg">@lang('team.registered.all')</span>
+                    </div>
+                @else
+                    <span class="info-box-icon bg-warning"><i class="fas fa-users"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-lg">@lang('team.registered.some',
+                            ['registered'=>$league->state_count['registered'],
+                            'total'=>$league->state_count['size']])</span>
+                    </div>
                 @endif
             </div>
-        </div>
-        <div class="info-box">
-            @if (count($games) == 0)
-                <span class="info-box-icon bg-danger"><i class="fas fa-running"></i></span>
-                <div class="info-box-content">
-                    <span class="info-box-text text-lg">@lang('game.created.no')</span>
+            <div class="info-box">
+                @if (count($games) == 0)
+                    <span class="info-box-icon bg-danger"><i class="fas fa-running"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-lg">@lang('game.created.no')</span>
+                    </div>
                 @else
                     <span class="info-box-icon bg-success"><i class="fas fa-running"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text text-lg">@lang('game.created.some', ['total'=> count($games)])</span>
-            @endif
+                    </div>
+                @endif
+            </div>
         </div>
-    </div>
-    </div>
 
-    </div>
     </div><!-- /.container-fluid -->
 @stop
 
@@ -136,8 +138,8 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <div class="row justify-content-between">
-                            <div class="col-md-6 m-3 ">
+                        <div class="row d-flex flex-row justify-content-between">
+                            <div class="col-sm-6 d-flex flex-column justify-content-sm-center">
                                 <h5 class="sub-header">@lang('league.action.close.assignment')</h5>
                                 <div class="table-responsive-xs">
                                     <table class="table table-hover table-sm w-auto" id="table1">
@@ -154,7 +156,7 @@
                                                     @isset($assigned_clubs[$i])
                                                         <td scope="row" class="text-center"><button id="deassignClub"
                                                                 data-id="{{ $assigned_clubs[$i]['club_id'] }}" type="button"
-                                                                class="btn btn-success btn-sm" @if ($league->state > App\Enums\LeagueState::Assignment()) disabled @endif>
+                                                                class="btn btn-success btn-sm" @if ( !($league->state->is(App\Enums\LeagueState::Assignment()) )) disabled @endif>
                                                                 {{ $assigned_clubs[$i]['shortname'] }} </button>
                                                         </td>
                                                         <td class="text-center">
@@ -168,7 +170,7 @@
                                                         </td>
                                                     @endisset
                                                     @empty($assigned_clubs[$i])
-                                                        @if ($league->isNotInState(App\Enums\LeagueState::Live()))
+                                                        @if ( ! $league->state->is(App\Enums\LeagueState::Live()))
                                                             <td><button type="button" id="assignClub"
                                                                     class="btn btn-outline-info btn-sm"
                                                                     data-itemid="{{ $i }}" data-toggle="modal"
@@ -186,30 +188,38 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="col-md-3 m-3">
+                            <div class="col-xs-1 border rounded border-secondary bg-secondary d-flex flex-row justify-content-sm-center">
+                              <span><i class="px-1"></i></span>
+                            </div>
+                            <div class="col-sm-3 d-flex flex-column justify-content-sm-center">    
                                 <h5 class="sub-header">@lang('league.action.close.registration')</h5>
                                 <div class="table-responsive-xs">
                                     <table class="table table-hover table-sm w-auto" id="table2">
                                         <thead class="thead-light">
                                             <tr>
+                                                <th></th>
                                                 <th scope="col">{{ trans_choice('team.team', 1) }}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @for ($i = 1; $i <= $league->size; $i++)
-                                                <tr scope="row" class="h-10">
+                                                <tr scope="row" >
+                                                    @isset($selected_teams[$i])
+                                                        <td class="text-center"><span class="badge badge-pill badge-dark">{{ $i }}</span></td>
+                                                    @endisset
+                                                    @empty($selected_teams[$i])
+                                                        <td class="text-center"><span class="badge badge-pill badge-info">{{ $i }}</span></td>
+                                                    @endempty
                                                     @isset($selected_teams[$i])
                                                         <td class="text-center">
                                                         <button type="button" class="btn btn-outline-dark btn-sm" id="withdrawTeam" @if ($league->state_count['registered'] == 0) disabled @endif>
-                                                        <span class="badge badge-pill badge-dark">{{ $i }}</span>
                                                         {{ $selected_teams[$i]['shortname'] }} {{ $selected_teams[$i]['team_no'] }}</button>
                                                         </td>
                                                     @endisset
                                                     @empty($selected_teams[$i])
                                                         <td class="text-center">
                                                         <button  type="button" class="btn btn-outline-info btn-sm" id="injectTeam" @if ($league->state_count['registered'] == $league->size) disabled @endif>
-                                                        <span class="badge badge-pill badge-info">{{ $i }}</span> ______
-                                                        </button>
+                                                        ______</button>
                                                         </td>
                                                     @endempty
                                                 </tr>
@@ -225,7 +235,7 @@
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer">
-                        @if ($league->isInState(App\Enums\LeagueState::Assignment()))
+                        @if ($league->state->is(App\Enums\LeagueState::Assignment()))
                             <button type="button" class="btn btn-outline-primary" id="changeState"
                                 data-action="{{ App\Enums\LeagueStateChange::CloseAssignment() }}"><i
                                     class="fas fa-lock"></i> Close Assignment
@@ -333,9 +343,9 @@
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer">
-                        <button type="button" class="btn btn-outline-secondary" id="deleteGames" @if ($league->isNotInState(App\Enums\LeagueState::Live())) disabled @endif><i class="fa fa-trash"></i> @lang('game.action.delete')
+                        <button type="button" class="btn btn-outline-secondary" id="deleteGames" @if ( ! $league->state->is(App\Enums\LeagueState::Live())) disabled @endif><i class="fa fa-trash"></i> @lang('game.action.delete')
                         </button>
-                        <button type="button" class="btn btn-outline-secondary" id="deleteNoshowGames" @if ($league->isNotInState(App\Enums\LeagueState::Scheduling())) disabled @endif><i class="fa fa-trash"></i> @lang('game.action.delete.noshow')
+                        <button type="button" class="btn btn-outline-secondary" id="deleteNoshowGames" @if ( ! $league->state->is(App\Enums\LeagueState::Scheduling())) disabled @endif><i class="fa fa-trash"></i> @lang('game.action.delete.noshow')
                         </button>
                         <a href="{{ route('league.game.index', ['language' => app()->getLocale(), 'league' => $league]) }}"
                             class="btn btn-primary">
@@ -363,6 +373,7 @@
             </div>
 
         </div>
+    </div>
     @stop
 
     @section('js')

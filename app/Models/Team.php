@@ -27,7 +27,6 @@ class Team extends Model
   {
     return [
     'club_id' => 'required|exists:clubs,id',
-    'league_id' => 'nullable|exists:leagues,id',
     'team_no' => 'required|integer|min:1|max:9',
     'training_day'   => 'required|integer|min:1|max:5',
     'training_time'  => array( 'required','date_format:H:i', new GameMinute, new GameHour),
@@ -44,7 +43,6 @@ class Team extends Model
 
   public static function getUpdateRules()
   { return [
-    'league_id' => 'nullable|exists:leagues,id',
     'team_no' => 'required|integer|min:1|max:9',
     'training_day'   => 'required|integer|min:1|max:5',
     'training_time'  => array('required','date_format:H:i', new GameMinute, new GameHour),

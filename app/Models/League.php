@@ -112,15 +112,6 @@ class League extends Model implements Auditable
     {
         return $query->where('region_id', Auth::user()->region->id);
     }
-    public function isInState($state)
-    {
-        return $this->state == $state;
-    }    
-    public function isNotInState($state)
-    {
-        return $this->state != $state;
-    }    
-
     public function memberIsA($role_id)
     {
         return $this->members()->wherePivot('role_id', $role_id)->exists();

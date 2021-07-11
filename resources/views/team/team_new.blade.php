@@ -37,16 +37,6 @@
                             </div>
                         </div>
                         <div class="form-group row ">
-                            <label for='selLeague' class="col-sm-4 col-form-label">{{ trans_choice('league.league',1)}}</label>
-                            <div class="col-sm-6">
-                                <select class='js-teamno-placeholder-single js-states form-control select2 @error('league_id') /> is-invalid @enderror' id='selLeague' name="league_id">
-                                </select>
-                                @error('league_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row ">
                             <label for="league_prev" class="col-sm-4 col-form-label">@lang('team.league.previous')</label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control @error('league_prev') is-invalid @enderror" id="league_prev" name="league_prev" placeholder="@lang('team.league.previous')" value="{{ old('league_prev') }}">
@@ -208,24 +198,7 @@
             allowClear: false,
             minimumResultsForSearch: 20
         });
-        $("#selLeague").select2({
-            placeholder: "@lang('league.action.select')...",
-            theme: 'bootstrap4',
-            multiple: false,
-            allowClear: true,
-            minimumResultsForSearch: 20,
-            ajax: {
-                    url: "{{ route('club.sb.league',['club' => $club])}}",
-                    type: "get",
-                    delay: 250,
-                    processResults: function (response) {
-                      return {
-                        results: response
-                      };
-                    },
-                    cache: true
-                  }
-        });
+
     });
 </script>
 

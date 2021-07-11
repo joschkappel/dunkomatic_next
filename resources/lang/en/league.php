@@ -48,6 +48,7 @@ return [
   'state.selected' => 'assigned',
 
   'action.assign' => 'Assign',
+  'action.register' => 'Register',
   'league_no' => 'Number',
 
 ];
