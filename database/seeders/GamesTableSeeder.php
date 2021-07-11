@@ -1,6 +1,9 @@
 <?php
 namespace Database\Seeders;
 
+use App\Enums\LeagueState;
+use App\Models\League;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -78,6 +81,11 @@ class GamesTableSeeder extends Seeder
           'referee_1' => $g->game_team_ref1,
           'referee_2' => $g->game_team_ref2
         ]);
+
+        $league = League::find($g->league_id);
+        $league->state = LeagueState::Scheduling();
+        $league->save();
+
       }
     }
 }

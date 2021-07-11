@@ -46,6 +46,7 @@ return [
   'state.assigned' => 'zugelassen',
   'state.registered' => 'gemeldet',
   'state.selected' => 'zugeordnet',
+  'action.register' => 'Melden',
   'action.assign' => 'Zulassen',
   'league_no' => 'Ziffer',
 

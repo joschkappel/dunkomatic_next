@@ -7,6 +7,7 @@ use App\Models\Club;
 use App\Models\League;
 use App\Models\Game;
 use App\Traits\GameManager;
+use App\Enums\LeagueState;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -211,12 +212,16 @@ class TeamController extends Controller
               'league_id' => 'required|exists:leagues,id',
           ]);
 
-          $team_id = $data['team_id'];
-          $league_id = $data['league_id'];
+          $team = Team::find($data['team_id']);
+          $league = League::find($data['league_id']);
           $club_id = $data['club_id'];
 
-          Team::where('id', $team_id)->update( ['league_id' => null, 'league_no' => null, 'league_char' => null ]);
-          $check = League::find($league_id)->clubs()->wherePivot('club_id','=',$club_id)->detach();
+          $team->update( ['league_id' => null, 'league_no' => null, 'league_char' => null ]);
+          $league->clubs()->wherePivot('club_id','=',$club_id)->detach();
+          if ($league->state > LeagueState::Freeze()){
+            Game::whereIn('id',$team->games_guest->pluck('id'))->delete();
+            Game::whereIn('id',$team->games_home->pluck('id'))->delete();
+          }
 
           return Response::json(true);
       }

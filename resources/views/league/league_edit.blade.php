@@ -27,7 +27,7 @@
                             <div class="form-group row">
                                 <label for="shortname" class="col-sm-4 col-form-label">@lang('league.shortname')</label>
                                 <div class="col-sm-6">
-                                    <input type="text" class="form-control @error('shortname') is-invalid @enderror" id="shortname" name="shortname" placeholder="@lang('league.shortname')" value="{{ $league->shortname }}">
+                                    <input type="text" class="form-control @error('shortname') is-invalid @enderror" id="shortname" name="shortname" placeholder="@lang('league.shortname')" value="{{ (old('shortname')!='') ? old('shortname') : $league->shortname }}">
                                     @error('shortname')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -36,7 +36,7 @@
                             <div class="form-group row">
                                 <label for="name" class="col-sm-4 col-form-label">@lang('league.name')</label>
                                 <div class="col-sm-6">
-                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="@lang('league.shortname')" value="{{ $league->name }}">
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="@lang('league.name')" value="{{  (old('name')!='') ? old('name') : $league->name }}">
                                     @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror

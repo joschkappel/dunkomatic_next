@@ -41,14 +41,11 @@
                         <div class="form-group row ">
                             <label for='selLeague' class="col-sm-4 col-form-label">{{trans_choice('league.league',1)}}</label>
                             <div class="col-sm-6">
-                                <select class='js-teamno-placeholder-single js-states form-control select2 @error('league_id') /> is-invalid @enderror' id='selLeague' name="league_id">
                                   @if ($team->league_id)
-                                    <option  selected value="{{ $team->league_id }}">{{ $team->league['shortname'] }}</option>
+                                    <input type="text" class="form-control" readonly value="{{ $team->league['shortname'] }}"></input>
+                                @else
+                                    <input type="text" class="form-control" readonly value=""></input>
                                   @endif
-                                </select>
-                                @error('league_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
                             </div>
                         </div>
                         <div class="form-group row ">
@@ -125,7 +122,7 @@
                         <div class="form-group row ">
                             <label for="coach_name" class="col-sm-4 col-form-label">@lang('team.coach')</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control @error('coach_name') is-invalid @enderror" id="coach_name" name="coach_name" placeholder="@lang('team.coach')" value="{{ $team->coach_name }}">
+                                <input type="text" class="form-control @error('coach_name') is-invalid @enderror" id="coach_name" name="coach_name" placeholder="@lang('team.coach')" value="{{  (old('coach_name')!='') ? old('coach_name') : $team->coach_name }}">
                                 @error('coach_name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -143,7 +140,7 @@
                         <div class="form-group row ">
                             <label for="coach_phone1" class="col-sm-4 col-form-label">@lang('team.phone1')</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control @error('coach_phone1') is-invalid @enderror" id="coach_phone1" name="coach_phone1" placeholder="@lang('team.phone1')" value="{{ $team->coach_phone1 }}">
+                                <input type="text" class="form-control @error('coach_phone1') is-invalid @enderror" id="coach_phone1" name="coach_phone1" placeholder="@lang('team.phone1')" value="{{ old('coach_phone1', $team->coach_phone1) }}">
                                 @error('coach_phone1')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -152,7 +149,7 @@
                         <div class="form-group row ">
                             <label for="coach_phone2" class="col-sm-4 col-form-label">@lang('team.phone2')</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control @error('coach_phone2') is-invalid @enderror" id="coach_phone2" name="coach_phone2" placeholder="@lang('team.phone2')" value="{{ $team->coach_phone2 }}">
+                                <input type="text" class="form-control @error('coach_phone2') is-invalid @enderror" id="coach_phone2" name="coach_phone2" placeholder="@lang('team.phone2')" value="{{ old('coach_phone2', $team->coach_phone2 )}}">
                                 @error('coach_phone2')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -217,24 +214,7 @@
             allowClear: false,
             minimumResultsForSearch: 20
         });
-        $("#selLeague").select2({
-            placeholder: "@lang('league.action.select')...",
-            theme: 'bootstrap4',
-            multiple: false,
-            allowClear: true,
-            minimumResultsForSearch: 20,
-            ajax: {
-                    url: "{{ route('club.sb.league',['club' => $team->club_id])}}",
-                    type: "get",
-                    delay: 250,
-                    processResults: function (response) {
-                      return {
-                        results: response
-                      };
-                    },
-                    cache: true
-                  }
-        });
+
     });
 </script>
 
