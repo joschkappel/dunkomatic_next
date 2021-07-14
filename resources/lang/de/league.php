@@ -49,5 +49,7 @@ return [
   'action.register' => 'Melden',
   'action.assign' => 'Zulassen',
   'league_no' => 'Ziffer',
+  'next.state' => 'zur nächsten Phase',
+  'prev.state' => 'zurück zu',
 
 ];

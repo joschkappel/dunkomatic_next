@@ -137,9 +137,6 @@ class LeagueStateControllerTest extends TestCase
 
       $this->assertDatabaseHas('leagues', ['id' => $league->id, 'state' => LeagueState::Selection()]);
 
-      Notification::fake();
-      Notification::assertNothingSent();
-
       // select league ns for  4 teams
       $teams = $league->teams;
       $teams[0]->update(['league_char'=>'A', 'league_no'=>1]);
@@ -187,9 +184,9 @@ class LeagueStateControllerTest extends TestCase
             ->assertDatabaseHas('games', ['league_id' => $league->id]);
 
       $member = Club::first()->members()->wherePivot('role_id',Role::ClubLead)->first();
-      //  assert club members are notified
+        //  assert club members are notified
       Notification::assertSentTo(
-          [$member], LeagueGamesGenerated::class
+            [$member], LeagueGamesGenerated::class
       );   
 
     }    

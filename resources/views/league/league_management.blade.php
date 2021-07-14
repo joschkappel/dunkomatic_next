@@ -66,8 +66,8 @@
                                 <th>@lang('league.gendertype')</th>
                                 <th>@lang('club.entitled')</th>
                                 <th>@lang('club.registered')</th>
-                                <th>{{__('Next Action')}}</th>
-                                <th>{{__('Rollback Action')}}</th>
+                                <th>@lang('league.next.state')</th>
+                                <th>@lang('league.prev.state')</th>
                             </tr>
                         </thead>
                     </table>

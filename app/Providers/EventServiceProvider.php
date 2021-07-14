@@ -6,11 +6,13 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Authenticated;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Notifications\Events\NotificationSent;
 
 use App\Models\Membership;
 use App\Observers\MembershipObserver;
 
 use App\Listeners\LogAuthenticated;
+use App\Listeners\LogNotification;
 use App\Models\User;
 use App\Observers\UserObserver;
 
@@ -27,6 +29,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         Authenticated::class => [
             LogAuthenticated::class,
+        ],
+        NotificationSent::class => [
+            LogNotification::class,
         ],
     ];
 

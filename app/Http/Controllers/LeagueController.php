@@ -234,33 +234,13 @@ class LeagueController extends Controller
 
     // get assigned clubs
     $clubs = $league->clubs()->get()->sortBy('shortname');
+    // get assigned Teams
+    $teams = $league->teams()->with('club')->get();
+
     $data['clubs'] = $clubs;
     $data['members'] = Member::whereIn('id', League::find($league->id)->members()->pluck('member_id'))->with('memberships')->get();
 
-    $assigned_club = array();
-    foreach ($clubs as $i => $club) {
-      //Log::debug(print_r($club['pivot'],true));
-        $assigned_club[$i+1] = array(
-          "club_id" => $club->id,
-          "shortname" => $club->shortname,
-          "league_id" => $league->id,
-          "team_registered" => $league->teams()->with('club')->get()->pluck('club.shortname')->contains($club->shortname),
-          "team_selected" => $league->teams()->whereNotNull('league_no')->with('club')->get()->pluck('club.shortname')->contains($club->shortname)
-        );
-    }
-    $data['assigned_clubs'] = $assigned_club;
-    $data['games'] = $data['league']->games()->get();
-
-
-    //Log::debug(print_r($assigned_club, true));
-    //Log::debug(print_r($data['clubs'], true));
-
-    // get assigned Teams
-    $teams = $league->teams()->with('club')->get();
-    //$data['teams'] = $teams;
-
-    //Log::debug(print_r($teams,true));
-    $selected_teams = array();
+    $selected_teams = collect();
     foreach ($teams as $i => $team) {
       $selected_teams[$team->league_no] = array(
         "team_id" => $team->id,
@@ -270,6 +250,38 @@ class LeagueController extends Controller
         "league_no" => $team->league_no
       );
     }
+
+    $assigned_club = collect();
+    foreach ($clubs as $i => $club) {
+      //Log::debug(print_r($club['pivot'],true));
+        $assigned_club[$i+1] = array(
+          "club_id" => $club->id,
+          "shortname" => $club->shortname,
+          "league_id" => $league->id,
+          "team_registered" => false, // $league->teams()->with('club')->get()->pluck('club.shortname')->contains($club->shortname),
+          "team_selected" => false, // $league->teams()->whereNotNull('league_no')->with('club')->get()->pluck('club.shortname')->contains($club->shortname)
+        );
+    }
+
+    // mark club as registered or selected
+    $st = $selected_teams->collect();
+    $assigned_club->transform(function ($item) use (&$st) {
+        $k = $st->search(function ($t) use ($item) {
+          return $t['shortname'] == $item['shortname'];
+        });
+
+        if ( $k ) {
+          $item['team_registered'] = true;
+          if ($st[$k]['league_no'] != null){
+            $item['team_selected'] = true;  
+          }
+          $st->pull($k);
+        }
+        return $item;
+    });
+
+    $data['assigned_clubs'] = $assigned_club;
+    $data['games'] = $data['league']->games()->get();
     $data['selected_teams'] = $selected_teams;
     //Log::debug(print_r($assigned_team,true));
     $directory =   $directory = session('cur_region')->league_folder;
@@ -440,29 +452,41 @@ class LeagueController extends Controller
    */
   public function deassign_club(Request $request, League $league, Club $club)
   {
-    $check = False;
-
-    if ($league) {
-      $check = $league->clubs()->detach($club->id);
-      // deassign teams as well
-      $team = Team::where('club_id', $club->id)->where('league_id', $league->id)->first();
-      if (isset($team)) {
-        $check = $team->update(['league_id' => null, 'league_no' => null, 'league_char' => null]);
+    $upperArr = config('dunkomatic.league_team_chars');
+    // special treatment as values might be duplicate
+    $occurences = $league->clubs->pluck('id')->intersect([$club->id])->count();
+    if ( $occurences > 1){
+      $assigned_clubs = $league->clubs->pluck('id')->diff([$club->id]);
+      for ($i=1; $i<$occurences; $i++){
+        $assigned_clubs[] = $club->id;
       }
+      $league->clubs()->detach();
+      foreach ($assigned_clubs as $i => $ac){
+        $c = $upperArr[$i+1];
+        $league->clubs()->attach( [$ac => ['league_no' => $i+1, 'league_char' => $c]]);
+      }
+    } else {
+      $league->clubs()->detach($club);
+    }
 
-      $member = $club->members()->wherePivot('role_id', Role::ClubLead)->first();
 
-      if ((isset($member)) and (isset($team))) {
-        $member->notify(new ClubDeAssigned($league, $club, $team, Auth::user()->name, $member->name));
-        $user = $member->user;
-        if (isset($user)) {
-          $user->notify(new ClubDeAssigned($league, $club, $team, Auth::user()->name, $user->name));
-        }
+    // deassign teams as well
+    $team = Team::where('club_id', $club->id)->where('league_id', $league->id)->first();
+    if (isset($team)) {
+      $team->update(['league_id' => null, 'league_no' => null, 'league_char' => null]);
+    }
+
+    $member = $club->members()->wherePivot('role_id', Role::ClubLead)->first();
+
+    if ((isset($member)) and (isset($team))) {
+      $member->notify(new ClubDeAssigned($league, $club, $team, Auth::user()->name, $member->name));
+      $user = $member->user;
+      if (isset($user)) {
+        $user->notify(new ClubDeAssigned($league, $club, $team, Auth::user()->name, $user->name));
       }
     }
-    Log::debug(print_r(Response::json($check), true));
 
-    return Response::json($check);
+    return Response::json('OK');
   }
 
   /**
@@ -602,21 +626,24 @@ class LeagueController extends Controller
       })      
       ->addColumn('clubs', function ($data) {
         $btnlist = '';
-        if ($data->state >= LeagueState::Assignment()){
-          $ccnt = 1;
-          $t = $data->teams()->with('club')->get()->pluck('club.shortname');
-          foreach ($data->clubs as $c){
-            if ( ! $t->contains($c->shortname)){
-              $btnlist .= '<button disabled  type="button" class="btn btn-outline-success btn-sm">'.$c->shortname.'</button> ';
-            };
-            $ccnt += 1;
-          }
-          if ($data->state == LeagueState::Assignment()){
-            for ($i = $ccnt; $i <= $data->size; $i++){
-              $btnlist .= '<button type="button" class="btn btn-outline-warning btn-sm" >?</button> ';
+
+        $ccnt = 1;
+        $t = $data->teams()->with('club')->get()->groupBy('club.shortname');
+        foreach ($data->clubs->groupBy('shortname') as $k => $c){
+          $diff = $c->count() > $t->get($k)->count(); 
+          if (  $diff > 0 ){
+            for ($i=0; $i < $diff; $i++){
+              $btnlist .= '<button disabled  type="button" class="btn btn-outline-success btn-sm">'.$k.'</button> ';
             }
+          };
+          $ccnt += $c->count(); 
+        }
+        if ($data->state->is(LeagueState::Assignment())){
+          for ($i = $ccnt; $i <= $data->size; $i++){
+            $btnlist .= '<button type="button" class="btn btn-outline-warning btn-sm" >?</button> ';
           }
         }
+
         return $btnlist;
       })
       ->addColumn('teams', function ($l) {

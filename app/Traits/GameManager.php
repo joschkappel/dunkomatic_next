@@ -119,9 +119,23 @@ trait GameManager {
                 Log::debug('creating game no:'.$g['game_no']);
                 Game::create($g);
               } else {
-                $team->load('club');
-                $league->games()->where('game_no',$s->game_no)->where('team_char_home',$league_no)->update(['club_id_home'=>$team->club_id, 'team_id_home'=>$team->id, 'team_home'=>$team['club']->shortname.$team->team_no ]);
-                $league->games()->where('game_no',$s->game_no)->where('team_char_guest',$league_no)->update(['club_id_guest'=>$team->club_id, 'team_id_guest'=>$team->id, 'team_guest'=>$team['club']->shortname.$team->team_no ]);
+                $game = $league->games()->where('game_no',$s->game_no)->where('team_char_home',$league_no)->first();
+                if (isset($game)){
+                  $game->club_id_home = $team->club->id;
+                  $game->team_id_home = $team->id;
+                  $game->team_home = $team->club->shortname.$team->team_no;
+                  $game->game_time = $team->preferred_game_time;
+                  if (isset($team['preferred_game_day'])){
+                      $pref_gday = $team['preferred_game_day'] % 7;
+                      $game->game_date = $game->game_date->next($pref_gday);
+                  }
+                  $game->save();
+                }
+
+                $league->games()->where('game_no',$s->game_no)->where('team_char_guest',$league_no)->update([
+                    'club_id_guest'=>$team->club->id, 
+                    'team_id_guest'=>$team->id, 
+                    'team_guest'=>$team->club->shortname.$team->team_no ]);
               }
             }
           }

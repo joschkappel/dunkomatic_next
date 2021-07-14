@@ -47,7 +47,23 @@ class TeamController extends Controller
         $team->games_guest()->delete();
 
         // League:club delete
-        $league->clubs()->detach($team->club_id);
+        $upperArr = config('dunkomatic.league_team_chars');
+        // special treatment as values might be duplicate
+        $occurences = $league->clubs->pluck('id')->intersect([$team->club->id])->count();
+        if ( $occurences > 1){
+          $assigned_clubs = $league->clubs->pluck('id')->diff([$team->club->id]);
+          for ($i=1; $i<$occurences; $i++){
+            $assigned_clubs[] = $team->club->id;
+          }
+          $league->clubs()->detach();
+          foreach ($assigned_clubs as $i => $ac){
+            $c = $upperArr[$i+1];
+            $league->clubs()->attach( [$ac => ['league_no' => $i+1, 'league_char' => $c]]);
+          }
+        } else {
+          $league->clubs()->detach($team->club);
+        }
+    
         return redirect()->back();
 
     }
@@ -92,10 +108,17 @@ class TeamController extends Controller
         $free_char = array_diff( $upperArr, $used_char);
         Log::debug(print_r($free_char,true));
 
-        $clubleague_char = array_shift( $free_char );
-        $clubleague_no = array_search( $clubleague_char, $chars, false);
-        $league->clubs()->detach($team->club_id); 
-        $league->clubs()->attach($team->club_id,['league_no' =>$clubleague_no ,'league_char' => $clubleague_char ]);
+        // special treatment as values might be duplicate
+        $occurences_club = $league->clubs->pluck('id')->intersect([$team->club->id])->count();
+        $occurences_team = $league->teams->pluck('club_id')->intersect([$team->club->id])->count();
+
+        if ($league->clubs->count() < $size ){
+          if ( $occurences_club < $occurences_team ){
+            $clubleague_char = array_shift( $free_char );
+            $clubleague_no = array_search( $clubleague_char, $chars, false);
+            $league->clubs()->attach($team->club->id,['league_no' =>$clubleague_no ,'league_char' => $clubleague_char ]);
+          }
+        }
 
         $this->inject_team_games($league, $team, $league_no);
 
