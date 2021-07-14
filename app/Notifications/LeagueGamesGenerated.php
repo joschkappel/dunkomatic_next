@@ -56,6 +56,7 @@ class LeagueGamesGenerated extends Notification
      */
     public function toMail($notifiable)
     {
+       
         return (new MailMessage)
                     ->level('info')
                     ->subject( __('notifications.leaguegamesgen.subject', ['league'=>$this->league->shortname]) )

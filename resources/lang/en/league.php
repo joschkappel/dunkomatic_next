@@ -50,5 +50,7 @@ return [
   'action.assign' => 'Assign',
   'action.register' => 'Register',
   'league_no' => 'Number',
+  'next.state' => 'start next phase',
+  'prev.state' => 'back to previous',
 
 ];
