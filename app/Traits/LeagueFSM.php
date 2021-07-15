@@ -19,7 +19,7 @@ trait LeagueFSM {
         $league->state = LeagueState::Registration();
         $league->assignment_closed_at = now();
         $league->save();
-        Log::info('League: '.$league->shortname.' Assigment Closed');
+        Log::info('League: '.$league->shortname.' Changed to Registration');
 
         $clubs = $league->clubs;
         $adminname = $league->region->regionadmin->first()->name;
@@ -40,7 +40,7 @@ trait LeagueFSM {
         $league->state = LeagueState::Selection();
         $league->registration_closed_at = now();
         $league->save();
-        Log::info('League: '.$league->shortname.' Registration Closed');
+        Log::info('League: '.$league->shortname.' Changed to Selection');
 
         $clubs = $league->clubs;
         $adminname = $league->region->regionadmin->first()->name;
@@ -61,7 +61,7 @@ trait LeagueFSM {
         $league->state = LeagueState::Freeze();
         $league->selection_closed_at = now();
         $league->save();
-        Log::info('League: '.$league->shortname.' Selection Closed');         
+        Log::info('League: '.$league->shortname.' Changed to Freeze');         
     }
 
     public function close_freeze(League $league) {
@@ -69,7 +69,7 @@ trait LeagueFSM {
         $league->generated_at = now();
         $league->save();
 
-        Log::info('League: '.$league->shortname.' Freeze Closed');
+        Log::info('League: '.$league->shortname.' Changed to Scheduling');
 
         $clubs = $league->teams()->pluck('club_id');
         $adminname = $league->region->regionadmin->first()->name;
@@ -93,7 +93,7 @@ trait LeagueFSM {
         $league->state = LeagueState::Live();
         $league->scheduling_closed_at = now();
         $league->save();
-        Log::info('League: '.$league->shortname.' Freeze Re-opened');
+        Log::info('League: '.$league->shortname.' changed to Live');
     }
 
     public function open_assignment(League $league) {
@@ -104,34 +104,34 @@ trait LeagueFSM {
         $league->selection_closed_at = null;
         $league->selection_opened_at = null;
         $league->save();
-        Log::info('League: '.$league->shortname.' Assignment (re)-Opened');
+        Log::info('League: '.$league->shortname.' Assignment (Re)-Opened');
     }
     
     public function open_registration(League $league) {
         $league->state = LeagueState::Registration();
         $league->registration_closed_at = null;
         $league->save();
-        Log::info('League: '.$league->shortname.' Registration Re-Opened');
+        Log::info('League: '.$league->shortname.' Registration (Re)-Opened');
     }    
 
     public function open_selection(League $league) {
         $league->state = LeagueState::Selection();
         $league->selection_closed_at = null;
         $league->save();
-        Log::info('League: '.$league->shortname.' Selection Re-opened');
+        Log::info('League: '.$league->shortname.' Selection (Re)-Opened');
     }    
 
     public function open_freeze(League $league) {
         $league->state = LeagueState::Freeze();
         $league->save();
-        Log::info('League: '.$league->shortname.' Freeze re-opened');
+        Log::info('League: '.$league->shortname.' Freeze (Re)-Opened');
     }        
         
     public function open_scheduling(League $league) {
         $league->state = LeagueState::Scheduling();
         $league->scheduling_closed_at = null;
         $league->save();
-        Log::info('League: '.$league->shortname.' Scheduöing Re-Opened');
+        Log::info('League: '.$league->shortname.' Scheduling (Re)-Opened');
 
     }
 
