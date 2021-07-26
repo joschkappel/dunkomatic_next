@@ -20,12 +20,16 @@
                         <div class="card-body">
                           <div class="form-group row">
                               <div class="col-sm-8">
+                              <div class="input-group mb-3">
                                 <select class='js-freechar-single js-states form-control select2' id='selChar' name='league_no'></select>
+                              </div>
                               </div>
                           </div>
                           <div class="form-group row">
                               <div class="col-sm-8">
+                              <div class="input-group mb-3">
                                 <select class='js-team-single js-states form-control select2' id='selFreeTeam' name='team_id'></select>
+                              </div>
                               </div>
                           </div>
 

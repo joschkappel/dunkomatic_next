@@ -18,9 +18,11 @@
 
                             @csrf
                             @method('POST')
+                            <div class="input-group mb-3">
                             <select multiple="multiple" id="clubsduallistbox" name="assignedClubs[]">
                             </select>
                             <br>
+                            </div>
                         </div>
                         <div class="card-footer">
                             <div class="btn-toolbar justify-content-between" role="toolbar"  aria-label="Toolbar with button groups">

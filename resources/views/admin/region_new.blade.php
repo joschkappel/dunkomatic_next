@@ -37,8 +37,10 @@
                         <div class="form-group row">
                             <label for="selRegion" class="col-sm-6 col-form-label">@lang('region.hq')</label>
                                 <div class="col-sm-4">
+                                <div class="input-group mb-3">
                                     <select class='sel-region js-states form-control select2' id='selRegion' name='region_id'>
                                     </select>
+                                </div>
                                 </div>
                         </div>
                     <div class="card-footer">

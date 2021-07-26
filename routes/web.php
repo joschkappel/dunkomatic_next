@@ -145,6 +145,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('league/team_register/dt', 'LeagueController@team_register_dt')->name('league.team_register.dt');
     Route::get('league/region/sb', 'LeagueController@sb_region')->name('league.sb.region');
     Route::get('schedule/list', 'ScheduleController@list')->name('schedule.list');
+    Route::get('schedule/region/size/{size}/sb', 'ScheduleController@sb_region_size')->name('schedule.sb.region_size');
     Route::get('schedule/region/sb', 'ScheduleController@sb_region')->name('schedule.sb.region');
     Route::get('schedule_event/list-cal', 'ScheduleEventController@list_cal')->name('schedule_event.list-cal');
     Route::post('message', 'MessageController@store')->name('message.store');

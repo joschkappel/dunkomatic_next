@@ -21,7 +21,9 @@
                         <div class="card-body">
                             <div class="form-group row">
                                 <div class="col-sm-8">
+                                <div class="input-group mb-3">
                                   <select class='js-example-placeholder-single js-states form-control select2' id='selTeam' name='team_id'></select>
+                                </div>
                                 </div>
                             </div>
 

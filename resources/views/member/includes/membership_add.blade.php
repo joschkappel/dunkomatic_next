@@ -22,11 +22,13 @@
                         <div class="card-body">
                             <div class="form-group row">
                                 <div class="col-sm-8">
+                                <div class="input-group mb-3">
                                     <select class='js-role-single js-states form-control select2 @error('selRole') is-invalid @enderror' id='selRole'
                                         name='selRole'></select>
                                     @error('selRole')
                                         <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror                                        
+                                    @enderror                 
+                                    </div>                       
                                 </div>
                             </div>
                             <div class="form-group row">

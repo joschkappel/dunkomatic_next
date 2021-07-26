@@ -77,6 +77,7 @@
                         <div class="form-group row">
                             <label for="selDestTo" class="col-sm-4 col-form-label">@lang('message.dest_to')</label>
                             <div class="col-sm-6">
+                            <div class="input-group mb-3">
                               <select class='js-sel-to js-states form-control select2 @error("dest_to") is-invalid @enderror' id='selDestTo' name="dest_to[]">
                                  @foreach ( $scopetype as $st )
                                    <option value="{{ $st->value }}" >{{ $st->description }}</option>
@@ -85,11 +86,13 @@
                               @error("dest_to")
                               <div class="invalid-feedback">{{ $message }}</div>
                               @enderror
+                              </div>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="selDestCc" class="col-sm-4 col-form-label">@lang('message.dest_cc')</label>
                             <div class="col-sm-6">
+                            <div class="input-group mb-3">
                               <select class='js-sel-cc js-states form-control select2 @error("dest_cc") is-invalid @enderror' id='selDestCc' name="dest_cc[]">
                                  @foreach ( $scopetype as $st )
                                    <option value="{{ $st->value }}" >{{ $st->description }}</option>
@@ -98,6 +101,7 @@
                               @error("dest_cc")
                               <div class="invalid-feedback">{{ $message }}</div>
                               @enderror
+                              </div>
                             </div>
                         </div>
                     <div class="card-footer">

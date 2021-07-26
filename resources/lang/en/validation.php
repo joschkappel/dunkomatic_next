@@ -168,6 +168,10 @@ return [
       'close_registration_at' => 'End of Team Registration',
       'close_selection_at' => 'End of Team League No Selection',
       'close_scheduling_at' => 'End of Home Game Scheduling',
+      'league_size_id' => 'Number of Teams',
+      'schedule_id' => 'Schedule',
+      'custom_events' => 'Custsom Schedule',
+
     ],
 
 ];

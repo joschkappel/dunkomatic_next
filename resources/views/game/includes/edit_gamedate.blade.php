@@ -70,6 +70,7 @@
                                     <label for='selGym'
                                         class="col-sm-4 col-form-label">{{ trans_choice('gym.gym', 1) }}</label>
                                     <div class="col-sm-6">
+                                    <div class="input-group mb-3">
                                         <select class='js-gym-single js-states form-control select2 @error(' gym_id')
                                             is-invalid @enderror' id='selGym' name="gym_id">
                                             <option id="selOption" value="" selected="selected"></option>
@@ -77,6 +78,7 @@
                                         @error('gym_id')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -22,7 +22,9 @@
                             <div class="form-group row">
                                 <label for="selClub" class="col-sm-4 col-form-label">{{ trans_choice('club.club',1)}}</label>
                                 <div class="col-sm-6">
+                                <div class="input-group mb-3">
                                   <select class='js-club-single js-states form-control select2' id='selClub' name='club_id'></select>
+                                </div>
                                 </div>
                             </div>
 

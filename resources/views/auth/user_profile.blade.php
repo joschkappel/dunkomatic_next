@@ -44,10 +44,12 @@
                         <div class="form-group row">
                             <label for="selLocale" class="col-sm-4 col-form-label">prferred language</label>
                             <div class="col-sm-4">
+                            <div class="input-group mb-3">
                               <select class='js-sel-locale js-states form-control select2' id='selLocale' name="locale">
                                  <option @if (Auth::user()->locale == 'en') selected @endif value="en">{{__('english')}}</option>
                                  <option @if (Auth::user()->locale == 'de') selected @endif value="de">{{__('deutsch')}}</option>
                               </select>
+                              </div>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-info">{{__('Submit')}}</button>

@@ -170,6 +170,9 @@ return [
       'close_registration_at' => 'Ende Mannschaftsmeldung',
       'close_selection_at' => 'Ende Ziffernwahl',
       'close_scheduling_at' => 'Ende Heimspieltermine',
+      'league_size_id' => 'Anzahl Mannschaften',
+      'schedule_id' => 'Rahmenterminplan',
+      'custom_events' => 'Manuelle Terminvergabe',
 
     ],
 

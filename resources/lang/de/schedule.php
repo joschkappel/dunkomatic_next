@@ -31,6 +31,7 @@ return [
   'game_day_short' => 'Spieltag|Spieltage',
   'size' => 'Anzahl Mannschaften',
   'color' => 'Farbe Kalendereintrag',
+  'custom_events' => 'Manuelle Terminvergabe',
   'events' => 'Termine',
   'event.direction' => 'Verschieben ',
   'event.forward' => 'in die Zukunft',

@@ -14,6 +14,7 @@
   "Email verified at": "Email bestätigt am",
   "Delete": "Löschen",
   "Submit": "Senden",
+  "Cancel": "Zurück",
   "Games No Time": "Spiele ohne Zeitangabe",
   "Games No Teams": "Spiele ohne Gegner",
   "Manage": "Bearbeiten",
@@ -22,5 +23,6 @@
   "You are logged in!": "Sie sind drinnen!",
   "Forbidden": "Zugang Verboten",
   "Go Home": "Hier geht's nach Hause",
-  "containing": "davon"
+  "containing": "davon",
+  "Custom": "Frei wählbar"
 }

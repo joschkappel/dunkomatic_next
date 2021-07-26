@@ -1,6 +1,7 @@
 <?php
 namespace Database\Seeders;
 
+use App\Models\LeagueSize;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\Region;
@@ -14,7 +15,22 @@ class SchedulesTableSeeder extends Seeder
      */
     public function run()
     {
+
       $sizes = [ '4'=>2,'6'=>3,'8'=>4,'10'=>5,'12'=>6,'14'=>7,'2*4'=>9,'3*4'=>11,'2*6'=>10,'16'=>8 ];
+
+      // create custom schedule entries, 1 per region
+      $regions = Region::all();
+      foreach ($regions as $r){
+        DB::connection('dunknxt')->table('schedules')->insert([
+          'id'     => 100 + $r->id,
+          'name'   => 'Custom',
+          'region_id' => $r->id,
+          'league_size_id' => LeagueSize::UNDEFINED,
+          'custom_events' => true,
+          'created_at' => now(),
+          'eventcolor' => 'red'
+        ]);
+      }
 
       $old = DB::connection('dunkv1')->table('schedule_group')->get();
 
@@ -33,20 +49,20 @@ class SchedulesTableSeeder extends Seeder
           if ( $size % 2 != 0){
             $size = "2*".(($osize / 4)+1);
           }
-          $newsize = $sizes[strval($size)];
 
-        } else {
-          $size = 0;
-          $newsize = 1;
+          $newsize = $sizes[strval($size)];
+          $custom_events = false;
+
+          DB::connection('dunknxt')->table('schedules')->insert([
+            'id'     => $schedule->group_id,
+            'name'   => $schedule->group_name,
+            'region_id' => Region::where('code',$region)->first()->id,
+            'league_size_id' => $newsize,
+            'custom_events' => $custom_events,
+            'created_at' => now()
+          ]);
         }
 
-        DB::connection('dunknxt')->table('schedules')->insert([
-          'id'     => $schedule->group_id,
-          'name'   => $schedule->group_name,
-          'region_id' => Region::where('code',$region)->first()->id,
-          'league_size_id' => $newsize,
-          'created_at' => now()
-        ]);
     }
   }
 }

@@ -3,6 +3,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\LeagueSize;
 
 class LeagueSizesTableSeeder extends Seeder
 {
@@ -14,7 +15,7 @@ class LeagueSizesTableSeeder extends Seeder
     public function run()
     {
       DB::table('league_sizes')->insert([
-        ['id'=>1, 'size' => 0, 'iterations' => 0, 'description' => 'Undefined' ],
+        ['id'=>LeagueSize::UNDEFINED, 'size' => 0, 'iterations' => 0, 'description' => 'Undefined' ],
         ['id'=>2, 'size' => 4, 'iterations' => 1, 'description' => '4er Runde' ],
         ['id'=>3, 'size' => 6, 'iterations' => 1, 'description' => '6er Runde' ],
         ['id'=>4, 'size' => 8, 'iterations' => 1, 'description' => '8er Runde' ],

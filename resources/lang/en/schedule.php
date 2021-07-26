@@ -31,6 +31,7 @@ return [
   'game_day_short' => 'Gameday|Gamedays',
   'size' => 'Number of Teams',
   'color' => 'Calendarentry Color',
+  'custom_events' => 'Manual Schedule',
   'events' => 'Events',
   'event.direction' => 'Shift ',
   'event.forward' => 'into the Future',
