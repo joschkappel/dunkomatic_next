@@ -60,7 +60,7 @@ class LeagueControllerTest extends TestCase
                       ]);
       $response
           ->assertStatus(302)
-          ->assertSessionHasErrors(['shortname','schedule_id']);
+          ->assertSessionHasErrors(['shortname','schedule_id','league_size_id']);
 
       $this->assertDatabaseMissing('leagues', ['name' => 'testleague']);
 
@@ -85,6 +85,7 @@ class LeagueControllerTest extends TestCase
                           'shortname' => 'TEST',
                           'name' => 'testleague',
                           'schedule_id' => $schedule->id,
+                          'league_size_id' => $schedule->league_size->id,
                           'region_id' => $this->region->id,
                           'age_type' => LeagueAgeType::getRandomValue(),
                           'gender_type' => LeagueGenderType::getRandomValue(),
@@ -168,6 +169,7 @@ class LeagueControllerTest extends TestCase
                           'shortname' => $league->shortname,
                           'region_id' => $league->region_id,
                           'schedule_id' => $league->schedule_id,
+                          'league_size_id' => $league->league_size_id,
                           'region_id' => $this->region->id,
                           'age_type' => $league->age_type,
                           'gender_type' => $league->gender_type,
