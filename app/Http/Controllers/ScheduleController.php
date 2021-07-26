@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LeagueSize;
 use App\Models\Schedule;
 use App\Models\Region;
-
 
 use Illuminate\Http\Request;
 use Datatables;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Database\Eloquent\Builder;
 
 class ScheduleController extends Controller
 {
@@ -24,7 +25,7 @@ class ScheduleController extends Controller
       return view('schedule/schedule_list');
     }
 
-    /**
+   /**
      * Display a listing of the resource for selecbboxes
      *
      * @return \Illuminate\Http\Response
@@ -32,6 +33,32 @@ class ScheduleController extends Controller
     public function sb_region(Region $region)
     {
       $schedules = $region->schedules()->orderBy('name','ASC')->get();
+
+      Log::debug('got schedules '.count($schedules));
+      $response = array();
+
+      foreach($schedules as $schedule){
+          $response[] = array(
+                "id"=>$schedule->id,
+                "text"=>$schedule->name
+              );
+      }
+      return Response::json($response);
+    }
+
+    /**
+     * Display a listing of the resource for selecbboxes
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sb_region_size(Region $region, LeagueSize $size)
+    {
+      $schedules = $region->schedules()
+                          ->where(function (Builder $query) use ($size) {
+                              return $query->where('league_size_id', $size->id)
+                                           ->orWhere('league_size_id', LeagueSize::UNDEFINED);
+                          })
+                          ->orderBy('name','ASC')->get();
 
       Log::debug('got schedules '.count($schedules));
       $response = array();
@@ -94,15 +121,23 @@ class ScheduleController extends Controller
         return $stlist
           ->addIndexColumn()
           ->addColumn('action', function($data){
+              if (! $data->leagues()->exists()){
                  $btn = '<button type="button" id="deleteSchedule" name="deleteSchedule" class="btn btn-outline-danger btn-sm" data-schedule-id="'.$data->id.'"
                     data-schedule-name="'.$data->name.'" data-events="'.count($data->events).'" data-toggle="modal" data-target="#modalDeleteSchedule"><i class="fa fa-trash"></i></button>';
                   return $btn;
+              } else {
+                return '';
+              }
           })
           ->addColumn('color', function($data){
               return '<spawn style="background-color:'.$data->eventcolor.'">'.$data->eventcolor.'</div>';
           })
           ->addColumn('events', function($data){
-              return '<a href="' . route('schedule_event.list', $data) .'">'.$data->events_count.' <i class="fas fa-arrow-circle-right"></i></a>';
+              if ($data->custom_events) {
+                return __('Custom');
+              } else {
+                return '<a href="' . route('schedule_event.list', $data) .'">'.$data->events_count.' <i class="fas fa-arrow-circle-right"></i></a>';
+              }
           })
           ->rawColumns(['name','color','events','action'])
           ->editColumn('created_at', function ($user) {
@@ -134,6 +169,13 @@ class ScheduleController extends Controller
     public function store(Request $request)
     {
       $data = $request->validate( Schedule::$createRules );
+
+      if ($request['custom_events'] == 'on'){
+        $data['custom_events'] = true;
+        $data['league_size_id'] = LeagueSize::UNDEFINED;
+      } else {
+        $data['custom_events'] = false;
+      }
 
       Log::debug(print_r($data, true));
 
@@ -179,7 +221,14 @@ class ScheduleController extends Controller
 
       $data = $request->validate( Schedule::$updateRules );
 
-      $check = schedule::where('id', $schedule->id)->update($data);
+      if ($request['custom_events'] == 'on'){
+        $data['custom_events'] = true;
+        $data['league_size_id'] = LeagueSize::UNDEFINED;
+      } else {
+        $data['custom_events'] = false;
+      }
+
+      $schedule->update($data);
       return redirect()->route('schedule.index', app()->getLocale());
     }
 

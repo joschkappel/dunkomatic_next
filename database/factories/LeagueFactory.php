@@ -7,7 +7,7 @@ use App\Models\Region;
 use App\Models\Schedule;
 use App\Enums\LeagueGenderType;
 use App\Enums\LeagueAgeType;
-
+use App\Models\LeagueSize;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 
@@ -27,12 +27,15 @@ class LeagueFactory extends Factory
      */
     public function definition()
     {
+        $size = LeagueSize::where('size',4)->first();
+
         return [
             'name' => $this->faker->words(2,true),
             'shortname' => $this->faker->regexify('[A-Z]{3}'),
             'region_id' => Region::where('code','HBVDA')->first()->id,
             'above_region' => False,
-            'schedule_id' => Schedule::factory()->create()->id,
+            'league_size_id' => $size->id,
+            'schedule_id' => Schedule::factory()->create(['league_size_id'=>$size->id])->id,
             'age_type' => LeagueAgeType::getRandomValue(),
             'gender_type' => LeagueGenderType::getRandomValue()
         ];

@@ -24,7 +24,9 @@
                             <div class="form-group row">
                                 <label for="selLeague" class="col-sm-4 col-form-label">{{ trans_choice('league.league',1)}}</label>
                                 <div class="col-sm-6">
+                                <div class="input-group mb-3">
                                   <select class='js-league-single js-states form-control select2' id='selLeague' name='league_id'></select>
+                                </div>
                                 </div>
                             </div>
                         </div>

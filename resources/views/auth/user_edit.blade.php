@@ -39,6 +39,7 @@
                         <div class="form-group row ">
                             <label for='selClubs' class="col-sm-4 col-form-label">{{ trans_choice('club.club',2)}}</label>
                             <div class="col-sm-6">
+                            <div class="input-group mb-3">
                                 <select class='js-clubs-placeholder-single js-states form-control select2 @error('club_ids') /> is-invalid @enderror' multiple="multiple"  id='selClubs' name="club_ids[]">
                                   @foreach ( $user['clubs'] as $k=>$v )
                                        <option value="{{ $v }}" selected>{{ $k }}</option>
@@ -47,11 +48,13 @@
                                 @error('club_ids')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row ">
                             <label for='selLeagues' class="col-sm-4 col-form-label">{{ trans_choice('league.league',2)}}</label>
                             <div class="col-sm-6">
+                            <div class="input-group mb-3">
                                 <select class='js-leagues-placeholder-single js-states form-control select2 @error('league_ids') /> is-invalid @enderror' multiple="multiple" id='selLeagues' name="league_ids[]">
                                   @foreach ($user['leagues'] as $k=>$v)
                                     <option value="{{$v}}" selected>{{ $k }}</option>
@@ -60,6 +63,7 @@
                                 @error('league_ids')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                                </div>
                             </div>
                         </div>
                     </div>

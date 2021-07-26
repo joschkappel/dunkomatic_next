@@ -17,20 +17,20 @@ class Schedule extends Model
   use HasFactory;
 
   protected $fillable = [
-        'id','name','region_id','eventcolor','league_size_id'
+        'id','name','region_id','eventcolor','league_size_id','custom_events'
     ];
 
   public static $createRules = [
       'name' => 'required',
       'region_id' => 'required|exists:regions,id',
       'eventcolor' => 'required',
-      'league_size_id' => 'required|exists:league_sizes,id'
+      'league_size_id' => 'required_without:custom_events|exists:league_sizes,id',
   ];
 
   public static $updateRules = [
       'name' => 'required',
       'eventcolor' => 'required',
-      'league_size_id' => 'required|exists:league_sizes,id'
+      'league_size_id' => 'required_without:custom_events|exists:league_sizes,id|notIn:'.LeagueSize::UNDEFINED,
   ];
 
   public function region()

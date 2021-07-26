@@ -329,9 +329,10 @@ class LeagueController extends Controller
         'unique:leagues',
         'max:10'
       ),
+      'league_size_id' => 'required|exists:league_sizes,id',
       'schedule_id' => 'required|exists:schedules,id',
       'name' => 'required|max:255',
-      'region_id' => 'required|max:5|exists:regions,id',
+      'region_id' => 'required|exists:regions,id',
       'age_type' => ['required', new EnumValue(LeagueAgeType::class, false)],
       'gender_type' => ['required', new EnumValue(LeagueGenderType::class, false)],
 
@@ -404,6 +405,7 @@ class LeagueController extends Controller
         'max:10'
       ),
       'schedule_id' => 'required|exists:schedules,id',
+      'league_size_id' => 'required|exists:league_sizes,id',
       'name' => 'required|max:255',
       'age_type' => ['required', new EnumValue(LeagueAgeType::class, false)],
       'gender_type' => ['required', new EnumValue(LeagueGenderType::class, false)],

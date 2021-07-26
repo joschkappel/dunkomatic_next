@@ -52,11 +52,13 @@
                             <label for='selClubs' class="col-sm-4 col-form-label">{{ trans_choice('club.club',2)}}</label>
                             <div class="col-sm-6">
                                 @empty($abilities->clubs)
+                                <div class="input-group mb-3">
                                     <select class='js-clubs-placeholder-single js-states form-control select2 @error('club_ids') /> is-invalid @enderror' id='selClubs' name="club_ids[]">
                                     </select>
                                     @error('club_ids')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
+                                    </div>
                                 @endempty
                                 @isset($abilities->clubs)
                                     <input type="input" readonly class="form-control" id="clubs" value="{{ $abilities->clubs  }}">
@@ -67,11 +69,13 @@
                             <label for='selLeagues' class="col-sm-4 col-form-label">{{ trans_choice('league.league',2)}}</label>
                             <div class="col-sm-6">
                                 @empty($abilities->leagues)
+                                <div class="input-group mb-3">
                                     <select class='js-leagues-placeholder-single js-states form-control select2 @error('league_ids') /> is-invalid @enderror' id='selLeagues' name="league_ids[]">
                                     </select>
                                     @error('league_ids')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
+                                    </div>
                                 @endempty
                                 @isset($abilities->leagues)
                                      <input type="input" readonly class="form-control" id="leagues" value="{{ $abilities->leagues }}">

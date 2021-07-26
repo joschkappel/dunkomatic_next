@@ -22,6 +22,7 @@ class CreateSchedulesTable extends Migration
             $table->unsignedInteger('league_size_id')->nullable();
             $table->foreign('league_size_id')->references('id')->on('league_sizes');
             $table->timestamps();
+            $table->boolean('custom_events')->default(false);
         });
     }
 

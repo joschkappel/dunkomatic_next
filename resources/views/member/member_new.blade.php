@@ -131,10 +131,12 @@
 
                         <div class="form-group row">
                           <div class="col-sm-6">
+                          <div class="input-group mb-3">
                             <select class="js-sel-role js-states form-control select2  @error('role_id') is-invalid @enderror" name="role_id" id='role_id'></select>
                             @error('role_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                            </div>
                           </div>
                         </div>
                         <div class="form-group row">

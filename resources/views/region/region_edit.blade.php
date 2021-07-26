@@ -68,6 +68,7 @@
                                         <label for="selNolead"
                                             class="col-sm-6 col-form-label">@lang('region.job.noleads')</label>
                                         <div class="col-sm-4">
+                                        <div class="input-group mb-3">
                                             <select class='js-sel-noleads js-states form-control select2' id='selNolead'
                                                 name="job_noleads">
                                                 @foreach ($frequencytype as $ft)
@@ -75,12 +76,14 @@
                                                         {{ $ft->description }}</option>
                                                 @endforeach
                                             </select>
+                                                </div>
                                         </div>
                                     </div>
                                     <div class="form-row m-2">
                                         <label for="selEmailCheck"
                                             class="col-sm-6 col-form-label">@lang('region.job.emails')</label>
                                         <div class="col-sm-4">
+                                        <div class="input-group mb-3">
                                             <select class='js-sel-emailcheck js-states form-control select2'
                                                 id='selEmailCheck' name="job_email_valid">
                                                 @foreach ($frequencytype as $ft)
@@ -88,12 +91,14 @@
                                                         {{ $ft->description }}</option>
                                                 @endforeach
                                             </select>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="form-row m-2">
                                         <label for="selNotime"
                                             class="col-sm-6 col-form-label">@lang('region.job.notime')</label>
                                         <div class="col-sm-4">
+                                        <div class="input-group mb-3">
                                             <select class='js-sel-notime js-states form-control select2' id='selNotime'
                                                 name="job_game_notime">
                                                 @foreach ($frequencytype as $ft)
@@ -101,12 +106,14 @@
                                                         {{ $ft->description }}</option>
                                                 @endforeach
                                             </select>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="form-row m-2">
                                         <label for="selOverlaps"
                                             class="col-sm-6 col-form-label">@lang('region.job.overlaps')</label>
                                         <div class="col-sm-4">
+                                        <div class="input-group mb-3">
                                             <select class='js-sel-overlaps js-states form-control select2' id='selOverlaps'
                                                 name="job_game_overlaps">
                                                 @foreach ($frequencytype as $ft)
@@ -114,6 +121,7 @@
                                                         {{ $ft->description }}</option>
                                                 @endforeach
                                             </select>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="form-row m-2">
@@ -130,6 +138,7 @@
                                         <label for="selLeagueReport"
                                             class="col-sm-6 col-form-label">@lang('region.job.league_reports')</label>
                                         <div class="col-sm-4">
+                                        <div class="input-group mb-3">
                                             <select class='js-sel-league-reports js-states form-control select2'
                                                 id='selLeagueReport' name="job_league_reports">
                                                 @foreach ($frequencytype as $ft)
@@ -137,23 +146,27 @@
                                                         {{ $ft->description }}</option>
                                                 @endforeach
                                             </select>
+                                                </div>
                                         </div>
                                     </div>
                                     <div class="form-row m-2">
                                         <label for="selLeagueReportFmt" class="col-sm-6 col-form-label"></label>
                                         <div class="col-sm-4">
+                                        <div class="input-group mb-3">
                                             <select class='js-sel-league-reports-fmt js-states form-control select2'
                                                 id='selLeagueReportFmt' name="fmt_league_reports[]">
                                                 @foreach ($filetype as $ft)
                                                     <option value="{{ $ft->value }}">{{ $ft->description }}</option>
                                                 @endforeach
                                             </select>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="form-row m-2">
                                         <label for="selClubReport"
                                             class="col-sm-6 col-form-label">@lang('region.job.club_reports')</label>
                                         <div class="col-sm-4">
+                                        <div class="input-group mb-3">
                                             <select class='js-sel-league-reports js-states form-control select2'
                                                 id='selClubReport' name="job_club_reports">
                                                 @foreach ($frequencytype as $ft)
@@ -161,17 +174,20 @@
                                                         {{ $ft->description }}</option>
                                                 @endforeach
                                             </select>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="form-row m-2">
                                         <label for="selClubReportFmt" class="col-sm-6 col-form-label"></label>
                                         <div class="col-sm-4">
+                                        <div class="input-group mb-3">
                                             <select class='js-sel-club-reports-fmt js-states form-control select2'
                                                 id='selClubReportFmt' name="fmt_club_reports[]">
                                                 @foreach ($filetype as $ft)
                                                     <option value="{{ $ft->value }}">{{ $ft->description }}</option>
                                                 @endforeach
                                             </select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

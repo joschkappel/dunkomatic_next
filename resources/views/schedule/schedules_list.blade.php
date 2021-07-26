@@ -14,8 +14,10 @@
                         <label class="col-sm-2 col-form-label"
                             for='selSize'>{{ trans_choice('schedule.schedule', 2) }}</label>
                         <div class="col-sm-10">
+                        <div class="input-group mb-3">
                             <select class='js-size-multiple js-states form-control select2' id='selSize'>
                             </select>
+                            </div>
                         </div>
 
                         @include('schedule/includes/scheduleevent_pivot')

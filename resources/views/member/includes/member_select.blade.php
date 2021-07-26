@@ -16,7 +16,9 @@
                         <div class="card-body">
                           <div class="form-group row">
                             <div class="col-sm-8">
+                            <div class="input-group mb-3">
                               <select class="js-sel-member js-states form-control select2" name="selMember" id='selMember'></select>
+                            </div>
                             </div>
                           </div>
                         </div>

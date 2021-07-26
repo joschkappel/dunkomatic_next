@@ -29,11 +29,13 @@
                         <div class="form-group row ">
                             <label for='selTeamNo' class="col-sm-4 col-form-label">@lang('team.no')</label>
                             <div class="col-sm-6">
+                            <div class="input-group mb-3">
                                 <select class='js-teamno-placeholder-single js-states form-control select2 @error('team_no') /> is-invalid @enderror' id='selTeamNo' name="team_no">
                                 @for ($i=1; $i<=9; $i++)
                                   <option @if ($i == old('team_no')) selected @endif value="{{ $i }}">{{ $i }}</option>
                                 @endfor
                                 </select>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row ">
@@ -59,6 +61,7 @@
                         <div class="form-group row ">
                             <label for='selTday' class="col-sm-4 col-form-label">@lang('team.training')</label>
                             <div class="col-sm-3">
+                            <div class="input-group mb-3">
                                 <select class='js-tday-placeholder-single js-states form-control select2 @error(' training_day') is-invalid @enderror' id='selTday' name="training_day">
                                   <option value="1" @if ( old('training_day') == '1' ) selected @endif>{{ Carbon\Carbon::now()->startOfWeek(Carbon\Carbon::MONDAY)->locale(Config::get('app.locale'))->dayName }}
                                   <option value="2" @if ( old('training_day') == '2' ) selected @endif>{{ Carbon\Carbon::now()->startOfWeek(Carbon\Carbon::TUESDAY)->locale(Config::get('app.locale'))->dayName }}
@@ -70,6 +73,7 @@
                                 @error('training_day')
                                   <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                                </div>
                             </div>
                             <div class="col-sm-3">
                               <div class="input-group date" id="ttime" data-target-input="nearest">
@@ -84,6 +88,7 @@
                         <div class="form-group row ">
                             <label for='selGday' class="col-sm-4 col-form-label">@lang('team.game.preferred')</label>
                             <div class="col-sm-3">
+                            <div class="input-group mb-3">
                                 <select class='js-gday-placeholder-single js-states form-control select2 @error(' preferred_game_day') is-invalid @enderror' id='selGday' name="preferred_game_day">
                                   {{-- <option value="1" @if ( old('preferred_game_day') == '1' ) selected @endif>{{ Carbon\Carbon::now()->startOfWeek(Carbon\Carbon::MONDAY)->locale(Config::get('app.locale'))->dayName }}
                                   <option value="2" @if ( old('preferred_game_day') == '2' ) selected @endif>{{ Carbon\Carbon::now()->startOfWeek(Carbon\Carbon::TUESDAY)->locale(Config::get('app.locale'))->dayName }}
@@ -96,6 +101,7 @@
                                 @error('preferred_game_day')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                                </div>
                             </div>
                             <div class="col-sm-3">
                               <div class="input-group date" id="gtime" data-target-input="nearest">

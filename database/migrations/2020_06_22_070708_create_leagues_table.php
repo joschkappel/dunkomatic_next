@@ -21,6 +21,8 @@ class CreateLeaguesTable extends Migration
             $table->char('shortname', 10)->unique();
             $table->text('name');
             $table->boolean('above_region')->default(False);
+            $table->unsignedInteger('league_size_id');
+            $table->foreign('league_size_id')->references('id')->on('league_sizes');
             $table->unsignedInteger('schedule_id')->nullable();
             $table->foreign('schedule_id')->references('id')->on('schedules');
             $table->unsignedInteger('age_type')->nullable();

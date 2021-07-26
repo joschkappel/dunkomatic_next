@@ -9,6 +9,7 @@ use App\Models\Member;
 use App\Models\Membership;
 use App\Models\Schedule;
 use App\Enums\LeagueState;
+use App\Models\LeagueSize;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +30,8 @@ class League extends Model implements Auditable
         ];
     }
     protected $fillable = [
-        'id', 'name', 'shortname', 'region_id', 'above_region', 'schedule_id', 'generated_at', 'age_type', 'gender_type', 'state',
+        'id', 'name', 'shortname', 'region_id', 'above_region', 'schedule_id', 'league_size_id',
+        'generated_at', 'age_type', 'gender_type', 'state',
         'assignment_closed_at', 'registration_closed_at', 'selection_opened_at',
         'selection_closed_at', 'scheduling_closed_at'
     ];
@@ -58,6 +60,11 @@ class League extends Model implements Auditable
     public function schedule()
     {
         return $this->belongsTo(Schedule::class);
+    }
+
+    public function league_size()
+    {
+        return $this->belongsTo(LeagueSize::class);
     }
 
     public function clubs()
@@ -118,11 +125,7 @@ class League extends Model implements Auditable
     }
     public function getSizeAttribute()
     {
-        if (isset($this->schedule)) {
-            return $this->schedule->league_size->size;
-        } else {
-            return 0;
-        }
+        return $this->league_size->size;
     }
     public function getStateCountAttribute()
     {
