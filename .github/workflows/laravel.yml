@@ -51,6 +51,8 @@ jobs:
       run: ./vendor/laravel/dusk/bin/chromedriver-linux &
     - name: Create Schema
       run: php artisan migrate:fresh
+    - name: Seed static tables
+      run: php artisan db:seed --class=TestDatabaseSeeder      
     - name: Run Laravel Server
       run: php artisan serve  &
     - name: Test dusk server access
