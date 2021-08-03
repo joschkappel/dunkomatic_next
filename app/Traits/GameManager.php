@@ -15,16 +15,21 @@ trait GameManager {
         // get size
         $league->load('schedule');
         // get scheme
-        $scheme = $league->schedule->schemes()->get();
 
+        if ( $league->schedule->custom_events) {
+          $scheme = $league->league_size->schemes()->get();
+          $gdate_by_day = collect([]);
+        } else {
+          $scheme = $league->schedule->schemes()->get();
         // get game days and dates
-        $gdate_by_day = $league->schedule->events()->pluck('game_date','game_day');
+          $gdate_by_day = $league->schedule->events()->pluck('game_date','game_day');
+        }
 
         // get teams
         $teams = $league->teams()->with('club')->get();
 
         foreach ($scheme as $s){
-          $gday = $gdate_by_day[ $s->game_day ];
+          $gday = $gdate_by_day[ $s->game_day ] ?? now();
 
           $hteam = $teams->firstWhere('league_no', $s->team_home);
           $gteam = $teams->firstWhere('league_no', $s->team_guest);

@@ -118,26 +118,12 @@ $(function() {
         $("#gym_no").val($(this).data('gym-no'));
         $("#game_id").val($(this).data('id'));
         $("#league").val($(this).data('league'));
-        $("#modtitle").html($(this).data('league')+' '+$(this).data('gym-no'));
-        var url = "{{route('game.update',['game'=>':game:'])}}";
+        $("#modalTitle").html( $(this).data('league') + ' - '+ gdate + '  {{ __('game.action.editdate') }}' );
+        var url = "{{route('game.update_home',['game'=>':game:'])}}";
         url = url.replace(':game:', $(this).data('id'));
         $('#formGamedate').attr('action', url);
         $("#modalEditGamedate").modal('show');
       });
-
-  @if ($errors->any())
-    $("#game_time").val("{{old('game_time')}}");
-    $("#game_date").val("{{old('game_date')}}");
-    $("#gym_id").val("{{old('gym_id')}}");
-    $("#gym_no").val("{{ old('gym_no')}}");
-    $("#game_id").val("{{old('game_id')}}");
-    $("#league").val("{{old('league')}}");
-    $("#modtitle").html("{{ old('league')}}"+' '+"{{old('gym_no')}}");
-    var url = "{{route('game.update',['game'=>':game:'])}}";
-    url = url.replace(':game:', "{{ old('game_id')}}");
-    $('#formGamedate').attr('action', url);
-    $("#modalEditGamedate").modal('show');
-  @endif
 
 });
 

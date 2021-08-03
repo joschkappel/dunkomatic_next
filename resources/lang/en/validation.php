@@ -171,6 +171,9 @@ return [
       'league_size_id' => 'Number of Teams',
       'schedule_id' => 'Schedule',
       'custom_events' => 'Custsom Schedule',
+      'game_no' => 'Game #',
+      'team_id_home' => 'Home Team',
+      'team_id_guest' => 'Guest Team',
 
     ],
 

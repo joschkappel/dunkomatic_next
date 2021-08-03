@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Club;
 use App\Models\Gym;
+use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
@@ -40,6 +41,25 @@ class ClubGymController extends Controller
       }
       return Response::json($response);
     }
+
+    public function sb_team(Team $team)
+    {
+      //Log::debug(print_r($club,true));
+      $gyms = $team->club->gyms()->get();
+
+      Log::debug('got gyms '.count($gyms));
+      $response = array();
+
+      foreach($gyms as $lgym){
+        $response[] = array(
+            "id"=>$lgym->id,
+            "text"=>$lgym->gym_no.' - '.$lgym->name
+            );
+
+      }
+      return Response::json($response);
+    }
+
     /**
      * Show the form for creating a new resource.
      *

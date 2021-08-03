@@ -40,4 +40,13 @@ class LeagueFactory extends Factory
             'gender_type' => LeagueGenderType::getRandomValue()
         ];
     }
+    public function custom()
+    {
+        $size = LeagueSize::where('size',4)->first();
+        return $this->state(function (array $attributes) use ($size) {
+            return [
+                'schedule_id' => Schedule::factory()->custom()->create()->id,
+            ];
+        });
+    }
 }
