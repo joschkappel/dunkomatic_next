@@ -173,6 +173,9 @@ return [
       'league_size_id' => 'Anzahl Mannschaften',
       'schedule_id' => 'Rahmenterminplan',
       'custom_events' => 'Manuelle Terminvergabe',
+      'game_no' => 'Spielnummer',
+      'team_id_home' => 'Heimteam',
+      'team_id_guest' => 'Gastteam',
 
     ],
 

@@ -30,4 +30,13 @@ class ScheduleFactory extends Factory
             'region_id' => Region::where('code','HBVDA')->first()->id
         ];
     }
+    public function custom()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'custom_events' => true,
+                'league_size_id' => 1,
+            ];
+        });
+    }
 }

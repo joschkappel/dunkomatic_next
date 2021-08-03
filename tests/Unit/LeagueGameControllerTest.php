@@ -81,7 +81,7 @@ class LeagueGameControllerTest extends TestCase
       $game = Game::where('league_id',$league->id)
                   ->where('club_id_home',$club->id)->first();
       $response = $this->authenticated( )
-                        ->put(route('game.update',['game'=>$game]),[
+                        ->put(route('game.update_home',['game'=>$game]),[
                           'gym_id' => $gym->id,
                           'game_time' => '12:15',
                         ]);
@@ -111,14 +111,14 @@ class LeagueGameControllerTest extends TestCase
       $game = Game::where('league_id',$league->id)
                   ->where('club_id_home',$club->id)->first();
       $response = $this->authenticated( )
-                        ->put(route('game.update',['game'=>$game]),[
+                        ->put(route('game.update_home',['game'=>$game]),[
                           'gym_id' => $gym->id,
                           'gym_no' => $gym->gym_no,
                           'game_date' => now(),
                           'game_time' => '12:15',
                         ]);
 
-      $response->assertStatus(302)
+      $response->assertStatus(200)
                ->assertSessionHasNoErrors();
 
       $this->assertDatabaseHas('games', ['id'=>$game->id,'gym_id'=>$gym->id]);

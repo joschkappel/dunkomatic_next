@@ -1,34 +1,9 @@
 @section('plugins.Moment', true)
 @section('plugins.TempusDominus', true)
 @section('plugins.Select2', true)
+@extends('layouts.modal', ['modalId' => 'modalEditGamedate', 'modalFormId' => 'formGamedate', 'modalFormMethod' => 'PUT' ])
 
-    <div class="modal fade right" id="modalEditGamedate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-        aria-hidden="true" data-backdrop="false">
-        <div class="modal-dialog modal-side modal-bottom-right modal-notify modal-info" role="document">
-            <!--Content-->
-            <div class="modal-content">
-                <!--Header-->
-                <div class="modal-header bg-info">
-                    <p class="heading">@lang('game.action.editdate')</p>
-                    <p class="heading" id="modtitle"></p>
-
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true" class="white-text">&times;</span>
-                    </button>
-                </div>
-
-                <!--Body-->
-                <div class="modal-body">
-                    <div class="card card-info">
-                        <form class="form-horizontal" id="formGamedate" action="" method="POST">
-                            <div class="card-body">
-                                @csrf
-                                @method('PUT')
-                                @if ($errors->any())
-                                    <div class="alert alert-danger" role="alert">
-                                        @lang('Please fix the following errors')
-                                    </div>
-                                @endif
+@section('modal_content')
                                 <input type="hidden" name="gym_id" id="gym_id" />
                                 <input type="hidden" name="gym_no" id="gym_no" />
                                 <input type="hidden" name="game_id" id="game_id" />
@@ -82,25 +57,17 @@
                                     </div>
                                 </div>
                             </div>
-                    </div>
-                    <div class="card-footer">
-                        <div class="btn-toolbar justify-content-between" role="toolbar"
-                            aria-label="Toolbar with button groups">
-                            <button type="submit" class="btn btn-info">{{ __('Submit') }}</button>
-                        </div>
-                    </div>
 
-                </div>
-            </div>
-        </div>
-        <!--/.Content-->
-    </div>
-    </div>
-    <!--Modal: modalRelatedContent-->
-    @push('js')
+@endsection
 
-        <script>
-            $(document).ready(function() {
+@section('modal_js_data')
+  gym_id: $('#selGym').find(':selected').val(),
+  game_date: $('#game_date').val(),
+  game_time: $('#game_time').val(),
+@endsection
+
+
+@section('modal_js')
                 $('#gtime').datetimepicker({
                     format: 'LT',
                     locale: '{{ app()->getLocale() }}',
@@ -160,7 +127,4 @@
                     });
                 });
 
-
-            });
-        </script>
-    @endpush
+@endsection

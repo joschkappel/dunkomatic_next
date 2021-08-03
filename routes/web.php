@@ -135,6 +135,7 @@ Route::middleware(['auth'])->group(function () {
   Route::get('club/{club}/game/chart_home', 'ClubGameController@chart_home')->name('club.game.chart_home');
   Route::get('club/{club}/list/gym/{gym}', 'ClubGymController@sb_gym')->name('gym.sb.gym');
   Route::get('club/{club}/list/gym', 'ClubGymController@sb_club')->name('gym.sb.club');
+  Route::get('team/{team}/list/gym', 'ClubGymController@sb_team')->name('gym.sb.team');
   Route::get('club/{club}/league/sb', 'ClubController@sb_league')->name('club.sb.league'); 
   Route::resource('club.gym', 'ClubGymController')->shallow()->only('store','update','destroy');
 
@@ -177,6 +178,7 @@ Route::middleware(['auth'])->group(function () {
   Route::post('league/{league}/team', 'TeamController@inject')->name('league.team.inject');
   Route::post('league/{league}/char', 'TeamController@pick_char')->name('league.team.pickchar');
   Route::get('league/{league}/team/sb', 'TeamController@sb_league')->name('league.team.sb'); // ä move tp öeague controller
+  Route::put('game/{game}/home', 'LeagueGameController@update_home')->name('game.update_home');
   Route::resource('league.game', 'LeagueGameController')->shallow()->except(['index','create','edit']);;
 
   Route::put('team/league', 'TeamController@assign_league')->name('team.assign-league');
