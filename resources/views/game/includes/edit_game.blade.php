@@ -3,7 +3,7 @@
 @section('plugins.Select2', true)
 @section('plugins.RangeSlider', true)
 
-@extends('layouts.modal', ['modalId' => 'modalEditGame', 'modalFormId' => 'formGame', 'modalFormMethod' => 'PUT' ])
+@extends('layouts.modal', ['modalId' => 'modalEditGame', 'modalFormId' => 'formGame', 'modalFormMethod' => 'PUT', 'stayOnSuccess' => true ])
 
 @section('modal_content')
 
@@ -20,8 +20,10 @@
                             <input type="hidden" name="league_id" id="league_id" />
                             <div class="form-group row">
                                 <label for="game_no"
-                                    class="col-sm-4 col-form-label">@lang('game.game_no')</label>
-                                <div class="col-sm-8">
+                                    class="col-sm-12 col-form-label">@lang('game.game_no')</label>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
                                     <input class="form-control " id="game_no" name="game_no" type="text" value=""></input>
                                 </div>
                             </div>                                                            
@@ -136,11 +138,7 @@
 
                 var teamhomeSelect = $('#team_id_home');
                 var teamguestSelect = $('#team_id_guest');
-
                 var gymSelect = $('#selGym');
-                var urlgym = "{{ route('gym.sb.gym', ['club' => ':clubid:', 'gym' => ':gymid:']) }}";
-                urlgym = urlgym.replace(':gymid:', $("#gym_id").val());
-                urlgym = urlgym.replace(':clubid:', $("#club_id_home").val());
 
                 function getGymDataTeam ( ) {
                     var url = "{{ route('gym.sb.team', ['team' => ':teamid:']) }}";
@@ -165,6 +163,22 @@
                             cache: true
                         }
                     });
+                }
+
+                function selectGymForTeam () {
+                    var urlgym = "{{ route('gym.sb.gym', ['club' => ':clubid:', 'gym' => ':gymid:']) }}";
+                    urlgym = urlgym.replace(':gymid:', $("#gym_id").val());
+                    urlgym = urlgym.replace(':clubid:', $("#club_id_home").val());
+
+                    $.ajax({
+                        type: 'GET',
+                        url: urlgym
+                    }).then(function(data) {
+                        // create the option and append to Select2
+                        var option = new Option(data[0].text, data[0].id, true, true);
+                        gymSelect.append(option).trigger('change');
+
+                    });                    
                 }
 
                 $("#selGym").select2({
@@ -217,7 +231,7 @@
                 @endif
 
                 @if ($league->schedule->custom_events)
-              $("#team_id_guest").select2({
+                $("#team_id_guest").select2({
                     placeholder: "select guest team",
                     theme: 'bootstrap4',
                     multiple: false,
@@ -254,27 +268,59 @@
                     @else
                     block: true,
                     @endif
+                    onChange: function (data) {
+                        var urlgames = "{{ route('league.game.show_bynumber', ['league' => ':leagueid:', 'game_no' => ':gameno:']) }}";
+                        urlgames = urlgames.replace(':leagueid:', $("#league_id").val());
+                        urlgames = urlgames.replace(':gameno:', data.from);
+                        $('.alert').hide();
+
+                        $.ajax({
+                            type: 'GET',
+                            url: urlgames,
+                        }).then(function(data) {
+                            console.log(data);
+
+                            $("#game_id").val(data.id);
+                            $("#gym_id").val(data.gym_id);
+                            $("#gym_no").val(data.gym_no);
+                            var url = "{{ route('game.update', ['game' => ':game:']) }}";
+                            url = url.replace(':game:', data.id);
+                            $('#formGame').attr('action', url);
+
+                            moment.locale('{{ app()->getLocale() }}');
+                            var gdate = moment(data.game_date).format('L');
+                            var gtime = moment(data.game_time, 'HH:mm:ss').format('LT');
+                            $("#game_time").val(gtime);
+                            $("#game_date").val(gdate);
+
+                           if (data.team_guest != ''){
+                                var tgoption = new Option( data.team_guest, data.team_id_guest, true, true);
+                                teamguestSelect.append(tgoption).trigger('change');
+                                $("#club_id_guest").val(data.club_id_guest);
+                           } else {
+                                teamguestSelect.val(null).trigger('change');
+                                $("#club_id_guest").val(null);
+                           }
+                           if (data.team_home != ''){
+                                var thoption = new Option( data.team_home, data.team_id_home, true, true);
+                                teamhomeSelect.append(thoption).trigger('change');
+                                $("#club_id_home").val(data.club_id_home);
+                                getGymDataTeam( );
+                                selectGymForTeam ();
+                           } else {
+                                teamhomeSelect.val(null).trigger('change');
+                                $("#club_id_home").val(null);
+                                gymSelect.val(null).trigger('change');
+                           }                           
+
+                        });
+                    }
                 });
 
                 $("#game_no").data("ionRangeSlider").update({ from: $('#game_no_old').val() });
 
                 if ($("#club_id_home").val()) {
-                    $.ajax({
-                        type: 'GET',
-                        url: urlgym
-                    }).then(function(data) {
-                        // create the option and append to Select2
-                        var option = new Option(data[0].text, data[0].id, true, true);
-                        gymSelect.append(option).trigger('change');
-
-                        // manually trigger the `select2:select` event
-                        gymSelect.trigger({
-                            type: 'select2:select',
-                            params: {
-                                data: data
-                            }
-                        });
-                    });
+                    selectGymForTeam ();
                 } else {
                     gymSelect.val(null).trigger('change');
                 }

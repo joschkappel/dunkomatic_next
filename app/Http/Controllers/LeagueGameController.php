@@ -35,6 +35,19 @@ class LeagueGameController extends Controller
     {
        return view('game/league_game_list', ['league' => $league]);
     }
+    /**
+     * Get a game by game number
+     *
+     * @param  \App\Models\League  $league
+     * @param  $game_no
+     * @return \Illuminate\Http\Response
+     */
+    public function show_by_number(League $league, $game_no)
+    {
+       $game = $league->games->where('game_no', $game_no)->first();
+
+       return Response::json( $game, 200);
+    }
 
     public function datatable($language, League $league)
     {
