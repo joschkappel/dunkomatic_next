@@ -6,8 +6,8 @@
         <div class="modal-content">
             <!--Header-->
             <div class="modal-header bg-primary">
-                <h5 class="modal-title" id="modalTitle">Titeel</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h5 class="modal-title" id="modalTitle">Titel</h5>
+                <button type="button" class="close" id="frmClose" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true" class="white-text">&times;</span>
                 </button>
             </div>
@@ -15,8 +15,8 @@
             <!--Body-->
             <div class="modal-body">
                 <div class="card card-info">
-                                <div class="alert alert-danger" role="alert">
-                                </div>
+                                <div class="alert alert-danger" role="alert"></div>
+                                <div class="alert alert-success" role="alert">{{ __('Your data has been successfully saved')}}</div>
                     <form class="form-horizontal" id="{{ $modalFormId }}" action="" method="POST" enctype="multipart/form-data">
                         <div class="card-body">
                             @csrf
@@ -27,7 +27,7 @@
                 <div class="card-footer">
                     <div class="btn-toolbar justify-content-between" role="toolbar"
                         aria-label="Toolbar with button groups">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">{{ __('Close')}}</button>
+                        <button type="button" class="btn btn-danger" id="frmClose" data-dismiss="modal">{{ __('Close')}}</button>
                         <button type="button" class="btn btn-success" id="frmSubmit">{{ __('Submit') }}</button>
                     </div>
                 </div>
@@ -47,7 +47,11 @@
             $('#{{ $modalId }}').on('show.bs.modal', function(e){
                 $('.invalid-feedback').text("");
                 $('.is-invalid').removeClass('is-invalid');
-                $('.alert-danger').hide();
+                $('.alert').hide();
+            })
+
+            $('#frmClose').click(function(e){
+                location.reload();
             })
 
             $('#frmSubmit').click(function(e){
@@ -62,15 +66,21 @@
                         @yield('modal_js_data')
                     },
                     success: function(result){
-                        $('.alert-danger').hide();
-                        $('#{{ $modalId }}').modal('hide');
-                        location.reload();
+                        @if ($stayOnSuccess)
+                            $('.alert-danger').hide();
+                            $('.alert-success').show()
+                        @else 
+                            $('.alert-danger').hide();
+                            $('#{{ $modalId }}').modal('hide');
+                            location.reload();
+                        @endif
 
                     },
                     error: function(response){
                         var result = response.responseJSON;
                         if(result.errors)
                         {
+                           $('.alert-success').hide();
                            $('.alert-danger').html( '{{ __('Please fix the following errors') }}' );
                            $.each(result.errors, function(key, value){
                                 $('.alert-danger').append('<li>'+value+'</li>');
@@ -79,7 +89,7 @@
 
                         }                         else
                         {
-                            $('.alert-danger').hide();
+                            $('.alert').hide();
                             $('#{{ $modalId }}').modal('hide');
                         }
 

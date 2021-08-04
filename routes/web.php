@@ -173,6 +173,7 @@ Route::middleware(['auth'])->group(function () {
   
 
   Route::delete('league/{league}/game', 'LeagueGameController@destroy_game')->name('league.game.destroy');
+  Route::get('league/{league}/game/{game_no}', 'LeagueGameController@show_by_number')->name('league.game.show_bynumber');
   Route::delete('league/{league}/game/noshow', 'LeagueGameController@destroy_noshow_game')->name('league.game.destroy_noshow');
   Route::delete('league/{league}/team', 'TeamController@withdraw')->name('league.team.withdraw');
   Route::post('league/{league}/team', 'TeamController@inject')->name('league.team.inject');
