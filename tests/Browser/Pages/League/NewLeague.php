@@ -41,10 +41,11 @@ class NewLeague extends Page
     }
 
     public function create_league( Browser $browser, $code, $name ){
-      $browser->select2('.js-selSize','10er')
+      $browser->select2('.js-selSize','4er Runde')
+              ->screenshot('Size selected')
               ->type('shortname',$code)
               ->type('name',$name)
-              ->select2('.js-sel-schedule', '10er')
+              ->select2('.js-sel-schedule')
               ->screenshot('Neue_runde')
               ->press('Senden');
     }

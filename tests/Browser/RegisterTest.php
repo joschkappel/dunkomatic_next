@@ -6,9 +6,6 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
-use App\Models\User;
-use App\Models\Member;
-use App\Models\Region;
 use Database\Seeders\TestDatabaseSeeder;
 
 
@@ -26,7 +23,7 @@ class RegisterTest extends DuskTestCase
     /**
      * test registration
      * @test
-     * @group auth
+     * @group authx
      *
      * @return void
      */

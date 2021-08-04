@@ -51,14 +51,12 @@ jobs:
       run: ./vendor/laravel/dusk/bin/chromedriver-linux &
     - name: Create Schema
       run: php artisan migrate:fresh
-    - name: Seed static tables
-      run: php artisan db:seed --class=TestDatabaseSeeder      
     - name: Run Laravel Server
       run: php artisan serve  &
     - name: Test dusk server access
       run: |
         curl http://127.0.0.1:8000/de/login
-    - name: Run Dusk Tests
+    - name: Run Dusk Tests    
       run: php artisan dusk --env=dusk.git
     - name: Archive code coverage results
       if: ${{ failure() }}

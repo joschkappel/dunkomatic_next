@@ -46,7 +46,7 @@ class ClubTest extends DuskTestCase
 
           $this->assertDatabaseHas('clubs', ['club_no' => $club_no]);;
 
-          $club = Club::where('shortname','VVVV')->first();
+          $club = Club::where('club_no', $club_no)->first();
 
           $this->browse(function ($browser) use ($club_name_new, $club_no_new, $club) {
             $browser->visit(new EditClub($club->id))

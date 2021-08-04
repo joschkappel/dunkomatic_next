@@ -46,7 +46,6 @@ class NewClub extends Page
 
     public function new_club(Browser $browser, $club_name, $club_no, $url){
       $browser->value('@shortname','VVVV')
-              ->value('@region','HBVDA')
               ->value('@name',$club_name)
               ->value('@club_no',$club_no)
               ->value('@url', $url)
