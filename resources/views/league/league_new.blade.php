@@ -148,13 +148,13 @@
                 theme: 'bootstrap4',
                 multiple: false,
                 allowClear: false,
-                minimumResultsForSearch: 10,
+                minimumResultsForSearch: -1,
             });
             $("#selGenderType").select2({
                 theme: 'bootstrap4',
                 multiple: false,
                 allowClear: false,
-                minimumResultsForSearch: 10,
+                minimumResultsForSearch: -1,
             });
 
             $(".js-selSize").select2({
@@ -162,6 +162,7 @@
                 theme: 'bootstrap4',
                 allowClear: false,
                 minimumResultsForSearch: 5,
+                minimumInputLength: 4,
                 ajax: {
                     url: "{{ url('size/index') }}",
                     type: "get",
@@ -180,7 +181,7 @@
                 theme: 'bootstrap4',
                 multiple: false,
                 allowClear: false,
-                minimumResultsForSearch: 5
+                minimumResultsForSearch: -1
             });
 
             $(".js-selSize").on("change", function() {

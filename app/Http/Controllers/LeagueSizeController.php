@@ -21,7 +21,7 @@ class LeagueSizeController extends Controller
       if ($request['term']){
         $sizes = LeagueSize::where('description', 'like', '%'.$request['term'].'%')->orderBy('size', 'ASC')->get();
       } else {
-        $sizes = LeagueSize::all()->orderBy('size', 'ASC')->get();
+        $sizes = LeagueSize::orderBy('size', 'ASC')->get();
       }
       Log::debug('got sizes '.count($sizes));
       $response = array();
