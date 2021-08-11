@@ -3,11 +3,11 @@
 namespace Tests\Browser;
 
 use App\Models\User;
-use App\Models\Region;
+
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
-use Database\Seeders\TestDatabaseSeeder;
+
 
 class LoginTest extends DuskTestCase
 {
@@ -16,8 +16,7 @@ class LoginTest extends DuskTestCase
     public function setUp(): void
     {
         parent::setUp();
-        //$this->artisan('db:seed', ['--class' => 'TestDatabaseSeeder']);
-        $this->seed(TestDatabaseSeeder::class);
+        $this->artisan('db:seed', ['--class' => 'TestDatabaseSeeder']);
 
     }
     /**

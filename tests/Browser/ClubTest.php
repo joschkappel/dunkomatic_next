@@ -11,7 +11,7 @@ use Tests\DuskTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Browser\Pages\Club\NewClub;
 use Tests\Browser\Pages\Club\EditClub;
-use Database\Seeders\TestDatabaseSeeder;
+
 
 class ClubTest extends DuskTestCase
 {
@@ -20,7 +20,7 @@ class ClubTest extends DuskTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->seed(TestDatabaseSeeder::class);
+        $this->artisan('db:seed', ['--class' => 'TestDatabaseSeeder']);
     }
 
     use withFaker;

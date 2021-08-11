@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
-use Database\Seeders\TestDatabaseSeeder;
+
 
 class LoginApprovedTest extends DuskTestCase
 {
@@ -16,8 +16,7 @@ class LoginApprovedTest extends DuskTestCase
     public function setUp(): void
     {
         parent::setUp();
-        //$this->artisan('db:seed', ['--class' => 'TestDatabaseSeeder']);
-        $this->seed(TestDatabaseSeeder::class);
+        $this->artisan('db:seed', ['--class' => 'TestDatabaseSeeder']);
 
     }
     /**

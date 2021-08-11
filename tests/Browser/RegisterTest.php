@@ -6,8 +6,6 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
-use Database\Seeders\TestDatabaseSeeder;
-
 
 class RegisterTest extends DuskTestCase
 {
@@ -17,7 +15,7 @@ class RegisterTest extends DuskTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->seed(TestDatabaseSeeder::class);
+        $this->artisan('db:seed', ['--class' => 'TestDatabaseSeeder']);
     }
 
     /**

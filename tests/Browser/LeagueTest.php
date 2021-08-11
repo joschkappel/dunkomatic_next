@@ -11,7 +11,6 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\DuskTestCase;
 use Tests\Browser\Pages\League\NewLeague;
 use Tests\Browser\Pages\League\EditLeague;
-use Database\Seeders\TestDatabaseSeeder;
 
 class LeagueTest extends DuskTestCase
 {
@@ -21,7 +20,6 @@ class LeagueTest extends DuskTestCase
     {
         parent::setUp();
         $this->artisan('db:seed', ['--class' => 'TestDatabaseSeeder']);
-        // $this->seed(TestDatabaseSeeder::class);
     }
 
     /**
