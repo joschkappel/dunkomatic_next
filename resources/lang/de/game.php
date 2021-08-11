@@ -10,6 +10,7 @@ return [
   'action.editdate' => 'Lege das Spieldatum und Startzeit fest',
   'action.team.withdraw' => 'Mannschaft zurückziehen',
   'action.team.add' => 'Mannschaft aufnehmen',
+  'action.game_no' => 'Wähle eine Spielnummer aus',
   'created.no' => 'Keine Spiele erzeugt',
   'created.some' => ':total Spiele erzeugt',
   'notstarted' => 'Spielrunde nocht nicht begonnen',
