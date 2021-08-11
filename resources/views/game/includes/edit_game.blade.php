@@ -17,9 +17,16 @@
                             <input type="hidden" name="game_no_old" id="game_no_old" />                           
                             <input type="hidden" name="league" id="league" />
                             <input type="hidden" name="league_id" id="league_id" />
-                            <div class="form-group row">
-                                <label for="game_no"
-                                    class="col-sm-12 col-form-label">@lang('game.game_no')</label>
+                            <div class="form-group row justify-content-between">
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-secondary" id="btnPrev"><i class="far fa-arrow-alt-circle-left"></i></button>
+                                    </div>
+                                    <div class="col-8">
+                                        <label for="game_no" class="col-form-label">@lang('game.action.game_no')</label>
+                                    </div>
+                                    <div class="col-2">                                        
+                                        <button type="button" class="btn btn-secondary" id="btnNext"><i class="far fa-arrow-alt-circle-right"></i></button>
+                                    </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-sm-12">
@@ -180,6 +187,55 @@
                     });                    
                 }
 
+                function getGameData(data){
+                        var urlgames = "{{ route('league.game.show_bynumber', ['league' => ':leagueid:', 'game_no' => ':gameno:']) }}";
+                        urlgames = urlgames.replace(':leagueid:', $("#league_id").val());
+                        urlgames = urlgames.replace(':gameno:', data.from);
+                        $('.alert').hide();
+
+                        $.ajax({
+                            type: 'GET',
+                            url: urlgames,
+                        }).then(function(data) {
+                            console.log(data);
+
+                            $("#game_id").val(data.id);
+                            $("#gym_id").val(data.gym_id);
+                            $("#gym_no").val(data.gym_no);
+                            var url = "{{ route('game.update', ['game' => ':game:']) }}";
+                            url = url.replace(':game:', data.id);
+                            $('#formGame').attr('action', url);
+
+                            moment.locale('{{ app()->getLocale() }}');
+                            var gdate = moment(data.game_date).format('L');
+                            var gtime = moment(data.game_time, 'HH:mm:ss').format('LT');
+                            $("#game_time").val(gtime);
+                            $("#game_date").val(gdate);
+
+                           if (data.team_guest != ''){
+                                var tgoption = new Option( data.team_guest, data.team_id_guest, true, true);
+                                teamguestSelect.append(tgoption).trigger('change');
+                                $("#club_id_guest").val(data.club_id_guest);
+                           } else {
+                                teamguestSelect.val(null).trigger('change');
+                                $("#club_id_guest").val(null);
+                           }
+                           if (data.team_home != ''){
+                                var thoption = new Option( data.team_home, data.team_id_home, true, true);
+                                teamhomeSelect.append(thoption).trigger('change');
+                                $("#club_id_home").val(data.club_id_home);
+                                getGymDataTeam( );
+                                selectGymForTeam ();
+                           } else {
+                                teamhomeSelect.val(null).trigger('change');
+                                $("#club_id_home").val(null);
+                                gymSelect.val(null).trigger('change');
+                           }                           
+
+                        });
+
+                }
+
                 $("#selGym").select2({
                     placeholder: "{{ __('gym.action.select') }}...",
                     theme: 'bootstrap4',
@@ -263,56 +319,15 @@
                     step: 1,
                     prettify: true,
                     @if ($league->schedule->custom_events)
-                    block: false,
+                        block: false,
                     @else
-                    block: true,
+                        block: true,
                     @endif
                     onChange: function (data) {
-                        var urlgames = "{{ route('league.game.show_bynumber', ['league' => ':leagueid:', 'game_no' => ':gameno:']) }}";
-                        urlgames = urlgames.replace(':leagueid:', $("#league_id").val());
-                        urlgames = urlgames.replace(':gameno:', data.from);
-                        $('.alert').hide();
-
-                        $.ajax({
-                            type: 'GET',
-                            url: urlgames,
-                        }).then(function(data) {
-                            console.log(data);
-
-                            $("#game_id").val(data.id);
-                            $("#gym_id").val(data.gym_id);
-                            $("#gym_no").val(data.gym_no);
-                            var url = "{{ route('game.update', ['game' => ':game:']) }}";
-                            url = url.replace(':game:', data.id);
-                            $('#formGame').attr('action', url);
-
-                            moment.locale('{{ app()->getLocale() }}');
-                            var gdate = moment(data.game_date).format('L');
-                            var gtime = moment(data.game_time, 'HH:mm:ss').format('LT');
-                            $("#game_time").val(gtime);
-                            $("#game_date").val(gdate);
-
-                           if (data.team_guest != ''){
-                                var tgoption = new Option( data.team_guest, data.team_id_guest, true, true);
-                                teamguestSelect.append(tgoption).trigger('change');
-                                $("#club_id_guest").val(data.club_id_guest);
-                           } else {
-                                teamguestSelect.val(null).trigger('change');
-                                $("#club_id_guest").val(null);
-                           }
-                           if (data.team_home != ''){
-                                var thoption = new Option( data.team_home, data.team_id_home, true, true);
-                                teamhomeSelect.append(thoption).trigger('change');
-                                $("#club_id_home").val(data.club_id_home);
-                                getGymDataTeam( );
-                                selectGymForTeam ();
-                           } else {
-                                teamhomeSelect.val(null).trigger('change');
-                                $("#club_id_home").val(null);
-                                gymSelect.val(null).trigger('change');
-                           }                           
-
-                        });
+                        getGameData(data);
+                    },
+                    onUpdate: function (data) {
+                        getGameData(data);
                     }
                 });
 
@@ -323,6 +338,30 @@
                 } else {
                     gymSelect.val(null).trigger('change');
                 }
+
+                $("#btnPrev").click(function() {
+                    $("#game_no").data("ionRangeSlider").update({ from: $('#game_no').val()-1 });
+                    if ( $('#game_no').val() == '1'){
+                      $('#btnPrev').addClass('disabled');
+                    } else if ( $('#game_no').val() == '{{ $league->size * ( $league->size-1) }}' ){
+                        $('#btnNext').addClass('disabled')
+                    } else {
+                        $('#btnNext').removeClass('disabled');
+                        $('#btnPrev').removeClass('disabled');
+                    }
+                });
+                $("#btnNext").click(function() {
+                    $("#game_no").data("ionRangeSlider").update({ from: parseInt($('#game_no').val())+1 });
+                    if ( $('#game_no').val() == '1'){
+                      $('#btnPrev').addClass('disabled');
+                    } else if ( $('#game_no').val() == '{{ $league->size * ( $league->size-1) }}' ){
+                        $('#btnNext').addClass('disabled')
+                    } else {
+                        $('#btnNext').removeClass('disabled');
+                        $('#btnPrev').removeClass('disabled');
+                    }
+
+                });                
 
             });
 

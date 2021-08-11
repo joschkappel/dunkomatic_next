@@ -10,6 +10,7 @@ return [
   'action.editdate' => 'Set Home Game Date and Time',
   'action.team.withdraw' => 'Withdraw Team',
   'action.team.add' => 'Inject Team',
+  'action.game_no' => 'Select the game number',
   'created.no' => 'No games created',
   'created.some' => ':total games created',
   'notstarted' => 'Competition not started',
