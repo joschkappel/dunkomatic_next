@@ -5,6 +5,7 @@
 /storage/*.key
 /vendor
 /storage/framework/views
+/storage/framework/sessions
 /tests/PerfTests/results
 
 !.env.dusk.git
