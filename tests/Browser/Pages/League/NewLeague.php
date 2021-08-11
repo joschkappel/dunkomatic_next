@@ -41,7 +41,9 @@ class NewLeague extends Page
     }
 
     public function create_league( Browser $browser, $code, $name ){
-      $browser->select2('.js-selSize','4er Run')
+      $browser->waitFor('.js-selSize',1)
+              ->select2('.js-selSize','4er Run')
+              ->waitForTextIn('.js-selSize', '4er Runde', 1)
               ->screenshot('Size selected')
               ->type('shortname',$code)
               ->type('name',$name)
