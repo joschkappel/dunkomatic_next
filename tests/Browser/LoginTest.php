@@ -7,7 +7,7 @@ use App\Models\Region;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
-use TestDatabaseSeeder;
+use Database\Seeders\TestDatabaseSeeder;
 
 class LoginTest extends DuskTestCase
 {

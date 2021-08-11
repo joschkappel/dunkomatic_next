@@ -11,7 +11,7 @@ use Tests\DuskTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Browser\Pages\Club\NewClub;
 use Tests\Browser\Pages\Club\EditClub;
-use TestDatabaseSeeder;
+use Database\Seeders\TestDatabaseSeeder;
 
 class ClubTest extends DuskTestCase
 {

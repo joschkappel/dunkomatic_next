@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\DuskTestCase;
 use Tests\Browser\Pages\League\NewLeague;
 use Tests\Browser\Pages\League\EditLeague;
-use TestDatabaseSeeder;
+use Database\Seeders\TestDatabaseSeeder;
 
 class LeagueTest extends DuskTestCase
 {
