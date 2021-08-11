@@ -20,7 +20,8 @@ class LeagueTest extends DuskTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->seed(TestDatabaseSeeder::class);
+        $this->artisan('db:seed', ['--class' => 'TestDatabaseSeeder']);
+        // $this->seed(TestDatabaseSeeder::class);
     }
 
     /**
