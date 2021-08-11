@@ -4,9 +4,9 @@ namespace Tests\Browser;
 
 use App\Models\Region;
 use App\Models\Club;
-use App\Models\Member;
+
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Laravel\Dusk\Browser;
+
 use Tests\DuskTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Browser\Pages\Club\NewClub;
