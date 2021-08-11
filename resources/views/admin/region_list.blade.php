@@ -42,7 +42,6 @@
           </div>
           <!-- /.card-body -->
         <!-- all modals here -->
-        @include('admin/includes/region_delete')
         <!-- all modals above -->
         </div>
       </div>
@@ -75,16 +74,6 @@
                         { data: 'leagues_count', name: 'leagues' },
                      ]
             });
-
-            $(document).on('click', '#deleteRegion', function () {
-              $('#region_id').val($(this).data('region-id'));
-              $('#region_name').html($(this).data('region-name'));
-              var url = "{{ route('region.destroy', ['region'=>':regionid:'])}}";
-              url = url.replace(':regionid:',$(this).data('region-id') );
-              $('#confirmDeleteRegion').attr('action', url);
-              $('#modalDeleteRegion').modal('show');
-           });
-
          });
 
 

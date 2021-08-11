@@ -6,7 +6,6 @@
 @extends('layouts.modal', ['modalId' => 'modalEditGame', 'modalFormId' => 'formGame', 'modalFormMethod' => 'PUT', 'stayOnSuccess' => true ])
 
 @section('modal_content')
-
                             <input type="hidden" name="gym_id" id="gym_id" />
                             <input type="hidden" name="club_id_home" id="club_id_home" />
                             <input type="hidden" name="team_id_home_old" id="team_id_home_old" />

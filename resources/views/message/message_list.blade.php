@@ -36,7 +36,7 @@
         </div>
         <!-- /.card -->
         <!-- all modals here -->
-        @include('message/includes/message_delete')
+        <x-confirm-deletion modalId="modalDeleteMessage" modalTitle="{{ __('message.title.delete') }}" modalConfirm="{{ __('message.confirm.delete') }}" deleteType="{{ trans_choice('message.message',1) }}" />
         <!-- all modals above -->
 
 
@@ -73,11 +73,10 @@
             });
 
           $(document).on('click', '#deleteMessage', function () {
-              $('#msg_id').val($(this).data('msg-id'));
-              $('#msg_title').html($(this).data('msg-title'));
+              $('#modalDeleteMessage_Instance').html($(this).data('msg-title'));
               var url = "{{ route('message.destroy', [ 'message'=>':messageid:'])}}"
               url = url.replace(':messageid:',$(this).data('msg-id') );
-              $('#confirmDeleteMessage').attr('action', url);
+              $('#modalDeleteMessage_Form').attr('action', url);
               $('#modalDeleteMessage').modal('show');
            });
 

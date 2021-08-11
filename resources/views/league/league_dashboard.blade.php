@@ -363,8 +363,8 @@
                 <!-- /.card -->
                 <!-- all modals here -->
                 @include('league/includes/assign_club')
-                @include('league/includes/league_delete')
-                @include('member/includes/member_delete')
+                <x-confirm-deletion modalId="modalDeleteLeague" modalTitle="{{ __('league.title.delete') }}" modalConfirm="{{ __('league.confirm.delete') }}" deleteType="{{ trans_choice('league.league',1) }}" />
+                <x-confirm-deletion modalId="modalDeleteMember" modalTitle="{{ __('role.title.delete') }}" modalConfirm="{{ __('role.confirm.delete') }}" deleteType="{{ __('role.member') }}" />                
                 @include('league/includes/withdraw_team')
                 @include('league/includes/inject_team')
                 @include('member/includes/membership_add')
@@ -418,16 +418,21 @@
                 });
 
                 $("button#assignClub").click(function() {
-                    var itemid = $(this).data("itemid");
                     $('#itemid').val($(this).data('itemid'));
+                    var url = "{{ route('league.assign-clubs', ['league'=>$league->id]) }}";
+                    $('#modalAssignClub_Form').attr('action', url);
                     $('#modalAssignClub').modal('show');
                 });
 
                 $("button#withdrawTeam").click(function() {
+                    var url = "{{ route('league.team.withdraw', ['league'=>$league->id]) }}";
+                    $('#modalWithdrawTeam_Form').attr('action', url);
                     $('#modalWithdrawTeam').modal('show');
                 });
 
                 $("button#injectTeam").click(function() {
+                    var url = "{{ route('league.team.inject', ['league'=>$league->id]) }}";
+                    $('#modalInjectTeam_Form').attr('action', url);
                     $('#modalInjectTeam').modal('show');
                 });
                 $("button#addMembership").click(function() {
@@ -435,7 +440,7 @@
                         "{{ route('membership.league.add', ['league' => ':leagueid:', 'member' => ':memberid:']) }}";
                     url = url.replace(':memberid:', $(this).data('member-id'));
                     url = url.replace(':leagueid:', $(this).data('league-id'));
-                    $('#addClubMembership').attr('action', url);
+                    $('#modalAddMembership_Form').attr('action', url);
                     $('#modalAddMembership').modal('show');
                 });
                 $("button#modMembership").click(function() {
@@ -443,24 +448,20 @@
                     url = url.replace(':membershipid:', $(this).data('membership-id'));
                     var url2 = "{{ route('membership.destroy', ['membership' => ':membershipid:']) }}";
                     url2 = url2.replace(':membershipid:', $(this).data('membership-id'));
+                    $('#hidDelUrl').val(url2);
                     $('#modmemfunction').val($(this).data('function'));
                     $('#modmememail').val($(this).data('email'));
                     $('#modmemrole').val($(this).data('role'));
-                    $('#frmModMembership').attr('action', url);
-                    $('#hidDelUrl').val(url2);
+                    $('#modalMembershipMod_Form').attr('action', url);
                     $('#modalMembershipMod').modal('show');
                 });
 
                 $("button#deleteMember").click(function() {
-                    $('#member_id').val($(this).data('member-id'));
-                    $('#unit_type').html('{{ trans_choice('league.league', 1) }}');
-                    $('#unit_shortname').html($(this).data('league-sname'));
-                    $('#role_name').html($(this).data('role-name'));
-                    $('#member_name').html($(this).data('member-name'));
+                    $('#modalDeleteMember_Instance').html($(this).data('member-name'));
                     var url =
                         "{{ route('membership.league.destroy', ['league' => $league, 'member' => ':member:']) }}";
                     url = url.replace(':member:', $(this).data('member-id'));
-                    $('#confirmDeleteMember').attr('action', url);
+                    $('#modalDeleteMember_Form').attr('action', url);
                     $('#modalDeleteMember').modal('show');
                 });
 
@@ -518,8 +519,11 @@
                     });
                 });
                 $("#deleteLeague").click(function() {
+                    $('#modalDeleteLeague_Info').html('{{ __('league.info.delete',['league'=>$league->shortname,'noteam'=>$league->state_count['registered'],'nomember'=>count($members)])  }}');
+                    $('#modalDeleteLeague_Instance').html( '{{ $league->name }}' );
+
                     var url = "{{ route('league.destroy', ['league' => $league]) }}";
-                    $('#confirmDeleteLeague').attr('action', url);
+                    $('#modalDeleteLeague_Form').attr('action', url);
                     $('#modalDeleteLeague').modal('show');
                 });
             });

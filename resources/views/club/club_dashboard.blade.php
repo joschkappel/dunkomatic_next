@@ -143,7 +143,7 @@
                                 <li class="list-group-item ">
                                     <button type="button" id="deleteMember" class="btn btn-outline-danger btn-sm"
                                         data-member-id="{{ $member->id }}" data-member-name="{{ $member->name }}"
-                                        data-club-sname="{{ $club->shortname }}" data-toggle="modal"
+                                        data-toggle="modal"
                                         data-target="#modalDeleteMember"><i class="fa fa-trash"></i></button>
                                     <a href="{{ route('member.edit', ['language' => app()->getLocale(), 'member' => $member]) }}"
                                         class=" px-2">{{ $member->name }} <i class="fas fa-arrow-circle-right"></i></a>
@@ -237,7 +237,7 @@
                                                 <tr>
                                                     <td>
                                                     @if ( ! ( ($registered_teams->contains($team->league_id)) and ($team->league->state->in([ App\Enums\LeagueState::Selection(), App\Enums\LeagueState::Scheduling(), App\Enums\LeagueState::Freeze(), App\Enums\LeagueState::Live() ])) ) ) 
-                                                        <button id="deleteTeam" data-team-id="{{ $team->id }}"
+                                                        <button id="deleteTeam" data-team-id="{{ $team->id }}" data-league-sname="@if( isset($team->league->shortname) ){{ $team->league->shortname }}@else{{ __('team.unassigned')}} @endif"
                                                             data-team-no="{{ $team->team_no }}" data-club-sname="{{ $club->shortname }}" type="button"
                                                             class="btn btn-outline-danger btn-sm "> <i class="fas fa-trash"></i>
                                                         </button>
@@ -389,13 +389,12 @@
 
                 <!-- all modals here -->
                 @include('club/includes/assign_league')
-                @include('club/includes/club_delete')
-                @include('member/includes/member_delete')
-                @include('team/includes/team_delete')
-                @include('club/gym/includes/gym_delete')
+                <x-confirm-deletion modalId="modalDeleteClub" modalTitle="{{ __('club.title.delete') }}" modalConfirm="{{ __('club.confirm.delete') }}" deleteType="{{ trans_choice('club.club',1) }}" />                
+                <x-confirm-deletion modalId="modalDeleteMember" modalTitle="{{ __('role.title.delete') }}" modalConfirm="{{ __('role.confirm.delete') }}" deleteType="{{ __('role.member') }}" />                
+                <x-confirm-deletion modalId="modalDeleteGym" modalTitle="{{ __('gym.title.delete') }}" modalConfirm="{{ __('gym.confirm.delete') }}" deleteType="{{ trans_choice('gym.gym',1) }}" />
+                <x-confirm-deletion modalId="modalDeleteTeam" modalTitle="{{ __('team.title.delete') }}" modalConfirm="{{ __('team.confirm.delete') }}" deleteType="{{ trans_choice('team.team',1) }}" />
                 @include('member/includes/membership_add')
                 @include('member/includes/membership_modify')
-                {{-- @include('member/includes/membership_club_modify') --}}
                 <!-- all modals above -->
             </div>
         </div>
@@ -419,7 +418,7 @@
                     "{{ route('membership.club.add', ['club' => ':clubid:', 'member' => ':memberid:']) }}";
                 url = url.replace(':memberid:', $(this).data('member-id'));
                 url = url.replace(':clubid:', $(this).data('club-id'));
-                $('#addClubMembership').attr('action', url);
+                $('#modalAddMembership_Form').attr('action', url);
                 $('#modalAddMembership').modal('show');
             });
             $("button#modMembership").click(function() {
@@ -427,16 +426,18 @@
                 url = url.replace(':membershipid:', $(this).data('membership-id'));
                 var url2 = "{{ route('membership.destroy', ['membership' => ':membershipid:']) }}";
                 url2 = url2.replace(':membershipid:', $(this).data('membership-id'));
+                $('#hidDelUrl').val(url2);
                 $('#modmemfunction').val($(this).data('function'));
                 $('#modmememail').val($(this).data('email'));
                 $('#modmemrole').val($(this).data('role'));
-                $('#frmModMembership').attr('action', url);
-                $('#hidDelUrl').val(url2);
+                $('#modalMembershipMod_Form').attr('action', url);
                 $('#modalMembershipMod').modal('show');
             });
             $("button#assignLeague").click(function() {
                 $('#team_id').val($(this).data('team-id'));
                 $('#club_id').val($(this).data('club-id'));
+                var url = "{{ route('team.assign-league') }}";
+                $('#modalAssignLeague_Form').attr('action', url);
                 $('#modalAssignLeague').modal('show');
             });
             $("button#deassignLeague").click(function() {
@@ -463,39 +464,37 @@
                 });
             });
             $("button#deleteMember").click(function() {
-                $('#member_id').val($(this).data('member-id'));
-                $('#unit_shortname').html($(this).data('club-sname'));
-                $('#unit_type').html('{{ trans_choice('club.club', 1) }}');
-                $('#role_name').html($(this).data('role-name'));
-                $('#member_name').html($(this).data('member-name'));
+                $('#modalDeleteMember_Instance').html($(this).data('member-name'));
                 var url =
                     "{{ route('membership.club.destroy', ['club' => $club, 'member' => ':member:']) }}";
                 url = url.replace(':member:', $(this).data('member-id'));
-                $('#confirmDeleteMember').attr('action', url);
+                $('#modalDeleteMember_Form').attr('action', url);
                 $('#modalDeleteMember').modal('show');
             });
             $("button#deleteTeam").click(function() {
-                $('#team_id').val($(this).data('team-id'));
-                $('#club_shortname').html($(this).data('club-sname'));
-                $('#league_shortname').html($(this).data('league-sname'));
-                $('#team_name').html($(this).data('club-sname') + $(this).data('team-no'));
+                if ($(this).data('league-sname') == ""){
+                    $('#modalDeleteTeam_Info').html('{{ trans_choice('league.league',1) .' '. __('team.unassigned')  }}');
+                } else {
+                    $('#modalDeleteTeam_Info').html( '{{ trans_choice('league.league',1) .' ' }}' + $(this).data('league-sname'));
+                } 
+                $('#modalDeleteTeam_Instance').html( $(this).data('club-sname') + $(this).data('team-no') );
                 var url = "{{ route('team.destroy', ['team' => ':team:']) }}";
                 url = url.replace(':team:', $(this).data('team-id'))
-                $('#confirmDeleteTeam').attr('action', url);
+                $('#modalDeleteTeam_Form').attr('action', url);
                 $('#modalDeleteTeam').modal('show');
             });
             $("button#deleteGym").click(function() {
-                $('#gym_id').val($(this).data('gym-id'));
-                $('#club_shortname').html($(this).data('club-sname'));
-                $('#gym_name').html($(this).data('gym-name'));
+                $('#modalDeleteGym_Instance').html($(this).data('gym-name'));
                 var url = "{{ route('gym.destroy', ['gym' => ':gymid:']) }}";
                 url = url.replace(':gymid:', $(this).data('gym-id'));
-                $('#confirmDeleteGym').attr('action', url);
+                $('#modalDeleteGym_Form').attr('action', url);
                 $('#modalDeleteGym').modal('show');
             });
             $("#deleteClub").click(function() {
+                $('#modalDeleteClub_Instance').html('{{ $club->name }}');
+                $('#modalDeleteClub_Info').html('{{ __('club.info.delete',['club'=>$club->shortname,'noteam'=>count($teams),'nomember'=>count($members),'nogym'=>count($gyms)]) }}');
                 var url = "{{ route('club.destroy', ['club' => $club]) }}";
-                $('#confirmDeleteClub').attr('action', url);
+                $('#modalDeleteClub_Form').attr('action', url);
                 $('#modalDeleteClub').modal('show');
             });
         });
