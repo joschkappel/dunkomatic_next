@@ -92,10 +92,10 @@
         <!-- /.card -->
 
     <!-- all modals here -->
-    @include('admin/includes/region_delete')    
+    <x-confirm-deletion modalId="modalDeleteRegion" modalTitle="{{ __('region.title.delete')}}" modalConfirm="{{ __('region.confirm.delete') }}" deleteType="{{ trans_choice('region.region',1) }}" />
     @include('member/includes/membership_add')
     @include('member/includes/membership_modify')
-    @include('member/includes/member_delete')
+    <x-confirm-deletion modalId="modalDeleteMember" modalTitle="{{ __('role.title.delete')}}" modalConfirm="{{ __('role.confirm.delete') }}" deleteType="{{ __('role.member') }}" />                
     <!-- all modals above -->
         </div>
     </div>
@@ -114,15 +114,16 @@
 <script>
   $(function() {
     $("#deleteRegion").click( function(){
+       $('#modalDeleteRegion_Instance').html('{{ $region->name }}');
        var url = "{{ route('region.destroy', ['region'=>$region])}}";
-       $('#confirmDeleteRegion').attr('action', url);
+       $('#modalDeleteRegion_Form').attr('action', url);
        $('#modalDeleteRegion').modal('show');
     });
     $("button#addMembership").click( function(){
        var url = "{{ route('membership.region.add', ['region'=>':regionid:', 'member'=>':memberid:'])}}";
        url = url.replace(':memberid:', $(this).data('member-id'));
        url = url.replace(':regionid:', $(this).data('region-id'));
-       $('#addRegionMembership').attr('action', url);
+       $('#modalAddMembership_Form').attr('action', url);
        $('#modalAddMembership').modal('show');
     });
     $("button#modMembership").click( function(){
@@ -130,22 +131,18 @@
        url = url.replace(':membershipid:', $(this).data('membership-id'));
        var url2 = "{{ route('membership.destroy', ['membership'=>':membershipid:'])}}";
        url2= url2.replace(':membershipid:', $(this).data('membership-id'));
+       $('#hidDelUrl').val( url2);
        $('#modmemfunction').val($(this).data('function'));
        $('#modmememail').val($(this).data('email'));
        $('#modmemrole').val($(this).data('role'));
-       $('#frmModMembership').attr('action', url);
-       $('#hidDelUrl').val( url2);
+       $('#modalMembershipMod_Form').attr('action', url);
        $('#modalMembershipMod').modal('show');
     }); 
     $("button#deleteMember").click( function(){
-       $('#member_id').val($(this).data('member-id'));
-       $('#unit_shortname').html($(this).data('region-sname'));
-       $('#unit_type').html('{{ trans_choice('region.region',1)}}');
-       $('#role_name').html($(this).data('role-name'));
-       $('#member_name').html($(this).data('member-name'));
+       $('#modalDeleteMember_Instance').html($(this).data('member-name'));
        var url = "{{ route('membership.region.destroy', ['region'=>$region, 'member'=>':member:']) }}";
        url = url.replace(':member:', $(this).data('member-id'));
-       $('#confirmDeleteMember').attr('action', url);
+       $('#modalDeleteMember_Form').attr('action', url);
        $('#modalDeleteMember').modal('show');
     });    
   });

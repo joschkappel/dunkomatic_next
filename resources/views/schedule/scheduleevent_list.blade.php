@@ -19,13 +19,13 @@
                 <!-- /.card-header -->
 
                 <div class="card-tools p-2">
-                    <button type="button" class="btn btn-info btn-sm mb-3" data-toggle="modal"
+                    <button type="button" id="btnCreateEvents" class="btn btn-info btn-sm mb-3" data-toggle="modal"
                         data-target="#modalCreateEvents"
                         {{ ($eventcount > 0) ? 'disabled' : '' }}>@lang('schedule.action.events.create')</button>
-                    <button type="button" class="btn btn-info btn-sm mb-3" data-toggle="modal"
+                    <button type="button" id="btnCloneEvents" class="btn btn-info btn-sm mb-3" data-toggle="modal"
                         data-target="#modalCloneEvents"
                         {{ ($eventcount > 0) ? 'disabled' : '' }}>@lang('schedule.action.events.clone')</button>
-                    <button type="button" class="btn btn-info btn-sm mb-3" data-toggle="modal"
+                    <button type="button" class="btn btn-info btn-sm mb-3" id="btnDeleteEvents" data-toggle="modal"
                         data-target="#modalDeleteEvents"
                         {{ ($eventcount == 0) ? 'disabled' : '' }}>@lang('schedule.action.events.delete')</button>
                 </div>
@@ -59,7 +59,7 @@
                 <!-- all modals here -->
                 @include('schedule/includes/create_events')
                 @include('schedule/includes/clone_events')
-                @include('schedule/includes/delete_events')
+             <x-confirm-deletion modalId="modalDeleteEvents" modalTitle="{{ __('schedule.title.event.delete') }}" modalConfirm="{{ __('schedule.confirm.event.delete') }}"  deleteType="{{ __('schedule.events') }}" />                
                 @include('schedule/includes/edit_event')
                 <!-- all modals above -->
     </div>
@@ -131,9 +131,29 @@
             minDate: startDate,
             maxDate: endDate,
         });
-        $('#editEventForm').attr('action', '/schedule_event/' + $(this).data('id'));
+        $('#modalEditEvent_Form').attr('action', '/schedule_event/' + $(this).data('id'));
         $('#modalEditEvent').modal('show');
     });
+
+    $(document).on('click', '#btnDeleteEvents', function () {
+        $('#modalDeleteEvents_Instance').html("{{ $schedule->name }}");
+        var url = "{{ route('schedule_event.list-destroy', ['schedule'=>$schedule] ) }}"
+        $('#modalDeleteEvents_Form').attr('action', url);
+        $('#modalDeleteEvents').modal('show');
+    });
+
+    $(document).on('click', '#btnCreateEvents', function () {
+        var url = "{{ route('schedule_event.store', ['schedule'=>$schedule]) }}"
+        $('#modalCreateEvents_Form').attr('action', url);
+        $('#modalCreateEvents').modal('show');
+    });    
+    $(document).on('click', '#btnCloneEvents', function () {
+        var url = "{{ route('schedule_event.clone', ['schedule'=>$schedule]) }}"
+        $('#modalCloneEvents_Form').attr('action', url);
+        $('#modalCloneEvents').modal('show');
+    });    
+
+
 </script>
 
 @stop

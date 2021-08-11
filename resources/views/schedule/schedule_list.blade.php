@@ -44,7 +44,7 @@
             </div>
             <!-- /.card-body -->
             <!-- all modals here -->
-            @include('schedule/includes/schedule_delete')
+            <x-confirm-deletion modalId="modalDeleteSchedule" modalTitle="{{ __('schedule.title.delete') }}" modalConfirm="{{ __('schedule.confirm.delete') }}" deleteType="{{ trans_choice('schedule.schedule',1) }}" />
             <!-- all modals above -->
         </div>
     </div>
@@ -110,12 +110,11 @@
         });
 
         $(document).on('click', '#deleteSchedule', function() {
-            $('#schedule_id').val($(this).data('schedule-id'));
-            $('#events').html($(this).data('events'));
-            $('#schedule_name').html($(this).data('schedule-name'));
+            $('#modalDeleteSchedule_Info').html($(this).data('events') + ' ' + '{{ __('schedule.events') }}');
+            $('#modalDeleteSchedule_Instance').html($(this).data('schedule-name'));
             var url = "{{ route('schedule.destroy', ['schedule' => ':scheduleid:']) }}";
             url = url.replace(':scheduleid:', $(this).data('schedule-id'));
-            $('#confirmDeleteSchedule').attr('action', url);
+            $('#modalDeleteSchedule_Form').attr('action', url);
             $('#modalDeleteSchedule').modal('show');
         });
     </script>

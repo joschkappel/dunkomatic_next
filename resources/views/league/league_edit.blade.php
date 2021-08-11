@@ -159,7 +159,7 @@
                 theme: 'bootstrap4',
                 allowClear: false,
                 minimumResultsForSearch: 5,
-                minimumInputLength: 4,
+                minimumInputLength: -1,
                 ajax: {
                     url: "{{ url('size/index') }}",
                     type: "get",

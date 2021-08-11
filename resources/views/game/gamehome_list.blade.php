@@ -1,6 +1,9 @@
 @extends('layouts.page')
 @section('plugins.Datatables', true)
 @section('plugins.DatatableButtons', true)
+@section('plugins.Moment', true)
+@section('plugins.TempusDominus', true)
+@section('plugins.Select2', true)
 
 @section('content')
 <div class="container-fluid">
