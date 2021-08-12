@@ -434,6 +434,8 @@ class LeagueController extends Controller
     $league->clubs()->detach();
     foreach ($league->teams as $t) {
       $t->league()->dissociate();
+      $t->league_char = null;
+      $t->league_no = null;
       $t->save();
     }
     $mships = $league->memberships()->get();
