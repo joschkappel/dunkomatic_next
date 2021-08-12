@@ -44,4 +44,5 @@ return [
   'event.unit.year' => 'Jahr|Jahre',
   'event.move' => 'Termin für Spieltag(e) #gamedayrange# um #unitcount# #unit# #direction# verschieben ?',
   'edit.size' => 'Zum Ändern der Anzahl Mannschaften bitte erst alle Termine löschen !',
+  'leagues' => 'Wird benutzt von Runde',
 ];

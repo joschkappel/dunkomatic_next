@@ -34,7 +34,7 @@
                                 <th>@lang('schedule.color')</th>
                                 <th>@lang('schedule.size')</th>
                                 <th>@lang('schedule.events')</th>
-                                <th>{{ __('Created at') }}</th>
+                                <th>{{ __('schedule.leagues') }}</th>
                                 <th>{{ __('Action') }}</th>
                             </tr>
                         </thead>
@@ -96,8 +96,8 @@
                         name: 'events'
                     },
                     {
-                        data: 'created_at',
-                        name: 'created_at'
+                        data: 'used_by_leagues',
+                        name: 'used_by_leagues'
                     },
                     {
                         data: 'action',

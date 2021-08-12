@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LeagueSize;
 use App\Models\Schedule;
 use App\Models\Region;
+use App\Models\League;
 
 use Illuminate\Http\Request;
 use Datatables;
@@ -132,11 +133,18 @@ class ScheduleController extends Controller
           ->addColumn('color', function($data){
               return '<spawn style="background-color:'.$data->eventcolor.'">'.$data->eventcolor.'</div>';
           })
+          ->addColumn('used_by_leagues', function($data){
+            return $data->leagues->pluck('shortname')->implode(', ');
+          })
           ->addColumn('events', function($data){
               if ($data->custom_events) {
                 return __('Custom');
               } else {
-                return '<a href="' . route('schedule_event.list', $data) .'">'.$data->events_count.' <i class="fas fa-arrow-circle-right"></i></a>';
+                if ( League::where('schedule_id',$data->id)->has('games')->count() == 0){
+                  return '<a href="' . route('schedule_event.list', $data) .'">'.$data->events_count.' <i class="fas fa-arrow-circle-right"></i></a>';
+                } else {
+                  return $data->events_count;
+                }                  
               }
           })
           ->rawColumns(['name','color','events','action'])
@@ -144,7 +152,7 @@ class ScheduleController extends Controller
                   return $user->created_at->format('d.m.Y H:i');
               })
           ->editColumn('name', function ($data) {
-              return '<a href="' . route('schedule.edit', ['language'=>Auth::user()->locale, 'schedule' =>$data->id]) .'">'.$data->name.' <i class="fas fa-arrow-circle-right"></i></a>';
+                return '<a href="' . route('schedule.edit', ['language'=>Auth::user()->locale, 'schedule' =>$data->id]) .'">'.$data->name.' <i class="fas fa-arrow-circle-right"></i></a>';
               })
           ->make(true);
     }
