@@ -153,7 +153,7 @@ class ClubGymController extends Controller
       $club_id = $gym->club_id;
 
       $data = $request->validate( [
-        'gym_no' => ['required',
+        'gym_no' => [  $gym->games()->exists() ? 'nullable' : 'required',
                         Rule::unique('gyms')->where(function ($query) use ($club_id, $gym_no) {
                             return $query->where('club_id', $club_id)
                                         ->where('gym_no', $gym_no);
@@ -164,7 +164,7 @@ class ClubGymController extends Controller
           'city' => 'required|max:40',
       ]);
 
-      $check = gym::where('id', $gym->id)->update($data);
+      $check = $gym->update($data);
       return redirect()->route('club.dashboard', ['language'=>app()->getLocale(), 'club' => $gym->club_id ]);
 
     }

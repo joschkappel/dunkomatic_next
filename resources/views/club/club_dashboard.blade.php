@@ -323,7 +323,9 @@
                     <!-- /.card-header -->
                     <div class="card-body">
                         @foreach ($gyms as $gym)
-                            <p><button type="button" id="deleteGym" class="btn btn-outline-danger btn-sm"
+                            <p>
+                                <button type="button" id="deleteGym" class="btn btn-outline-danger btn-sm"
+                                    @if ($gym->games()->exists()) disabled @endif
                                     data-gym-id="{{ $gym->id }}"
                                     data-gym-name="{{ $gym->gym_no }} - {{ $gym->name }}"
                                     data-club-sname="{{ $club->shortname }}" data-toggle="modal"
