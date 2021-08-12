@@ -634,7 +634,11 @@ class LeagueController extends Controller
         $ccnt = 1;
         $t = $data->teams()->with('club')->get()->groupBy('club.shortname');
         foreach ($data->clubs->groupBy('shortname') as $k => $c){
-          $diff = $c->count() > $t->get($k)->count(); 
+          if ($t->get($k) == null){
+            $diff = $c->count();
+          } else {
+            $diff = $c->count() > $t->get($k)->count(); 
+          }
           if (  $diff > 0 ){
             for ($i=0; $i < $diff; $i++){
               $btnlist .= '<button disabled  type="button" class="btn btn-outline-success btn-sm">'.$k.'</button> ';

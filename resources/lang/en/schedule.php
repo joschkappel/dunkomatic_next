@@ -44,4 +44,5 @@ return [
   'event.unit.year' => 'Year|Years',
   'event.move' => 'Move date for game day(s) #gamedayrange# by #unitcount# #unit# #direction# ?',
   'edit.size' => 'To modify the number of teams please delete all events first !',
+  'leagues' => 'In use by league',
 ];
