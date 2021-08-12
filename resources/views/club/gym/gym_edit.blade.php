@@ -26,7 +26,7 @@
                             <label class="col-sm-4 col-form-label" for='selGymno'>@lang('gym.no')</label>
                             <div class="col-sm-6">
                             <div class="input-group mb-3">
-                              <select class="js-sel-gymno js-states form-control select2  @error('gym_no') is-invalid @enderror" name="gym_no" id='gym_no'>
+                              <select class="js-sel-gymno js-states form-control select2  @error('gym_no') is-invalid @enderror" name="gym_no" id='gym_no'  @if ($gym->games()->exists()) disabled @endif >
                                 <option value="{{$gym->gym_no}}">{{$gym->gym_no}}</option>
                               @foreach ( array_diff($allowed_gymno, $gym->club->gyms->pluck('gym_no')->toarray()) as $gymno )
                                 <option value="{{$gymno}}">{{$gymno}}</option>
