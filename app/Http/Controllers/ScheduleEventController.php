@@ -241,7 +241,7 @@ class ScheduleEventController extends Controller
             'direction' => 'required|in:+,-',
             'unit' => 'required|in:DAY,WEEK,MONTH,YEAR',
             'unitRange' => 'required|integer|between:1,12',
-            'gamedayRange' => array( 'required', new SliderRange(1, 10) ),
+            'gamedayRange' => array( 'required', new SliderRange(1, $schedule->events->count() ) ),
           ]);
         Log::debug($data);
 
