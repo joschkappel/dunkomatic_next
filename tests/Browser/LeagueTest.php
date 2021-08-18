@@ -40,7 +40,7 @@ class LeagueTest extends DuskTestCase
         Schedule::factory()->count(3)->create();
         $schedule = Schedule::where('region_id',$r->id)->first();
         $this->assertDatabaseHas('schedules', ['id' => $schedule->id]);
-        $this->assertDatabaseHas('league_sizes', ['description' => '4er Runde']);
+        $this->assertDatabaseHas('league_sizes', ['description' => '4 Teams']);
 
         $this->browse(function ($browser) use ($u, $league_code, $league_code_new, $league_name, $league_name_new) {
           $browser->loginAs($u)
