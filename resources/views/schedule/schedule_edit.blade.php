@@ -3,6 +3,7 @@
 @section('plugins.Select2', true)
 @section('plugins.ICheck', true)
 @section('plugins.Colorpicker', true)
+@section('plugins.RangeSlider',true)
 
 @section('content')
     <div class="container-fluid">
@@ -53,8 +54,7 @@
                                 <div class="col-sm-6">
                                     @if ($schedule->events()->count() == 0)
                                     <div class="input-group mb-3">
-                                        <select class='js-sizes js-states form-control select2 @error(' league_size_id')
-                                            is-invalid @enderror' id='selSize' name="league_size_id">
+                                        <select class='js-sizes js-states form-control select2 @error('league_size_id') is-invalid @enderror' id='selSize' name="league_size_id">
                                             <option
                                                 value="{{ old('league_size_id') ? old('league_size_id') : $schedule->league_size_id }}"
                                                 selected="selected">
@@ -67,6 +67,16 @@
                                         </div>
                                     @else
                                         <span class='text-info'>@lang('schedule.edit.size')</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="form-group row ">
+                                <label for="iterationRange" class="col-sm-4 col-form-label">@lang('schedule.iterations')</label>
+                                <div class="col-sm-6">
+                                    @if ($schedule->events()->count() == 0)
+                                    <input id="iterationRange" type="text" name="iterations" value="">
+                                    @else
+                                        <span class='text-info'>@lang('schedule.edit.iterations')</span>
                                     @endif
                                 </div>
                             </div>
@@ -107,6 +117,28 @@
 
     <script>
         $(function() {
+            var custom_values_1 = [1,2,3];
+            var custom_values_2 = [1];
+            var values_p = ["{{ __('schedule.single') }}", "{{__('schedule.double')}}", "{{__('schedule.triple')}}"];
+
+            @if ($schedule->custom_events) 
+            var values = custom_values_2; 
+            @else 
+            var values = custom_values_1; 
+            @endif
+
+            $('#iterationRange').ionRangeSlider({
+                skin: "big",
+                grid    : false,
+                step    :1 ,
+                postfix: '-'+'{{ trans_choice('league.league',1 ) }}',
+                values: values,
+                prettify: function (n) {
+                    var ind = custom_values_1.indexOf(n);
+                    return values_p[ind];
+                },                
+            });
+
             $('#cp2').colorpicker();
             $(".js-sizes").select2({
                 placeholder: "@lang('schedule.action.size.select')...",
@@ -132,13 +164,27 @@
                 if (data.id == {{ App\Models\LeagueSize::UNDEFINED }}) {
                     // console.log('UNDEFIND');
                     $('#custom_events').prop("checked", true);
+                    $("#iterationRange").data("ionRangeSlider").update({ values: custom_values_2, });
                 } else {
                     $('#custom_events').prop("checked", false);
+                    $("#iterationRange").data("ionRangeSlider").update({ values: custom_values_1, });
                 }
             });
             $('#custom_events').on('change', function(event) {
                 $('#selSize').val(null).trigger('change')
+                if ( $('#custom_events').prop('checked')){
+                    $("#iterationRange").data("ionRangeSlider").update({ values: custom_values_2, });
+                } else {
+                    $("#iterationRange").data("ionRangeSlider").update({ values: custom_values_1, });
+                }
             });
+
+            
+            @if (old('iterations') != '')
+                $("#iterationRange").data("ionRangeSlider").update({ from: values.indexOf( {{old('iterations') }}) });
+            @else
+                $("#iterationRange").data("ionRangeSlider").update({ from: values.indexOf({{ $schedule->iterations }}) });
+            @endif
         });
     </script>
 @endsection

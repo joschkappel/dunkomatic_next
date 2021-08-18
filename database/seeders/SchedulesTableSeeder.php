@@ -16,7 +16,8 @@ class SchedulesTableSeeder extends Seeder
     public function run()
     {
 
-      $sizes = [ '4'=>2,'6'=>3,'8'=>4,'10'=>5,'12'=>6,'14'=>7,'2*4'=>9,'3*4'=>11,'2*6'=>10,'16'=>8 ];
+      $sizes = [ '4'=>2,'6'=>3,'8'=>4,'10'=>5,'12'=>6,'14'=>7,'2*4'=>2,'3*4'=>2,'2*6'=>3,'16'=>8 ];
+      $iterations = [ '4'=>1,'6'=>1,'8'=>1,'10'=>1,'12'=>1,'14'=>1,'2*4'=>2,'3*4'=>3,'2*6'=>2,'16'=>1 ];
 
       // create custom schedule entries, 1 per region
       $regions = Region::all();
@@ -51,6 +52,7 @@ class SchedulesTableSeeder extends Seeder
           }
 
           $newsize = $sizes[strval($size)];
+          $newiter = $iterations[strval($size)];
           $custom_events = false;
 
           DB::connection('dunknxt')->table('schedules')->insert([
@@ -58,6 +60,7 @@ class SchedulesTableSeeder extends Seeder
             'name'   => $schedule->group_name,
             'region_id' => Region::where('code',$region)->first()->id,
             'league_size_id' => $newsize,
+            'iterations' => $newiter,
             'custom_events' => $custom_events,
             'created_at' => now()
           ]);

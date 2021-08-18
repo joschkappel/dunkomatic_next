@@ -21,11 +21,11 @@ class TeamsTableSeeder extends Seeder
                             $query->select(DB::raw(1))
                                   ->from('club')
                                   ->whereRaw('team.club_id = club.club_id');})
-                        ->whereExists(function ($query) {
+/*                         ->whereExists(function ($query) {
                             $query->select(DB::raw(1))
                                   ->from('league')
                                   ->whereRaw('team.league_id = league.league_id AND league.active="1"');})
-                        ->get();
+ */                        ->get();
 
       foreach ($old_team as $team) {
         if ($team->changeable === 'Y'){
@@ -97,27 +97,29 @@ class TeamsTableSeeder extends Seeder
         ]);
 
         $l = League::find($team->league_id);
-        if ($registered){
-          $l->registration_closed_at = now();
-          $l->assignment_closed_at = now();
-          $l->state = LeagueState::Freeze();
-          if ($charpicked){
-            $l->selection_closed_at = now();
-          } 
-        } else {
-            $l->state = LeagueState::Assignment();
-        }
-        if ($l->games->count() > 0){
-          if ( ($l->games_notime->count() == 0) and ($l->games_noshow->count() == 0) ){
-            $l->state = LeagueState::Live();
-            $l->scheduling_closed_at = now();
-            $l->generated_at = now();
+        if (isset($l)){
+          if ($registered){
+            $l->registration_closed_at = now();
+            $l->assignment_closed_at = now();
+            $l->state = LeagueState::Freeze();
+            if ($charpicked){
+              $l->selection_closed_at = now();
+            } 
           } else {
-            $l->state = LeagueState::Scheduling();
-            $l->generated_at = now();
+              $l->state = LeagueState::Assignment();
           }
-        }
-        $l->save();
+          if ($l->games->count() > 0){
+            if ( ($l->games_notime->count() == 0) and ($l->games_noshow->count() == 0) ){
+              $l->state = LeagueState::Live();
+              $l->scheduling_closed_at = now();
+              $l->generated_at = now();
+            } else {
+              $l->state = LeagueState::Scheduling();
+              $l->generated_at = now();
+            }
+          }
+          $l->save();
+          }
         }
 
     }

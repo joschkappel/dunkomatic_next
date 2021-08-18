@@ -180,7 +180,7 @@ class ScheduleEventController extends Controller
 
         // check if 2* or 3* size)
         $size = $schedule->league_size->size;
-        $repeat = $schedule->league_size->iterations;
+        $repeat = $schedule->iterations;
 
         $gamedays = ( ($size - 1) * 2 * $repeat);
         $startdate = CarbonImmutable::parse($data['startdate']);
