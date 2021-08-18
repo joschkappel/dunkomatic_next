@@ -82,11 +82,12 @@ class ScheduleController extends Controller
     public function sb_size(Schedule $schedule)
     {
 
-      $schedules = session('cur_region')->schedules()
-                                        ->where('id','!=',$schedule->id)
-                                        ->where('league_size_id', $schedule->league_size_id)
-                                        ->orderBy('name','ASC')
-                                        ->get();
+      // $schedules = session('cur_region')->schedules()
+      $schedules = Schedule::where('id','!=',$schedule->id)
+                             ->where('league_size_id', $schedule->league_size_id)
+                             ->where('iterations', $schedule->iterations)
+                             ->orderBy('name','ASC')
+                             ->get();
 
       Log::debug('got schedules '.count($schedules));
       $response = array();
@@ -154,6 +155,17 @@ class ScheduleController extends Controller
           ->editColumn('name', function ($data) {
                 return '<a href="' . route('schedule.edit', ['language'=>Auth::user()->locale, 'schedule' =>$data->id]) .'">'.$data->name.' <i class="fas fa-arrow-circle-right"></i></a>';
               })
+          ->editColumn('iterations', function ($data) {
+            if ($data->iterations == 1){
+              return __('schedule.single');
+            } elseif ($data->iterations == 2){
+              return __('schedule.double');
+            } elseif ($data->iterations == 3){              
+              return __('schedule.triple');
+            } else {
+              return "????";
+            }
+          })              
           ->make(true);
     }
 
@@ -226,6 +238,7 @@ class ScheduleController extends Controller
     public function update(Request $request, Schedule $schedule)
     {
       Log::info('validating '.$schedule->id);
+      Log::debug(print_r($request->all(), true));
 
       $data = $request->validate( Schedule::$updateRules );
 

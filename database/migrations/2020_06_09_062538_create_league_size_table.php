@@ -16,9 +16,8 @@ class CreateLeagueSizeTable extends Migration
         Schema::create('league_sizes', function (Blueprint $table) {
             $table->unsignedInteger('id')->primary();
             $table->unsignedInteger('size');
-            $table->unsignedInteger('iterations');
             $table->string('description',40);
-            $table->unique(['size','iterations']);
+            $table->unique(['size']);
         });
     }
 

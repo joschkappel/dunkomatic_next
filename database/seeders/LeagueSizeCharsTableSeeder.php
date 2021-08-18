@@ -20,21 +20,6 @@ class LeagueSizeCharsTableSeeder extends Seeder
         ['league_size_id' => 2, 'team_char' => '3', 'created_at' => now() ],
         ['league_size_id' => 2, 'team_char' => '4', 'created_at' => now() ]
       ]);
-      // 2*4er
-      DB::table('league_size_chars')->insert([
-        ['league_size_id' => 9, 'team_char' => '1', 'created_at' => now() ],
-        ['league_size_id' => 9, 'team_char' => '2', 'created_at' => now() ],
-        ['league_size_id' => 9, 'team_char' => '3', 'created_at' => now() ],
-        ['league_size_id' => 9, 'team_char' => '4', 'created_at' => now() ]
-      ]);
-      // 3*4er
-      DB::table('league_size_chars')->insert([
-        ['league_size_id' => 11, 'team_char' => '1', 'created_at' => now() ],
-        ['league_size_id' => 11, 'team_char' => '2', 'created_at' => now() ],
-        ['league_size_id' => 11, 'team_char' => '3', 'created_at' => now() ],
-        ['league_size_id' => 11, 'team_char' => '4', 'created_at' => now() ]
-      ]);
-
       // 6er
       DB::table('league_size_chars')->insert([
         ['league_size_id' => 3, 'team_char' => '1', 'created_at' => now() ],
@@ -43,15 +28,6 @@ class LeagueSizeCharsTableSeeder extends Seeder
         ['league_size_id' => 3, 'team_char' => '4', 'created_at' => now() ],
         ['league_size_id' => 3, 'team_char' => '5', 'created_at' => now() ],
         ['league_size_id' => 3, 'team_char' => '6', 'created_at' => now() ]
-      ]);
-      // 2*6er
-      DB::table('league_size_chars')->insert([
-        ['league_size_id' => 10, 'team_char' => '1', 'created_at' => now() ],
-        ['league_size_id' => 10, 'team_char' => '2', 'created_at' => now() ],
-        ['league_size_id' => 10, 'team_char' => '3', 'created_at' => now() ],
-        ['league_size_id' => 10, 'team_char' => '4', 'created_at' => now() ],
-        ['league_size_id' => 10, 'team_char' => '5', 'created_at' => now() ],
-        ['league_size_id' => 10, 'team_char' => '6', 'created_at' => now() ]
       ]);
 
       // 8er

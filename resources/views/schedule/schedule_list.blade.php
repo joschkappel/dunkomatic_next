@@ -33,6 +33,7 @@
                                 <th>Eventcolor</th>
                                 <th>@lang('schedule.color')</th>
                                 <th>@lang('schedule.size')</th>
+                                <th>@lang('schedule.iterations')</th>
                                 <th>@lang('schedule.events')</th>
                                 <th>{{ __('schedule.leagues') }}</th>
                                 <th>{{ __('Action') }}</th>
@@ -90,6 +91,10 @@
                     {
                         data: 'league_size.description',
                         name: 'description'
+                    },
+                    {
+                        data: 'iterations',
+                        name: 'iterations'
                     },
                     {
                         data: 'events',

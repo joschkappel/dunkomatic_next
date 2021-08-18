@@ -31,6 +31,6 @@ class LeagueSizeControllerTest extends TestCase
 
        //$response->dump();
        $response->assertStatus(200)
-                ->assertJsonFragment([["id"=>4,"text"=>"8er Runde"]]);
+                ->assertJsonFragment([["id"=>4,"text"=>"8 Teams"]]);
       }
 }

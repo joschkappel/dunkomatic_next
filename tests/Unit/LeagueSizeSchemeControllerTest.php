@@ -45,7 +45,7 @@ class LeagueSizeSchemeControllerTest extends TestCase
      */
     public function list_piv()
     {
-      $size = LeagueSize::orderBy('size','DESC')->first();
+      $size = LeagueSize::where('id', '!=', LeagueSize::UNDEFINED )->orderBy('size','DESC')->first();
       $response = $this->authenticated( )
                         ->get(route('scheme.list_piv', ['size'=>$size]));
 

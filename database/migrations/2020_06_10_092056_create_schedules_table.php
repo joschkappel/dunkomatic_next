@@ -21,6 +21,7 @@ class CreateSchedulesTable extends Migration
             $table->string('eventcolor')->default('green');
             $table->unsignedInteger('league_size_id')->nullable();
             $table->foreign('league_size_id')->references('id')->on('league_sizes');
+            $table->unsignedInteger('iterations')->default(1);
             $table->timestamps();
             $table->boolean('custom_events')->default(false);
         });

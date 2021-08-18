@@ -3,6 +3,7 @@
 @section('plugins.Select2', true)
 @section('plugins.ICheck', true)
 @section('plugins.Colorpicker', true)
+@section('plugins.RangeSlider',true)
 
 @section('content')
     <div class="container-fluid">
@@ -78,6 +79,12 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="form-group row ">
+                                <label for="iterationRange" class="col-sm-4 col-form-label">@lang('schedule.iterations')</label>
+                                <div class="col-sm-6">
+                                    <input id="iterationRange" type="text" name="iterations" value="">
+                                </div>
+                            </div>                            
                         </div>
                         <div class="card-footer">
                             <div class="btn-toolbar justify-content-between" role="toolbar"
@@ -100,6 +107,26 @@
 
     <script>
         $(function() {
+            var custom_values_1 = [1,2,3];
+            var custom_values_2 = [1];
+            var values_p = ["{{ __('schedule.single') }}", "{{__('schedule.double')}}", "{{__('schedule.triple')}}"];
+
+            var values = custom_values_1; 
+
+            $('#iterationRange').ionRangeSlider({
+                skin: "big",
+                grid    : false,
+                step    :1 ,
+                postfix: '-'+'{{ trans_choice('league.league',1 ) }}',
+                values: values,
+                prettify: function (n) {
+                    var ind = custom_values_1.indexOf(n);
+                    return values_p[ind];
+                },                
+            });
+
+
+
             $('#cp2').colorpicker();
             $(".js-selSize").select2({
                 placeholder: "@lang('schedule.action.size.select')...",
@@ -124,16 +151,28 @@
                 if (data.id == {{ App\Models\LeagueSize::UNDEFINED }}) {
                     // console.log('UNDEFIND');
                     $('#custom_events').prop("checked", true);
+                    $("#iterationRange").data("ionRangeSlider").update({ values: custom_values_2, });
                 } else {
                     $('#custom_events').prop("checked", false);
+                    $("#iterationRange").data("ionRangeSlider").update({ values: custom_values_1, });
                 }
             });
             $('#custom_events').on('change', function(event) {
                 if (this.checked) {
                     //console.log('CHECKED');
                     $('#selSize').val(null).trigger('change')
+                    if ( $('#custom_events').prop('checked')){
+                        $("#iterationRange").data("ionRangeSlider").update({ values: custom_values_2, });
+                    } else {
+                        $("#iterationRange").data("ionRangeSlider").update({ values: custom_values_1, });
+                    }
+
                 }
             });
+
+            @if (old('iterations') != '')
+                $("#iterationRange").data("ionRangeSlider").update({ from: values.indexOf( {{old('iterations') }}) });
+            @endif            
 
         });
     </script>

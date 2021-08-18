@@ -26,6 +26,7 @@ class ScheduleFactory extends Factory
         return [
             'name' => $this->faker->words(2,true),
             'league_size_id' => 2,
+            'iterations' => 1, 
             'eventcolor' => $this->faker->hexColor(),
             'region_id' => Region::where('code','HBVDA')->first()->id
         ];
@@ -36,6 +37,7 @@ class ScheduleFactory extends Factory
             return [
                 'custom_events' => true,
                 'league_size_id' => 1,
+                'iterations' => 1,
             ];
         });
     }

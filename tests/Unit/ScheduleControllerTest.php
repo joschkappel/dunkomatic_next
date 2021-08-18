@@ -89,6 +89,7 @@ class ScheduleControllerTest extends TestCase
                           'region_id' => $this->region->id,
                           'eventcolor' => $this->faker->hexColor(),
                           'league_size_id' => 2,
+                          'iterations' => 1
                       ]);
       $response->assertSessionHasNoErrors()
                ->assertRedirect(route('schedule.index', ['language'=>'de']));
@@ -157,6 +158,7 @@ class ScheduleControllerTest extends TestCase
                           'name' => 'testschedule2',
                           'eventcolor' => $schedule->eventcolor,
                           'league_size_id' => 2,
+                          'iterations' => 1
                         ]);
 
       $schedule->refresh();
