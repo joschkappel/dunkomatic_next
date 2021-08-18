@@ -70,9 +70,9 @@
                             </div>
                         </div>
                         <div class="card-footer">
-                            <div class="btn-toolbar justify-content-between" role="toolbar"
+                            <div class="btn-toolbar justify-content-end" role="toolbar"
                                 aria-label="Toolbar with button groups">
-                                <a class="btn btn-outline-dark " href="{{ route('club.index', ['language' => app()->getLocale()]) }}">{{ __('Cancel') }}</a>
+                                <a class="btn btn-outline-primary mr-2" href="{{ route('club.index', ['language' => app()->getLocale()]) }}">{{ __('Cancel') }}</a>
                                 <button type="submit" class="btn btn-primary">{{ __('Submit') }}</button>
                             </div>
                         </div>

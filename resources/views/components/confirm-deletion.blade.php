@@ -5,8 +5,8 @@
             <!--Content-->
             <div class="modal-content">
                 <!--Header-->
-                <div class="modal-header bg-light">
-                    <h5 class="modal-title">{{ $modalTitle }}</h5>
+                <div class="modal-header">
+                    <h3 class="col-12 modal-title text-center">{{ $modalTitle }}</h3>
                     <button type="button" class="close" id="frmClose" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true" class="white-text">&times;</span>
                     </button>
@@ -33,9 +33,9 @@
                         </div>
 
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary"
-                            data-dismiss="modal">{{ __('Close') }}</button>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-outline-primary"
+                            data-dismiss="modal">{{ __('Cancel') }}</button>
                         <button type="submit" class="btn btn-primary">{{ __('Submit') }}</button>
                     </div>
                 </form>

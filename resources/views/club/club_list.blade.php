@@ -6,14 +6,21 @@
 
     <div class="row">
         <div class="col-12">
-            <div class="card card-secondary">
-                <h4 class="card-header">@lang('club.title.list', ['region' => session('cur_region')->name ])</h4>
-                <!-- /.card-header -->
-
-                <div class="card-tools p-2">
-                    <a href="{{ route('club.create', app()->getLocale()) }}" class="text-center btn btn-success mb-3"><i
-                            class="fas fa-plus-circle pr-2"></i>@lang('club.action.create')</a>
+            <div class="card card-light">
+                <div class="card-header container-fluid">
+                    <div class="row justify-content-between">
+                        <div class="col-md-10">
+                            <h4 class="w-75 p-3">@lang('club.title.list', ['region' => session('cur_region')->name ])</h4>
+                        </div>
+                        <div class="col-md-2 float-right">
+                            <div class="card-tools pt-3">
+                                <a href="{{ route('club.create', app()->getLocale()) }}" class="text-center btn btn-success text-white"><i
+                                        class="fas fa-plus-circle pr-2"></i>@lang('club.action.create')</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                <!-- /.card-header -->
                 <div class="card-body">
 
                     <table width="100%" class="table table-hover table-bordered table-sm" id="table">

@@ -5,8 +5,8 @@
         <!--Content-->
         <div class="modal-content">
             <!--Header-->
-            <div class="modal-header bg-primary">
-                <h5 class="modal-title" id="modalTitle">Titel</h5>
+            <div class="col-12 modal-header text-center">
+                <h3 class="modal-title" id="modalTitle">Titel</h3>
                 <button type="button" class="close" id="frmClose" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true" class="white-text">&times;</span>
                 </button>
@@ -27,8 +27,8 @@
                 <div class="card-footer">
                     <div class="btn-toolbar justify-content-between" role="toolbar"
                         aria-label="Toolbar with button groups">
-                        <button type="button" class="btn btn-danger" id="frmClose" data-dismiss="modal">{{ __('Close')}}</button>
-                        <button type="button" class="btn btn-success" id="frmSubmit">{{ __('Submit') }}</button>
+                        <button type="button" class="btn btn-outline-primary" id="frmClose" data-dismiss="modal">{{ __('Cancel')}}</button>
+                        <button type="button" class="btn btn-primary" id="frmSubmit">{{ __('Submit') }}</button>
                     </div>
                 </div>
 
