@@ -1,44 +1,27 @@
 @extends('layouts.page')
 
 @section('content')
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Users List to Approve</div>
-
-                    <div class="card-body">
-
-                        @if (session('message'))
-                            <div class="alert alert-success" role="alert">
-                                {{ session('message') }}
-                            </div>
-                        @endif
-
-                        <table width="100%" class="table table-striped table-border">
-                            <tr>
-                                <th>User name</th>
-                                <th>Email</th>
-                                <th>Registered at</th>
-                                <th></th>
-                            </tr>
-                            @forelse ($users as $auser)
-                                <tr>
-                                    <td>{{ $auser->name }}</td>
-                                    <td>{{ $auser->email }}</td>
-                                    <td>{{ $auser->created_at }}</td>
-                                    <td><a href="{{ route('admin.user.edit', ['language' => app()->getLocale(), 'user' => $auser->id ]) }}"
-                                           class="btn btn-primary btn-sm">Approve</a></td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4">No users found.</td>
-                                </tr>
-                            @endforelse
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<x-card-list cardTitle="{{ __('auth.title.approve') }}">
+    <th>{{ __('auth.user') }}</th>
+    <th>{{__('auth.email')}}</th>
+    <th>{{ __('auth.registered_at') }}</th>
+    <th>{{__('Action')}}</th>
+    <x-slot name="tbodySlot">
+        <tbody>
+        @forelse ($users as $auser)
+            <tr>
+                <td>{{ $auser->name }}</td>
+                <td>{{ $auser->email }}</td>
+                <td>{{ $auser->created_at }}</td>
+                <td><a href="{{ route('admin.user.edit', ['language' => app()->getLocale(), 'user' => $auser->id ]) }}"
+                        class="btn btn-primary btn-sm">{{ __('auth.action.approve') }}</a></td>
+            </tr>
+        @empty
+            <tr>
+                <td colspan="4">{{__('auth.no_users_found')}}</td>
+            </tr>
+        @endforelse
+        </tbody>
+    </x-slot>
+</x-card-list>
 @endsection

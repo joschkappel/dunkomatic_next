@@ -150,7 +150,8 @@ class ClubGameController extends Controller
         $path = $request->gfile->store('homegames');
         $hgImport = new HomeGamesImport($club->id);
         try {
-          $hgImport->import($path, 'local', \Maatwebsite\Excel\Excel::XLSX);
+          // $hgImport->import($path, 'local', \Maatwebsite\Excel\Excel::XLSX);
+          $hgImport->import($path, 'local' );
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
           $failures = $e->failures();
           $ebag = array();
@@ -163,8 +164,8 @@ class ClubGameController extends Controller
         }
         Storage::delete($path);
 
-        //return redirect()->back();
-        return redirect()->route('club.edit.homegame', ['language'=>$language, 'club' => $club]);
+        return redirect()->back()->with(['status'=>'All data imported']);
+        //return redirect()->route('club.list.homegame', ['language'=>$language, 'club' => $club]);
     }
 
 

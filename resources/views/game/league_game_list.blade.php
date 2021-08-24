@@ -5,46 +5,19 @@
 
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-            <!-- left column -->
-            <div class="col-12">
-                <!-- general form elements -->
-                <div class="card card-info">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            @lang('league.title.game', ['league'=>$league->shortname])</h3>
-                    </div>
-                    <!-- /.card-header -->
-                    <div class="card-body">
-                        <table width="100%" class="table table-hover table-bordered table-sm" id="table">
-                            <thead class="thead-light">
-                                <tr>
+<x-card-list cardTitle="{{ __('league.title.game', ['league'=>$league->shortname]) }}">
                                     <th>id</th>
-                                    <th>
-                                        @lang('game.game_no')</th>
-                                    <th>
-                                        @lang('game.game_date')</th>
-                                    <th>
-                                        @lang('game.gym_no')</th>
+                                    <th>@lang('game.game_no')</th>
+                                    <th>@lang('game.game_date')</th>
+                                    <th>@lang('game.game_time')</th>
+                                    <th>@lang('game.team_home')</th>
+                                    <th>@lang('game.team_guest')</th>
+                                    <th>@lang('game.gym_no')</th>
                                     <th>gym_id</th>
-                                    <th>
-                                        @lang('game.game_time')</th>
-                                    <th>
-                                        @lang('game.team_home')</th>
-                                    <th>
-                                        @lang('game.team_guest')</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- all modals here -->
-        @include('game/includes/edit_game')
-        <!-- all modals above -->
-    </div>
+</x-card-list>
+<!-- all modals here -->
+@include('game/includes/edit_game')
+<!-- all modals above -->
 @endsection
 
 @section('js')
@@ -53,6 +26,10 @@
 
     <script>
         $(function() {
+            $('#goBack').click(function(e){
+                history.back();
+            }); 
+
             $('#table').DataTable({
                 processing: true,
                 serverSide: false,
@@ -108,19 +85,6 @@
                         name: 'game_date.ts'
                     },
                     {
-                        data: {
-                            _: 'gym_no.default',
-                            export: 'gym_no.default',
-                            display: 'gym_no.display'
-                        },
-                        name: 'gym_no.default'
-                    },
-                    {
-                        data: 'gym_id',
-                        name: 'gym_id',
-                        visible: false
-                    },
-                    {
                         data: 'game_time',
                         name: 'game_time'
                     },
@@ -132,6 +96,19 @@
                         data: 'team_guest',
                         name: 'team_guest'
                     },
+                    {
+                        data: {
+                            _: 'gym_no.default',
+                            export: 'gym_no.default',
+                            display: 'gym_no.display'
+                        },
+                        name: 'gym_no.default'
+                    },
+                    {
+                        data: 'gym_id',
+                        name: 'gym_id',
+                        visible: false
+                    }
                 ]
             });
 

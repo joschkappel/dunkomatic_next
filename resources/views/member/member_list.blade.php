@@ -3,46 +3,25 @@
 @section('plugins.Datatables', true)
 
 @section('content')
-
-            <div class="row">
-              <div class="col-12">
-                <div class="card">
-                  <div class="card-header">
-                    <h3 class="card-title">@lang('role.member.title.list', ['region'=>session('cur_region')->name ])</h3>
-                  </div>
-                  <!-- /.card-header -->
-          <div class="card-body">
-            @csrf
-
-         <table width="100%" class="table table-hover table-bordered table-sm" id="table">
-            <thead class="thead-light">
-               <tr>
-                  <th>Id</th>
-                  <th>Name</th>
-                  <th>{{ trans_choice('club.club',2)}}</th>
-                  <th>{{ trans_choice('league.league',2)}}</th>
-                  <th>{{ __('auth.user.account') }}</th>
-                  <th>{{__('Created at')}}</th>
-                  <th>{{__('Updated at')}}</th>
-               </tr>
-            </thead>
-         </table>
-          </div>
-
-        </div>
-        <!-- /.card-body -->
-        <!-- all modals here -->
-
-        <!-- all modals above -->
-      </div>
-    </div>
-@stop
+<x-card-list cardTitle="{{ __('role.member.title.list', ['region'=>session('cur_region')->name ]) }}">
+    <th>Id</th>
+    <th>Name</th>
+    <th>{{ trans_choice('club.club',2)}}</th>
+    <th>{{ trans_choice('league.league',2)}}</th>
+    <th>{{ __('auth.user.account') }}</th>
+    <th>{{__('Created at')}}</th>
+    <th>{{__('Updated at')}}</th>
+</x-card-list>
+@endsection
 
 @section('js')
 
 <script>
          $(function() {
-               $('#table').DataTable({
+              $('#goBack').click(function(e){
+                  history.back();
+              });            
+              $('#table').DataTable({
                  processing: true,
                  serverSide: true,
                  responsive: true,
@@ -66,4 +45,4 @@
             });
 
 </script>
-@stop
+@endsection

@@ -44,4 +44,8 @@ return [
     'user'                       => 'User',
     'member_found'              => 'A member with this email already exists: ',
     'user.account'              => 'Useraccount',
+    'title.approve'             => 'Approve or Reject Users',
+    'action.approve'             => 'Approve / Reject',
+    'registered_at'             => 'Registered at',
+    'no_users_found'            => 'No users found',
 ];

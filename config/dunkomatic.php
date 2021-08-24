@@ -431,5 +431,26 @@ return [
               ],
           ],
       ],
+      'FileUpload' => [
+        'name' => 'FileUpload',
+        'active' => true,
+        'files' => [
+            [
+                'type' => 'js',
+                'asset' => true,
+                'location' => 'vendor/kartik-v/bootstrap-fileinput/js/fileinput.min.js',
+            ],
+            [
+                'type' => 'css',
+                'asset' => true,
+                'location' => 'vendor/kartik-v/bootstrap-fileinput/css/fileinput.min.css',
+            ],
+            [
+                'type' => 'js',
+                'asset' => true,
+                'location' => 'vendor/kartik-v/bootstrap-fileinput/themes/fas/theme.min.js',
+            ],
+        ],
+    ],      
   ],
 ];

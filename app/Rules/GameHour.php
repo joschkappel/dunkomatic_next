@@ -28,7 +28,11 @@ class GameHour implements Rule
     public function passes($attribute, $value)
     {
       $hour_val = explode(":",$value);
-      return in_array($hour_val[0], $this->ok_hours);
+      if (count($hour_val) != 2){
+        return false;
+      } else {
+        return in_array($hour_val[0], $this->ok_hours);
+      }
     }
 
     /**

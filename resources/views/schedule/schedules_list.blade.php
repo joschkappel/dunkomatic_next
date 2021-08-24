@@ -7,8 +7,10 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-10">
-                <div class="card card-secondary">
-                    <h4 class="card-header">@lang('schedule.title.compare', ['region' => session('cur_region')->name ])</h4>
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title font-weight-bold">@lang('schedule.title.compare', ['region' => session('cur_region')->name ])</h3>
+                    </div>
                     <div class="card-body">
                         <!-- For defining autocomplete -->
                         <label class="col-sm-2 col-form-label"
@@ -24,6 +26,13 @@
 
 
                     </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer">
+                        <div class="btn-toolbar justify-content-end" role="toolbar" aria-label="Toolbar with button groups">
+                            <button type="button" class="btn btn-outline-primary mr-2" id="goBack" data-dismiss="modal">{{ __('Cancel')}}</button>
+                        </div>
+                    </div>
+                    <!-- /.card-footer -->                    
                 </div>
             </div>
         </div>
@@ -33,7 +42,9 @@
 @section('js')
     <script>
         $(function() {
-
+            $('#goBack').click(function(e){
+                history.back();
+            });
             $(".js-size-multiple").select2({
                 placeholder: "@lang('schedule.action.select')...",
                 theme: 'bootstrap4',

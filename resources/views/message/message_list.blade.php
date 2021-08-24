@@ -3,19 +3,7 @@
 @section('plugins.Datatables', true)
 
 @section('content')
-            <div class="row">
-              <div class="col-12">
-                <div class="card">
-                  <div class="card-header bg-secondary">
-                    <h3 class="card-title">@lang('message.title.list')</h3>
-                  </div>
-                  <!-- /.card-header -->
-          <div class="card-body">
-            @csrf
-
-         <table width="100%" class="table table-hover table-bordered table-sm" id="table">
-            <thead class="thead-light">
-               <tr>
+<x-card-list cardTitle="{{ __('message.title.list') }}" cardNewAction="{{ route('message.create', app()->getLocale() ) }}" cardNewTitle="{{ __('message.action.create') }}">
                   <th>Id</th>
                   <th>@lang('message.action.send')</th>
                   <th>@lang('message.title')</th>
@@ -24,31 +12,18 @@
                   <th>@lang('message.sent_at')</th>
                   <th>{{__('Updated at')}}</th>
                   <th>{{__('Action')}}</th>
-               </tr>
-            </thead>
-         </table>
-          </div>
-          <!-- /.card-body -->
-          <div class="card-footer">
-            <a href="{{ route('message.create', app()->getLocale() ) }}" class="text-center btn btn-success mb-3"><i class="fas fa-plus-circle"></i> @lang('message.action.create')</a>
-          </div>
-          <!-- /.card-footer -->
-        </div>
-        <!-- /.card -->
-        <!-- all modals here -->
-        <x-confirm-deletion modalId="modalDeleteMessage" modalTitle="{{ __('message.title.delete') }}" modalConfirm="{{ __('message.confirm.delete') }}" deleteType="{{ trans_choice('message.message',1) }}" />
-        <!-- all modals above -->
+</x-card-list>
 
-
-      </div>
-    </div>
-@stop
+<x-confirm-deletion modalId="modalDeleteMessage" modalTitle="{{ __('message.title.delete') }}" modalConfirm="{{ __('message.confirm.delete') }}" deleteType="{{ trans_choice('message.message',1) }}" />
+@endsection
 
 @section('js')
-
 <script>
          $(function() {
-               $('#table').DataTable({
+              $('#goBack').click(function(e){
+                history.back();
+              });   
+              $('#table').DataTable({
                  processing: true,
                  serverSide: true,
                  responsive: true,
@@ -102,4 +77,4 @@
 
 
 </script>
-@stop
+@endsection

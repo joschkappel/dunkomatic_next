@@ -1,4 +1,5 @@
 @extends('layouts.page')
+
 @section('plugins.Datatables', true)
 @section('plugins.DatatableButtons', true)
 @section('plugins.Moment', true)
@@ -6,41 +7,21 @@
 @section('plugins.Select2', true)
 
 @section('content')
-<div class="container-fluid">
-    <div class="row">
-        <!-- left column -->
-        <div class="col-12">
-            <!-- general form elements -->
-            <div class="card card-info">
-                <div class="card-header">
-                    <h3 class="card-title">@lang('club.title.gamehome.edit', ['club'=>$club->shortname])</h3>
-                </div>
-                <!-- /.card-header -->
-                    <div class="card-body">
-                      <table width="100%" class="table table-hover table-bordered table-sm" id="table">
-                         <thead class="thead-light">
-                            <tr>
-                               <th>id</th>
-                               <th>@lang('game.game_no')</th>
-                               <th>@lang('game.game_date')</th>
-                               <th>@lang('game.gym_no')</th>
-                               <th>gym_id</th>
-                               <th>@lang('game.game_time')</th>
-                               <th class="text-center">@lang('game.overlap')</th>
-                               <th>{{ trans_choice('league.league',1)}}</th>
-                               <th>@lang('game.team_home')</th>
-                               <th>@lang('game.team_guest')</th>
-                            </tr>
-                         </thead>
-                      </table>
-                    </div>
-            </div>
-        </div>
-    </div>
-    <!-- all modals here -->
-    @include('game/includes/edit_gamedate')
-    <!-- all modals above -->
-</div>
+<x-card-list cardTitle="{{ __('club.title.gamehome.edit', ['club'=>$club->shortname]) }}">
+  <th>id</th>
+  <th>{{ __('game.game_no')}}</th>
+  <th>{{ __('game.game_date')}}</th>
+  <th>{{ __('game.game_time') }}</th>
+  <th>{{ trans_choice('league.league',1) }}</th>
+  <th>{{ __('game.team_home') }}</th>
+  <th>{{ __('game.team_guest') }}</th>
+  <th>{{ __('game.gym_no') }}</th>
+  <th>gym_id</th>
+  <th class="text-center">{{ __('game.overlap') }}</th>
+</x-card-list>
+<!-- all modals here -->
+@include('game/includes/edit_gamedate')
+<!-- all modals above -->
 @endsection
 
 @section('js')
@@ -49,6 +30,9 @@
 
 <script>
 $(function() {
+    $('#goBack').click(function(e){
+      history.back();
+    }); 
     $.fn.dataTable.ext.buttons.import = {
         text: '{{__('game.excel.import')}}',
         action: function ( e, dt, node, config ) {
@@ -97,17 +81,17 @@ $(function() {
                     display: 'game_date.display',
                     sort: 'game_date.ts'
                   }, name: 'game_date.ts' },
+                 { data: 'game_time', name: 'game_time' },
+                 { data: 'league.shortname', name: 'league.shortname' },
+                 { data: 'team_home', name: 'team_home'},
+                 { data: 'team_guest', name: 'team_guest'},
                  { data: {
                     _: 'gym_no.default',
                     export: 'gym_no.default',
                     display: 'gym_no.display'
                   }, name: 'gym_no.default' },
                  { data: 'gym_id', name: 'gym_id', visible: false },
-                 { data: 'game_time', name: 'game_time' },
-                 { data: 'duplicate', name: 'duplicate' },
-                 { data: 'league.shortname', name: 'league.shortname'  },
-                 { data: 'team_home', name: 'team_home'},
-                 { data: 'team_guest', name: 'team_guest'},
+                 { data: 'duplicate', name: 'duplicate' }
               ]
     });
 

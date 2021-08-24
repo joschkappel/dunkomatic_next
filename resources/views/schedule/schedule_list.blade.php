@@ -1,60 +1,31 @@
 @extends('layouts.page')
 
-@section('content_header')
-    @if (Session::has('success'))
-        <div class="alert alert-success">
-            {{ Session::get('success') }}
-        </div>
-    @endif
-@stop
-
 @section('plugins.Datatables', true)
+
 @section('content')
+<x-card-list cardTitle="{{ __('schedule.title.list', ['region'=>session('cur_region')->name ]) }}" cardNewAction="{{ route('schedule.create', app()->getLocale()) }}" cardNewTitle="{{ __('schedule.action.create') }}">
+    <th>Id</th>
+    <th>Name</th>
+    <th>Eventcolor</th>
+    <th>@lang('schedule.color')</th>
+    <th>@lang('schedule.size')</th>
+    <th>@lang('schedule.iterations')</th>
+    <th>@lang('schedule.events')</th>
+    <th>{{ __('schedule.leagues') }}</th>
+    <th>{{ __('Action') }}</th>
+</x-card-list>
 
-    <div class="row">
-        <div class="col-12">
-            <div class="card card-secondary">
-                <h4 class="card-header">@lang('schedule.title.list', ['region'=>session('cur_region')->name ])</h4>
-                <!-- /.card-header -->
+<x-confirm-deletion modalId="modalDeleteSchedule" modalTitle="{{ __('schedule.title.delete') }}" modalConfirm="{{ __('schedule.confirm.delete') }}" deleteType="{{ trans_choice('schedule.schedule',1) }}" />
 
-                <div class="card-tools p-2">
-                    <a href="{{ route('schedule.create', app()->getLocale()) }}"
-                        class="text-center btn btn-success btn-sm mb-3"><i
-                            class="fas fa-plus-circle pr-2"></i>@lang('schedule.action.create')</a>
-                </div>
-                <div class="card-body">
-                    @csrf
-
-                    <table width="100%" class="table table-hover table-bordered table-sm" id="table">
-                        <thead class="thead-light">
-                            <tr>
-                                <th>Id</th>
-                                <th>Name</th>
-                                <th>Eventcolor</th>
-                                <th>@lang('schedule.color')</th>
-                                <th>@lang('schedule.size')</th>
-                                <th>@lang('schedule.iterations')</th>
-                                <th>@lang('schedule.events')</th>
-                                <th>{{ __('schedule.leagues') }}</th>
-                                <th>{{ __('Action') }}</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
-
-            </div>
-            <!-- /.card-body -->
-            <!-- all modals here -->
-            <x-confirm-deletion modalId="modalDeleteSchedule" modalTitle="{{ __('schedule.title.delete') }}" modalConfirm="{{ __('schedule.confirm.delete') }}" deleteType="{{ trans_choice('schedule.schedule',1) }}" />
-            <!-- all modals above -->
-        </div>
-    </div>
-@stop
+@endsection
 
 @section('js')
 
     <script>
         $(function() {
+            $('#goBack').click(function(e){
+                history.back();
+            });             
             $('#table').DataTable({
                 processing: true,
                 serverSide: true,
@@ -123,4 +94,4 @@
             $('#modalDeleteSchedule').modal('show');
         });
     </script>
-@stop
+@endsection

@@ -5,24 +5,7 @@
 @section('plugins.TempusDominus', true)
 
 @section('content')
-<div class="container-fluid">
-    <div class="row">
-        <!-- left column -->
-        <div class="col-md-6">
-            <!-- general form elements -->
-            <div class="card card-info">
-                <div class="card-header">
-                    <h3 class="card-title">@lang('message.title.new', ['region' => session('cur_region')->name ])</h3>
-                </div>
-                <!-- /.card-header -->
-                <form class="form-horizontal" action="{{ route('message.store',['region'=>session('cur_region')->id]) }}" method="post">
-                    <div class="card-body">
-                        @csrf
-                        @if ($errors->any())
-                        <div class="alert alert-danger" role="alert">
-                            @lang('Please fix the following errors')
-                        </div>
-                        @endif
+<x-card-form cardTitle="{{ __('message.title.new', ['region' => session('cur_region')->name ]) }}" formAction="{{ route('message.store',['region'=>session('cur_region')->id]) }}">
                         <input type="hidden" class="form-control" id="author" name="author" value="{{ Auth::user()->id }}">
                         <div class="form-group row">
                             <label for="title" class="col-sm-4 col-form-label">@lang('message.title')</label>
@@ -104,23 +87,17 @@
                               </div>
                             </div>
                         </div>
-                    <div class="card-footer">
-                        <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-                            <button type="submit" class="btn btn-primary">{{__('Submit')}}</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
+</x-card-form>
 @endsection
 
 @push('js')
 
   <script>
       $(function() {
+        $('#frmClose').click(function(e){
+            history.back();
+        });
+                    
         $('#summernote').summernote({
           lang: @if (app()->getLocale() == 'de') 'de-DE' @else 'en-US'  @endif,
           placeholder: 'Edit your message...',

@@ -1,26 +1,8 @@
 @extends('layouts.page')
 
 @section('content')
-<div class="container-fluid">
-    <div class="row">
-        <!-- left column -->
-        <div class="col-md-6">
-            <!-- general form elements -->
-            <div class="card card-info">
-    <div class="card-header">
-      <h3 class="card-title">@lang('role.title.edit', ['member'=> $member->name ])</h3>
-    </div>
-    <!-- /.card-header -->
-      <div class="card-body">
-          <form id="editMember" class="form-horizontal" action="{{ route('member.update',['member'=>$member]) }}" method="POST">
-              @csrf
-              @method('PUT')
+<x-card-form cardTitle="{{ __('role.title.edit', ['member'=>$member->name]) }}" formAction="{{ route('member.update',['member' => $member]) }}" formMethod="PUT">
               <input type="hidden" id="backto" name="backto" value={{$backto}}>
-              @if ($errors->err_member->any())
-              <div class="alert alert-danger" role="alert">
-                 @lang('Please fix the following errors')
-              </div>
-              @endif
               <div class="form-group row">
                   <div class="col-sm-6">
                       <input type="text" class="form-control @error('firstname') is-invalid @enderror"
@@ -103,23 +85,15 @@
                       @enderror
                   </div>
               </div>
-              <!--/.Content-->
-              <button type="submit" class="btn btn-info">{{__('Submit')}}</button>
-          </form>
-      </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection
-
-@section('css')
-
+</x-card-form>
 @endsection
 
 @section('js')
 <script>
+        $(document).ready(function(){
+            $('#frmClose').click(function(e){
+                history.back();
+            })
+        });
 </script>
-
-
-@stop
+@endsection

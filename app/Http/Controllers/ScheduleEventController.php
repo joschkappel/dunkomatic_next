@@ -149,16 +149,17 @@ class ScheduleEventController extends Controller
 
         $eventlist = array();
         foreach( $data as $event){
-          if ( $event->full_weekend ){
-            $end = Carbon::parse($event->game_date);
-            if ( $end->dayOfWeek == 6 ){
+          $end = Carbon::parse($event->game_date)->addDays(1);
+          $start = Carbon::parse($event->game_date)->addDays(1);
+
+          if ( $event->full_weekend ){  
+          //  if ( $end->dayOfWeek == 6 ){
               $end = $end->addDays(2);
-            }
-          } else {
-            $end = $event->game_date;
+           // }
           }
+
           $title = '( '.$event->game_day.' ) '.$event->schedule->name;
-          $eventlist[] = array( "title" => $title, "start" => $event->game_date, "end" => $end, "allDay" => true, "color" => $event->schedule->eventcolor );
+          $eventlist[] = array( "title" => $title, "start" => $start, "end" => $end, "allDay" => true, "color" => $event->schedule->eventcolor );
         }
         Log::info('event list with '.count($eventlist));
 
