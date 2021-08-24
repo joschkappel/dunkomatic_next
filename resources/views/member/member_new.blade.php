@@ -3,167 +3,143 @@
 @section('plugins.Select2', true)
 
 @section('content')
-<div class="container-fluid">
-    <div class="row">
-        <!-- left column -->
-        <div class="col-md-6">
-            <!-- general form elements -->
-            <div class="card card-info">
-                <div class="card-header">
-                  @if ( $entity_type == 'App\Models\Club' )
-                    <h3 class="card-title">@lang('role.title.new', ['unittype'=> trans_choice('club.club',1), 'unitname' => $entity->shortname ])</h3>
-                  @elseif ( $entity_type == 'App\Models\League' )
-                    <h3 class="card-title">@lang('role.title.new', ['unittype'=> trans_choice('league.league',1), 'unitname' => $entity->shortname ])</h3>
-                  @elseif ( $entity_type == 'App\Models\Region' )
-                    <h3 class="card-title">@lang('role.title.new', ['unittype'=> trans_choice('region.region',1), 'unitname' => $entity->code ])</h3>
-                  @endif
-                </div>
-                <!-- /.card-header -->
-                    <div class="card-body">
-                      <form id="newMembership" class="form-horizontal" action="{{ route('member.store') }}" method="POST">
-                        @method('POST')
-                        @csrf
-                        <input type="hidden" id="entity_type" name="entity_type" value="{{ $entity_type }}">
-                        <input type="hidden" id="entity_id" name="entity_id" value="{{ $entity->id }}">
-                        <input type="hidden" id="member_id" name="member_id" value="">
-                        @if ($errors->any())
-                        <div class="alert alert-danger" role="alert">
-                           @lang('Please fix the following errors')
-                        </div>
-                        @endif
-                        @if (session('member'))
-                            <div class="alert alert-success">
-                              New Member created: {{ session('member')->name }}
-                            </div>
-                        @endif
-                        <div class="form-group row">
-                          <div class="col-sm-10">
-                          <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                            <button type="button" id="btnSelectMember" class="btn btn-secondary">@lang('role.member.action.select')</button>
-                            <button type="button" id="btnClear" class="btn btn-secondary">@lang('Clear')</button>
-                          </div>
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control @error('firstname') is-invalid @enderror"
-                                  id="firstname" name="firstname" placeholder="@lang('role.firstname')" value="{{ old('firstname') }}"></input>
-                                @error('firstname')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control @error('lastname') is-invalid @enderror"
-                                  id="lastname" name="lastname" placeholder="@lang('role.lastname')" value="{{ old('lastname') }}"></input>
-                                @error('lastname')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control @error('street') is-invalid @enderror"
-                                  id="street" name="street" placeholder="@lang('role.street')" value="{{ old('street')}}"></input>
-                                @error('street')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control @error('zipcode') is-invalid @enderror"
-                                  id="zipcode" name="zipcode" placeholder="@lang('role.zipcode')" value="{{ old('zipcode') }}"></input>
-                                @error('zipcode')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control @error('city') is-invalid @enderror"
-                                  id="city" name="city" placeholder="@lang('role.city')" value="{{old('city') }}"></input>
-                                @error('city')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control @error('mobile') is-invalid @enderror"
-                                  id="mobile" name="mobile" placeholder="@lang('role.mobile')" value="{{ old('mobile') }}"></input>
-                                @error('mobile')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control @error('phone') is-invalid @enderror"
-                                  id="phone" name="phone" placeholder="@lang('role.phone')" value="{{ old('phone') }}"></input>
-                                @error('phone')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+@php 
+  if ($entity_type == 'App\Models\Club'){ 
+    $title = __('role.title.new', ['unittype'=> trans_choice('club.club',1), 'unitname' => $entity->shortname ]);
+  } elseif ($entity_type == 'App\Models\League'){
+    $title = __('role.title.new', ['unittype'=> trans_choice('league.league',1), 'unitname' => $entity->shortname ]);
+  } elseif ($entity_type == 'App\Models\Region'){
+    $title = __('role.title.new', ['unittype'=> trans_choice('region.region',1), 'unitname' => $entity->code ]);
+  } 
+@endphp
 
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control @error('email1') is-invalid @enderror"
-                                  id="email1" name="email1" placeholder="@lang('role.email1')" value="{{ old('email1') }}"></input>
-                                @error('email1')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control @error('email2') is-invalid @enderror"
-                                  id="email2" name="email2" placeholder="@lang('role.email2')" value="{{ old('email2') }}"></input>
-                                @error('email2')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control @error('fax') is-invalid @enderror"
-                                  id="fax" name="fax" placeholder="@lang('role.fax')" value="{{ old('fax') }}"></input>
-                                @error('fax')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-
-                        <div class="form-group row">
-                          <div class="col-sm-6">
-                          <div class="input-group mb-3">
-                            <select class="js-sel-role js-states form-control select2  @error('role_id') is-invalid @enderror" name="role_id" id='role_id'></select>
-                            @error('role_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            </div>
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                          <div class="col-sm-6">
-                              <input type="text" class="form-control @error('function') is-invalid @enderror" id="function" name="function" placeholder="@lang('role.function')" value="{{ old('function') }}">
-                              @error('function')
-                              <div class="invalid-feedback">{{ $message }}</div>
-                              @enderror
-                          </div>
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control @error('email') is-invalid @enderror"
-                                  id="email" name="email" placeholder="@lang('role.email1')" value="{{ old('email') }}"></input>
-                                @error('email')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>                        
-
-                        <button type="submit" class="btn btn-info">{{__('Submit')}}</button>
-                      </form>
-                    </div>
-            </div>
-              </div>
-        @include('member.includes.member_select')
+<x-card-form :cardTitle="$title" formAction="{{ route('member.store') }}">
+    <input type="hidden" id="entity_type" name="entity_type" value="{{ $entity_type }}">
+    <input type="hidden" id="entity_id" name="entity_id" value="{{ $entity->id }}">
+    <input type="hidden" id="member_id" name="member_id" value="">
+    @if (session('member'))
+        <div class="alert alert-success">
+          {{ __('member.confirm.created') }}: {{ session('member')->name }}
+        </div>
+    @endif
+    <div class="form-group row">
+      <div class="col-sm-10">
+      <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+        <button type="button" id="btnSelectMember" class="btn btn-secondary">@lang('role.member.action.select')</button>
+        <button type="button" id="btnClear" class="btn btn-secondary">@lang('Clear')</button>
+      </div>
+      </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-6">
+            <input type="text" class="form-control @error('firstname') is-invalid @enderror"
+              id="firstname" name="firstname" placeholder="@lang('role.firstname')" value="{{ old('firstname') }}"></input>
+            @error('firstname')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="col-sm-6">
+            <input type="text" class="form-control @error('lastname') is-invalid @enderror"
+              id="lastname" name="lastname" placeholder="@lang('role.lastname')" value="{{ old('lastname') }}"></input>
+            @error('lastname')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
         </div>
     </div>
-</div>
+    <div class="form-group row">
+        <div class="col-sm-6">
+            <input type="text" class="form-control @error('street') is-invalid @enderror"
+              id="street" name="street" placeholder="@lang('role.street')" value="{{ old('street')}}"></input>
+            @error('street')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-6">
+            <input type="text" class="form-control @error('zipcode') is-invalid @enderror"
+              id="zipcode" name="zipcode" placeholder="@lang('role.zipcode')" value="{{ old('zipcode') }}"></input>
+            @error('zipcode')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="col-sm-6">
+            <input type="text" class="form-control @error('city') is-invalid @enderror"
+              id="city" name="city" placeholder="@lang('role.city')" value="{{old('city') }}"></input>
+            @error('city')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-6">
+            <input type="text" class="form-control @error('mobile') is-invalid @enderror"
+              id="mobile" name="mobile" placeholder="@lang('role.mobile')" value="{{ old('mobile') }}"></input>
+            @error('mobile')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="col-sm-6">
+            <input type="text" class="form-control @error('phone') is-invalid @enderror"
+              id="phone" name="phone" placeholder="@lang('role.phone')" value="{{ old('phone') }}"></input>
+            @error('phone')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-6">
+            <input type="text" class="form-control @error('email1') is-invalid @enderror"
+              id="email1" name="email1" placeholder="@lang('role.email1')" value="{{ old('email1') }}"></input>
+            @error('email1')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="col-sm-6">
+            <input type="text" class="form-control @error('email2') is-invalid @enderror"
+              id="email2" name="email2" placeholder="@lang('role.email2')" value="{{ old('email2') }}"></input>
+            @error('email2')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-6">
+            <input type="text" class="form-control @error('fax') is-invalid @enderror"
+              id="fax" name="fax" placeholder="@lang('role.fax')" value="{{ old('fax') }}"></input>
+            @error('fax')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-6">
+      <div class="input-group mb-3">
+        <select class="js-sel-role js-states form-control select2  @error('role_id') is-invalid @enderror" name="role_id" id='role_id'></select>
+        @error('role_id')
+        <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-6">
+          <input type="text" class="form-control @error('function') is-invalid @enderror" id="function" name="function" placeholder="@lang('role.function')" value="{{ old('function') }}">
+          @error('function')
+          <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+      </div>
+        <div class="col-sm-6">
+            <input type="text" class="form-control @error('email') is-invalid @enderror"
+              id="email" name="email" placeholder="@lang('role.email1')" value="{{ old('email') }}"></input>
+            @error('email')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+    </div>
+</x-card-form>
+@include('member.includes.member_select')
 @endsection
 
 @section('js')
@@ -186,6 +162,10 @@
       @if ($errors->err_member->any())
       $("#createMember").collapse("toggle");
       @endif
+      $('#frmClose').click(function(e){
+            history.back();
+      });
+
 
       @if (session('member'))
        show_member( {{ session('member')->id }},

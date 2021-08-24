@@ -25,7 +25,7 @@ class HomeGamesImport implements ToCollection, WithStartRow, WithValidation
           foreach ($rows as $row){
 
             $t = Game::find($row[0]);
-            //Log::debug(print_r($row[0],true));
+            // Log::debug(print_r($row[0],true));
           // 'id' => $row[0],
           // 'game_date' => $row[2],
           // 'gym_no' => $row[3],
@@ -42,8 +42,8 @@ class HomeGamesImport implements ToCollection, WithStartRow, WithValidation
           '0' => ['required','integer','exists:games,id'],
           '1' => ['required','integer'],
           '2' => ['nullable', 'date'],
-          '4' => ['required','date_format:'.__('game.gametime_format')],
-          '3' => ['required','integer','between:1,9']
+          '3' => ['required','date_format:'.__('game.gametime_format')],
+          '7' => ['required','integer','between:1,9']
         ];
     }
     /**
@@ -51,10 +51,10 @@ class HomeGamesImport implements ToCollection, WithStartRow, WithValidation
      */
     public function customValidationAttributes()
     {
-        return ['3' => __('game.gym_no'),
+        return ['7' => __('game.gym_no'),
                 '0' => 'Id',
                 '1' => __('game.game_no'),
                 '2' => __('game.game_date'),
-                '4' => __('game.game_time')];
+                '3' => __('game.game_time')];
     }
 }

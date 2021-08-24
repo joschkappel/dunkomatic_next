@@ -1,4 +1,5 @@
 @extends('layouts.page')
+
 @section('plugins.Select2', true)
 @section('plugins.Datatables', true)
 @section('plugins.Toastr', true)
@@ -7,7 +8,8 @@
     <div class="container-fluid">
         <div class="row ">
             <div class="col-sm ">
-                <div class="small-box bg-gray">
+                <!-- small card LEAGUE -->
+                <div class="small-box bg-primary">
                     <div class="inner">
                         <div class="row">
                             <input type="hidden" id="entitytype" value="App\Models\League">
@@ -114,20 +116,11 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-6 pd-2">
-
                 <!-- card CLUB TEAM ASSIGNMENT -->
                 <div class="card card-outline card-dark " id="clubsCard">
                     <div class="card-header">
-                        <h4 class="card-title"><i
-                                class="fas fa-basketball-ball pr-2"></i>{{ $league->state_count['size'] }}
-                            {{ trans_choice('team.team', 2) }}:
-                            <span
-                                class="badge badge-pill badge-info mr-2">{{ $league->state_count['assigned'] }}</span>@lang('league.state.assigned')
-                            -
-                            <span class="badge badge-pill badge-info mr-2">{{ $league->state_count['registered'] }}</span>
-                            @lang('league.state.registered') -
-                            <span
-                                class="badge badge-pill badge-info mr-2">{{ $league->state_count['charspicked'] }}</span>@lang('league.state.selected')
+                        <h4 class="card-title pt-2"><i class="fas fa-basketball-ball fa-lg"></i> {{ trans_choice('team.team', 2) }} 
+                            <span class="badge badge-pill badge-info">{{ $league->state_count['size'] }}</span>
                         </h4>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -235,33 +228,35 @@
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer">
-                        @if ($league->state->is(App\Enums\LeagueState::Assignment()))
-                            <button type="button" class="btn btn-outline-primary" id="changeState"
-                                data-action="{{ App\Enums\LeagueStateChange::CloseAssignment() }}"><i
-                                    class="fas fa-lock"></i> Close Assignment
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-primary float-right" id="injectTeam" @if ($league->state_count['registered'] == $league->size) disabled @endif><i class="fas fa-plus"></i> @lang('game.action.team.add')
                             </button>
-                        @endif
-                        <button type="button" class="btn btn-outline-secondary" id="injectTeam" @if ($league->state_count['registered'] == $league->size) disabled @endif><i class="fa fa-trash"></i> @lang('game.action.team.add')
-                        </button>
-                        <button type="button" class="btn btn-outline-secondary" id="withdrawTeam" @if ($league->state_count['registered'] == 0) disabled @endif><i
-                                class="fa fa-trash"></i> @lang('game.action.team.withdraw')
-                        </button>
-
+                            @if ($league->state->is(App\Enums\LeagueState::Assignment()))
+                                <button type="button" class="btn btn-outline-primary float-right mr-2" id="changeState"
+                                    data-action="{{ App\Enums\LeagueStateChange::CloseAssignment() }}"><i
+                                        class="fas fa-lock"></i> Close Assignment
+                                </button>
+                            @endif
+                            <button type="button" class="btn btn-outline-primary float-right mr-2" id="withdrawTeam" @if ($league->state_count['registered'] == 0) disabled @endif><i
+                                    class="fa fa-trash"></i> @lang('game.action.team.withdraw')
+                            </button>
+                        </div>
                     </div>
                     <!-- /.card-footer -->
                 </div>
                 <!-- /.card CLUB TEAM ASSIGNMENT -->
-
-
             </div>
-
             <div class="col-sm-6">
                 <!-- card MEMBERS -->
-                <div class="card card-outline card-secondary collapsed-card">
-                    <div class="card-header ">
-                        <h4 class="card-title"><i class="fas fa-user-tie"></i> {{ trans_choice('role.member', 2) }} <span
+                <div class="card card-outline card-dark collapsed-card">
+                    <div class="card-header align-content-between">
+                        <h4 class="card-title pt-2"><i class="fas fa-user-tie fa-lg"></i> {{ trans_choice('role.member', 2) }} <span
                                 class="badge badge-pill badge-info">{{ count($members) }}</span></h4>
                         <div class="card-tools">
+                           <a href="{{ route('membership.league.create', ['language' => app()->getLocale(), 'league' => $league]) }}"
+                                class="btn btn-success">
+                                <i class="fas fa-plus-circle"></i> @lang('league.member.action.create')
+                            </a>                        
                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
                                     class="fas fa-plus"></i>
                             </button>
@@ -304,23 +299,15 @@
                                 </li>
                             @endforeach
                         </ul>
-
-
                     </div>
                     <!-- /.card-body -->
-                    <div class="card-footer">
-                        <a href="{{ route('membership.league.create', ['language' => app()->getLocale(), 'league' => $league]) }}"
-                            class="btn btn-outline-secondary">
-                            <i class="fas fa-plus-circle"></i> @lang('role.action.create')
-                        </a>
-                    </div>
                     <!-- /.card-footer -->
                 </div>
                 <!-- /.card -->
                 <!-- card GAMES -->
-                <div class="card card-outline card-secondary collapsed-card">
+                <div class="card card-outline card-dark collapsed-card">
                     <div class="card-header">
-                        <h4 class="card-title"><i class="fas fa-trophy"></i> {{ trans_choice('game.game', 2) }} <span
+                        <h4 class="card-title"><i class="fas fa-trophy fa-lg"></i> {{ trans_choice('game.game', 2) }} <span
                                 class="badge badge-pill badge-info">{{ count($games) }}</span></h4>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -343,16 +330,18 @@
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer">
-                        <button type="button" class="btn btn-outline-secondary" id="deleteGames" @if ( ! $league->state->is(App\Enums\LeagueState::Live())) disabled @endif><i class="fa fa-trash"></i> @lang('game.action.delete')
-                        </button>
-                        <button type="button" class="btn btn-outline-secondary" id="deleteNoshowGames" @if ( ! $league->state->is(App\Enums\LeagueState::Scheduling())) disabled @endif><i class="fa fa-trash"></i> @lang('game.action.delete.noshow')
-                        </button>
-                        <a href="{{ route('league.game.index', ['language' => app()->getLocale(), 'league' => $league]) }}"
-                            class="btn btn-primary">
-                            <i class="far fa-edit"></i> @lang('league.action.game.list')</a>
-                        <a href="{{ route('cal.league', ['language' => app()->getLocale(), 'league' => $league]) }}"
-                            class="btn btn-secondary">
-                            <i class="fas fa-calendar-alt"></i> iCAL</a>
+                        <div class="card-tools">
+                            <a href="{{ route('league.game.index', ['language' => app()->getLocale(), 'league' => $league]) }}"
+                                class="btn btn-primary float-right">
+                                <i class="far fa-edit"></i> @lang('league.action.game.list')</a>
+                            <a href="{{ route('cal.league', ['language' => app()->getLocale(), 'league' => $league]) }}"
+                                class="btn btn-outline-primary float-right mr-2">
+                                <i class="fas fa-calendar-alt"></i> iCAL</a>
+                            <button type="button" class="btn btn-outline-danger float-right mr-2" id="deleteGames" @if ( ! $league->state->is(App\Enums\LeagueState::Live())) disabled @endif><i class="fa fa-trash"></i> @lang('game.action.delete')
+                            </button>
+                            <button type="button" class="btn btn-outline-danger float-right mr-2" id="deleteNoshowGames" @if ( ! $league->state->is(App\Enums\LeagueState::Scheduling())) disabled @endif><i class="fa fa-trash"></i> @lang('game.action.delete.noshow')
+                            </button>
+                        </div>
                     </div>
                     {{-- <img class="card-img-bottom"
                         src="{{ asset('img/' . config('dunkomatic.grafics.league', 'oops.jpg')) }}" class="card-img"

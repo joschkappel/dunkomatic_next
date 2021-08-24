@@ -4,20 +4,10 @@
 @section('plugins.Chartjs', true)
 
 @section('content')
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card rounded">
-                <div class="card-body py-2 px-2">
-                    <div style="width: 100%" style="height: 25%">
-                        <canvas id="myChart" height="120" width="200"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@stop
+<x-card-form cardTitle="{{ __('club.title.gamehome.chart') }}" :omitSubmit="true" colWidth="12">
+    <canvas id="myChart" height="120" width="200"></canvas>
+</x-card-form>
+@endsection
 
 
 @section('js')
@@ -25,6 +15,10 @@
     $(document).ajaxStart(function() { Pace.restart(); });
 
     $(function() {
+      $('#frmClose').click(function(e){
+        history.back();
+      });
+
        var ctx = document.getElementById('myChart').getContext('2d');
        var myChart = new Chart(ctx, {
             type: 'scatter',
@@ -101,4 +95,4 @@
 
     });
 </script>
-@stop
+@endsection

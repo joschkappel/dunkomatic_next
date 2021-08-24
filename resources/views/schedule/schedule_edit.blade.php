@@ -6,117 +6,90 @@
 @section('plugins.RangeSlider',true)
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-            <!-- left column -->
-            <div class="col-md-6">
-                <!-- general form elements -->
-                <div class="card card-secondary">
-                    <div class="card-header">
-                        <h3 class="card-title">@lang('schedule.title.modify', ['schedule' => $schedule->name] )</h3>
-                    </div>
-                    <!-- /.card-header -->
-                    <form class="form-horizontal" action="{{ route('schedule.update', ['schedule' => $schedule]) }}"
-                        method="POST">
-                        <div class="card-body">
-                            @method('PUT')
-                            @csrf
-                            @if ($errors->any())
-                                <div class="alert alert-danger" role="alert">
-                                    @lang('Please fix the following errors')
-                                </div>
-                            @endif
-                            <div class="form-group row ">
-                                <label for="title" class="col-sm-4 col-form-label">Name</label>
-                                <div class="col-sm-6">
-                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
-                                        name="name" placeholder="Name"
-                                        value="{{ old('name') ? old('name') : $schedule->name }}">
-                                    @error('name')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="form-group row ">
-                                <div class="col-sm-4">
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group  clearfix">
-                                        <div class="icheck-primary d-inline">
-                                            <input type="checkbox" id="custom_events" name="custom_events" @if ($schedule->custom_events) checked @endif>
-                                            <label for="custom_events">@lang('schedule.custom_events')</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group row ">
-                                <label for='selSize' class="col-sm-4 col-form-label">@lang('schedule.size')</label>
-                                <div class="col-sm-6">
-                                    @if ($schedule->events()->count() == 0)
-                                    <div class="input-group mb-3">
-                                        <select class='js-sizes js-states form-control select2 @error('league_size_id') is-invalid @enderror' id='selSize' name="league_size_id">
-                                            <option
-                                                value="{{ old('league_size_id') ? old('league_size_id') : $schedule->league_size_id }}"
-                                                selected="selected">
-                                                {{ old('league_size_id') ? App\Models\LeagueSize::find(old('league_size_id'))->description : $schedule->league_size['description'] }}
-                                            </option>
-                                        </select>
-                                        @error('league_size_id')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                        </div>
-                                    @else
-                                        <span class='text-info'>@lang('schedule.edit.size')</span>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="form-group row ">
-                                <label for="iterationRange" class="col-sm-4 col-form-label">@lang('schedule.iterations')</label>
-                                <div class="col-sm-6">
-                                    @if ($schedule->events()->count() == 0)
-                                    <input id="iterationRange" type="text" name="iterations" value="">
-                                    @else
-                                        <span class='text-info'>@lang('schedule.edit.iterations')</span>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="form-group row ">
-                                <label for="eventcolor" class="col-sm-4 col-form-label">@lang('schedule.color')</label>
-                                <div class="col-sm-6">
-                                    <div id="cp2" class="input-group">
-                                        <input type="text"
-                                            class="form-control input-lg @error('eventcolor') is-invalid @enderror"
-                                            id="eventcolor" name="eventcolor" placeholder="@lang('schedule.color')"
-                                            value="{{ old('eventcolor') ? old('eventcolor') : $schedule->eventcolor }}">
-                                        <span class="input-group-append">
-                                            <span class="input-group-text colorpicker-input-addon"><i></i></span>
-                                        </span>
-                                    </div>
-                                    @error('eventcolor')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                    <!-- /.input group -->
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <div class="btn-toolbar justify-content-between" role="toolbar"
-                                aria-label="Toolbar with button groups">
-                                <a class="btn btn-outline-dark " href="{{ route('schedule.index', ['language' => app()->getLocale()]) }}">{{ __('Cancel') }}</a>
-                                <button type="submit" class="btn btn-primary">{{ __('Submit') }}</button>
-                            </div>
-                        </div>
-                    </form>
+<x-card-form cardTitle="{{ __('schedule.title.modify', ['schedule' => $schedule->name] ) }}" formAction="{{ route('schedule.update', ['schedule' => $schedule]) }}" formMethod="PUT">
+    <div class="form-group row ">
+        <label for="title" class="col-sm-4 col-form-label">Name</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
+                name="name" placeholder="Name"
+                value="{{ old('name') ? old('name') : $schedule->name }}">
+            @error('name')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+    </div>
+    <div class="form-group row ">
+        <div class="col-sm-4">
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group  clearfix">
+                <div class="icheck-primary d-inline">
+                    <input type="checkbox" id="custom_events" name="custom_events" @if ($schedule->custom_events) checked @endif>
+                    <label for="custom_events">@lang('schedule.custom_events')</label>
                 </div>
             </div>
         </div>
     </div>
+    <div class="form-group row ">
+        <label for='selSize' class="col-sm-4 col-form-label">@lang('schedule.size')</label>
+        <div class="col-sm-6">
+            @if ($schedule->events()->count() == 0)
+            <div class="input-group mb-3">
+                <select class='js-sizes js-states form-control select2 @error('league_size_id') is-invalid @enderror' id='selSize' name="league_size_id">
+                    <option
+                        value="{{ old('league_size_id') ? old('league_size_id') : $schedule->league_size_id }}"
+                        selected="selected">
+                        {{ old('league_size_id') ? App\Models\LeagueSize::find(old('league_size_id'))->description : $schedule->league_size['description'] }}
+                    </option>
+                </select>
+                @error('league_size_id')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+                </div>
+            @else
+                <span class='text-info'>@lang('schedule.edit.size')</span>
+            @endif
+        </div>
+    </div>
+    <div class="form-group row ">
+        <label for="iterationRange" class="col-sm-4 col-form-label">@lang('schedule.iterations')</label>
+        <div class="col-sm-6">
+            @if ($schedule->events()->count() == 0)
+            <input id="iterationRange" type="text" name="iterations" value="">
+            @else
+                <span class='text-info'>@lang('schedule.edit.iterations')</span>
+            @endif
+        </div>
+    </div>
+    <div class="form-group row ">
+        <label for="eventcolor" class="col-sm-4 col-form-label">@lang('schedule.color')</label>
+        <div class="col-sm-6">
+            <div id="cp2" class="input-group">
+                <input type="text"
+                    class="form-control input-lg @error('eventcolor') is-invalid @enderror"
+                    id="eventcolor" name="eventcolor" placeholder="@lang('schedule.color')"
+                    value="{{ old('eventcolor') ? old('eventcolor') : $schedule->eventcolor }}">
+                <span class="input-group-append">
+                    <span class="input-group-text colorpicker-input-addon"><i></i></span>
+                </span>
+            </div>
+            @error('eventcolor')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+            <!-- /.input group -->
+        </div>
+    </div>
+</x-card-slot>
 @endsection
 
 @section('js')
 
     <script>
         $(function() {
+            $('#frmClose').click(function(e){
+                history.back();
+            });
+
             var custom_values_1 = [1,2,3];
             var custom_values_2 = [1];
             var values_p = ["{{ __('schedule.single') }}", "{{__('schedule.double')}}", "{{__('schedule.triple')}}"];

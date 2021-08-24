@@ -3,26 +3,7 @@
 @section('plugins.Select2', true)
 
 @section('content')
-<div class="container-fluid">
-    <div class="row">
-        <!-- left column -->
-        <div class="col-md-6">
-            <!-- general form elements -->
-            <div class="card card-info">
-                <div class="card-header">
-                    <h3 class="card-title">@lang('auth.title.edit')</h3>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                  <form class="form-horizontal" action="{{ route('admin.user.update', ['user' => Auth::user()]) }}" method="POST">
-                        <input type="hidden" name="_method" value="PUT">
-                        @csrf
-                        @method('PUT')
-                        @if ($errors->any())
-                        <div class="alert alert-danger" role="alert">
-                            @lang('Please fix the following errors')
-                        </div>
-                        @endif
+<x-card-form cardTitle="{{ __('auth.title.edit') }}" formAction="{{ route('admin.user.update', ['user' => Auth::user()]) }}" formMethod="PUT" >
                         <div class="form-group row">
                             <label for="name" class="col-sm-4 col-form-label">@lang('auth.full_name')</label>
                             <div class="col-sm-6">
@@ -52,19 +33,15 @@
                               </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-info">{{__('Submit')}}</button>
-                      </form>
-                  </div>
-            </div>
-          </div>
-          @include('member.includes.member_edit')
-        </div>
-    </div>
-</div>
+</x-card-form>
+@include('member.includes.member_edit')
 @endsection
 
 @section('js')
 <script>
+    $('#frmClose').click(function(e){
+        history.back();
+    });
     $("#updateMember").collapse("toggle");
 
     function formatLocale (locale) {

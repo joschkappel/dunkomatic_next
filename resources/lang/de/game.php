@@ -30,4 +30,6 @@ return [
   'gametime_format' => 'H:i',
   'referee' => 'Schiri',
   'team.gym' => 'Gegner und Hallen',
+  'import.success' => 'Alle Daten wurden erfolgreich importiert',
+  'import.failure' => 'Folgende Fehler wurden festgestellt. Bitte korrigiere diese und starte den Import nochmal',
 ];

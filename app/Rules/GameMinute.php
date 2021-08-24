@@ -28,7 +28,11 @@ class GameMinute implements Rule
     public function passes($attribute, $value)
     {
         $min_val = explode(":",$value);
-        return in_array($min_val[1], $this->ok_minutes);
+        if (count($min_val) != 2){
+            return false;
+        } else {
+            return in_array($min_val[1], $this->ok_minutes);
+        }
     }
 
     /**

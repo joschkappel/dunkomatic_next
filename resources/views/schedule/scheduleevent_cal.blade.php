@@ -3,14 +3,18 @@
 @section('plugins.FullCalendar',true)
 
 @section('content')
-
-  <h3>@lang('schedule.title.calendar', ['region' => session('cur_region')->name ])</h3>
-
+<x-card-form cardTitle="{{ __('schedule.title.calendar', ['region' => session('cur_region')->name ]) }}" :omitSubmit="true" colWidth="10">
   <div id='calendar'></div>
-@stop
+</x-card-form>
+@endsection
 
 @section('js')
   <script>
+          $(function() {
+            $('#frmClose').click(function(e){
+                history.back();
+            });
+          });
         document.addEventListener('DOMContentLoaded', function() {
           var calendarEl = document.getElementById('calendar');
           var calendar = new FullCalendar.Calendar(calendarEl, {

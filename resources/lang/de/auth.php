@@ -44,4 +44,8 @@ return [
     'user'                       => 'Benutzer',
     'member_found'              => 'Es existiert ein Mitglied mit gleicher email:',
     'user.account'              => 'Benutzerkonto',
+    'title.approve'             => 'Benutzer Zulassen oder Ablehnen',
+    'action.approve'             => 'Zulassen / Ablehnen',
+    'registered_at'             => 'Registriet am',
+    'no_users_found'            => 'Keine Benutzer gefunden',
 ];

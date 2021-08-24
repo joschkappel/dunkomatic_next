@@ -5,23 +5,15 @@
 <div class="container-fluid">
     <div class="row ">
       <div class="col-sm">
-              <!-- small card CLUB -->
-              <div class="small-box bg-gray">
+              <!-- small card REGION -->
+              <div class="small-box bg-primary">
                   <div class="inner">
                       <div class="row">
-                      <input type="hidden" id="entitytype" value="App\Models\Region">
-                        <div class="col-sm-8 pd-2">
-                            <h3>{{ $region->code }}</h3>
-                            <h5>{{ $region->name }}</h5>
-                        </div>
-                        <div class="col-sm-4 pd-2">
-                            <ul class="list-group">
-                              <li class="list-group-item list-group-item-info py-0"> {{ $region->clubs_count }} CLubs </li>
-                              <li class="list-group-item list-group-item-info py-0"> {{ $region->teams_count }} Teams </li>
-                              <li class="list-group-item list-group-item-info py-0"> {{ $region->gyms_count }} Hallen </li>
-                              <li class="list-group-item list-group-item-info py-0"> {{ $region->leagues_count }} Runden </li>
-                            </ul>
-                        </div>                        
+                        <input type="hidden" id="entitytype" value="App\Models\Region">
+                          <div class="col-sm-6 pd-2">
+                              <h3>{{ $region->code }}</h3>
+                              <h5>{{ $region->name }}</h5>
+                          </div>
                       </div>
                   </div>
                   <div class="icon">
@@ -37,6 +29,35 @@
                   @endif
               </div>
             </div>
+            <div class="col-sm ">
+                <div class="info-box"> 
+                    <span class="info-box-icon bg-info"><i class="fas fa-basketball-ball"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-lg">{{ __('region.clubs.count',['count' => $region->clubs_count  ]) }}</span>
+                    </div>                
+                </div>
+                <div class="info-box"> 
+                    <span class="info-box-icon bg-info"><i class="fas fa-building"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-lg">{{ __('region.gyms.count',['count' => $region->gyms_count  ]) }}</span>
+                    </div>                  
+                </div>
+            </div> 
+            <div class="col-sm ">
+                <div class="info-box"> 
+                    <span class="info-box-icon bg-info"><i class="fas fa-trophy"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-lg">{{ __('region.leagues.count',['count' => $region->leagues_count  ]) }}</span>
+                    </div>                
+                </div>
+                <div class="info-box"> 
+                    <span class="info-box-icon bg-info"><i class="fas fa-users"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-lg">{{ __('region.teams.count',['count' => $region->teams_count  ]) }}</span>
+                    </div>                
+
+                </div>
+            </div>                            
     </div>
 </div><!-- /.container-fluid -->
 @stop

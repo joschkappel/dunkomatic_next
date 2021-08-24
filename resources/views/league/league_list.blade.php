@@ -3,20 +3,7 @@
 @section('plugins.Datatables', true)
 
 @section('content')
-
-            <div class="row">
-              <div class="col-12">
-                <div class="card card-secondary">
-                  <h4 class="card-header">@lang('league.title.list', ['region' => session('cur_region')->name ])</h4>
-                  <!-- /.card-header -->
-
-                  <div class="card-tools p-2">
-          </div>
-          <div class="card-body">
-
-         <table width="100%" class="table stripe hover row-border compact table-sm" id="table">
-            <thead class="thead-light">
-               <tr>
+<x-card-list cardTitle="{{ __('league.title.list', ['region' => session('cur_region')->name ]) }}">
                   <th>Id</th>
                   <th>@lang('league.shortname')</th>
                   <th>@lang('league.state')</th>
@@ -30,19 +17,16 @@
                   <th>{{__('Games No Time')}}</th>
                   <th>{{__('Games No Teams')}}</th>
                   <th>{{__('Updated at')}}</th>
-               </tr>
-            </thead>
-         </table>
-          </div>
-          <!-- /.card-body -->
-        </div>
-      </div>
-    </div>
-@stop
+</x-card-list>
+@endsection
 
 @section('js')
 <script>
    $(function() {
+         $('#goBack').click(function(e){
+            history.back();
+         }); 
+         
          $('#table').DataTable({
          processing: true,
          serverSide: true,
@@ -110,4 +94,4 @@
    });
 
 </script>
-@stop
+@endsection

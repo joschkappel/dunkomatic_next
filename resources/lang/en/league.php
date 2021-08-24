@@ -53,5 +53,6 @@ return [
   'league_no' => 'Number',
   'next.state' => 'start next phase',
   'prev.state' => 'back to previous',
+  'member.action.create' => 'New Member',
 
 ];

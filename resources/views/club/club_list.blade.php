@@ -3,55 +3,29 @@
 @section('plugins.Datatables', true)
 
 @section('content')
-
-    <div class="row">
-        <div class="col-12">
-            <div class="card card-light">
-                <div class="card-header container-fluid">
-                    <div class="row justify-content-between">
-                        <div class="col-md-10">
-                            <h4 class="w-75 p-3">@lang('club.title.list', ['region' => session('cur_region')->name ])</h4>
-                        </div>
-                        <div class="col-md-2 float-right">
-                            <div class="card-tools pt-3">
-                                <a href="{{ route('club.create', app()->getLocale()) }}" class="text-center btn btn-success text-white"><i
-                                        class="fas fa-plus-circle pr-2"></i>@lang('club.action.create')</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-
-                    <table width="100%" class="table table-hover table-bordered table-sm" id="table">
-                        <thead class="thead-light">
-                            <tr>
-                                <th>Id</th>
-                                <th>@lang('club.shortname')</th>
-                                <th>@lang('club.name')</th>
-                                <th>{{ trans_choice('team.team', 2) }}</th>
-                                <th>{{ __('containing') }}@lang('team.assigned')</th>
-                                <th>{{ __('containing') }}@lang('team.registered')</th>
-                                <th>{{ __('containing') }}@lang('team.selected')</th>
-                                <th>{{ __('Total Games') }}</th>
-                                <th>{{ __('Games No Time') }}</th>
-                                <th>{{ __('Games No Teams') }}</th>
-                                <th>{{ __('Updated at') }}</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
-                <!-- /.card-body -->
-            </div>
-        </div>
-    </div>
-@stop
+<x-card-list cardTitle="{{ __('club.title.list', ['region' => session('cur_region')->name ]) }}" cardNewAction="{{ route('club.create', app()->getLocale()) }}" cardNewTitle="{{ __('club.action.create') }}">
+    <th>Id</th>
+    <th>@lang('club.shortname')</th>
+    <th>@lang('club.name')</th>
+    <th>{{ trans_choice('team.team', 2) }}</th>
+    <th>{{ __('containing') }}@lang('team.assigned')</th>
+    <th>{{ __('containing') }}@lang('team.registered')</th>
+    <th>{{ __('containing') }}@lang('team.selected')</th>
+    <th>{{ __('Total Games') }}</th>
+    <th>{{ __('Games No Time') }}</th>
+    <th>{{ __('Games No Teams') }}</th>
+    <th>{{ __('Updated at') }}</th>
+</x-card-list>
+@endsection
 
 
 @section('js')
 
     <script>
         $(function() {
+            $('#goBack').click(function(e){
+                history.back();
+            }); 
             $('#table').DataTable({
                 processing: true,
                 serverSide: true,
@@ -139,4 +113,4 @@
             });
         });
     </script>
-@stop
+@endsection

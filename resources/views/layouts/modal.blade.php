@@ -25,10 +25,10 @@
                     </form>
                 </div>
                 <div class="card-footer">
-                    <div class="btn-toolbar justify-content-between" role="toolbar"
+                    <div class="btn-toolbar justify-content-end" role="toolbar"
                         aria-label="Toolbar with button groups">
-                        <button type="button" class="btn btn-outline-primary" id="frmClose" data-dismiss="modal">{{ __('Cancel')}}</button>
-                        <button type="button" class="btn btn-primary" id="frmSubmit">{{ __('Submit') }}</button>
+                        <button type="button" class="btn btn-outline-primary mr-2" id="frmClose" data-dismiss="modal">{{ __('Cancel')}}</button>
+                        <button type="button" class="btn btn-primary mr-2" id="frmSubmit">{{ __('Submit') }}</button>
                     </div>
                 </div>
 

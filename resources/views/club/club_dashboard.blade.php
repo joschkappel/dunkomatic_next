@@ -8,7 +8,7 @@
         <div class="row ">
             <div class="col-sm">
                 <!-- small card CLUB -->
-                <div class="small-box bg-gray">
+                <div class="small-box bg-primary">
                     <div class="inner">
                         <div class="row">
                             <input type="hidden" id="entitytype" value="App\Models\Club">
@@ -123,13 +123,16 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-6 pd-2">
-
                 <!-- card MEMBERS -->
                 <div class="card card-outline card-dark collapsed-card">
-                    <div class="card-header">
-                        <h4 class="card-title"><i class="fas fa-user-tie"></i> @lang('role.member') <span
+                    <div class="card-header align-content-between">
+                        <h4 class="card-title pt-2"><i class="fas fa-user-tie fa-lg"></i> @lang('role.member') <span
                                 class="badge badge-pill badge-info">{{ count($members) }}</span></h4>
                         <div class="card-tools">
+                            <a href="{{ route('membership.club.create', ['language' => app()->getLocale(), 'club' => $club]) }}"
+                                class="btn btn-success">
+                                <i class="fas fa-plus-circle"></i> @lang('club.member.action.create')
+                            </a>
                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
                                     class="fas fa-plus"></i>
                             </button>
@@ -172,33 +175,22 @@
                                 </li>
                             @endforeach
                         </ul>
-
                     </div>
                     <!-- /.card-body -->
-                    <div class="card-footer">
-                        <a href="{{ route('membership.club.create', ['language' => app()->getLocale(), 'club' => $club]) }}"
-                            class="btn btn-primary">
-                            <i class="fas fa-plus-circle"></i> @lang('club.member.action.create')
-                        </a>
-                    </div>
                     <!-- /.card-footer -->
                 </div>
                 <!-- /.card -->
-
                 <!-- card CLUB TEAM ASSIGNMENT -->
                 <div class="card card-outline card-dark collapsed-card" id="teamsCard">
                     <div class="card-header">
-                        <h4 class="card-title"><i class="fas fa-basketball-ball pr-2"></i>{{ count($teams) }}
-                            {{ trans_choice('team.team', 2) }}:
-                            <span
-                                class="badge badge-pill badge-info mr-2">{{ count($leagues) }}</span>@lang('league.state.assigned')
-                            -
-                            <span class="badge badge-pill badge-info mr-2">{{ count($registered_teams) }}</span>
-                            @lang('league.state.registered') -
-                            <span
-                                class="badge badge-pill badge-info mr-2">{{ count($selected_teams) }}</span>@lang('league.state.selected')
+                        <h4 class="card-title pt-2"><i class="fas fa-basketball-ball fa-lg"></i> {{ trans_choice('team.team', 2) }} 
+                            <span class="badge badge-pill badge-info">{{ count($teams) }}</span>
                         </h4>
                         <div class="card-tools">
+                            <a href="{{ route('club.team.create', ['language' => app()->getLocale(), 'club' => $club]) }}"
+                            class="btn btn-success">
+                            <i class="fas fa-plus-circle"></i> @lang('team.action.create')</a>
+
                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
                                     class="fas fa-plus"></i>
                             </button>
@@ -208,7 +200,6 @@
                     <!-- /.card-header -->
                     <div class="card-body ">
                         <div class="row  justify-content-center">
-    
                             <div class="col-md-8 ">
                                 <div class="table-responsive-md">
                                     <table class="table table-hover table-sm " id="table2">
@@ -289,31 +280,32 @@
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer">
-                        <a href="{{ route('club.team.create', ['language' => app()->getLocale(), 'club' => $club]) }}"
-                            class="btn btn-primary">
-                            <i class="fas fa-plus-circle"></i> @lang('team.action.create')</a>
-                        <a href="{{ route('team.plan-leagues', ['language' => app()->getLocale(), 'club' => $club]) }}"
-                            class="btn btn-primary">
-                            <i class="fas fa-map"></i> @lang('team.action.plan.season')</a>
-                        @if ($club->leagues->where('state', App\Enums\LeagueState::Selection())->count() > 0)
-                            <a href="{{ route('club.team.pickchar', ['language' => app()->getLocale(), 'club' => $club]) }}"
-                                class="btn btn-primary">
-                                <i class="fas fa-edit"></i> @lang('pick chars')</a>
-                        @endif
+                        <div class="card-tools">
+                            <a href="{{ route('team.plan-leagues', ['language' => app()->getLocale(), 'club' => $club]) }}"
+                                class="btn btn-primary float-right">
+                                <i class="fas fa-map"></i> @lang('team.action.plan.season')</a>
+                            @if ($club->leagues->where('state', App\Enums\LeagueState::Selection())->count() > 0)
+                                <a href="{{ route('club.team.pickchar', ['language' => app()->getLocale(), 'club' => $club]) }}"
+                                    class="btn btn-outline-primary float-right mr-2">
+                                    <i class="fas fa-edit"></i> @lang('pick chars')</a>
+                            @endif
+                        </div>
                     </div>
                     <!-- /.card-footer -->
                 </div>
                 <!-- /.card CLUB TEAM ASSIGNMENT -->
-
             </div>
-
             <div class="col-sm-6">
                 <!-- card GYMS -->
                 <div class="card card-outline card-dark collapsed-card">
                     <div class="card-header">
-                        <h4 class="card-title"><i class="fas fa-building"></i> {{ trans_choice('gym.gym', 2) }} <span
+                        <h4 class="card-title mt-2"><i class="fas fa-building fa-lg"></i> {{ trans_choice('gym.gym', 2) }} <span
                                 class="badge badge-pill badge-info">{{ count($gyms) }}</span></h4>
                         <div class="card-tools">
+                            <a href="{{ route('club.gym.create', ['language' => app()->getLocale(), 'club' => $club]) }}"
+                                class="btn btn-success">
+                                <i class="fas fa-plus-circle"></i> @lang('gym.action.create')
+                            </a>
                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
                                     class="fas fa-plus"></i>
                             </button>
@@ -322,8 +314,9 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        @foreach ($gyms as $gym)
-                            <p>
+                        <ul class="list-group list-group-flush">
+                        @foreach ($gyms as $gym)   
+                           <li class="list-group-item ">
                                 <button type="button" id="deleteGym" class="btn btn-outline-danger btn-sm"
                                     @if ($gym->games()->exists()) disabled @endif
                                     data-gym-id="{{ $gym->id }}"
@@ -338,24 +331,18 @@
                                     class=" px-4" target="_blank">
                                     <i class="fas fa-map-marked-alt"></i>
                                 </a>
-                            </p>
+                            </li>
                         @endforeach
+                        </ul>
                     </div>
                     <!-- /.card-body -->
-                    <div class="card-footer">
-                        <a href="{{ route('club.gym.create', ['language' => app()->getLocale(), 'club' => $club]) }}"
-                            class="btn btn-primary">
-                            <i class="fas fa-plus-circle"></i> @lang('gym.action.create')
-                        </a>
-                    </div>
                     <!-- /.card-footer -->
                 </div>
                 <!-- /.card -->
-
                 <!-- card GAMES -->
                 <div class="card card-outline card-dark collapsed-card">
                     <div class="card-header">
-                        <h4 class="card-title"><i class="fas fa-trophy"></i> @lang('game.home') <span
+                        <h4 class="card-title"><i class="fas fa-trophy fa-lg"></i> @lang('game.home') <span
                                 class="badge badge-pill badge-info">{{ count($games_home) }}</span></h4>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -378,17 +365,16 @@
                     <!-- /.card-body -->
                     <div class="card-footer">
                         <a href="{{ route('club.list.homegame', ['language' => app()->getLocale(), 'club' => $club]) }}"
-                            class="btn btn-primary">
+                            class="btn btn-primary float-right mr-2">
                             <i class="far fa-edit"></i> @lang('club.action.edit-homegame')</a>
                         <a href="{{ route('club.game.chart', ['language' => app()->getLocale(), 'club' => $club]) }}"
-                            class="btn btn-secondary">
+                            class="btn btn-outline-primary float-right mr-2">
                             <i class="far fa-chart-bar"></i> @lang('club.action.chart-homegame')</a>
 
                     </div>
                     <!-- /.card-footer -->
                 </div>
                 <!-- /.card -->
-
                 <!-- all modals here -->
                 @include('club/includes/assign_league')
                 <x-confirm-deletion modalId="modalDeleteClub" modalTitle="{{ __('club.title.delete') }}" modalConfirm="{{ __('club.confirm.delete') }}" deleteType="{{ trans_choice('club.club',1) }}" />                

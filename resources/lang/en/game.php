@@ -30,4 +30,6 @@ return [
   'gametime_format' => 'g:i A',
   'referee' => 'Referee',
   'team.gym' => 'Teams and Gyms',  
+  'import.success' => 'All data successfully imported',
+  'import.failure' => 'The data contained errors. Please correct and retry the import',  
 ];

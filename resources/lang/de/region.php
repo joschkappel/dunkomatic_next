@@ -25,4 +25,12 @@ return [
   'close_registration' => 'Ende Mannschaftsmeldung',
   'close_selection' => 'Ende Ziffernwahl',
   'close_scheduling' => 'Ende Heimspieländerung',
+  'home' => 'Allgemeines',
+  'checks' => 'Prüfungen',
+  'reports' => 'Listen',
+  'leaguestates' => 'Runden Phasen',
+  'leagues.count' => ':COUNT Spielrunden',
+  'clubs.count' => ':COUNT Vereine',
+  'gyms.count' => ':COUNT Speilhallen',
+  'teams.count' => ':COUNT Mannschaften',
 ];

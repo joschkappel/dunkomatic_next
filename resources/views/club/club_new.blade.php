@@ -1,25 +1,7 @@
 @extends('layouts.page')
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-            <!-- left column -->
-            <div class="col-md-6">
-                <!-- general form elements -->
-                <div class="card card-secondary">
-                    <div class="card-header container-fluid" id="clubnew">
-
-                        <h3 class="card-title">@lang('club.title.new', ['region' =>session('cur_region')->name ])</h3>
-                    </div>
-                    <!-- /.card-header -->
-                    <form class="form-horizontal" action="{{ route('club.store') }}" method="post">
-                        <div class="card-body">
-                            @csrf
-                            @if ($errors->any())
-                                <div class="alert alert-danger" role="alert">
-                                    @lang('Please fix the following errors')
-                                </div>
-                            @endif
+<x-card-form cardTitle="{{ __('club.title.new', ['region' =>session('cur_region')->name ]) }}" formAction="{{ route('club.store') }}" >
                             <div class="form-group row">
                                 <label for="region" class="col-sm-4 col-form-label">@lang('club.region')</label>
                                 <div class="col-sm-6">
@@ -68,25 +50,15 @@
                                     @enderror
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-footer">
-                            <div class="btn-toolbar justify-content-end" role="toolbar"
-                                aria-label="Toolbar with button groups">
-                                <a class="btn btn-outline-primary mr-2" href="{{ route('club.index', ['language' => app()->getLocale()]) }}">{{ __('Cancel') }}</a>
-                                <button type="submit" class="btn btn-primary">{{ __('Submit') }}</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
+</x-card-form>
 @endsection
+
 @section('js')
     <script>
-        $('.close').click(function() {
-            location.href = "{{ URL::previous() }}";
-        })
+        $(document).ready(function(){
+            $('#frmClose').click(function(e){
+                history.back();
+            })
+        });
     </script>
 @endsection

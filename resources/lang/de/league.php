@@ -52,5 +52,5 @@ return [
   'league_no' => 'Ziffer',
   'next.state' => 'zur nächsten Phase',
   'prev.state' => 'zurück zu',
-
+  'member.action.create' => 'Neuer Staffelleiter',
 ];

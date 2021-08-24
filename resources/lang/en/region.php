@@ -25,4 +25,12 @@ return [
   'close_registration' => 'End of Team Registration',
   'close_selection' => 'End of League Number Selection',
   'close_scheduling' => 'End of Home Game Scheduling',
+  'home' => 'General',
+  'checks' => 'Checks',
+  'reports' => 'Reports',
+  'leaguestates' => 'League States',
+  'leagues.count' => 'Total of :COUNT leagues',
+  'clubs.count' => 'Total of :COUNT clubs',
+  'gyms.count' => 'Total of :COUNT gyms',
+  'teams.count' => 'Total of :COUNT teams',
 ];

@@ -83,7 +83,6 @@ class ClubTeamController extends Controller
 
       //Log::debug(print_r($team,true));
       $team->load('club','league');
-      Log::debug(print_r($team,true));
 
       return view('team/team_edit', ['team' => $team]);
     }
@@ -99,10 +98,17 @@ class ClubTeamController extends Controller
     public function update(Request $request, Club $club, Team $team)
     {
         Log::debug(print_r($request->all(),true));
-
+        // reset time values if invalid
+        if ($request['training_time'] == 'Invalid date'){
+          $request['training_time'] = null;
+        }
+        if ($request['preferred_game_time'] == 'Invalid date'){
+          $request['preferred_game_time'] = null;
+        }
+        Log::debug(print_r($request->all(),true));
         $data = $request->validate( Team::getUpdateRules() );
 
-        Log::debug(print_r($team,true));
+        Log::debug('UPDATING');
         $check = Team::where('id', $team->id)->update($data);
 
         return redirect()->action(
