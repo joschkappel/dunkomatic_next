@@ -1,8 +1,9 @@
 <?php
-namespace Database\Seeders;
+namespace Database\Seeders\dev;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Faker\Factory;
 
 use App\Models\Region;
 use App\Models\User;
@@ -11,6 +12,8 @@ use Bouncer;
 
 class ClubsTableSeeder extends Seeder
 {
+    protected $faker;
+
     /**
      * Run the database seeds.
      *
@@ -18,15 +21,17 @@ class ClubsTableSeeder extends Seeder
      */
     public function run()
     {
+      $this->faker = Factory::create('de_DE');
+
       $old_club = DB::connection('dunkv1')->table('club')->get();
 
       foreach ($old_club as $club) {
         DB::connection('dunknxt')->table('clubs')->insert([
-          'shortname'     => $club->shortname,
+          'name' => $this->faker->words(2,true),
+          'shortname' => $this->faker->regexify('[A-Z]{4}'),
+          'url' => $this->faker->url,
+          'club_no' => $this->faker->randomNumber(7, true),
           'region_id'        => Region::where('code', $club->region)->first()->id,
-          'name'          => $club->name,
-          'club_no'       => $club->club_no,
-          'url'           => $club->club_url,
           'created_at'    => now(),
           'id'            => $club->club_id,
         ]);

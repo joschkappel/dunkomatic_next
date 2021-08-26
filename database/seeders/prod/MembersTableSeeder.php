@@ -1,5 +1,5 @@
 <?php
-namespace Database\Seeders;
+namespace Database\Seeders\prod;
 
 use App\Models\Club;
 use App\Models\League;
@@ -8,6 +8,7 @@ use App\Models\Membership;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Faker\Factory;
 
 class MembersTableSeeder extends Seeder
 {

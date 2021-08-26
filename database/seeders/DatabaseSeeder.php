@@ -2,6 +2,9 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Database\Seeders\dev\GymsTableSeeder;
+use Database\Seeders\dev\ClubsTableSeeder;
+use Database\Seeders\dev\MembersTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {
