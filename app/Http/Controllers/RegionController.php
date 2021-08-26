@@ -8,15 +8,18 @@ use Illuminate\Support\Facades\Response;
 
 use BenSampo\Enum\Rules\EnumValue;
 use App\Enums\JobFrequencyType;
+use App\Enums\LeagueState;
+use App\Enums\LeagueAgeType;
+use App\Enums\LeagueGenderType;
+use App\Enums\Role;
 use App\Enums\ReportFileType;
 
 use App\Models\Region;
-use App\Enums\Role;
 use App\Models\Member;
-use App\Notifications\CharPickingEnabled;
+use App\Models\Membership;
 use Illuminate\Support\Facades\Auth;
 
-use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Datatables;
 
 class RegionController extends Controller
@@ -229,5 +232,165 @@ class RegionController extends Controller
 
         return redirect()->route('region.index', app()->getLocale());
     }
+    
+    /**
+     * leagues by status for a region
+     * 
+     * @param Region $region
+     * @return Response
+     * 
+     */
+    public function league_state_chart(Region $region)
+    {
 
-}
+      $data = array();
+      $data['labels'] = [];
+      $datasets = array();
+
+      $rs = DB::table('leagues')->where('region_id',$region->id)->select('state', DB::raw('count(*) as total'))->groupBy('state')->get();
+
+      // initialize datasets
+      foreach ( LeagueState::getValues() as $ls){
+        $datasets[0]['stack'] = 'Stack 1';
+        $data['labels'][] = LeagueState::getDescription( LeagueState::coerce($ls) );
+        $datasets[0]['data'][] = $rs[$ls]->total ?? 0;
+      }
+
+      $data['datasets'] = $datasets;
+
+      // Log::debug(print_r($data,true));
+
+      return Response::json($data);
+    }
+
+    /**
+     * leagues by age and gender for a region
+     * 
+     * @param Region $region
+     * @return Response
+     * 
+     */
+    public function league_socio_chart(Region $region)
+    {
+
+      $data = array();
+      $data['labels'] = [];
+      $datasets = array();
+
+      $rs = DB::table('leagues')->where('region_id',$region->id)->select('age_type', DB::raw('count(*) as total'))->groupBy('age_type')->get();
+      // initialize dataset 0
+      foreach ( LeagueAgeType::getValues() as $at){
+        $data['labels'][] = LeagueAgeType::getDescription( LeagueAgeType::coerce($at) );
+        $datasets[0]['data'][] = $rs[$at]->total ?? 0;
+      }
+      $datasets[0]['backgroundColor'] = ['hsl(0, 100%, 60%)', 'hsl(0, 100%, 40%)', 'hsl(0, 100%, 20%)'];
+
+      $rs = DB::table('leagues')->where('region_id',$region->id)->select('gender_type', DB::raw('count(*) as total'))->groupBy('gender_type')->get();
+      // initialize dataset 1
+      foreach ( LeagueGenderType::getValues() as $gt){
+        $data['labels'][] = LeagueGenderType::getDescription( LeagueGenderType::coerce($gt) );
+        $datasets[1]['data'][] = $rs[$gt]->total ?? 0;
+      }
+      $datasets[1]['backgroundColor'] = ['hsl(100, 100%, 60%)', 'hsl(100, 100%, 40%)', 'hsl(100, 100%, 20%)'];
+
+      $data['datasets'] = $datasets;
+
+      // Log::debug(print_r($data,true));
+
+      return Response::json($data);
+    }
+
+    /**
+     * teams by club for a region
+     * 
+     * @param Region $region
+     * @return Response
+     * 
+     */
+    public function club_team_chart(Region $region)
+    {
+
+      $data = array();
+      $data['labels'] = [];
+      $datasets = array();
+      // initialize datasets
+      foreach ( LeagueAgeType::getValues() as $at){
+        $datasets[$at]['stack'] = 'Stack 1';
+        $datasets[$at]['label'] = LeagueAgeType::getDescription( LeagueAgeType::coerce($at) );
+        $datasets[$at]['data'] = [];
+      }
+
+      /*       SELECT c.shortname, count(t.id)
+      FROM clubs as c, teams as t
+      WHERE c.region_id=2
+      AND t.club_id = c.id
+      GROUP BY c.shortname */
+      $select = "select c.shortname, l.age_type, count(l.age_type) as total ";
+      $select .= " FROM clubs as c, teams as t, leagues as l ";
+      $select .= " WHERE c.region_id = ".$region->id;
+      $select .= " AND t.club_id = c.id ";
+      $select .= " AND t.league_id = l.id ";
+      $select .= " GROUP BY c.shortname, l.age_type";
+      $select .= " ORDER BY c.shortname ASC, l.age_type ASC";
+      Log::debug(print_r($select, true));
+
+      // Log::debug($select);
+      $rs = collect(DB::select($select));
+      $data['labels'] = $rs->pluck('shortname')->unique()->values()->toArray();
+
+      foreach ($rs as $r){
+        $datasets[$r->age_type]['data'][] = $r->total;
+      }
+      $data['datasets'] = $datasets;
+
+      // Log::debug(print_r($data,true));
+
+      return Response::json($data);
+    }    
+
+    /**
+     * members and roles by club for a region
+     * 
+     * @param Region $region
+     * @return Response
+     * 
+     */
+    public function club_member_chart(Region $region)
+    {
+
+      $data = array();
+      $data['labels'] = [];
+      $datasets = array();
+      // initialize datasets
+      foreach ( Role::getValues() as $r){
+        $datasets[$r]['stack'] = 'Stack 1';
+        $datasets[$r]['label'] = Role::getDescription( Role::coerce($r) );
+        $datasets[$r]['data'] = [];
+      }
+      
+/*       Membership::whereIn('member_id',Club::find(26)->members()->pluck('member_id'))
+        ->get()
+        ->groupBy('role_id')
+        ->map(function ($item, $key) {
+            return collect($item)->count();
+          }); */
+      $clubs = $region->clubs->sortBy('shortname');
+      $data['labels'] = $clubs->pluck('shortname')->toArray();
+
+      foreach ($clubs as $c){
+        $mships = Membership::whereIn('member_id', $c->members()->pluck('member_id'))
+                ->get()
+                ->countBy('role_id');
+
+        foreach ( Role::getValues() as $r ){
+          $datasets[$r]['data'][] = $mships[$r] ?? 0;
+        }
+      }
+      $data['datasets'] = $datasets;
+
+      // Log::debug(print_r($data,true));
+
+      return Response::json($data);
+    }    
+
+  }

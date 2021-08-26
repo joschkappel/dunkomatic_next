@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Collection;
 
 use App\Imports\HomeGamesImport;
 use Illuminate\Support\Facades\Storage;
@@ -108,7 +109,7 @@ class ClubGameController extends Controller
         if ( $cgym != $hg->gym){
           $cgym = $hg->gym;
           $hg_by_gym[$cgym]['label'] = $hg->gymname;
-          $hg_by_gym[$cgym]['data'] = new \Illuminate\Support\Collection;
+          $hg_by_gym[$cgym]['data'] = new Collection;
         }
         $hg->y = intval($hg->ghour)+($hg->gmin = intval($hg->gmin)/60);
         unset($hg->gmin);
