@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Enums\LeagueAgeType;
 use App\Models\League;
 use App\Models\Team;
 use App\Models\Game;
@@ -43,7 +44,13 @@ trait GameManager {
           } else {
             $g['game_date'] = $gday;
           };
-          $g['referee_1'] = "";
+
+          if ($league->age_type->in( [LeagueAgeType::Junior(), LeagueAgeType::Mini()] ) ){
+            $g['referee_1'] = "****";
+          } else {
+            $g['referee_1'] = "";
+          }
+
           $g['referee_2'] = "";
           $g['team_char_home'] = $s->team_home;
           $g['team_char_guest'] = $s->team_guest;
@@ -103,7 +110,13 @@ trait GameManager {
                   $g['game_date'] = $gday;
                 };
                 $g['gym_no'] = "1";
-                $g['referee_1'] = "";
+
+                if ($league->age_type->in( [ LeagueAgeType::Junior(), LeagueAgeType::Mini() ] ) ){
+                  $g['referee_1'] = "****";
+                } else {
+                  $g['referee_1'] = "";
+                }                
+
                 $g['referee_2'] = "";
                 $g['team_char_home'] = $s->team_home;
                 $g['team_char_guest'] = $s->team_guest;

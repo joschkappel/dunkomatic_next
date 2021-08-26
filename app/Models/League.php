@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\LeagueAgeType;
+use App\Enums\LeagueGenderType;
 use App\Models\Game;
 use App\Models\Region;
 use App\Models\Club;
@@ -49,6 +51,8 @@ class League extends Model implements Auditable
         'selection_closed_at' => 'datetime',
         'scheduling_closed_at' => 'datetime',
         'state' => LeagueState::class,
+        'age_type' => LeagueAgeType::class,
+        'gender_type' => LeagueGenderType::class,
     ];
 
 

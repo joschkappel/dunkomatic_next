@@ -3,8 +3,11 @@
 @push('css')
 <style>
 .chart-wrapper {
-  border: 1px solid gray;
+  border: 2px solid black;
   width: 75%;
+  border-radius: 25px;
+  background: whitesmoke;
+  padding: 20px;
 }
 </style>
 @endpush
@@ -231,7 +234,7 @@
             type: 'pie',
             data: { datasets: [{ data: [], }] },
             options: {
-              plugins: { colorschemes: { scheme: 'brewer.SetOne9' }, },
+              plugins: { colorschemes: { scheme: 'brewer.SetOne4' }, },
               title: { 
                 display: true,
                 text: 'Leagues by Status'
@@ -301,7 +304,7 @@
             type: 'bar',
             data: { datasets: [{ data: [], }] },
             options: {
-              plugins: { colorschemes: { scheme: 'brewer.SetOne9' }, },
+              plugins: { colorschemes: { scheme: 'brewer.SetOne3' }, },
               responsive: true,
             
               title: { 
@@ -315,12 +318,13 @@
             }
         });
 
-       var cmc = document.getElementById('clubmemberchart').getContext('2d');
+       var cmc_canvas = document.getElementById('clubmemberchart');
+       var cmc = cmc_canvas.getContext('2d');
        var clubmemberchart = new Chart(cmc, {
             type: 'bar',
             data: { },
             options: {
-              plugins: { colorschemes: { scheme: 'brewer.SetOne9' }, },
+              plugins: { colorschemes: { scheme: 'brewer.RdYlGn10' }, },
               responsive: true,
 
               title: { 
@@ -351,6 +355,12 @@
       load_chart( leaguesociochart, '{{ route('region.league.socio.chart', ['region' => $region->id]) }}' );
       load_chart( clubteamchart, '{{ route('region.club.team.chart', ['region' => $region->id]) }}' );
       load_chart( clubmemberchart, '{{ route('region.club.member.chart', ['region' => $region->id]) }}' );
+
+      cmc_canvas.onclick = function(e) {
+        var slice = clubmemberchart.getElementAtEvent(e);
+        if (!slice.length) return; 
+        alert('you clicked on '+slice[0]._model.label);
+      };
 
 
   });
