@@ -67,7 +67,7 @@
                 <select class='js-placeholder-single js-states form-control select2 @error('age_type') is-invalid @enderror
                         id='selAgeType' name='age_type'>
                     @foreach ($agetype as $at)
-                        <option value="{{ $at->value }}" @if ($league->age_type == $at->value) selected="selected" @endif>
+                        <option value="{{ $at->value }}" @if ($league->age_type->is($at) ) selected="selected" @endif>
                             {{ $at->description }}</option>
                     @endforeach
                 </select>
@@ -85,7 +85,7 @@
                 <select class='js-placeholder-single js-states form-control select2 @error('gender_type') is-invalid @enderror
                         id='selGenderType' name='gender_type'>
                     @foreach ($gendertype as $gt)
-                        <option value="{{ $gt->value }}" @if ($league->gender_type == $gt->value) selected="selected" @endif>
+                        <option value="{{ $gt->value }}" @if ($league->gender_type->is( $gt )) selected="selected" @endif>
                             {{ $gt->description }}</option>
                     @endforeach
                 </select>

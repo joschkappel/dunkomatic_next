@@ -412,14 +412,14 @@ class LeagueController extends Controller
     ]);
 
     $above_region = $request->input('above_region');
-    if (isset($above_region) and ($above_region === 'on')) {
+    if (isset($above_region) and ($above_region == 'on')) {
       $data['above_region'] = True;
     } else {
       $data['above_region'] = False;
     }
 
     Log::debug('ready to update league:' . print_r($data, true));
-    $check = League::find($league->id)->update($data);
+    $result = $league->update($data);
     return redirect()->route('league.dashboard', ['language' => app()->getLocale(), 'league' => $league]);
   }
 
