@@ -1,5 +1,13 @@
 @extends('layouts.page')
 
+@push('css')
+<style>
+.chart-wrapper {
+  border: 1px solid gray;
+  width: 75%;
+}
+</style>
+@endpush
 
 @section('content_header')
 <div class="container-fluid">
@@ -66,7 +74,6 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-sm-6 pd-2">
-
         <!-- card MEMBERS -->
         <div class="card card-outline card-info collapsed-card">
           <div class="card-header">
@@ -111,25 +118,77 @@
           <!-- /.card-footer -->
         </div>
         <!-- /.card -->
-
-    <!-- all modals here -->
-    <x-confirm-deletion modalId="modalDeleteRegion" modalTitle="{{ __('region.title.delete')}}" modalConfirm="{{ __('region.confirm.delete') }}" deleteType="{{ trans_choice('region.region',1) }}" />
-    @include('member/includes/membership_add')
-    @include('member/includes/membership_modify')
-    <x-confirm-deletion modalId="modalDeleteMember" modalTitle="{{ __('role.title.delete')}}" modalConfirm="{{ __('role.confirm.delete') }}" deleteType="{{ __('role.member') }}" />                
-    <!-- all modals above -->
-        </div>
     </div>
-    <div class="row justify-content-center">
-        <div class="col-sm-4">
-            <div class="card border-secondary bg-secondary text-white">
-                <img src="{{asset('img/'.config('dunkomatic.grafics.region', 'oops.jpg'))}}" class="card-img" alt="...">
-                <div class="card-img-overlay">
-                </div>
+    <div class="col-sm-6 pd-2">
+        <!-- card LEAGUE ANALYSIS -->
+        <div class="card card-outline card-info collapsed-card">
+          <div class="card-header">
+            <h4 class="card-title"><i class="fas fa-trophy"></i> @lang('league statistics') </h4>
+            <div class="card-tools">
+              <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
+              </button>
             </div>
+            <!-- /.card-tools -->
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body">
+            <div class="row m-5">
+              <div class="chart-wrapper">
+                <canvas id="leaguestatechart"></canvas>
+              </div>
+            </div>
+            <div class="row m-5">
+              <div class="chart-wrapper">
+                <canvas id="leaguesociochart"></canvas>
+              </div>
+            </div>
+          </div>
+          <!-- /.card-body -->
+          <!-- /.card-footer -->
         </div>
+        <!-- /.card -->
     </div>
-@stop
+  </div>
+  <div class="row">
+    <div class="col-sm-12 pd-2">
+          <!-- card CLUB ANALYSIS -->
+          <div class="card card-outline card-info ">
+            <div class="card-header">
+              <h4 class="card-title"><i class="fas fa-basketball-ball"></i> @lang('club statistics')</h4>
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                </button>
+              </div>
+              <!-- /.card-tools -->
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+              <div class="row m-5">
+                <div class="chart-wrapper">
+                  <canvas id="clubteamchart"></canvas>
+                </div>
+              </div>
+              <div class="row m-5">
+                <div class="chart-wrapper">
+                  <canvas id="clubmemberchart"></canvas>
+              </div>  
+              </div>
+            </div>
+            <!-- /.card-body -->
+            <!-- /.card-footer -->
+          </div>
+          <!-- /.card -->
+      </div>
+    </div>
+  </div>  
+  <!-- all modals here -->
+  <x-confirm-deletion modalId="modalDeleteRegion" modalTitle="{{ __('region.title.delete')}}" modalConfirm="{{ __('region.confirm.delete') }}" deleteType="{{ trans_choice('region.region',1) }}" />
+  @include('member/includes/membership_add')
+  @include('member/includes/membership_modify')
+  <x-confirm-deletion modalId="modalDeleteMember" modalTitle="{{ __('role.title.delete')}}" modalConfirm="{{ __('role.confirm.delete') }}" deleteType="{{ __('role.member') }}" />                
+  <!-- all modals above -->
+</div>
+@endsection
 
 @section('js')
 <script>
@@ -165,7 +224,135 @@
        url = url.replace(':member:', $(this).data('member-id'));
        $('#modalDeleteMember_Form').attr('action', url);
        $('#modalDeleteMember').modal('show');
-    });    
+    }); 
+
+       var lsc = document.getElementById('leaguestatechart').getContext('2d');
+       var leaguestatechart = new Chart(lsc, {
+            type: 'pie',
+            data: { datasets: [{ data: [], }] },
+            options: {
+              plugins: { colorschemes: { scheme: 'brewer.SetOne9' }, },
+              title: { 
+                display: true,
+                text: 'Leagues by Status'
+              },
+            }
+        });
+
+       var lsoc = document.getElementById('leaguesociochart').getContext('2d');   
+       var leaguesociochart = new Chart(lsoc, {
+          type: "pie",
+          data: { },
+          options: {
+            legend: {
+              labels: {
+                generateLabels: function(context) {
+                  // Get the default label list
+                  var original = Chart.defaults.pie.legend.labels.generateLabels;
+                  var labels = original.call(this, context);
+
+                  // Build an array of colors used in the datasets of the chart
+                  var datasetColors = context.chart.data.datasets.map(function(e) {
+                    return e.backgroundColor;
+                  });
+                  datasetColors = datasetColors.flat();
+
+                  // Modify the color and hide state of each label
+                  labels.forEach(label => {
+                    // There are twice as many labels as there are datasets. This converts the label index into the corresponding dataset index
+                    label.datasetIndex = (label.index - label.index % 3) / 3;
+
+                    // The hidden state must match the dataset's hidden state
+                    label.hidden = !context.chart.isDatasetVisible(label.datasetIndex);
+
+                    // Change the color to match the dataset
+                    label.fillStyle = datasetColors[label.index];
+                  });
+
+                  return labels;
+                }
+              },
+              onClick: function(mouseEvent, legendItem) {
+                // toggle the visibility of the dataset from what it currently is
+                this.chart.getDatasetMeta(
+                  legendItem.datasetIndex
+                ).hidden = this.chart.isDatasetVisible(legendItem.datasetIndex);
+                this.chart.update();
+              }
+            },
+            tooltips: {
+              callbacks: {
+                label: function(tooltipItem, data) {
+                  var labelIndex = (tooltipItem.datasetIndex * 3) + tooltipItem.index;
+                  return data.labels[labelIndex] + ": "+ data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                }
+              }
+            },
+            title: { 
+              display: true,
+              text: 'Leagues by Age and Gender'
+            },
+          }
+        });
+
+
+       var ctc = document.getElementById('clubteamchart').getContext('2d');
+       var clubteamchart = new Chart(ctc, {
+            type: 'bar',
+            data: { datasets: [{ data: [], }] },
+            options: {
+              plugins: { colorschemes: { scheme: 'brewer.SetOne9' }, },
+              responsive: true,
+            
+              title: { 
+                display: true,
+                text: 'Clubs by team'
+              },
+              scales: {
+                y: { beginAtZero: true, stacked: true },
+                x: { stacked: true }
+              },
+            }
+        });
+
+       var cmc = document.getElementById('clubmemberchart').getContext('2d');
+       var clubmemberchart = new Chart(cmc, {
+            type: 'bar',
+            data: { },
+            options: {
+              plugins: { colorschemes: { scheme: 'brewer.SetOne9' }, },
+              responsive: true,
+
+              title: { 
+                display: true,
+                text: 'Clubs by members'
+              },
+              scales: {
+                y: { beginAtZero: true, stacked: true },
+                x: { stacked: true }
+              },
+            }
+        });        
+
+       function load_chart(chart, route) {
+            $.ajax({
+                type: 'GET',
+                url: route,
+                success: function(response) {
+                    chart.data.labels = response['labels'];
+                    chart.data.datasets = response['datasets'];
+
+                    chart.update();
+                },
+            });
+        };
+
+      load_chart( leaguestatechart, '{{ route('region.league.state.chart', ['region' => $region->id]) }}' );
+      load_chart( leaguesociochart, '{{ route('region.league.socio.chart', ['region' => $region->id]) }}' );
+      load_chart( clubteamchart, '{{ route('region.club.team.chart', ['region' => $region->id]) }}' );
+      load_chart( clubmemberchart, '{{ route('region.club.member.chart', ['region' => $region->id]) }}' );
+
+
   });
 
 </script>

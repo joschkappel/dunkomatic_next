@@ -212,4 +212,10 @@ Route::middleware(['auth'])->group(function () {
   Route::get('archive/user/{user}', 'FileDownloadController@get_user_archive')->name('user_archive.get');
   Route::get('archive/club/{club}', 'FileDownloadController@get_club_archive')->name('club_archive.get');
   Route::get('archive/league/{league}', 'FileDownloadController@get_league_archive')->name('league_archive.get');
+
+  Route::get('region/{region}/league/team', 'RegionController@league_team_chart')->name('region.league.team.chart');
+  Route::get('region/{region}/league/state', 'RegionController@league_state_chart')->name('region.league.state.chart');
+  Route::get('region/{region}/league/socio', 'RegionController@league_socio_chart')->name('region.league.socio.chart');
+  Route::get('region/{region}/club/team', 'RegionController@club_team_chart')->name('region.club.team.chart');
+  Route::get('region/{region}/club/member', 'RegionController@club_member_chart')->name('region.club.member.chart');
 });
