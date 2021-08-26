@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
           LeagueSizeCharsTableSeeder::class,
           SchedulesTableSeeder::class,
           UsersTableSeeder::class,
+          TestUserSeeder::class,
         ]);
 
         $this->call([
