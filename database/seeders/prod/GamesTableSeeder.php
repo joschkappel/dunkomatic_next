@@ -1,5 +1,5 @@
 <?php
-namespace Database\Seeders;
+namespace Database\Seeders\prod;
 
 use App\Enums\LeagueState;
 use App\Models\League;

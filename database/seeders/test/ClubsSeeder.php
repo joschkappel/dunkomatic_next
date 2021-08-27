@@ -1,5 +1,5 @@
 <?php
-namespace Database\Seeders;
+namespace Database\Seeders\test;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Factories\Sequence;
@@ -7,7 +7,7 @@ use App\Models\Club;
 use App\Models\Member;
 use App\Models\Gym;
 
-class TestClubsSeeder extends Seeder
+class ClubsSeeder extends Seeder
 {
     /**
      * Seed clubs

@@ -1,10 +1,9 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\base;
 
 use Bouncer;
 use Illuminate\Database\Seeder;
-use App\Models\Region;
 
 class BouncerSeeder extends Seeder
 {

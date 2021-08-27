@@ -14,18 +14,18 @@ class PerfTestDatabaseSeeder extends Seeder
     {
         // $this->call(UsersTableSeeder::class);
         $this->call([
-          BouncerSeeder::class,
-          SettingsTableSeeder::class,
-          RegionsTableSeeder::class,
-          UsersTableSeeder::class,
-          TestUserSeeder::class,
-          LeagueSizesTableSeeder::class,
-          LeagueSizeCharsTableSeeder::class,
-          LeagueSizeSchemesTableSeeder::class,
+          base\BouncerSeeder::class,
+          base\SettingsTableSeeder::class,
+          base\RegionsTableSeeder::class,
+          dev\UsersTableSeeder::class,
+          test\UserSeeder::class,
+          base\LeagueSizesTableSeeder::class,
+          base\LeagueSizeCharsTableSeeder::class,
+          base\LeagueSizeSchemesTableSeeder::class,
         ]);
         $this->call([
-            TestClubsSeeder::class,
-            TestLeaguesSeeder::class,
+            test\ClubsSeeder::class,
+            test\LeaguesSeeder::class,
           ]);
     }
 }

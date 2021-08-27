@@ -1,5 +1,5 @@
 <?php
-namespace Database\Seeders;
+namespace Database\Seeders\prod;
 
 use App\Models\LeagueSize;
 use Illuminate\Database\Seeder;

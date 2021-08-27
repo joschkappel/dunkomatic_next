@@ -2,9 +2,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Database\Seeders\dev\GymsTableSeeder;
-use Database\Seeders\dev\ClubsTableSeeder;
-use Database\Seeders\dev\MembersTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,33 +13,29 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // $this->call(UserSeeder::class);
+
+        // load base tables
         $this->call([
-          BouncerSeeder::class,
-          SettingsTableSeeder::class,
-          RegionsTableSeeder::class,
-          LeagueSizesTableSeeder::class,
-          LeagueSizeCharsTableSeeder::class,
-          SchedulesTableSeeder::class,
-          UsersTableSeeder::class,
-          TestUserSeeder::class,
+          base\BouncerSeeder::class,
+          base\SettingsTableSeeder::class,
+          base\RegionsTableSeeder::class,
+          base\LeagueSizesTableSeeder::class,
+          base\LeagueSizeCharsTableSeeder::class,
+          base\LeagueSizeSchemesTableSeeder::class,
+          dev\UsersTableSeeder::class,
         ]);
 
+        // migrate tables from v1
         $this->call([
-          ClubsTableSeeder::class,
-          GymsTableSeeder::class,
-        ]);
-
-        $this->call([
-          LeagueSizeSchemesTableSeeder::class,
-          ScheduleEventsTableSeeder::class,
-          LeaguesTableSeeder::class,
-          ClubLeagueTableSeeder::class,
-        ]);
-
-        $this->call([
-          TeamsTableSeeder::class,
-          MembersTableSeeder::class,
-          GamesTableSeeder::class,
+          dev\ClubsTableSeeder::class,
+          dev\GymsTableSeeder::class,
+          prod\SchedulesTableSeeder::class,
+          prod\ScheduleEventsTableSeeder::class,
+          prod\LeaguesTableSeeder::class,
+          prod\ClubLeagueTableSeeder::class,
+          prod\TeamsTableSeeder::class,
+          dev\MembersTableSeeder::class,
+          prod\GamesTableSeeder::class,
         ]);
     }
 }
