@@ -50,15 +50,24 @@ class LeagueController extends Controller
   {
 
     app()->setLocale($language);
-    
-    $leagues = $region->leagues()
-      ->with('schedule.league_size')
-      ->withCount([
-        'clubs', 'teams', 'registered_teams','selected_teams','games',
-        'games_notime', 'games_noshow'
-      ])
-      ->orderBy('shortname','ASC')
-      ->get();
+
+    if ( $region->is_base_level ){
+        $leagues = League::whereIn('region_id', [ $region->id, $region->parentRegion->id ] )->with('schedule.league_size')
+                        ->withCount([
+                            'clubs', 'teams', 'registered_teams','selected_teams','games',
+                            'games_notime', 'games_noshow'
+                        ])
+                        ->orderBy('shortname','ASC')
+                        ->get();
+    } else {
+        $leagues = League::where('region_id', $region->id)->with('schedule.league_size')
+                        ->withCount([
+                            'clubs', 'teams', 'registered_teams','selected_teams','games',
+                            'games_notime', 'games_noshow'
+                        ])
+                        ->orderBy('shortname','ASC')
+                        ->get();
+    }
 
     //Log::debug(print_r($leagues,true));
 
@@ -66,11 +75,14 @@ class LeagueController extends Controller
 
     return $leaguelist
       ->addIndexColumn()
-      ->rawColumns(['shortname.display','age_type.display','gender_type.display', 
-                    'assigned_rel.display', 'registered_rel.display', 
+      ->rawColumns(['shortname.display','age_type.display','gender_type.display',
+                    'assigned_rel.display', 'registered_rel.display',
                     'selected_rel.display','size.display','state'])
-      ->editColumn('shortname', function ($l) {
-        if ((Bouncer::can('manage', $l)) or (Auth::user()->isA('regionadmin'))) {
+      ->editColumn('shortname', function ($l) use ($region) {
+        if (  ( (Bouncer::can('manage', $l))
+             or (Auth::user()->isA('regionadmin')) )
+             and ( $l->region->is( $region ) ))
+        {
           $link = '<a href="' . route('league.dashboard', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" >' . $l->shortname . '</a>';
         } else {
           $link = '<a href="' . route('league.briefing', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" class="text-info">' . $l->shortname . '</a>';
@@ -82,13 +94,21 @@ class LeagueController extends Controller
       })
       ->editColumn('gender_type', function ($l) {
         return array('display'=>LeagueGenderType::getDescription($l->gender_type), 'sort'=>$l->gender_type);
-      }) 
+      })
       ->addColumn('size', function ($l){
         if ($l->schedule()->exists()){
           return ($l->size == null  ) ? array('display' =>null, 'sort'=>0) : array('display' =>$l->size, 'sort'=>$l->size);
         } else {
           return array('display' =>null, 'sort'=>0);
         }
+      })
+      ->addColumn('alien_region', function ($l) use ($region) {
+          if ($region->is_base_level and $l->region->is_top_level){
+              return $l->region->code;
+          } else {
+              return '';
+          }
+
       })
       ->addColumn('assigned_rel', function($l){
         if ($l->teams_count!=0){
@@ -111,7 +131,7 @@ class LeagueController extends Controller
         <div class="progress-bar" role="progressbar" style="width: '.$registered_rel.'%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">'.$registered_rel.'%</div>
         </div>';
         return array('display' =>$content, 'sort'=>$registered_rel);
-      }) 
+      })
       ->addColumn('selected_rel', function($l){
         if ($l->teams_count!=0){
             $selected_rel = round(($l->selected_teams_count * 100)/$l->teams_count);
@@ -122,7 +142,7 @@ class LeagueController extends Controller
         <div class="progress-bar bg-success" role="progressbar" style="width: '.$selected_rel.'%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">'.$selected_rel.'%</div>
         </div>';
         return array('display' =>$content, 'sort'=>$selected_rel);
-      })         
+      })
       ->editColumn('updated_at', function ($l) {
         return ($l->updated_at==null) ? null : $l->updated_at->format('d.m.Y H:i');
       })
@@ -175,7 +195,7 @@ class LeagueController extends Controller
       );
     }
     return Response::json($response);
-  } 
+  }
 
   /**
    * Display a listing of the resource for selectboxes.
@@ -273,7 +293,7 @@ class LeagueController extends Controller
         if ( $k ) {
           $item['team_registered'] = true;
           if ($st[$k]['league_no'] != null){
-            $item['team_selected'] = true;  
+            $item['team_selected'] = true;
           }
           $st->pull($k);
         }
@@ -516,35 +536,35 @@ class LeagueController extends Controller
       $league->clubs()->detach();
 
       foreach ($data['assignedClubs'] as $i => $c){
-        $league_no = $i+1;  
+        $league_no = $i+1;
         $league_char = $upperArr[$league_no];
         Log::debug('league_char: ' . $league_char);
 
         $league->clubs()->attach(
-            $c, 
+            $c,
             [
               'league_no' => $league_no,
               'league_char' => $league_char
             ]
-          );      
+          );
       }
     } elseif (isset($data['club_id'])){
       $league_no = $league->clubs->max('pivot.league_no') +1;
       $league_char = $upperArr[$league_no];
       $league->clubs()->attach(
-        Club::find($data['club_id']), 
+        Club::find($data['club_id']),
         [
           'league_no' => $league_no,
           'league_char' => $league_char
         ]
-      );  
+      );
     }
 
     return redirect()->back();
     //route('league.dashboard', ['language' => app()->getLocale(), 'league' => $league]);
   }
 
-  
+
   /**
    * display management dashboard
    *
@@ -560,8 +580,12 @@ class LeagueController extends Controller
   public function club_assign_dt($language, Region $region)
   {
 
+    if ( $region->is_base_level ){
+        $leagues = League::whereIn('region_id', [ $region->id, $region->parentRegion->id ] )->get();
+    } else {
+        $leagues = $region->leagues;
+    }
 
-    $leagues = $region->leagues;
 
     //Log::debug(print_r($leagues,true));
 
@@ -572,62 +596,77 @@ class LeagueController extends Controller
       ->addIndexColumn()
       ->rawColumns(['shortname.display','nextaction','rollbackaction','clubs','teams',
                     'age_type.display', 'gender_type.display'])
-      ->editColumn('shortname', function ($l) {
-        if ((Bouncer::can('manage', $l)) or (Auth::user()->isA('regionadmin'))) {
+      ->editColumn('shortname', function ($l) use ($region) {
+        if (  ( (Bouncer::can('manage', $l))
+             or (Auth::user()->isA('regionadmin')) )
+             and ( $l->region->is( $region ) )
+            ) {
           $link = '<a href="' . route('league.dashboard', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" >' . $l->shortname . '</a>';
         } else {
           $link = '<a href="' . route('league.briefing', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" class="text-info">' . $l->shortname . '</a>';
         }
         return array('display' =>$link, 'sort'=>$l->shortname);
-      })      
+      })
       ->editColumn('age_type', function ($l) {
         return array('display'=>LeagueAgeType::getDescription($l->age_type), 'sort'=>$l->age_type);
       })
       ->editColumn('gender_type', function ($l) {
         return array('display'=>LeagueGenderType::getDescription($l->gender_type), 'sort'=>$l->gender_type);
-      }) 
-      ->addColumn('nextaction', function ($data) {
-          $btn = '';
-          if ($data->state->is( LeagueState::Assignment())){
-            $btn = '<button type="button" class="btn btn-primary btn-sm" id="changeState" data-league="'.$data->id.'" 
-                    data-action="'.LeagueStateChange::CloseAssignment().'"><i class="fas fa-lock"> </i> '.__('league.action.close.assignment').'</button>';
-            $btn .= '<button type="button" class="btn btn-secondary btn-sm" id="assignClub" data-league="'.$data->id.'" 
-                    data-toggle="collapse" data-target="#collapseAssignment"><i class="fas fa-lock"> </i> Assign Clubs</button>';
-          } elseif ($data->state->is( LeagueState::Registration())) {
-            $btn = '<button type="button" class="btn btn-primary btn-sm" id="changeState" data-league="'.$data->id.'" 
-                    data-action="'.LeagueStateChange::CloseRegistration().'"><i class="fas fa-lock"> </i> '.__('league.action.close.registration').'</button>';
-          } elseif ($data->state->is( LeagueState::Selection())) {
-            $btn = '<button type="button" class="btn btn-primary btn-sm" id="changeState" data-league="'.$data->id.'"
-                    data-action="'.LeagueStateChange::CloseSelection().'"><i class="fas fa-lock"> </i> '.__('league.action.close.selection').'</button>';
-          } elseif ($data->state->is( LeagueState::Freeze())) {
-            $btn = '<button type="button" class="btn btn-primary btn-sm" id="createGames" data-league="'.$data->id.'"><i class="fas fa-plus-circle"> </i> '. __('league.action.close.freeze').'
-                    </button>';
-          } elseif ($data->state->is( LeagueState::Scheduling())) {
-            $btn = '<button type="button" class="btn btn-primary btn-sm" id="changeState" data-league="'.$data->id.'" 
-                    data-action="'.LeagueStateChange::CloseScheduling().'"><i class="fas fa-lock"> </i> '.__('league.action.close.scheduling').'</button>';
-          }
-          return $btn;
       })
-      ->addColumn('rollbackaction', function ($data) {
+      ->addColumn('alien_region', function ($l) use ($region) {
+        if ($region->is_base_level and $l->region->is_top_level){
+            return $l->region->code;
+        } else {
+            return '';
+        }
+
+        })
+      ->addColumn('nextaction', function ($data) use ($region) {
           $btn = '';
-          if ($data->state->is( LeagueState::Registration())) {
-            $btn .= '<button type="button" class="btn btn-outline-danger btn-sm" id="changeState" data-league="'.$data->id.'" 
-                    data-action="'.LeagueStateChange::OpenAssignment().'"><i class="fas fa-lock"> </i> '.__('league.action.open.assignment').'</button>';
-          } elseif ($data->state->is( LeagueState::Selection())) {
-            $btn .= '<button type="button" class="btn btn-outline-danger btn-sm" id="changeState" data-league="'.$data->id.'" 
-                    data-action="'.LeagueStateChange::OpenRegistration().'"><i class="fas fa-lock"> </i> '.__('league.action.open.registration').'</button>';        
-          } elseif ($data->state->is( LeagueState::Freeze())) {
-            $btn .= '<button type="button" class="btn btn-outline-danger btn-sm" id="changeState" data-league="'.$data->id.'" 
-                    data-action="'.LeagueStateChange::OpenSelection().'"><i class="fas fa-lock"> </i> '.__('league.action.open.selection').'</button>';
-          } elseif ($data->state->is( LeagueState::Scheduling())) {
-            $btn .= '<button type="button" class="btn btn-outline-danger btn-sm" id="deleteGames" data-league="'.$data->id.'"><i class="fas fa-minus-circle"> </i> '. __('league.action.open.freeze').'
-                    </button>';
-          } elseif ($data->state->is( LeagueState::Live())) {
-            $btn .= '<button type="button" class="btn btn-outline-danger btn-sm" id="changeState" data-league="'.$data->id.'" 
-                    data-action="'.LeagueStateChange::OpenScheduling().'"><i class="fas fa-lock"> </i> '.__('league.action.open.scheduling').'</button>';                
-          }
-          return $btn;
-      })      
+          if ($region->is($data->region)){
+            if ($data->state->is( LeagueState::Assignment())){
+                $btn = '<button type="button" class="btn btn-primary btn-sm" id="changeState" data-league="'.$data->id.'"
+                        data-action="'.LeagueStateChange::CloseAssignment().'"><i class="fas fa-lock"> </i> '.__('league.action.close.assignment').'</button>';
+                $btn .= '<button type="button" class="btn btn-secondary btn-sm" id="assignClub" data-league="'.$data->id.'"
+                        data-toggle="collapse" data-target="#collapseAssignment"><i class="fas fa-lock"> </i> Assign Clubs</button>';
+            } elseif ($data->state->is( LeagueState::Registration())) {
+                $btn = '<button type="button" class="btn btn-primary btn-sm" id="changeState" data-league="'.$data->id.'"
+                        data-action="'.LeagueStateChange::CloseRegistration().'"><i class="fas fa-lock"> </i> '.__('league.action.close.registration').'</button>';
+            } elseif ($data->state->is( LeagueState::Selection())) {
+                $btn = '<button type="button" class="btn btn-primary btn-sm" id="changeState" data-league="'.$data->id.'"
+                        data-action="'.LeagueStateChange::CloseSelection().'"><i class="fas fa-lock"> </i> '.__('league.action.close.selection').'</button>';
+            } elseif ($data->state->is( LeagueState::Freeze())) {
+                $btn = '<button type="button" class="btn btn-primary btn-sm" id="createGames" data-league="'.$data->id.'"><i class="fas fa-plus-circle"> </i> '. __('league.action.close.freeze').'
+                        </button>';
+            } elseif ($data->state->is( LeagueState::Scheduling())) {
+                $btn = '<button type="button" class="btn btn-primary btn-sm" id="changeState" data-league="'.$data->id.'"
+                        data-action="'.LeagueStateChange::CloseScheduling().'"><i class="fas fa-lock"> </i> '.__('league.action.close.scheduling').'</button>';
+            }
+        }
+        return $btn;
+      })
+      ->addColumn('rollbackaction', function ($data) use ($region) {
+          $btn = '';
+          if ($region->is($data->region)){
+            if ($data->state->is( LeagueState::Registration())) {
+                $btn .= '<button type="button" class="btn btn-outline-danger btn-sm" id="changeState" data-league="'.$data->id.'"
+                        data-action="'.LeagueStateChange::OpenAssignment().'"><i class="fas fa-lock"> </i> '.__('league.action.open.assignment').'</button>';
+            } elseif ($data->state->is( LeagueState::Selection())) {
+                $btn .= '<button type="button" class="btn btn-outline-danger btn-sm" id="changeState" data-league="'.$data->id.'"
+                        data-action="'.LeagueStateChange::OpenRegistration().'"><i class="fas fa-lock"> </i> '.__('league.action.open.registration').'</button>';
+            } elseif ($data->state->is( LeagueState::Freeze())) {
+                $btn .= '<button type="button" class="btn btn-outline-danger btn-sm" id="changeState" data-league="'.$data->id.'"
+                        data-action="'.LeagueStateChange::OpenSelection().'"><i class="fas fa-lock"> </i> '.__('league.action.open.selection').'</button>';
+            } elseif ($data->state->is( LeagueState::Scheduling())) {
+                $btn .= '<button type="button" class="btn btn-outline-danger btn-sm" id="deleteGames" data-league="'.$data->id.'"><i class="fas fa-minus-circle"> </i> '. __('league.action.open.freeze').'
+                        </button>';
+            } elseif ($data->state->is( LeagueState::Live())) {
+                $btn .= '<button type="button" class="btn btn-outline-danger btn-sm" id="changeState" data-league="'.$data->id.'"
+                        data-action="'.LeagueStateChange::OpenScheduling().'"><i class="fas fa-lock"> </i> '.__('league.action.open.scheduling').'</button>';
+            }
+         }
+         return $btn;
+      })
       ->addColumn('clubs', function ($data) {
         $btnlist = '';
 
@@ -637,14 +676,14 @@ class LeagueController extends Controller
           if ($t->get($k) == null){
             $diff = $c->count();
           } else {
-            $diff = $c->count() > $t->get($k)->count(); 
+            $diff = $c->count() > $t->get($k)->count();
           }
           if (  $diff > 0 ){
             for ($i=0; $i < $diff; $i++){
               $btnlist .= '<button disabled  type="button" class="btn btn-outline-success btn-sm">'.$k.'</button> ';
             }
           };
-          $ccnt += $c->count(); 
+          $ccnt += $c->count();
         }
         if ($data->state->is(LeagueState::Assignment())){
           for ($i = $ccnt; $i <= $data->size; $i++){
@@ -656,8 +695,8 @@ class LeagueController extends Controller
       })
       ->addColumn('teams', function ($l) {
         $btnlist = '';
-        $ccnt = 1;    
-        $c = $l->clubs->pluck('shortname'); 
+        $ccnt = 1;
+        $c = $l->clubs->pluck('shortname');
         foreach ($l->teams()->with('club')->orderBy('league_no')->get()->pluck('league_no','club.shortname') as $lt => $lnr ){
           if ($c->contains($lt)){
             if ($lnr == null){

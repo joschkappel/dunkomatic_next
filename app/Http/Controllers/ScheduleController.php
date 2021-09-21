@@ -33,16 +33,28 @@ class ScheduleController extends Controller
      */
     public function sb_region(Region $region)
     {
-      $schedules = $region->schedules()->orderBy('name','ASC')->get();
+      if ($region->is_base_level){
+        $schedules = Schedule::whereIn('region_id', [ $region->id, $region->parentRegion->id ] )->orderBy('name','ASC')->get();
+
+      } else {
+          $schedules = $region->schedules()->orderBy('name','ASC')->get();
+      }
 
       Log::debug('got schedules '.count($schedules));
       $response = array();
 
       foreach($schedules as $schedule){
-          $response[] = array(
-                "id"=>$schedule->id,
-                "text"=>$schedule->name
-              );
+          if ($schedule->region->is( $region)){
+            $response[] = array(
+                    "id"=>$schedule->id,
+                    "text"=>$schedule->name
+                );
+            } else {
+                $response[] = array(
+                    "id"=>$schedule->id,
+                    "text"=>'(' . $schedule->region->code .') ' . $schedule->name
+                );
+            }
       }
       return Response::json($response);
     }
@@ -145,7 +157,7 @@ class ScheduleController extends Controller
                   return '<a href="' . route('schedule_event.list', $data) .'">'.$data->events_count.' <i class="fas fa-arrow-circle-right"></i></a>';
                 } else {
                   return $data->events_count;
-                }                  
+                }
               }
           })
           ->rawColumns(['name','color','events','action'])
@@ -160,12 +172,12 @@ class ScheduleController extends Controller
               return __('schedule.single');
             } elseif ($data->iterations == 2){
               return __('schedule.double');
-            } elseif ($data->iterations == 3){              
+            } elseif ($data->iterations == 3){
               return __('schedule.triple');
             } else {
               return "????";
             }
-          })              
+          })
           ->make(true);
     }
 

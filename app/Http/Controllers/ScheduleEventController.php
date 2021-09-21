@@ -143,6 +143,11 @@ class ScheduleEventController extends Controller
         Log::info('getting schedule events');
         // pass scheduled events back to calendar
         $schedule_ids = $region->schedules()->pluck('id');
+        Log::debug(print_r($schedule_ids, true));
+        if ($region->is_base_level){
+            $schedule_ids = $schedule_ids->concat( $region->parentRegion->schedules()->pluck('id'));
+        }
+        Log::debug(print_r($schedule_ids, true));
 
         $data = ScheduleEvent::whereIn('schedule_id', $schedule_ids)->get();
         Log::debug('found schedule events: '.count($data));
@@ -152,13 +157,17 @@ class ScheduleEventController extends Controller
           $end = Carbon::parse($event->game_date)->addDays(1);
           $start = Carbon::parse($event->game_date)->addDays(1);
 
-          if ( $event->full_weekend ){  
+          if ( $event->full_weekend ){
           //  if ( $end->dayOfWeek == 6 ){
               $end = $end->addDays(2);
            // }
           }
 
-          $title = '( '.$event->game_day.' ) '.$event->schedule->name;
+          if ($event->schedule->region->is($region)){
+              $title = '( '.$event->game_day.' ) '.$event->schedule->name;
+          } else {
+            $title = '( '.$event->game_day.' ) ('.$event->schedule->region->code.')  '.$event->schedule->name;
+          }
           $eventlist[] = array( "title" => $title, "start" => $start, "end" => $end, "allDay" => true, "color" => $event->schedule->eventcolor );
         }
         Log::info('event list with '.count($eventlist));

@@ -5,6 +5,9 @@
 @section('content')
 <x-card-list cardTitle="{{ __('league.title.list', ['region' => session('cur_region')->name ]) }}">
                   <th>Id</th>
+                  @if (session('cur_region')->is_base_level)
+                    <th>{{ trans_choice('region.region',1) }}</th>
+                  @endif
                   <th>@lang('league.shortname')</th>
                   <th>@lang('league.state')</th>
                   <th>@lang('league.agetype')</th>
@@ -25,8 +28,8 @@
    $(function() {
          $('#goBack').click(function(e){
             history.back();
-         }); 
-         
+         });
+
          $('#table').DataTable({
          processing: true,
          serverSide: true,
@@ -40,6 +43,9 @@
          ajax: '{{ route('league.list', ['language'=>app()->getLocale(),'region'=>session('cur_region')->id]) }}',
          columns: [
                   { data: 'id', name: 'id', visible: false },
+                  @if (session('cur_region')->is_base_level)
+                    { data: 'alien_region', name: 'alien_region'},
+                  @endif
                   { data:  {
                      _: 'shortname.sort',
                      filter: 'shortname.sort',
@@ -65,26 +71,26 @@
                      _: 'size.sort',
                      filter: 'size.sort',
                      display: 'size.display',
-                     sort: 'size.sort' 
+                     sort: 'size.sort'
                      }, name: 'size.sort', width: '2%'},
                   { data: {
                      _: 'assigned_rel.sort',
                      filter: 'assigned_rel.sort',
                      display: 'assigned_rel.display',
-                     sort: 'assigned_rel.sort' 
+                     sort: 'assigned_rel.sort'
                      }, name: 'assigned_rel.sort' },
                   { data: {
                      _: 'registered_rel.sort',
                      filter: 'registered_rel.sort',
                      display: 'registered_rel.display',
-                     sort: 'registered_rel.sort' 
+                     sort: 'registered_rel.sort'
                      }, name: 'registered_rel.sort' },
                   { data: {
                      _: 'selected_rel.sort',
                      filter: 'selected_rel.sort',
                      display: 'selected_rel.display',
-                     sort: 'selected_rel.sort' 
-                     }, name: 'selected_rel.sort' },                   
+                     sort: 'selected_rel.sort'
+                     }, name: 'selected_rel.sort' },
                   { data: 'games_count', name: 'games_count', width: '2%'},
                   { data: 'games_notime_count', name: 'games_notime_count', width: '2%'},
                   { data: 'games_noshow_count', name: 'games_noshow_count', width: '2%'},
