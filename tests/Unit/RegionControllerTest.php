@@ -4,7 +4,6 @@ namespace Tests\Unit;
 
 use App\Enums\JobFrequencyType;
 use App\Enums\ReportFileType;
-use App\Notifications\CharPickingEnabled;
 use Tests\TestCase;
 use Tests\Support\Authentication;
 use Illuminate\Support\Facades\Notification;
@@ -12,6 +11,7 @@ use App\Enums\Role;
 use App\Models\Club;
 use App\Models\Member;
 use App\Models\User;
+use App\Models\Region;
 
 class RegionControllerTest extends TestCase
 {
@@ -29,11 +29,20 @@ class RegionControllerTest extends TestCase
     public function set_region()
     {
 
-      $response = $this->authenticated()
-                        ->get(route('region.set', ['region'=>$this->region]));
+      $r1 = Region::find(1);
+      $r2 = Region::find(2);
 
-      $response->assertRedirect(route('home',['language'=>'de']))
-               ->assertSessionHas('cur_region.code',$this->region->code);
+      $response = $this->authenticated()
+                        ->followingRedirects()
+                        ->get(route('region.set', ['region'=> $r2 ]));
+
+      $response->assertSessionHas('cur_region.code',$r2->code);
+
+      $response = $this->get(route('region.set', ['region'=> $r1]));
+
+      $response->assertSessionHas('cur_region.code',$r1->code);
+
+
     }
 
     /**
