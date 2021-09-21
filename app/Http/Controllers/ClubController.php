@@ -29,14 +29,20 @@ class ClubController extends Controller
      */
     public function list(Region $region)
     {
-
-      $clubs = $region->clubs()->withCount(['leagues','teams','registered_teams','selected_teams','games_home',
-                                     'games_home_notime','games_home_noshow'
-                          ])
-                        ->orderBy('shortname','ASC')
-                        ->get();
-
-      //Log::debug(print_r($leagues,true));
+      if ( $region->is_top_level){
+        $clubs = Club::whereIn('region_id', $region->childRegions()->pluck('id') )->withCount(['leagues','teams','registered_teams','selected_teams','games_home',
+                                        'games_home_notime','games_home_noshow'
+                            ])
+                            ->orderBy('shortname','ASC')
+                            ->get();
+      } else {
+        $clubs = Club::where('region_id', $region->id)->withCount(['leagues','teams','registered_teams','selected_teams','games_home',
+                                        'games_home_notime','games_home_noshow'
+                            ])
+                            ->orderBy('shortname','ASC')
+                            ->get();
+      }
+      // Log::debug(print_r($clubs,true));
 
       $clublist = datatables()::of($clubs);
 
@@ -46,7 +52,10 @@ class ClubController extends Controller
         ->editColumn('shortname', function ($data) {
             $link = '<a href="' . route('club.dashboard', ['language'=>Auth::user()->locale,'club'=>$data->id]) .'">'.$data->shortname.'</a>';
             return array('display' =>$link, 'sort'=>$data->shortname);
-            })
+        })
+        ->editColumn('region', function ($data) {
+            return $data->region->code;
+        })
         ->editColumn('name', function ($data){
           $link = '<a href="http://' . $data->url .'" target="_blank">'.$data->name.'</a>';
           return array('display' =>$link, 'sort'=>Str::slug($data->name,'-'));
@@ -72,7 +81,7 @@ class ClubController extends Controller
           <div class="progress-bar" role="progressbar" style="width: '.$registered_rel.'%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">'.$registered_rel.'%</div>
           </div>';
           return array('display' =>$content, 'sort'=>$registered_rel);
-        }) 
+        })
         ->addColumn('selected_rel', function($c){
           if ($c->teams_count!=0){
               $selected_rel = round(($c->selected_teams_count * 100)/$c->teams_count);
@@ -83,7 +92,7 @@ class ClubController extends Controller
           <div class="progress-bar bg-success" role="progressbar" style="width: '.$selected_rel.'%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">'.$selected_rel.'%</div>
           </div>';
           return array('display' =>$content, 'sort'=>$selected_rel);
-        })         
+        })
         ->editColumn('updated_at', function ($c) {
           return ($c->updated_at==null) ? null : $c->updated_at->format('d.m.Y H:i');
         })
@@ -177,7 +186,7 @@ class ClubController extends Controller
       }
     }
     return Response::json($response);
-  }    
+  }
     /**
      * Show the form for creating a new resource.
      *

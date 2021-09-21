@@ -51,7 +51,7 @@
                     </div>
                 @endif
                 <h4 class="card-header">@lang('league.title.management')</h4>
-                
+
                 <!-- /.card-header -->
 
                 <div class="card-tools p-2">
@@ -63,6 +63,9 @@
                         <thead class="thead-light">
                             <tr>
                                 <th>ID</th>
+                                @if (session('cur_region')->is_base_level)
+                                    <th>{{ trans_choice('region.region',1) }}</th>
+                                @endif
                                 <th>@lang('league.shortname')</th>
                                 <th>@lang('league.agetype')</th>
                                 <th>@lang('league.gendertype')</th>
@@ -114,6 +117,9 @@
                         name: 'id',
                         visible: false
                     },
+                    @if (session('cur_region')->is_base_level)
+                        { data: 'alien_region', name: 'alien_region'},
+                    @endif
                     { data:  {
                         _: 'shortname.sort',
                         filter: 'shortname.sort',
@@ -240,11 +246,11 @@
                             console.log('Error:', data);
                         }
                     });
-                });            
+                });
                 $(document).on('click', "button#deleteGames", function() {
                     var leagueid = $(this).data("league");
                     var url = "{{ route('league.game.destroy', ['league' => ':leagueid:']) }}";
-                    url = url.replace(':leagueid:', leagueid);                    
+                    url = url.replace(':leagueid:', leagueid);
                     $.ajax({
                         type: "POST",
                         dataType: "json",

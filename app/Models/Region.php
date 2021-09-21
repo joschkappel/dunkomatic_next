@@ -12,6 +12,7 @@ use App\Models\Membership;
 use App\Models\Schedule;
 use App\Models\Team;
 use App\Models\Gym;
+use App\Models\MessageDestination;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,7 +27,7 @@ class Region extends Model
       'id','code','name', 'hq', 'job_game_overlaps', 'game_slot',
       'job_game_notime', 'job_noleads', 'job_email_valid',
       'job_league_reports', 'job_club_reports','job_exports',
-      'fmt_league_reports', 'fmt_club_reports', 
+      'fmt_league_reports', 'fmt_club_reports',
       'close_assignment_at', 'close_registration_at',
       'close_selection_at', 'close_scheduling_at'
   ];
@@ -73,7 +74,7 @@ class Region extends Model
   }
   public function parentRegion()
   {
-      return $this->belongsTo('Region', 'hq', 'code');
+      return $this->belongsTo('App\Models\Region', 'hq', 'code');
   }
   public function getIsTopLevelAttribute()
   {
@@ -85,7 +86,7 @@ class Region extends Model
   }
   public function messages()
   {
-      return $this->hasMany('App\Models\MessageDestination','region','code');
+      return $this->hasMany(MessageDestination::class,'region','code');
   }
 
   public function members()

@@ -5,6 +5,9 @@
 @section('content')
 <x-card-list cardTitle="{{ __('club.title.list', ['region' => session('cur_region')->name ]) }}" cardNewAction="{{ route('club.create', app()->getLocale()) }}" cardNewTitle="{{ __('club.action.create') }}">
     <th>Id</th>
+    @if (session('cur_region')->is_top_level)
+     <th>{{ trans_choice('region.region',1) }}</th>
+    @endif
     <th>@lang('club.shortname')</th>
     <th>@lang('club.name')</th>
     <th>{{ trans_choice('team.team', 2) }}</th>
@@ -25,7 +28,7 @@
         $(function() {
             $('#goBack').click(function(e){
                 history.back();
-            }); 
+            });
             $('#table').DataTable({
                 processing: true,
                 serverSide: true,
@@ -38,12 +41,18 @@
                 order: [
                     [1, 'asc']
                 ],
-                ajax: '{{ route('club.list', ['region' => session('cur_region')->id]) }}',
+                ajax: '{{ route('club.list', ['region' => session('cur_region')->id ]) }}',
                 columns: [{
                         data: 'id',
                         name: 'id',
                         visible: false
                     },
+                    @if (session('cur_region')->is_top_level)
+                    {
+                        data: 'region',
+                        name: 'region'
+                    },
+                    @endif
                     {
                         data: {
                             _: 'shortname.sort',
