@@ -85,7 +85,7 @@ class RegionController extends Controller
     {
       session(['cur_region' => $region]);
 
-      return redirect()->route('home', app()->getLocale());
+      return redirect()->back();
     }
 
 
@@ -102,7 +102,7 @@ class RegionController extends Controller
         ->rawColumns(['regionadmin','code'])
         ->editColumn('code', function ($data) {
             return '<a href="' . route('region.dashboard', ['language'=>Auth::user()->locale,'region'=>$data->id]) .'">'.$data->code.'</a>';
-            })        
+            })
         ->editColumn('regionadmin', function ($r) use ($language) {
             if ($r->regionadmin()->exists()){
                 $admin = $r->regionadmin()->first()->firstname.' '.$r->regionadmin()->first()->lastname;
@@ -232,13 +232,13 @@ class RegionController extends Controller
 
         return redirect()->route('region.index', app()->getLocale());
     }
-    
+
     /**
      * leagues by status for a region
-     * 
+     *
      * @param Region $region
      * @return Response
-     * 
+     *
      */
     public function league_state_chart(Region $region)
     {
@@ -265,10 +265,10 @@ class RegionController extends Controller
 
     /**
      * leagues by age and gender for a region
-     * 
+     *
      * @param Region $region
      * @return Response
-     * 
+     *
      */
     public function league_socio_chart(Region $region)
     {
@@ -302,10 +302,10 @@ class RegionController extends Controller
 
     /**
      * teams by club for a region
-     * 
+     *
      * @param Region $region
      * @return Response
-     * 
+     *
      */
     public function club_team_chart(Region $region)
     {
@@ -346,14 +346,14 @@ class RegionController extends Controller
       // Log::debug(print_r($data,true));
 
       return Response::json($data);
-    }    
+    }
 
     /**
      * members and roles by club for a region
-     * 
+     *
      * @param Region $region
      * @return Response
-     * 
+     *
      */
     public function club_member_chart(Region $region)
     {
@@ -367,7 +367,7 @@ class RegionController extends Controller
         $datasets[$r]['label'] = Role::getDescription( Role::coerce($r) );
         $datasets[$r]['data'] = [];
       }
-      
+
 /*       Membership::whereIn('member_id',Club::find(26)->members()->pluck('member_id'))
         ->get()
         ->groupBy('role_id')
@@ -391,6 +391,6 @@ class RegionController extends Controller
       // Log::debug(print_r($data,true));
 
       return Response::json($data);
-    }    
+    }
 
   }
