@@ -90,7 +90,7 @@ trait LeagueFSM {
     }
 
     public function close_scheduling(League $league) {
-        $league->state = LeagueState::Referee();
+        $league->state = LeagueState::Referees();
         $league->scheduling_closed_at = now();
         $league->save();
         Log::info('League: '.$league->shortname.' changed to Referee Assignment');

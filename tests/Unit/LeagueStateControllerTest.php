@@ -117,7 +117,7 @@ class LeagueStateControllerTest extends TestCase
        //  assert club members are notified
         Notification::assertSentTo(
           [$member], SelectTeamLeagueNo::class
-      );      
+      );
 
     }
 
@@ -187,9 +187,9 @@ class LeagueStateControllerTest extends TestCase
         //  assert club members are notified
       Notification::assertSentTo(
             [$member], LeagueGamesGenerated::class
-      );   
+      );
 
-    }    
+    }
 
     /**
      * close scheduling
@@ -218,10 +218,66 @@ class LeagueStateControllerTest extends TestCase
                       ]);
 
        $response->assertStatus(200);
+       $this->assertDatabaseHas('leagues', ['id' => $league->id, 'state' => LeagueState::Referees()]);
+
+    }
+
+    /**
+     * close referee assignemnt
+     *
+     * @test
+     * @group league
+     * @group leaguestate
+     * @group controller
+     *
+     * @return void
+     */
+    public function close_referees()
+    {
+      $league = League::where('name','testleague')->first();
+
+      $this->assertDatabaseHas('leagues', ['id' => $league->id, 'state' => LeagueState::Referees()]);
+
+      Notification::fake();
+      Notification::assertNothingSent();
+
+
+      // change state to registration
+      $response = $this->authenticated( )
+                        ->post(route('league.state.change',['league'=>$league->id]), [
+                          'action' => LeagueStateChange::CloseReferees()
+                      ]);
+
+       $response->assertStatus(200);
        $this->assertDatabaseHas('leagues', ['id' => $league->id, 'state' => LeagueState::Live()]);
+    }
 
-    } 
+    /**
+     * reopen referees
+     *
+     * @test
+     * @group league
+     * @group leaguestate
+     * @group controller
+     *
+     * @return void
+     */
+    public function backto_referees()
+    {
+      $league = League::where('name','testleague')->first();
 
+      $this->assertDatabaseHas('leagues', ['id' => $league->id, 'state' => LeagueState::Live()]);
+
+      // change state to registration
+      $response = $this->authenticated( )
+                        ->post(route('league.state.change',['league'=>$league->id]), [
+                          'action' => LeagueStateChange::OpenReferees()
+                      ]);
+
+       $response->assertStatus(200);
+       $this->assertDatabaseHas('leagues', ['id' => $league->id, 'state' => LeagueState::Referees()]);
+
+    }
     /**
      * reopen scheduling
      *
@@ -236,7 +292,7 @@ class LeagueStateControllerTest extends TestCase
     {
       $league = League::where('name','testleague')->first();
 
-      $this->assertDatabaseHas('leagues', ['id' => $league->id, 'state' => LeagueState::Live()]);
+      $this->assertDatabaseHas('leagues', ['id' => $league->id, 'state' => LeagueState::Referees()]);
 
       // change state to registration
       $response = $this->authenticated( )
@@ -247,7 +303,7 @@ class LeagueStateControllerTest extends TestCase
        $response->assertStatus(200);
        $this->assertDatabaseHas('leagues', ['id' => $league->id, 'state' => LeagueState::Scheduling()]);
 
-    }        
+    }
 
    /**
      * reopen freeze
@@ -273,8 +329,8 @@ class LeagueStateControllerTest extends TestCase
        $this->assertDatabaseHas('leagues', ['id' => $league->id, 'state' => LeagueState::Freeze()])
             ->assertDatabaseMissing('games', ['league_id' => $league->id]);
 
-    }       
-    
+    }
+
     /**
      * reopen selection
      *
@@ -326,7 +382,7 @@ class LeagueStateControllerTest extends TestCase
        $response->assertStatus(200);
        $this->assertDatabaseHas('leagues', ['id' => $league->id, 'state' => LeagueState::Registration()]);
 
-    }              
+    }
 
     /**
      * reopen assignment
@@ -353,7 +409,7 @@ class LeagueStateControllerTest extends TestCase
        $response->assertStatus(200);
        $this->assertDatabaseHas('leagues', ['id' => $league->id, 'state' => LeagueState::Assignment()]);
 
-    }       
+    }
 
     /**
      * db_cleanup
