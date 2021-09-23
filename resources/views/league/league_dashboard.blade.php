@@ -36,22 +36,11 @@
             </div>
             <div class="col-sm ">
                 <div class="info-box">
-                    @if ($league->state->is(App\Enums\LeagueState::Assignment()))
-                        <span class="info-box-icon bg-info"><i class="fas fa-battery-empty"></i></span>
-                    @elseif ($league->state->is(App\Enums\LeagueState::Registration()))
-                        <span class="info-box-icon bg-info"><i class="fas fa-battery-quarter"></i></span>
-                    @elseif ($league->state->is(App\Enums\LeagueState::Selection()))
-                        <span class="info-box-icon bg-info"><i class="fas fa-battery-half"></i></span>
-                    @elseif ($league->state->is(App\Enums\LeagueState::Scheduling()))
-                        <span class="info-box-icon bg-info"><i class="fas fa-battery-three-quarters"></i></span>
-                    @elseif ($league->state->is(App\Enums\LeagueState::Freeze()))
-                        <span class="info-box-icon bg-warning"><i class="fas fa-battery-half"></i></span>
-                    @elseif ($league->state->is(App\Enums\LeagueState::Live()))
-                        <span class="info-box-icon bg-success"><i class="fas fa-battery-full"></i></span>
-                    @endif
+                    <x-league-status currentState="{{ $league->state->key }}" mode="infobox-icon"/>
                     <div class="info-box-content">
                         <span class="info-box-text text-lg">Status</span>
                         <span class="info-box-number">{{ $league->state->description }}</span>
+                        <x-league-status currentState="{{ $league->state->key }}" />
                     </div>
                 </div>
                 <div class="info-box">
@@ -119,7 +108,7 @@
                 <!-- card CLUB TEAM ASSIGNMENT -->
                 <div class="card card-outline card-dark " id="clubsCard">
                     <div class="card-header">
-                        <h4 class="card-title pt-2"><i class="fas fa-basketball-ball fa-lg"></i> {{ trans_choice('team.team', 2) }} 
+                        <h4 class="card-title pt-2"><i class="fas fa-basketball-ball fa-lg"></i> {{ trans_choice('team.team', 2) }}
                             <span class="badge badge-pill badge-info">{{ $league->state_count['size'] }}</span>
                         </h4>
                         <div class="card-tools">
@@ -184,7 +173,7 @@
                             <div class="col-xs-1 border rounded border-secondary bg-secondary d-flex flex-row justify-content-sm-center">
                               <span><i class="px-1"></i></span>
                             </div>
-                            <div class="col-sm-3 d-flex flex-column justify-content-sm-center">    
+                            <div class="col-sm-3 d-flex flex-column justify-content-sm-center">
                                 <h5 class="sub-header">@lang('league.action.close.registration')</h5>
                                 <div class="table-responsive-xs">
                                     <table class="table table-hover table-sm w-auto" id="table2">
@@ -256,7 +245,7 @@
                            <a href="{{ route('membership.league.create', ['language' => app()->getLocale(), 'league' => $league]) }}"
                                 class="btn btn-success">
                                 <i class="fas fa-plus-circle"></i> @lang('league.member.action.create')
-                            </a>                        
+                            </a>
                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
                                     class="fas fa-plus"></i>
                             </button>
@@ -353,7 +342,7 @@
                 <!-- all modals here -->
                 @include('league/includes/assign_club')
                 <x-confirm-deletion modalId="modalDeleteLeague" modalTitle="{{ __('league.title.delete') }}" modalConfirm="{{ __('league.confirm.delete') }}" deleteType="{{ trans_choice('league.league',1) }}" />
-                <x-confirm-deletion modalId="modalDeleteMember" modalTitle="{{ __('role.title.delete') }}" modalConfirm="{{ __('role.confirm.delete') }}" deleteType="{{ __('role.member') }}" />                
+                <x-confirm-deletion modalId="modalDeleteMember" modalTitle="{{ __('role.title.delete') }}" modalConfirm="{{ __('role.confirm.delete') }}" deleteType="{{ __('role.member') }}" />
                 @include('league/includes/withdraw_team')
                 @include('league/includes/inject_team')
                 @include('member/includes/membership_add')
