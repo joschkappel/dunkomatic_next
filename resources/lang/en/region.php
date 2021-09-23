@@ -25,6 +25,7 @@ return [
   'close_registration' => 'End of Team Registration',
   'close_selection' => 'End of League Number Selection',
   'close_scheduling' => 'End of Home Game Scheduling',
+  'close_referees' => 'End of Referee Assignment',
   'home' => 'General',
   'checks' => 'Checks',
   'reports' => 'Reports',

@@ -46,5 +46,6 @@ return [
       LeagueState::Scheduling => 'Schedule Home Games',
       LeagueState::Live => 'Live',
       LeagueState::Freeze => 'Waiting',
-    ]    
+      LeagueState::Referees => 'Pick Referees',
+    ]
 ];

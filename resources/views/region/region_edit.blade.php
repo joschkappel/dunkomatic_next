@@ -248,6 +248,24 @@
                     </div>
                 </div>
             </div>
+            <div class="form-row m-2">
+                <label for="closereferees"
+                    class="col-sm-6 col-form-label">@lang('region.close_referees')</label>
+                <div class="col-sm-4">
+                    <div class="input-group date" id="closereferees" data-target-input="nearest">
+                        <input type="text"
+                            class="form-control datetimepicker-input @error('close_referees_at') is-invalid @enderror"
+                            data-target="#closereferees" name="close_referees_at" />
+                        <div class="input-group-append" data-target="#closereferees"
+                            data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                        @error('close_referees_at')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </x-card-form>
@@ -306,26 +324,13 @@
                 locale: '{{ app()->getLocale() }}',
                 defaultDate: moment('{{ $region->close_scheduling_at }}').format('L')
             });
-            $("#closeassignment").on("change.datetimepicker", function(e) {
-                $('#closeregistration').datetimepicker('minDate', moment(e.date).add(1, 'day'));
-                $('#closeselection').datetimepicker('minDate', moment(e.date).add(2, 'day'));
-                $('#closescheduling').datetimepicker('minDate', moment(e.date).add(3, 'day'));
+            $('#closereferees').datetimepicker({
+                useCurrent: false,
+                format: 'L',
+                locale: '{{ app()->getLocale() }}',
+                defaultDate: moment('{{ $region->close_referees_at }}').format('L')
             });
-            $("#closeregistration").on("change.datetimepicker", function(e) {
-                $('#closeassignment').datetimepicker('maxDate', moment(e.date).subtract(1, 'day'));
-                $('#closeselection').datetimepicker('minDate', moment(e.date).add(1, 'days'));
-                $('#closescheduling').datetimepicker('minDate', moment(e.date).add(2, 'days'));
-            });
-            $("#closeselection").on("change.datetimepicker", function(e) {
-                $('#closeassignment').datetimepicker('maxDate', moment(e.date).subtract(2, 'days'));
-                $('#closeregistration').datetimepicker('maxDate', moment(e.date).subtract(1, 'day'));
-                $('#closescheduling').datetimepicker('minDate', moment(e.date).add(1, 'day'));
-            });
-            $("#closescheduling").on("change.datetimepicker", function(e) {
-                $('#closeassignment').datetimepicker('maxDate', moment(e.date).subtract(3, 'days'));
-                $('#closeregistration').datetimepicker('maxDate', moment(e.date).subtract(2, 'day'));
-                $('#closeselection').datetimepicker('maxDate', moment(e.date).subtract(1, 'day'));
-            });
+
 
             $("#selNolead").select2({
                 theme: 'bootstrap4',

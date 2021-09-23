@@ -47,6 +47,7 @@ class ProcessLeagueStateChanges implements ShouldQueue
         $close_registration = $this->region->close_registration_at ??  Carbon::now()->nextWeekday();
         $close_selection = $this->region->close_selection_at ??  Carbon::now()->nextWeekday();
         $close_scheduling = $this->region->close_scheduling_at ??  Carbon::now()->nextWeekday();
+        $close_referees = $this->region->close_referees_at ??  Carbon::now()->nextWeekday();
 
 
         foreach ($leagues as $l){
@@ -67,7 +68,11 @@ class ProcessLeagueStateChanges implements ShouldQueue
                 if ( (( $l->games_notime->count() == 0 ) and ($l->games_noshow->count() == 0 )) or ( $close_scheduling < now()) ){
                     $this->close_scheduling($l);
                 }
-            }            
+            } elseif ($l->state->is( LeagueState::Referees())){
+                if ( ( $l->games_noreferee->count() == 0 )  or ( $close_referees < now()) ){
+                    $this->close_scheduling($l);
+                }
+            }
         }
     }
 }
