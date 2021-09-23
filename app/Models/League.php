@@ -35,7 +35,7 @@ class League extends Model implements Auditable
         'id', 'name', 'shortname', 'region_id', 'above_region', 'schedule_id', 'league_size_id',
         'generated_at', 'age_type', 'gender_type', 'state',
         'assignment_closed_at', 'registration_closed_at', 'selection_opened_at',
-        'selection_closed_at', 'scheduling_closed_at'
+        'selection_closed_at', 'scheduling_closed_at', 'referees_closed_at'
     ];
 
     /**
@@ -50,6 +50,7 @@ class League extends Model implements Auditable
         'selection_opened_at' => 'datetime',
         'selection_closed_at' => 'datetime',
         'scheduling_closed_at' => 'datetime',
+        'referees_closed_at' => 'datetime',
         'state' => LeagueState::class,
         'age_type' => LeagueAgeType::class,
         'gender_type' => LeagueGenderType::class,
@@ -88,7 +89,7 @@ class League extends Model implements Auditable
     public function selected_teams()
     {
         return $this->hasMany(Team::class)->whereNotNull('league_no');
-    } 
+    }
 
     public function members()
     {
@@ -109,6 +110,10 @@ class League extends Model implements Auditable
     public function games_notime()
     {
         return $this->hasMany(Game::class)->whereNull('game_time');
+    }
+    public function games_noreferee()
+    {
+        return $this->hasMany(Game::class)->whereNull('referee_1');
     }
 
     public function games_noshow()
@@ -134,20 +139,24 @@ class League extends Model implements Auditable
     public function getStateCountAttribute()
     {
         if (isset($this->schedule)) {
-            return [ 'assigned' => $this->clubs->count(), 
+            return [ 'assigned' => $this->clubs->count(),
                      'registered' => $this->teams->count(),
                      'charspicked' => $this->teams->whereNotNull('league_char')->count(),
                      'generated' => $this->games->count(),
+                     'scheduled' => $this->games->whereNotNull('game_time')->count(),
+                     'referees' => $this->games->whereNotNull('referee_1')->count(),
                      'size' => $this->schedule->league_size->size ];
         } else {
-            return [ 'assigned' => $this->clubs->count(), 
+            return [ 'assigned' => $this->clubs->count(),
                      'registered' => $this->teams->count(),
                      'charspicked' => $this->teams->whereNotNull('league_char')->count(),
                      'generated' => $this->games->count(),
+                     'scheduled' => $this->games->whereNotNull('game_time')->count(),
+                     'referees' => $this->games->whereNotNull('referee_1')->count(),
                      'size' => 0 ];
         }
     }
-    
+
     public function getFilecountAttribute()
     {
         $directory = $this->region->league_folder;

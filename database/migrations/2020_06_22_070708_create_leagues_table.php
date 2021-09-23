@@ -28,12 +28,13 @@ class CreateLeaguesTable extends Migration
             $table->unsignedInteger('age_type')->nullable();
             $table->unsignedInteger('gender_type')->nullable();
             $table->unsignedInteger('state')->default(LeagueState::Assignment());
-            $table->timestamp('assignment_closed_at')->nullable();  
+            $table->timestamp('assignment_closed_at')->nullable();
             $table->timestamp('registration_closed_at')->nullable();
-            $table->timestamp('selection_opened_at')->nullable(); 
-            $table->timestamp('selection_closed_at')->nullable(); 
+            $table->timestamp('selection_opened_at')->nullable();
+            $table->timestamp('selection_closed_at')->nullable();
             $table->timestamp('generated_at')->nullable();
-            $table->timestamp('scheduling_closed_at')->nullable(); 
+            $table->timestamp('scheduling_closed_at')->nullable();
+            $table->timestamp('referees_closed_at')->nullable();
             $table->timestamps();
             //$table->unique('region','shortname');
         });

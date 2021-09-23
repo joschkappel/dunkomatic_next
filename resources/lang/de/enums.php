@@ -44,9 +44,10 @@ return [
       LeagueState::Assignment =>  'Bezirk ordnet Vereine zu',
       LeagueState::Registration =>  'Verein meldet Mannschaften',
       LeagueState::Selection =>   'Verein wählt Ziffern',
-      LeagueState::Scheduling => 'Vereine legt Heimspieltermine fest',
+      LeagueState::Scheduling => 'Verein legt Heimspieltermine fest',
       LeagueState::Live => 'Live',
       LeagueState::Freeze => 'Wartet auf Freigabe',
+      LeagueState::Freeze => 'Bezirk legt Schiedsrichter fest',
     ]
 
 ];

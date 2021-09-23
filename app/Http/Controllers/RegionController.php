@@ -204,6 +204,7 @@ class RegionController extends Controller
             'close_registration_at' => 'sometimes|required|date|after:close_assignment_at',
             'close_selection_at' => 'sometimes|required|date|after:close_registration_at',
             'close_scheduling_at' => 'sometimes|required|date|after:close_selection_at',
+            'close_referees_at' => 'sometimes|required|date|after:close_scheduling_at',
         ]);
 
         Log::debug(print_r($data,true));

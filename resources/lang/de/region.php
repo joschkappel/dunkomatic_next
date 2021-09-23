@@ -25,6 +25,7 @@ return [
   'close_registration' => 'Ende Mannschaftsmeldung',
   'close_selection' => 'Ende Ziffernwahl',
   'close_scheduling' => 'Ende Heimspieländerung',
+  'close_referees' => 'Ende Schiedsrichterzuteilung',
   'home' => 'Allgemeines',
   'checks' => 'Prüfungen',
   'reports' => 'Listen',

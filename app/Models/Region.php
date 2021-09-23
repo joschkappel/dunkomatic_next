@@ -29,10 +29,10 @@ class Region extends Model
       'job_league_reports', 'job_club_reports','job_exports',
       'fmt_league_reports', 'fmt_club_reports',
       'close_assignment_at', 'close_registration_at',
-      'close_selection_at', 'close_scheduling_at'
+      'close_selection_at', 'close_scheduling_at', 'close_referees_at'
   ];
 
-  protected $dates = ['close_assignment_at', 'close_registration_at', 'close_selection_at', 'close_scheduling_at'];
+  protected $dates = ['close_assignment_at', 'close_registration_at', 'close_selection_at', 'close_scheduling_at', 'close_referees_at'];
 
   protected $casts = [
       'fmt_league_reports' => ReportFileType::class,
