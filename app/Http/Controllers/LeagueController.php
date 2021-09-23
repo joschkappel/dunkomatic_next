@@ -24,10 +24,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 use App\Notifications\ClubDeAssigned;
-
+use App\View\Components\LeagueStatus;
 
 class LeagueController extends Controller
 {
@@ -147,20 +146,8 @@ class LeagueController extends Controller
         return ($l->updated_at==null) ? null : $l->updated_at->format('d.m.Y H:i');
       })
       ->editColumn('state', function ($l) {
-          if ($l->state->is(LeagueState::Assignment())){
-            $content = '<span class="badge badge-info"><i class="fas fa-battery-empty fa-lg"></i></span>';
-          } elseif ($l->state->is(LeagueState::Registration())) {
-            $content = '<span class="badge badge-info"><i class="fas fa-battery-quarter fa-lg"></i></span>';
-          } elseif ($l->state->is(LeagueState::Selection())) {
-            $content = '<span class="badge badge-info"><i class="fas fa-battery-half fa-lg"></i></span>';
-          } elseif ($l->state->is(LeagueState::Scheduling())) {
-            $content = '<span class="badge badge-info"><i class="fas fa-battery-three-quarters fa-lg"></i></span>';
-          } elseif ($l->state->is(LeagueState::Freeze())) {
-            $content = '<span class="badge badge-warning"><i class="fas fa-battery-half fa-lg"></i></span>';
-          } elseif ($l->state->is(LeagueState::Live())) {
-            $content = '<span class="badge badge-success"><i class="fas fa-battery-full fa-lg"></i></span>';
-          }
-          return $content;
+            $content = new LeagueStatus($l->state->key, 'badge');
+            return $content->render()->with($content->data());
       })
       ->make(true);
   }

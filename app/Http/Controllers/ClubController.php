@@ -147,20 +147,31 @@ class ClubController extends Controller
      */
     public function sb_region(Region $region)
     {
+        if ( $region->is_top_level ){
+            $clubs = Club::whereIn('region_id', $region->childRegions->pluck('id'))->orderBy('shortname','ASC')->get();
+        } else {
+            $clubs = $region->clubs()->orderBy('shortname','ASC')->get();
+        }
 
-      $clubs = $region->clubs()->orderBy('shortname','ASC')->get();
+        Log::debug('got clubs '.count($clubs));
+        $response = array();
 
-      Log::debug('got clubs '.count($clubs));
-      $response = array();
+        foreach($clubs as $club){
+            if ($club->region->is($region)){
+                $response[] = array(
+                    "id"=>$club->id,
+                    "text"=>$club->shortname
+                );
+            } else {
+                $response[] = array(
+                    "id"=>$club->id,
+                    "text"=>'('.$club->region->code.') '.$club->shortname
+                );
+            }
 
-      foreach($clubs as $club){
-          $response[] = array(
-                "id"=>$club->id,
-                "text"=>$club->shortname
-              );
-      }
+        }
 
-      return Response::json($response);
+        return Response::json($response);
     }
 
   /**
