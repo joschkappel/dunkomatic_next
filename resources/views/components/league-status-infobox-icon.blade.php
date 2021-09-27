@@ -8,6 +8,8 @@
     <span class="info-box-icon bg-warning"><i class="fas fa-battery-half"></i></span>
 @elseif ($currentState->is(App\Enums\LeagueState::Scheduling()))
     <span class="info-box-icon bg-info"><i class="fas fa-battery-three-quarters"></i></span>
+@elseif ($currentState->is(App\Enums\LeagueState::Referees()))
+    <span class="info-box-icon bg-warning"><i class="fas fa-battery-full"></i></span>
 @elseif ($currentState->is(App\Enums\LeagueState::Live()))
     <span class="info-box-icon bg-success"><i class="fas fa-battery-full"></i></span>
 @endif

@@ -67,8 +67,7 @@
                                     <th>{{ trans_choice('region.region',1) }}</th>
                                 @endif
                                 <th>@lang('league.shortname')</th>
-                                <th>@lang('league.agetype')</th>
-                                <th>@lang('league.gendertype')</th>
+                                <th>@lang('league.state')</th>
                                 <th>@lang('club.entitled')</th>
                                 <th>@lang('club.registered')</th>
                                 <th>@lang('league.next.state')</th>
@@ -126,20 +125,7 @@
                         display: 'shortname.display',
                         sort: 'shortname.sort'
                     }, name: 'shortname.sort' },
-                    { data: {
-                        _: 'age_type.display',
-                        filter: 'age_type.display',
-                        display: 'age_type.display',
-                        sort: 'age_type.sort'
-                        }, name: 'age_type.display'
-                    },
-                    { data: {
-                        _: 'gender_type.display',
-                        filter: 'gender_type.display',
-                        display: 'gender_type.display',
-                        sort: 'gender_type.sort'
-                        }, name: 'gender_type.display'
-                    },
+                    { data: 'state', name: 'state', width: '1%'},
                     {
                         data: 'clubs',
                         name: 'clubs'

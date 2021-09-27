@@ -75,8 +75,7 @@ class LeagueController extends Controller
     return $leaguelist
       ->addIndexColumn()
       ->rawColumns(['shortname.display','age_type.display','gender_type.display',
-                    'assigned_rel.display', 'registered_rel.display',
-                    'selected_rel.display','size.display','state'])
+                    'size.display','state'])
       ->editColumn('shortname', function ($l) use ($region) {
         if (  ( (Bouncer::can('manage', $l))
              or (Auth::user()->isA('regionadmin')) )
@@ -109,44 +108,11 @@ class LeagueController extends Controller
           }
 
       })
-      ->addColumn('assigned_rel', function($l){
-        if ($l->teams_count!=0){
-            $assigned_rel = round(($l->clubs_count * 100)/$l->teams_count);
-        } else {
-            $assigned_rel = 0;
-        }
-        $content = '<div class="progress" style="height: 20px;">
-        <div class="progress-bar bg-info" role="progressbar" style="width: '.$assigned_rel.'%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">'.$assigned_rel.'%</div>
-        </div>';
-        return array('display' =>$content, 'sort'=>$assigned_rel);
-      })
-      ->addColumn('registered_rel', function($l){
-        if ($l->teams_count!=0){
-            $registered_rel = round(($l->registered_teams_count * 100)/$l->teams_count);
-        } else {
-            $registered_rel = 0;
-        }
-        $content = '<div class="progress" style="height: 20px;">
-        <div class="progress-bar" role="progressbar" style="width: '.$registered_rel.'%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">'.$registered_rel.'%</div>
-        </div>';
-        return array('display' =>$content, 'sort'=>$registered_rel);
-      })
-      ->addColumn('selected_rel', function($l){
-        if ($l->teams_count!=0){
-            $selected_rel = round(($l->selected_teams_count * 100)/$l->teams_count);
-        } else {
-            $selected_rel = 0;
-        }
-        $content = '<div class="progress" style="height: 20px;">
-        <div class="progress-bar bg-success" role="progressbar" style="width: '.$selected_rel.'%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">'.$selected_rel.'%</div>
-        </div>';
-        return array('display' =>$content, 'sort'=>$selected_rel);
-      })
       ->editColumn('updated_at', function ($l) {
         return ($l->updated_at==null) ? null : $l->updated_at->format('d.m.Y H:i');
       })
       ->editColumn('state', function ($l) {
-            $content = new LeagueStatus($l->state->key, 'badge');
+            $content = new LeagueStatus($l);
             return $content->render()->with($content->data());
       })
       ->make(true);
@@ -582,7 +548,7 @@ class LeagueController extends Controller
     return $leaguelist
       ->addIndexColumn()
       ->rawColumns(['shortname.display','nextaction','rollbackaction','clubs','teams',
-                    'age_type.display', 'gender_type.display'])
+                    'state'])
       ->editColumn('shortname', function ($l) use ($region) {
         if (  ( (Bouncer::can('manage', $l))
              or (Auth::user()->isA('regionadmin')) )
@@ -593,12 +559,6 @@ class LeagueController extends Controller
           $link = '<a href="' . route('league.briefing', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" class="text-info">' . $l->shortname . '</a>';
         }
         return array('display' =>$link, 'sort'=>$l->shortname);
-      })
-      ->editColumn('age_type', function ($l) {
-        return array('display'=>LeagueAgeType::getDescription($l->age_type), 'sort'=>$l->age_type);
-      })
-      ->editColumn('gender_type', function ($l) {
-        return array('display'=>LeagueGenderType::getDescription($l->gender_type), 'sort'=>$l->gender_type);
       })
       ->addColumn('alien_region', function ($l) use ($region) {
         if ($region->is_base_level and $l->region->is_top_level){
@@ -628,6 +588,9 @@ class LeagueController extends Controller
             } elseif ($data->state->is( LeagueState::Scheduling())) {
                 $btn = '<button type="button" class="btn btn-primary btn-sm" id="changeState" data-league="'.$data->id.'"
                         data-action="'.LeagueStateChange::CloseScheduling().'"><i class="fas fa-lock"> </i> '.__('league.action.close.scheduling').'</button>';
+            } elseif ($data->state->is( LeagueState::Referees())) {
+                $btn = '<button type="button" class="btn btn-primary btn-sm" id="changeState" data-league="'.$data->id.'"
+                        data-action="'.LeagueStateChange::CloseReferees().'"><i class="fas fa-lock"> </i> '.__('league.action.close.referees').'</button>';
             }
         }
         return $btn;
@@ -647,9 +610,12 @@ class LeagueController extends Controller
             } elseif ($data->state->is( LeagueState::Scheduling())) {
                 $btn .= '<button type="button" class="btn btn-outline-danger btn-sm" id="deleteGames" data-league="'.$data->id.'"><i class="fas fa-minus-circle"> </i> '. __('league.action.open.freeze').'
                         </button>';
+            } elseif ($data->state->is( LeagueState::Referees())) {
+                $btn .= '<button type="button" class="btn btn-outline-danger btn-sm" id="changeState" data-league="'.$data->id.'"
+                        data-action="'.LeagueStateChange::OpenScheduling().'"><i class="fas fa-lock"> </i> '. __('league.action.open.scheduling').'</button>';
             } elseif ($data->state->is( LeagueState::Live())) {
                 $btn .= '<button type="button" class="btn btn-outline-danger btn-sm" id="changeState" data-league="'.$data->id.'"
-                        data-action="'.LeagueStateChange::OpenScheduling().'"><i class="fas fa-lock"> </i> '.__('league.action.open.scheduling').'</button>';
+                        data-action="'.LeagueStateChange::OpenReferees().'"><i class="fas fa-lock"> </i> '.__('league.action.open.referees').'</button>';
             }
          }
          return $btn;
@@ -698,6 +664,10 @@ class LeagueController extends Controller
           $ccnt += 1;
         }
         return $btnlist;
+      })
+      ->editColumn('state', function ($l) {
+        $content = new LeagueStatus($l, 'badge');
+        return $content->render()->with($content->data());
       })
       ->make(true);
 
