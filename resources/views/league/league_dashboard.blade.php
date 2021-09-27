@@ -36,11 +36,11 @@
             </div>
             <div class="col-sm ">
                 <div class="info-box">
-                    <x-league-status currentState="{{ $league->state->key }}" mode="infobox-icon"/>
+                    <x-league-status :league="$league" mode="infobox-icon"/>
                     <div class="info-box-content">
                         <span class="info-box-text text-lg">Status</span>
                         <span class="info-box-number">{{ $league->state->description }}</span>
-                        <x-league-status currentState="{{ $league->state->key }}" />
+                        <x-league-status :league="$league" />
                     </div>
                 </div>
                 <div class="info-box">

@@ -4,6 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 use App\Enums\LeagueState;
+use App\Models\League;
 
 use Illuminate\Support\Facades\Log;
 
@@ -18,6 +19,13 @@ class LeagueStatus extends Component
     public $currentState;
 
     /**
+     * The league KPIs
+     *
+     * @var list
+     */
+    public $league_kpis;
+
+    /**
      * The display mode (badge, infobox-icon, progressbar)
      *
      * @var string
@@ -29,9 +37,10 @@ class LeagueStatus extends Component
      *
      * @return void
      */
-    public function __construct($currentState, $mode='progressbar')
+    public function __construct( League $league, $mode='progressbar')
     {
-        $this->currentState = LeagueState::coerce($currentState);
+        $this->currentState = $league->state;
+        $this->league_kpis = $league->state_count;
         $this->mode = $mode;
     }
 
