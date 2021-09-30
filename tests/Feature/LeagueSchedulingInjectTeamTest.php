@@ -30,7 +30,7 @@ class LeagueSchedulingInjectTeamTest extends TestCase
      * 4 Clubs, 1 Team ech
      * 1 Schedule for 4
      * 1 League, State Scheduling
-     * 
+     *
      * @test
      * @group leaguemgmt
      *
@@ -82,12 +82,12 @@ class LeagueSchedulingInjectTeamTest extends TestCase
         $this->assertEquals( 3 , static::$league->state_count['assigned']);
         $this->assertEquals( 3 , static::$league->state_count['registered']);
         $this->assertEquals( 3 , static::$league->state_count['charspicked']);
-        $this->assertEquals( 12 , static::$league->state_count['generated']);        
+        $this->assertEquals( 12 , static::$league->state_count['generated']);
     }
 
     /**
      * Inject new club and team
-     * 
+     *
      * @test
      * @group leaguemgmt
      *
@@ -95,7 +95,7 @@ class LeagueSchedulingInjectTeamTest extends TestCase
      */
     public function inject_team()
     {
-        // now add the new club/team 
+        // now add the new club/team
         $response = $this->authenticated()
             ->followingRedirects()
             ->post(
@@ -118,18 +118,18 @@ class LeagueSchedulingInjectTeamTest extends TestCase
         $this->assertEquals( 4 , static::$league->state_count['assigned']);
         $this->assertEquals( 4 , static::$league->state_count['registered']);
         $this->assertEquals( 4 , static::$league->state_count['charspicked']);
-        $this->assertEquals( 12 , static::$league->state_count['generated']);        
+        $this->assertEquals( 12 , static::$league->state_count['generated']);
     }
 
     /**
      * withdraw team
-     * 
+     *
      * @test
      * @group leaguemgmt
      *
      * @return void
      */
-    public function withdraw_team()  
+    public function withdraw_team()
     {
         // now withdraw a team
         $response = $this->authenticated()
@@ -145,30 +145,30 @@ class LeagueSchedulingInjectTeamTest extends TestCase
             ->assertDatabaseCount('clubs', 4)
             ->assertDatabaseCount('teams', 4)
             ->assertDatabaseCount('club_league', 3)
-            ->assertDatabaseCount('games', 6);
+            ->assertDatabaseCount('games', 12);
 
         static::$league->refresh();
         $this->assertCount(0, static::$league->games_notime);
-        $this->assertCount(0, static::$league->games_noshow);
+        $this->assertCount(3, static::$league->games_noshow);
         $this->assertEquals( 4 , static::$league->state_count['size']);
         $this->assertEquals( 3 , static::$league->state_count['assigned']);
         $this->assertEquals( 3 , static::$league->state_count['registered']);
         $this->assertEquals( 3 , static::$league->state_count['charspicked']);
-        $this->assertEquals( 6 , static::$league->state_count['generated']);        
+        $this->assertEquals( 12 , static::$league->state_count['generated']);
 
     }
 
     /**
      * re-add team
-     * 
+     *
      * @test
      * @group leaguemgmt
      *
      * @return void
      */
-    public function reinject_team()  
+    public function reinject_team()
     {
-        // now re-add the team 
+        // now re-add the team
         $response = $this->authenticated()
             ->followingRedirects()
             ->post(
@@ -220,7 +220,7 @@ class LeagueSchedulingInjectTeamTest extends TestCase
             $league->schedule->events()->delete();
             $league->delete();
         }
-        
+
         $schedule = Schedule::where('name', 'testschedule')->first();
         if (isset($schedule)){
             if ($schedule->events()->exists()){
@@ -228,7 +228,7 @@ class LeagueSchedulingInjectTeamTest extends TestCase
             }
             $schedule->delete();
         }
-        
+
         //League::whereNotNull('id')->delete();
         $this->assertDatabaseCount('leagues', 0)
             ->assertDatabaseCount('clubs', 0)

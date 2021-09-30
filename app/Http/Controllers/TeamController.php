@@ -8,6 +8,7 @@ use App\Models\League;
 use App\Models\Game;
 use App\Traits\GameManager;
 use App\Enums\LeagueState;
+use App\Models\Region;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -42,9 +43,8 @@ class TeamController extends Controller
 
         // Team: league_prev, league_id, league_char, league_no,
         $team->update(['league_prev'=>$league->shortname,'league_id'=>null,'league_char'=>null,'league_no'=>null]);
-        // Game: delete all games with gameteam home+guest
-        $team->games_home()->delete();
-        $team->games_guest()->delete();
+        // Game: blank all games with gameteam home+guest
+        $this->blank_team_games($league, $team);
 
         // League:club delete
         $upperArr = config('dunkomatic.league_team_chars');
@@ -63,26 +63,47 @@ class TeamController extends Controller
         } else {
           $league->clubs()->detach($team->club);
         }
-    
+
         return redirect()->back();
 
     }
 
     public function sb_freeteam(League $league)
     {
+        $region = $league->region;
         //Log::debug(print_r($league,true));
-        $free_teams = session('cur_region')->teams()->whereNull('league_id')->orWhere(function($query) use($league)
-          { $query->where('league_id', $league->id)
-                  ->whereNull('league_no');
-          })->with('club')->get();
+        if ($region->is_top_level){
+            $free_teams = collect();
+            foreach ($region->childRegions as $r){
+                $t = $r->teams()->whereNull('league_id')->orWhere(function($query) use($league)
+                { $query->where('league_id', $league->id)
+                        ->whereNull('league_no');
+                })->with('club')->get();
+                $free_teams = $free_teams->concat( $t );
+
+            }
+
+        } else  {
+            $free_teams = $region->teams()->whereNull('league_id')->orWhere(function($query) use($league)
+            { $query->where('league_id', $league->id)
+                    ->whereNull('league_no');
+            })->with('club')->get();
+        }
         Log::debug(print_r($free_teams,true));
         $response = array();
 
         foreach ($free_teams as $t){
-          $response[] = array(
-                "id"=>$t->id,
-                "text"=>$t['club']->shortname.$t->team_no.' ('.$t->league_prev.')'
-              );
+            if ($region->is_top_level){
+                $response[] = array(
+                    "id"=>$t->id,
+                    "text"=> $t->club->region->code .' : '. $t['club']->shortname.$t->team_no.' ('.$t->league_prev.')'
+                    );
+            } else {
+                $response[] = array(
+                    "id"=>$t->id,
+                    "text"=>$t['club']->shortname.$t->team_no.' ('.$t->league_prev.')'
+                    );
+            }
         }
         return Response::json($response);
     }

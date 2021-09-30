@@ -115,7 +115,7 @@ trait GameManager {
                   $g['referee_1'] = "****";
                 } else {
                   $g['referee_1'] = "";
-                }                
+                }
 
                 $g['referee_2'] = "";
                 $g['team_char_home'] = $s->team_home;
@@ -151,13 +151,32 @@ trait GameManager {
                 }
 
                 $league->games()->where('game_no',$s->game_no)->where('team_char_guest',$league_no)->update([
-                    'club_id_guest'=>$team->club->id, 
-                    'team_id_guest'=>$team->id, 
+                    'club_id_guest'=>$team->club->id,
+                    'team_id_guest'=>$team->id,
                     'team_guest'=>$team->club->shortname.$team->team_no ]);
               }
             }
           }
         }
+    }
+
+    public function blank_team_games(League $league, Team $team){
+        // blank out home games
+        $league->games()->where('team_id_home', $team->id)->update([
+            'team_id_home'=>null,
+            'club_id_home'=>null,
+            'team_home'=>null,
+            'gym_no'=>null,
+            'gym_id'=>null
+        ]);
+
+        // blank out guest games
+        $league->games()->where('team_id_guest', $team->id)->update([
+            'team_id_guest'=>null,
+            'club_id_guest'=>null,
+            'team_guest'=>null,
+        ]);
+
     }
 
 
