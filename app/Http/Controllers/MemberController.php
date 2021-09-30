@@ -154,7 +154,7 @@ class MemberController extends Controller
           $league = League::find($entity_id);
           $league->memberships()->create($mship);
           return redirect()->route('league.dashboard', ['language' => app()->getLocale(), 'league' => $league]);
-        } elseif ($entity_type == Region::class){        
+        } elseif ($entity_type == Region::class){
           $region = Region::find($entity_id);
           $region->memberships()->create($mship);
           // auto-invite rgeion admin

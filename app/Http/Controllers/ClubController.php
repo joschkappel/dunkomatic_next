@@ -189,7 +189,7 @@ class ClubController extends Controller
     $response = array();
 
     foreach ($leagues as $league) {
-      if ($league->state > LeagueState::Assignment()){
+      if ($league->state->is( LeagueState::Assignment()) ){
         $response[] = array(
           "id" => $league->id,
           "text" => $league->shortname

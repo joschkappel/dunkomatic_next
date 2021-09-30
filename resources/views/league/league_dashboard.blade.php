@@ -138,7 +138,7 @@
                                                     @isset($assigned_clubs[$i])
                                                         <td scope="row" class="text-center"><button id="deassignClub"
                                                                 data-id="{{ $assigned_clubs[$i]['club_id'] }}" type="button"
-                                                                class="btn btn-success btn-sm" @if ( !($league->state->is(App\Enums\LeagueState::Assignment()) )) disabled @endif>
+                                                                class="btn btn-success btn-sm" @if ( ($league->state->is(App\Enums\LeagueState::Live()) )) disabled @endif>
                                                                 {{ $assigned_clubs[$i]['shortname'] }} </button>
                                                         </td>
                                                         <td class="text-center">
@@ -220,12 +220,6 @@
                         <div class="card-tools">
                             <button type="button" class="btn btn-primary float-right" id="injectTeam" @if ($league->state_count['registered'] == $league->size) disabled @endif><i class="fas fa-plus"></i> @lang('game.action.team.add')
                             </button>
-                            @if ($league->state->is(App\Enums\LeagueState::Assignment()))
-                                <button type="button" class="btn btn-outline-primary float-right mr-2" id="changeState"
-                                    data-action="{{ App\Enums\LeagueStateChange::CloseAssignment() }}"><i
-                                        class="fas fa-lock"></i> Close Assignment
-                                </button>
-                            @endif
                             <button type="button" class="btn btn-outline-primary float-right mr-2" id="withdrawTeam" @if ($league->state_count['registered'] == 0) disabled @endif><i
                                     class="fa fa-trash"></i> @lang('game.action.team.withdraw')
                             </button>

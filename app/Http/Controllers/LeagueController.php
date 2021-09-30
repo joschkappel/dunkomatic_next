@@ -28,8 +28,12 @@ use Illuminate\Support\Facades\Storage;
 use App\Notifications\ClubDeAssigned;
 use App\View\Components\LeagueStatus;
 
+use App\Traits\GameManager;
+
 class LeagueController extends Controller
 {
+    use GameManager;
+
   /**
    * Display a listing of the resource.
    *
@@ -240,10 +244,10 @@ class LeagueController extends Controller
     $st = $selected_teams->collect();
     $assigned_club->transform(function ($item) use (&$st) {
         $k = $st->search(function ($t) use ($item) {
-          return $t['shortname'] == $item['shortname'];
+          return ($t['shortname'] == $item['shortname']);
         });
 
-        if ( $k ) {
+        if ( $k !== false ) {
           $item['team_registered'] = true;
           if ($st[$k]['league_no'] != null){
             $item['team_selected'] = true;
@@ -451,7 +455,11 @@ class LeagueController extends Controller
     $team = Team::where('club_id', $club->id)->where('league_id', $league->id)->first();
     if (isset($team)) {
       $team->update(['league_id' => null, 'league_no' => null, 'league_char' => null]);
+
+      // if league games are generated, delete these games as well
+      $this->blank_team_games($league, $team);
     }
+
 
     $member = $club->members()->wherePivot('role_id', Role::ClubLead)->first();
 
