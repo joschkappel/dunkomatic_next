@@ -10,7 +10,7 @@ return [
   'action.select' => 'Wähle eine Funktion aus',
   'member.action.select' => 'Wähle einen Mitarbeiter aus',
   'member.action.create' => 'Lege den Mitarbeiter für diese Funktion fest',
-  'member.title.list' => 'Mitarbeiter Liste',  
+  'member.title.list' => 'Mitarbeiter Liste',
   'title.new' => 'Lege einen neuen Mitarbeiter für :unittype :unitname an',
   'title.delete' => 'Einen Mitarbeiter löschen',
   'title.edit' => 'Ändere die Daten des Mitarbeiters :member',
@@ -26,5 +26,13 @@ return [
   'email1' => 'eMail Addresse',
   'email2' => 'Alternative eMail',
   'fax' => 'Fax-Nr.',
-  'user.account' => 'Benutzerkonto anlegen'
+  'user.account' => 'Benutzerkonto anlegen',
+  '1.short' => 'Abteilung',
+  '0.short' => 'Benutzer',
+  '2.short' => 'Schiris',
+  '3.short' => 'Staffeln',
+  '4.short' => 'Bezirk',
+  '5.short' => 'Mädchen',
+  '6.short' => 'Jugend',
+  '7.short' => 'Bezirk',
 ];

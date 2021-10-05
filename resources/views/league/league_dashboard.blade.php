@@ -219,7 +219,7 @@
                     <div class="card-footer">
                         <div class="card-tools">
                             <button type="button" class="btn btn-primary float-right" id="injectTeam" @if ($league->state_count['registered'] == $league->size) disabled @endif><i class="fas fa-plus"></i> @lang('game.action.team.add')
-                            </button>
+                            </button>comp
                             <button type="button" class="btn btn-outline-primary float-right mr-2" id="withdrawTeam" @if ($league->state_count['registered'] == 0) disabled @endif><i
                                     class="fa fa-trash"></i> @lang('game.action.team.withdraw')
                             </button>
