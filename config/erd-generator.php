@@ -7,7 +7,7 @@ return [
      * By default, the `app` directory will be scanned recursively for models.
      */
     'directories' => [
-        base_path('app'),
+        base_path('app/Models'),
     ],
 
     /*
@@ -55,11 +55,11 @@ return [
         // App\Models\Region::class,
         // App\Models\Schedule::class,
         // SCHEDULE model
-        App\Models\LeagueSize::class,
-        App\Models\LeagueSizeChar::class,
-        App\Models\LeagueSizeScheme::class,
-        App\Models\Schedule::class,
-        App\Models\ScheduleEvent::class,
+        // App\Models\LeagueSize::class,
+        // App\Models\LeagueSizeChar::class,
+        // App\Models\LeagueSizeScheme::class,
+        // App\Models\Schedule::class,
+        // App\Models\ScheduleEvent::class,
 
     ],
 

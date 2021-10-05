@@ -273,6 +273,27 @@ class LeagueController extends Controller
   }
 
   /**
+   * Display a brief overview
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function briefing($language, League $league)
+  {
+    $data['league'] = $league;
+
+    // get assigned clubs
+    $clubs = $league->clubs()->with('memberships')->get()->sortBy('shortname');
+    // get assigned Teams
+    $teams = $league->teams()->with('club')->get();
+
+    $data['clubs'] = $clubs;
+    $data['memberships'] = $league->memberships()->with('member')->get();
+    $data['teams'] = $teams;
+
+    return view('league/league_briefing', $data);
+  }
+
+  /**
    * Show the form for creating a new resource.
    *
    * @return \Illuminate\Http\Response

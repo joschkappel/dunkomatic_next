@@ -141,6 +141,23 @@ class ClubController extends Controller
     }
 
     /**
+     * Display a brief overview
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function briefing( $language, Club $club )
+    {
+          $data['club'] = $club;
+
+          $data['gyms'] = $data['club']->gyms()->get();
+          $data['teams'] = $data['club']->teams()->with('league')->get()->sortBy('league.shortname');
+          $data['memberships'] = $data['club']->memberships()->with('member')->get();
+
+          return view('club/club_briefing', $data);
+
+    }
+
+    /**
      * Display a listing of the resource for selectboxes.
      *
      * @return \Illuminate\Http\Response
