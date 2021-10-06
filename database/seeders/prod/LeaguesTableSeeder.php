@@ -54,8 +54,9 @@ class LeaguesTableSeeder extends Seeder
         // handle "*4, 2*6 and 3*4 sizes
         $size = $league->league_teams % 20;
         $iterations = intdiv( $league->league_teams, 20)+1;
-        
+
         $league_size = LeagueSize::where( 'size' ,$size)->first();
+
         if (isset($league_size)){
           $size_id = $league_size->id;
 
@@ -65,7 +66,7 @@ class LeaguesTableSeeder extends Seeder
             'region_id'        => Region::where('code', $league->region)->first()->id,
             'name'          => $league->league_name,
             'schedule_id'   => $group_id,
-            'league_size_id'       => $size_id,
+            'league_size_id' => $size_id,
             'above_region'  => $league->above_region,
             'created_at'    => now(),
             'age_type'      => $ageclass,

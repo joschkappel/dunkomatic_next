@@ -27,7 +27,7 @@ class CreateLeaguesTable extends Migration
             $table->foreign('schedule_id')->references('id')->on('schedules');
             $table->unsignedInteger('age_type')->nullable();
             $table->unsignedInteger('gender_type')->nullable();
-            $table->unsignedInteger('state')->default(LeagueState::Assignment());
+            $table->unsignedInteger('state')->default(LeagueState::Setup());
             $table->timestamp('assignment_closed_at')->nullable();
             $table->timestamp('registration_closed_at')->nullable();
             $table->timestamp('selection_opened_at')->nullable();

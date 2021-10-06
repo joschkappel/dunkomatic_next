@@ -22,6 +22,7 @@ class TestDatabaseSeeder extends Seeder
           base\LeagueSizesTableSeeder::class,
           base\LeagueSizeCharsTableSeeder::class,
           base\LeagueSizeSchemesTableSeeder::class,
+          base\LeagueStateTableSeeder::class,
         ]);
     }
 }

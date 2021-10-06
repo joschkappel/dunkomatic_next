@@ -254,7 +254,7 @@ class RegionController extends Controller
       foreach ( LeagueState::getValues() as $ls){
         $datasets[0]['stack'] = 'Stack 1';
         $data['labels'][] = LeagueState::getDescription( LeagueState::coerce($ls) );
-        $datasets[0]['data'][] = $rs[$ls]->total ?? 0;
+        $datasets[0]['data'][] = $rs->firstWhere('state', $ls)->total ?? 0;
       }
 
       $data['datasets'] = $datasets;

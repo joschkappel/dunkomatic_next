@@ -19,7 +19,7 @@ class LeagueObserver
      */
     public function created(League $league)
     {
-        if ( isset($league->schedule_id)  and isset($league->league_size_id ) ) {
+        if ( $league->schedule()->exists()  and  $league->league_size()->exists() ) {
              $this->open_assignment($league);
         } else {
              $this->open_setup($league);
@@ -34,13 +34,13 @@ class LeagueObserver
      */
     public function updated(League $league)
     {
-        if ( !isset($league->schedule_id)  or  !isset($league->league_size_id) ){
+        if ( ! $league->schedule()->exists()  or  ! $league->league_size()->exists() ){
             if (! $league->state->is(LeagueState::Setup() )){
                 $this->open_setup($league);
             }
         }
 
-        if ( isset($league->schedule_id)  and  isset($league->league_size_id) and ($league->state->is(LeagueState::Setup))  ){
+        if ( $league->schedule()->exists()  and  $league->league_size()->exists() and ($league->state->is(LeagueState::Setup))  ){
             if ( ! $league->state->is(LeagueState::Assignment() ) ) {
                 $this->open_assignment($league);
            }

@@ -1,9 +1,6 @@
 <?php
 namespace Database\Seeders\prod;
 
-use App\Enums\LeagueState;
-use App\Models\League;
-
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -24,18 +21,18 @@ class GamesTableSeeder extends Seeder
                               ->whereExists(function ($query) {
                                 $query->select(DB::raw(1))
                                       ->from('team')
-                                      ->whereRaw('game.team_id_guest = team.team_id ');}) 
+                                      ->whereRaw('game.team_id_guest = team.team_id ');})
                               ->whereExists(function ($query) {
                                 $query->select(DB::raw(1))
                                       ->from('team')
-                                      ->whereRaw('game.team_id_home = team.team_id ');})                                                                              
+                                      ->whereRaw('game.team_id_home = team.team_id ');})
                               ->get();
 
       foreach ($old_games as $g) {
 
         if ($g->club_id == 0){
           $g->club_id = NULL;
-        } 
+        }
 
         if ($g->club_id_guest == 0){
           $g->club_id_guest = NULL;
@@ -89,10 +86,6 @@ class GamesTableSeeder extends Seeder
           'referee_1' => $g->game_team_ref1,
           'referee_2' => $g->game_team_ref2
         ]);
-
-        $league = League::find($g->league_id);
-        $league->state = LeagueState::Scheduling();
-        $league->save();
 
       }
     }

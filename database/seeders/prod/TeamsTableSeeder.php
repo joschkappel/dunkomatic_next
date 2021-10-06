@@ -1,7 +1,6 @@
 <?php
 namespace Database\Seeders\prod;
 
-use App\Enums\LeagueState;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -95,32 +94,6 @@ class TeamsTableSeeder extends Seeder
           'created_at'    => now(),
           'id'            => $team->team_id
         ]);
-
-        $l = League::find($team->league_id);
-        if (isset($l)){
-          if ($registered){
-            $l->registration_closed_at = now();
-            $l->assignment_closed_at = now();
-            $l->state = LeagueState::Freeze();
-            if ($charpicked){
-              $l->selection_closed_at = now();
-            } 
-          } else {
-              $l->state = LeagueState::Assignment();
-          }
-          if ($l->games->count() > 0){
-            if ( ($l->games_notime->count() == 0) and ($l->games_noshow->count() == 0) ){
-              $l->state = LeagueState::Live();
-              $l->scheduling_closed_at = now();
-              $l->generated_at = now();
-            } else {
-              $l->state = LeagueState::Scheduling();
-              $l->generated_at = now();
-            }
-          }
-          $l->save();
-          }
-        }
-
+      }
     }
 }

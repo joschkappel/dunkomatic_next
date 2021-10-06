@@ -22,15 +22,18 @@ trait LeagueFSM {
         Log::info('League: '.$league->shortname.' Changed to Registration');
 
         $clubs = $league->clubs;
-        $adminname = $league->region->regionadmin->first()->name;
-        foreach ($clubs as $c) {
-            $member = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
+        if ($league->region->regionadmin()->exists()){
+            $adminname = $league->region->regionadmin->first()->name;
 
-            if (isset($member)) {
-                $member->notify(new RegisterTeams($league, $c, $adminname, $member->name));
-                $user = $member->user;
-                if (isset($user)) {
-                    $user->notify(new RegisterTeams($league, $c, $adminname, $user->name));
+            foreach ($clubs as $c) {
+                $member = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
+
+                if (isset($member)) {
+                    $member->notify(new RegisterTeams($league, $c, $adminname, $member->name));
+                    $user = $member->user;
+                    if (isset($user)) {
+                        $user->notify(new RegisterTeams($league, $c, $adminname, $user->name));
+                    }
                 }
             }
         }
@@ -43,15 +46,18 @@ trait LeagueFSM {
         Log::info('League: '.$league->shortname.' Changed to Selection');
 
         $clubs = $league->clubs;
-        $adminname = $league->region->regionadmin->first()->name;
-        foreach ($clubs as $c) {
-            $member = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
 
-            if (isset($member)) {
-                $member->notify(new SelectTeamLeagueNo($league, $c, $adminname, $member->name));
-                $user = $member->user;
-                if (isset($user)) {
-                    $user->notify(new SelectTeamLeagueNo($league, $c, $adminname, $user->name));
+        if ($league->region->regionadmin()->exists()){
+            $adminname = $league->region->regionadmin->first()->name;
+            foreach ($clubs as $c) {
+                $member = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
+
+                if (isset($member)) {
+                    $member->notify(new SelectTeamLeagueNo($league, $c, $adminname, $member->name));
+                    $user = $member->user;
+                    if (isset($user)) {
+                        $user->notify(new SelectTeamLeagueNo($league, $c, $adminname, $user->name));
+                    }
                 }
             }
         }
@@ -72,20 +78,23 @@ trait LeagueFSM {
         Log::info('League: '.$league->shortname.' Changed to Scheduling');
 
         $clubs = $league->teams()->pluck('club_id');
-        $adminname = $league->region->regionadmin->first()->name;
 
-        foreach ($clubs as $c){
-          $club = Club::find($c);
-          $member = $club->members()->wherePivot('role_id',Role::ClubLead)->first();
+        if ($league->region->regionadmin()->exists()){
+            $adminname = $league->region->regionadmin->first()->name;
 
-          if (isset($member)){
-            $member->notify(new LeagueGamesGenerated($league, $club, $adminname, $member->name ));
-            $user = $member->user;
-            if (isset($user)){
-              $user->notify(new LeagueGamesGenerated($league, $club, $adminname, $user->name ));
+            foreach ($clubs as $c){
+            $club = Club::find($c);
+            $member = $club->members()->wherePivot('role_id',Role::ClubLead)->first();
+
+            if (isset($member)){
+                $member->notify(new LeagueGamesGenerated($league, $club, $adminname, $member->name ));
+                $user = $member->user;
+                if (isset($user)){
+                $user->notify(new LeagueGamesGenerated($league, $club, $adminname, $user->name ));
+                }
             }
-          }
 
+            }
         }
     }
 

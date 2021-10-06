@@ -26,6 +26,7 @@ class PerfTestDatabaseSeeder extends Seeder
         $this->call([
             test\ClubsSeeder::class,
             test\LeaguesSeeder::class,
+            base\LeagueStateTableSeeder::class,
           ]);
     }
 }

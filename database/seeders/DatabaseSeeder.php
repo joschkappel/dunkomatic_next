@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
           prod\TeamsTableSeeder::class,
           dev\MembersTableSeeder::class,
           prod\GamesTableSeeder::class,
+          base\LeagueStateTableSeeder::class,
         ]);
     }
 }
