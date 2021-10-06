@@ -33,14 +33,14 @@
                 <select class="js-selSize js-states form-control select2 @error('league_size_id') is-invalid @enderror" id='selSize' name='league_size_id'>
                     @if ($league->league_size_id)
                     <option value="{{ old('league_size_id',$league->league_size_id ) }}" selected >{{ old('league_size_id') ? App\Models\LeagueSize::find(old('league_size_id'))->description : $league->league_size['description'] }}</option>
-                    @endif                                        
+                    @endif
                 </select>
                 @error('league_size_id')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
         </div>
-    </div>                            
+    </div>
     <div class="form-group row">
         <label for="selSchedule"
             class="col-sm-4 col-form-label">{{ trans_choice('league.schedule', 1) }}</label>
@@ -109,7 +109,7 @@
         $(function() {
             $('#frmClose').click(function(e){
                 history.back();
-            })            
+            })
 
             $("#selAgeType").select2({
                 theme: 'bootstrap4',
@@ -127,9 +127,7 @@
             $(".js-selSize").select2({
                 placeholder: "@lang('schedule.action.size.select')...",
                 theme: 'bootstrap4',
-                allowClear: false,
-                minimumResultsForSearch: 5,
-                minimumInputLength: -1,
+                allowClear: true,
                 ajax: {
                     url: "{{ url('size/index') }}",
                     type: "get",
@@ -147,7 +145,7 @@
                 placeholder: "Select a size first...",
                 theme: 'bootstrap4',
                 multiple: false,
-                allowClear: false,
+                allowClear: true,
                 minimumResultsForSearch: -1
             });
 
@@ -156,7 +154,7 @@
                 console.log(selected);
                 var url = "{{ route('schedule.sb.region_size', ['region' => session('cur_region')->id, 'size'=>':size:' ]) }}";
                 url = url.replace(':size:', selected);
-                
+
                 $(".js-sel-schedule").val(null).trigger('change');
                 $(".js-sel-schedule").select2({
                     theme: 'bootstrap4',

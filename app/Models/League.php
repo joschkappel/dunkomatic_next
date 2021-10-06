@@ -134,7 +134,7 @@ class League extends Model implements Auditable
     }
     public function getSizeAttribute()
     {
-        return $this->league_size->size;
+        return isset($this->league_size->size) ? $this->league_size->size : null;
     }
     public function getStateCountAttribute()
     {

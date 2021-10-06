@@ -60,7 +60,7 @@ class LeagueControllerTest extends TestCase
                       ]);
       $response
           ->assertStatus(302)
-          ->assertSessionHasErrors(['shortname','schedule_id','league_size_id']);
+          ->assertSessionHasErrors(['shortname']);
 
       $this->assertDatabaseMissing('leagues', ['name' => 'testleague']);
 

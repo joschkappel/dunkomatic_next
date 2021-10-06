@@ -7,6 +7,7 @@ use App\Models\Region;
 use App\Models\Schedule;
 use App\Enums\LeagueGenderType;
 use App\Enums\LeagueAgeType;
+use App\Enums\LeagueState;
 use App\Models\LeagueSize;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -36,6 +37,7 @@ class LeagueFactory extends Factory
             'above_region' => False,
             'league_size_id' => $size->id,
             'schedule_id' => Schedule::factory()->create(['league_size_id'=>$size->id])->id,
+            'state' => LeagueState::Setup(),
             'age_type' => LeagueAgeType::getRandomValue(),
             'gender_type' => LeagueGenderType::getRandomValue()
         ];
