@@ -1,4 +1,6 @@
-@if ($currentState->is(App\Enums\LeagueState::Assignment()))
+@if ($currentState->is(App\Enums\LeagueState::Setup()))
+    <span class="info-box-icon bg-danger"><i class="fas fa-pencil-ruler"></i></span>
+@elseif ($currentState->is(App\Enums\LeagueState::Assignment()))
     <span class="info-box-icon bg-info"><i class="fas fa-battery-empty"></i></span>
 @elseif ($currentState->is(App\Enums\LeagueState::Registration()))
     <span class="info-box-icon bg-info"><i class="fas fa-battery-quarter"></i></span>

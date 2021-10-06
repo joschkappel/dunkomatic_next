@@ -9,6 +9,7 @@ use App\Models\League;
 use App\Models\Game;
 use App\Models\Gym;
 use App\Models\Team;
+use App\Models\LeagueSize;
 
 use App\Enums\Role;
 use App\Enums\LeagueState;
@@ -30,7 +31,7 @@ class LeagueRegistrationInjectTeamTest extends TestCase
      * 4 Clubs, 1 Team ech
      * 1 Schedule for 4
      * 1 League, State Selection
-     * 
+     *
      * @test
      * @group leaguemgmt
      *
@@ -49,7 +50,10 @@ class LeagueRegistrationInjectTeamTest extends TestCase
                 'startdate' => Carbon::now()->addDays(32),
             ]);
         // create league
-        static::$league = League::factory()->create(['name' => 'testleague', 'state' => LeagueState::Registration(), 'schedule_id' => $schedule->id]);
+        $size = LeagueSize::where('size',4)->first();
+        static::$league = League::factory()->create(['name' => 'testleague', 'schedule_id' => $schedule->id, 'league_size_id' => $size->id]);
+        static::$league->state = LeagueState::Registration();
+        static::$league->save();
 
         // assign clubs to league
         static::$league->clubs()->attach([
@@ -76,11 +80,11 @@ class LeagueRegistrationInjectTeamTest extends TestCase
         $this->assertEquals( 0 , static::$league->state_count['charspicked']);
         $this->assertEquals( 0 , static::$league->state_count['generated']);
 
-    }    
+    }
 
     /**
      * Assign club
-     * 
+     *
      * @test
      * @group leaguemgmt
      *
@@ -88,7 +92,7 @@ class LeagueRegistrationInjectTeamTest extends TestCase
      */
     public function assign_club()
     {
-        
+
         // now add the new club/
         $response = $this->authenticated()
             ->followingRedirects()
@@ -110,13 +114,13 @@ class LeagueRegistrationInjectTeamTest extends TestCase
         $this->assertEquals( 4 , static::$league->state_count['assigned']);
         $this->assertEquals( 3 , static::$league->state_count['registered']);
         $this->assertEquals( 0 , static::$league->state_count['charspicked']);
-        $this->assertEquals( 0 , static::$league->state_count['generated']);            
+        $this->assertEquals( 0 , static::$league->state_count['generated']);
 
     }
 
     /**
      * Register team
-     * 
+     *
      * @test
      * @group leaguemgmt
      *
@@ -138,26 +142,26 @@ class LeagueRegistrationInjectTeamTest extends TestCase
             ->assertDatabaseCount('clubs', 4)
             ->assertDatabaseCount('teams', 4)
             ->assertDatabaseCount('club_league', 4)
-            ->assertDatabaseCount('games',0 );     
+            ->assertDatabaseCount('games',0 );
 
         static::$league->refresh();
         $this->assertEquals( 4 , static::$league->state_count['size']);
         $this->assertEquals( 4 , static::$league->state_count['assigned']);
         $this->assertEquals( 4 , static::$league->state_count['registered']);
         $this->assertEquals( 0 , static::$league->state_count['charspicked']);
-        $this->assertEquals( 0 , static::$league->state_count['generated']);                   
+        $this->assertEquals( 0 , static::$league->state_count['generated']);
 
     }
 
     /**
      * withdraw team
-     * 
+     *
      * @test
      * @group leaguemgmt
      *
      * @return void
      */
-    public function withdraw_team()  
+    public function withdraw_team()
     {
         // now withdraw a team
         $response = $this->authenticated()
@@ -186,21 +190,21 @@ class LeagueRegistrationInjectTeamTest extends TestCase
 
     /**
      * assign duplicate club
-     * 
+     *
      * @test
      * @group leaguemgmt
      *
      * @return void
      */
-    public function assign_duplicate_club()  
-    {    
+    public function assign_duplicate_club()
+    {
 
         $response = $this->authenticated()
         ->followingRedirects()
         ->post(
             route('league.assign-clubs', ['league' => static::$league->id]),
             ['club_id' => static::$c_toadd[0]->id, 'item_id'=> static::$league->id]
-        );    
+        );
         $response->assertStatus(200);
         $this->assertDatabaseHas('leagues', ['id' => static::$league->id, 'state' => LeagueState::Registration()])
             ->assertDatabaseMissing('games', ['league_id' => static::$league->id])
@@ -249,7 +253,7 @@ class LeagueRegistrationInjectTeamTest extends TestCase
             }
             $schedule->delete();
         }
-        
+
         //League::whereNotNull('id')->delete();
         $this->assertDatabaseCount('leagues', 0)
             ->assertDatabaseCount('clubs', 0)

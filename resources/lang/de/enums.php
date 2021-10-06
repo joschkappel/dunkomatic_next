@@ -41,6 +41,7 @@ return [
     ],
 
     LeagueState::class => [
+      LeagueState::Setup =>  'Spielrunde wird definiert',
       LeagueState::Assignment =>  'Bezirk ordnet Vereine zu',
       LeagueState::Registration =>  'Verein meldet Mannschaften',
       LeagueState::Selection =>   'Verein wählt Ziffern',

@@ -40,6 +40,7 @@ return [
     ],
 
     LeagueState::class => [
+      LeagueState::Setup =>  'Setup League',
       LeagueState::Assignment =>  'Assign Clubs',
       LeagueState::Registration =>  'Register Teams',
       LeagueState::Selection =>   'Select Team Number',

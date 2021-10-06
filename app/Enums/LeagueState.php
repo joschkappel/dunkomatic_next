@@ -6,6 +6,7 @@ use BenSampo\Enum\Enum;
 use BenSampo\Enum\Contracts\LocalizedEnum;
 
 /**
+ * @method static static Setup()
  * @method static static Assignment()
  * @method static static Registration()
  * @method static static Selection()
@@ -16,12 +17,13 @@ use BenSampo\Enum\Contracts\LocalizedEnum;
  */
 final class LeagueState extends Enum implements LocalizedEnum
 {
-    const Assignment =   0;
-    const Registration =   1;
-    const Selection =   2;
-    const Freeze = 3;
-    const Scheduling = 4;
-    const Referees = 5;
-    const Live = 6;
+    const Setup =   0;
+    const Assignment =   1;
+    const Registration =  2;
+    const Selection =   3;
+    const Freeze = 4;
+    const Scheduling = 5;
+    const Referees = 6;
+    const Live = 7;
 
 }
