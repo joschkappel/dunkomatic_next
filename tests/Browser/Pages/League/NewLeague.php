@@ -41,7 +41,7 @@ class NewLeague extends Page
     }
 
     public function create_league( Browser $browser, $code, $name ){
-      $browser->select2('.js-selSize', '4 Teams', 5)
+      $browser->select2('.js-selSize', '4 Teams')
               // ->assertSelected('.js-selSize', 2)
               ->screenshot('Size selected')
               ->type('shortname',$code)

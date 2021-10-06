@@ -132,6 +132,7 @@
                 placeholder: "@lang('schedule.action.size.select')...",
                 theme: 'bootstrap4',
                 allowClear: true,
+                minimumResultsForSearch: -1,
                 ajax: {
                     url: "{{ url('size/index') }}",
                     type: "get",
