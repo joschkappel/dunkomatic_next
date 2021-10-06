@@ -5,7 +5,7 @@ namespace Tests\Browser;
 use App\Models\Region;
 use App\Models\Schedule;
 use App\Models\League;
-
+use App\Models\LeagueSize;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 use Tests\DuskTestCase;
@@ -40,6 +40,7 @@ class LeagueTest extends DuskTestCase
         Schedule::factory()->count(3)->create();
         $schedule = Schedule::where('region_id',$r->id)->first();
         $this->assertDatabaseHas('schedules', ['id' => $schedule->id]);
+        LeagueSize::where('description','Undefined')->delete();
         $this->assertDatabaseHas('league_sizes', ['description' => '4 Teams']);
 
         $this->browse(function ($browser) use ($u, $league_code, $league_code_new, $league_name, $league_name_new) {

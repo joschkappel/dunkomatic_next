@@ -4,25 +4,25 @@ namespace App\Observers;
 
 use App\Models\League;
 use App\Enums\LeagueState;
-
+use App\Traits\LeagueFSM;
 use Illuminate\Support\Facades\Log;
 
 class LeagueObserver
 {
+    use LeagueFSM;
+
     /**
      * Handle the League "creating" event.
      *
      * @param  \App\Models\League  $league
      * @return void
      */
-    public function creating(League $league)
+    public function created(League $league)
     {
         if ( isset($league->schedule_id)  and isset($league->league_size_id ) ) {
-            $league->state = LeagueState::Assignment();
-            Log::info('League state set to Assignment');
+             $this->open_assignment($league);
         } else {
-            $league->state = LeagueState::Setup();
-            Log::info('League state set to Setup');
+             $this->open_setup($league);
         }
     }
 
@@ -32,16 +32,18 @@ class LeagueObserver
      * @param  \App\Models\League  $league
      * @return void
      */
-    public function updating(League $league)
+    public function updated(League $league)
     {
         if ( !isset($league->schedule_id)  or  !isset($league->league_size_id) ){
-            $league->state = LeagueState::Setup();
-            Log::info('League state reset to Setup');
+            if (! $league->state->is(LeagueState::Setup() )){
+                $this->open_setup($league);
+            }
         }
 
         if ( isset($league->schedule_id)  and  isset($league->league_size_id) and ($league->state->is(LeagueState::Setup))  ){
-            $league->state = LeagueState::Assignment();
-            Log::info('League state set to Assignment');
+            if ( ! $league->state->is(LeagueState::Assignment() ) ) {
+                $this->open_assignment($league);
+           }
         }
 
 

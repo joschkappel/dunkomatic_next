@@ -327,8 +327,8 @@ class LeagueController extends Controller
         'unique:leagues',
         'max:10'
       ),
-      'league_size_id' => 'required|exists:league_sizes,id',
-      'schedule_id' => 'required|exists:schedules,id',
+      'league_size_id' => 'sometimes|required|exists:league_sizes,id',
+      'schedule_id' => 'sometimes|required|exists:schedules,id',
       'name' => 'required|max:255',
       'region_id' => 'required|exists:regions,id',
       'age_type' => ['required', new EnumValue(LeagueAgeType::class, false)],
@@ -400,8 +400,8 @@ class LeagueController extends Controller
         Rule::unique('leagues')->ignore($league->id),
         'max:10'
       ),
-      'schedule_id' => 'required|exists:schedules,id',
-      'league_size_id' => 'required|exists:league_sizes,id',
+      'schedule_id' => 'sometimes|required|exists:schedules,id',
+      'league_size_id' => 'sometimes|required|exists:league_sizes,id',
       'name' => 'required|max:255',
       'age_type' => ['required', new EnumValue(LeagueAgeType::class, false)],
       'gender_type' => ['required', new EnumValue(LeagueGenderType::class, false)],
@@ -409,13 +409,22 @@ class LeagueController extends Controller
 
     $above_region = $request->input('above_region');
     if (isset($above_region) and ($above_region == 'on')) {
-      $data['above_region'] = True;
+      $data['above_region'] = true;
     } else {
-      $data['above_region'] = False;
+      $data['above_region'] = false;
+    }
+
+    if ( $request->input('schedule_id') == null) {
+        $data['schedule_id'] = null;
+    }
+    if ( $request->input('league_size_id') == null) {
+        $data['league_size_id'] = null;
     }
 
     Log::debug('ready to update league:' . print_r($data, true));
     $result = $league->update($data);
+    Log::debug(print_r($result,true));
+    $league->refresh();
     return redirect()->route('league.dashboard', ['language' => app()->getLocale(), 'league' => $league]);
   }
 

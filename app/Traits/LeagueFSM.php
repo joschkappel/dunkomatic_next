@@ -149,6 +149,16 @@ trait LeagueFSM {
 
     }
 
+    public function open_setup(League $league) {
+        $league->state = LeagueState::Setup();
+        $league->save();
+        $league->games()->delete();
+        $league->teams()->update(['league_id'=>null]);
+        $league->clubs()->detach();
+
+        Log::info('League: '.$league->shortname.' Setup  (Re)-Opened');
+
+    }
 
 
 
