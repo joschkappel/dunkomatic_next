@@ -32,7 +32,7 @@
         <label for='selSize' class="col-sm-4 col-form-label">@lang('schedule.size')</label>
         <div class="col-sm-6">
             <div class="input-group mb-3">
-                <select class='js-selSize js-states form-control select2 @error('league_size_id') is-invalid @enderror id='selSize' name="league_size_id">
+                <select class="js-selSize js-states form-control select2 @error('league_size_id') is-invalid @enderror" id="selSize" name="league_size_id">
                     @if (old('league_size_id')!== null)
                     <option value="{{ old('league_size_id') }}" selected >{{  App\Models\LeagueSize::find(old('league_size_id'))->description }}</option>
                     @endif
@@ -48,8 +48,7 @@
             class="col-sm-4 col-form-label">{{ trans_choice('schedule.schedule', 1) }}</label>
         <div class="col-sm-6">
             <div class="input-group mb-3">
-                <select class='js-sel-schedule js-states form-control select2 @error('schedule_id')
-                    is-invalid @enderror id='selSchedule' name='schedule_id'>
+                <select class="js-sel-schedule js-states form-control select2 @error('schedule_id') is-invalid @enderror" id="selSchedule" name="schedule_id">
                     @if (old('schedule_id')!== null)
                     <option value="{{ old('schedule_id') }}" selected >{{  App\Models\Schedule::find(old('schedule_id'))->name }}</option>
                     @endif
