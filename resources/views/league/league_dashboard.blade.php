@@ -138,7 +138,7 @@
                                                     @isset($assigned_clubs[$i])
                                                         <td scope="row" class="text-center"><button id="deassignClub"
                                                                 data-id="{{ $assigned_clubs[$i]['club_id'] }}" type="button"
-                                                                class="btn btn-success btn-sm" @if ( ($league->state->is(App\Enums\LeagueState::Live()) )) disabled @endif>
+                                                                class="btn btn-success btn-sm" @if ( ($league->state->in([ App\Enums\LeagueState::Live(), App\Enums\LeagueState::Setup()]) )) disabled @endif>
                                                                 {{ $assigned_clubs[$i]['shortname'] }} </button>
                                                         </td>
                                                         <td class="text-center">
@@ -152,7 +152,7 @@
                                                         </td>
                                                     @endisset
                                                     @empty($assigned_clubs[$i])
-                                                        @if ( ! $league->state->is(App\Enums\LeagueState::Live()))
+                                                        @if ( ! $league->state->in([ App\Enums\LeagueState::Live(), App\Enums\LeagueState::Setup() ]))
                                                             <td><button type="button" id="assignClub"
                                                                     class="btn btn-outline-info btn-sm"
                                                                     data-itemid="{{ $i }}" data-toggle="modal"
@@ -219,7 +219,7 @@
                     <div class="card-footer">
                         <div class="card-tools">
                             <button type="button" class="btn btn-primary float-right" id="injectTeam" @if ($league->state_count['registered'] == $league->size) disabled @endif><i class="fas fa-plus"></i> @lang('game.action.team.add')
-                            </button>comp
+                            </button>
                             <button type="button" class="btn btn-outline-primary float-right mr-2" id="withdrawTeam" @if ($league->state_count['registered'] == 0) disabled @endif><i
                                     class="fa fa-trash"></i> @lang('game.action.team.withdraw')
                             </button>

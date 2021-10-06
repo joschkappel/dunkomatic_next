@@ -342,9 +342,7 @@ class LeagueController extends Controller
     } else {
       $data['above_region'] = False;
     }
-    $data['state'] = LeagueState::Assignment();
-
-    Log::info(print_r($data, true));
+    Log::debug(print_r($data, true));
 
     $check = League::create($data);
     return redirect()->route('league.index', app()->getLocale());

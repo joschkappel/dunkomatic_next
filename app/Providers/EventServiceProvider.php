@@ -15,6 +15,8 @@ use App\Listeners\LogAuthenticated;
 use App\Listeners\LogNotification;
 use App\Models\User;
 use App\Observers\UserObserver;
+use App\Models\League;
+use App\Observers\LeagueObserver;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -44,6 +46,7 @@ class EventServiceProvider extends ServiceProvider
     {
         Membership::observe(MembershipObserver::class);
         User::observe(UserObserver::class);
+        League::observe(LeagueObserver::class);
         parent::boot();
 
     }
