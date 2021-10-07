@@ -34,4 +34,5 @@ return [
   'clubs.count' => ':COUNT Vereine',
   'gyms.count' => ':COUNT Speilhallen',
   'teams.count' => ':COUNT Mannschaften',
+  'menu.manage' => 'Verwalten',
 ];

@@ -8,9 +8,9 @@
 /storage/framework/sessions
 /tests/PerfTests/results
 
-!.env.dusk.git
+/.env*
+/!.env.dusk.git
 .aws
-.env*
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
