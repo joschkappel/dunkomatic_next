@@ -34,4 +34,5 @@ return [
   'clubs.count' => 'Total of :COUNT clubs',
   'gyms.count' => 'Total of :COUNT gyms',
   'teams.count' => 'Total of :COUNT teams',
+  'menu.manage' => 'Manage',
 ];

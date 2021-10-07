@@ -24,7 +24,7 @@ return [
   'title.gamehome.import' => 'Heimspieltermine Importieren',
   'title.membership.add'  => 'Füge eine neue Funktion zu',
   'title.membership.mod'  => 'Ändere oder Lösche eine Funktion',
-  'menu.list' => 'Vereinsliste',
+  'menu.list' => 'Übersicht',
   'menu.stats' => 'Statistiken',
   'entitled' => 'Zugelassene Vereine',
   'region' => 'Bezirk',
