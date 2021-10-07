@@ -9,7 +9,9 @@
 /tests/PerfTests/results
 
 /.env*
-/!.env.dusk.git
+/.env.*
+/.env.*.*
+!/.env.dusk.git
 .aws
 .phpunit.result.cache
 Homestead.json
