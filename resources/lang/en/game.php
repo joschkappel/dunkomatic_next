@@ -33,5 +33,5 @@ return [
   'import.success' => 'All data successfully imported',
   'import.failure' => 'The data contained errors. Please correct and retry the import',
   'menu.list' => 'List',
-  'menu.referees' => 'Referee Assignment'
+  'menu.referees' => 'Referee Assignment',
 ];

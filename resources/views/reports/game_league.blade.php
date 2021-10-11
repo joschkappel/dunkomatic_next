@@ -34,7 +34,7 @@
            <td style="border: 1px solid #FFFFFF;padding: 3px 2px;">{{ $game->team_home}}</td>
            <td style="border: 1px solid #FFFFFF;padding: 3px 2px;">{{ $game->team_guest}}</td>
            <td style="border: 1px solid #FFFFFF;padding: 3px 2px;">{{ $game->gym_no}}</td>
-           <td style="border: 1px solid #FFFFFF;padding: 3px 2px;">{{ $game->referee_1}}</td>
+           <td style="border: 1px solid #FFFFFF;padding: 3px 2px;">{{ ($game->referee_1 == '' or $game->referee_1 == '****') ? $game->referee_1 : $game->referee_1." / ".$game->referee_2}}</td>
        </tr>
    @endforeach
    </tbody>

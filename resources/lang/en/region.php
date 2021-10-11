@@ -1,7 +1,7 @@
 <?php
 
 return [
-  'region' => 'Region|Regions',
+  'region' => 'Region |Regions',
   'action.edit' => 'Modify settings',
   'action.create' => 'Create Region',
   'action.delete' => 'Delete Region',

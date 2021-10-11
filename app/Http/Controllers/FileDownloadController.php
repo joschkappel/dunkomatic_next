@@ -26,7 +26,7 @@ class FileDownloadController extends Controller
 
     if ( $user->league_filecount + $user->club_filecount > 0){
       $zip = new ZipArchive;
-      $fileName = $user->region.'-reports-'.Str::slug($user->name,'-').'.zip';
+      $fileName = $user->region->code.'-reports-'.Str::slug($user->name,'-').'.zip';
       Storage::delete('public/'.$fileName);
 
       $pf = storage_path('app/public/'.$fileName);
@@ -60,7 +60,7 @@ class FileDownloadController extends Controller
 
     if ( $club->filecount > 0){
       $zip = new ZipArchive;
-      $filename = $club->region.'-reports-'.Str::slug($club->shortname,'-').'.zip';
+      $filename = $club->region->code.'-reports-'.Str::slug($club->shortname,'-').'.zip';
       $pf = storage_path('app/public/'.$filename);
       Log::info($pf);
 
@@ -91,7 +91,7 @@ class FileDownloadController extends Controller
 
     if ( $league->filecount > 0){
       $zip = new ZipArchive;
-      $filename = $league->region.'-reports-'.Str::slug($league->shortname,'-').'.zip';
+      $filename = $league->region->code.'-reports-'.Str::slug($league->shortname,'-').'.zip';
       $pf = storage_path('app/public/'.$filename);
       Log::info($pf);
 

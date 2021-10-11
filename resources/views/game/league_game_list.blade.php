@@ -14,6 +14,8 @@
                                     <th>@lang('game.team_guest')</th>
                                     <th>@lang('game.gym_no')</th>
                                     <th>gym_id</th>
+                                    <th>{{ __('game.referee') }} 1</th>
+                                    <th>{{ __('game.referee') }} 2</th>
 </x-card-list>
 <!-- all modals here -->
 @include('game/includes/edit_game')
@@ -28,7 +30,7 @@
         $(function() {
             $('#goBack').click(function(e){
                 history.back();
-            }); 
+            });
 
             $('#table').DataTable({
                 processing: true,
@@ -46,12 +48,17 @@
                         extend: 'excelHtml5',
                         text: '{{ __('game.excel.export') }}',
                         exportOptions: {
-                            orthogonal: 'export'
+                            orthogonal: 'export',
+                            columns: ':visible'
                         },
                         title: '{{ $league->shortname }}_{{ trans_choice('game.homegame', 2) }}',
                         sheetName: '{{ trans_choice('game.homegame', 2) }}',
                     },
-                    'print'
+                    { extend: 'print',
+                     exportOptions: {
+                            columns: ':visible'
+                        }
+                    }
                 ],
                 order: [
                     [1, 'asc']
@@ -108,7 +115,9 @@
                         data: 'gym_id',
                         name: 'gym_id',
                         visible: false
-                    }
+                    },
+                    { data: 'referee_1', name: 'referee_1'},
+                    { data: 'referee_2', name: 'referee_2'},
                 ]
             });
 

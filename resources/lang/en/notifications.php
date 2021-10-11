@@ -3,7 +3,7 @@
 return [
     'app.salutation'    => 'Best Regards',
     'app.greeting'      => 'Hello!',
-    'app.actionurl'     =>  'If you’re having trouble clicking the ":actionText" button, copy and paste this URL into your web browser:',
+    'app.actionurl'     =>  'If you are having trouble clicking the ":actionText" button, copy and paste this URL into your web browser:',
 
     'regionadmin.greeting'  => 'Hello Admin!',
     'user.greeting'  => 'Hello :username!',
