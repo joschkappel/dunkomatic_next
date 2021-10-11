@@ -14,10 +14,10 @@ return [
     */
 
     'accepted' => 'The :attribute must be accepted.',
-    'active_url' => ':attribute ist keine gültige URL.',
-    'after' => 'Das Datum :attribute muss nach dem :date liegen.',
+    'active_url' => ':attribute is not a valid URL.',
+    'after' => 'Date :attribute must be after :date.',
     'after_or_equal' => 'The :attribute must be a date after or equal to :date.',
-    'alpha' => ':attribute kann nur Buchstaben enthalten.',
+    'alpha' => ':attribute can only contain characters.',
     'alpha_dash' => 'The :attribute may only contain letters, numbers, dashes and underscores.',
     'alpha_num' => 'The :attribute may only contain letters and numbers.',
     'array' => 'The :attribute must be an array.',

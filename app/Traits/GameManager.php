@@ -47,11 +47,8 @@ trait GameManager {
 
           if ($league->age_type->in( [LeagueAgeType::Junior(), LeagueAgeType::Mini()] ) ){
             $g['referee_1'] = "****";
-          } else {
-            $g['referee_1'] = "";
           }
 
-          $g['referee_2'] = "";
           $g['team_char_home'] = $s->team_home;
           $g['team_char_guest'] = $s->team_guest;
 
@@ -113,11 +110,8 @@ trait GameManager {
 
                 if ($league->age_type->in( [ LeagueAgeType::Junior(), LeagueAgeType::Mini() ] ) ){
                   $g['referee_1'] = "****";
-                } else {
-                  $g['referee_1'] = "";
                 }
 
-                $g['referee_2'] = "";
                 $g['team_char_home'] = $s->team_home;
                 $g['team_char_guest'] = $s->team_guest;
 

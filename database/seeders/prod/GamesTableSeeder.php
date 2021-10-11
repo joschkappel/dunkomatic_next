@@ -53,6 +53,13 @@ class GamesTableSeeder extends Seeder
           $g->game_time=null;
         }
 
+        if ($g->game_team_ref1 == ''){
+            $g->game_team_ref1=null;
+        }
+        if ($g->game_team_ref2 == ''){
+            $g->game_team_ref2=null;
+        }
+
         if ($g->game_gym != ''){
           $gym = DB::connection('dunknxt')->table('gyms')->select('id')
                                   ->where([

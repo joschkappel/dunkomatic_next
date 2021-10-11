@@ -89,7 +89,7 @@ class GenerateClubGamesReport implements ShouldQueue
       }
 
       if ($this->rtype->hasFlag(ReportFileType::PDF)){
-        Excel::store(new ClubGamesExport($this->club->id, new ReportScope($this->scope), $this->league->id), $this->rpt_name, NULL, \Maatwebsite\Excel\Excel::MPDF );
+        Excel::store(new ClubGamesExport($this->club->id, new ReportScope($this->scope), (isset($this->league->id))?$this->league->id : NULL ), $this->rpt_name, NULL, \Maatwebsite\Excel\Excel::MPDF );
       } elseif ($this->rtype->hasFlag(ReportFileType::ICS)){
         // do calendar files
         switch ($this->scope) {

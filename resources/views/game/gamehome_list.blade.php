@@ -16,6 +16,8 @@
   <th>{{ __('game.team_home') }}</th>
   <th>{{ __('game.team_guest') }}</th>
   <th>{{ __('game.gym_no') }}</th>
+  <th>{{ __('game.referee') }} 1</th>
+  <th>{{ __('game.referee') }} 2</th>
   <th>gym_id</th>
   <th class="text-center">{{ __('game.overlap') }}</th>
 </x-card-list>
@@ -32,7 +34,7 @@
 $(function() {
     $('#goBack').click(function(e){
       history.back();
-    }); 
+    });
     $.fn.dataTable.ext.buttons.import = {
         text: '{{__('game.excel.import')}}',
         action: function ( e, dt, node, config ) {
@@ -54,11 +56,13 @@ $(function() {
         buttons: [
           { extend: 'excelHtml5',
             text: '{{__('game.excel.export')}}',
-            exportOptions: { orthogonal: 'export' },
+            exportOptions: { orthogonal: 'export', columns: ':visible' },
             title: '{{$club->shortname}}_{{ trans_choice('game.homegame',2)}}',
             sheetName: '{{ trans_choice('game.homegame',2)}}',
           },
-          'print',
+          { extend: 'print',
+            exportOptions: { orthogonal: 'export', columns: ':visible' },
+          },
           'import'
         ],
         order: [[ 2,'asc'],[ 3,'asc'], [ 4,'asc']],
@@ -90,6 +94,8 @@ $(function() {
                     export: 'gym_no.default',
                     display: 'gym_no.display'
                   }, name: 'gym_no.default' },
+                  { data: 'referee_1', name: 'referee_1'},
+                  { data: 'referee_2', name: 'referee_2'},
                  { data: 'gym_id', name: 'gym_id', visible: false },
                  { data: 'duplicate', name: 'duplicate' }
               ]
