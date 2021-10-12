@@ -31,7 +31,22 @@
     </div>
     @endisset
     <div class="form-group row ">
-        <label for='selClubs' class="col-sm-4 col-form-label">{{ trans_choice('club.club',2)}}</label>
+        <label for='selRole' class="col-sm-4 col-form-label">{{ __('auth.user.role')}}</label>
+        <div class="col-sm-6">
+            <div class="input-group mb-3">
+                <select class='js-role js-states form-control select2 @error('role') /> is-invalid @enderror' id='selRole' name="role">
+                @foreach ( Silber\Bouncer\Database\Role::whereNotIn('name',['superadmin', 'regionadmin','candidate'])->get() as $role )
+                <option value="{{$role->id}}">{{ __('auth.user.role.'.$role->name) }}</option>
+                @endforeach
+                </select>
+                @error('role')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+        </div>
+    </div>
+    <div class="form-group row ">
+        <label for='selClubs' class="col-sm-4 col-form-label">{{ __('club.preferred')}}</label>
         <div class="col-sm-6">
             @empty($abilities->clubs)
             <div class="input-group mb-3">
@@ -48,7 +63,7 @@
         </div>
     </div>
     <div class="form-group row ">
-        <label for='selLeagues' class="col-sm-4 col-form-label">{{ trans_choice('league.league',2)}}</label>
+        <label for='selLeagues' class="col-sm-4 col-form-label">{{ __('league.preferred')}}</label>
         <div class="col-sm-6">
             @empty($abilities->leagues)
             <div class="input-group mb-3">
@@ -89,12 +104,17 @@
         $('#frmClose').click(function(e){
             history.back();
         });
+        $("#selRole").select2({
+            placeholder: "@lang('auth.user.role.action.select')...",
+            theme: 'bootstrap4',
+            multiple: false,
+            allowClear: false,
+        });
         $("#selClubs").select2({
             placeholder: "@lang('club.action.select')...",
             theme: 'bootstrap4',
             multiple: true,
-            allowClear: false,
-            minimumResultsForSearch: 20,
+            allowClear: true,
             ajax: {
                     url: "{{ route('club.sb.region', ['region'=>$user->region->id] )}}",
                     type: "get",
@@ -111,8 +131,7 @@
             placeholder: "@lang('league.action.select')...",
             theme: 'bootstrap4',
             multiple: true,
-            allowClear: false,
-            minimumResultsForSearch: 20,
+            allowClear: true,
             ajax: {
                     url: "{{ route('league.sb.region', ['region'=>$user->region->id] )}}",
                     type: "get",

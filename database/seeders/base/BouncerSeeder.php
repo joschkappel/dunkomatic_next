@@ -15,60 +15,164 @@ class BouncerSeeder extends Seeder
     public function run()
     {
 
-        // abilities
-        $manage_regions = Bouncer::ability()->firstOrCreate(['name' => 'manage-regions','title' => 'Manage regions', ]);
-        $manage_clubs = Bouncer::ability()->firstOrCreate(['name' => 'manage-clubs','title' => 'Manage clubs', ]);
-        $manage_leagues = Bouncer::ability()->firstOrCreate(['name' => 'manage-leagues','title' => 'Manage leagues', ]);
+        /**
+         *
+         * ABILITIES
+         *
+         */
+        // clubs
+        $create_clubs = Bouncer::ability()->firstOrCreate(['name' => 'create-clubs','title' => 'Create/Delete Clubs', ]);
+        $update_clubs = Bouncer::ability()->firstOrCreate(['name' => 'update-clubs','title' => 'Update Clubs', ]);
+        $view_clubs = Bouncer::ability()->firstOrCreate(['name' => 'view-clubs','title' => 'View Clubs', ]);
+        // teams
+        $create_teams = Bouncer::ability()->firstOrCreate(['name' => 'create-teams','title' => 'Create/Delete Teams', ]);
+        $update_teams = Bouncer::ability()->firstOrCreate(['name' => 'update-teams','title' => 'Update Teams', ]);
+        $view_teams = Bouncer::ability()->firstOrCreate(['name' => 'view-teams','title' => 'View Teams', ]);
+        // gyms
+        $create_gyms = Bouncer::ability()->firstOrCreate(['name' => 'create-gyms','title' => 'Create/Delete gyms', ]);
+        $update_gyms = Bouncer::ability()->firstOrCreate(['name' => 'update-gyms','title' => 'Update gyms', ]);
+        $view_gyms = Bouncer::ability()->firstOrCreate(['name' => 'view-gyms','title' => 'View gyms', ]);
+        // regions
+        $create_regions = Bouncer::ability()->firstOrCreate(['name' => 'create-regions','title' => 'Create/Delete regions', ]);
         $update_regions = Bouncer::ability()->firstOrCreate(['name' => 'update-regions','title' => 'Update region details', ]);
-        $view_regions = Bouncer::ability()->firstOrCreate(['name' => 'view-regions','title' => 'read-only regions', ]);
-        $view_clubs = Bouncer::ability()->firstOrCreate(['name' => 'view-clubs','title' => 'read-only clubs', ]);
-        $view_leagues = Bouncer::ability()->firstOrCreate(['name' => 'view-leagues','title' => 'read-only leagues', ]);
-        $manage_schedules = Bouncer::ability()->firstOrCreate(['name' => 'manage-schedules','title' => 'CRUD schedules', ]);
-        $view_schedules = Bouncer::ability()->firstOrCreate(['name' => 'view-schedules','title' => 'read-only schedules', ]);
-        $manage_members = Bouncer::ability()->firstOrCreate(['name' => 'manage-members','title' => 'CRUD members', ]);
-        $view_members = Bouncer::ability()->firstOrCreate(['name' => 'view-members','title' => 'read-only members', ]);
-        $manage_users = Bouncer::ability()->firstOrCreate(['name' => 'manage-users','title' => 'CRUD users', ]);
-        $view_users = Bouncer::ability()->firstOrCreate(['name' => 'view-users','title' => 'read-only users', ]);
+        $view_regions = Bouncer::ability()->firstOrCreate(['name' => 'view-regions','title' => 'View regions', ]);
+        // leagues
+        $create_leagues = Bouncer::ability()->firstOrCreate(['name' => 'create-leagues','title' => 'Create/Delete leagues', ]);
+        $update_leagues = Bouncer::ability()->firstOrCreate(['name' => 'update-leagues','title' => 'Update leagues', ]);
+        $view_leagues = Bouncer::ability()->firstOrCreate(['name' => 'view-leagues','title' => 'View leagues', ]);
+        // games
+        $update_games = Bouncer::ability()->firstOrCreate(['name' => 'update-games','title' => 'Update games', ]);
+        $view_games = Bouncer::ability()->firstOrCreate(['name' => 'view-games','title' => 'View games', ]);
+        // schedules
+        $create_schedules = Bouncer::ability()->firstOrCreate(['name' => 'create-schedules','title' => 'Create schedules', ]);
+        $update_schedules = Bouncer::ability()->firstOrCreate(['name' => 'update-schedules','title' => 'Update schedules', ]);
+        $view_schedules = Bouncer::ability()->firstOrCreate(['name' => 'view-schedules','title' => 'View schedules', ]);
+        // members
+        $create_members = Bouncer::ability()->firstOrCreate(['name' => 'create-members','title' => 'Create/Delete members', ]);
+        $update_members = Bouncer::ability()->firstOrCreate(['name' => 'update-members','title' => 'Update members', ]);
+        $view_members = Bouncer::ability()->firstOrCreate(['name' => 'view-members','title' => 'View members', ]);
+        // users
+        $create_users = Bouncer::ability()->firstOrCreate(['name' => 'create-users','title' => 'Create/Delete users', ]);
+        $update_users = Bouncer::ability()->firstOrCreate(['name' => 'update-users','title' => 'Update users', ]);
+        $view_users = Bouncer::ability()->firstOrCreate(['name' => 'view-users','title' => 'View users', ]);
+        // auth
         $register = Bouncer::ability()->firstOrCreate(['name' => 'register','title' => 'guest registration', ]);
 
-        // roles
+        /**
+         *
+         * ROLES
+         *
+         */
         $superadmin = Bouncer::role()->firstOrCreate(['name' => 'superadmin','title' => 'Application Administrator',]);
-        Bouncer::allow('superadmin')->everything();
+        Bouncer::allow($superadmin)->everything();
 
         $regionadmin = Bouncer::role()->firstOrCreate(['name' => 'regionadmin','title' => 'Region Administrator',]);
-        Bouncer::allow($regionadmin)->to($manage_clubs);
-        Bouncer::allow($regionadmin)->to($manage_leagues);
+        Bouncer::allow($regionadmin)->to($create_clubs);
+        Bouncer::allow($regionadmin)->to($update_clubs);
         Bouncer::allow($regionadmin)->to($view_clubs);
-        Bouncer::allow($regionadmin)->to($view_leagues);
-        Bouncer::allow($regionadmin)->to($view_members);
+
         Bouncer::allow($regionadmin)->to($update_regions);
-        Bouncer::allow($regionadmin)->to($manage_members);
-        Bouncer::allow($regionadmin)->to($manage_schedules);
+        Bouncer::allow($regionadmin)->to($view_regions);
+
+        Bouncer::allow($regionadmin)->to($create_leagues);
+        Bouncer::allow($regionadmin)->to($update_leagues);
+        Bouncer::allow($regionadmin)->to($view_leagues);
+
+        Bouncer::allow($regionadmin)->to($create_schedules);
+        Bouncer::allow($regionadmin)->to($update_schedules);
         Bouncer::allow($regionadmin)->to($view_schedules);
-        Bouncer::allow($regionadmin)->to($manage_users);
+
+        Bouncer::allow($regionadmin)->to($update_games);
+        Bouncer::allow($regionadmin)->to($view_games);
+
+        Bouncer::allow($regionadmin)->to($create_members);
+        Bouncer::allow($regionadmin)->to($update_members);
+        Bouncer::allow($regionadmin)->to($view_members);
+
+        Bouncer::allow($regionadmin)->to($create_users);
+        Bouncer::allow($regionadmin)->to($update_users);
+        Bouncer::allow($regionadmin)->to($view_users);
+
+        $regionassist = Bouncer::role()->firstOrCreate(['name' => 'regionassist','title' => 'Region Admin Assistant',]);
+        Bouncer::allow($regionassist)->to($view_regions);
+
+        Bouncer::allow($regionassist)->to($update_games);
+        Bouncer::allow($regionassist)->to($view_games);
+
+        Bouncer::allow($regionassist)->to($create_members);
+        Bouncer::allow($regionassist)->to($update_members);
+        Bouncer::allow($regionassist)->to($view_members);
+
 
         $clubadmin = Bouncer::role()->firstOrCreate(['name' => 'clubadmin','title' => 'Club Administrator',]);
+        Bouncer::allow($clubadmin)->to($update_clubs);
         Bouncer::allow($clubadmin)->to($view_clubs);
+
+        Bouncer::allow($clubadmin)->to($create_teams);
+        Bouncer::allow($clubadmin)->to($update_teams);
+        Bouncer::allow($clubadmin)->to($view_teams);
+
+        Bouncer::allow($clubadmin)->to($create_gyms);
+        Bouncer::allow($clubadmin)->to($update_gyms);
+        Bouncer::allow($clubadmin)->to($view_gyms);
+
+        Bouncer::allow($clubadmin)->to($view_regions);
+
         Bouncer::allow($clubadmin)->to($view_leagues);
-        Bouncer::allow($clubadmin)->to($view_members);
-        Bouncer::allow($clubadmin)->to($manage_members);
         Bouncer::allow($clubadmin)->to($view_schedules);
 
+        Bouncer::allow($clubadmin)->to($update_games);
+        Bouncer::allow($clubadmin)->to($view_games);
+
+        Bouncer::allow($clubadmin)->to($create_members);
+        Bouncer::allow($clubadmin)->to($update_members);
+        Bouncer::allow($clubadmin)->to($view_members);
+
+        $clubassist = Bouncer::role()->firstOrCreate(['name' => 'clubassist','title' => 'Club Admin Assistant',]);
+        Bouncer::allow($clubassist)->to($view_clubs);
+
+        Bouncer::allow($clubassist)->to($update_teams);
+        Bouncer::allow($clubassist)->to($view_teams);
+
+        Bouncer::allow($clubassist)->to($update_gyms);
+        Bouncer::allow($clubassist)->to($view_gyms);
+
+        Bouncer::allow($clubassist)->to($view_regions);
+
+        Bouncer::allow($clubassist)->to($view_leagues);
+        Bouncer::allow($clubassist)->to($view_schedules);
+
+        Bouncer::allow($clubassist)->to($update_games);
+        Bouncer::allow($clubassist)->to($view_games);
+
+        Bouncer::allow($clubassist)->to($create_members);
+        Bouncer::allow($clubassist)->to($update_members);
+        Bouncer::allow($clubassist)->to($view_members);
+
         $leagueadmin = Bouncer::role()->firstOrCreate(['name' => 'leagueadmin','title' => 'League Administrator',]);
+        Bouncer::allow($leagueadmin)->to($view_regions);
+
+        Bouncer::allow($leagueadmin)->to($view_clubs);
         Bouncer::allow($leagueadmin)->to($view_leagues);
-        Bouncer::allow($leagueadmin)->to($view_members);
-        Bouncer::allow($leagueadmin)->to($manage_members);
+
         Bouncer::allow($leagueadmin)->to($view_schedules);
 
-        $user = Bouncer::role()->firstOrCreate(['name' => 'user','title' => 'Application User',]);
-        Bouncer::allow($user)->to($view_clubs);
-        Bouncer::allow($user)->to($view_leagues);
-        Bouncer::allow($user)->to($view_members);
-        Bouncer::allow($user)->to($view_schedules);
+        Bouncer::allow($leagueadmin)->to($update_games);
+        Bouncer::allow($leagueadmin)->to($view_games);
+
+        Bouncer::allow($leagueadmin)->to($create_members);
+        Bouncer::allow($leagueadmin)->to($update_members);
+        Bouncer::allow($leagueadmin)->to($view_members);
 
         $guest = Bouncer::role()->firstOrCreate(['name' => 'guest','title' => 'Guest',]);
-        Bouncer::forbid('guest')->everything();
-        Bouncer::allow($guest)->to($register);
+        Bouncer::forbid($guest)->everything();
+        Bouncer::allow($guest)->to($view_clubs);
+        Bouncer::allow($guest)->to($view_games);
+        Bouncer::allow($guest)->to($view_leagues);
+
+        $candidate = Bouncer::role()->firstOrCreate(['name' => 'candidate','title' => 'Candidate',]);
+        Bouncer::forbid($candidate)->everything();
+        Bouncer::allow($candidate)->to($register);
 
     }
 }

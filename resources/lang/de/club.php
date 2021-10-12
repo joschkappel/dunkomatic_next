@@ -44,4 +44,5 @@ return [
   'game_noshow.no' =>  'Alle Heimspiele finden statt',
   'game_noshow.all' => 'Alle Heimspiele ohne Gegner',
   'member.action.create' => 'Neuer Vereinsmitarbeiter',
+  'preferred' => 'Bevorzugte Vereine',
 ];

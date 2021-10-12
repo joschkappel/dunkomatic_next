@@ -56,4 +56,5 @@ return [
   'next.state' => 'zur nächsten Phase',
   'prev.state' => 'zurück zu',
   'member.action.create' => 'Neuer Staffelleiter',
+  'preferred' => 'Bevorzugte Runden',
 ];

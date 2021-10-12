@@ -3,7 +3,7 @@
 @section('plugins.Datatables', true)
 
 @section('content')
-<x-card-list cardTitle="{{ __('club.title.list', ['region' => session('cur_region')->name ]) }}" cardNewAction="{{ route('club.create', app()->getLocale()) }}" cardNewTitle="{{ __('club.action.create') }}">
+<x-card-list cardTitle="{{ __('club.title.list', ['region' => session('cur_region')->name ]) }}" cardNewAction="{{ route('club.create', app()->getLocale()) }}" cardNewTitle="{{ __('club.action.create') }}" cardNewAbility="create-clubs">
     <th>Id</th>
     @if (session('cur_region')->is_top_level)
      <th>{{ trans_choice('region.region',1) }}</th>

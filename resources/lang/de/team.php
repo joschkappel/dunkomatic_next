@@ -23,6 +23,7 @@ return [
   'action.refresh-chart' => 'Grafik aktualisieren',
   'action.showon-chart' => 'Zifferkombinationen erzeugen',
   'action.select' => 'Lösche Mannschaft',
+  'action.pickchars' => 'Ziffern wählen',
   'registration' => 'Meldungen',
   'unassigned' => 'nicht zugeordnet',
   'league.unassigned' => 'nicht zugeordnet (vorherige Runde: :LEAGUE)',

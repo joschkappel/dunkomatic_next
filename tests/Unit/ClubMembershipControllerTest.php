@@ -62,7 +62,7 @@ class ClubMembershipControllerTest extends TestCase
                           'entity_id' => $club->id,
                           'entity_type' => Club::class,
                           'function' => null,
-                          'email' => null,                          
+                          'email' => null,
                       ]);
       $response
           ->assertStatus(302)
@@ -100,7 +100,7 @@ class ClubMembershipControllerTest extends TestCase
                           'function' => null,
                           'email' => null,
                       ]);
-      
+
       $response->assertRedirect(route('club.dashboard', ['language'=>'de','club'=>$club]))
                ->assertSessionHasNoErrors();
 
@@ -108,7 +108,7 @@ class ClubMembershipControllerTest extends TestCase
 
       $this->assertDatabaseHas('members', ['id' => $member->id])
            ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-           ->assertDatabaseCount('memberships', 4);
+           ->assertDatabaseCount('memberships', 5);
     }
     /**
      * update NOT OK
@@ -140,7 +140,7 @@ class ClubMembershipControllerTest extends TestCase
 
       $this->assertDatabaseHas('members', ['id' => $member->id])
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 4);
+            ->assertDatabaseCount('memberships', 5);
     }
     /**
      * update OK
@@ -172,7 +172,7 @@ class ClubMembershipControllerTest extends TestCase
 
       $this->assertDatabaseHas('members', ['lastname' => 'testmember2'])
           ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-          ->assertDatabaseCount('memberships', 4);
+          ->assertDatabaseCount('memberships', 5);
 
     }
 
@@ -201,7 +201,7 @@ class ClubMembershipControllerTest extends TestCase
 
       $this->assertDatabaseHas('members', ['id' => $member->id])
         ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-        ->assertDatabaseCount('memberships', 4);
+        ->assertDatabaseCount('memberships', 5);
 
     }
 
@@ -213,7 +213,7 @@ class ClubMembershipControllerTest extends TestCase
      * @group controller
      *
      * @return void
-     */    
+     */
     public function add_ok()
     {
       $club = Club::where('name','testclub')->first();
@@ -231,7 +231,7 @@ class ClubMembershipControllerTest extends TestCase
 
       $this->assertDatabaseHas('members', ['id' => $member->id])
         ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-        ->assertDatabaseCount('memberships', 5);
+        ->assertDatabaseCount('memberships', 6);
     }
    /**
      * update mship NOT OK
@@ -257,8 +257,8 @@ class ClubMembershipControllerTest extends TestCase
 
       $this->assertDatabaseHas('members', ['id' => $member->id])
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 5);
-    }    
+            ->assertDatabaseCount('memberships', 6);
+    }
    /**
      * update mship OK
      *
@@ -283,8 +283,8 @@ class ClubMembershipControllerTest extends TestCase
 
       $this->assertDatabaseHas('members', ['id' => $member->id])
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 5);
-    }     
+            ->assertDatabaseCount('memberships', 6);
+    }
     /**
      * destroy
      *
@@ -307,7 +307,7 @@ class ClubMembershipControllerTest extends TestCase
 
       $this->assertDatabaseMissing('members', ['id' => $member2->id])
            ->assertDatabaseMissing('memberships', ['member_id' => $member2->id])
-           ->assertDatabaseCount('memberships', 3);
+           ->assertDatabaseCount('memberships', 4);
     }
     /**
      * db_cleanup
@@ -326,6 +326,6 @@ class ClubMembershipControllerTest extends TestCase
         $member2 = Member::where('lastname','testmember2')->delete();
 
         $this->assertDatabaseCount('clubs', 0);
-        $this->assertDatabaseCount('members', 5);
+        $this->assertDatabaseCount('members', 6);
    }
 }

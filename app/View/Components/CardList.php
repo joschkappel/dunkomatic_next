@@ -18,23 +18,32 @@ class CardList extends Component
      *
      * @var string
      */
-    public $cardNewAction;    
+    public $cardNewAction;
 
     /**
      * Button name to create a new object
      *
      * @var string
      */
-    public $cardNewTitle; 
+    public $cardNewTitle;
+
+    /**
+     * Ability required to create new entities
+     *
+     * @var string
+     */
+    public $cardNewAbility;
 
 
-    public function __construct($cardTitle, $cardNewAction=null, $cardNewTitle='' )
+    public function __construct($cardTitle, $cardNewAction=null, $cardNewTitle='', $cardNewAbility='' )
     {
         $this->cardTitle = $cardTitle;
         if ($cardNewAction){
             $this->cardNewAction = $cardNewAction;
+            $this->cardNewTitle = $cardNewTitle;
+            $this->cardNewAbility = $cardNewAbility;
         }
-        $this->cardNewTitle = $cardNewTitle;
+
     }
 
     /**

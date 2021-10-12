@@ -81,10 +81,7 @@ class LeagueController extends Controller
       ->rawColumns(['shortname.display','age_type.display','gender_type.display',
                     'size.display','state'])
       ->editColumn('shortname', function ($l) use ($region) {
-        if (  ( (Bouncer::can('manage', $l))
-             or (Auth::user()->isA('regionadmin')) )
-             and ( $l->region->is( $region ) ))
-        {
+        if (  (Bouncer::can('manage', $l)) or  (Bouncer::canAny(['create-leagues', 'update-leagues'])) ){
           $link = '<a href="' . route('league.dashboard', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" >' . $l->shortname . '</a>';
         } else {
           $link = '<a href="' . route('league.briefing', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" class="text-info">' . $l->shortname . '</a>';

@@ -78,16 +78,16 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         $user = User::create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => Hash::make($data['password']),
-                'region_id' => $data['region_id'],
-                'reason_join' => $data['reason_join'],
-                'locale' => $data['locale']
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'region_id' => $data['region_id'],
+            'reason_join' => $data['reason_join'],
+            'locale' => $data['locale']
         ]);
 
         $member = Member::where('email1', $user->email)->orWhere('email2', $user->email)->first();
-        if (isset($member)){
+        if (isset($member)) {
             // link user and member
             $member->user()->save($user);
             // RBAC - set access to clubs
@@ -105,37 +105,26 @@ class RegisterController extends Controller
             foreach ($regions as $r) {
                 Bouncer::allow($user)->to('manage', $r);
             }
+        }
 
-            //RBAC - set user role
-            if ($user->isregionadmin){
-                Bouncer::assign('regionadmin')->to($user);
-            } elseif ($user->isrole(Role::ClubLead())){
-                Bouncer::assign('clubadmin')->to($user);
-            } elseif ($user->isrole(Role::LeagueLead())){
-                Bouncer::assign('leagueadmin')->to($user);
+        //RBAC - set user role
+        Bouncer::assign('candidate')->to($user);
+
+
+        if (isset($data['invited_by']) and (Crypt::decryptString($data['invited_by']) == $data['email'])) {
+            // invited users are auto-approved
+            $user->update(['approved_at' => now()]);
+        } else {
+
+            if (Region::find($data['region_id'])->regionadmin->first()->user->exists()) {
+                $radmin = Region::find($data['region_id'])->regionadmin->first()->user()->first();
+                $radmin->notify(new NewUser($user));
             } else {
-                Bouncer::assign('user')->to($user);
+                Log::error('regionadmin is null');
             }
-
-        } else {
-            // RBAC set guest role
-            Bouncer::assign('guest')->to($user);
         }
 
-      if (isset($data['invited_by']) and (Crypt::decryptString( $data['invited_by'] ) == $data['email'])){
-          // invited users are auto-approved
-          $user->update(['approved_at'=>now()]);
-      } else {
-
-        if ( Region::find($data['region_id'])->regionadmin->first()->user->exists() ) {
-            $radmin = Region::find($data['region_id'])->regionadmin->first()->user()->first();
-            $radmin->notify(new NewUser($user));
-        } else {
-            Log::error('regionadmin is null');
-        }
-      }
-
-      return $user;
+        return $user;
     }
 
     /**
@@ -145,6 +134,6 @@ class RegisterController extends Controller
      */
     public function showRegistrationFormInvited($language, Member $member, Region $region, User $inviting_user, $invited_by)
     {
-        return view('auth.register_invited',['language'=>$language, 'member'=>$member, 'user'=>$inviting_user, 'invited_by'=>$invited_by, 'region'=>$region]);
+        return view('auth.register_invited', ['language' => $language, 'member' => $member, 'user' => $inviting_user, 'invited_by' => $invited_by, 'region' => $region]);
     }
 }
