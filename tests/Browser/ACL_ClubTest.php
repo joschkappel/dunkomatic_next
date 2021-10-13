@@ -38,6 +38,7 @@ class ACL_ClubTest extends DuskTestCase
         $region = Region::where('code','HBVDA')->first();
         $member = Member::factory()->create();
         static::$user = User::factory()->approved()->for($region)->for($member)->create();
+        Bouncer::allow(static::$user)->to('manage', static::$club );
 
     }
 
@@ -168,54 +169,64 @@ class ACL_ClubTest extends DuskTestCase
         $club = static::$club;
 
         $this->browse(function ($browser) use ($user, $club) {
-            $browser->loginAs($user)->visit(route('club.index',['language'=>'de']));
-            ($user->can('create-clubs')) ? $browser->assertSee(__('club.action.create',$locale=['de'])) : $browser->assertDontSee(__('club.action.create',$locale=['de']));
-            $browser->waitFor('.table')->assertSeeLink($club->shortname)->clickLink($club->shortname);
-            (  (Bouncer::can('manage', $club)) or  ($user->canAny(['create-clubs', 'update-clubs'])) ) ? $browser->assertRouteIs('club.dashboard', ['language'=>'de','club'=>$club->id]) :  $browser->assertRouteIs('club.briefing', ['language'=>'de','club'=>$club->id]);
+            $browser->loginAs($user)->visitRoute('club.index',['language'=>'de']);
+
+            if ( $user->can('view-clubs') ) {
+                $browser->assertRouteIs('club.index',['language'=>'de']);
+                ($user->can('create-clubs')) ? $browser->assertSee(__('club.action.create',$locale=['de'])) : $browser->assertDontSee(__('club.action.create',$locale=['de']));
+                $browser->waitFor('.table')->assertSeeLink($club->shortname)->clickLink($club->shortname);
+                (  ($user->can('manage', $club)) or  ($user->canAny(['create-clubs', 'update-clubs'])) ) ? $browser->assertRouteIs('club.dashboard', ['language'=>'de','club'=>$club->id]) :  $browser->assertRouteIs('club.briefing', ['language'=>'de','club'=>$club->id]);
+            } else {
+                $browser->assertSee('403');
+            }
         });
     }
 
     private function access_clubdashboard( $user)
     {
         $this->browse(function ($browser) use ($user) {
-            $browser->loginAs($user)->visit((route('club.dashboard',['language'=>'de', 'club'=>static::$club]))); // ->screenshot($user->getRoles()[0]);
-            ($user->can('update-clubs')) ? $browser->assertSee(__('club.action.edit',$locale=['de'])) : $browser->assertDontSee(__('club.action.edit',$locale=['de']));
-            ($user->can('create-clubs')) ? $browser->assertSee(__('club.action.delete',$locale=['de'])) : $browser->assertDontSee(__('club.action.delete',$locale=['de']));
-            ($user->can('create-members')) ? $browser->assertSee(__('club.member.action.create',$locale=['de'])) : $browser->assertDontSee(__('club.member.action.create',$locale=['de']));
-            ($user->can('create-gyms')) ? $browser->assertSee(__('gym.action.create',$locale=['de'])) : $browser->assertDontSee(__('gym.action.create',$locale=['de']));
-            ($user->can('create-teams')) ? $browser->assertSee(__('team.action.create',$locale=['de'])) : $browser->assertDontSee(__('team.action.create',$locale=['de']));
-
+            $browser->loginAs($user)->visitRoute('club.dashboard',['language'=>'de', 'club'=>static::$club]); // ->screenshot($user->getRoles()[0]);
             $team = static::$team;
             $club = static::$club;
             $gym = static::$gym;
             $member = static::$member;
 
-            $browser->with('#teamsCard', function ($teamCard) use ($user, $club, $team) {
-                $teamCard->click('.btn-tool')->waitFor('.btn-tool');
-                ($user->can('create-teams')) ? $teamCard->assertButtonEnabled('#deleteTeam') :  $teamCard->assertButtonDisabled('#deleteTeam');
-                ($user->can('update-teams')) ? $teamCard->assertSeeLink($club->shortname.$team->team_no) : $teamCard->assertDontSeeLink($club->shortname.$team->team_no);
-                ($user->can('update-teams')) ? $teamCard->assertPresent('#assignLeague') : $teamCard->assertNotPresent('#assignLeague');
-                ( ($user->can('update-teams')) and ($club->leagues->where('state', LeagueState::Selection())->count() > 0)) ? $teamCard->assertSeeLink(__('team.action.plan.season'))  : $teamCard->assertDontSeeLink(__('team.action.plan.season'));
-                ( ($user->can('update-teams')) and ($club->leagues->where('state', LeagueState::Selection())->count() > 0)) ? $teamCard->assertSeeLink(__('team.action.pickchars'))  : $teamCard->assertDontSeeLink(__('team.action.pickchars'));
-            });
-            $browser->with('#gymsCard', function ($gymCard) use ($user, $club, $gym) {
-                $gymCard->click('.btn-tool')->waitFor('.btn-tool');
-                ($user->can('create-gyms')) ? $gymCard->assertButtonEnabled('#deleteGym') :  $gymCard->assertButtonDisabled('#deleteGym');
-                ($user->can('update-gyms')) ? $gymCard->assertSeeLink($gym->gym_no.' - '.$gym->name) : $gymCard->assertDontSeeLink($gym->gym_no.' - '.$gym->name);
-            });
-            $browser->with('#membersCard', function ($memberCard) use ($user, $club, $member) {
-                $memberCard->click('.btn-tool')->waitFor('.btn-tool');
-                ($user->can('create-members')) ? $memberCard->assertButtonEnabled('#deleteMember') :  $memberCard->assertButtonDisabled('#deleteMember');
-                ($user->can('update-members')) ? $memberCard->assertSeeLink($member->name) : $memberCard->assertDontSeeLink($member->name);
-                ($user->can('update-members')) ? $memberCard->assertSeeLink(__('role.send.invite')) : $memberCard->assertDontSeeLink(__('role.send.invite'));
-                ($user->can('update-members')) ? $memberCard->assertButtonEnabled('#addMembership') : $memberCard->assertButtonDisabled('#addMembership');
-                ($user->can('update-members')) ? $memberCard->assertButtonEnabled('#modMembership') : $memberCard->assertButtonDisabled('#modMembership');
-            });
-            $browser->with('#gamesCard', function ($gameCard) use ($user) {
-                $gameCard->click('.btn-tool')->waitFor('.btn-tool');
-                ($user->can('update-games')) ? $gameCard->assertSeeLink(__('club.action.edit-homegame')) : $gameCard->assertDontSeeLink(__('club.action.edit-homegame')) ;
-                ($user->can('view-games')) ? $gameCard->assertSeeLink(__('club.action.chart-homegame')) : $gameCard->assertDontSeeLink(__('club.action.chart-homegame'));
-            });
+            if (($user->can('manage', $club)) or  ( $user->canAny(['create-clubs', 'update-clubs'])) ){
+                ($user->can('update-clubs')) ? $browser->assertSee(__('club.action.edit',$locale=['de'])) : $browser->assertDontSee(__('club.action.edit',$locale=['de']));
+                ($user->can('create-clubs')) ? $browser->assertSee(__('club.action.delete',$locale=['de'])) : $browser->assertDontSee(__('club.action.delete',$locale=['de']));
+                ($user->can('create-members')) ? $browser->assertSee(__('club.member.action.create',$locale=['de'])) : $browser->assertDontSee(__('club.member.action.create',$locale=['de']));
+                ($user->can('create-gyms')) ? $browser->assertSee(__('gym.action.create',$locale=['de'])) : $browser->assertDontSee(__('gym.action.create',$locale=['de']));
+                ($user->can('create-teams')) ? $browser->assertSee(__('team.action.create',$locale=['de'])) : $browser->assertDontSee(__('team.action.create',$locale=['de']));
+
+                $browser->with('#teamsCard', function ($teamCard) use ($user, $club, $team) {
+                    $teamCard->click('.btn-tool')->waitFor('.btn-tool');
+                    ($user->can('create-teams')) ? $teamCard->assertButtonEnabled('#deleteTeam') :  $teamCard->assertButtonDisabled('#deleteTeam');
+                    ($user->can('update-teams')) ? $teamCard->assertSeeLink($club->shortname.$team->team_no) : $teamCard->assertDontSeeLink($club->shortname.$team->team_no);
+                    ($user->can('update-teams')) ? $teamCard->assertPresent('#assignLeague') : $teamCard->assertNotPresent('#assignLeague');
+                    ( ($user->can('update-teams')) and ($club->leagues->where('state', LeagueState::Selection())->count() > 0)) ? $teamCard->assertSeeLink(__('team.action.plan.season'))  : $teamCard->assertDontSeeLink(__('team.action.plan.season'));
+                    ( ($user->can('update-teams')) and ($club->leagues->where('state', LeagueState::Selection())->count() > 0)) ? $teamCard->assertSeeLink(__('team.action.pickchars'))  : $teamCard->assertDontSeeLink(__('team.action.pickchars'));
+                });
+                $browser->with('#gymsCard', function ($gymCard) use ($user, $club, $gym) {
+                    $gymCard->click('.btn-tool')->waitFor('.btn-tool');
+                    ($user->can('create-gyms')) ? $gymCard->assertButtonEnabled('#deleteGym') :  $gymCard->assertButtonDisabled('#deleteGym');
+                    ($user->can('update-gyms')) ? $gymCard->assertSeeLink($gym->gym_no.' - '.$gym->name) : $gymCard->assertDontSeeLink($gym->gym_no.' - '.$gym->name);
+                });
+                $browser->with('#membersCard', function ($memberCard) use ($user, $club, $member) {
+                    $memberCard->click('.btn-tool')->waitFor('.btn-tool');
+                    ($user->can('create-members')) ? $memberCard->assertButtonEnabled('#deleteMember') :  $memberCard->assertButtonDisabled('#deleteMember');
+                    ($user->can('update-members')) ? $memberCard->assertSeeLink($member->name) : $memberCard->assertDontSeeLink($member->name);
+                    ($user->can('update-members')) ? $memberCard->assertSeeLink(__('role.send.invite')) : $memberCard->assertDontSeeLink(__('role.send.invite'));
+                    ($user->can('update-members')) ? $memberCard->assertButtonEnabled('#addMembership') : $memberCard->assertButtonDisabled('#addMembership');
+                    ($user->can('update-members')) ? $memberCard->assertButtonEnabled('#modMembership') : $memberCard->assertButtonDisabled('#modMembership');
+                });
+                $browser->with('#gamesCard', function ($gameCard) use ($user) {
+                    $gameCard->click('.btn-tool')->waitFor('.btn-tool');
+                    ($user->can('update-games')) ? $gameCard->assertSeeLink(__('club.action.edit-homegame')) : $gameCard->assertDontSeeLink(__('club.action.edit-homegame')) ;
+                    ($user->can('view-games')) ? $gameCard->assertSeeLink(__('club.action.chart-homegame')) : $gameCard->assertDontSeeLink(__('club.action.chart-homegame'));
+                });
+            } else {
+                $browser->assertSee('403');
+            }
         });
 
     }
