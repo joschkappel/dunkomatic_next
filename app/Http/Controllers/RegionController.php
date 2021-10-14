@@ -20,6 +20,8 @@ use App\Models\Membership;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\DB;
+
+use Bouncer;
 use Datatables;
 
 class RegionController extends Controller
@@ -101,7 +103,11 @@ class RegionController extends Controller
         ->addIndexColumn()
         ->rawColumns(['regionadmin','code'])
         ->editColumn('code', function ($data) {
-            return '<a href="' . route('region.dashboard', ['language'=>Auth::user()->locale,'region'=>$data->id]) .'">'.$data->code.'</a>';
+            if (Bouncer::canAny(['update-regions','create-regions'])){
+                return '<a href="' . route('region.dashboard', ['language'=>Auth::user()->locale,'region'=>$data->id]) .'">'.$data->code.'</a>';
+            } else {
+                return $data->code;
+            }
             })
         ->editColumn('regionadmin', function ($r) use ($language) {
             if ($r->regionadmin()->exists()){

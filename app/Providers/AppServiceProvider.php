@@ -251,7 +251,7 @@ class AppServiceProvider extends ServiceProvider
                         'text'  => __('Regions'),
                         'icon'  => 'fas fa-list',
                         'url' => route('region.index', ['language' => app()->getLocale()]),
-                        'can' => 'create-regions',
+                        'can' => 'view-regions',
                         'shift' => 'ml-3'
                     ],
                 ]

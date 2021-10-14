@@ -30,45 +30,49 @@
                   <div class="icon">
                       <i class="fas fa-globe-europe"></i>
                   </div>
+                  @can('update-regions')
                   <a href="{{ route('region.edit',['language'=> app()->getLocale(),'region' => $region ]) }}" class="small-box-footer" dusk="btn-edit">
                       @lang('region.action.edit') <i class="fas fa-arrow-circle-right"></i>
                   </a>
+                  @endcan
+                  @can('create-regions')
                   @if ( ($region->clubs_count==0) and ($region->child_regions_count == 0) and ($region->leagues_count==0) )
                   <a id="deleteRegion" href="#" data-toggle="modal" data-target="#modalDeleteRegion" class="small-box-footer" dusk="btn-delete">
                       @lang('region.action.delete') <i class="fa fa-trash"></i>
                   </a>
                   @endif
+                  @endcan
               </div>
             </div>
             <div class="col-sm ">
-                <div class="info-box"> 
+                <div class="info-box">
                     <span class="info-box-icon bg-info"><i class="fas fa-basketball-ball"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text text-lg">{{ __('region.clubs.count',['count' => $region->clubs_count  ]) }}</span>
-                    </div>                
+                    </div>
                 </div>
-                <div class="info-box"> 
+                <div class="info-box">
                     <span class="info-box-icon bg-info"><i class="fas fa-building"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text text-lg">{{ __('region.gyms.count',['count' => $region->gyms_count  ]) }}</span>
-                    </div>                  
+                    </div>
                 </div>
-            </div> 
+            </div>
             <div class="col-sm ">
-                <div class="info-box"> 
+                <div class="info-box">
                     <span class="info-box-icon bg-info"><i class="fas fa-trophy"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text text-lg">{{ __('region.leagues.count',['count' => $region->leagues_count  ]) }}</span>
-                    </div>                
+                    </div>
                 </div>
-                <div class="info-box"> 
+                <div class="info-box">
                     <span class="info-box-icon bg-info"><i class="fas fa-users"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text text-lg">{{ __('region.teams.count',['count' => $region->teams_count  ]) }}</span>
-                    </div>                
+                    </div>
 
                 </div>
-            </div>                            
+            </div>
     </div>
 </div><!-- /.container-fluid -->
 @stop
@@ -76,12 +80,17 @@
 @section('content')
 <div class="container-fluid">
   <div class="row">
-    <div class="col-sm-6 pd-2">
+    <div class="col-md-6 pd-2">
         <!-- card MEMBERS -->
-        <div class="card card-outline card-info collapsed-card">
-          <div class="card-header">
-            <h4 class="card-title"><i class="fas fa-user-tie"></i> @lang('role.member')  <span class="badge badge-pill badge-info">{{ count($members) }}</span></h4>
+        <div class="card card-outline card-info collapsed-card" id="membersCard">
+          <div class="card-header align-content-between">
+            <h4 class="card-title pt-2"><i class="fas fa-user-tie fa-lg"></i> @lang('role.member')  <span class="badge badge-pill badge-info">{{ count($members) }}</span></h4>
             <div class="card-tools">
+                @can('create-members')
+                    <a href="{{ route('membership.region.create',[ 'language'=>app()->getLocale(), 'region' => $region ]) }}" class="btn btn-primary" >
+                    <i class="fas fa-plus-circle"></i>  @lang('region.member.action.create')
+                    </a>
+                @endcan
               <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
               </button>
             </div>
@@ -90,20 +99,27 @@
           <!-- /.card-header -->
           <div class="card-body">
             @foreach ($members as $member )
-            <p><button type="button" id="deleteMember" class="btn btn-outline-danger btn-sm" data-member-id="{{ $member->id }}"
+            <p>
+            <button type="button" id="deleteMember" class="btn btn-outline-danger btn-sm" data-member-id="{{ $member->id }}"
               data-member-name="{{ $member->name }}"
-              data-region-sname="{{ $region->code }}" data-toggle="modal" data-target="#modalDeleteMember"><i class="fa fa-trash"></i></button>
+              data-region-sname="{{ $region->code }}" data-toggle="modal" data-target="#modalDeleteMember" @cannot('create-members') disabled @endcannot><i class="fa fa-trash"></i></button>
+            @can('update-members')
             <a href="{{ route('member.edit',[ 'language'=>app()->getLocale(),'member' => $member ]) }}" class=" px-2">{{ $member->name }} <i class="fas fa-arrow-circle-right"></i></a>
+            @else
+            {{ $member->name }}
+            @endcan
             @if (! $member->is_user)
-            <a href="{{ route('member.invite',[ 'member' => $member]) }}" type="button" class="btn btn-outline-primary btn-sm"><i class="far fa-paper-plane"></i></a>
+                @can('update-members')
+                <a href="{{ route('member.invite',[ 'member' => $member]) }}" type="button" class="btn btn-outline-primary btn-sm"><i class="far fa-paper-plane"></i> {{__('role.send.invite')}}</a>
+                @endcan
             @endif
             <button type="button" id="addMembership" class="btn btn-outline-primary btn-sm" data-member-id="{{ $member->id }}"
-              data-region-id="{{ $region->id }}" data-toggle="modal" data-target="#modalClubMembershipAdd"><i class="fas fa-user-tag"></i></button>
+              data-region-id="{{ $region->id }}" data-toggle="modal" data-target="#modalClubMembershipAdd" @cannot('update-members') disabled @endcannot><i class="fas fa-user-tag"></i></button>
               @foreach ($member['memberships'] as $membership)
                 @if (($membership->membership_type == 'App\Models\Region' ) and ($membership->membership_id == $region->id))
-                <button type="button" id="modMembership" class="btn btn-outline-primary btn-sm" data-membership-id="{{ $membership->id }}" 
-                data-function="{{ $membership->function }}" data-email="{{ $membership->email }}" data-role="{{ App\Enums\Role::getDescription($membership->role_id) }}" 
-                data-toggle="modal" data-target="#modalRegionbMembershipMod">{{ App\Enums\Role::getDescription($membership->role_id) }}</button>
+                <button type="button" id="modMembership" class="btn btn-outline-primary btn-sm" data-membership-id="{{ $membership->id }}"
+                data-function="{{ $membership->function }}" data-email="{{ $membership->email }}" data-role="{{ App\Enums\Role::getDescription($membership->role_id) }}"
+                data-toggle="modal" data-target="#modalRegionbMembershipMod" @cannot('update-members') disabled @endcannot>{{ App\Enums\Role::getDescription($membership->role_id) }}</button>
                 @else
                 <span class="badge badge-secondary">{{ App\Enums\Role::getDescription($membership->role_id) }}</span>
                 @endif
@@ -113,11 +129,6 @@
 
           </div>
           <!-- /.card-body -->
-          <div class="card-footer">
-            <a href="{{ route('membership.region.create',[ 'language'=>app()->getLocale(), 'region' => $region ]) }}" class="btn btn-primary" >
-            <i class="fas fa-plus-circle"></i>  @lang('club.member.action.create')
-            </a>
-          </div>
           <!-- /.card-footer -->
         </div>
         <!-- /.card -->
@@ -174,7 +185,7 @@
               <div class="row m-5">
                 <div class="chart-wrapper">
                   <canvas id="clubmemberchart"></canvas>
-              </div>  
+              </div>
               </div>
             </div>
             <!-- /.card-body -->
@@ -183,12 +194,12 @@
           <!-- /.card -->
       </div>
     </div>
-  </div>  
+  </div>
   <!-- all modals here -->
   <x-confirm-deletion modalId="modalDeleteRegion" modalTitle="{{ __('region.title.delete')}}" modalConfirm="{{ __('region.confirm.delete') }}" deleteType="{{ trans_choice('region.region',1) }}" />
   @include('member/includes/membership_add')
   @include('member/includes/membership_modify')
-  <x-confirm-deletion modalId="modalDeleteMember" modalTitle="{{ __('role.title.delete')}}" modalConfirm="{{ __('role.confirm.delete') }}" deleteType="{{ __('role.member') }}" />                
+  <x-confirm-deletion modalId="modalDeleteMember" modalTitle="{{ __('role.title.delete')}}" modalConfirm="{{ __('role.confirm.delete') }}" deleteType="{{ __('role.member') }}" />
   <!-- all modals above -->
 </div>
 @endsection
@@ -220,14 +231,14 @@
        $('#modmemrole').val($(this).data('role'));
        $('#modalMembershipMod_Form').attr('action', url);
        $('#modalMembershipMod').modal('show');
-    }); 
+    });
     $("button#deleteMember").click( function(){
        $('#modalDeleteMember_Instance').html($(this).data('member-name'));
        var url = "{{ route('membership.region.destroy', ['region'=>$region, 'member'=>':member:']) }}";
        url = url.replace(':member:', $(this).data('member-id'));
        $('#modalDeleteMember_Form').attr('action', url);
        $('#modalDeleteMember').modal('show');
-    }); 
+    });
 
        var lsc = document.getElementById('leaguestatechart').getContext('2d');
        var leaguestatechart = new Chart(lsc, {
@@ -235,14 +246,14 @@
             data: { datasets: [{ data: [], }] },
             options: {
               plugins: { colorschemes: { scheme: 'brewer.SetOne4' }, },
-              title: { 
+              title: {
                 display: true,
                 text: 'Leagues by Status'
               },
             }
         });
 
-       var lsoc = document.getElementById('leaguesociochart').getContext('2d');   
+       var lsoc = document.getElementById('leaguesociochart').getContext('2d');
        var leaguesociochart = new Chart(lsoc, {
           type: "pie",
           data: { },
@@ -291,7 +302,7 @@
                 }
               }
             },
-            title: { 
+            title: {
               display: true,
               text: 'Leagues by Age and Gender'
             },
@@ -306,8 +317,8 @@
             options: {
               plugins: { colorschemes: { scheme: 'brewer.SetOne3' }, },
               responsive: true,
-            
-              title: { 
+
+              title: {
                 display: true,
                 text: 'Clubs by team'
               },
@@ -327,7 +338,7 @@
               plugins: { colorschemes: { scheme: 'brewer.RdYlGn10' }, },
               responsive: true,
 
-              title: { 
+              title: {
                 display: true,
                 text: 'Clubs by members'
               },
@@ -336,7 +347,7 @@
                 x: { stacked: true }
               },
             }
-        });        
+        });
 
        function load_chart(chart, route) {
             $.ajax({
@@ -358,7 +369,7 @@
 
       cmc_canvas.onclick = function(e) {
         var slice = clubmemberchart.getElementAtEvent(e);
-        if (!slice.length) return; 
+        if (!slice.length) return;
         alert('you clicked on '+slice[0]._model.label);
       };
 

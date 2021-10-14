@@ -3,7 +3,7 @@
 @section('plugins.Datatables', true)
 
 @section('content')
-<x-card-list cardTitle="{{ __('region.title.list') }}" cardNewAction="{{ route('region.create', app()->getLocale()) }}" cardNewTitle="{{ __('region.action.create') }}">
+<x-card-list cardTitle="{{ __('region.title.list') }}" cardNewAction="{{ route('region.create', app()->getLocale()) }}" cardNewTitle="{{ __('region.action.create') }}" cardNewAbility="create-regions">
                   <th>Id</th>
                   <th>{{ __('region.code') }}</th>
                   <th>{{ __('region.name') }}</th>
@@ -21,7 +21,8 @@
          $(function() {
             $('#goBack').click(function(e){
                history.back();
-            }); 
+            });
+
             $('#table').DataTable({
                processing: true,
                serverSide: true,

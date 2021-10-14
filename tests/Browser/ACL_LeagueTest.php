@@ -87,7 +87,7 @@ class ACL_LeagueTest extends DuskTestCase
 
     /**
      * @test
-     * @group club
+     * @group league
      * @group acl
      * @group regionadmin
      */
@@ -112,7 +112,7 @@ class ACL_LeagueTest extends DuskTestCase
 
    /**
      * @test
-     * @group club
+     * @group league
      * @group acl
      * @group clubadmin
      */
@@ -137,7 +137,7 @@ class ACL_LeagueTest extends DuskTestCase
 
    /**
      * @test
-     * @group club
+     * @group league
      * @group acl
      * @group clubassist
      */
@@ -161,7 +161,7 @@ class ACL_LeagueTest extends DuskTestCase
     }
    /**
      * @test
-     * @group club
+     * @group league
      * @group acl
      * @group leagueadmin
      */
@@ -185,7 +185,7 @@ class ACL_LeagueTest extends DuskTestCase
     }
    /**
      * @test
-     * @group club
+     * @group league
      * @group acl
      * @group guest
      */
