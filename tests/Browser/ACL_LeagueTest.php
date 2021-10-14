@@ -107,7 +107,30 @@ class ACL_LeagueTest extends DuskTestCase
         $this->access_leaguelist($user);
 
         $this->access_leaguedashboard($user);
+    }
 
+    /**
+     * @test
+     * @group league
+     * @group acl
+     * @group regionassist
+     */
+    public function regionassist_acls()
+    {
+        $user = static::$user;
+        Bouncer::retract( $user->getRoles()  )->from($user);
+        Bouncer::assign( 'regionassist')->to($user);
+        Bouncer::refreshFor($user);
+
+        $this->access_leaguemgmtlist($user);
+        $this->access_leaguelist($user);
+
+        Bouncer::allow($user)->to('manage', static::$league );
+        Bouncer::refreshFor($user);
+        $this->access_leaguemgmtlist($user);
+        $this->access_leaguelist($user);
+
+        $this->access_leaguedashboard($user);
     }
 
    /**

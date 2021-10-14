@@ -8,7 +8,10 @@ use App\Models\Region;
 use App\Models\League;
 
 use Illuminate\Http\Request;
+
 use Datatables;
+use Bouncer;
+
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
@@ -153,7 +156,7 @@ class ScheduleController extends Controller
               if ($data->custom_events) {
                 return __('Custom');
               } else {
-                if ( League::where('schedule_id',$data->id)->has('games')->count() == 0){
+                if ( (League::where('schedule_id',$data->id)->has('games')->count() == 0) and (Bouncer::can(['update-schedules'])) ) {
                   return '<a href="' . route('schedule_event.list', $data) .'">'.$data->events_count.' <i class="fas fa-arrow-circle-right"></i></a>';
                 } else {
                   return $data->events_count;
@@ -165,7 +168,11 @@ class ScheduleController extends Controller
                   return $user->created_at->format('d.m.Y H:i');
               })
           ->editColumn('name', function ($data) {
-                return '<a href="' . route('schedule.edit', ['language'=>Auth::user()->locale, 'schedule' =>$data->id]) .'">'.$data->name.' <i class="fas fa-arrow-circle-right"></i></a>';
+                if (Bouncer::canAny(['create-schedules', 'update-schedules'])){
+                    return '<a href="' . route('schedule.edit', ['language'=>Auth::user()->locale, 'schedule' =>$data->id]) .'">'.$data->name.' <i class="fas fa-arrow-circle-right"></i></a>';
+                } else {
+                    return $data->name;
+                }
               })
           ->editColumn('iterations', function ($data) {
             if ($data->iterations == 1){

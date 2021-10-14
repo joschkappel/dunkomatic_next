@@ -13,7 +13,7 @@
                 <td>{{ $auser->name }}</td>
                 <td>{{ $auser->email }}</td>
                 <td>{{ $auser->created_at }}</td>
-                <td><a href="{{ route('admin.user.edit', ['language' => app()->getLocale(), 'user' => $auser->id ]) }}"
+                <td><a href="{{ route('admin.user.edit', ['language' => app()->getLocale(), 'user' => $auser->id ]) }}" id="btnApprove"
                         class="btn btn-primary btn-sm">{{ __('auth.action.approve') }}</a></td>
             </tr>
         @empty

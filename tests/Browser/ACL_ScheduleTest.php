@@ -5,6 +5,7 @@ namespace Tests\Browser;
 use App\Models\Region;
 use App\Models\Member;
 use App\Models\User;
+use App\Models\Schedule;
 
 use Bouncer;
 
@@ -14,13 +15,14 @@ use Tests\DuskTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 
 
-class ACL_RegionTest extends DuskTestCase
+class ACL_ScheduleTest extends DuskTestCase
 {
     use DatabaseMigrations;
 
     protected static $region;
     protected static $member;
     protected static $user;
+    protected static $schedule;
 
     public function setUp(): void
     {
@@ -31,13 +33,15 @@ class ACL_RegionTest extends DuskTestCase
         static::$member = Member::factory()->create();
         static::$user = User::factory()->approved()->for(static::$region)->for(static::$member)->create();
 
+        static::$schedule = Schedule::factory()->create(['name' => 'testschedule']);
+
     }
 
     use withFaker;
 
     /**
      * @test
-     * @group region
+     * @group schedule
      * @group acl
      * @group superadmin
      */
@@ -48,13 +52,12 @@ class ACL_RegionTest extends DuskTestCase
         Bouncer::assign( 'superadmin')->to($user);
         Bouncer::refreshFor($user);
 
-        $this->access_regionlist($user);
-        $this->access_regiondashboard($user);
+        $this->access_schedulelist($user);
     }
 
     /**
      * @test
-     * @group region
+     * @group schedule
      * @group acl
      * @group regionadmin
      */
@@ -65,32 +68,28 @@ class ACL_RegionTest extends DuskTestCase
         Bouncer::assign( 'regionadmin')->to($user);
         Bouncer::refreshFor($user);
 
-        $this->access_regionlist($user);
-        $this->access_regiondashboard($user);
-
+        $this->access_schedulelist($user);
     }
 
     /**
      * @test
-     * @group region
+     * @group schedule
      * @group acl
      * @group regionassist
      */
-    public function regionassit_acls()
+    public function regionassist_acls()
     {
         $user = static::$user;
         Bouncer::retract( $user->getRoles()  )->from($user);
-        Bouncer::assign( 'regionassist')->to($user);
+        Bouncer::assign( 'regionadmin')->to($user);
         Bouncer::refreshFor($user);
 
-        $this->access_regionlist($user);
-        $this->access_regiondashboard($user);
-
+        $this->access_schedulelist($user);
     }
 
    /**
      * @test
-     * @group region
+     * @group schedule
      * @group acl
      * @group clubadmin
      */
@@ -101,14 +100,12 @@ class ACL_RegionTest extends DuskTestCase
         Bouncer::assign( 'clubadmin')->to($user);
         Bouncer::refreshFor($user);
 
-        $this->access_regionlist($user);
-        $this->access_regiondashboard($user);
-
+        $this->access_schedulelist($user);
     }
 
    /**
      * @test
-     * @group region
+     * @group schedule
      * @group acl
      * @group clubassist
      */
@@ -119,13 +116,11 @@ class ACL_RegionTest extends DuskTestCase
         Bouncer::assign( 'clubassist')->to($user);
         Bouncer::refreshFor($user);
 
-        $this->access_regionlist($user);
-        $this->access_regiondashboard($user);
-
+        $this->access_schedulelist($user);
     }
    /**
      * @test
-     * @group region
+     * @group schedule
      * @group acl
      * @group leagueadmin
      */
@@ -136,13 +131,11 @@ class ACL_RegionTest extends DuskTestCase
         Bouncer::assign( 'leagueadmin')->to($user);
         Bouncer::refreshFor($user);
 
-        $this->access_regionlist($user);
-        $this->access_regiondashboard($user);
-
+        $this->access_schedulelist($user);
     }
    /**
      * @test
-     * @group region
+     * @group schedule
      * @group acl
      * @group guest
      */
@@ -153,13 +146,12 @@ class ACL_RegionTest extends DuskTestCase
         Bouncer::assign( 'guest')->to($user);
         Bouncer::refreshFor($user);
 
-        $this->access_regionlist($user);
-        $this->access_regiondashboard($user);
-
+        $this->access_schedulelist($user);
     }
-   /**
+
+    /**
      * @test
-     * @group region
+     * @group schedule
      * @group acl
      * @group candidate
      */
@@ -170,31 +162,53 @@ class ACL_RegionTest extends DuskTestCase
         Bouncer::assign( 'candidate')->to($user);
         Bouncer::refreshFor($user);
 
-        $this->access_regionlist($user);
-        $this->access_regiondashboard($user);;
-
+        $this->access_schedulelist($user);
     }
 
 
-    private function access_regionlist( $user )
+    private function access_schedulelist( $user )
     {
-        $region = static::$region;
+        $schedule = static::$schedule;
 
-        $this->browse(function ($browser) use ($user, $region) {
-            $browser->loginAs($user)->visitRoute('region.index',['language'=>'de']);
+        $this->browse(function ($browser) use ($user, $schedule) {
+            $browser->loginAs($user)->visitRoute('schedule.index',['language'=>'de']);
 
-            if ( $user->can('view-regions') ) {
-                $browser->assertRouteIs('region.index',['language'=>'de']);
-                ($user->can('create-regions')) ? $browser->assertSee(__('region.action.create',$locale=['de'])) : $browser->assertDontSee(__('region.action.create',$locale=['de']));
+            if ( $user->can('view-schedules') ) {
+                $browser->assertRouteIs('schedule.index',['language'=>'de']);
+                ($user->can('create-schedules')) ? $browser->assertSee(__('schedule.action.create',$locale=['de'])) : $browser->assertDontSee(__('schedule.action.create',$locale=['de']));
                 $browser->waitFor('.table');
 
-                if ($user->canAny(['create-regions', 'update-regions'])) {
-                    $browser->assertSeeLink($region->code);
-                    $browser->clickLink($region->code)
-                            ->assertRouteIs('region.dashboard', ['language'=>'de','region'=>$region->id]);
+                $events_count = $schedule->events_count ?? '0';
+
+                if ($user->canAny(['create-schedules', 'update-schedules'])) {
+                    $browser->with('.table', function ($sRow) use ($user, $schedule) {
+                        $sRow->assertSeeLink($schedule->name);
+                        $sRow->clickLink($schedule->name)
+                                ->assertRouteIs('schedule.edit', ['language'=>'de','schedule'=>$schedule->id]);
+                    });
+                    $browser->assertPresent('@frmClose')->press('@frmClose')->waitFor('.table');
+
+                    if ($user->can('update-schedules')){
+                        $browser->with('.table', function ($sRow) use ($user, $schedule, $events_count) {
+                            $sRow->waitForLink($events_count);
+                            $sRow->assertSeeLink($events_count);
+                            $sRow->clickLink($events_count)
+                                    ->assertRouteIs('schedule_event.list', ['schedule'=>$schedule->id]);
+                        });
+                    } else {
+                        $browser->with('.table', function ($sRow) use ($user, $schedule, $events_count) {
+                            $sRow->assertDontSeeLink($events_count)
+                                 ->assertSee($events_count);
+
+                        });
+                    }
                 } else {
-                    $browser->assertDontSeeLink($region->code)
-                            ->assertSee($region->code);
+                    $browser->with('.table', function ($sRow) use ($user, $schedule, $events_count) {
+                        $sRow->assertDontSeeLink($schedule->name)
+                                ->assertSee($schedule->name)
+                                ->assertDontSeeLink($events_count)
+                                ->assertSee($events_count);
+                    });
                 }
 
             } else {
@@ -203,21 +217,5 @@ class ACL_RegionTest extends DuskTestCase
         });
     }
 
-    private function access_regiondashboard( $user)
-    {
-        $this->browse(function ($browser) use ($user) {
-            $browser->loginAs($user)->visitRoute('region.dashboard',['language'=>'de', 'region'=>static::$region]); // ->screenshot($user->getRoles()[0]);
-            $member = static::$member;
-            $region = static::$region;
-
-            if  ( $user->canAny(['create-regions', 'update-regions']) ){
-                ($user->can('update-regions')) ? $browser->assertSee(__('region.action.edit',$locale=['de'])) : $browser->assertDontSee(__('region.action.edit',$locale=['de']));
-                ($user->can('create-regions')) ? $browser->assertSee(__('region.action.delete',$locale=['de'])) : $browser->assertDontSee(__('region.action.delete',$locale=['de']));
-                ($user->can('create-members')) ? $browser->assertSee(__('region.member.action.create',$locale=['de'])) : $browser->assertDontSee(__('region.member.action.create',$locale=['de']));
-            }
-
-        });
-
-    }
 
 }

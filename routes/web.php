@@ -41,12 +41,13 @@ Route::group([
     Route::get('/approval', 'HomeController@approval')->name('approval');
 
 
-    Route::get('user/new', 'UserController@index_new')->name('admin.user.index.new');
-    Route::get('user/dt', 'UserController@datatable')->name('admin.user.dt')->middleware('auth');
-    Route::post('user/{user_id}/approve', 'UserController@approve')->name('admin.user.approve');
-    Route::get('user/{user}/edit', 'UserController@edit')->name('admin.user.edit')->middleware('auth');
-    Route::get('user/{user}/show', 'UserController@show')->name('admin.user.show');
-    Route::get('user', 'UserController@index')->name('admin.user.index')->middleware('auth');
+    Route::get('user/new', 'UserController@index_new')->name('admin.user.index.new')->middleware('can:update-users');
+    Route::get('user/dt', 'UserController@datatable')->name('admin.user.dt')->middleware('auth')->middleware('can:view-users');
+    Route::post('user/{user_id}/approve', 'UserController@approve')->name('admin.user.approve')->middleware('can:update-users');
+    Route::get('user/{user}/edit', 'UserController@edit')->name('admin.user.edit')->middleware('auth')->middleware('can:update-users');
+    Route::get('user/{user}/show', 'UserController@show')->name('admin.user.show')->middleware('can:update-users');
+    Route::get('user', 'UserController@index')->name('admin.user.index')->middleware('auth')->middleware('can:view-users');
+
     Route::get('audit', 'AuditController@index')->name('admin.audit.index')->middleware('auth');
     Route::get('audit/dt', 'AuditController@datatable')->name('admin.audit.dt')->middleware('auth');
 
@@ -107,10 +108,12 @@ Route::group([
 
     Route::resource('club.team', 'ClubTeamController')->shallow()->only('index','create','edit');;
 
-    Route::get('schedule_event/calendar',function() { return view('schedule/scheduleevent_cal');})->name('schedule_event.cal');
-
-    Route::get('schedule/index_piv', function() { return view('schedule/schedules_list');})->name('schedule.index_piv');
-    Route::resource('schedule', 'ScheduleController')->only('index','create','edit');
+    Route::get('schedule_event/calendar',function() { return view('schedule/scheduleevent_cal');})->name('schedule_event.cal')->middleware('can:view-schedules');
+    Route::get('schedule/index_piv', function() { return view('schedule/schedules_list');})->name('schedule.index_piv')->middleware('can:view-schedules');
+    Route::get('schedule', 'ScheduleController@index')->name('schedule.index')->middleware('can:view-schedules');
+    Route::get('schedule/create', 'ScheduleController@create')->name('schedule.create')->middleware('can:create-schedules');
+    Route::get('schedule/{schedule}', 'ScheduleController@show')->name('schedule.show')->middleware('can:view-schedules');
+    Route::get('schedule/{schedule}/edit', 'ScheduleController@edit')->name('schedule.edit')->middleware('can:update-schedules');
 
     Route::resource('message', 'MessageController')->only('index','create','edit');
     Route::get('message/user/{user}/dt', 'MessageController@datatable_user')->name('message.user.dt');
@@ -133,10 +136,10 @@ Route::middleware(['auth'])->group(function () {
   Route::delete('region/{region}', 'RegionController@destroy')->name('region.destroy')->middleware('can:create-regions');
   Route::get('region/hq/sb', 'RegionController@hq_sb')->name('region.hq.sb');
 
-  Route::delete('user/{user}', 'UserController@destroy')->name('admin.user.destroy');
-  Route::post('user/{user}/block', 'UserController@block')->name('admin.user.block');
-  Route::put('user/{user}', 'UserController@update')->name('admin.user.update');
-  Route::put('user/{user}/allowance', 'UserController@allowance')->name('admin.user.allowance');
+  Route::delete('user/{user}', 'UserController@destroy')->name('admin.user.destroy')->middleware('can:update-users');
+  Route::post('user/{user}/block', 'UserController@block')->name('admin.user.block')->middleware('can:update-users');
+  Route::put('user/{user}', 'UserController@update')->name('admin.user.update')->middleware('can:update-users');
+  Route::put('user/{user}/allowance', 'UserController@allowance')->name('admin.user.allowance')->middleware('can:update-users');
 
   Route::put('member/{member}', 'MemberController@update')->name('member.update')->middleware('can:update-members');
   Route::post('member', 'MemberController@store')->name('member.store')->middleware('can:create-members');
@@ -163,10 +166,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('club/region/sb', 'ClubController@sb_region')->name('club.sb.region');
     Route::get('league/team_register/dt', 'LeagueController@team_register_dt')->name('league.team_register.dt');
     Route::get('league/region/sb', 'LeagueController@sb_region')->name('league.sb.region');
-    Route::get('schedule/list', 'ScheduleController@list')->name('schedule.list');
+    Route::get('schedule/list', 'ScheduleController@list')->name('schedule.list')->middleware('can:view-schedules');
     Route::get('schedule/region/size/{size}/sb', 'ScheduleController@sb_region_size')->name('schedule.sb.region_size');
     Route::get('schedule/region/sb', 'ScheduleController@sb_region')->name('schedule.sb.region');
-    Route::get('schedule_event/list-cal', 'ScheduleEventController@list_cal')->name('schedule_event.list-cal');
+    Route::get('schedule_event/list-cal', 'ScheduleEventController@list_cal')->name('schedule_event.list-cal')->middleware('can:view-schedules');
     Route::post('message', 'MessageController@store')->name('message.store');
     Route::put('message/{message}', 'MessageController@update')->name('message.update');
     Route::get('member/datatable', 'MemberController@datatable')->name('member.datatable')->middleware('can:view-members');
@@ -225,7 +228,10 @@ Route::middleware(['auth'])->group(function () {
   Route::resource('schedule_event', 'ScheduleEventController')->except('store');
 
   Route::get('schedule/{schedule}/size/league_size}/sb', 'ScheduleController@sb_size')->name('schedule.sb.size');
-  Route::resource('schedule', 'ScheduleController')->except('index','create','edit');
+  Route::post('schedule', 'ScheduleController@store')->name('schedule.store')->middleware('can:create-schedules');
+  Route::put('schedule/{schedule}', 'ScheduleController@update')->name('schedule.update')->middleware('can:update-schedules');
+  Route::delete('schedule/{schedule}', 'ScheduleController@destroy')->name('schedule.destroy')->middleware('can:create-schedules');
+
   Route::resource('message', 'MessageController')->except('index','create','edit');
 
   Route::get('file/exports/{season}/{region}/{type}/{file}', 'FileDownloadController@get_file')->name('file.get');

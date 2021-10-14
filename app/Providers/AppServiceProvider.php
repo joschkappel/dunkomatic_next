@@ -137,7 +137,7 @@ class AppServiceProvider extends ServiceProvider
                         'url'  => route('schedule.index', app()->getLocale()),
                         'icon' => 'fas fa-calendar-plus',
                         'icon_color' => 'green',
-                        'can' => ['create-schedules', 'update-schedules'],
+                        'can' => 'view-schedules',
                         'shift' => 'ml-5'
                     ], [
                         'text' => __('Calendar'),
@@ -196,14 +196,14 @@ class AppServiceProvider extends ServiceProvider
                         'submenu' => [
                             [
                                 'text' => __('game.menu.referees'),
-                                'url'  => route('schedule.index', app()->getLocale()),
+                                // 'url'  => route('schedule.index', app()->getLocale()),
                                 'icon' => 'fas fa-running',
                                 'icon_color' => 'blue',
                                 'can' => 'update-games',
                                 'shift' => 'ml-5'
                             ], [
                                 'text' => __('game.menu.list'),
-                                'url'  => route('schedule_event.cal', app()->getLocale()),
+                                // 'url'  => route('schedule_event.cal', app()->getLocale()),
                                 'icon' => 'fas fa-list',
                                 'icon_color' => 'blue',
                                 'can'  => 'view-games',
@@ -224,14 +224,14 @@ class AppServiceProvider extends ServiceProvider
                         'text'  => __('Approve Users'),
                         'icon'  => 'fas fa-thumbs-up',
                         'url' => route('admin.user.index.new', app()->getLocale()),
-                        'can'  => 'create-users',
+                        'can'  => 'udpate-users',
                         'shift' => 'ml-3'
                     ],
                     [
                         'text'  => __('Manage Users'),
                         'icon'  => 'fas fa-users',
                         'url' => route('admin.user.index', app()->getLocale()),
-                        'can'  => 'update-users',
+                        'can'  => 'view-users',
                         'shift' => 'ml-3'
                     ],
 

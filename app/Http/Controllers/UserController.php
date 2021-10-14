@@ -36,17 +36,27 @@ class UserController extends Controller
           ->rawColumns(['name','action'])
           ->addColumn('action', function($data){
                  $state = ($data->approved_at == null) ? 'disabled' : '';
-                 $btn = '<button type="button" id="blockUser" name="blockUser" class="btn btn-outline-primary btn-sm" data-user-id="'.$data->id.'"
-                    data-user-name="'.$data->name.'" data-toggle="modal" data-target="#modalBlockUser" '.$state.'><i class="fas fa-ban"></i></button>  ';
-                  $btn .= '<button type="button" id="deleteUser" name="deleteUser" class="btn btn-outline-danger btn-sm" data-user-id="'.$data->id.'"
+                 if (Bouncer::can('update-users')){
+                    $btn = '<button type="button" id="blockUser" name="blockUser" class="btn btn-outline-primary btn-sm" data-user-id="'.$data->id.'"
+                        data-user-name="'.$data->name.'" data-toggle="modal" data-target="#modalBlockUser" '.$state.'><i class="fas fa-ban"></i></button>  ';
+                 } else {
+                     $btn = '';
+                 }
+                 if (Bouncer::can('create-users')){
+                    $btn .= '<button type="button" id="deleteUser" name="deleteUser" class="btn btn-outline-danger btn-sm" data-user-id="'.$data->id.'"
                        data-user-name="'.$data->name.'" data-toggle="modal" data-target="#modalDeleteUser" ><i class="fa fa-trash"></i></button>';
-                  return $btn;
+                 };
+                 return $btn;
           })
           ->editColumn('name', function ($userlist) use($language) {
               if ($userlist->approved_at == null) {
                 return '<i class="fas fa-exclamation-triangle text-warning"></i>  '.$userlist->name;
               } else {
-                return '<a href="' . route('admin.user.edit', ['language'=>$language, 'user'=>$userlist->id]) .'">'.$userlist->name.'</a>';
+                  if (Bouncer::can('update-users')) {
+                    return '<a href="' . route('admin.user.edit', ['language'=>$language, 'user'=>$userlist->id]) .'">'.$userlist->name.'</a>';
+                  } else {
+                      return $userlist->name;
+                  }
               };
               })
             ->addColumn('roles', function ($u) {

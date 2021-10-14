@@ -82,6 +82,28 @@ class ACL_ClubTest extends DuskTestCase
         $this->access_clubdashboard($user);
     }
 
+    /**
+     * @test
+     * @group club
+     * @group acl
+     * @group regionassist
+     */
+    public function regionassist_acls()
+    {
+        $user = static::$user;
+        Bouncer::retract( $user->getRoles()  )->from($user);
+        Bouncer::assign( 'regionassist')->to($user);
+        Bouncer::refreshFor($user);
+
+        $this->access_clublist($user);
+
+        Bouncer::allow($user)->to('manage', static::$club );
+        Bouncer::refreshFor($user);
+        $this->access_clublist($user);
+
+        $this->access_clubdashboard($user);
+    }
+
    /**
      * @test
      * @group club
