@@ -29,8 +29,6 @@ class ClubController extends Controller
      */
     public function list(Region $region)
     {
-      Bouncer::authorize('view-clubs');
-
       if ( $region->is_top_level){
         $clubs = Club::whereIn('region_id', $region->childRegions()->pluck('id') )->withCount(['leagues','teams','registered_teams','selected_teams','games_home',
                                         'games_home_notime','games_home_noshow'
@@ -52,7 +50,7 @@ class ClubController extends Controller
         ->addIndexColumn()
         ->rawColumns(['shortname.display','name.display', 'assigned_rel.display', 'registered_rel.display', 'selected_rel.display'])
         ->editColumn('shortname', function ($data) {
-            if (  (Bouncer::can('manage', $data)) or  (Bouncer::canAny(['create-clubs', 'update-clubs'])) ){
+            if (  (Bouncer::can('manage', $data)) or (Bouncer::canAny(['create-clubs', 'update-clubs'])) ){
                 $link = '<a href="' . route('club.dashboard', ['language'=>Auth::user()->locale,'club'=>$data->id]) .'">'.$data->shortname.'</a>';
             } else {
                 $link = '<a href="' . route('club.briefing', ['language'=>Auth::user()->locale,'club'=>$data->id]) .'" class="text-info" >'.$data->shortname.'</a>';
@@ -112,8 +110,6 @@ class ClubController extends Controller
      */
     public function index()
     {
-        Bouncer::authorize('view-clubs');
-
         return view('club/club_list');
     }
     /**
@@ -158,8 +154,6 @@ class ClubController extends Controller
      */
     public function briefing( $language, Club $club )
     {
-          Bouncer::authorize('view-clubs');
-
           $data['club'] = $club;
 
           $data['gyms'] = $data['club']->gyms()->get();
@@ -235,8 +229,6 @@ class ClubController extends Controller
      */
     public function create()
     {
-      Bouncer::authorize('create-clubs');
-
       Log::info('create new club');
       return view('club/club_new', ['region' => session('cur_region')]);
     }
@@ -249,8 +241,6 @@ class ClubController extends Controller
      */
     public function store(Request $request)
     {
-        Bouncer::authorize('create-clubs');
-
         $data = $request->validate( Club::getCreateRules());
 
         Log::info(print_r($data, true));
@@ -270,7 +260,7 @@ class ClubController extends Controller
      */
     public function show(Club $club)
     {
-        Bouncer::authorize('view-clubs');
+        //
     }
 
     /**
@@ -281,9 +271,7 @@ class ClubController extends Controller
      */
     public function edit($language, Club $club)
     {
-        Bouncer::authorize('update-clubs');
-
-        Log::debug('editing club '.$club->id);
+        Log::debug('editing club ', ['shortname'=>$club->shortname]);
         return view('club/club_edit', ['club' => $club]);
     }
 
@@ -295,8 +283,6 @@ class ClubController extends Controller
      */
     public function list_homegame($language, Club $club)
     {
-        Bouncer::authorize('view-games');
-
         Log::debug('listing hgames for club '.$club->id);
         return view('game/gamehome_list', ['club' => $club]);
     }
@@ -310,8 +296,6 @@ class ClubController extends Controller
      */
     public function update(Request $request,  Club $club)
     {
-      Bouncer::authorize('update-clubs');
-
       $data = $request->validate( [
           'shortname' => array('required','string', Rule::unique('clubs')->ignore($club->id),'max:4','min:4',new Uppercase ),
           'name' => 'required|max:255',
@@ -339,9 +323,6 @@ class ClubController extends Controller
 
     public function destroy(Club $club)
     {
-
-      Bouncer::authorize('create-clubs');
-
       Log::info(print_r($club->id, true));
       // delete all dependent items
 

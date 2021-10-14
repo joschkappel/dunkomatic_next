@@ -83,11 +83,7 @@ class AppServiceProvider extends ServiceProvider
             $allowed_clubs = Club::whereIn('id', Auth::user()->getAbilities()->where('entity_type', Club::class)->pluck('entity_id'))->get();
             foreach ($allowed_clubs as $c) {
                 $smenu['text'] = $c->shortname;
-                if (Bouncer::canAny(['create-clubs', 'update-clubs'])) {
-                    $smenu['url']  = route('club.dashboard', ['language' => app()->getLocale(), 'club' => $c]);
-                } else {
-                    $smenu['url']  = route('club.briefing', ['language' => app()->getLocale(), 'club' => $c]);
-                }
+                $smenu['url']  = route('club.dashboard', ['language' => app()->getLocale(), 'club' => $c]);
                 $smenu['icon_color'] = 'orange';
                 $smenu['icon'] =  'fas fa-list';
                 $smenu['shift'] = 'ml-3';
@@ -114,11 +110,7 @@ class AppServiceProvider extends ServiceProvider
             $allowed_leagues = League::whereIn('id', Auth::user()->getAbilities()->where('entity_type', League::class)->pluck('entity_id'))->get();
             foreach ($allowed_leagues as $l) {
                 $smenu['text'] = $l->shortname;
-                if (Bouncer::canAny(['create-leagues', 'update-leagues'])) {
-                    $smenu['url']  = route('league.dashboard', ['language' => app()->getLocale(), 'league' => $l]);
-                } else {
-                    $smenu['url']  = route('league.briefing', ['language' => app()->getLocale(), 'league' => $l]);
-                }
+                $smenu['url']  = route('league.dashboard', ['language' => app()->getLocale(), 'league' => $l]);
                 $smenu['icon_color'] = 'yellow';
                 $smenu['icon'] =  'fas fa-list';
                 $smenu['shift'] = 'ml-3';
@@ -127,7 +119,7 @@ class AppServiceProvider extends ServiceProvider
             };
 
             $smenu['text'] =  __('league.menu.manage');;
-            $smenu['url']  = route('league.mgmt_dashboard', app()->getLocale());
+            $smenu['url']  = route('league.index_mgmt', app()->getLocale());
             $smenu['icon_color'] = 'yellow';
             $smenu['icon'] =  'fas fa-chart-bar';
             $smenu['can'] = ['create-leagues','update-leagues'];

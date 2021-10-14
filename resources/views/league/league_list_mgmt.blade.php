@@ -11,7 +11,7 @@
             <div class="collapse" id="collapseAssignment">
 
                 <div class="card card-info">
-                    <h5 class="card-header">Assign Clubs</h5>
+                    <h5 class="card-header">{{ __('league.action.open.assignment')}}</h5>
                     <form id="frmAssignClubs" action="#" method="post">
 
                         <div class="card-body">
@@ -55,8 +55,10 @@
                 <!-- /.card-header -->
 
                 <div class="card-tools p-2">
+                    @can('create-leagues')
                     <a href="{{ route('league.create', app()->getLocale()) }}" class="text-center btn btn-success mb-3"><i
                             class="fas fa-plus-circle pr-2"></i>@lang('league.action.create')</a>
+                    @endcan
                 </div>
                 <div class="card-body">
                     <table width="100%" class="table table-hover table-bordered table-sm" id="tblAssignClubs">
@@ -110,7 +112,7 @@
                 order: [
                     [1, 'asc']
                 ],
-                ajax: '{{ route('league.club_assign.dt', ['language'=> app()->getLocale(),'region' => session('cur_region')->id]) }}',
+                ajax: '{{ route('league.list_mgmt', ['language'=> app()->getLocale(),'region' => session('cur_region')->id]) }}',
                 columns: [{
                         data: 'id',
                         name: 'id',

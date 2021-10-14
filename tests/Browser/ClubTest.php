@@ -33,6 +33,10 @@ class ClubTest extends DuskTestCase
     {
         $r = Region::where('code','HBVDA')->first();
         $u = $r->regionadmin->first()->user()->first();
+        Bouncer::retract( $u->getRoles()  )->from($u);
+        Bouncer::assign( 'superadmin')->to($u);
+        Bouncer::refreshFor($u);
+
         $club_no = '1234567';
         $club_no_new = '1122334';
         $club_name = 'VVV';

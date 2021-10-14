@@ -35,7 +35,7 @@ class LeagueTest extends DuskTestCase
         $r = Region::where('code','HBVDA')->first();
         $u = $r->regionadmin->first()->user()->first();
         Bouncer::retract( $u->getRoles()  )->from($u);
-        Bouncer::assign( 'leagueadmin')->to($u);
+        Bouncer::assign( 'superadmin')->to($u);
         Bouncer::refreshFor($u);
 
         $league_code = 'LSX';

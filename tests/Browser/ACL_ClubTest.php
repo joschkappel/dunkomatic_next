@@ -38,7 +38,6 @@ class ACL_ClubTest extends DuskTestCase
         $region = Region::where('code','HBVDA')->first();
         $member = Member::factory()->create();
         static::$user = User::factory()->approved()->for($region)->for($member)->create();
-        Bouncer::allow(static::$user)->to('manage', static::$club );
 
     }
 
@@ -75,6 +74,11 @@ class ACL_ClubTest extends DuskTestCase
         Bouncer::refreshFor($user);
 
         $this->access_clublist($user);
+
+        Bouncer::allow($user)->to('manage', static::$club );
+        Bouncer::refreshFor($user);
+        $this->access_clublist($user);
+
         $this->access_clubdashboard($user);
     }
 
@@ -92,6 +96,11 @@ class ACL_ClubTest extends DuskTestCase
         Bouncer::refreshFor($user);
 
         $this->access_clublist($user);
+
+        Bouncer::allow($user)->to('manage', static::$club );
+        Bouncer::refreshFor($user);
+        $this->access_clublist($user);
+
         $this->access_clubdashboard($user);
     }
 
@@ -109,6 +118,11 @@ class ACL_ClubTest extends DuskTestCase
         Bouncer::refreshFor($user);
 
         $this->access_clublist($user);
+
+        Bouncer::allow($user)->to('manage', static::$club );
+        Bouncer::refreshFor($user);
+        $this->access_clublist($user);
+
         $this->access_clubdashboard($user);
 
     }
@@ -126,6 +140,11 @@ class ACL_ClubTest extends DuskTestCase
         Bouncer::refreshFor($user);
 
         $this->access_clublist($user);
+
+        Bouncer::allow($user)->to('manage', static::$club );
+        Bouncer::refreshFor($user);
+        $this->access_clublist($user);
+
         $this->access_clubdashboard($user);
 
     }

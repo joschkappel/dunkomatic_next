@@ -22,23 +22,27 @@
                     <div class="icon">
                         <i class="fas fa-trophy"></i>
                     </div>
+                    @can('update-leagues')
                     <a href="{{ route('league.edit', ['language' => app()->getLocale(), 'league' => $league]) }}"
                         class="small-box-footer">
                         @lang('league.action.edit') <i class="fas fa-arrow-circle-right"></i>
                     </a>
+                    @endcan
+                    @can('create-leagues')
                     @if (count($games) == 0)
                         <a id="deleteLeague" href="#" data-toggle="modal" data-target="#modalDeleteLeague"
                             class="small-box-footer" dusk="btn-delete">
                             @lang('league.action.delete') <i class="fa fa-trash"></i>
                         </a>
                     @endif
+                    @endcan
                 </div>
             </div>
             <div class="col-sm ">
                 <div class="info-box">
                     <x-league-status :league="$league" mode="infobox-icon"/>
                     <div class="info-box-content">
-                        <span class="info-box-text text-lg">Status</span>
+                        <span class="info-box-text text-lg">{{__('league.state')}}</span>
                         <span class="info-box-number">{{ $league->state->description }}</span>
                         <x-league-status :league="$league" />
                     </div>
@@ -134,11 +138,11 @@
                                         </thead>
                                         <tbody>
                                             @for ($i = 1; $i <= $league->size; $i++)
-                                                <tr scope="row" >
+                                                <tr scope="row" dusk="rowClub{{ $i }}">
                                                     @isset($assigned_clubs[$i])
                                                         <td scope="row" class="text-center"><button id="deassignClub"
                                                                 data-id="{{ $assigned_clubs[$i]['club_id'] }}" type="button"
-                                                                class="btn btn-success btn-sm" @if ( ($league->state->in([ App\Enums\LeagueState::Live(), App\Enums\LeagueState::Setup()]) )) disabled @endif>
+                                                                class="btn btn-success btn-sm" @if ( (Auth::user()->cannot('update-leagues')) or ($league->state->in([ App\Enums\LeagueState::Live(), App\Enums\LeagueState::Setup()])) )  disabled @endif>
                                                                 {{ $assigned_clubs[$i]['shortname'] }} </button>
                                                         </td>
                                                         <td class="text-center">
@@ -152,14 +156,11 @@
                                                         </td>
                                                     @endisset
                                                     @empty($assigned_clubs[$i])
-                                                        @if ( ! $league->state->in([ App\Enums\LeagueState::Live(), App\Enums\LeagueState::Setup() ]))
                                                             <td><button type="button" id="assignClub"
                                                                     class="btn btn-outline-info btn-sm"
                                                                     data-itemid="{{ $i }}" data-toggle="modal"
-                                                                    data-target="#modalAssignClub"><i class="fas fa-link"></i>
+                                                                    data-target="#modalAssignClub" @if ( (Auth::user()->cannot('update-leagues')) or ( $league->state->in([ App\Enums\LeagueState::Live(), App\Enums\LeagueState::Setup() ])) ) disabled @endif ><i class="fas fa-link"></i>
                                                                     @lang('league.action.assign')</button></td>
-                                                        @else <td></td>
-                                                        @endif
                                                         <td></td>
                                                         <td></td>
                                                     @endempty
@@ -185,7 +186,7 @@
                                         </thead>
                                         <tbody>
                                             @for ($i = 1; $i <= $league->size; $i++)
-                                                <tr scope="row" >
+                                                <tr scope="row" dusk="rowTeam{{ $i }}">
                                                     @isset($selected_teams[$i])
                                                         <td class="text-center"><span class="badge badge-pill badge-dark">{{ $i }}</span></td>
                                                     @endisset
@@ -194,13 +195,13 @@
                                                     @endempty
                                                     @isset($selected_teams[$i])
                                                         <td class="text-center">
-                                                        <button type="button" class="btn btn-outline-dark btn-sm" id="withdrawTeam" @if ($league->state_count['registered'] == 0) disabled @endif>
+                                                        <button type="button" class="btn btn-outline-dark btn-sm" id="withdrawTeam" @if ( Auth::user()->cannot('update-teams') or  ($league->state_count['registered'] == 0)) disabled @endif>
                                                         {{ $selected_teams[$i]['shortname'] }} {{ $selected_teams[$i]['team_no'] }}</button>
                                                         </td>
                                                     @endisset
                                                     @empty($selected_teams[$i])
                                                         <td class="text-center">
-                                                        <button  type="button" class="btn btn-outline-info btn-sm" id="injectTeam" @if ($league->state_count['registered'] == $league->size) disabled @endif>
+                                                        <button  type="button" class="btn btn-outline-info btn-sm" id="injectTeam" @if ( Auth::user()->cannot('update-teams') or ($league->state_count['registered'] == $league->size)) disabled @endif>
                                                         ______</button>
                                                         </td>
                                                     @endempty
@@ -216,12 +217,13 @@
                         </div>
                     </div>
                     <!-- /.card-body -->
-                    <div class="card-footer">
+                    <div class="card-footer" id="clubsCardFooter">
                         <div class="card-tools">
-                            <button type="button" class="btn btn-primary float-right" id="injectTeam" @if ($league->state_count['registered'] == $league->size) disabled @endif><i class="fas fa-plus"></i> @lang('game.action.team.add')
+                            <button type="button" class="btn btn-primary float-right" dusk="injectTeam" id="injectTeam" @if( (Auth::user()->cannot('update-teams')) or ($league->state_count['registered'] == $league->size)) disabled @endif><i class="fas fa-plus"></i> @lang('game.action.team.add')
                             </button>
-                            <button type="button" class="btn btn-outline-primary float-right mr-2" id="withdrawTeam" @if ($league->state_count['registered'] == 0) disabled @endif><i
-                                    class="fa fa-trash"></i> @lang('game.action.team.withdraw')
+                            <button type="button" class="btn btn-outline-primary float-right mr-2" dusk="withdrawTeam" id="withdrawTeam"
+                            @if( (Auth::user()->cannot('update-teams')) or ($league->state_count['registered'] == 0) )  disabled @endif
+                            ><i class="fa fa-trash"></i> @lang('game.action.team.withdraw')
                             </button>
                         </div>
                     </div>
@@ -231,15 +233,17 @@
             </div>
             <div class="col-sm-6">
                 <!-- card MEMBERS -->
-                <div class="card card-outline card-dark collapsed-card">
+                <div class="card card-outline card-dark collapsed-card" id="membersCard">
                     <div class="card-header align-content-between">
                         <h4 class="card-title pt-2"><i class="fas fa-user-tie fa-lg"></i> {{ trans_choice('role.member', 2) }} <span
                                 class="badge badge-pill badge-info">{{ count($members) }}</span></h4>
                         <div class="card-tools">
+                            @can('create-members')
                            <a href="{{ route('membership.league.create', ['language' => app()->getLocale(), 'league' => $league]) }}"
                                 class="btn btn-success">
                                 <i class="fas fa-plus-circle"></i> @lang('league.member.action.create')
                             </a>
+                            @endcan
                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
                                     class="fas fa-plus"></i>
                             </button>
@@ -254,16 +258,22 @@
                                     <button type="button" id="deleteMember" class="btn btn-outline-danger btn-sm"
                                         data-member-id="{{ $member->id }}" data-member-name="{{ $member->name }}"
                                         data-league-sname="{{ $league->shortname }}" data-toggle="modal"
-                                        data-target="#modalDeleteMember"><i class="fa fa-trash"></i></button>
+                                        data-target="#modalDeleteMember" @cannot('create-members') disabled @endcannot><i class="fa fa-trash"></i></button>
+                                    @can('update-members')
                                     <a href="{{ route('member.edit', ['language' => app()->getLocale(), 'member' => $member]) }}"
                                         class=" px-2">{{ $member->name }} <i class="fas fa-arrow-circle-right"></i></a>
+                                    @else
+                                    {{ $member->name }}
+                                    @endcan
                                     @if (!$member->is_user)
+                                        @can('update-members')
                                         <a href="{{ route('member.invite', ['member' => $member]) }}" type="button"
-                                            class="btn btn-outline-primary btn-sm"><i class="far fa-paper-plane"></i></a>
+                                            class="btn btn-outline-primary btn-sm"><i class="far fa-paper-plane"></i> {{__('role.send.invite')}}</a>
+                                        @endcan
                                     @endif
                                     <button type="button" id="addMembership" class="btn btn-outline-primary btn-sm"
                                         data-member-id="{{ $member->id }}" data-league-id="{{ $league->id }}"
-                                        data-toggle="modal" data-target="#modalLeagueMembershipAdd"><i
+                                        data-toggle="modal" data-target="#modalLeagueMembershipAdd"   @cannot('update-members') disabled @endcannot><i
                                             class="fas fa-user-tag"></i></button>
                                     @foreach ($member['memberships'] as $membership)
                                         @if ($membership->membership_type == 'App\Models\League' and $membership->membership_id == $league->id)
@@ -273,7 +283,7 @@
                                                 data-email="{{ $membership->email }}"
                                                 data-role="{{ App\Enums\Role::getDescription($membership->role_id) }}"
                                                 data-toggle="modal"
-                                                data-target="#modalLeagueMembershipMod">{{ App\Enums\Role::getDescription($membership->role_id) }}</button>
+                                                data-target="#modalLeagueMembershipMod"  @cannot('update-members') disabled @endcannot>{{ App\Enums\Role::getDescription($membership->role_id) }}</button>
                                         @else
                                             <span
                                                 class="badge badge-secondary">{{ App\Enums\Role::getDescription($membership->role_id) }}</span>
@@ -288,7 +298,7 @@
                 </div>
                 <!-- /.card -->
                 <!-- card GAMES -->
-                <div class="card card-outline card-dark collapsed-card">
+                <div class="card card-outline card-dark collapsed-card" id="gamesCard">
                     <div class="card-header">
                         <h4 class="card-title"><i class="fas fa-trophy fa-lg"></i> {{ trans_choice('game.game', 2) }} <span
                                 class="badge badge-pill badge-info">{{ count($games) }}</span></h4>
@@ -314,16 +324,18 @@
                     <!-- /.card-body -->
                     <div class="card-footer">
                         <div class="card-tools">
+                            @can('view-games')
                             <a href="{{ route('league.game.index', ['language' => app()->getLocale(), 'league' => $league]) }}"
                                 class="btn btn-primary float-right">
                                 <i class="far fa-edit"></i> @lang('league.action.game.list')</a>
                             <a href="{{ route('cal.league', ['language' => app()->getLocale(), 'league' => $league]) }}"
                                 class="btn btn-outline-primary float-right mr-2">
                                 <i class="fas fa-calendar-alt"></i> iCAL</a>
-                            <button type="button" class="btn btn-outline-danger float-right mr-2" id="deleteGames" @if ( ! $league->state->is(App\Enums\LeagueState::Live())) disabled @endif><i class="fa fa-trash"></i> @lang('game.action.delete')
+                            @endcan
+                            @if( (Auth::user()->can('update-games')) and (  $league->state->is(App\Enums\LeagueState::Referees())) )
+                            <button type="button" class="btn btn-outline-danger float-right mr-2" id="deleteNoshowGames"><i class="fa fa-trash"></i> @lang('game.action.delete.noshow')
                             </button>
-                            <button type="button" class="btn btn-outline-danger float-right mr-2" id="deleteNoshowGames" @if ( ! $league->state->is(App\Enums\LeagueState::Scheduling())) disabled @endif><i class="fa fa-trash"></i> @lang('game.action.delete.noshow')
-                            </button>
+                            @endif
                         </div>
                     </div>
                     {{-- <img class="card-img-bottom"
@@ -395,7 +407,6 @@
                     $('#modalAssignClub_Form').attr('action', url);
                     $('#modalAssignClub').modal('show');
                 });
-
                 $("button#withdrawTeam").click(function() {
                     var url = "{{ route('league.team.withdraw', ['league'=>$league->id]) }}";
                     $('#modalWithdrawTeam_Form').attr('action', url);

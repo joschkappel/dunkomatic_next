@@ -80,7 +80,7 @@ class LeagueController extends Controller
       ->addIndexColumn()
       ->rawColumns(['shortname.display','age_type.display','gender_type.display',
                     'size.display','state'])
-      ->editColumn('shortname', function ($l) use ($region) {
+      ->editColumn('shortname', function ($l) {
         if (  (Bouncer::can('manage', $l)) or  (Bouncer::canAny(['create-leagues', 'update-leagues'])) ){
           $link = '<a href="' . route('league.dashboard', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" >' . $l->shortname . '</a>';
         } else {
@@ -204,6 +204,10 @@ class LeagueController extends Controller
    */
   public function dashboard($language, League $league)
   {
+
+    if (  (Bouncer::cannot('manage', $league)) and  ( ! Bouncer::canAny(['create-leagues', 'update-leagues'])) ) {
+        abort(403);
+      }
     $data['league'] = $league;
 
     // get assigned clubs
@@ -555,16 +559,22 @@ class LeagueController extends Controller
    * display management dashboard
    *
    */
-  public function mgmt_dashboard()
+  public function index_mgmt()
   {
-    return view('league.league_management');
+    if ( ! Bouncer::canAny(['create-leagues', 'update-leagues']) ) {
+        abort(403);
+    }
+    return view('league.league_list_mgmt');
   }
   /**
    * league datatables club assignments
    *
    */
-  public function club_assign_dt($language, Region $region)
+  public function list_mgmt($language, Region $region)
   {
+    if ( ! Bouncer::canAny(['create-leagues', 'update-leagues']) ) {
+        abort(403);
+    }
 
     if ( $region->is_base_level ){
         $leagues = League::whereIn('region_id', [ $region->id, $region->parentRegion->id ] )->get();
@@ -582,15 +592,8 @@ class LeagueController extends Controller
       ->addIndexColumn()
       ->rawColumns(['shortname.display','nextaction','rollbackaction','clubs','teams',
                     'state'])
-      ->editColumn('shortname', function ($l) use ($region) {
-        if (  ( (Bouncer::can('manage', $l))
-             or (Auth::user()->isA('regionadmin')) )
-             and ( $l->region->is( $region ) )
-            ) {
+      ->editColumn('shortname', function ($l) {
           $link = '<a href="' . route('league.dashboard', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" >' . $l->shortname . '</a>';
-        } else {
-          $link = '<a href="' . route('league.briefing', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" class="text-info">' . $l->shortname . '</a>';
-        }
         return array('display' =>$link, 'sort'=>$l->shortname);
       })
       ->addColumn('alien_region', function ($l) use ($region) {
