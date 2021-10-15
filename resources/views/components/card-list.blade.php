@@ -1,10 +1,12 @@
 <div class="card card-outline card-primary">
     <div class="card-header">
         <h3 class="card-title font-weight-bold">{{ $cardTitle }}</h3>
-        @if ( isset($cardNewAction)) 
+        @if ( isset($cardNewAction))
         <div class="card-tools">
             <span>
+                @can($cardNewAbility)
                 <a href="{{ $cardNewAction }}" class="btn btn-success"><i class="fas fa-plus-circle pr-2"></i>{{ $cardNewTitle }}</a>
+                @endcan
             </span>
         </div>
         @endif
@@ -29,4 +31,4 @@
         </div>
     </div>
     <!-- /.card-footer -->
-</div>  
+</div>

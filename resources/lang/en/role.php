@@ -27,6 +27,7 @@ return [
   'email2' => 'Alternative eMail',
   'fax' => 'Fax no',
   'user.account' => 'User account',
+  'send.invite' => 'Invite',
   '1.short' => 'Club',
   '0.short' => 'User',
   '2.short' => 'Referees',

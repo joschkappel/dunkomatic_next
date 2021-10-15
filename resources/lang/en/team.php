@@ -23,6 +23,7 @@ return [
   'action.save-assignment' => 'Save Preferred Combination',
   'action.refresh-chart' => 'Refresh Chart',
   'action.showon-chart' => 'Create Combinations',
+  'action.pickchars' => 'Pick League No',
   'registration' => 'Registration',
   'unassigned' => 'unassigned',
   'league.unassigned' => 'unassigned (was: :LEAGUE)',

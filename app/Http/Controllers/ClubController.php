@@ -50,7 +50,11 @@ class ClubController extends Controller
         ->addIndexColumn()
         ->rawColumns(['shortname.display','name.display', 'assigned_rel.display', 'registered_rel.display', 'selected_rel.display'])
         ->editColumn('shortname', function ($data) {
-            $link = '<a href="' . route('club.dashboard', ['language'=>Auth::user()->locale,'club'=>$data->id]) .'">'.$data->shortname.'</a>';
+            if (  (Bouncer::can('manage', $data)) or (Bouncer::canAny(['create-clubs', 'update-clubs'])) ){
+                $link = '<a href="' . route('club.dashboard', ['language'=>Auth::user()->locale,'club'=>$data->id]) .'">'.$data->shortname.'</a>';
+            } else {
+                $link = '<a href="' . route('club.briefing', ['language'=>Auth::user()->locale,'club'=>$data->id]) .'" class="text-info" >'.$data->shortname.'</a>';
+            }
             return array('display' =>$link, 'sort'=>$data->shortname);
         })
         ->editColumn('region', function ($data) {
@@ -115,6 +119,9 @@ class ClubController extends Controller
      */
     public function dashboard( $language, Club $club )
     {
+          if (  (Bouncer::cannot('manage', $club)) and  ( ! Bouncer::canAny(['create-clubs', 'update-clubs'])) ) {
+            abort(403);
+          }
           $data['club'] = $club;
 
           $data['gyms'] = $data['club']->gyms()->get();
@@ -264,7 +271,7 @@ class ClubController extends Controller
      */
     public function edit($language, Club $club)
     {
-        Log::debug('editing club '.$club->id);
+        Log::debug('editing club ', ['shortname'=>$club->shortname]);
         return view('club/club_edit', ['club' => $club]);
     }
 
@@ -289,7 +296,6 @@ class ClubController extends Controller
      */
     public function update(Request $request,  Club $club)
     {
-
       $data = $request->validate( [
           'shortname' => array('required','string', Rule::unique('clubs')->ignore($club->id),'max:4','min:4',new Uppercase ),
           'name' => 'required|max:255',

@@ -67,7 +67,7 @@ class RegionMembershipControllerTest extends TestCase
                           'entity_id' => $region->id,
                           'entity_type' => Region::class,
                           'function' => null,
-                          'email' => null,                             
+                          'email' => null,
                       ]);
       $response
           ->assertStatus(302)
@@ -115,7 +115,7 @@ class RegionMembershipControllerTest extends TestCase
       $member = Member::where('lastname','testmember')->first();
       $this->assertDatabaseHas('members', ['id' => $member->id])
            ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-           ->assertDatabaseCount('memberships', 4);
+           ->assertDatabaseCount('memberships', 5);
 
       Notification::assertSentTo(
         [$member], InviteUser::class
@@ -156,7 +156,7 @@ class RegionMembershipControllerTest extends TestCase
 
       $this->assertDatabaseHas('members', ['id' => $member->id])
           ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-          ->assertDatabaseCount('memberships', 4);
+          ->assertDatabaseCount('memberships', 5);
 
       Notification::assertNothingSent();
     }
@@ -184,7 +184,7 @@ class RegionMembershipControllerTest extends TestCase
                           'street' => $member->street,
                           'mobile' => $member->mobile,
                           'email1' => 'test2@gmail.com',
-                          'backto' => url(route('region.dashboard', ['region'=>$region, 'language'=>'de'])),    
+                          'backto' => url(route('region.dashboard', ['region'=>$region, 'language'=>'de'])),
                       ]);
 
       $response->assertRedirect(route('region.dashboard', ['language'=>'de','region'=>$region]))
@@ -192,7 +192,7 @@ class RegionMembershipControllerTest extends TestCase
 
       $this->assertDatabaseHas('members', ['lastname' => 'testmember2'])
                ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-               ->assertDatabaseCount('memberships', 4);
+               ->assertDatabaseCount('memberships', 5);
     }
 
 
@@ -216,7 +216,7 @@ class RegionMembershipControllerTest extends TestCase
 
       $this->assertDatabaseMissing('memberships', ['member_id' => $member2->id])
            ->assertDatabaseMissing('memberships', ['member_id' => $member->id])
-           ->assertDatabaseCount('memberships', 3);
+           ->assertDatabaseCount('memberships', 4);
     }
     /**
      * db_cleanup

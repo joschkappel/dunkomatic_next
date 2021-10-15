@@ -48,7 +48,7 @@ class UserControllerTest extends TestCase
     {
         $user =  User::where("email","=","approved@gmail.com")->first();
 
-        $response = $this->authenticated($user)
+        $response = $this->authenticated()
                          ->followingRedirects()
                          ->get(route('admin.user.show',[
                             'language'=>'de',
@@ -73,7 +73,7 @@ class UserControllerTest extends TestCase
     {
         $user =  User::where("email","=","approved@gmail.com")->first();
 
-        $response = $this->authenticated($user)
+        $response = $this->authenticated()
                          ->put(route('admin.user.update',[
                             'user' => $user,
                             'name' => '',
@@ -98,7 +98,7 @@ class UserControllerTest extends TestCase
     {
         $user =  User::where("email","=","approved@gmail.com")->first();
 
-        $response = $this->authenticated($user)
+        $response = $this->authenticated()
                          ->put(route('admin.user.update',[
                             'user' => $user,
                             'locale' => 'en',
@@ -132,7 +132,7 @@ class UserControllerTest extends TestCase
 
         $user =  User::where("email","=","approved@gmail.com")->first();
 
-        $response = $this->authenticated($user)
+        $response = $this->authenticated()
                          ->followingRedirects()
                          ->put(route('admin.user.update',[
                             'user' => $user,

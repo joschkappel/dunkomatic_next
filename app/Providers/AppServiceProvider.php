@@ -83,11 +83,7 @@ class AppServiceProvider extends ServiceProvider
             $allowed_clubs = Club::whereIn('id', Auth::user()->getAbilities()->where('entity_type', Club::class)->pluck('entity_id'))->get();
             foreach ($allowed_clubs as $c) {
                 $smenu['text'] = $c->shortname;
-                if (Bouncer::can('manage-clubs')) {
-                    $smenu['url']  = route('club.dashboard', ['language' => app()->getLocale(), 'club' => $c]);
-                } else {
-                    $smenu['url']  = route('club.briefing', ['language' => app()->getLocale(), 'club' => $c]);
-                }
+                $smenu['url']  = route('club.dashboard', ['language' => app()->getLocale(), 'club' => $c]);
                 $smenu['icon_color'] = 'orange';
                 $smenu['icon'] =  'fas fa-list';
                 $smenu['shift'] = 'ml-3';
@@ -114,11 +110,7 @@ class AppServiceProvider extends ServiceProvider
             $allowed_leagues = League::whereIn('id', Auth::user()->getAbilities()->where('entity_type', League::class)->pluck('entity_id'))->get();
             foreach ($allowed_leagues as $l) {
                 $smenu['text'] = $l->shortname;
-                if (Bouncer::can('manage-leagues')) {
-                    $smenu['url']  = route('league.dashboard', ['language' => app()->getLocale(), 'league' => $l]);
-                } else {
-                    $smenu['url']  = route('league.briefing', ['language' => app()->getLocale(), 'league' => $l]);
-                }
+                $smenu['url']  = route('league.dashboard', ['language' => app()->getLocale(), 'league' => $l]);
                 $smenu['icon_color'] = 'yellow';
                 $smenu['icon'] =  'fas fa-list';
                 $smenu['shift'] = 'ml-3';
@@ -127,10 +119,10 @@ class AppServiceProvider extends ServiceProvider
             };
 
             $smenu['text'] =  __('league.menu.manage');;
-            $smenu['url']  = route('league.mgmt_dashboard', app()->getLocale());
+            $smenu['url']  = route('league.index_mgmt', app()->getLocale());
             $smenu['icon_color'] = 'yellow';
             $smenu['icon'] =  'fas fa-chart-bar';
-            $smenu['can'] = 'manage-leagues';
+            $smenu['can'] = ['create-leagues','update-leagues'];
             $smenu['shift'] = 'ml-3';
             $leaguemenu['submenu'][] = $smenu;
 
@@ -145,7 +137,7 @@ class AppServiceProvider extends ServiceProvider
                         'url'  => route('schedule.index', app()->getLocale()),
                         'icon' => 'fas fa-calendar-plus',
                         'icon_color' => 'green',
-                        'can' => 'manage-schedules',
+                        'can' => 'view-schedules',
                         'shift' => 'ml-5'
                     ], [
                         'text' => __('Calendar'),
@@ -176,7 +168,7 @@ class AppServiceProvider extends ServiceProvider
                     [
                         'text' => __('region.menu.manage'),
                         'url'  => route('region.dashboard', ['language'=>app()->getLocale(), 'region'=> session('cur_region', Auth::user()->region)->id ]),
-                        'can' => 'view-regions',
+                        'can' => ['update-regions', 'view-regions'],
                         'icon' => 'fas fa-list',
                         'icon_color' => 'danger',
                         'shift' => 'ml-3'
@@ -185,7 +177,7 @@ class AppServiceProvider extends ServiceProvider
                         'text'  => __('Manage Members'),
                         'icon'  => 'fas fa-users',
                         'url' => route('member.index', app()->getLocale()),
-                        'can'  => 'manage-members',
+                        'can'  => 'view-members',
                         'icon_color' => 'danger',
                         'shift' => 'ml-3'
                     ],
@@ -204,17 +196,17 @@ class AppServiceProvider extends ServiceProvider
                         'submenu' => [
                             [
                                 'text' => __('game.menu.referees'),
-                                'url'  => route('schedule.index', app()->getLocale()),
+                                // 'url'  => route('schedule.index', app()->getLocale()),
                                 'icon' => 'fas fa-running',
                                 'icon_color' => 'blue',
-                                'can' => 'manage-schedules',
+                                'can' => 'update-games',
                                 'shift' => 'ml-5'
                             ], [
                                 'text' => __('game.menu.list'),
-                                'url'  => route('schedule_event.cal', app()->getLocale()),
+                                // 'url'  => route('schedule_event.cal', app()->getLocale()),
                                 'icon' => 'fas fa-list',
                                 'icon_color' => 'blue',
-                                'can'  => 'view-schedules',
+                                'can'  => 'view-games',
                                 'shift' => 'ml-5'
                             ]
                         ]
@@ -232,14 +224,14 @@ class AppServiceProvider extends ServiceProvider
                         'text'  => __('Approve Users'),
                         'icon'  => 'fas fa-thumbs-up',
                         'url' => route('admin.user.index.new', app()->getLocale()),
-                        'can'  => 'manage-users',
+                        'can'  => 'udpate-users',
                         'shift' => 'ml-3'
                     ],
                     [
                         'text'  => __('Manage Users'),
                         'icon'  => 'fas fa-users',
                         'url' => route('admin.user.index', app()->getLocale()),
-                        'can'  => 'manage-users',
+                        'can'  => 'view-users',
                         'shift' => 'ml-3'
                     ],
 

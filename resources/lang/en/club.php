@@ -44,4 +44,5 @@ return [
   'game_noshow.no' => 'All games with guest',
   'game_noshow.all' => 'All games without guest',
   'member.action.create' => 'New Member',
+  'preferred' => 'Preferred Clubs',
 ];

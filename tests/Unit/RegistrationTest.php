@@ -134,8 +134,10 @@ class RegistrationTest extends TestCase
                                     'language' => 'de',
                                     'approved' => 'on',
                                     'user_id' => $user->id,
-                                    'club_ids' => $club
+                                    'club_ids' => $club,
+                                    'role' => 3
         ]));
+        // $response->dump();
         $response->assertStatus(200)
                  ->assertViewIs('auth.users');
 
@@ -200,7 +202,8 @@ class RegistrationTest extends TestCase
                          ->put(route('admin.user.allowance',[
                             'user' => $user,
                             'club_ids' => [ $club1->id, $club2->id],
-                            'league_ids' => [ $league->id ]
+                            'league_ids' => [ $league->id ],
+                            'role' => 3
         ]));
 
         $response->assertStatus(200)
@@ -234,6 +237,7 @@ class RegistrationTest extends TestCase
                                     'language' => 'de',
                                     'reason_reject' => 'rejected test',
                                     'user_id' => $user->id,
+                                    'role' => 3,
         ]));
         $response->assertStatus(200)
                  ->assertViewIs('auth.users');

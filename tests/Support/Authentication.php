@@ -7,6 +7,9 @@ use App\Models\Region;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Tests\TestCase;
 
+use Bouncer;
+
+
 trait Authentication
 {
     /** @var User $region_user **/
@@ -23,6 +26,10 @@ trait Authentication
             $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
             $this->region = Region::where('code','HBVDA')->first();
             $this->region_user = $this->region->regionadmin->first()->user()->first();
+
+            Bouncer::retract( $this->region_user->getRoles()  )->from($this->region_user);
+            Bouncer::assign( 'superadmin')->to($this->region_user);
+            Bouncer::refreshFor($this->region_user);
         });
     }
 

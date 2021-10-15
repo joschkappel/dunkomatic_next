@@ -25,6 +25,7 @@ return [
   'phone' => 'Telefon-Nr.',
   'email1' => 'eMail Addresse',
   'email2' => 'Alternative eMail',
+  'send.invite' => 'Einladen',
   'fax' => 'Fax-Nr.',
   'user.account' => 'Benutzerkonto anlegen',
   '1.short' => 'Abteilung',

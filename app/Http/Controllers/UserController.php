@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Club;
 use App\Models\League;
-use App\Enums\Role;
 
 use Bouncer;
+use Silber\Bouncer\Database\Role;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,21 +36,35 @@ class UserController extends Controller
           ->rawColumns(['name','action'])
           ->addColumn('action', function($data){
                  $state = ($data->approved_at == null) ? 'disabled' : '';
-                 $btn = '<button type="button" id="blockUser" name="blockUser" class="btn btn-outline-primary btn-sm" data-user-id="'.$data->id.'"
-                    data-user-name="'.$data->name.'" data-toggle="modal" data-target="#modalBlockUser" '.$state.'><i class="fas fa-ban"></i></button>  ';
-                  $btn .= '<button type="button" id="deleteUser" name="deleteUser" class="btn btn-outline-danger btn-sm" data-user-id="'.$data->id.'"
+                 if (Bouncer::can('update-users')){
+                    $btn = '<button type="button" id="blockUser" name="blockUser" class="btn btn-outline-primary btn-sm" data-user-id="'.$data->id.'"
+                        data-user-name="'.$data->name.'" data-toggle="modal" data-target="#modalBlockUser" '.$state.'><i class="fas fa-ban"></i></button>  ';
+                 } else {
+                     $btn = '';
+                 }
+                 if (Bouncer::can('create-users')){
+                    $btn .= '<button type="button" id="deleteUser" name="deleteUser" class="btn btn-outline-danger btn-sm" data-user-id="'.$data->id.'"
                        data-user-name="'.$data->name.'" data-toggle="modal" data-target="#modalDeleteUser" ><i class="fa fa-trash"></i></button>';
-                  return $btn;
+                 };
+                 return $btn;
           })
           ->editColumn('name', function ($userlist) use($language) {
               if ($userlist->approved_at == null) {
                 return '<i class="fas fa-exclamation-triangle text-warning"></i>  '.$userlist->name;
               } else {
-                return '<a href="' . route('admin.user.edit', ['language'=>$language, 'user'=>$userlist->id]) .'">'.$userlist->name.'</a>';
+                  if (Bouncer::can('update-users')) {
+                    return '<a href="' . route('admin.user.edit', ['language'=>$language, 'user'=>$userlist->id]) .'">'.$userlist->name.'</a>';
+                  } else {
+                      return $userlist->name;
+                  }
               };
               })
-            ->addColumn('roles', function ($userlist) {
-                return $userlist->getRoles()->implode(', ');
+            ->addColumn('roles', function ($u) {
+                $roles = '';
+                foreach ( $u->getRoles() as $ur){
+                    $roles .= __('auth.user.role.'.$ur).', ';
+                }
+                return substr($roles,0,-2);
             })
           ->addColumn('clubs', function ($userlist) {
               $ca = $userlist->getAbilities()->where('entity_type', Club::class)->pluck('entity_id');
@@ -189,13 +203,12 @@ class UserController extends Controller
 
           $data = $request->validate( [
               'reason_reject' =>  'exclude_if:approved,"on"|required|string',
-              'club_ids' => Rule::requiredIf(function () use ($request) {
-                              return (($request->approved == 'on') and (!isset($request->league_ids)) and (!isset($request->member_id)) );
-                              }),
-              'league_ids' => Rule::requiredIf(function () use ($request) {
-                              return (($request->approved == 'on') and (!isset($request->club_ids)) and (!isset($request->member_id)) );
-                              }),
-              'member_id' => 'sometimes|required|exists:members,id'
+              'club_ids' => 'sometimes|required|array',
+              'club_ids.*' => 'nullable|exists:clubs,id',
+              'league_ids' => 'sometimes|required|array',
+              'league_ids.*' => 'nullable|exists:leagues,id',
+              'member_id' => 'sometimes|required|exists:members,id',
+              'role' => 'required|exists:roles,id',
           ]);
 
           if ( $request->approved == 'on'){
@@ -217,15 +230,7 @@ class UserController extends Controller
 
             // RBAC set roles
             Bouncer::retract('guest')->from($user);
-            if ($user->isregionadmin){
-                Bouncer::assign('regionadmin')->to($user);
-            } elseif ($user->isrole(Role::ClubLead())){
-                Bouncer::assign('clubadmin')->to($user);
-            } elseif ($user->isrole(Role::LeagueLead())){
-                Bouncer::assign('leagueadmin')->to($user);
-            } else {
-                Bouncer::assign('user')->to($user);
-            }
+            Bouncer::assign( Role::find($data['role'])->name )->to($user);
 
             $user->notify(new ApproveUser(Auth::user(), $user));
           } else {
@@ -240,19 +245,29 @@ class UserController extends Controller
   public function allowance(Request $request, User $user)
   {
     Log::debug(print_r($request->all(),true));
+    $data = $request->validate( [
+        'club_ids' => 'sometimes|required|array',
+        'club_ids.*' => 'nullable|exists:clubs,id',
+        'league_ids' => 'sometimes|required|array',
+        'league_ids.*' => 'nullable|exists:leagues,id',
+        'role' => 'required|exists:roles,id',
+    ]);
 
     // RBAC need to add remove abilities
     $user->abilities()->detach();
-    if ( isset($request['club_ids']) ){
-        foreach ($request['club_ids'] as $c) {
+    if ( isset($data['club_ids']) ){
+        foreach ($data['club_ids'] as $c) {
           Bouncer::allow($user)->to('manage', Club::find($c));
         }
       };
-    if ( isset($request['league_ids'] )){
-        foreach ($request['league_ids'] as $l) {
+    if ( isset($data['league_ids'] )){
+        foreach ($data['league_ids'] as $l) {
             Bouncer::allow($user)->to('manage', League::find($l));
         }
     };
+    // RBAC set roles
+    Bouncer::retract( $user->getRoles()  )->from($user);
+    Bouncer::assign( Role::find($data['role'])->name )->to($user);
 
     return redirect()->route('admin.user.index', app()->getLocale());
   }
@@ -268,9 +283,8 @@ class UserController extends Controller
   {
     $user->update(['approved_at'=> null]);
     // RBAC remove old roles and set guest
-    Bouncer::assign('guest')->to($user);
-    Bouncer::retract('user')->from($user);
-    Bouncer::retract('regionadmin')->from($user);
+    Bouncer::retract( Role::all() )->from($user);
+    Bouncer::assign('candidate')->to($user);
 
     return redirect()->route('admin.user.index', app()->getLocale());
   }

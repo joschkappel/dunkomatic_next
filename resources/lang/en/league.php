@@ -57,5 +57,6 @@ return [
   'next.state' => 'start next phase',
   'prev.state' => 'back to previous',
   'member.action.create' => 'New Member',
+  'preferred' => 'Preferred Leagues',
 
 ];

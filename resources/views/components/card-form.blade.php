@@ -25,7 +25,7 @@
                     <div class="card-footer">
                         <div class="btn-toolbar justify-content-end" role="toolbar" aria-label="Toolbar with button groups">
                             @if ( ! $omitCancel  )
-                            <button type="button" class="btn btn-outline-primary mr-2" id="frmClose">{{ __('Cancel')}}</button>
+                            <button type="button" class="btn btn-outline-primary mr-2" dusk="frmClose" id="frmClose">{{ __('Cancel')}}</button>
                             @endif
                             {{ $addButtons ?? "" }}
                             @if( ! $omitSubmit )
@@ -37,4 +37,4 @@
             </div>
         </div>
     </div>
-</div>                        
+</div>

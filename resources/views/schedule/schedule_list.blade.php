@@ -3,7 +3,7 @@
 @section('plugins.Datatables', true)
 
 @section('content')
-<x-card-list cardTitle="{{ __('schedule.title.list', ['region'=>session('cur_region')->name ]) }}" cardNewAction="{{ route('schedule.create', app()->getLocale()) }}" cardNewTitle="{{ __('schedule.action.create') }}">
+<x-card-list cardTitle="{{ __('schedule.title.list', ['region'=>session('cur_region')->name ]) }}" cardNewAction="{{ route('schedule.create', app()->getLocale()) }}" cardNewTitle="{{ __('schedule.action.create') }}" cardNewAbility="create-schedules">
     <th>Id</th>
     <th>Name</th>
     <th>Eventcolor</th>
@@ -25,7 +25,7 @@
         $(function() {
             $('#goBack').click(function(e){
                 history.back();
-            });             
+            });
             $('#table').DataTable({
                 processing: true,
                 serverSide: true,
