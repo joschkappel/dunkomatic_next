@@ -5,6 +5,7 @@ return [
   'action.edit' => 'Einstellungen für Bezirk ändern',
   'action.create' => 'Lege einen neuen Bezirk an',
   'action.delete' => 'Bezirk löschen',
+  'action.select' => 'Wähle einen Bezirk',
   'confirm.delete' => 'Will Du diesen Bezirk wirklich löschen ?',
   'title.edit' => 'Einstellungen für :Region ändern',
   'title.list' => 'Bezirke',

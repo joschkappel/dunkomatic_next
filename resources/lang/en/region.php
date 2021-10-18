@@ -5,6 +5,7 @@ return [
   'action.edit' => 'Modify settings',
   'action.create' => 'Create Region',
   'action.delete' => 'Delete Region',
+  'action.select' => 'Select a Region',
   'title.edit' => 'Modify settings for :Region',
   'title.list' => 'Regions',
   'title.create' => 'Create a new Region',
