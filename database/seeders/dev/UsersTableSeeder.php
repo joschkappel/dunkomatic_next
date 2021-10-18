@@ -48,9 +48,9 @@ class UsersTableSeeder extends Seeder
 
         $mid = DB::table('members')->insertGetId(['lastname'=>'regionassist','email1'=>'regionassist@gmail.com']);
         $uid = DB::table('users')->insertGetId([
-          'name' => 'regionassist',
-          'user_old' => 'assist',
-          'email' => 'regionassist@gmail.com',
+          'name' => 'regionobserver',
+          'user_old' => 'observer',
+          'email' => 'regionobserver@gmail.com',
           'email_verified_at' => now(),
           'approved_at' => now(),
           'region_id' => Region::where('code','HBVDA')->first()->id,
@@ -58,7 +58,7 @@ class UsersTableSeeder extends Seeder
           'member_id' => $mid
         ]);
         DB::table('memberships')->insert(['member_id'=>$mid,'role_id'=>Role::RegionLead,'membership_id'=>Region::where('code','HBVDA')->first()->id,'membership_type'=> Region::class ]);
-        Bouncer::assign('regionassist')->to(User::find($uid));
+        Bouncer::assign('regionobserver')->to(User::find($uid));
 
         $uid = DB::table('users')->insertGetId([
             'name' => 'clubadmin',
@@ -73,16 +73,16 @@ class UsersTableSeeder extends Seeder
           Bouncer::assign('clubadmin')->to(User::find($uid));
 
           $uid = DB::table('users')->insertGetId([
-            'name' => 'clubassist',
-            'user_old' => 'assist',
-            'email' => 'clubassist@gmail.com',
+            'name' => 'clubobserver',
+            'user_old' => 'observer',
+            'email' => 'clubobserver@gmail.com',
             'email_verified_at' => now(),
             'approved_at' => now(),
             'region_id' => Region::where('code','HBVDA')->first()->id,
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'member_id' => $mid
           ]);
-          Bouncer::assign('clubassist')->to(User::find($uid));
+          Bouncer::assign('clubobserver')->to(User::find($uid));
 
           $uid = DB::table('users')->insertGetId([
             'name' => 'leagueadmin',

@@ -31,15 +31,47 @@
     </div>
     @endisset
     <div class="form-group row ">
-        <label for='selRole' class="col-sm-4 col-form-label">{{ __('auth.user.role')}}</label>
+        <label for='selRegionRole' class="col-sm-4 col-form-label">{{ __('auth.user.regionrole')}}</label>
         <div class="col-sm-6">
             <div class="input-group mb-3">
-                <select class='js-role js-states form-control select2 @error('role') /> is-invalid @enderror' id='selRole' name="role">
-                @foreach ( Silber\Bouncer\Database\Role::whereNotIn('name',['superadmin', 'regionadmin','candidate'])->get() as $role )
+                <select class='js-role js-states form-control select2 @error('regionrole') /> is-invalid @enderror' id='selRegionRole' name="regionrole">
+                @foreach ( Silber\Bouncer\Database\Role::whereIn('name',['regionadmin', 'regionobserver'])->get() as $role )
                 <option value="{{$role->id}}">{{ __('auth.user.role.'.$role->name) }}</option>
                 @endforeach
                 </select>
-                @error('role')
+                @error('regionrole')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+        </div>
+    </div>
+    <div class="form-group row ">
+        <label for='selRegions' class="col-sm-4 col-form-label">{{ __('region.preferred')}}</label>
+        <div class="col-sm-6">
+            @empty($abilities->regions)
+            <div class="input-group mb-3">
+                <select class='js-regions-placeholder-single js-states form-control select2 @error('region_ids') /> is-invalid @enderror' id='selRegions' name="region_ids[]">
+                </select>
+                @error('region_ids')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+                </div>
+            @endempty
+            @isset($abilities->regions)
+                <input type="input" readonly class="form-control" id="clubs" value="{{ $abilities->regions  }}">
+            @endisset
+        </div>
+    </div>
+    <div class="form-group row ">
+        <label for='selClubRole' class="col-sm-4 col-form-label">{{ __('auth.user.clubrole')}}</label>
+        <div class="col-sm-6">
+            <div class="input-group mb-3">
+                <select class='js-role js-states form-control select2 @error('clubrole') /> is-invalid @enderror' id='selClubRole' name="clubrole">
+                @foreach ( Silber\Bouncer\Database\Role::whereIn('name',['clubadmin', 'clubobserver'])->get() as $role )
+                <option value="{{$role->id}}">{{ __('auth.user.role.'.$role->name) }}</option>
+                @endforeach
+                </select>
+                @error('clubrole')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
@@ -60,6 +92,21 @@
             @isset($abilities->clubs)
                 <input type="input" readonly class="form-control" id="clubs" value="{{ $abilities->clubs  }}">
             @endisset
+        </div>
+    </div>
+    <div class="form-group row ">
+        <label for='selLeagueRole' class="col-sm-4 col-form-label">{{ __('auth.user.leaguerole')}}</label>
+        <div class="col-sm-6">
+            <div class="input-group mb-3">
+                <select class='js-role js-states form-control select2 @error('leaguerole') /> is-invalid @enderror' id='selLeagueRole' name="leaguerole">
+                @foreach ( Silber\Bouncer\Database\Role::whereIn('name',['leagueadmin', 'leagueobserver'])->get() as $role )
+                <option value="{{$role->id}}">{{ __('auth.user.role.'.$role->name) }}</option>
+                @endforeach
+                </select>
+                @error('leaguerole')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
         </div>
     </div>
     <div class="form-group row ">
@@ -104,11 +151,11 @@
         $('#frmClose').click(function(e){
             history.back();
         });
-        $("#selRole").select2({
+        $(".js-role").select2({
             placeholder: "@lang('auth.user.role.action.select')...",
             theme: 'bootstrap4',
             multiple: false,
-            allowClear: false,
+            allowClear: true,
         });
         $("#selClubs").select2({
             placeholder: "@lang('club.action.select')...",
@@ -117,6 +164,23 @@
             allowClear: true,
             ajax: {
                     url: "{{ route('club.sb.region', ['region'=>$user->region->id] )}}",
+                    type: "get",
+                    delay: 250,
+                    processResults: function (response) {
+                      return {
+                        results: response
+                      };
+                    },
+                    cache: true
+                  }
+        });
+        $("#selRegions").select2({
+            placeholder: "@lang('region.action.select')...",
+            theme: 'bootstrap4',
+            multiple: true,
+            allowClear: true,
+            ajax: {
+                    url: "{{ route('region.admin.sb')}}",
                     type: "get",
                     delay: 250,
                     processResults: function (response) {

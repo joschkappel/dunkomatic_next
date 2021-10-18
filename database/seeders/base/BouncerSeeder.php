@@ -66,10 +66,12 @@ class BouncerSeeder extends Seeder
         $superadmin = Bouncer::role()->firstOrCreate(['name' => 'superadmin','title' => 'Application Administrator',]);
         Bouncer::allow($superadmin)->everything();
 
-        $regionadmin = Bouncer::role()->firstOrCreate(['name' => 'regionadmin','title' => 'Region Administrator',]);
+        $regionadmin = Bouncer::role()->firstOrCreate(['name' => 'regionadmin','title' => 'Manages Regions',]);
         Bouncer::allow($regionadmin)->to($create_clubs);
         Bouncer::allow($regionadmin)->to($update_clubs);
         Bouncer::allow($regionadmin)->to($view_clubs);
+        Bouncer::allow($regionadmin)->to($view_teams);
+        Bouncer::allow($regionadmin)->to($view_gyms);
 
         Bouncer::allow($regionadmin)->to($update_regions);
         Bouncer::allow($regionadmin)->to($view_regions);
@@ -93,18 +95,18 @@ class BouncerSeeder extends Seeder
         Bouncer::allow($regionadmin)->to($update_users);
         Bouncer::allow($regionadmin)->to($view_users);
 
-        $regionassist = Bouncer::role()->firstOrCreate(['name' => 'regionassist','title' => 'Region Admin Assistant',]);
-        Bouncer::allow($regionassist)->to($view_regions);
+        $regionobserver = Bouncer::role()->firstOrCreate(['name' => 'regionobserver','title' => 'Observes Regions',]);
+        Bouncer::allow($regionobserver)->to($view_regions);
+        Bouncer::allow($regionobserver)->to($view_clubs);
+        Bouncer::allow($regionobserver)->to($view_teams);
+        Bouncer::allow($regionobserver)->to($view_gyms);
+        Bouncer::allow($regionobserver)->to($view_leagues);
+        Bouncer::allow($regionobserver)->to($view_schedules);
+        Bouncer::allow($regionobserver)->to($view_games);
+        Bouncer::allow($regionobserver)->to($view_members);
 
-        Bouncer::allow($regionassist)->to($update_games);
-        Bouncer::allow($regionassist)->to($view_games);
 
-        Bouncer::allow($regionassist)->to($create_members);
-        Bouncer::allow($regionassist)->to($update_members);
-        Bouncer::allow($regionassist)->to($view_members);
-
-
-        $clubadmin = Bouncer::role()->firstOrCreate(['name' => 'clubadmin','title' => 'Club Administrator',]);
+        $clubadmin = Bouncer::role()->firstOrCreate(['name' => 'clubadmin','title' => 'Manages Clubs',]);
         Bouncer::allow($clubadmin)->to($update_clubs);
         Bouncer::allow($clubadmin)->to($view_clubs);
 
@@ -116,10 +118,8 @@ class BouncerSeeder extends Seeder
         Bouncer::allow($clubadmin)->to($update_gyms);
         Bouncer::allow($clubadmin)->to($view_gyms);
 
-        Bouncer::allow($clubadmin)->to($view_regions);
-
         Bouncer::allow($clubadmin)->to($view_leagues);
-        Bouncer::allow($clubadmin)->to($view_schedules);
+        Bouncer::allow($clubadmin)->to($update_leagues);
 
         Bouncer::allow($clubadmin)->to($update_games);
         Bouncer::allow($clubadmin)->to($view_games);
@@ -128,31 +128,16 @@ class BouncerSeeder extends Seeder
         Bouncer::allow($clubadmin)->to($update_members);
         Bouncer::allow($clubadmin)->to($view_members);
 
-        $clubassist = Bouncer::role()->firstOrCreate(['name' => 'clubassist','title' => 'Club Admin Assistant',]);
-        Bouncer::allow($clubassist)->to($view_clubs);
+        $clubobserver = Bouncer::role()->firstOrCreate(['name' => 'clubobserver','title' => 'Observes Clubs',]);
+        Bouncer::allow($clubobserver)->to($view_clubs);
+        Bouncer::allow($clubobserver)->to($view_teams);;
+        Bouncer::allow($clubobserver)->to($view_gyms);
+        Bouncer::allow($clubobserver)->to($view_leagues);
+        Bouncer::allow($clubobserver)->to($view_games);
+        Bouncer::allow($clubobserver)->to($view_members);
 
-        Bouncer::allow($clubassist)->to($update_teams);
-        Bouncer::allow($clubassist)->to($view_teams);
-
-        Bouncer::allow($clubassist)->to($update_gyms);
-        Bouncer::allow($clubassist)->to($view_gyms);
-
-        Bouncer::allow($clubassist)->to($view_regions);
-
-        Bouncer::allow($clubassist)->to($view_leagues);
-        Bouncer::allow($clubassist)->to($view_schedules);
-
-        Bouncer::allow($clubassist)->to($update_games);
-        Bouncer::allow($clubassist)->to($view_games);
-
-        Bouncer::allow($clubassist)->to($create_members);
-        Bouncer::allow($clubassist)->to($update_members);
-        Bouncer::allow($clubassist)->to($view_members);
-
-        $leagueadmin = Bouncer::role()->firstOrCreate(['name' => 'leagueadmin','title' => 'League Administrator',]);
-        Bouncer::allow($leagueadmin)->to($view_regions);
-
-        Bouncer::allow($leagueadmin)->to($view_clubs);
+        $leagueadmin = Bouncer::role()->firstOrCreate(['name' => 'leagueadmin','title' => 'Manages Leagues',]);
+        Bouncer::allow($leagueadmin)->to($update_leagues);
         Bouncer::allow($leagueadmin)->to($view_leagues);
 
         Bouncer::allow($leagueadmin)->to($view_schedules);
@@ -163,6 +148,13 @@ class BouncerSeeder extends Seeder
         Bouncer::allow($leagueadmin)->to($create_members);
         Bouncer::allow($leagueadmin)->to($update_members);
         Bouncer::allow($leagueadmin)->to($view_members);
+
+
+        $leagueobserver = Bouncer::role()->firstOrCreate(['name' => 'leagueobserver','title' => 'Observes Leagues',]);
+        Bouncer::allow($leagueobserver)->to($view_leagues);
+        Bouncer::allow($leagueobserver)->to($view_schedules);
+        Bouncer::allow($leagueobserver)->to($view_games);
+        Bouncer::allow($leagueobserver)->to($view_members);
 
         $guest = Bouncer::role()->firstOrCreate(['name' => 'guest','title' => 'Guest',]);
         Bouncer::forbid($guest)->everything();

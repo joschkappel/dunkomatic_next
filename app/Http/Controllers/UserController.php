@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Club;
 use App\Models\League;
+use App\Models\Region;
 
 use Bouncer;
 use Silber\Bouncer\Database\Role;
@@ -152,6 +153,9 @@ class UserController extends Controller
               $abilities['clubs'] = Club::whereIn('id',$c)->get()->unique()->implode('shortname',', ');
               $l = $user->getAbilities()->where('entity_type', League::class)->pluck('entity_id');
               $abilities['leagues'] = League::whereIn('id', $l)->get()->unique()->implode('shortname',', ');
+              $r = $user->getAbilities()->where('entity_type', Region::class)->pluck('entity_id');
+              $abilities['regions'] = Region::whereIn('id', $r)->get()->unique()->implode('name',', ');
+
 
             return view('auth/user_approve', ['user'=>$user, 'member'=>$member, 'abilities'=>$abilities] );
           } else {
@@ -159,6 +163,9 @@ class UserController extends Controller
                 $user['clubs'] = Club::whereIn('id', $c)->pluck('id','shortname');
                 $l = $user->getAbilities()->where('entity_type', League::class)->pluck('entity_id');
                 $user['leagues'] = League::whereIn('id', $l)->pluck('leagues.id','leagues.shortname');
+                $r = $user->getAbilities()->where('entity_type', Region::class)->pluck('entity_id');
+                $user['regions'] = Region::whereIn('id', $r)->pluck('regions.id','regions.name');
+
             return view('auth/user_edit', ['user'=>$user]);
           }
 
@@ -203,16 +210,27 @@ class UserController extends Controller
 
           $data = $request->validate( [
               'reason_reject' =>  'exclude_if:approved,"on"|required|string',
+              'region_ids' => 'sometimes|required|array',
+              'region_ids.*' => 'nullable|exists:regions,id',
               'club_ids' => 'sometimes|required|array',
               'club_ids.*' => 'nullable|exists:clubs,id',
               'league_ids' => 'sometimes|required|array',
               'league_ids.*' => 'nullable|exists:leagues,id',
               'member_id' => 'sometimes|required|exists:members,id',
-              'role' => 'required|exists:roles,id',
+              'regionrole' => 'sometimes|required|exists:roles,id',
+              'clubrole' => 'sometimes|required|exists:roles,id',
+              'leaguerole' => 'sometimes|required|exists:roles,id',
           ]);
 
           if ( $request->approved == 'on'){
             $user->update(['approved_at' => now()]);
+
+            // RBAC - enable region access
+            if ( isset($data['region_ids']) ){
+                foreach ($data['region_ids'] as $r) {
+                    Bouncer::allow($user)->to('manage', Region::find($r));
+                }
+                };
 
             // RBAC - enable club access
             if ( isset($data['club_ids']) ){
@@ -229,8 +247,20 @@ class UserController extends Controller
             };
 
             // RBAC set roles
-            Bouncer::retract('guest')->from($user);
-            Bouncer::assign( Role::find($data['role'])->name )->to($user);
+
+            if (isset($data['regionrole']) ) {
+                Bouncer::retract('guest')->from($user);
+                Bouncer::assign( Role::find($data['regionrole'])->name )->to($user);
+            }
+            if (isset($data['clubrole']) ) {
+                Bouncer::retract('guest')->from($user);
+                Bouncer::assign( Role::find($data['clubrole'])->name )->to($user);
+            }
+            if (isset($data['leaguerole']) ) {
+                Bouncer::retract('guest')->from($user);
+                Bouncer::assign( Role::find($data['leaguerole'])->name )->to($user);
+            }
+
 
             $user->notify(new ApproveUser(Auth::user(), $user));
           } else {
@@ -246,15 +276,24 @@ class UserController extends Controller
   {
     Log::debug(print_r($request->all(),true));
     $data = $request->validate( [
+        'region_ids' => 'sometimes|required|array',
+        'region_ids.*' => 'nullable|exists:regions,id',
         'club_ids' => 'sometimes|required|array',
         'club_ids.*' => 'nullable|exists:clubs,id',
         'league_ids' => 'sometimes|required|array',
         'league_ids.*' => 'nullable|exists:leagues,id',
-        'role' => 'required|exists:roles,id',
+        'regionrole' => 'sometimes|required|exists:roles,id',
+        'clubrole' => 'sometimes|required|exists:roles,id',
+        'leaguerole' => 'sometimes|required|exists:roles,id',
     ]);
 
     // RBAC need to add remove abilities
     $user->abilities()->detach();
+    if ( isset($data['region_ids']) ){
+        foreach ($data['region_ids'] as $r) {
+          Bouncer::allow($user)->to('manage', Region::find($r));
+        }
+      };
     if ( isset($data['club_ids']) ){
         foreach ($data['club_ids'] as $c) {
           Bouncer::allow($user)->to('manage', Club::find($c));
@@ -267,7 +306,18 @@ class UserController extends Controller
     };
     // RBAC set roles
     Bouncer::retract( $user->getRoles()  )->from($user);
-    Bouncer::assign( Role::find($data['role'])->name )->to($user);
+    if (isset($data['regionrole']) ) {
+        Bouncer::assign( Role::find($data['regionrole'])->name )->to($user);
+    }
+    if (isset($data['clubrole']) ) {
+        Bouncer::assign( Role::find($data['clubrole'])->name )->to($user);
+    }
+    if (isset($data['leaguerole']) ) {
+        Bouncer::assign( Role::find($data['leaguerole'])->name )->to($user);
+    }
+    if ( (! isset($data['regionrole'])) and (! isset($data['clubrole'])) and (! isset($data['leaguerole'])) ) {
+        Bouncer::assign( 'guest' )->to($user);
+    }
 
     return redirect()->route('admin.user.index', app()->getLocale());
   }
