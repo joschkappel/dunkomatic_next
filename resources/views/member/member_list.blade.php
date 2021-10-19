@@ -6,11 +6,12 @@
 <x-card-list cardTitle="{{ __('role.member.title.list', ['region'=>session('cur_region')->name ]) }}">
     <th>Id</th>
     <th>Name</th>
+    <th>{{__('role.email1')}}</th>
+    <th>{{__('role.phone')}}</th>
     <th>{{ trans_choice('club.club',2)}}</th>
     <th>{{ trans_choice('league.league',2)}}</th>
     <th>{{ __('auth.user.account') }}</th>
-    <th>{{__('Created at')}}</th>
-    <th>{{__('Updated at')}}</th>
+
 </x-card-list>
 @endsection
 
@@ -20,7 +21,7 @@
          $(function() {
               $('#goBack').click(function(e){
                   history.back();
-              });            
+              });
               $('#table').DataTable({
                  processing: true,
                  serverSide: true,
@@ -35,11 +36,11 @@
                  columns: [
                           { data: 'id', name: 'id', visible: false },
                           { data: 'name', name: 'name' },
+                          { data: 'email1', name: 'email1' },
+                          { data: 'phone', name: 'phone' },
                           { data: 'clubs', name: 'clubs' },
                           { data: 'leagues', name: 'leagues' },
                           { data: 'user_account', name: 'user_account' },
-                          { data: 'created_at', name: 'created_at'},
-                          { data: 'updated_at', name: 'updated_at'},
                        ]
               });
             });
