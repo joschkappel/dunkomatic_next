@@ -183,11 +183,11 @@ class LeagueStateControllerTest extends TestCase
        $this->assertDatabaseHas('leagues', ['id' => $league->id, 'state' => LeagueState::Scheduling()])
             ->assertDatabaseHas('games', ['league_id' => $league->id]);
 
-      $member = Club::first()->members()->wherePivot('role_id',Role::ClubLead)->first();
+/*       $member = Club::first()->members()->wherePivot('role_id',Role::ClubLead)->first();
         //  assert club members are notified
-      // Notification::assertSentTo(
-         //    [$member], LeagueGamesGenerated::class
-      );
+      Notification::assertSentTo(
+         [$member], LeagueGamesGenerated::class
+      ); */
 
     }
 
