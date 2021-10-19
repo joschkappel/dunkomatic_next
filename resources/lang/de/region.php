@@ -36,4 +36,5 @@ return [
   'gyms.count' => ':COUNT Speilhallen',
   'teams.count' => ':COUNT Mannschaften',
   'menu.manage' => 'Verwalten',
+  'menu.members' => 'Mitarbeiter',
 ];

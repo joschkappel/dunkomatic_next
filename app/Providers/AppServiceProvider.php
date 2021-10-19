@@ -174,8 +174,8 @@ class AppServiceProvider extends ServiceProvider
                         'shift' => 'ml-3'
                     ],
                     [
-                        'text'  => __('Manage Members'),
-                        'icon'  => 'fas fa-users',
+                        'text'  => __('region.menu.members'),
+                        'icon'  => 'fas fa-user-tie',
                         'url' => route('member.index', app()->getLocale()),
                         'can'  => 'view-members',
                         'icon_color' => 'danger',

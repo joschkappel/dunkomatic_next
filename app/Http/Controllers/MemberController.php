@@ -11,6 +11,8 @@ use BenSampo\Enum\Rules\EnumValue;
 use App\Enums\Role;
 
 use Datatables;
+use Bouncer;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Log;
@@ -38,7 +40,7 @@ class MemberController extends Controller
         $mlist = datatables()::of(Member::whereIn('id', $members)->get());
 
         return $mlist
-              ->rawColumns(['user_account'])
+              ->rawColumns(['user_account','email1','phone'])
               ->addColumn('name', function ($data) {
                       return $data->lastname.', '.$data->firstname;
                   })
@@ -49,10 +51,29 @@ class MemberController extends Controller
                       return $data->memberofleagues;
                   })
               ->addColumn('user_account', function ($data) {
-                      if ($data->isuser and !$data->user->isregionadmin){
-                        return '<a href="' . route('admin.user.edit', ['language'=>app()->getLocale(), 'user'=>$data->user->id]) .'"><i class="fas fa-user text-info"></i></a>';
+                      if ($data->isuser){
+                          if (Bouncer::can('update-users')){
+                              return '<a href="' . route('admin.user.edit', ['language'=>app()->getLocale(), 'user'=>$data->user->id]) .'"><i class="fas fa-user text-info"></i></a>';
+                          } else {
+                              return '<i class="fas fa-user text-info"></i>';
+                          }
                       };
                   })
+              ->editColumn('email1', function($m) {
+                  if (isset($m->email1)) {
+                    return '<a href="mailto:'.$m->email1.'" target="_blank">'.$m->email1.'</a>';
+                  } else {
+                      return "";
+                  }
+                })
+                ->editColumn('phone', function($m) {
+                    if ( (isset($m->mobile)) or (isset($m->phone)) ){
+                        $phone = isset($m->mobile) ? $m->mobile : $m->phone;
+                        return '<a href="tel:'.$phone.'" target="_blank">'.$phone.'</a>';
+                    } else {
+                        return "";
+                    }
+                    })
               ->make(True);
       }
 
