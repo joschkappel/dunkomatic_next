@@ -14,7 +14,7 @@ return [
   'title.edit' => 'Modify Details of member :member',
   'title.delete' => 'Delete a role from ',
   'member.title.select' => 'Select an existing Member ',
-  'member.title.list' => 'Member List',
+  'member.title.list' => 'Member List of :REGION',
   'confirm.delete' => 'Do you really want to delete this role ?',
   'firstname' => 'Firstname',
   'lastname' => 'Lastname',

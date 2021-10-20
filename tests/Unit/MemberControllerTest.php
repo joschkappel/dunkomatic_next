@@ -135,7 +135,7 @@ class MemberControllerTest extends TestCase
                           'street' => 'street',
                           'mobile' => 'mobileno',
                           'email1' => 'testmember2@gmail.com',
-                          'backto' => url(route('member.index', ['language'=>'de']))
+                          'backto' => url(route('member.index', ['language'=>'de','region'=>$this->region]))
                       ]);
       $response->assertStatus(302)
                ->assertSessionHasNoErrors();
@@ -228,6 +228,6 @@ class MemberControllerTest extends TestCase
       public function db_cleanup()
       {
         Club::where('name','testclub')->delete();
-        
-      }     
+
+      }
 }

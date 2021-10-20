@@ -21,6 +21,15 @@ use Illuminate\Support\Str;
 
 class ClubController extends Controller
 {
+    /**
+     * Display a listing of the all resources.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index($language, Region $region)
+    {
+        return view('club/club_list',['region'=>$region]);
+    }
 
     /**
      * Display a listing of the resource .
@@ -103,15 +112,7 @@ class ClubController extends Controller
         ->make(true);
 
     }
-    /**
-     * Display a listing of the all resources.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        return view('club/club_list');
-    }
+
     /**
      * Display a dashboard
      *
@@ -248,7 +249,7 @@ class ClubController extends Controller
         unset($data['region']);
 
         $check = Club::create($data);
-        return redirect()->route('club.index', ['language' => app()->getLocale()]);
+        return redirect()->route('club.index', ['language' => app()->getLocale(), $region=$data['region_id']]);
 
     }
 
@@ -307,7 +308,7 @@ class ClubController extends Controller
         $data['region_id'] = Region::where('code',$data['region'])->first()->id;
         unset($data['region']);
         if(!$club->id){
-           return redirect()->route('club.index', app()->getLocale() );
+           return redirect()->route('club.index', ['language'=> app()->getLocale(),'region'=> $data['region_id']] );
         }
 
         $check = Club::find($club->id)->update($data);
@@ -334,8 +335,9 @@ class ClubController extends Controller
           $ms->delete();
       }
 
+      $region = $club->region;
       $club->delete();
 
-      return redirect()->route('club.index', ['language'=> app()->getLocale()]);
+      return redirect()->route('club.index', ['language'=> app()->getLocale(), 'region'=>$region]);
     }
 }

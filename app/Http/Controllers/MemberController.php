@@ -25,9 +25,9 @@ use App\Notifications\InviteUser;
 class MemberController extends Controller
 {
 
-      public function index()
+      public function index($language, Region $region)
       {
-        return view('member/member_list');
+        return view('member/member_list', ['region'=>$region]);
       }
 
       public function datatable(Region $region )

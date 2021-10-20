@@ -80,7 +80,7 @@ class ClubControllerTest extends TestCase
       $response
           ->assertStatus(302)
           ->assertSessionHasNoErrors()
-          ->assertHeader('Location', route('club.index', ['language'=>'de']));
+          ->assertHeader('Location', route('club.index', ['language'=>'de', 'region'=>$this->region]));
 
       $this->assertDatabaseHas('clubs', ['name' => 'testclub']);
 
@@ -174,7 +174,7 @@ class ClubControllerTest extends TestCase
     {
 
       $response = $this->authenticated()
-                        ->get(route('club.index',['language'=>'de']));
+                        ->get(route('club.index',['language'=>'de', 'region'=>$this->region]));
 
       $response->assertStatus(200)
                ->assertViewIs('club.club_list');

@@ -46,6 +46,12 @@ class RegionController extends Controller
     {
           $data['region'] = Region::withCount('clubs','gyms','teams','leagues','childRegions')->find($region->id);
           $data['members'] = Member::whereIn('id', $region->members()->pluck('member_id'))->with('memberships')->get();
+          $data['member_count'] = $region->clubs()->with('members')->get()->pluck('members.*.id')->flatten()->concat(
+                                        $region->leagues()->with('members')->get()->pluck('members.*.id')->flatten()
+                                  )->concat(
+                                        $region->members->pluck('id')->flatten()
+                                  )->unique()->count();
+          $data['games_count'] = $region->leagues()->with('games')->get()->pluck('games.*.id')->flatten()->count();
 
           return view('admin/region_dashboard', $data);
 
@@ -103,7 +109,7 @@ class RegionController extends Controller
         ->addIndexColumn()
         ->rawColumns(['regionadmin','code'])
         ->editColumn('code', function ($data) {
-            if (Bouncer::canAny(['update-regions','create-regions'])){
+            if (  (Bouncer::can('manage', $data)) and (Bouncer::canAny(['create-regions', 'update-regions'])) ){
                 return '<a href="' . route('region.dashboard', ['language'=>Auth::user()->locale,'region'=>$data->id]) .'">'.$data->code.'</a>';
             } else {
                 return $data->code;

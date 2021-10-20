@@ -33,5 +33,6 @@ return [
   'import.success' => 'All data successfully imported',
   'import.failure' => 'The data contained errors. Please correct and retry the import',
   'menu.list' => 'List',
+  'title.list' => 'All Games for :REGION',
   'menu.referees' => 'Referee Assignment',
 ];

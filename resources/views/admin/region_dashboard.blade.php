@@ -1,159 +1,168 @@
 @extends('layouts.page')
 
 @push('css')
-<style>
-.chart-wrapper {
-  border: 2px solid black;
-  width: 75%;
-  border-radius: 25px;
-  background: whitesmoke;
-  padding: 20px;
-}
-</style>
+    <style>
+    .chart-wrapper {
+    border: 2px solid black;
+    width: 75%;
+    border-radius: 25px;
+    background: whitesmoke;
+    padding: 20px;
+    }
+    </style>
 @endpush
 
 @section('content_header')
-<div class="container-fluid">
-    <div class="row ">
-      <div class="col-sm">
-              <!-- small card REGION -->
-              <div class="small-box bg-primary">
-                  <div class="inner">
-                      <div class="row">
-                        <input type="hidden" id="entitytype" value="App\Models\Region">
-                          <div class="col-sm-6 pd-2">
-                              <h3>{{ $region->code }}</h3>
-                              <h5>{{ $region->name }}</h5>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="icon">
-                      <i class="fas fa-globe-europe"></i>
-                  </div>
-                  @can('update-regions')
-                  <a href="{{ route('region.edit',['language'=> app()->getLocale(),'region' => $region ]) }}" class="small-box-footer" dusk="btn-edit">
-                      @lang('region.action.edit') <i class="fas fa-arrow-circle-right"></i>
-                  </a>
-                  @endcan
-                  @can('create-regions')
-                  @if ( ($region->clubs_count==0) and ($region->child_regions_count == 0) and ($region->leagues_count==0) )
-                  <a id="deleteRegion" href="#" data-toggle="modal" data-target="#modalDeleteRegion" class="small-box-footer" dusk="btn-delete">
-                      @lang('region.action.delete') <i class="fa fa-trash"></i>
-                  </a>
-                  @endif
-                  @endcan
-              </div>
-            </div>
-            <div class="col-sm ">
-                <div class="info-box">
-                    <span class="info-box-icon bg-info"><i class="fas fa-basketball-ball"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text text-lg">{{ __('region.clubs.count',['count' => $region->clubs_count  ]) }}</span>
+    <div class="container-fluid">
+        <div class="row ">
+        <div class="col-sm">
+                <!-- small card REGION -->
+                <div class="small-box bg-primary">
+                    <div class="inner">
+                        <div class="row">
+                            <input type="hidden" id="entitytype" value="App\Models\Region">
+                            <div class="col-sm-6 pd-2">
+                                <h3>{{ $region->code }}</h3>
+                                <h5>{{ $region->name }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-globe-europe"></i>
+                    </div>
+                    @can('update-regions')
+                    <a href="{{ route('region.edit',['language'=> app()->getLocale(),'region' => $region ]) }}" class="small-box-footer" dusk="btn-edit">
+                        @lang('region.action.edit') <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                    @endcan
+                    @can('create-regions')
+                    @if ( ($region->clubs_count==0) and ($region->child_regions_count == 0) and ($region->leagues_count==0) )
+                    <a id="deleteRegion" href="#" data-toggle="modal" data-target="#modalDeleteRegion" class="small-box-footer" dusk="btn-delete">
+                        @lang('region.action.delete') <i class="fa fa-trash"></i>
+                    </a>
+                    @endif
+                    @endcan
+                </div>
+                </div>
+                <div class="col-sm ">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-info"><i class="fas fa-basketball-ball"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text text-lg">{{ trans_choice('club.club',$region->clubs_count) }}</span>
+                            <span class="info-box-number text-xl"><a href="{{ route('club.index', ['language' => app()->getLocale(),'region'=>$region]); }}">{{ $region->clubs_count }}</a></span>
+                        </div>
+                    </div>
+                    <div class="info-box">
+                        <span class="info-box-icon bg-info"><i class="fas fa-user-tie"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text text-lg">{{ __('role.member') }}</span>
+                            <span class="info-box-number text-xl"><a href="{{ route('member.index', ['language' => app()->getLocale(), 'region'=>$region]); }}">{{ $member_count }}</a></span>
+                        </div>
                     </div>
                 </div>
-                <div class="info-box">
-                    <span class="info-box-icon bg-info"><i class="fas fa-building"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text text-lg">{{ __('region.gyms.count',['count' => $region->gyms_count  ]) }}</span>
+                <div class="col-sm ">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-info"><i class="fas fa-trophy"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text text-lg">{{ trans_choice('league.league',$region->leagues_count) }}</span>
+                            <span class="info-box-number text-xl"><a href="{{ route('league.index', ['language' => app()->getLocale(), 'region'=>$region]); }}">{{ $region->leagues_count }}</a></span>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-sm ">
-                <div class="info-box">
-                    <span class="info-box-icon bg-info"><i class="fas fa-trophy"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text text-lg">{{ __('region.leagues.count',['count' => $region->leagues_count  ]) }}</span>
-                    </div>
-                </div>
-                <div class="info-box">
-                    <span class="info-box-icon bg-info"><i class="fas fa-users"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text text-lg">{{ __('region.teams.count',['count' => $region->teams_count  ]) }}</span>
-                    </div>
+                    <div class="info-box">
+                        <span class="info-box-icon bg-info"><i class="fas fa-running"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text text-lg">{{ trans_choice('game.game', $games_count) }}</span>
+                            <span class="info-box-number text-xl"><a href="{{ route('game.index', ['language' => app()->getLocale(),'region'=>$region]); }}">{{ $games_count }}</a></span>
+                        </div>
 
+                    </div>
                 </div>
-            </div>
-    </div>
-</div><!-- /.container-fluid -->
+        </div>
+    </div><!-- /.container-fluid -->
 @stop
 
 @section('content')
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-md-6 pd-2">
-        <!-- card MEMBERS -->
-        <x-member-card :members="$members" :entity="$region" entity-class="App\Models\Region" />
-        <!-- /.card -->
-    </div>
-    <div class="col-sm-6 pd-2">
-        <!-- card LEAGUE ANALYSIS -->
-        <div class="card card-outline card-info collapsed-card">
-          <div class="card-header">
-            <h4 class="card-title"><i class="fas fa-trophy"></i> @lang('league statistics') </h4>
-            <div class="card-tools">
-              <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
-              </button>
-            </div>
-            <!-- /.card-tools -->
-          </div>
-          <!-- /.card-header -->
-          <div class="card-body">
-            <div class="row m-5">
-              <div class="chart-wrapper">
-                <canvas id="leaguestatechart"></canvas>
-              </div>
-            </div>
-            <div class="row m-5">
-              <div class="chart-wrapper">
-                <canvas id="leaguesociochart"></canvas>
-              </div>
-            </div>
-          </div>
-          <!-- /.card-body -->
-          <!-- /.card-footer -->
+    <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6 pd-2">
+            <!-- card MEMBERS -->
+            <x-member-card :members="$members" :entity="$region" entity-class="App\Models\Region" />
+            <!-- /.card -->
         </div>
-        <!-- /.card -->
+        <div class="col-sm-6 pd-2">
+
+        </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-sm-12 pd-2">
-          <!-- card CLUB ANALYSIS -->
-          <div class="card card-outline card-info ">
-            <div class="card-header">
-              <h4 class="card-title"><i class="fas fa-basketball-ball"></i> @lang('club statistics')</h4>
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                </button>
-              </div>
-              <!-- /.card-tools -->
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-              <div class="row m-5">
-                <div class="chart-wrapper">
-                  <canvas id="clubteamchart"></canvas>
+    <div class="row">
+        <div class="col-sm-12 pd-2">
+            <!-- card CLUB ANALYSIS -->
+            <div class="card card-outline card-info ">
+                <div class="card-header">
+                <h4 class="card-title"><i class="fas fa-basketball-ball"></i> @lang('club statistics')</h4>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                    </button>
                 </div>
-              </div>
-              <div class="row m-5">
-                <div class="chart-wrapper">
-                  <canvas id="clubmemberchart"></canvas>
-              </div>
-              </div>
+                <!-- /.card-tools -->
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                <div class="row m-5">
+                    <div class="chart-wrapper">
+                    <canvas id="clubteamchart"></canvas>
+                    </div>
+                </div>
+                <div class="row m-5">
+                    <div class="chart-wrapper">
+                    <canvas id="clubmemberchart"></canvas>
+                </div>
+                </div>
+                </div>
+                <!-- /.card-body -->
+                <!-- /.card-footer -->
             </div>
-            <!-- /.card-body -->
-            <!-- /.card-footer -->
-          </div>
-          <!-- /.card -->
-      </div>
+            <!-- /.card -->
+        </div>
+        </div>
     </div>
-  </div>
-  <!-- all modals here -->
-  <x-confirm-deletion modalId="modalDeleteRegion" modalTitle="{{ __('region.title.delete')}}" modalConfirm="{{ __('region.confirm.delete') }}" deleteType="{{ trans_choice('region.region',1) }}" />
-  @include('member/includes/membership_add')
-  @include('member/includes/membership_modify')
-  <x-confirm-deletion modalId="modalDeleteMember" modalTitle="{{ __('role.title.delete')}}" modalConfirm="{{ __('role.confirm.delete') }}" deleteType="{{ __('role.member') }}" />
-  <!-- all modals above -->
-</div>
+    <div class="row">
+        <div class="col-sm-12 pd-2">
+            <!-- card LEAGUE ANALYSIS -->
+            <div class="card card-outline card-info collapsed-card">
+                <div class="card-header">
+                    <h4 class="card-title"><i class="fas fa-trophy"></i> @lang('league statistics') </h4>
+                    <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
+                    </button>
+                    </div>
+                    <!-- /.card-tools -->
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="row m-5">
+                    <div class="chart-wrapper">
+                        <canvas id="leaguestatechart"></canvas>
+                    </div>
+                    </div>
+                    <div class="row m-5">
+                    <div class="chart-wrapper">
+                        <canvas id="leaguesociochart"></canvas>
+                    </div>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+                <!-- /.card-footer -->
+                </div>
+                <!-- /.card -->
+        </div>
+    </div>
+    <!-- all modals here -->
+    <x-confirm-deletion modalId="modalDeleteRegion" modalTitle="{{ __('region.title.delete')}}" modalConfirm="{{ __('region.confirm.delete') }}" deleteType="{{ trans_choice('region.region',1) }}" />
+    @include('member/includes/membership_add')
+    @include('member/includes/membership_modify')
+    <x-confirm-deletion modalId="modalDeleteMember" modalTitle="{{ __('role.title.delete')}}" modalConfirm="{{ __('role.confirm.delete') }}" deleteType="{{ __('role.member') }}" />
+    <!-- all modals above -->
+    </div>
 @endsection
 
 @section('js')

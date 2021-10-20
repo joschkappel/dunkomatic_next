@@ -37,4 +37,5 @@ return [
   'teams.count' => ':COUNT Mannschaften',
   'menu.manage' => 'Verwalten',
   'menu.members' => 'Mitarbeiter',
+  'menu.list' => 'Übersicht',
 ];

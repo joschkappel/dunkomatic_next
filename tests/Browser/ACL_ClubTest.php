@@ -25,6 +25,7 @@ class ACL_ClubTest extends DuskTestCase
     protected static $team;
     protected static $member;
     protected static $user;
+    protected static $region;
 
     public function setUp(): void
     {
@@ -35,9 +36,9 @@ class ACL_ClubTest extends DuskTestCase
         static::$gym = static::$club->gyms->first();
         static::$member = static::$club->members->first();
 
-        $region = Region::where('code','HBVDA')->first();
+        static::$region = Region::where('code','HBVDA')->first();
         $member = Member::factory()->create();
-        static::$user = User::factory()->approved()->for($region)->for($member)->create();
+        static::$user = User::factory()->approved()->for(static::$region)->for($member)->create();
 
     }
 
@@ -230,12 +231,13 @@ class ACL_ClubTest extends DuskTestCase
     private function access_clublist( $user )
     {
         $club = static::$club;
+        $region = static::$region;
 
-        $this->browse(function ($browser) use ($user, $club) {
-            $browser->loginAs($user)->visitRoute('club.index',['language'=>'de']);
+        $this->browse(function ($browser) use ($user, $club, $region) {
+            $browser->loginAs($user)->visitRoute('club.index',['language'=>'de', 'region'=>$region]);
 
             if ( $user->can('view-clubs') ) {
-                $browser->assertRouteIs('club.index',['language'=>'de']);
+                $browser->assertRouteIs('club.index',['language'=>'de','region'=>$region]);
                 ($user->can('create-clubs')) ? $browser->assertSee(__('club.action.create',$locale=['de'])) : $browser->assertDontSee(__('club.action.create',$locale=['de']));
                 $browser->waitFor('.table')->assertSeeLink($club->shortname)->clickLink($club->shortname);
                 (  ($user->can('manage', $club)) or  ($user->canAny(['create-clubs', 'update-clubs'])) ) ? $browser->assertRouteIs('club.dashboard', ['language'=>'de','club'=>$club->id]) :  $browser->assertRouteIs('club.briefing', ['language'=>'de','club'=>$club->id]);

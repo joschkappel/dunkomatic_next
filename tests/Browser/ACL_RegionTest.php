@@ -205,7 +205,7 @@ class ACL_RegionTest extends DuskTestCase
                 ($user->can('create-regions')) ? $browser->assertSee(__('region.action.create',$locale=['de'])) : $browser->assertDontSee(__('region.action.create',$locale=['de']));
                 $browser->waitFor('.table');
 
-                if ($user->canAny(['create-regions', 'update-regions'])) {
+                if (  ($user->can('manage', $region)) and ($user->canAny(['create-regions', 'update-regions'])) ) {
                     $browser->assertSeeLink($region->code);
                     $browser->clickLink($region->code)
                             ->assertRouteIs('region.dashboard', ['language'=>'de','region'=>$region->id]);

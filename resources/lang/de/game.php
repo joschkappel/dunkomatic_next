@@ -34,4 +34,5 @@ return [
   'import.failure' => 'Folgende Fehler wurden festgestellt. Bitte korrigiere diese und starte den Import nochmal',
   'menu.list' => 'Liste',
   'menu.referees' => 'Schiri Ansetzuugen',
+  'title.list' => 'Gesamtspielplan für :REGION',
 ];

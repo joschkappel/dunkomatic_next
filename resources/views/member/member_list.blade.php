@@ -3,7 +3,7 @@
 @section('plugins.Datatables', true)
 
 @section('content')
-<x-card-list cardTitle="{{ __('role.member.title.list', ['region'=>session('cur_region')->name ]) }}">
+<x-card-list cardTitle="{{ __('role.member.title.list', ['region'=>$region->name ]) }}">
     <th>Id</th>
     <th>Name</th>
     <th>{{__('role.email1')}}</th>
@@ -32,7 +32,7 @@
                  language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/English.json')}}" },
                  @endif
                  order: [[1,'asc']],
-                 ajax: '{{ route('member.datatable', ['region' => session('cur_region')->id]) }}',
+                 ajax: '{{ route('member.datatable', ['region' => $region]) }}',
                  columns: [
                           { data: 'id', name: 'id', visible: false },
                           { data: 'name', name: 'name' },
