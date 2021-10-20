@@ -73,7 +73,7 @@ class AppServiceProvider extends ServiceProvider
             $clubmenu['icon'] = 'fas fa-basketball-ball';
 
             $smenu['text'] = __('club.menu.list');
-            $smenu['url']  = route('club.index', ['language' => app()->getLocale()]);
+            $smenu['url']  = route('club.index', ['language' => app()->getLocale(), 'region'=> session('cur_region')]);
             $smenu['icon_color'] = 'orange';
             $smenu['icon'] =  'fas fa-list';
             $smenu['can'] = 'view-clubs';
@@ -100,7 +100,7 @@ class AppServiceProvider extends ServiceProvider
             $leaguemenu['icon'] = 'fas fa-trophy';
 
             $smenu['text'] = __('league.menu.list');
-            $smenu['url']  = route('league.index', app()->getLocale());
+            $smenu['url']  = route('league.index',  ['language' => app()->getLocale(), 'region'=> session('cur_region')]);
             $smenu['icon_color'] = 'yellow';
             $smenu['icon'] =  'fas fa-list';
             $smenu['can'] = 'view-leagues';
@@ -159,59 +159,45 @@ class AppServiceProvider extends ServiceProvider
 
             $event->menu->add($leaguemenu);
 
+            $smenu = [
+                'text'  => __('region.menu.list'),
+                'icon'  => 'fas fa-list',
+                'icon_color' => 'danger',
+                'url' => route('region.index', ['language' => app()->getLocale()]),
+                'can' => 'view-regions',
+                'shift' => 'ml-3'
+            ];
+            $regionmenu[] = $smenu;
+
+            $allowed_regions = Region::whereIn('id', Auth::user()->getAbilities()->where('entity_type', Region::class)->pluck('entity_id'))->get();
+            $allowed_region[] = Auth::user()->region->id;
+
+            foreach ($allowed_regions as $r) {
+                $smenu['text'] = $r->code;
+                $smenu['url']  = route('region.dashboard', ['language' => app()->getLocale(), 'region' => $r]);
+                $smenu['icon_color'] = 'danger';
+                $smenu['icon'] =  'fas fa-list';
+                $smenu['shift'] = 'ml-3';
+                unset($smenu['can']);
+                $regionmenu[] = $smenu;
+            };
+
+            $smenu = [
+                'text' => trans_choice('schedule.scheme', 2),
+                'url'  => route('scheme.index', app()->getLocale()),
+                'icon' => 'fas fa-people-arrows',
+                'icon_color' => 'danger',
+                'shift' => 'ml-3'
+            ];
+            $regionmenu[] = $smenu;
+
+
             // MENU - REGION
             $event->menu->add([
-                'text' => trans_choice('region.region', 1),
+                'text' => trans_choice('region.region', 2),
                 'icon' => 'fas fa-globe-europe',
                 'icon_color' => 'danger',
-                'submenu' => [
-                    [
-                        'text' => __('region.menu.manage'),
-                        'url'  => route('region.dashboard', ['language'=>app()->getLocale(), 'region'=> session('cur_region', Auth::user()->region)->id ]),
-                        'can' => ['update-regions', 'view-regions'],
-                        'icon' => 'fas fa-list',
-                        'icon_color' => 'danger',
-                        'shift' => 'ml-3'
-                    ],
-                    [
-                        'text'  => __('region.menu.members'),
-                        'icon'  => 'fas fa-user-tie',
-                        'url' => route('member.index', app()->getLocale()),
-                        'can'  => 'view-members',
-                        'icon_color' => 'danger',
-                        'shift' => 'ml-3'
-                    ],
-                    [
-                        'text' => trans_choice('schedule.scheme', 2),
-                        'url'  => route('scheme.index', app()->getLocale()),
-                        'icon' => 'fas fa-people-arrows',
-                        'icon_color' => 'danger',
-                        'shift' => 'ml-3'
-                    ],
-                    [
-                        'text' => trans_choice('game.game', 2),
-                        'icon' => 'fas fa-running',
-                        'icon_color' => 'blue',
-                        'shift' => 'ml-3',
-                        'submenu' => [
-                            [
-                                'text' => __('game.menu.referees'),
-                                // 'url'  => route('schedule.index', app()->getLocale()),
-                                'icon' => 'fas fa-running',
-                                'icon_color' => 'blue',
-                                'can' => 'update-games',
-                                'shift' => 'ml-5'
-                            ], [
-                                'text' => __('game.menu.list'),
-                                // 'url'  => route('schedule_event.cal', app()->getLocale()),
-                                'icon' => 'fas fa-list',
-                                'icon_color' => 'blue',
-                                'can'  => 'view-games',
-                                'shift' => 'ml-5'
-                            ]
-                        ]
-                    ]
-                ]
+                'submenu' => $regionmenu,
             ]);
 
             // MENU - ADMIN
@@ -247,13 +233,7 @@ class AppServiceProvider extends ServiceProvider
                         'url' => route('message.index', app()->getLocale()),
                         'shift' => 'ml-3'
                     ],
-                    [
-                        'text'  => __('Regions'),
-                        'icon'  => 'fas fa-list',
-                        'url' => route('region.index', ['language' => app()->getLocale()]),
-                        'can' => 'view-regions',
-                        'shift' => 'ml-3'
-                    ],
+
                 ]
             ]);
 
@@ -287,7 +267,7 @@ class AppServiceProvider extends ServiceProvider
             $regions = Region::all();
 
             foreach ($regions as $r) {
-                if ((Auth::user()->isA('regionadmin', 'superadmin')) or (Auth::user()->region->name == $r->name)) {
+                if ((Auth::user()->can('manage', $r)) or (Auth::user()->region->name == $r->name)) {
                     $rs['text'] = $r->name;
                     $rs['url'] = route('region.set', ['region' => $r->id]);
                     $regionmenu['submenu'][] = $rs;

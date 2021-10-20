@@ -3,7 +3,7 @@
 @section('plugins.Datatables', true)
 
 @section('content')
-<x-card-list cardTitle="{{ __('league.title.list', ['region' => session('cur_region')->name ]) }}">
+<x-card-list cardTitle="{{ __('league.title.list', ['region' => $region->name ]) }}">
                   <th>Id</th>
                   @if (session('cur_region')->is_base_level)
                     <th>{{ trans_choice('region.region',1) }}</th>
@@ -37,10 +37,10 @@
          language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/English.json')}}" },
          @endif
          order: [[1,'asc']],
-         ajax: '{{ route('league.list', ['language'=>app()->getLocale(),'region'=>session('cur_region')->id]) }}',
+         ajax: '{{ route('league.list', ['language'=>app()->getLocale(),'region'=>$region]) }}',
          columns: [
                   { data: 'id', name: 'id', visible: false },
-                  @if (session('cur_region')->is_base_level)
+                  @if ($region->is_base_level)
                     { data: 'alien_region', name: 'alien_region'},
                   @endif
                   { data:  {

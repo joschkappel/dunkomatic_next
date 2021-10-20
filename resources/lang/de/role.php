@@ -10,7 +10,7 @@ return [
   'action.select' => 'Wähle eine Funktion aus',
   'member.action.select' => 'Wähle einen Mitarbeiter aus',
   'member.action.create' => 'Lege den Mitarbeiter für diese Funktion fest',
-  'member.title.list' => 'Mitarbeiter Liste',
+  'member.title.list' => 'Mitarbeiter Liste für :REGION',
   'title.new' => 'Lege einen neuen Mitarbeiter für :unittype :unitname an',
   'title.delete' => 'Einen Mitarbeiter löschen',
   'title.edit' => 'Ändere die Daten des Mitarbeiters :member',

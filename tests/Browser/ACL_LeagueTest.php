@@ -29,6 +29,7 @@ class ACL_LeagueTest extends DuskTestCase
     protected static $team;
     protected static $member;
     protected static $user;
+    protected static $region;
 
     use LeagueFSM;
 
@@ -57,9 +58,9 @@ class ACL_LeagueTest extends DuskTestCase
         $this->open_assignment(static::$league);
         $this->close_assignment(static::$league);
 
-        $region = Region::where('code','HBVDA')->first();
+        static::$region = Region::where('code','HBVDA')->first();
         $member = Member::factory()->create();
-        static::$user = User::factory()->approved()->for($region)->for($member)->create();
+        static::$user = User::factory()->approved()->for(static::$region)->for($member)->create();
 /*         Bouncer::allow(static::$user)->to('manage', static::$league );
         Bouncer::refreshFor(static::$user); */
 
@@ -250,7 +251,7 @@ class ACL_LeagueTest extends DuskTestCase
     }
    /**
      * @test
-     * @group club
+     * @group league
      * @group acl
      * @group candidate
      */
@@ -287,12 +288,13 @@ class ACL_LeagueTest extends DuskTestCase
     private function access_leaguelist( $user )
     {
         $league = static::$league;
+        $region = static::$region;
 
-        $this->browse(function ($browser) use ($user, $league) {
-            $browser->loginAs($user)->visitRoute('league.index',['language'=>'de']);
+        $this->browse(function ($browser) use ($user, $league, $region) {
+            $browser->loginAs($user)->visitRoute('league.index',['language'=>'de', 'region'=>$region]);
 
             if ( $user->can('view-leagues') ) {
-                $browser->assertRouteIs('league.index',['language'=>'de']);
+                $browser->assertRouteIs('league.index',['language'=>'de','region'=>$region]);
                 $browser->waitFor('.table')->assertSeeLink($league->shortname)->clickLink($league->shortname);
                 (  ($user->can('manage', $league)) or  ($user->canAny(['create-leagues', 'update-leagues'])) ) ? $browser->assertRouteIs('league.dashboard', ['language'=>'de','league'=>$league->id]) :  $browser->assertRouteIs('league.briefing', ['language'=>'de','league'=>$league->id]);
             } else {

@@ -39,9 +39,9 @@ class LeagueController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index()
+  public function index($language, Region $region)
   {
-    return view('league/league_list');
+    return view('league/league_list',['region'=>$region]);
   }
 
   /**
@@ -344,9 +344,10 @@ class LeagueController extends Controller
       $data['above_region'] = False;
     }
     Log::debug(print_r($data, true));
+    $region = Region::find($data['region_id']);
 
     $check = League::create($data);
-    return redirect()->route('league.index', app()->getLocale());
+    return redirect()->route('league.index', ['language'=>app()->getLocale(),'region'=>$region]);
   }
 
   /**
@@ -449,9 +450,10 @@ class LeagueController extends Controller
       $ms->delete();
     }
 
+    $region = $league->region;
     $league->delete();
 
-    return redirect()->route('league.index', ['language' => app()->getLocale()]);
+    return redirect()->route('league.index', ['language' => app()->getLocale(), 'region'=>$region]);
   }
 
   /**

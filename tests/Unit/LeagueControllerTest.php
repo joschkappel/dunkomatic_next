@@ -91,7 +91,7 @@ class LeagueControllerTest extends TestCase
                           'gender_type' => LeagueGenderType::getRandomValue(),
                           'above_region' => False
                       ]);
-      $response->assertRedirect(route('league.index', ['language'=>'de']))
+      $response->assertRedirect(route('league.index', ['language'=>'de', 'region'=>$this->region]))
                ->assertSessionHasNoErrors();
 
       $this->assertDatabaseHas('leagues', ['name' => 'testleague']);
@@ -196,7 +196,7 @@ class LeagueControllerTest extends TestCase
     public function index()
     {
       $response = $this->authenticated( )
-                        ->get(route('league.index',['language'=>'de']));
+                        ->get(route('league.index',['language'=>'de', 'region'=>$this->region]));
 
       $response->assertStatus(200)
                ->assertViewIs('league.league_list');

@@ -37,4 +37,5 @@ return [
   'teams.count' => 'Total of :COUNT teams',
   'menu.manage' => 'Manage',
   'menu.members' => 'Members',
+  'menu.list' => 'Overview',
 ];

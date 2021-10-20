@@ -61,7 +61,6 @@ Route::group([
     Route::get('club/{club}/dashboard', 'ClubController@dashboard')->name('club.dashboard');
     Route::get('club/{club}/briefing', 'ClubController@briefing')->name('club.briefing')->middleware('can:view-clubs');
     Route::get('club/{club}/game/home','ClubController@list_homegame')->name('club.list.homegame')->middleware('can:view-games');
-    Route::get('club', 'ClubController@index')->name('club.index')->middleware('can:view-clubs');
     Route::get('club/create', 'ClubController@create')->name('club.create')->middleware('can:create-clubs');
     Route::get('club/{club}', 'ClubController@show')->name('club.show')->middleware('can:view-clubs');
     Route::get('club/{club}/edit', 'ClubController@edit')->name('club.edit')->middleware('can:update-clubs');
@@ -75,6 +74,10 @@ Route::group([
     Route::group(['prefix' => '{region}'], function () {
       Route::get('league/list_mgmt', 'LeagueController@list_mgmt')->name('league.list_mgmt');
       Route::get('league/list', 'LeagueController@list')->name('league.list')->middleware('can:view-leagues');
+      Route::get('club', 'ClubController@index')->name('club.index')->middleware('can:view-clubs');
+      Route::get('league', 'LeagueController@index')->name('league.index')->middleware('can:view-leagues');
+      Route::get('member', 'MemberController@index')->name('member.index')->middleware('can:view-members');
+      Route::get('game', 'GameController@index')->name('game.index')->middleware('can:view-games');
     });
 
     Route::resource('club.gym', 'ClubGymController')->shallow()->except('store','update','destroy','show');
@@ -82,7 +85,6 @@ Route::group([
     Route::get('league/manage', 'LeagueController@index_mgmt')->name('league.index_mgmt');
     Route::get('league/{league}/dashboard', 'LeagueController@dashboard')->name('league.dashboard');
     Route::get('league/{league}/briefing', 'LeagueController@briefing')->name('league.briefing')->middleware('can:view-leagues');
-    Route::get('league', 'LeagueController@index')->name('league.index')->middleware('can:view-leagues');
     Route::get('league/create', 'LeagueController@create')->name('league.create')->middleware('can:create-leagues');
     Route::get('league/{league}', 'LeagueController@show')->name('league.show')->middleware('can:view-leagues');
     Route::get('league/{league}/edit', 'LeagueController@edit')->name('league.edit')->middleware('can:update-leagues');
@@ -92,7 +94,6 @@ Route::group([
 
     Route::get('member/{member}/show', 'MemberController@show')->name('member.show')->middleware('can:view-members');
     Route::get('member/{member}', 'MemberController@edit')->name('member.edit')->middleware('can:update-members');
-    Route::get('member', 'MemberController@index')->name('member.index')->middleware('can:view-members');
 
     Route::get('membership/club/{club}/member', 'ClubMembershipController@create')->name('membership.club.create');
     Route::get('membership/league/{league}/member', 'LeagueMembershipController@create')->name('membership.league.create');
@@ -173,6 +174,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('message', 'MessageController@store')->name('message.store');
     Route::put('message/{message}', 'MessageController@update')->name('message.update');
     Route::get('member/datatable', 'MemberController@datatable')->name('member.datatable')->middleware('can:view-members');
+    Route::get('game/datatable', 'GameController@datatable')->name('game.datatable')->middleware('can:view-games');
   });
 
   Route::get('league/{league}/freechar/sb', 'LeagueController@sb_freechars')->name('league.sb_freechar');
