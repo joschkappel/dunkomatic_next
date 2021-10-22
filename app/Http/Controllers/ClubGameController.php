@@ -131,7 +131,11 @@ class ClubGameController extends Controller
      */
     public function upload($language, Club $club)
     {
-        return view('club/club_homegame_upload', ['club' => $club]);
+
+        $cardtitle =  __('club.title.gamehome.import', ['club'=>$club->shortname]);
+        $uploadroute = route('club.import.homegame',['language'=> app()->getLocale(),'club' => $club]);
+
+        return view('game.game_file_upload', ['cardTitle' => $cardtitle, 'uploadRoute'=>$uploadroute]);
     }
 
     /**

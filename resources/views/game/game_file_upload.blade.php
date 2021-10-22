@@ -3,7 +3,7 @@
 @section('plugins.FileUpload', true)
 
 @section('content')
-<x-card-form cardTitle="{{ __('club.title.gamehome.import', ['club'=>$club->shortname]) }}" formAction="{{ route('club.import.homegame',['language'=> app()->getLocale(),'club' => $club]) }}" :isMultipart="true">
+<x-card-form cardTitle="{{ $cardTitle }}" formAction="{{ $uploadRoute }}" :isMultipart="true">
     @if ( Session::has('status') )
         <div class="alert alert-success" role="alert">
             @lang('game.import.success')
@@ -51,7 +51,7 @@
             showPreview: false,
             showUpload: false,
         });
-    
+
         $(document).ready(function(){
 
 

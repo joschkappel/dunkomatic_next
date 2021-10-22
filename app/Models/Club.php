@@ -83,7 +83,7 @@ class Club extends Model implements Auditable
     public function selected_teams()
     {
         return $this->hasMany(Team::class)->whereNotNull('league_no');
-    }    
+    }
     public function games_home()
     {
         return $this->hasMany(Game::class, 'club_id_home', 'id');
@@ -96,7 +96,16 @@ class Club extends Model implements Auditable
     {
         return $this->hasMany(Game::class, 'club_id_home', 'id')->whereNull('team_id_guest');
     }
+    public function games_noreferee()
+    {
+        return $this->hasMany(Game::class, 'club_id_home', 'id')->whereNull('referee_1');
 
+    }
+    public function games_withreferee()
+    {
+        return $this->hasMany(Game::class, 'club_id_home', 'id')->whereNotNull('referee_1');
+
+    }
     public function games_guest()
     {
         return $this->hasMany(Game::class, 'club_id_guest', 'id');
