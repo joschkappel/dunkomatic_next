@@ -11,6 +11,7 @@ return [
   'action.team.withdraw' => 'Mannschaft zurückziehen',
   'action.team.add' => 'Mannschaft aufnehmen',
   'action.game_no' => 'Wähle eine Spielnummer aus',
+  'action.assign-referees' => 'Schiedsrichter zuordnen',
   'created.no' => 'Keine Spiele erzeugt',
   'created.some' => ':total Spiele erzeugt',
   'notstarted' => 'Spielrunde nocht nicht begonnen',
@@ -25,6 +26,7 @@ return [
   'weekend' => 'Gesamtes Wochenende',
   'overlap' => 'Überschneidung',
   'homegame' => 'Heimspiel|Heimspiele',
+  'allregion' => 'Bezirksspielplan',
   'excel.export' => 'Excel Export',
   'excel.import' => 'Import Exceldatei',
   'gametime_format' => 'H:i',
@@ -33,6 +35,6 @@ return [
   'import.success' => 'Alle Daten wurden erfolgreich importiert',
   'import.failure' => 'Folgende Fehler wurden festgestellt. Bitte korrigiere diese und starte den Import nochmal',
   'menu.list' => 'Liste',
-  'menu.referees' => 'Schiri Ansetzuugen',
+  'menu.referees' => 'Schiedsrichter Ansetzungen',
   'title.list' => 'Gesamtspielplan für :REGION',
 ];

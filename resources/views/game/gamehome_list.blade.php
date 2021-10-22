@@ -66,12 +66,6 @@ $(function() {
           'import'
         ],
         order: [[ 2,'asc'],[ 3,'asc'], [ 4,'asc']],
-        @if (app()->getLocale() == 'de')
-        language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/German.json')}}" },
-        @endif
-        @if (app()->getLocale() == 'en')
-        language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/English.json')}}" },
-        @endif
         ajax: '{{ route('club.game.list_home',['language' => app()->getLocale(), 'club'=>$club]) }}',
         columns: [
                  { data: 'id', name: 'id', visible: false },

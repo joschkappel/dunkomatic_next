@@ -16,7 +16,7 @@ class HomeGamesImport implements ToCollection, WithStartRow, WithValidation
     use Importable;
 
     /**
-    * @param array $row
+    * @param array $rows
     *
     * @return \Illuminate\Database\Eloquent\Model|null
     */
@@ -32,10 +32,12 @@ class HomeGamesImport implements ToCollection, WithStartRow, WithValidation
           // 'game_time' => $row[4],
       }
     }
+
     public function startRow(): int
     {
         return 3;
     }
+
     public function rules(): array
     {
         return [

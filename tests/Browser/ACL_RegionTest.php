@@ -28,8 +28,12 @@ class ACL_RegionTest extends DuskTestCase
         $this->artisan('db:seed', ['--class' => 'TestDatabaseSeeder']);
 
         static::$region = Region::where('code','HBVDA')->first();
+
         static::$member = Member::factory()->create();
-        static::$user = User::factory()->approved()->for(static::$region)->for(static::$member)->create();
+        static::$region->memberships()->create(['role_id' => 4, 'member_id' => static::$member->id]);
+
+        $member = Member::factory()->create();
+        static::$user = User::factory()->approved()->for(static::$region)->for($member)->create();
 
     }
 
@@ -232,6 +236,19 @@ class ACL_RegionTest extends DuskTestCase
                 ($user->can('create-regions')) ? $browser->assertSee(__('region.action.delete',$locale=['de'])) : $browser->assertDontSee(__('region.action.delete',$locale=['de']));
                 ($user->can('create-members')) ? $browser->assertSee(__('region.member.action.create',$locale=['de'])) : $browser->assertDontSee(__('region.member.action.create',$locale=['de']));
             }
+
+            $browser->with('#membersCard', function ($memberCard) use ($user, $member) {
+                $memberCard->click('.btn-tool')->waitFor('.btn-tool');
+                ($user->can('create-members')) ? $memberCard->assertButtonEnabled('#deleteMember') :  $memberCard->assertButtonDisabled('#deleteMember');
+                ($user->can('update-members')) ? $memberCard->assertSeeLink($member->name) : $memberCard->assertDontSeeLink($member->name);
+                ($user->can('update-members')) ? $memberCard->assertSeeLink(__('role.send.invite')) : $memberCard->assertDontSeeLink(__('role.send.invite'));
+                ($user->can('update-members')) ? $memberCard->assertButtonEnabled('#addMembership') : $memberCard->assertButtonDisabled('#addMembership');
+                ($user->can('update-members')) ? $memberCard->assertButtonEnabled('#modMembership') : $memberCard->assertButtonDisabled('#modMembership');
+            });
+            $browser->with('#refereeCard', function ($gameCard) use ($user) {
+                $gameCard->click('.btn-tool')->waitFor('.btn-tool');
+                ($user->can('update-games')) ? $gameCard->assertSeeLink(__('game.action.assign-referees')) : $gameCard->assertDontSeeLink(__('game.action.assign-referees')) ;
+            });
 
         });
 

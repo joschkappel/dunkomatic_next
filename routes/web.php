@@ -57,6 +57,8 @@ Route::group([
     Route::get('region/{region}/edit', 'RegionController@edit')->name('region.edit')->middleware('can:update-regions');
     Route::get('regions/dt', 'RegionController@datatable')->name('region.list.dt')->middleware('can:view-regions');
     Route::get('region/{region}/dashboard', 'RegionController@dashboard')->name('region.dashboard');
+    Route::get('region/{region}/game/upload','RegionGameController@upload')->name('region.upload.game');
+    Route::post('region/{region}/game/ref/import','RegionGameController@import_referees')->name('region.import.refgame');
 
     Route::get('club/{club}/dashboard', 'ClubController@dashboard')->name('club.dashboard');
     Route::get('club/{club}/briefing', 'ClubController@briefing')->name('club.briefing')->middleware('can:view-clubs');
@@ -78,6 +80,7 @@ Route::group([
       Route::get('league', 'LeagueController@index')->name('league.index')->middleware('can:view-leagues');
       Route::get('member', 'MemberController@index')->name('member.index')->middleware('can:view-members');
       Route::get('game', 'GameController@index')->name('game.index')->middleware('can:view-games');
+      Route::get('game/datatable', 'GameController@datatable')->name('game.datatable')->middleware('can:view-games');
     });
 
     Route::resource('club.gym', 'ClubGymController')->shallow()->except('store','update','destroy','show');
@@ -174,7 +177,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('message', 'MessageController@store')->name('message.store');
     Route::put('message/{message}', 'MessageController@update')->name('message.update');
     Route::get('member/datatable', 'MemberController@datatable')->name('member.datatable')->middleware('can:view-members');
-    Route::get('game/datatable', 'GameController@datatable')->name('game.datatable')->middleware('can:view-games');
   });
 
   Route::get('league/{league}/freechar/sb', 'LeagueController@sb_freechars')->name('league.sb_freechar');
@@ -246,4 +248,5 @@ Route::middleware(['auth'])->group(function () {
   Route::get('region/{region}/league/socio', 'RegionController@league_socio_chart')->name('region.league.socio.chart')->middleware('can:view-leagues');
   Route::get('region/{region}/club/team', 'RegionController@club_team_chart')->name('region.club.team.chart')->middleware('can:view-clubs');
   Route::get('region/{region}/club/member', 'RegionController@club_member_chart')->name('region.club.member.chart')->middleware('can:view-clubs');
+  Route::get('region/{region}/game/noreferee', 'RegionController@game_noreferee_chart')->name('region.game.noreferee.chart')->middleware('can:view-games');
 });

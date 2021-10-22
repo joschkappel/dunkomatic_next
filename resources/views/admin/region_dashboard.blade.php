@@ -4,10 +4,10 @@
     <style>
     .chart-wrapper {
     border: 2px solid black;
-    width: 75%;
-    border-radius: 25px;
+    width: 100%;
+    border-radius: 10px;
     background: whitesmoke;
-    padding: 20px;
+    padding: 10px;
     }
     </style>
 @endpush
@@ -72,7 +72,7 @@
                         <span class="info-box-icon bg-info"><i class="fas fa-running"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text text-lg">{{ trans_choice('game.game', $games_count) }}</span>
-                            <span class="info-box-number text-xl"><a href="{{ route('game.index', ['language' => app()->getLocale(),'region'=>$region]); }}">{{ $games_count }}</a></span>
+                            <span class="info-box-number text-xl"><a href="{{ route('game.index', ['language' => app()->getLocale(),'region'=>$region]) }}">{{ $games_count }}</a></span>
                         </div>
 
                     </div>
@@ -90,7 +90,38 @@
             <!-- /.card -->
         </div>
         <div class="col-sm-6 pd-2">
+                <!-- card REFEREES -->
+                <div class="card card-outline card-dark collapsed-card" id="refereeCard">
+                    <div class="card-header">
+                        <h4 class="card-title mt-2"><i class="fas fa-hand-paper fa-lg"></i> {{ __('game.menu.referees') }} <span
+                                class="badge badge-pill badge-info">{{ $games_noref_count }}</span></h4>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                    class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <!-- /.card-tools -->
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
 
+                        <div class="row m-1">
+                            <div class="chart-wrapper">
+                                <canvas id="missingrefereeschart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer">
+                        @can('update-games')
+                        <a href="{{ route('game.index', ['language' => app()->getLocale(),'region'=>$region]) }}"
+                            class="btn btn-primary float-right mr-2">
+                            <i class="far fa-edit"></i> @lang('game.action.assign-referees')</a>
+                        @endcan
+                    </div>
+                    <!-- /.card-footer -->
+                </div>
+                <!-- /.card -->
         </div>
     </div>
     <div class="row">
@@ -201,6 +232,21 @@
        $('#modalDeleteMember').modal('show');
     });
 
+       var mrc = document.getElementById('missingrefereeschart').getContext('2d');
+       var missingrefereeschart = new Chart(mrc, {
+            type: 'bar',
+            data: { },
+            options: {
+              plugins: { colorschemes: { scheme: 'brewer.SetOne3' }, },
+              responsive: true,
+
+              title: {
+                display: true,
+                text: 'Referees by Game Date'
+              },
+            }
+        });
+
        var lsc = document.getElementById('leaguestatechart').getContext('2d');
        var leaguestatechart = new Chart(lsc, {
             type: 'pie',
@@ -304,8 +350,7 @@
                 text: 'Clubs by members'
               },
               scales: {
-                y: { beginAtZero: true, stacked: true },
-                x: { stacked: true }
+                y: { beginAtZero: true },
               },
             }
         });
@@ -327,6 +372,7 @@
       load_chart( leaguesociochart, '{{ route('region.league.socio.chart', ['region' => $region->id]) }}' );
       load_chart( clubteamchart, '{{ route('region.club.team.chart', ['region' => $region->id]) }}' );
       load_chart( clubmemberchart, '{{ route('region.club.member.chart', ['region' => $region->id]) }}' );
+      load_chart( missingrefereeschart, '{{ route('region.game.noreferee.chart', ['region' => $region->id]) }}' );
 
       cmc_canvas.onclick = function(e) {
         var slice = clubmemberchart.getElementAtEvent(e);
