@@ -38,4 +38,14 @@ return [
   'menu.manage' => 'Verwalten',
   'menu.members' => 'Mitarbeiter',
   'menu.list' => 'Übersicht',
+  'chart.title.referees' => 'Schiedsrichteransetzugen',
+  'chart.label.referees.missing' => 'Anz. fehlender Schiris',
+  'chart.label.referees.assigned' => 'Anz. angesetzter Schiris',
+  'chart.title.leaguestate' => 'Status der Spielrunden',
+  'chart.title.leaguesocio' => 'Altersklassen der Spielrunden',
+  'chart.title.clubteams' => 'Vereinsmannschaften nach Altersklassen',
+  'chart.title.clubmembers' => 'Funktionen per Verein',
+  'chart.clubstats' => 'Vereinsanalysen',
+  'chart.leaguestats' => 'Spielrundenanalysen',
+
 ];

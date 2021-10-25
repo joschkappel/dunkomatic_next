@@ -37,7 +37,7 @@ class RegionController extends Controller
     public function index()
     {
         Log::info('listing regions');
-        return view('admin.region_list');
+        return view('region.region_list');
     }
 
     /**
@@ -58,14 +58,14 @@ class RegionController extends Controller
         $data['games_count'] = $region->clubs()->with('games_home')->get()->pluck('games_home.*.id')->flatten()->count();
         $data['games_noref_count'] = $region->clubs()->with('games_noreferee')->get()->pluck('games_noreferee.*.id')->flatten()->count();
 
-        return view('admin/region_dashboard', $data);
+        return view('region.region_dashboard', $data);
     }
 
 
     public function create()
     {
         Log::info('new region');
-        return view('admin.region_new');
+        return view('region.region_new');
     }
 
     /**
@@ -378,7 +378,8 @@ class RegionController extends Controller
         $data['labels'] = [];
         $datasets = array();
         // initialize datasets
-        foreach (Role::getValues() as $r) {
+        $roleList = Role::getValues();
+        foreach ($roleList as $r) {
             $datasets[$r]['stack'] = 'Stack 1';
             $datasets[$r]['label'] = Role::getDescription(Role::coerce($r));
             $datasets[$r]['data'] = [];
@@ -398,7 +399,7 @@ class RegionController extends Controller
                 ->get()
                 ->countBy('role_id');
 
-            foreach (Role::getValues() as $r) {
+            foreach ( $roleList as $r) {
                 $datasets[$r]['data'][] = $mships[$r] ?? 0;
             }
         }
@@ -423,10 +424,10 @@ class RegionController extends Controller
         $data['labels'] = [];
         $datasets = array();
         $datasets[0]['stack'] = 'Stack 1';
-        $datasets[0]['label'] = '#of missing referees';
+        $datasets[0]['label'] = __('region.chart.label.referees.assigned');
         $datasets[0]['data'] = [];
         $datasets[1]['stack'] = 'Stack 1';
-        $datasets[1]['label'] = '#of set referees';
+        $datasets[1]['label'] = __('region.chart.label.referees.missing');
         $datasets[1]['data'] = [];
 
         $clubs = $region->clubs()->pluck('id');
