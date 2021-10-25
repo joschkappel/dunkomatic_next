@@ -102,7 +102,6 @@ class RegionController extends Controller
 
     public function datatable($language)
     {
-        Log::info('at least i ma here');
         $regions = Region::with('regionadmin')->withCount('clubs', 'leagues', 'teams', 'gyms')->get();
         Log::info('regions found:' . $regions->count());
 
@@ -145,7 +144,7 @@ class RegionController extends Controller
                 );
             }
         }
-        Log::debug(print_r($response, true));
+
 
         return Response::json($response);
     }
