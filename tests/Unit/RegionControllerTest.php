@@ -158,7 +158,7 @@ class RegionControllerTest extends TestCase
                         ->get(route('region.index',['language'=>'de']));
 
       $response->assertStatus(200)
-               ->assertViewIs('admin.region_list');
+               ->assertViewIs('region.region_list');
 
     }
 

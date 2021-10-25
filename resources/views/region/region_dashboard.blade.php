@@ -129,7 +129,7 @@
             <!-- card CLUB ANALYSIS -->
             <div class="card card-outline card-info ">
                 <div class="card-header">
-                <h4 class="card-title"><i class="fas fa-basketball-ball"></i> @lang('club statistics')</h4>
+                <h4 class="card-title"><i class="fas fa-basketball-ball"></i> @lang('region.chart.clubstats')</h4>
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
                     </button>
@@ -161,7 +161,7 @@
             <!-- card LEAGUE ANALYSIS -->
             <div class="card card-outline card-info collapsed-card">
                 <div class="card-header">
-                    <h4 class="card-title"><i class="fas fa-trophy"></i> @lang('league statistics') </h4>
+                    <h4 class="card-title"><i class="fas fa-trophy"></i> @lang('region.chart.leaguestats') </h4>
                     <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
                     </button>
@@ -242,20 +242,20 @@
 
               title: {
                 display: true,
-                text: 'Referees by Game Date'
+                text: '{{ __('region.chart.title.referees') }}'
               },
             }
         });
 
        var lsc = document.getElementById('leaguestatechart').getContext('2d');
        var leaguestatechart = new Chart(lsc, {
-            type: 'pie',
+            type: 'bar',
             data: { datasets: [{ data: [], }] },
             options: {
               plugins: { colorschemes: { scheme: 'brewer.SetOne4' }, },
               title: {
                 display: true,
-                text: 'Leagues by Status'
+                text: '{{ __('region.chart.title.leaguestate') }}'
               },
             }
         });
@@ -311,7 +311,7 @@
             },
             title: {
               display: true,
-              text: 'Leagues by Age and Gender'
+              text: '{{ __('region.chart.title.leaguesocio') }}'
             },
           }
         });
@@ -327,7 +327,7 @@
 
               title: {
                 display: true,
-                text: 'Clubs by team'
+                text: '{{ __('region.chart.title.clubteams') }}'
               },
               scales: {
                 y: { beginAtZero: true, stacked: true },
@@ -347,7 +347,7 @@
 
               title: {
                 display: true,
-                text: 'Clubs by members'
+                text: '{{ __('region.chart.title.clubmembers') }}'
               },
               scales: {
                 y: { beginAtZero: true },

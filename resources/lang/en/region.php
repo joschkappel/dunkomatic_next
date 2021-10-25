@@ -38,4 +38,14 @@ return [
   'menu.manage' => 'Manage',
   'menu.members' => 'Members',
   'menu.list' => 'Overview',
+  'chart.title.referees' => 'Referee Assignments',
+  'chart.label.referees.missing' => '# missing Referees',
+  'chart.label.referees.assigned' => '# assigned Referees',
+  'chart.title.leaguestate' => 'League States',
+  'chart.title.leaguesocio' => 'Leagues Age Classes',
+  'chart.title.clubteams' => 'Teams by Club and',
+  'chart.title.clubmembers' => 'Functions ny Club',
+  'chart.clubstats' => 'Club Analysis',
+  'chart.leaguestats' => 'Leagues Analysis',
+
 ];
