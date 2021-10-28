@@ -1,9 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Moment', true)
-@section('plugins.TempusDominus', true)
-@section('plugins.Select2', true)
-
 @section('content')
 <x-card-form cardTitle="{{ __('team.title.new', ['club' => $club->shortname])  }}" formAction="{{ route('club.team.store',['club' => $club]) }}" formMethod="POST">
     <input type="hidden" name="_method" value="POST">
@@ -65,7 +61,7 @@
             </div>
             @error('training_time')
             <div class="invalid-feedback">{{ $message }}</div>
-            @enderror            
+            @enderror
             </div>
         </div>
     </div>
@@ -146,7 +142,7 @@
         $('#frmClose').click(function(e){
             history.back();
         });
-        
+
         $('#ttime').datetimepicker({
             format: 'HH:mm',
             stepping: 15,

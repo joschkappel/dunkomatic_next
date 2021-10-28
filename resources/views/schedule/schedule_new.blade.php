@@ -1,6 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Select2', true)
 @section('plugins.ICheck', true)
 @section('plugins.Colorpicker', true)
 @section('plugins.RangeSlider',true)
@@ -66,7 +65,7 @@
         <div class="col-sm-6">
             <input id="iterationRange" type="text" name="iterations" value="">
         </div>
-    </div>                            
+    </div>
 </x-card-form>
 @endsection
 
@@ -84,7 +83,7 @@
             var custom_values_2 = [1];
             var values_p = ["{{ __('schedule.single') }}", "{{__('schedule.double')}}", "{{__('schedule.triple')}}"];
 
-            var values = custom_values_1; 
+            var values = custom_values_1;
 
             $('#iterationRange').ionRangeSlider({
                 skin: "big",
@@ -95,7 +94,7 @@
                 prettify: function (n) {
                     var ind = custom_values_1.indexOf(n);
                     return values_p[ind];
-                },                
+                },
             });
 
 
@@ -145,7 +144,7 @@
 
             @if (old('iterations') != '')
                 $("#iterationRange").data("ionRangeSlider").update({ from: values.indexOf( {{old('iterations') }}) });
-            @endif            
+            @endif
 
         });
     </script>

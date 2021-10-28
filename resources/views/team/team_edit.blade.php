@@ -1,9 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Moment', true)
-@section('plugins.TempusDominus', true)
-@section('plugins.Select2', true)
-
 @section('content')
 <x-card-form cardTitle="{{ __('team.title.modify', ['team'=> $team->club['shortname'].' '.$team->team_no ]) }}" formAction="{{ route('team.update',['team' => $team]) }}" formMethod="PUT" >
     <div class="form-group row ">

@@ -1,7 +1,5 @@
 @extends('layouts.master')
 
-@section('plugins.Select2', true)
-
 @section('app_css')
     @stack('css')
     @yield('css')

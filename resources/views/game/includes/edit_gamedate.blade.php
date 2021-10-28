@@ -1,6 +1,4 @@
-@section('plugins.Moment', true)
-@section('plugins.TempusDominus', true)
-@section('plugins.Select2', true)
+
 @extends('layouts.modal', ['modalId' => 'modalEditGamedate', 'modalFormId' => 'formGamedate', 'modalFormMethod' => 'PUT', 'stayOnSuccess' => false  ])
 
 @section('modal_content')

@@ -2,9 +2,6 @@
 
 @section('plugins.Datatables', true)
 @section('plugins.DatatableButtons', true)
-@section('plugins.Moment', true)
-@section('plugins.TempusDominus', true)
-@section('plugins.Select2', true)
 
 @section('content')
 <x-card-list cardTitle="{{ __('club.title.gamehome.edit', ['club'=>$club->shortname]) }}">

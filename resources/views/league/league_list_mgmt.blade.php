@@ -1,6 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Select2', true)
 @section('plugins.Datatables', true)
 @section('plugins.Toastr', true)
 @section('plugins.Duallistbox', true)

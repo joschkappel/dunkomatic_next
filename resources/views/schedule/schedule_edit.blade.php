@@ -1,6 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Select2', true)
 @section('plugins.ICheck', true)
 @section('plugins.Colorpicker', true)
 @section('plugins.RangeSlider',true)
@@ -94,10 +93,10 @@
             var custom_values_2 = [1];
             var values_p = ["{{ __('schedule.single') }}", "{{__('schedule.double')}}", "{{__('schedule.triple')}}"];
 
-            @if ($schedule->custom_events) 
-            var values = custom_values_2; 
-            @else 
-            var values = custom_values_1; 
+            @if ($schedule->custom_events)
+            var values = custom_values_2;
+            @else
+            var values = custom_values_1;
             @endif
 
             $('#iterationRange').ionRangeSlider({
@@ -109,7 +108,7 @@
                 prettify: function (n) {
                     var ind = custom_values_1.indexOf(n);
                     return values_p[ind];
-                },                
+                },
             });
 
             $('#cp2').colorpicker();
@@ -152,7 +151,7 @@
                 }
             });
 
-            
+
             @if (old('iterations') != '')
                 $("#iterationRange").data("ionRangeSlider").update({ from: values.indexOf( {{old('iterations') }}) });
             @else

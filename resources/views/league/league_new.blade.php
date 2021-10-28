@@ -1,7 +1,6 @@
 @extends('layouts.page')
 
 @section('plugins.ICheck', true)
-@section('plugins.Select2', true)
 
 @section('content')
 <x-card-form cardTitle="{{ __('league.title.new', ['region'=>session('cur_region')->code ]) }}" formAction="{{ route('league.store', app()->getLocale()) }}">

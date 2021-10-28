@@ -1,8 +1,6 @@
 @extends('layouts.page')
 
 @section('plugins.Summernote', true)
-@section('plugins.Moment', true)
-@section('plugins.TempusDominus', true)
 
 @section('content')
 <x-card-form cardTitle="{{ __('message.title.edit', ['region' => session('cur_region')->name ]) }}" formAction="{{ route('message.update',['message'=>$message['message'],'region'=>session('cur_region')->id]) }}" formMethod="PUT">
@@ -97,7 +95,7 @@
       $(function() {
         $('#frmClose').click(function(e){
             history.back();
-        });          
+        });
         $('#summernote').summernote({
           lang: @if (app()->getLocale() == 'de') 'de-DE' @else 'en-US'  @endif,
           placeholder: 'Edit your message...',

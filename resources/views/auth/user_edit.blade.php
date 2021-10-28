@@ -1,8 +1,6 @@
 @extends('layouts.page')
 
-@section('plugins.Select2', true)
 @section('plugins.ICheck', true)
-
 
 @section('content')
 <x-card-form cardTitle="{{ __('auth.title.edit') }}" formAction="{{ route('admin.user.allowance', ['language'=>app()->getLocale(), 'user'=>$user]) }}" formMethod="PUT">
