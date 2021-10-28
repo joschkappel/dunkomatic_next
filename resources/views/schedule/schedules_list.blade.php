@@ -5,7 +5,7 @@
  --}}
 @section('content')
 <x-card-list cardTitle="{{ __('schedule.title.list', ['region'=>$region->name ]) }}">
-            <th>@lang('year')</th>
+            <th>{{ trans_choice('schedule.event.unit.year', 1) }}</th>
             <th>@lang('game.game_date')</th>
             <th></th>
             @foreach ($schedules as $s )
