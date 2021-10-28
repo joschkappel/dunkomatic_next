@@ -1,7 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Select2', true)
-
 @section('content')
 <x-card-form cardTitle="{{ __('gym.title.new', ['club' =>  $club->shortname]) }}" formAction="{{ route('club.gym.store', ['club' => $club ]) }}" >
     <input type="hidden" name="club_id" value="{{ $club->id}}">

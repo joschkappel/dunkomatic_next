@@ -1,8 +1,6 @@
 @extends('layouts.page')
 
-@section('plugins.Select2', true)
 @section('plugins.ICheck', true)
-
 
 @section('content')
 <x-card-form cardTitle="{{ __('auth.title.approve') }}" formAction="{{ route('admin.user.approve', ['language'=>app()->getLocale(), 'user_id'=>$user->id]) }}">

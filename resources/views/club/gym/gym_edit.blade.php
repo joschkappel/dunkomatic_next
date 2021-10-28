@@ -1,7 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Select2', true)
-
 @section('content')
 <x-card-form cardTitle="{{ __('gym.title.edit', ['gymno' => $gym->gym_no, 'club'=> $gym->club['shortname']]) }}" formAction="{{ route('gym.update',['gym' => $gym]) }}" formMethod="PUT" >
     <div class="form-group row">

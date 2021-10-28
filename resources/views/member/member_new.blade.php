@@ -1,16 +1,14 @@
 @extends('layouts.page')
 
-@section('plugins.Select2', true)
-
 @section('content')
-@php 
-  if ($entity_type == 'App\Models\Club'){ 
+@php
+  if ($entity_type == 'App\Models\Club'){
     $title = __('role.title.new', ['unittype'=> trans_choice('club.club',1), 'unitname' => $entity->shortname ]);
   } elseif ($entity_type == 'App\Models\League'){
     $title = __('role.title.new', ['unittype'=> trans_choice('league.league',1), 'unitname' => $entity->shortname ]);
   } elseif ($entity_type == 'App\Models\Region'){
     $title = __('role.title.new', ['unittype'=> trans_choice('region.region',1), 'unitname' => $entity->code ]);
-  } 
+  }
 @endphp
 
 <x-card-form :cardTitle="$title" formAction="{{ route('member.store') }}">
@@ -248,7 +246,7 @@
                   url: url,
                   success: function (data) {
                     show_member(data.id,
-                                data.firstname, 
+                                data.firstname,
                                 data.lastname,
                                 data.street,
                                 data.zipcode,

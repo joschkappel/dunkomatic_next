@@ -1,8 +1,6 @@
 @extends('layouts.page')
 
 @section('plugins.Pace', true)
-
-@section('plugins.Select2', true)
 @section('plugins.Chartjs', true)
 @section('plugins.RangeSlider',true)
 

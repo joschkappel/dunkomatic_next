@@ -1,7 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Select2', true)
-
 @section('content')
 <x-card-form cardTitle="{{ __('auth.title.edit') }}" formAction="{{ route('admin.user.update', ['user' => Auth::user()]) }}" formMethod="PUT" >
                         <div class="form-group row">

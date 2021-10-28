@@ -1,8 +1,8 @@
 @extends('layouts.page')
 
-{{-- @section('plugins.Datatables', true)
+@section('plugins.Datatables', true)
 @section('plugins.DatatableButtons', true)
- --}}
+
 @section('content')
 <x-card-list cardTitle="{{ __('schedule.title.list', ['region'=>$region->name ]) }}">
             <th>{{ trans_choice('schedule.event.unit.year', 1) }}</th>

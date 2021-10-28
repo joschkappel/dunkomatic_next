@@ -1,11 +1,7 @@
 @extends('layouts.page')
 
 @section('plugins.Datatables',true)
-@section('plugins.Moment',true)
-@section('plugins.TempusDominus',true)
 @section('plugins.RangeSlider',true)
-{{-- @section('plugins.DateRangePicker',false) --}}
-
 
 @section('content')
 <div class="container-fluid">

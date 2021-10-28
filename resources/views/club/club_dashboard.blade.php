@@ -1,7 +1,6 @@
 @extends('layouts.page')
 
 @section('plugins.Pace', true)
-@section('plugins.Select2', true)
 
 @section('content_header')
     <div class="container-fluid">

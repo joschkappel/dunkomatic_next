@@ -1,7 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Select2', true)
-
 @section('content')
 <div class="container-fluid">
     <div class="row">

@@ -1,6 +1,4 @@
-@section('plugins.Moment', true)
-@section('plugins.TempusDominus', true)
-@section('plugins.Select2', true)
+
 @section('plugins.RangeSlider', true)
 
 @extends('layouts.modal', ['modalId' => 'modalEditGame', 'modalFormId' => 'formGame', 'modalFormMethod' => 'PUT', 'stayOnSuccess' => true ])
@@ -14,7 +12,7 @@
                             <input type="hidden" name="team_guest" id="team_guest" />
                             <input type="hidden" name="gym_no" id="gym_no" />
                             <input type="hidden" name="game_id" id="game_id" />
-                            <input type="hidden" name="game_no_old" id="game_no_old" />                           
+                            <input type="hidden" name="game_no_old" id="game_no_old" />
                             <input type="hidden" name="league" id="league" />
                             <input type="hidden" name="league_id" id="league_id" />
                             <div class="form-group row justify-content-between">
@@ -24,7 +22,7 @@
                                     <div class="col-8">
                                         <label for="game_no" class="col-form-label">@lang('game.action.game_no')</label>
                                     </div>
-                                    <div class="col-2">                                        
+                                    <div class="col-2">
                                         <button type="button" class="btn btn-secondary" id="btnNext"><i class="far fa-arrow-alt-circle-right"></i></button>
                                     </div>
                             </div>
@@ -32,7 +30,7 @@
                                 <div class="col-sm-12">
                                     <input class="form-control " id="game_no" name="game_no" type="text" value=""></input>
                                 </div>
-                            </div>                                                            
+                            </div>
                             <div class="form-group row ">
                                 <label for='game_date_grp' class="col-sm-4 col-form-label">@lang('game.game_date')</label>
                                 <div class="col-sm-8">
@@ -77,7 +75,7 @@
                                     </div>
                                 @endif
                                 </div>
-                            </div>                            
+                            </div>
                             <div class="form-group row ">
                                 <label for='selGym'
                                     class="col-sm-4 col-form-label">{{ trans_choice('gym.gym', 1) }}</label>
@@ -106,7 +104,7 @@
                                         </input>
                                     </div>
                                 @endif
-                            </div>                                
+                            </div>
 @endsection
 
 @section('modal_js_data')
@@ -150,7 +148,7 @@
                     var url = "{{ route('gym.sb.team', ['team' => ':teamid:']) }}";
                     var selTeam = $('#team_id_home').find(':selected');
                     url = url.replace(':teamid:', selTeam.val() );
-                    
+
                     $("#selGym").select2({
                         placeholder: "{{ __('gym.action.select') }}...",
                         theme: 'bootstrap4',
@@ -184,7 +182,7 @@
                         var option = new Option(data[0].text, data[0].id, true, true);
                         gymSelect.append(option).trigger('change');
 
-                    });                    
+                    });
                 }
 
                 function getGameData(data){
@@ -230,7 +228,7 @@
                                 teamhomeSelect.val(null).trigger('change');
                                 $("#club_id_home").val(null);
                                 gymSelect.val(null).trigger('change');
-                           }                           
+                           }
 
                         });
 
@@ -361,7 +359,7 @@
                         $('#btnPrev').removeClass('disabled');
                     }
 
-                });                
+                });
 
             });
 

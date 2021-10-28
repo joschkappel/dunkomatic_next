@@ -1,7 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Select2', true)
-
 @section('content')
 <x-card-form cardTitle="{{ __('region.title.create') }}" formAction="{{ route('region.store') }}">
     <div class="form-group row">
