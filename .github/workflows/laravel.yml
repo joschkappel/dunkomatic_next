@@ -56,11 +56,17 @@ jobs:
     - name: Test dusk server access
       run: |
         curl http://127.0.0.1:8000/de/login
-    - name: Run Dusk Tests    
+    - name: Run Dusk Tests
       run: php artisan dusk --env=dusk.git
-    - name: Archive code coverage results
+    - name: Archive dusk screenshots
       if: ${{ failure() }}
       uses: actions/upload-artifact@v2
       with:
         name: screenshots
         path: tests/Browser/screenshots/
+    - name: Archive dusk console output
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: dusk_console
+        path: tests/Browser/console/
