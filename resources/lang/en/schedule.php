@@ -49,5 +49,6 @@ return [
   'iterations' => 'Iterations',
   'single' => 'Single',
   'double' => 'Double',
-  'triple' => 'Triple',
+  'triple' => 'Triple',#
+  'allregion' => 'Game Schedule Templates',
 ];

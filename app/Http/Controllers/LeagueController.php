@@ -561,7 +561,7 @@ class LeagueController extends Controller
    * display management dashboard
    *
    */
-  public function index_mgmt()
+  public function index_mgmt($language, Region $region)
   {
     if ( ! Bouncer::canAny(['create-leagues', 'update-leagues']) ) {
         abort(403);

@@ -16,6 +16,7 @@
     <div class="card-body">
         <table width="100%" class="table table-hover table-bordered table-sm" id="table">
             <thead class="thead-light">
+                {{ $extraHeaderSlot ?? ""}}
                 <tr>
                     {{ $slot }}
                 </tr>

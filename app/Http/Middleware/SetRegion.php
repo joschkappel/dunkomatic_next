@@ -17,8 +17,8 @@ class SetRegion
     public function handle(Request $request, Closure $next)
     {
 
-        if (($request->region) === null) {
-            return redirect()->route('home', app()->getLocale() )->withErrors(['error' => __('Please select a customer/tenant before making this request.')]);
+        if (($request->region) !== null) {
+            $request->session()->put('cur_region', $request->region );
         }
 
         return $next($request);

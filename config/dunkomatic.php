@@ -121,7 +121,7 @@ return [
             'location' => 'vendor/bootstrap4-duallistbox/bootstrap-duallistbox.min.css'
           ],
         ]
-      ],      
+      ],
       'Moment' => [
          'name' => 'Moment',
          'active' => true,
@@ -235,32 +235,32 @@ return [
               [
                   'type' => 'js',
                   'asset' => true,
-                  'location' => 'vendor/datatables/js/jquery.dataTables.js'
+                  'location' => 'vendor/datatables.net/datatables.net/js/jquery.dataTables.min.js'
               ],
               [
                   'type' => 'js',
                   'asset' => true,
-                  'location' => 'vendor/datatables/js/dataTables.bootstrap4.min.js'
+                  'location' => 'vendor/datatables.net/datatables.net-bs4/js/dataTables.bootstrap4.min.js'
               ],
               [
                   'type' => 'js',
                   'asset' => true,
-                  'location' => 'vendor/datatables-plugins/responsive/js/dataTables.responsive.min.js'
+                  'location' => 'vendor/datatables.net/datatables.net-responsive/js/dataTables.responsive.min.js'
               ],
               [
                   'type' => 'js',
                   'asset' => true,
-                  'location' => 'vendor/datatables-plugins/responsive/js/responsive.bootstrap4.min.js'
+                  'location' => 'vendor/datatables.net/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js'
               ],
               [
                   'type' => 'css',
                   'asset' => true,
-                  'location' => 'vendor/datatables/css/dataTables.bootstrap4.css'
+                  'location' => 'vendor/datatables.net/datatables.net-bs4/css/dataTables.bootstrap4.min.css'
               ],
               [
                   'type' => 'css',
                   'asset' => true,
-                  'location' => 'vendor/datatables-plugins/responsive/css/responsive.bootstrap4.css'
+                  'location' => 'vendor/datatables.net/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css'
               ],
           ],
       ],
@@ -271,38 +271,58 @@ return [
               [
                   'type' => 'css',
                   'asset' => true,
-                  'location' => 'vendor/datatables-plugins/buttons/css/buttons.bootstrap4.min.css',
+                  'location' => 'vendor/datatables.net/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css',
               ],
               [
                   'type' => 'js',
                   'asset' => true,
-                  'location' => 'vendor/datatables-plugins/buttons/js/dataTables.buttons.min.js',
+                  'location' => 'vendor/datatables.net/datatables.net-buttons/js/dataTables.buttons.min.js',
               ],
               [
                   'type' => 'js',
                   'asset' => true,
-                  'location' => 'vendor/datatables-plugins/jszip/jszip.min.js',
+                  'location' => 'vendor/datatables.net/jszip/jszip.min.js',
+              ],
+              [
+                'type' => 'js',
+                'asset' => true,
+                'location' => 'vendor/datatables.net/pdfmake/pdfmake.min.js',
+              ],
+/*               [
+                'type' => 'js',
+                'asset' => true,
+                'location' => 'vendor/datatables.net/pdfmake/pdfmake.min.js.map',
+              ],
+ */              [
+                'type' => 'js',
+                'asset' => true,
+                'location' => 'vendor/datatables.net/pdfmake/vfs_fonts.js',
               ],
               [
                   'type' => 'js',
                   'asset' => true,
-                  'location' => 'vendor/datatables-plugins/buttons/js/buttons.bootstrap4.min.js',
+                  'location' => 'vendor/datatables.net/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js',
               ],
               [
                   'type' => 'js',
                   'asset' => true,
-                  'location' => 'vendor/datatables-plugins/buttons/js/buttons.html5.min.js',
+                  'location' => 'vendor/datatables.net/datatables.net-buttons/js/buttons.html5.min.js',
               ],
               [
                   'type' => 'js',
                   'asset' => true,
-                  'location' => 'vendor/datatables-plugins/buttons/js/buttons.flash.min.js',
+                  'location' => 'vendor/datatables.net/datatables.net-buttons/js/buttons.flash.min.js',
               ],
               [
                   'type' => 'js',
                   'asset' => true,
-                  'location' => 'vendor/datatables-plugins/buttons/js/buttons.print.min.js',
+                  'location' => 'vendor/datatables.net/datatables.net-buttons/js/buttons.print.min.js',
               ],
+              [
+                'type' => 'js',
+                'asset' => true,
+                'location' => 'vendor/datatables.net/datatables.net-buttons/js/buttons.colVis.min.js',
+            ],
           ],
       ],
       'DatatableSelect' => [
@@ -312,20 +332,41 @@ return [
             [
                 'type' => 'css',
                 'asset' => true,
-                'location' => 'vendor/datatables-plugins/select/css/select.bootstrap4.min.css',
+                'location' => 'vendor/datatables.net/datatables.net-select-bs4/css/select.bootstrap4.min.css',
             ],
             [
                 'type' => 'js',
                 'asset' => true,
-                'location' => 'vendor/datatables-plugins/select/js/dataTables.select.min.js',
+                'location' => 'vendor/datatables.net/datatables.net-select/js/dataTables.select.min.js',
             ],
             [
                 'type' => 'js',
                 'asset' => true,
-                'location' => 'vendor/datatables-plugins/select/js/select.bootstrap4.min.js',
+                'location' => 'vendor/datatables.net/datatables.net-select-bs4/js/select.bootstrap4.min.js',
             ],
         ],
-    ],      
+    ],
+    'DatatableRowgroup' => [
+        'name' => 'DatatableRowgroup',
+        'active' => true,
+        'files' => [
+            [
+                'type' => 'css',
+                'asset' => true,
+                'location' => 'vendor/datatables.net/datatables.net-rowgroup-bs4/css/rowGroup.bootstrap4.min.css',
+            ],
+            [
+                'type' => 'js',
+                'asset' => true,
+                'location' => 'vendor/datatables.net/datatables.net-rowgroup/js/dataTables.rowGroup.min.js',
+            ],
+            [
+                'type' => 'js',
+                'asset' => true,
+                'location' => 'vendor/datatables.net/datatables.net-rowgroup-bs4/js/rowGroup.bootstrap4.min.js',
+            ],
+        ],
+    ],
       'Select2' => [
           'name' => 'Select2',
           'active' => true,
@@ -451,6 +492,6 @@ return [
                 'location' => 'vendor/kartik-v/bootstrap-fileinput/themes/fas/theme.min.js',
             ],
         ],
-    ],      
+    ],
   ],
 ];

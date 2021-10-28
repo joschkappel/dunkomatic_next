@@ -186,17 +186,17 @@ class ACL_ScheduleTest extends DuskTestCase
         $schedule = static::$schedule;
 
         $this->browse(function ($browser) use ($user, $schedule) {
-            $browser->loginAs($user)->visitRoute('schedule.index',['language'=>'de']);
+            $browser->loginAs($user)->visitRoute('schedule.index',['language'=>'de','region'=>static::$region]);
 
             if ( $user->can('view-schedules') ) {
-                $browser->assertRouteIs('schedule.index',['language'=>'de']);
+                $browser->assertRouteIs('schedule.index',['language'=>'de','region'=>static::$region]);
                 ($user->can('create-schedules')) ? $browser->assertSee(__('schedule.action.create',$locale=['de'])) : $browser->assertDontSee(__('schedule.action.create',$locale=['de']));
                 $browser->waitFor('.table');
 
                 $events_count = $schedule->events_count ?? '0';
 
                 if ($user->canAny(['create-schedules', 'update-schedules'])) {
-                    $browser->with('.table', function ($sRow) use ($user, $schedule) {
+                    $browser->with('.table', function ($sRow) use ($schedule) {
                         $sRow->assertSeeLink($schedule->name);
                         $sRow->clickLink($schedule->name)
                                 ->assertRouteIs('schedule.edit', ['language'=>'de','schedule'=>$schedule->id]);
@@ -204,21 +204,21 @@ class ACL_ScheduleTest extends DuskTestCase
                     $browser->assertPresent('@frmClose')->press('@frmClose')->waitFor('.table');
 
                     if ($user->can('update-schedules')){
-                        $browser->with('.table', function ($sRow) use ($user, $schedule, $events_count) {
+                        $browser->with('.table', function ($sRow) use ($schedule, $events_count) {
                             $sRow->waitForLink($events_count);
                             $sRow->assertSeeLink($events_count);
                             $sRow->clickLink($events_count)
                                     ->assertRouteIs('schedule_event.list', ['schedule'=>$schedule->id]);
                         });
                     } else {
-                        $browser->with('.table', function ($sRow) use ($user, $schedule, $events_count) {
+                        $browser->with('.table', function ($sRow) use ($events_count) {
                             $sRow->assertDontSeeLink($events_count)
                                  ->assertSee($events_count);
 
                         });
                     }
                 } else {
-                    $browser->with('.table', function ($sRow) use ($user, $schedule, $events_count) {
+                    $browser->with('.table', function ($sRow) use ($schedule, $events_count) {
                         $sRow->assertDontSeeLink($schedule->name)
                                 ->assertSee($schedule->name)
                                 ->assertDontSeeLink($events_count)

@@ -26,7 +26,7 @@ class ScheduleControllerTest extends TestCase
     public function index()
     {
       $response = $this->authenticated()
-                        ->get(route('schedule.index',['language'=>'de']));
+                        ->get(route('schedule.index',['language'=>'de', 'region'=>$this->region]));
 
       $response->assertStatus(200)
                ->assertViewIs('schedule.schedule_list');
@@ -92,7 +92,7 @@ class ScheduleControllerTest extends TestCase
                           'iterations' => 1
                       ]);
       $response->assertSessionHasNoErrors()
-               ->assertRedirect(route('schedule.index', ['language'=>'de']));
+               ->assertRedirect(route('schedule.index', ['language'=>'de', 'region'=>$this->region]));
 
       $this->assertDatabaseHas('schedules', ['name' => 'testschedule']);
     }
@@ -163,7 +163,7 @@ class ScheduleControllerTest extends TestCase
 
       $schedule->refresh();
       $response->assertSessionHasNoErrors()
-               ->assertRedirect(route('schedule.index', ['language'=>'de']));
+               ->assertRedirect(route('schedule.index', ['language'=>'de', 'region'=>$this->region]));
       //$response->dumpSession();
       $this->assertDatabaseHas('schedules', ['name'=>$schedule->name]);
 
@@ -245,7 +245,7 @@ class ScheduleControllerTest extends TestCase
                         ->delete(route('schedule.destroy',['schedule'=>$schedule]));
 
       $response->assertSessionHasNoErrors()
-               ->assertRedirect(route('schedule.index', ['language'=>'de']));
+               ->assertRedirect(route('schedule.index', ['language'=>'de', 'region'=>$this->region]));
       $this->assertDatabaseMissing('schedules', ['id'=>$schedule->id]);
     }
 }

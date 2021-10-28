@@ -119,7 +119,7 @@ class AppServiceProvider extends ServiceProvider
             };
 
             $smenu['text'] =  __('league.menu.manage');;
-            $smenu['url']  = route('league.index_mgmt', app()->getLocale());
+            $smenu['url']  = route('league.index_mgmt',['language' => app()->getLocale(), 'region'=> session('cur_region')]);
             $smenu['icon_color'] = 'yellow';
             $smenu['icon'] =  'fas fa-chart-bar';
             $smenu['can'] = ['create-leagues','update-leagues'];
@@ -134,7 +134,7 @@ class AppServiceProvider extends ServiceProvider
             $smenu['submenu'] = [
                     [
                         'text' => __('Manage'),
-                        'url'  => route('schedule.index', app()->getLocale()),
+                        'url'  => route('schedule.index',['language'=>app()->getLocale(), 'region'=> session('cur_region') ]),
                         'icon' => 'fas fa-calendar-plus',
                         'icon_color' => 'green',
                         'can' => 'view-schedules',
@@ -148,7 +148,7 @@ class AppServiceProvider extends ServiceProvider
                         'shift' => 'ml-5'
                     ], [
                         'text' => __('Compare'),
-                        'url'  => route('schedule.index_piv', app()->getLocale()),
+                        'url'  => route('schedule.compare', ['language'=>app()->getLocale(), 'region'=> session('cur_region') ]),
                         'icon' => 'fas fa-calendar-week',
                         'icon_color' => 'green',
                         'can'  => 'view-schedules',
@@ -269,7 +269,8 @@ class AppServiceProvider extends ServiceProvider
             foreach ($regions as $r) {
                 if ((Auth::user()->can('manage', $r)) or (Auth::user()->region->name == $r->name)) {
                     $rs['text'] = $r->name;
-                    $rs['url'] = route('region.set', ['region' => $r->id]);
+                    // $rs['url'] = route('region.set', ['region' => $r->id]);
+                    $rs['url'] = route(Route::currentRouteName(), array_merge(Route::current()->parameters(), ['region' => $r])  );
                     $regionmenu['submenu'][] = $rs;
                 }
             }

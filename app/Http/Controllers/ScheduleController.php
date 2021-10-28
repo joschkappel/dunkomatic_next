@@ -11,11 +11,13 @@ use Illuminate\Http\Request;
 
 use Datatables;
 use Bouncer;
+use Illuminate\Support\Carbon;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class ScheduleController extends Controller
 {
@@ -24,10 +26,87 @@ class ScheduleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($language, Region $region)
     {
-      return view('schedule/schedule_list');
+      return view('schedule/schedule_list',['region'=>$region]);
     }
+    /**
+     * Display a listing to compare multiple resources
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function compare($language, Region $region)
+    {
+        if ($region->is_base_level){
+            $schedules = Schedule::whereIn('region_id', [ $region->id, $region->parentRegion->id ] )->orderBy('region_id','ASC')->get();
+            $parentRegion = $region->parentRegion;
+        } else {
+            $schedules = $region->schedules()->orderBy('region_id','ASC')->get();
+            $parentRegion = $region;
+        }
+
+
+       return view('schedule/schedules_list',['region'=>$region, 'hq'=> $parentRegion, 'schedules'=>$schedules, 'language'=>$language]);
+    }
+
+    /**
+     * Display a listing to compare multiple resources
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function compare_datatable($language, Region $region)
+    {
+        Log::info('Retrieving schedules.',['region'=>$region->name]);
+        if ($region->is_base_level){
+            $schedules = Schedule::whereIn('region_id', [ $region->id, $region->parentRegion->id ] )->orderBy('region_id','ASC')->get();
+
+        } else {
+            $schedules = $region->schedules()->orderBy('region_id','ASC')->get();
+        }
+        Log::info('Schedules found.',['schedules'=>$schedules->pluck('id')]);
+
+        $select = "game_date, full_weekend ";
+        foreach($schedules as $s){
+            $select .= ", max(case when (schedule_id=".$s->id." and full_weekend) then game_day when (schedule_id=".$s->id." and not full_weekend) then CONCAT(game_day,'(*)') else ' ' end ) as 's_".$s->id."' ";
+        }
+        // $select .= "FROM schedule_events WHERE schedule_id in (".$ids.") GROUP BY game_date";
+
+        $events = DB::table('schedule_events')
+                    ->select(DB::raw($select))
+                    ->whereIn('schedule_id', $schedules->pluck('id') )
+                    ->groupBy(['game_date','full_weekend'])
+                    ->get();
+        Log::info('Found game days.',['count'=>$events->count()]);
+
+        $elist = datatables()::of($events);
+        $curYear = '';
+        return $elist
+                ->addColumn('sat_game', function ($e) use ($language) {
+                    $gdate = Carbon::parse($e->game_date);
+                    if ($gdate->isSaturday()){
+                        return $gdate->locale( $language )->isoFormat('ddd L');
+                    }
+                })
+                ->addColumn('sun_game', function ($e) use ($language) {
+                    $gdate = Carbon::parse($e->game_date);
+                    if ($gdate->isSaturday() and $e->full_weekend) {
+                        return $gdate->addDay()->locale( $language )->isoFormat('ddd L');
+                    } elseif (! $e->full_weekend) {
+                        return $gdate->locale( $language )->isoFormat('ddd L');
+                    }
+                })
+                ->addColumn('year', function ($e) use (&$curYear) {
+                    if ($curYear != Carbon::parse($e->game_date)->isoFormat('YYYY')){
+                        $curYear = Carbon::parse($e->game_date)->isoFormat('YYYY');
+                        return $curYear;
+                    } else {
+                        return '';
+                    }
+                })
+                ->make(true);
+
+    }
+
 
    /**
      * Display a listing of the resource for selecbboxes
@@ -219,7 +298,7 @@ class ScheduleController extends Controller
       Log::debug(print_r($data, true));
 
       $check = Schedule::create($data);
-      return redirect()->route('schedule.index', app()->getLocale());
+      return redirect()->route('schedule.index', ['language'=>app()->getLocale(), 'region'=>session('cur_region')]);
     }
 
     /**
@@ -269,7 +348,7 @@ class ScheduleController extends Controller
       }
 
       $schedule->update($data);
-      return redirect()->route('schedule.index', app()->getLocale());
+      return redirect()->route('schedule.index', ['language'=>app()->getLocale(), 'region'=>session('cur_region')]);
     }
 
     /**
@@ -287,6 +366,6 @@ class ScheduleController extends Controller
         $schedule->events()->delete();
         $schedule->delete();
 
-        return redirect()->route('schedule.index', app()->getLocale());
+        return redirect()->route('schedule.index', ['language'=>app()->getLocale(), 'region'=>session('cur_region')]);
     }
 }

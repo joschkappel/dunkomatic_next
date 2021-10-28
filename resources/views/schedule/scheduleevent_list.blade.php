@@ -59,7 +59,7 @@
                 <!-- all modals here -->
                 @include('schedule/includes/create_events')
                 @include('schedule/includes/clone_events')
-             <x-confirm-deletion modalId="modalDeleteEvents" modalTitle="{{ __('schedule.title.event.delete') }}" modalConfirm="{{ __('schedule.confirm.event.delete') }}"  deleteType="{{ __('schedule.events') }}" />                
+             <x-confirm-deletion modalId="modalDeleteEvents" modalTitle="{{ __('schedule.title.event.delete') }}" modalConfirm="{{ __('schedule.confirm.event.delete') }}"  deleteType="{{ __('schedule.events') }}" />
                 @include('schedule/includes/edit_event')
                 <!-- all modals above -->
     </div>
@@ -75,11 +75,7 @@
         responsive: true,
         pageLength: 50,
         searching: false,
-        @if(app()->getLocale() == 'de')
-        language: {"url": "{{ URL::asset('vendor/datatables-plugins/i18n/German.json') }}"},
-        @else
-        language: {"url": "{{ URL::asset('vendor/datatables-plugins/i18n/English.json') }}"},
-        @endif
+        language: { "url": "{{URL::asset('vendor/datatables.net/i18n/'.app()->getLocale().'.json')}}" },
         order: [
             [1, 'asc']
         ],
@@ -146,12 +142,12 @@
         var url = "{{ route('schedule_event.store', ['schedule'=>$schedule]) }}"
         $('#modalCreateEvents_Form').attr('action', url);
         $('#modalCreateEvents').modal('show');
-    });    
+    });
     $(document).on('click', '#btnCloneEvents', function () {
         var url = "{{ route('schedule_event.clone', ['schedule'=>$schedule]) }}"
         $('#modalCloneEvents_Form').attr('action', url);
         $('#modalCloneEvents').modal('show');
-    });    
+    });
 
 
 </script>
