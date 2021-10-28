@@ -18,7 +18,7 @@ class CreateScheduleEventsTable extends Migration
             $table->unsignedInteger('schedule_id');
             $table->foreign('schedule_id')->references('id')->on('schedules');
             $table->smallInteger('game_day');
-            $table->dateTime('game_date',0);
+            $table->date('game_date');
             $table->boolean('full_weekend')->default(True);
             $table->timestamps();
         });

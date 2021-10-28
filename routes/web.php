@@ -26,7 +26,7 @@ Route::get('/health', function () {
 Route::group([
   'prefix' => '{language}',
   'where' => ['language' => '[a-zA-Z]{2}'],
-  'middleware' => 'setLanguage'], function() {
+  'middleware' => 'set.language'], function() {
 
   Route::get('/', function () {
       return view('welcome');
@@ -73,19 +73,23 @@ Route::group([
     Route::get('club/{club}/game/chart', 'ClubGameController@chart')->name('club.game.chart')->middleware('can:view-games');;
     Route::get('club/{club}/team/pickchar', 'ClubTeamController@pickchar')->name('club.team.pickchar')->middleware('can:update-teams');;
 
-    Route::group(['prefix' => '{region}'], function () {
+    Route::group(['prefix' => 'region/{region}','middleware' => 'set.region'], function () {
       Route::get('league/list_mgmt', 'LeagueController@list_mgmt')->name('league.list_mgmt');
+      Route::get('league/manage', 'LeagueController@index_mgmt')->name('league.index_mgmt');
       Route::get('league/list', 'LeagueController@list')->name('league.list')->middleware('can:view-leagues');
       Route::get('club', 'ClubController@index')->name('club.index')->middleware('can:view-clubs');
       Route::get('league', 'LeagueController@index')->name('league.index')->middleware('can:view-leagues');
       Route::get('member', 'MemberController@index')->name('member.index')->middleware('can:view-members');
       Route::get('game', 'GameController@index')->name('game.index')->middleware('can:view-games');
       Route::get('game/datatable', 'GameController@datatable')->name('game.datatable')->middleware('can:view-games');
+      Route::get('schedule', 'ScheduleController@index')->name('schedule.index')->middleware('can:view-schedules');
+      Route::get('schedule/compare/dt', 'ScheduleController@compare_datatable')->name('schedule.compare.dt')->middleware('can:view-schedules');
+      Route::get('schedule/compare', 'ScheduleController@compare' )->name('schedule.compare')->middleware('can:view-schedules');
     });
 
     Route::resource('club.gym', 'ClubGymController')->shallow()->except('store','update','destroy','show');
 
-    Route::get('league/manage', 'LeagueController@index_mgmt')->name('league.index_mgmt');
+
     Route::get('league/{league}/dashboard', 'LeagueController@dashboard')->name('league.dashboard');
     Route::get('league/{league}/briefing', 'LeagueController@briefing')->name('league.briefing')->middleware('can:view-leagues');
     Route::get('league/create', 'LeagueController@create')->name('league.create')->middleware('can:create-leagues');
@@ -113,8 +117,6 @@ Route::group([
     Route::resource('club.team', 'ClubTeamController')->shallow()->only('index','create','edit');;
 
     Route::get('schedule_event/calendar',function() { return view('schedule/scheduleevent_cal');})->name('schedule_event.cal')->middleware('can:view-schedules');
-    Route::get('schedule/index_piv', function() { return view('schedule/schedules_list');})->name('schedule.index_piv')->middleware('can:view-schedules');
-    Route::get('schedule', 'ScheduleController@index')->name('schedule.index')->middleware('can:view-schedules');
     Route::get('schedule/create', 'ScheduleController@create')->name('schedule.create')->middleware('can:create-schedules');
     Route::get('schedule/{schedule}', 'ScheduleController@show')->name('schedule.show')->middleware('can:view-schedules');
     Route::get('schedule/{schedule}/edit', 'ScheduleController@edit')->name('schedule.edit')->middleware('can:update-schedules');
@@ -151,7 +153,6 @@ Route::middleware(['auth'])->group(function () {
   Route::delete('member/{member}', 'MemberController@destroy')->name('member.destroy')->middleware('can:create-members');
 
   Route::put('region/{region}/details', 'RegionController@update_details')->name('region.update_details')->middleware('can:update-regions');
-  // Route::post('region', 'RegionController@create')->name('region.create')->middleware('auth')->middleware('regionadmin');
 
   Route::post('club', 'ClubController@store')->name('club.store')->middleware('can:create-clubs');
   Route::put('club/{club}', 'ClubController@update')->name('club.update')->middleware('can:update-clubs');
@@ -164,15 +165,15 @@ Route::middleware(['auth'])->group(function () {
   Route::get('team/{team}/list/gym', 'ClubGymController@sb_team')->name('gym.sb.team');
   Route::resource('club.gym', 'ClubGymController')->shallow()->only('store','update','destroy');
 
-  Route::group(['prefix' => '{region}'], function () {
-    Route::get('region/set', 'RegionController@set_region')->name('region.set');
+  Route::group(['prefix' => 'region/{region}', 'middleware' => 'set.region'], function () {
+    Route::get('set', 'RegionController@set_region')->name('region.set');
     Route::get('club/list', 'ClubController@list')->name('club.list')->middleware('can:view-clubs');
-    Route::get('club/region/sb', 'ClubController@sb_region')->name('club.sb.region');
+    Route::get('club/sb', 'ClubController@sb_region')->name('club.sb.region');
     Route::get('league/team_register/dt', 'LeagueController@team_register_dt')->name('league.team_register.dt');
-    Route::get('league/region/sb', 'LeagueController@sb_region')->name('league.sb.region');
+    Route::get('league/sb', 'LeagueController@sb_region')->name('league.sb.region');
     Route::get('schedule/list', 'ScheduleController@list')->name('schedule.list')->middleware('can:view-schedules');
-    Route::get('schedule/region/size/{size}/sb', 'ScheduleController@sb_region_size')->name('schedule.sb.region_size');
-    Route::get('schedule/region/sb', 'ScheduleController@sb_region')->name('schedule.sb.region');
+    Route::get('schedule/size/{size}/sb', 'ScheduleController@sb_region_size')->name('schedule.sb.region_size');
+    Route::get('schedule/sb', 'ScheduleController@sb_region')->name('schedule.sb.region');
     Route::get('schedule_event/list-cal', 'ScheduleEventController@list_cal')->name('schedule_event.list-cal')->middleware('can:view-schedules');
     Route::post('message', 'MessageController@store')->name('message.store');
     Route::put('message/{message}', 'MessageController@update')->name('message.update');

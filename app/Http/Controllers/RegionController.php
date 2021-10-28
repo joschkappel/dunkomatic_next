@@ -20,6 +20,7 @@ use App\Models\Membership;
 use App\Models\Game;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
 
 use Illuminate\Support\Facades\DB;
 
@@ -94,8 +95,6 @@ class RegionController extends Controller
 
     public function set_region(Region $region)
     {
-        session(['cur_region' => $region]);
-
         return redirect()->back();
     }
 

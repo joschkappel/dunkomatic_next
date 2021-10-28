@@ -35,11 +35,7 @@
                  processing: true,
                  serverSide: false,
                  responsive: true,
-                 @if (app()->getLocale() == 'de')
-                 language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/German.json')}}" },
-                 @else
-                 language: { "url": "{{URL::asset('vendor/datatables-plugins/i18n/English.json')}}" },
-                 @endif
+                 language: { "url": "{{URL::asset('vendor/datatables.net/i18n/'.app()->getLocale().'.json')}}" },
                  ordering: true,
                 stateSave: true,
                 @if (($region->close_scheduling_at <= now() ) and ($region->close_referees_at > now() ))

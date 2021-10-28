@@ -50,4 +50,5 @@ return [
   'single' => 'Einfach',
   'double' => 'Doppel',
   'triple' => 'Dreifach',
+  'allregion' => 'Rahmenterminpläne',
 ];

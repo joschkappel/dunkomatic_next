@@ -36,11 +36,7 @@
                 processing: true,
                 serverSide: false,
                 responsive: true,
-                @if (app()->getLocale() == 'de')
-                    language: { "url": "{{ URL::asset('vendor/datatables-plugins/i18n/German.json') }}" },
-                @else
-                    language: { "url": "{{ URL::asset('vendor/datatables-plugins/i18n/English.json') }}" },
-                @endif
+                language: { "url": "{{URL::asset('vendor/datatables.net/i18n/'.app()->getLocale().'.json')}}" },
                 ordering: true,
                 stateSave: true,
                 dom: 'Bflrtip',
@@ -63,12 +59,7 @@
                 order: [
                     [1, 'asc']
                 ],
-                @if (app()->getLocale() == 'de')
-                    language: { "url": "{{ URL::asset('vendor/datatables-plugins/i18n/German.json') }}" },
-                @endif
-                @if (app()->getLocale() == 'en')
-                    language: { "url": "{{ URL::asset('vendor/datatables-plugins/i18n/English.json') }}" },
-                @endif
+                language: { "url": "{{URL::asset('vendor/datatables.net/i18n/'.app()->getLocale().'.json')}}" },
                 ajax: '{{ route('league.game.dt', ['language' => app()->getLocale(), 'league' => $league]) }}',
                 columns: [{
                         data: 'id',

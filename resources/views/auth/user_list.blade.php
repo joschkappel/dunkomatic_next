@@ -29,16 +29,12 @@
     $(function() {
         $('#goBack').click(function(e){
             history.back();
-        }); 
+        });
         $('#table').DataTable({
             processing: true,
             serverSide: true,
             responsive: true,
-            @if (app()->getLocale() == 'de')
-                language: { "url": "{{ URL::asset('vendor/datatables-plugins/i18n/German.json') }}" },
-            @else
-                language: { "url": "{{ URL::asset('vendor/datatables-plugins/i18n/English.json') }}" },
-            @endif
+            language: { "url": "{{URL::asset('vendor/datatables.net/i18n/'.app()->getLocale().'.json')}}" },
             order: [
                 [1, 'asc']
             ],

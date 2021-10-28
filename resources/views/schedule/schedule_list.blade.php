@@ -3,7 +3,7 @@
 @section('plugins.Datatables', true)
 
 @section('content')
-<x-card-list cardTitle="{{ __('schedule.title.list', ['region'=>session('cur_region')->name ]) }}" cardNewAction="{{ route('schedule.create', app()->getLocale()) }}" cardNewTitle="{{ __('schedule.action.create') }}" cardNewAbility="create-schedules">
+<x-card-list cardTitle="{{ __('schedule.title.list', ['region'=>$region->name ]) }}" cardNewAction="{{ route('schedule.create', app()->getLocale()) }}" cardNewTitle="{{ __('schedule.action.create') }}" cardNewAbility="create-schedules">
     <th>Id</th>
     <th>Name</th>
     <th>Eventcolor</th>
@@ -30,15 +30,11 @@
                 processing: true,
                 serverSide: true,
                 responsive: true,
-                @if (app()->getLocale() == 'de')
-                    language: { "url": "{{ URL::asset('vendor/datatables-plugins/i18n/German.json') }}" },
-                @else
-                    language: { "url": "{{ URL::asset('vendor/datatables-plugins/i18n/English.json') }}" },
-                @endif
+                language: { "url": "{{URL::asset('vendor/datatables.net/i18n/'.app()->getLocale().'.json')}}" },
                 order: [
                     [1, 'asc']
                 ],
-                ajax: '{{ route('schedule.list', ['region' => session('cur_region')->id]) }}',
+                ajax: '{{ route('schedule.list', ['region' => $region]) }}',
                 columns: [{
                         data: 'id',
                         name: 'id',

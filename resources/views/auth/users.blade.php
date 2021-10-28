@@ -25,3 +25,15 @@
     </x-slot>
 </x-card-list>
 @endsection
+
+@section('js')
+
+<script>
+         $(function() {
+              $('#goBack').click(function(e){
+                  history.back();
+              });
+         });
+</script>
+
+@endsection

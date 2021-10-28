@@ -64,12 +64,10 @@ class Kernel extends HttpKernel
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-      //  'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
         'approved' => \App\Http\Middleware\CheckApproved::class,
-        'regionadmin' => \App\Http\Middleware\CheckRegionAdmin::class,
-        'setLanguage' => \App\Http\Middleware\SetLanguage::class,
-        'setRegion' => \App\Http\Middleware\SetRegion::class,
+        'set.language' => \App\Http\Middleware\SetLanguage::class,
+        'set.region' => \App\Http\Middleware\SetRegion::class,
     ];
 
 
