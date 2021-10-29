@@ -3,7 +3,7 @@
 @section('plugins.Datatables', true)
 
 @section('content')
-<x-card-list cardTitle="{{ __('auth.title.list', ['region' => Auth::user()->region ]) }}">
+<x-card-list cardTitle="{{ __('auth.title.list', ['region' => $region->name ]) }}">
     <th>Id</th>
     <th>@lang('auth.full_name')</th>
     <th>@lang('auth.email')</th>
@@ -38,7 +38,7 @@
             order: [
                 [1, 'asc']
             ],
-            ajax: '{{ route('admin.user.dt', app()->getLocale()) }}',
+            ajax: '{{ route('admin.user.dt', ['language'=>app()->getLocale(),'region'=>$region]) }}',
             columns: [{
                     data: 'id',
                     name: 'id',

@@ -24,7 +24,7 @@ class ClubControllerTest extends TestCase
     {
 
       $response = $this->authenticated()
-                        ->get(route('club.create',['language'=>'de']));
+                        ->get(route('club.create',['language'=>'de','region'=>$this->region]));
 
       // $response->dump();
       $response->assertStatus(200)

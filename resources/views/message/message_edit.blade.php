@@ -3,9 +3,7 @@
 @section('plugins.Summernote', true)
 
 @section('content')
-<x-card-form cardTitle="{{ __('message.title.edit', ['region' => session('cur_region')->name ]) }}" formAction="{{ route('message.update',['message'=>$message['message'],'region'=>session('cur_region')->id]) }}" formMethod="PUT">
-    <input type="hidden" class="form-control" id="author" name="author" value="{{ Auth::user()->id }}">
-    <input type="hidden" class="form-control" id="region_id" name="dest.region_id" value="{{ Auth::user()->region }}">
+<x-card-form cardTitle="{{ __('message.title.edit') }}" formAction="{{ route('message.update',['message'=>$message['message']]) }}" formMethod="PUT">
     <div class="form-group row">
         <label for="title" class="col-sm-4 col-form-label">@lang('message.title')</label>
         <div class="col-sm-6">

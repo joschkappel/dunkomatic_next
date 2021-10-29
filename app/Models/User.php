@@ -102,6 +102,15 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
         return $this->hasMany('App\Models\Message','author');
     }
 
+/*     public function scopeUserRegion($query)
+    {
+        return $query->where('region_id', Auth::user()->region->id);
+    }
+    public function memberIsA($role_id)
+    {
+        return $this->members()->wherePivot('role_id', $role_id)->exists();
+    } */
+
     // this is a recommended way to declare event handlers
     public static function boot() {
         parent::boot();

@@ -30,7 +30,7 @@ class MessageControllerTest extends TestCase
     {
 
       $response = $this->authenticated()
-                        ->get(route('message.index',['language'=>'de']));
+                        ->get(route('message.index',['language'=>'de','region'=>$this->region, 'user'=>$this->region_user]));
 
       $response->assertStatus(200)
                ->assertViewIs('message.message_list');
@@ -49,7 +49,7 @@ class MessageControllerTest extends TestCase
     {
 
       $response = $this->authenticated()
-                        ->get(route('message.create',['language'=>'de']));
+                        ->get(route('message.create',['language'=>'de','region'=>$this->region, 'user'=>$this->region_user]));
 
       $response->assertStatus(200)
                ->assertViewIs('message.message_new')
@@ -69,13 +69,12 @@ class MessageControllerTest extends TestCase
     {
       //$this->withoutExceptionHandling();
       $response = $this->authenticated()
-                        ->post(route('message.store',['region'=>$this->region]),[
-                          'title' => 'testmessage',
-                          'author' => 99,
+                        ->post(route('message.store',['region'=>$this->region, 'user'=>$this->region_user]),[
+                          'title' => 'testmessage'
                         ]);
 
       $response->assertStatus(302)
-               ->assertSessionHasErrors(['author']);
+               ->assertSessionHasErrors(['body','greeting']);
       //$response->dumpSession();
       $this->assertDatabaseMissing('messages', ['title'=>'testmessage']);
     }
@@ -93,20 +92,19 @@ class MessageControllerTest extends TestCase
     {
       //$this->withoutExceptionHandling();
       $response = $this->authenticated()
-                        ->post(route('message.store',['region'=>$this->region]),[
+                        ->post(route('message.store',['region'=>$this->region, 'user'=>$this->region_user]),[
                           'title' => 'testmessage',
                           'body' => 'this is a test',
                           'greeting' => 'hello',
                           'salutation' => 'all',
                           'send_at' => now(),
-                          'author' => $this->region_user->id,
                           'dest_to' => [Role::getRandomValue()],
                           'dest_cc' => [Role::getRandomValue()],
                         ]);
 
       $response->assertStatus(302)
                ->assertSessionHasNoErrors()
-               ->assertHeader('Location', route('message.index',['language'=>'de']));
+               ->assertHeader('Location', route('message.index',['language'=>'de','region'=>$this->region, 'user'=>$this->region_user]));
 
       $this->assertDatabaseHas('messages', ['title'=>'testmessage']);
     }
@@ -147,13 +145,13 @@ class MessageControllerTest extends TestCase
       //$this->withoutExceptionHandling();
       $message = Message::where('title','testmessage')->first();
       $response = $this->authenticated()
-                        ->put(route('message.update',['region'=>$this->region, 'message'=>$message]),[
+                        ->put(route('message.update',['message'=>$message]),[
                           'title' => 'testmessage2',
-                          'author' => 99,
+                          'greeting' => null
                         ]);
 
       $response->assertStatus(302)
-               ->assertSessionHasErrors(['author']);;
+               ->assertSessionHasErrors(['greeting']);;
       //$response->dumpSession();
       $this->assertDatabaseMissing('messages', ['title'=>'testmessage2']);
     }
@@ -171,20 +169,19 @@ class MessageControllerTest extends TestCase
       //$this->withoutExceptionHandling();
       $message = Message::where('title','testmessage')->first();
       $response = $this->authenticated()
-                        ->put(route('message.update',['region'=>$this->region, 'message'=>$message]),[
+                        ->put(route('message.update',['message'=>$message]),[
                           'title' => 'testmessage2',
                           'body' => $message->body,
                           'greeting' => $message->greeting,
                           'salutation' => 'du',
                           'send_at' => Carbon::now()->addDay(),
-                          'author' => $this->region_user->id,
                           'dest_to' => [Role::getRandomValue()],
                           'dest_cc' => [Role::getRandomValue()],
                         ]);
 
       $response->assertStatus(302)
                ->assertSessionHasNoErrors()
-               ->assertHeader('Location', route('message.index',['language'=>'de']));
+               ->assertHeader('Location', route('message.index',['language'=>'de','region'=>$this->region, 'user'=>$this->region_user]));
 
       $this->assertDatabaseHas('messages', ['title'=>'testmessage2']);
     }
@@ -201,7 +198,7 @@ class MessageControllerTest extends TestCase
     {
       $msgs = $this->region_user->messages()->first();
       $response = $this->authenticated()
-                        ->get(route('message.user.dt',['language'=>'de','user'=>$this->region_user]));
+                        ->get(route('message.user.dt',['language'=>'de','region'=>$this->region, 'user'=>$this->region_user]));
 
      //  $response->dump();
       $response->assertStatus(200)
@@ -227,7 +224,7 @@ class MessageControllerTest extends TestCase
 
       $response->assertStatus(302)
                ->assertSessionHasNoErrors()
-               ->assertHeader('Location', route('message.index',['language'=>'de']));
+               ->assertHeader('Location', route('message.index',['language'=>'de','region'=>$this->region, 'user'=>$this->region_user]));
 
       $this->assertDatabaseMissing('messages', ['title'=>'testmessage2']);
     }

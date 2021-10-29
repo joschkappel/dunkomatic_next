@@ -262,7 +262,7 @@ class LeagueController extends Controller
     $data['games'] = $data['league']->games()->get();
     $data['selected_teams'] = $selected_teams;
     //Log::debug(print_r($assigned_team,true));
-    $directory =   $directory = session('cur_region')->league_folder;
+    $directory =   $directory = $league->region->league_folder;
     $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($league) {
       return (strpos($value, $league->shortname) !== false);
     });
@@ -299,13 +299,13 @@ class LeagueController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function create()
+  public function create($language, Region $region)
   {
     Log::info('create new league');
     return view(
       'league/league_new',
       [
-        'region' => session('cur_region'),
+        'region' => $region,
         'agetype' => LeagueAgeType::getInstances(),
         'gendertype' => LeagueGenderType::getInstances()
       ]
@@ -566,7 +566,7 @@ class LeagueController extends Controller
     if ( ! Bouncer::canAny(['create-leagues', 'update-leagues']) ) {
         abort(403);
     }
-    return view('league.league_list_mgmt');
+    return view('league.league_list_mgmt',['language'=>$language, 'region'=>$region]);
   }
   /**
    * league datatables club assignments

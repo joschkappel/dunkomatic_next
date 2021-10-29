@@ -3,9 +3,9 @@
 @section('plugins.ICheck', true)
 
 @section('content')
-<x-card-form cardTitle="{{ __('league.title.new', ['region'=>session('cur_region')->code ]) }}" formAction="{{ route('league.store', app()->getLocale()) }}">
+<x-card-form cardTitle="{{ __('league.title.new', ['region'=>$region->code ]) }}" formAction="{{ route('league.store', app()->getLocale()) }}">
     <input type="hidden" class="form-control id=" region_id" name="region_id"
-        value="{{ session('cur_region')->id }}">
+        value="{{ $region->id }}">
     <div class="form-group row">
         <label for="shortname" class="col-sm-4 col-form-label">@lang('league.shortname')</label>
         <div class="col-sm-6">
@@ -155,7 +155,7 @@
             $(".js-selSize").on("change", function() {
                 var selected = $(".js-selSize").val();
                 console.log(selected);
-                var url = "{{ route('schedule.sb.region_size', ['region' => session('cur_region')->id, 'size'=>':size:' ]) }}";
+                var url = "{{ route('schedule.sb.region_size', ['region' => $region, 'size'=>':size:' ]) }}";
                 url = url.replace(':size:', selected);
 
                 $(".js-sel-schedule").val(null).trigger('change');

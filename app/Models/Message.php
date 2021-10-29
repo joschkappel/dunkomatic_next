@@ -19,12 +19,13 @@ class Message extends Model
 
     public function user()
     {
-        return $this->belongsTo('App\Models\User','user_id','id');
+        return $this->belongsTo('App\Models\User','author','id');
     }
 
     public function destinations()
     {
         return $this->hasMany('App\Models\MessageDestination','message_id','id');
     }
+
 
 }

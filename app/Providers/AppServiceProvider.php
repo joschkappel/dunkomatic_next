@@ -209,14 +209,14 @@ class AppServiceProvider extends ServiceProvider
                     [
                         'text'  => __('Approve Users'),
                         'icon'  => 'fas fa-thumbs-up',
-                        'url' => route('admin.user.index.new', app()->getLocale()),
+                        'url' => route('admin.user.index.new', ['language'=>app()->getLocale(),'region'=>session('cur_region')]),
                         'can'  => 'udpate-users',
                         'shift' => 'ml-3'
                     ],
                     [
                         'text'  => __('Manage Users'),
                         'icon'  => 'fas fa-users',
-                        'url' => route('admin.user.index', app()->getLocale()),
+                        'url' => route('admin.user.index', ['language'=>app()->getLocale(),'region'=>session('cur_region')]),
                         'can'  => 'view-users',
                         'shift' => 'ml-3'
                     ],
@@ -230,7 +230,7 @@ class AppServiceProvider extends ServiceProvider
                     [
                         'text'  => __('message.menu.list'),
                         'icon'  => 'fas fa-envelope',
-                        'url' => route('message.index', app()->getLocale()),
+                        'url' => route('message.index', ['language'=>app()->getLocale(), 'region'=>session('cur_region'), 'user'=>Auth::user()]),
                         'shift' => 'ml-3'
                     ],
 

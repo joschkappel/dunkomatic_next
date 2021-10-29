@@ -5,7 +5,7 @@
 @section('content')
 <x-card-list cardTitle="{{ __('league.title.list', ['region' => $region->name ]) }}">
                   <th>Id</th>
-                  @if (session('cur_region')->is_base_level)
+                  @if ($region->is_base_level)
                     <th>{{ trans_choice('region.region',1) }}</th>
                   @endif
                   <th>@lang('league.shortname')</th>

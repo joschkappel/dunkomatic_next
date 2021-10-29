@@ -44,7 +44,7 @@ class ScheduleControllerTest extends TestCase
     {
 
       $response = $this->authenticated( )
-                        ->get(route('schedule.create',['language'=>'de']));
+                        ->get(route('schedule.create',['language'=>'de','region'=>$this->region]));
 
       $response->assertStatus(200)
                ->assertViewIs('schedule.schedule_new');

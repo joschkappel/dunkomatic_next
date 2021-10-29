@@ -21,14 +21,14 @@ use Carbon\Carbon;
 
 class UserController extends Controller
 {
-  public function index($language)
+  public function index($language, Region $region)
       {
-          return view('auth/user_list');
+          return view('auth/user_list',['region'=>$region]);
       }
 
-  public function datatable($language)
+  public function datatable($language, Region $region)
       {
-        $users = session('cur_region')->users()->get();
+        $users = $region->users()->get();
         //Log::debug(print_r($users,true));
         $userlist = datatables()::of($users);
 
@@ -123,16 +123,16 @@ class UserController extends Controller
           ->make(true);
       }
 
-  public function index_new($language)
+  public function index_new($language, Region $region)
       {
         //  DB::enableQueryLog(); // Enable query log
 
-          $users = session('cur_region')->users()
+          $users = $region->users()
                        ->whereNull('approved_at')
                        ->whereNull('rejected_at')
                        ->get();
         //  dd(DB::getQueryLog());
-          return view('auth/users', compact('users'));
+          return view('auth/users', ['users'=>$users, 'region'=>$region]);
       }
 
   public function show($language, User $user)
@@ -269,7 +269,7 @@ class UserController extends Controller
             $user->notify(new RejectUser(Auth::user(), $user));
           }
 
-          return redirect()->route('admin.user.index.new', app()->getLocale())->withMessage('User approved successfully');
+          return redirect()->route('admin.user.index.new', ['language'=>app()->getLocale(),'region'=>$user->region])->withMessage('User approved successfully');
       }
 
   public function allowance(Request $request, User $user)
@@ -319,14 +319,14 @@ class UserController extends Controller
         Bouncer::assign( 'guest' )->to($user);
     }
 
-    return redirect()->route('admin.user.index', app()->getLocale());
+    return redirect()->route('admin.user.index', ['language'=>app()->getLocale(),'region'=>$user->region]);
   }
 
   public function destroy(Request $request, User $user)
   {
 
     $user->delete();
-    return redirect()->route('admin.user.index', app()->getLocale());
+    return redirect()->route('admin.user.index', ['language'=>app()->getLocale(),'region'=>$user->region]);
   }
 
   public function block(Request $request, User $user)
@@ -336,7 +336,7 @@ class UserController extends Controller
     Bouncer::retract( Role::all() )->from($user);
     Bouncer::assign('candidate')->to($user);
 
-    return redirect()->route('admin.user.index', app()->getLocale());
+    return redirect()->route('admin.user.index', ['language'=>app()->getLocale(),'region'=>$user->region]);
   }
 
 }

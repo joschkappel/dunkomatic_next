@@ -44,9 +44,9 @@ class ClubTest extends DuskTestCase
         $club_name = 'VVV';
         $club_name_new = 'VVVXXX';
 
-        $this->browse(function ($browser) use ($u, $club_no, $club_name) {
+        $this->browse(function ($browser) use ($u, $club_no, $club_name, $r) {
           $browser->loginAs($u)
-                  ->visit(new NewClub)
+                  ->visit(new NewClub($r->id))
                   ->new_club($club_name, $club_no, $this->faker->url);
           });
 

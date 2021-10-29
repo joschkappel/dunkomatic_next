@@ -228,10 +228,10 @@ class ClubController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($language, Region $region)
     {
       Log::info('create new club');
-      return view('club/club_new', ['region' => session('cur_region')]);
+      return view('club/club_new', ['region' => $region]);
     }
 
     /**

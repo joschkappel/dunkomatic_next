@@ -7,11 +7,9 @@ use App\Models\User;
 use App\Models\Region;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 use App\Enums\Role;
 use App\Enums\MessageType;
 use BenSampo\Enum\Rules\EnumValue;
-use Illuminate\Database\Eloquent\Builder;
 use Datatables;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
@@ -27,9 +25,9 @@ class MessageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($language, Region $region, User $user)
     {
-      return view('message/message_list');
+      return view('message/message_list', ['language'=>$language, 'user'=>$user, 'region'=>$region]);
     }
 
 
@@ -38,7 +36,7 @@ class MessageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function datatable_user($language, User $user)
+    public function datatable_user($language, Region $region, User $user)
     {
       $msgs = $user->messages()->orderBy('updated_at','ASC')->get();
 
@@ -86,10 +84,10 @@ class MessageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($language)
+    public function create($language, Region $region, User $user)
     {
-      Log::info('create new message');
-      return view('message/message_new', ['scopetype' => Role::getInstances()]);
+      Log::info('create new message',['user'=>$user->name]);
+      return view('message/message_new', ['scopetype' => Role::getInstances(), 'user'=>$user, 'region'=>$region]);
     }
 
     /**
@@ -98,23 +96,17 @@ class MessageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Region $region, User $user)
     {
-        Log::debug(print_r($request->all(),true));
-        $region = Region::find($request->region);
-        Log::debug(print_r($region,true));
         $data = $request->validate( [
             'title' => 'required|string|max:20',
             'body' => 'required|string',
             'greeting' => 'required|string',
             'salutation' => 'required|string',
             'send_at' => 'required|date|after:today',
-            'author' => 'required|exists:users,id',
             'dest_to.*' => ['required', new EnumValue(Role::class, false)],
             'dest_cc.*' => [ new EnumValue(Role::class, false)],
         ]);
-
-        Log::info(print_r($data, true));
 
         if ( isset($data['dest_to'])) {
           $dest_tos = $data['dest_to'];
@@ -131,7 +123,7 @@ class MessageController extends Controller
           $dest_ccs = [];
         }
 
-        $msg = Message::create($data);
+        $msg = $user->messages()->create($data);
 
         foreach ($dest_tos as $d){
           $dest = $msg->destinations()->create([
@@ -154,7 +146,7 @@ class MessageController extends Controller
         //  })->count();
         // Log::debug(print_r($test,true));
 
-        return redirect()->route('message.index', ['language' => app()->getLocale()]);
+        return redirect()->route('message.index', ['language' => app()->getLocale(),'user'=>$user,'region'=>$region]);
     }
 
 
@@ -186,26 +178,22 @@ class MessageController extends Controller
      * @param  \App\Models\Message  $message
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Message $message, Region $region)
+    public function update(Request $request, Message $message)
     {
-      Log::debug(print_r($request->all(),true));
+
       $data = $request->validate( [
           'title' => 'required|string|max:20',
           'body' => 'required|string',
           'greeting' => 'required|string',
           'salutation' => 'required|string',
           'send_at' => 'date|after:today',
-          'author' => 'required|exists:users,id',
           'dest_to.*' => ['required', new EnumValue(Role::class, false)],
           'dest_cc.*' => [ new EnumValue(Role::class, false)],
       ]);
 
-      Log::info(print_r($data, true));
-      Log::info(print_r($region, true));
-
       $message->destinations()->delete();
 
-      $region = Region::find($request->region);
+      $region = $message->user->region;
 
       if ( isset($data['dest_to'])) {
         $dest_tos = $data['dest_to'];
@@ -239,7 +227,7 @@ class MessageController extends Controller
         ]);
       }
 
-      return redirect()->route('message.index', ['language' => app()->getLocale()]);
+      return redirect()->route('message.index', ['language' => app()->getLocale(), 'region'=> session('cur_region') ,'user'=>$message->user]);
     }
 
     /**
@@ -271,6 +259,6 @@ class MessageController extends Controller
         $message->destinations()->delete();
         $message->delete();
 
-        return redirect()->route('message.index', app()->getLocale());
+        return redirect()->route('message.index', ['language'=>app()->getLocale(),'region'=> session('cur_region'),'user'=>$message->user]);
     }
 }
