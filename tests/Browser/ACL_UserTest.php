@@ -196,10 +196,10 @@ class ACL_UserTest extends DuskTestCase
         $u2na = static::$user_notapproved;
 
         $this->browse(function ($browser) use ($user, $u2a, $u2na) {
-            $browser->loginAs($user)->visitRoute('admin.user.index.new',['language'=>'de']);
+            $browser->loginAs($user)->visitRoute('admin.user.index.new',['language'=>'de','region'=>static::$region]);
 
             if ( $user->can('update-users') ) {
-                $browser->assertRouteIs('admin.user.index.new',['language'=>'de'])->waitFor('.table');
+                $browser->assertRouteIs('admin.user.index.new',['language'=>'de','region'=>static::$region])->waitFor('.table');
 
                 $browser->with('.table', function ($sRow) use ($user, $u2a, $u2na) {
                     $sRow->waitForText($u2na->name);
@@ -222,10 +222,10 @@ class ACL_UserTest extends DuskTestCase
         $u2na = static::$user_notapproved;
 
         $this->browse(function ($browser) use ($user, $u2a, $u2na) {
-            $browser->loginAs($user)->visitRoute('admin.user.index',['language'=>'de']);
+            $browser->loginAs($user)->visitRoute('admin.user.index',['language'=>'de','region'=>static::$region]);
 
             if ( $user->can('view-users') ) {
-                $browser->assertRouteIs('admin.user.index',['language'=>'de'])->waitFor('.table');
+                $browser->assertRouteIs('admin.user.index',['language'=>'de','region'=>static::$region])->waitFor('.table');
 
                 if ($user->canAny('update-users')) {
                     $browser->with('.table', function ($sRow) use ($user, $u2a, $u2na) {

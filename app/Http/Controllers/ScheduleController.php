@@ -176,7 +176,6 @@ class ScheduleController extends Controller
     public function sb_size(Schedule $schedule)
     {
 
-      // $schedules = session('cur_region')->schedules()
       $schedules = Schedule::where('id','!=',$schedule->id)
                              ->where('league_size_id', $schedule->league_size_id)
                              ->where('iterations', $schedule->iterations)
@@ -202,15 +201,7 @@ class ScheduleController extends Controller
      */
     public function list(Region $region)
     {
-//        $region = Region::find($user_region);
-//        $hq_region = $region->hq;
-
-//        if (isset($hq_region)){
-//          $user_region = array( $user_region, $hq_region);
-//        } else {
-//        }
-
-        $schedule = session('cur_region')->schedules()->with('league_size')->withCount('events')->get();
+        $schedule = $region->schedules()->with('league_size')->withCount('events')->get();
 
         $stlist = datatables()::of($schedule);
 
@@ -272,10 +263,10 @@ class ScheduleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($language)
+    public function create($language, Region $region)
     {
-      Log::info('create new schedule');
-      return view('schedule/schedule_new');
+      Log::info('Create a new schedule.',['region'=>$region]);
+      return view('schedule/schedule_new',['region'=>$region]);
     }
 
     /**
@@ -297,8 +288,8 @@ class ScheduleController extends Controller
 
       Log::debug(print_r($data, true));
 
-      $check = Schedule::create($data);
-      return redirect()->route('schedule.index', ['language'=>app()->getLocale(), 'region'=>session('cur_region')]);
+      $schedule = Schedule::create($data);
+      return redirect()->route('schedule.index', ['language'=>app()->getLocale(), 'region'=>$schedule->region]);
     }
 
     /**
@@ -348,7 +339,7 @@ class ScheduleController extends Controller
       }
 
       $schedule->update($data);
-      return redirect()->route('schedule.index', ['language'=>app()->getLocale(), 'region'=>session('cur_region')]);
+      return redirect()->route('schedule.index', ['language'=>app()->getLocale(), 'region'=>$schedule->region]);
     }
 
     /**
@@ -366,6 +357,6 @@ class ScheduleController extends Controller
         $schedule->events()->delete();
         $schedule->delete();
 
-        return redirect()->route('schedule.index', ['language'=>app()->getLocale(), 'region'=>session('cur_region')]);
+        return redirect()->route('schedule.index', ['language'=>app()->getLocale(), 'region'=>$schedule->region]);
     }
 }

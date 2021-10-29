@@ -95,7 +95,8 @@ class RegistrationTest extends TestCase
         $response = $this->authenticated($region_admin)
                          ->followingRedirects()
                          ->get(route('admin.user.index.new',[
-                                    'language' => 'de' ]));
+                                    'language' => 'de',
+                                'region'=>$region ]));
 
 
         $response->assertStatus(200)
@@ -164,7 +165,8 @@ class RegistrationTest extends TestCase
         $response = $this->authenticated($region_admin)
                          ->followingRedirects()
                          ->get(route('admin.user.index.new',[
-                                    'language' => 'de' ]));
+                                    'language' => 'de',
+                                'region'=>$region ]));
 
 
         $response->assertStatus(200)
@@ -265,7 +267,8 @@ class RegistrationTest extends TestCase
         $response = $this->authenticated($region_admin)
                          ->followingRedirects()
                          ->get(route('admin.user.index.new',[
-                                    'language' => 'de' ]));
+                                    'language' => 'de',
+                                'region'=>$region ]));
 
 
         $response->assertStatus(200)
@@ -321,7 +324,7 @@ class RegistrationTest extends TestCase
         $response = $this->authenticated($region_admin)
                          ->followingRedirects()
                          ->get(route('admin.user.index.new',[
-                                    'language' => 'de' ]));
+                                    'language' => 'de','region'=>$region ]));
 
 
         $response->assertStatus(200)

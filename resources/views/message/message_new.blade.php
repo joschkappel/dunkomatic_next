@@ -3,8 +3,7 @@
 @section('plugins.Summernote', true)
 
 @section('content')
-<x-card-form cardTitle="{{ __('message.title.new', ['region' => session('cur_region')->name ]) }}" formAction="{{ route('message.store',['region'=>session('cur_region')->id]) }}">
-                        <input type="hidden" class="form-control" id="author" name="author" value="{{ Auth::user()->id }}">
+<x-card-form cardTitle="{{ __('message.title.new', ['user' => $user->name ]) }}" formAction="{{ route('message.store',['user'=>$user,'region'=>$region]) }}">
                         <div class="form-group row">
                             <label for="title" class="col-sm-4 col-form-label">@lang('message.title')</label>
                             <div class="col-sm-6">

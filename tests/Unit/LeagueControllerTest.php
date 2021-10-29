@@ -29,7 +29,7 @@ class LeagueControllerTest extends TestCase
     {
 
       $response = $this->authenticated( )
-                        ->get(route('league.create',['language'=>'de']));
+                        ->get(route('league.create',['language'=>'de','region'=>$this->region]));
 
       $response->assertStatus(200)
                ->assertViewIs('league.league_new')

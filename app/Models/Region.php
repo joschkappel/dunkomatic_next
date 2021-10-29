@@ -86,7 +86,7 @@ class Region extends Model
   }
   public function messages()
   {
-      return $this->hasMany(MessageDestination::class,'region','code');
+      return $this->hasMany(MessageDestination::class,'region_id','id');
   }
 
   public function members()

@@ -55,7 +55,7 @@
 
                 <div class="card-tools p-2">
                     @can('create-leagues')
-                    <a href="{{ route('league.create', app()->getLocale()) }}" class="text-center btn btn-success mb-3"><i
+                    <a href="{{ route('league.create', ['language'=>app()->getLocale(), 'region'=>$region]) }}" class="text-center btn btn-success mb-3"><i
                             class="fas fa-plus-circle pr-2"></i>@lang('league.action.create')</a>
                     @endcan
                 </div>
@@ -64,7 +64,7 @@
                         <thead class="thead-light">
                             <tr>
                                 <th>ID</th>
-                                @if (session('cur_region')->is_base_level)
+                                @if ($region->is_base_level)
                                     <th>{{ trans_choice('region.region',1) }}</th>
                                 @endif
                                 <th>@lang('league.shortname')</th>
@@ -107,13 +107,13 @@
                 order: [
                     [1, 'asc']
                 ],
-                ajax: '{{ route('league.list_mgmt', ['language'=> app()->getLocale(),'region' => session('cur_region')->id]) }}',
+                ajax: '{{ route('league.list_mgmt', ['language'=> app()->getLocale(),'region' => $region]) }}',
                 columns: [{
                         data: 'id',
                         name: 'id',
                         visible: false
                     },
-                    @if (session('cur_region')->is_base_level)
+                    @if ($region->is_base_level)
                         { data: 'alien_region', name: 'alien_region'},
                     @endif
                     { data:  {

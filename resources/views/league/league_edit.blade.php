@@ -152,7 +152,7 @@
             $(".js-selSize").on("change", function() {
                 var selected = $(".js-selSize").val();
                 console.log(selected);
-                var url = "{{ route('schedule.sb.region_size', ['region' => session('cur_region')->id, 'size'=>':size:' ]) }}";
+                var url = "{{ route('schedule.sb.region_size', ['region' => $league->region, 'size'=>':size:' ]) }}";
                 url = url.replace(':size:', selected);
 
                 $(".js-sel-schedule").val(null).trigger('change');

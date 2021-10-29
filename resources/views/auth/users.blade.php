@@ -1,7 +1,7 @@
 @extends('layouts.page')
 
 @section('content')
-<x-card-list cardTitle="{{ __('auth.title.approve') }}">
+<x-card-list cardTitle="{{ __('auth.title.approve', ['region' => $region->name ]) }}">
     <th>{{ __('auth.user') }}</th>
     <th>{{__('auth.email')}}</th>
     <th>{{ __('auth.registered_at') }}</th>

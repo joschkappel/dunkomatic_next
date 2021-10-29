@@ -34,11 +34,11 @@ class RegionControllerTest extends TestCase
 
       $response = $this->authenticated()
                         ->followingRedirects()
-                        ->get(route('region.set', ['region'=> $r2 ]));
+                        ->get(route('club.index', ['language'=>'de','region'=> $r2 ]));
 
       $response->assertSessionHas('cur_region.code',$r2->code);
 
-      $response = $this->get(route('region.set', ['region'=> $r1]));
+      $response = $this->get(route('club.index', ['language'=>'de','region'=> $r1]));
 
       $response->assertSessionHas('cur_region.code',$r1->code);
 

@@ -49,9 +49,9 @@ class LeagueTest extends DuskTestCase
         LeagueSize::where('description','Undefined')->delete();
         $this->assertDatabaseHas('league_sizes', ['description' => '4 Teams']);
 
-        $this->browse(function ($browser) use ($u, $league_code, $league_code_new, $league_name, $league_name_new) {
+        $this->browse(function ($browser) use ($u, $league_code, $league_code_new, $league_name, $league_name_new, $r) {
           $browser->loginAs($u)
-                  ->visit(new NewLeague)
+                  ->visit(new NewLeague($r->id))
                   ->create_league($league_code, $league_name);
 
           $this->assertDatabaseHas('leagues', ['shortname' => $league_code]);

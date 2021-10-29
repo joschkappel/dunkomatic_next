@@ -93,12 +93,6 @@ class RegionController extends Controller
         return redirect()->route('region.index', ['language' => app()->getLocale()]);
     }
 
-    public function set_region(Region $region)
-    {
-        return redirect()->back();
-    }
-
-
     public function datatable($language)
     {
         $regions = Region::with('regionadmin')->withCount('clubs', 'leagues', 'teams', 'gyms')->get();

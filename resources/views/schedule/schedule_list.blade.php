@@ -3,7 +3,7 @@
 @section('plugins.Datatables', true)
 
 @section('content')
-<x-card-list cardTitle="{{ __('schedule.title.list', ['region'=>$region->name ]) }}" cardNewAction="{{ route('schedule.create', app()->getLocale()) }}" cardNewTitle="{{ __('schedule.action.create') }}" cardNewAbility="create-schedules">
+<x-card-list cardTitle="{{ __('schedule.title.list', ['region'=>$region->name ]) }}" cardNewAction="{{ route('schedule.create', ['language'=>app()->getLocale(),'region'=>$region]) }}" cardNewTitle="{{ __('schedule.action.create') }}" cardNewAbility="create-schedules">
     <th>Id</th>
     <th>Name</th>
     <th>Eventcolor</th>

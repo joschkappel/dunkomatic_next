@@ -3,7 +3,7 @@
 @section('plugins.Datatables', true)
 
 @section('content')
-<x-card-list cardTitle="{{ __('message.title.list') }}" cardNewAction="{{ route('message.create', app()->getLocale() ) }}" cardNewTitle="{{ __('message.action.create') }}">
+<x-card-list cardTitle="{{ __('message.title.list',['user'=>$user->name, 'region'=>$region->name]) }}" cardNewAction="{{ route('message.create', ['language'=>app()->getLocale(),'user'=>$user, 'region'=>$region] ) }}" cardNewTitle="{{ __('message.action.create') }}" cardNewAbility="">
                   <th>Id</th>
                   <th>@lang('message.action.send')</th>
                   <th>@lang('message.title')</th>
@@ -29,7 +29,7 @@
                  responsive: true,
                  language: { "url": "{{URL::asset('vendor/datatables.net/i18n/'.app()->getLocale().'.json')}}" },
                  order: [[1,'asc']],
-                 ajax: '{{ route('message.user.dt', ['language'=>app()->getLocale(), 'user'=> Auth::user()->id]) }}',
+                 ajax: '{{ route('message.user.dt', ['language'=>app()->getLocale(), 'user'=> $user, 'region'=>$region]) }}',
                  columns: [
                           { data: 'id', name: 'id', visible: false },
                           { data: 'action_send', name: 'action_send', orderable: false, searchable: false},

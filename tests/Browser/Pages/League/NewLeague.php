@@ -7,6 +7,13 @@ use Tests\Browser\Pages\Page;
 
 class NewLeague extends Page
 {
+    protected $region_id;
+
+    public function __construct($region_id)
+    {
+       $this->region_id = $region_id;
+    }
+
     /**
      * Get the URL for the page.
      *
@@ -14,7 +21,7 @@ class NewLeague extends Page
      */
     public function url()
     {
-        return '/de/league/create';
+        return '/de/region/'.$this->region_id.'/league/create';
     }
 
     /**

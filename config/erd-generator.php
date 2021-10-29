@@ -60,6 +60,8 @@ return [
         // App\Models\LeagueSizeScheme::class,
         // App\Models\Schedule::class,
         // App\Models\ScheduleEvent::class,
+        // REGION
+        //App\Models\Region::class
 
     ],
 

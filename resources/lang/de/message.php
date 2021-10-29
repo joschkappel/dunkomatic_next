@@ -3,8 +3,8 @@
 return [
   'message' => 'Nachricht|Nachrichten',
   'menu.list' => 'Nachrichten',
-  'title.new' => 'Schreibe eine neue Nachricht für den Bezirk :REGION',
-  'title.list' => 'List aller Nachrichten',
+  'title.new' => 'Schreibe eine neue Nachricht für Benutzer :USER und :REGION',
+  'title.list' => 'List aller Nachrichten für Benutzer :USER für :REGION',
   'title.delete' => 'Nachricht Löschen',
   'title.edit' => 'Nachricht Ändern',
   'confirm.delete' => 'Willst Du diese Nachricht löschen ?',
