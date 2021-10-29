@@ -44,10 +44,9 @@ class ClubControllerTest extends TestCase
     public function store_notok()
     {
       $response = $this->authenticated()
-                        ->post(route('club.store'), [
+                        ->post(route('club.store',['region'=>$this->region]), [
                           'shortname' => 'testtoolong',
                           'name' => 'testclub',
-                          'region' => $this->region->code,
                       ]);
       $response
           ->assertStatus(302)
@@ -70,10 +69,9 @@ class ClubControllerTest extends TestCase
     {
 
       $response = $this->authenticated()
-                        ->post(route('club.store'), [
+                        ->post(route('club.store',['region'=>$this->region]), [
                           'shortname' => 'TEST',
                           'name' => 'testclub',
-                          'region' => $this->region->code,
                           'club_no' => '9999',
                           'url' => 'http://example.com',
                       ]);

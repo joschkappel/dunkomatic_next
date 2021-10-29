@@ -2,33 +2,30 @@
 
 namespace App\Models;
 
+use App\Enums\MessageType;
+use App\Enums\Role;
+use App\Models\Message;
+
+use BenSampo\Enum\Traits\CastsEnums;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class MessageDestination extends Model
 {
-    use HasFactory;
+    use HasFactory, CastsEnums;
 
     protected $fillable = [
-        'id','scope','type', 'region_id', 'message_id'
+        'id','role_id','type', 'message_id'
     ];
 
-    public function region()
-    {
-        return $this->belongsTo('App\Models\Region','region_id','id');
-    }
+    protected $casts = [
+        'role_id' => Role::class,
+        'type' => MessageType::class
+    ];
 
     public function message()
     {
-        return $this->belongsTo('App\Models\Message','message_id','id');
+        return $this->belongsTo(Message::class);
     }
 
-    public function club()
-    {
-        return $this->belongsTo('App\Models\Club','club_id','id');
-    }
-    public function league()
-    {
-        return $this->belongsTo('App\Models\League','league_id','id');
-    }
 }

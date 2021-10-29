@@ -24,7 +24,7 @@ class ClubValidationTest extends TestCase
     {
 
       $response = $this->authenticated()
-           ->post('club', [$formInput => $formInputValue]);
+           ->post(route('club.store',['region'=>$this->region]), [$formInput => $formInputValue]);
 
       $response->assertSessionHasErrors($formInput);
     }
@@ -36,8 +36,6 @@ class ClubValidationTest extends TestCase
                 'shortname small chars' => ['shortname', 'ismu'],
                 'shortname 5 chars' => ['shortname', 'AAAAA'],
                 'shortname 3 chars' => ['shortname', 'AAA'],
-                'region wrong' => ['region', 'XXX'],
-                'region missing' => ['region', ''],
                 'url missing' => ['url', ''],
                 'url wrong' => ['url', 'lorem-ipsum'],
                 'club_no missing' => ['club_no', ''],

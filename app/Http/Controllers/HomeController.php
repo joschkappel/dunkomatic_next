@@ -21,8 +21,6 @@ class HomeController extends Controller
   public function home()
   {
     $today = Carbon::today()->toDateString();
-    Log::debug($today);
-
     $user = Auth::user();
 
     $msglist = array();
@@ -50,11 +48,6 @@ class HomeController extends Controller
 
     $msglist[] = $mi;
     array_shift($msglist);
-
-    Log::debug(print_r($msglist,true));
-
-
-
 
     return view('home', ['msglist' => $msglist]);
   }

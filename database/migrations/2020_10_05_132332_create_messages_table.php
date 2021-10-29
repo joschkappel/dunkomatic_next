@@ -16,8 +16,10 @@ class CreateMessagesTable extends Migration
         Schema::create('messages', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
-            $table->unsignedBigInteger('author')->nullable;
-            $table->foreign('author')->references('id')->on('users');
+            $table->unsignedBigInteger('user_id')->nullable;
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedInteger('region_id');
+            $table->foreign('region_id')->references('id')->on('regions');
             $table->string('title');
             $table->text('greeting');
             $table->text('body');

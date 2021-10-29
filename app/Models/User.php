@@ -14,6 +14,7 @@ use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 use App\Models\Member;
 use App\Models\Region;
+use App\Models\Message;
 use App\Notifications\VerifyEmail;
 use App\Notifications\ResetPassword as ResetPasswordNotification;
 use Illuminate\Contracts\Translation\HasLocalePreference;
@@ -83,6 +84,14 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
         'created_at' => 'datetime',
         'rejected_at' => 'datetime',
     ];
+    // this is a recommended way to declare event handlers
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($user) { // before delete() method call this
+                $user->messages()->delete();
+        });
+    }
 
     /**
      * Get the related member
@@ -99,26 +108,13 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
 
     public function messages()
     {
-        return $this->hasMany('App\Models\Message','author');
+        return $this->hasMany(Message::class);
     }
-
-/*     public function scopeUserRegion($query)
+    public function region_messages($region_id)
     {
-        return $query->where('region_id', Auth::user()->region->id);
+        return $this->messages()->where('region_id',$region_id);
     }
-    public function memberIsA($role_id)
-    {
-        return $this->members()->wherePivot('role_id', $role_id)->exists();
-    } */
 
-    // this is a recommended way to declare event handlers
-    public static function boot() {
-        parent::boot();
-
-        static::deleting(function($user) { // before delete() method call this
-             $user->messages()->delete();
-        });
-    }
 
     public function scopeIsRole($query, $role)
     {

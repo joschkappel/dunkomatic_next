@@ -19,13 +19,7 @@ class CreateMessageDestinationsTable extends Migration
             $table->unsignedInteger('message_id');
             $table->foreign('message_id')->references('id')->on('messages');
             $table->unsignedInteger('type');  // to or cc
-            $table->unsignedInteger('scope'); // user, club, league, admin
-            $table->unsignedInteger('region_id');
-            $table->foreign('region_id')->references('id')->on('regions');
-            $table->unsignedInteger('club_id')->nullable();
-            $table->foreign('club_id')->references('id')->on('clubs');
-            $table->unsignedInteger('league_id')->nullable();
-            $table->foreign('league_id')->references('id')->on('leagues');
+            $table->unsignedInteger('role_id'); // user, club, league, admin
         });
     }
 

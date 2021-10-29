@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
           base\LeagueSizeCharsTableSeeder::class,
           base\LeagueSizeSchemesTableSeeder::class,
           dev\UsersTableSeeder::class,
+          base\MessagesTableSeeder::class,
         ]);
 
         // migrate tables from v1

@@ -240,16 +240,14 @@ class ClubController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Region $region)
     {
         $data = $request->validate( Club::getCreateRules());
 
-        Log::info(print_r($data, true));
-        $data['region_id'] = Region::where('code',$data['region'])->first()->id;
-        unset($data['region']);
+        $club = new Club($data);
+        $region->clubs()->save($club);
 
-        $check = Club::create($data);
-        return redirect()->route('club.index', ['language' => app()->getLocale(), $region=$data['region_id']]);
+        return redirect()->route('club.index', ['language' => app()->getLocale(), 'region'=>$region]);
 
     }
 

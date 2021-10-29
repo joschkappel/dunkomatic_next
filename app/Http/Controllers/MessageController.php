@@ -38,7 +38,7 @@ class MessageController extends Controller
      */
     public function datatable_user($language, Region $region, User $user)
     {
-      $msgs = $user->messages()->orderBy('updated_at','ASC')->get();
+      $msgs = $user->region_messages($region->id)->orderBy('updated_at','ASC')->get();
 
       $msglist = datatables()::of($msgs);
 
@@ -108,43 +108,28 @@ class MessageController extends Controller
             'dest_cc.*' => [ new EnumValue(Role::class, false)],
         ]);
 
-        if ( isset($data['dest_to'])) {
-          $dest_tos = $data['dest_to'];
-          unset($data['dest_to']);
-        } else {
-          $dest_tos = [];
-        }
+        $msg = new Message();
+        $msg->user()->associate($user);
+        $msg->region()->associate($region);
+        $msg->title = $data['title'];
+        $msg->greeting = $data['greeting'];
+        $msg->body = $data['body'];
+        $msg->salutation = $data['salutation'];
+        $msg->send_at = $data['send_at'];
+        $msg->save();
 
-
-        if ( isset($data['dest_cc'])){
-          $dest_ccs = $data['dest_cc'];
-          unset($data['dest_cc']);
-        } else {
-          $dest_ccs = [];
-        }
-
-        $msg = $user->messages()->create($data);
-
-        foreach ($dest_tos as $d){
-          $dest = $msg->destinations()->create([
-              'scope' => $d,
-              'region_id' => $region->id,
-              'type' => new MessageType( MessageType::to),
+        foreach ($data['dest_to'] as $d){
+          $dest = $msg->message_destinations()->create([
+              'role_id' => Role::coerce(intval($d)),
+              'type' => MessageType::to(),
           ]);
         }
-        foreach ($dest_ccs as $d){
-          $dest = $msg->destinations()->create([
-              'scope' => $d,
-              'region_id' => $region->id,
-              'type' => new MessageType( MessageType::cc),
+        foreach ($data['dest_cc'] as $d){
+          $dest = $msg->message_destinations()->create([
+            'role_id' => Role::coerce(intval($d)),
+            'type' => MessageType::cc(),
           ]);
         }
-
-        // msg for USers
-        // $test = Message::whereHas('destinations', function( Builder $q) {
-        //    $q->where('region',Auth::user()->region);
-        //  })->count();
-        // Log::debug(print_r($test,true));
 
         return redirect()->route('message.index', ['language' => app()->getLocale(),'user'=>$user,'region'=>$region]);
     }
@@ -158,9 +143,9 @@ class MessageController extends Controller
      */
     public function edit($language, Message $message)
     {
-      Log::info('editing message '.print_r($message->id,true));
-      $dest_to = $message->destinations()->where('type', new MessageType( MessageType::to) )->get()->pluck('scope');
-      $dest_cc = $message->destinations()->where('type', new MessageType( MessageType::cc) )->get()->pluck('scope');
+      Log::debug('editing message. ',['message'=> $message]);
+      $dest_to = $message->message_destinations()->where('type', new MessageType( MessageType::to) )->get()->pluck('role_id');
+      $dest_cc = $message->message_destinations()->where('type', new MessageType( MessageType::cc) )->get()->pluck('role_id');
 
       $data = array();
       $data['message'] = $message;
@@ -191,43 +176,33 @@ class MessageController extends Controller
           'dest_cc.*' => [ new EnumValue(Role::class, false)],
       ]);
 
-      $message->destinations()->delete();
+      $message->title = $data['title'];
+      $message->greeting = $data['greeting'];
+      $message->body = $data['body'];
+      $message->salutation = $data['salutation'];
+      $message->send_at = $data['send_at'];
 
-      $region = $message->user->region;
+      $message->save();
 
-      if ( isset($data['dest_to'])) {
-        $dest_tos = $data['dest_to'];
-        unset($data['dest_to']);
-      } else {
-        $dest_tos = [];
-      }
+      // delete old destintaion
+      $message->message_destinations()->delete();
 
-
-      if ( isset($data['dest_cc'])){
-        $dest_ccs = $data['dest_cc'];
-        unset($data['dest_cc']);
-      } else {
-        $dest_ccs = [];
-      }
-
-      $message->update($data);
-
-      foreach ($dest_tos as $d){
-        $dest = $message->destinations()->create([
-            'scope' => $d,
-            'region_id' => $region->id,
-            'type' => new MessageType( MessageType::to),
+      foreach ($data['dest_to'] as $d){
+        $dest = $message->message_destinations()->create([
+            'role_id' => Role::coerce(intval($d)),
+            'type' => MessageType::to(),
         ]);
       }
-      foreach ($dest_ccs as $d){
-        $dest = $message->destinations()->create([
-            'scope' => $d,
-            'region_id' => $region->id,
-            'type' => new MessageType( MessageType::cc),
-        ]);
-      }
+      if (isset($data['dest_cc'])){
+        foreach ($data['dest_cc'] as $d){
+            $dest = $message->message_destinations()->create([
+            'role_id' => Role::coerce(intval($d)),
+            'type' => MessageType::cc(),
+            ]);
+        }
+    }
 
-      return redirect()->route('message.index', ['language' => app()->getLocale(), 'region'=> session('cur_region') ,'user'=>$message->user]);
+      return redirect()->route('message.index', ['language' => app()->getLocale(), 'region'=> $message->region ,'user'=>$message->user]);
     }
 
     /**
@@ -238,9 +213,9 @@ class MessageController extends Controller
      */
     public function send($language, Message $message)
     {
-      Log::info('will prepare notification for: '.$message->title);
+      Log::info('prepare notification for message: ',['message'=>$message->title]);
 
-      ProcessCustomMessages::dispatch($message);
+      ProcessCustomMessages::dispatchSync($message);
                 //->delay(now()->addMinutes(1));
 
 
@@ -256,9 +231,9 @@ class MessageController extends Controller
      */
     public function destroy(Message $message)
     {
-        $message->destinations()->delete();
+        $message->message_destinations()->delete();
         $message->delete();
 
-        return redirect()->route('message.index', ['language'=>app()->getLocale(),'region'=> session('cur_region'),'user'=>$message->user]);
+        return redirect()->route('message.index', ['language'=>app()->getLocale(),'region'=> $message->region,'user'=>$message->user]);
     }
 }

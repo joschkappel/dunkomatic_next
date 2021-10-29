@@ -50,10 +50,9 @@ class LeagueControllerTest extends TestCase
     public function store_notok()
     {
       $response = $this->authenticated( )
-                        ->post(route('league.store'), [
+                        ->post(route('league.store',['region'=>$this->region]), [
                           'shortname' => 'testtoolong',
                           'name' => 'testleague',
-                          'region_id' => $this->region->id,
                           'age_type' => LeagueAgeType::getRandomValue(),
                           'gender_type' => LeagueGenderType::getRandomValue(),
                           'above_region' => False
@@ -81,12 +80,11 @@ class LeagueControllerTest extends TestCase
       $schedule = Schedule::where('region_id',$this->region->id)->first();
 
       $response = $this->authenticated( )
-                        ->post(route('league.store'), [
+                        ->post(route('league.store',['region'=>$this->region]), [
                           'shortname' => 'TEST',
                           'name' => 'testleague',
                           'schedule_id' => $schedule->id,
                           'league_size_id' => $schedule->league_size->id,
-                          'region_id' => $this->region->id,
                           'age_type' => LeagueAgeType::getRandomValue(),
                           'gender_type' => LeagueGenderType::getRandomValue(),
                           'above_region' => False

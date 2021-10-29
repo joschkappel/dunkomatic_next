@@ -24,7 +24,7 @@ class LeagueValidationTest extends TestCase
     {
 
       $response = $this->authenticated()
-           ->post(route('league.store'), [$formInput => $formInputValue]);
+           ->post(route('league.store',['region'=>$this->region]), [$formInput => $formInputValue]);
 
       $response->assertSessionHasErrors($formInput);
     }
@@ -34,8 +34,6 @@ class LeagueValidationTest extends TestCase
             return [
                 'name missing' => ['name', ''],
                 'shortname 11 chars' => ['shortname', 'AAAABBBBCCCC'],
-                'region wrong' => ['region_id', '100'],
-                'region missing' => ['region_id', ''],
                 'schedule missing' => ['schedule_id', ''],
                 'schedule wrong' => ['schedule_id', '100'],
                 'age type missing' => ['age_type', ''],

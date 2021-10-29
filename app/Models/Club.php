@@ -40,7 +40,6 @@ class Club extends Model implements Auditable
             'shortname' => array('required', 'string', 'unique:clubs', 'max:4', 'min:4', new Uppercase),
             'name' => 'required|max:255',
             'url' => 'required|url|max:255',
-            'region' => 'required|max:5|exists:regions,code',
             'club_no' => 'required|unique:clubs|max:7',
         ];
     }

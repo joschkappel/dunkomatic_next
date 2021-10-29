@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\User;
+use App\Models\Region;
+use App\Models\MessageDestination;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,19 +15,22 @@ class Message extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id','title','body', 'greeting', 'salutation', 'send_at', 'sent_at', 'author'
+        'id','title','body', 'greeting', 'salutation', 'send_at', 'sent_at', 'user_id', 'region_id'
     ];
 
     protected $dates = ['send_at', 'sent_at'];
 
     public function user()
     {
-        return $this->belongsTo('App\Models\User','author','id');
+        return $this->belongsTo(User::class);
     }
-
-    public function destinations()
+    public function region()
     {
-        return $this->hasMany('App\Models\MessageDestination','message_id','id');
+        return $this->belongsTo(Region::class);
+    }
+    public function message_destinations()
+    {
+        return $this->hasMany(MessageDestination::class);
     }
 
 
