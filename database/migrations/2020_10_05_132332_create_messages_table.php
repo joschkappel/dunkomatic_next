@@ -22,7 +22,7 @@ class CreateMessagesTable extends Migration
             $table->foreign('region_id')->references('id')->on('regions');
             $table->string('title');
             $table->text('greeting');
-            $table->text('body');
+            $table->longText('body');
             $table->text('salutation');
             $table->date('send_at')->nullable();
             $table->date('sent_at')->nullable();

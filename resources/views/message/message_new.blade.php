@@ -3,10 +3,10 @@
 @section('plugins.Summernote', true)
 
 @section('content')
-<x-card-form cardTitle="{{ __('message.title.new', ['user' => $user->name ]) }}" formAction="{{ route('message.store',['user'=>$user,'region'=>$region]) }}">
+<x-card-form cardTitle="{{ __('message.title.new', ['region'=> $region->name ]) }}" formAction="{{ route('message.store',['user'=>$user,'region'=>$region]) }}">
                         <div class="form-group row">
-                            <label for="title" class="col-sm-4 col-form-label">@lang('message.title')</label>
-                            <div class="col-sm-6">
+                            <label for="title" class="col-sm-2 col-form-label">@lang('message.title')</label>
+                            <div class="col-sm-10">
                                 <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" placeholder="@lang('message.title')" value="{{ old('title') }}">
                                 @error('title')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -14,17 +14,17 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="greeting" class="col-sm-4 col-form-label">@lang('message.greeting')</label>
-                            <div class="col-sm-6">
-                              <textarea class="form-control @error('greeting') is-invalid @enderror" name="greeting" id="greeting"></textarea>
+                            <label for="greeting" class="col-sm-2 col-form-label">@lang('message.greeting')</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control @error('greeting') is-invalid @enderror" name="greeting" id="greeting"></input>
                               @error('greeting')
                               <div class="invalid-feedback">{{ $message }}</div>
                               @enderror
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="body" class="col-sm-4 col-form-label">@lang('message.body')</label>
-                            <div class="col-sm-6">
+                            <label for="body" class="col-sm-2 col-form-label">@lang('message.body')</label>
+                            <div class="col-sm-10">
                               <textarea class="form-control @error('body') is-invalid @enderror" name="body" id="summernote"></textarea>
                               @error('body')
                               <div class="invalid-feedback">{{ $message }}</div>
@@ -32,17 +32,17 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="salutation" class="col-sm-4 col-form-label">@lang('message.salutation')</label>
-                            <div class="col-sm-6">
-                              <textarea class="form-control @error('salutation') is-invalid @enderror" name="salutation" id="salutation"></textarea>
+                            <label for="salutation" class="col-sm-2 col-form-label">@lang('message.salutation')</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control @error('salutation') is-invalid @enderror" name="salutation" id="salutation"></input>
                               @error('salutation')
                               <div class="invalid-feedback">{{ $message }}</div>
                               @enderror
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="send_at" class="col-sm-4 col-form-label">@lang('message.send_at')</label>
-                            <div class="col-sm-6">
+                            <label for="send_at" class="col-sm-2 col-form-label">@lang('message.send_at')</label>
+                            <div class="col-sm-10">
                                 <div class="input-group date" id="send_at" data-target-input="nearest">
                                     <input type="text" name='send_at' id='send_at' class="form-control datetimepicker-input @error('send_at') is-invalid @enderror" data-target="#send_at" />
                                     <div class="input-group-append" data-target="#send_at" data-toggle="datetimepicker">
@@ -55,8 +55,8 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="selDestTo" class="col-sm-4 col-form-label">@lang('message.dest_to')</label>
-                            <div class="col-sm-6">
+                            <label for="selDestTo" class="col-sm-2 col-form-label">@lang('message.dest_to')</label>
+                            <div class="col-sm-10">
                             <div class="input-group mb-3">
                               <select class='js-sel-to js-states form-control select2 @error("dest_to") is-invalid @enderror' id='selDestTo' name="dest_to[]">
                                  @foreach ( $scopetype as $st )
@@ -70,8 +70,8 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="selDestCc" class="col-sm-4 col-form-label">@lang('message.dest_cc')</label>
-                            <div class="col-sm-6">
+                            <label for="selDestCc" class="col-sm-2 col-form-label">@lang('message.dest_cc')</label>
+                            <div class="col-sm-10">
                             <div class="input-group mb-3">
                               <select class='js-sel-cc js-states form-control select2 @error("dest_cc") is-invalid @enderror' id='selDestCc' name="dest_cc[]">
                                  @foreach ( $scopetype as $st )
@@ -97,9 +97,9 @@
 
         $('#summernote').summernote({
           lang: @if (app()->getLocale() == 'de') 'de-DE' @else 'en-US'  @endif,
-          placeholder: 'Edit your message...',
+          placeholder: '{{ __('message.body.enter') }}',
           tabsize: 2,
-          height: 100,
+          height: 200,
           toolbar: [
             ['style', ['style']],
             ['font', ['bold', 'underline', 'clear', 'italic']],
@@ -129,8 +129,8 @@
         $('#send_at').datetimepicker({
             format: 'L',
             locale: '{{ app()->getLocale()}}',
-            defaultDate: moment().add(1, 'd').format('L'),
-            minDate: moment().add(1, 'd').format('L'),
+            useCurrent: true,
+            minDate: moment().add(1, 'd'),
         });
 
       });

@@ -99,7 +99,7 @@ class MessageController extends Controller
     public function store(Request $request, Region $region, User $user)
     {
         $data = $request->validate( [
-            'title' => 'required|string|max:20',
+            'title' => 'required|string|max:40',
             'body' => 'required|string',
             'greeting' => 'required|string',
             'salutation' => 'required|string',
