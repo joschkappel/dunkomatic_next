@@ -19,6 +19,7 @@ class TestDatabaseSeeder extends Seeder
           base\RegionsTableSeeder::class,
           dev\UsersTableSeeder::class,
           test\UserSeeder::class,
+          base\MessagesTableSeeder::class,
           base\LeagueSizesTableSeeder::class,
           base\LeagueSizeCharsTableSeeder::class,
           base\LeagueSizeSchemesTableSeeder::class,

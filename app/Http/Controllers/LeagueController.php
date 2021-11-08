@@ -318,9 +318,8 @@ class LeagueController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function store(Request $request)
+  public function store(Request $request, Region $region)
   {
-    Log::debug(print_r($request->input(), true));
     $data = $request->validate([
       'shortname' => array(
         'required',
@@ -331,7 +330,6 @@ class LeagueController extends Controller
       'league_size_id' => 'sometimes|required|exists:league_sizes,id',
       'schedule_id' => 'sometimes|required|exists:schedules,id',
       'name' => 'required|max:255',
-      'region_id' => 'required|exists:regions,id',
       'age_type' => ['required', new EnumValue(LeagueAgeType::class, false)],
       'gender_type' => ['required', new EnumValue(LeagueGenderType::class, false)],
 
@@ -343,10 +341,11 @@ class LeagueController extends Controller
     } else {
       $data['above_region'] = False;
     }
-    Log::debug(print_r($data, true));
-    $region = Region::find($data['region_id']);
 
-    $check = League::create($data);
+
+    $league = new League($data);
+    $region->leagues()->save($league);
+
     return redirect()->route('league.index', ['language'=>app()->getLocale(),'region'=>$region]);
   }
 
@@ -662,7 +661,7 @@ class LeagueController extends Controller
         $btnlist = '';
 
         $ccnt = 1;
-        $t = $data->teams()->with('club')->get()->groupBy('club.shortname');
+        $t = $data->teams()->with('club')->get()->groupBy('shortname');
         foreach ($data->clubs->groupBy('shortname') as $k => $c){
           if ($t->get($k) == null){
             $diff = $c->count();

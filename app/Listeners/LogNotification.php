@@ -27,6 +27,6 @@ class LogNotification
      */
     public function handle(NotificationSent $event)
     {
-            Log::debug("Notificaztion SENT to ".$event->notifiable->lastname);
+            Log::debug("Notification SENT ",['lastname'=>$event->notifiable->lastname]);
     }
 }

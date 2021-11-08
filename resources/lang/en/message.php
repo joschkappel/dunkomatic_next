@@ -3,7 +3,7 @@
 return [
   'message' => 'Message|Messages',
   'menu.list' => 'Messages',
-  'title.new' => 'Create a new message for :USER and :REGION',
+  'title.new' => 'Create a new message for :REGION',
   'title.list' => 'List of all messages of user :USER for :REGION',
   'title.delete' => 'Delete message',
   'title.edit' => 'Modify message',
@@ -21,4 +21,5 @@ return [
   'dest_cc' => 'Copy to',
   'tl_to' => 'Message from ',
   'tl_cc' => 'Message Copy from ',
+  'body.enter' => 'Enter your message text here...',
 ];

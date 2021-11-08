@@ -12,7 +12,7 @@ use App\Models\Membership;
 use App\Models\Schedule;
 use App\Models\Team;
 use App\Models\Gym;
-use App\Models\MessageDestination;
+use App\Models\Message;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -86,7 +86,7 @@ class Region extends Model
   }
   public function messages()
   {
-      return $this->hasMany(MessageDestination::class,'region_id','id');
+      return $this->hasMany(Message::class);
   }
 
   public function members()

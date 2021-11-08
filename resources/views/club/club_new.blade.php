@@ -1,12 +1,12 @@
 @extends('layouts.page')
 
 @section('content')
-<x-card-form cardTitle="{{ __('club.title.new', ['region' =>$region->name ]) }}" formAction="{{ route('club.store') }}" >
+<x-card-form cardTitle="{{ __('club.title.new', ['region' =>$region->name ]) }}" formAction="{{ route('club.store',['region'=>$region]) }}" >
                             <div class="form-group row">
                                 <label for="region" class="col-sm-4 col-form-label">@lang('club.region')</label>
                                 <div class="col-sm-6">
-                                    <input type="text" readonly class="form-control @error('region') is-invalid @enderror"
-                                        id="region" name="region" value="{{ $region->name }}">
+                                    <input type="text" readonly class="form-control"
+                                        id="region" value="{{ $region->name }}">
                                 </div>
                             </div>
                             <div class="form-group row">

@@ -161,7 +161,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::put('region/{region}/details', 'RegionController@update_details')->name('region.update_details')->middleware('can:update-regions');
 
-    Route::post('club', 'ClubController@store')->name('club.store')->middleware('can:create-clubs');
     Route::put('club/{club}', 'ClubController@update')->name('club.update')->middleware('can:update-clubs');
     Route::delete('club/{club}', 'ClubController@destroy')->name('club.destroy')->middleware('can:create-clubs');
     Route::get('club/{club}/league/sb', 'ClubController@sb_league')->name('club.sb.league');
@@ -174,6 +173,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::group(['prefix' => 'region/{region}', 'middleware' => 'set.region'], function () {
         Route::get('club/list', 'ClubController@list')->name('club.list')->middleware('can:view-clubs');
+        Route::post('club', 'ClubController@store')->name('club.store')->middleware('can:create-clubs');
+        Route::post('league', 'LeagueController@store')->name('league.store')->middleware('can:create-leagues');
         Route::get('schedule/list', 'ScheduleController@list')->name('schedule.list')->middleware('can:view-schedules');
 
         Route::get('club/sb', 'ClubController@sb_region')->name('club.sb.region');
@@ -206,7 +207,6 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('league/{league}/club/{club}', 'LeagueController@deassign_club')->name('league.deassign-club')->middleware('can:update-leagues');
     Route::post('league/{league}/club', 'LeagueController@assign_clubs')->name('league.assign-clubs')->middleware('can:update-leagues');
     Route::post('league/{league}/state', 'LeagueStateController@change_state')->name('league.state.change')->middleware('can:update-leagues');
-    Route::post('league', 'LeagueController@store')->name('league.store')->middleware('can:create-leagues');
     Route::put('league/{league}', 'LeagueController@update')->name('league.update')->middleware('can:update-leagues');
     Route::delete('league/{league}', 'LeagueController@destroy')->name('league.destroy')->middleware('can:create-leagues');
 

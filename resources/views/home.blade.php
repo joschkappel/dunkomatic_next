@@ -14,7 +14,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <p class="mb-0">{{ __('You are logged in!') }}</p>
+                    {{-- <p class="mb-0">{{ __('You are logged in!') }}</p> --}}
                     @include('message.includes.message_timeline')
                 </div>
             </div>

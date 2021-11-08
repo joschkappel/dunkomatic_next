@@ -3,7 +3,7 @@
 @section('plugins.ICheck', true)
 
 @section('content')
-<x-card-form cardTitle="{{ __('league.title.new', ['region'=>$region->code ]) }}" formAction="{{ route('league.store', app()->getLocale()) }}">
+<x-card-form cardTitle="{{ __('league.title.new', ['region'=>$region->code ]) }}" formAction="{{ route('league.store', ['region'=>$region]) }}">
     <input type="hidden" class="form-control id=" region_id" name="region_id"
         value="{{ $region->id }}">
     <div class="form-group row">

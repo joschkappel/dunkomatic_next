@@ -3,8 +3,8 @@
 return [
   'message' => 'Nachricht|Nachrichten',
   'menu.list' => 'Nachrichten',
-  'title.new' => 'Schreibe eine neue Nachricht für Benutzer :USER und :REGION',
-  'title.list' => 'List aller Nachrichten für Benutzer :USER für :REGION',
+  'title.new' => 'Schreibe eine neue Nachricht für den :REGION',
+  'title.list' => 'Liste aller Nachrichten für Benutzer :USER für :REGION',
   'title.delete' => 'Nachricht Löschen',
   'title.edit' => 'Nachricht Ändern',
   'confirm.delete' => 'Willst Du diese Nachricht löschen ?',
@@ -21,4 +21,5 @@ return [
   'dest_cc' => 'mit Kopie an',
   'tl_to' => 'Nachricht von ',
   'tl_cc' => 'Nachricht-Kopie von ',
+  'body.enter' => 'Hier steht deine Nachricht...',
 ];
