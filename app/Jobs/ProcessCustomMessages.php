@@ -115,10 +115,10 @@ class ProcessCustomMessages implements ShouldQueue
         $this->message->update(['sent_at' => Carbon::today()]);
         $author = $this->message->user;
 
-        $msg = 'Message send to ' . implode(', ', $to_roles);
+        $msg = __('To').' '. implode(', ', $to_roles);
         if (count($cc_roles) > 0) {
-            $msg .= ', with copy to ' . implode(', ', $cc_roles);
+            $msg .= ', '.__('with copy to').' '. implode(', ', $cc_roles);
         }
-        $author->notify(new AppActionMessage('Message ' . $this->message->title . ' sent', $msg));
+        $author->notify(new AppActionMessage(__('Message').' "'. $this->message->title . '" '.__('sent'), $msg));
     }
 }

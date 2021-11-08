@@ -101,8 +101,8 @@ class MessageController extends Controller
         $data = $request->validate( [
             'title' => 'required|string|max:40',
             'body' => 'required|string',
-            'greeting' => 'required|string',
-            'salutation' => 'required|string',
+            'greeting' => 'required|string|max:40',
+            'salutation' => 'required|string|max:40',
             'send_at' => 'required|date|after:today',
             'dest_to.*' => ['required', new EnumValue(Role::class, false)],
             'dest_cc.*' => [ new EnumValue(Role::class, false)],
@@ -167,10 +167,10 @@ class MessageController extends Controller
     {
 
       $data = $request->validate( [
-          'title' => 'required|string|max:20',
+          'title' => 'required|string|max:40',
           'body' => 'required|string',
-          'greeting' => 'required|string',
-          'salutation' => 'required|string',
+          'greeting' => 'required|string|max:40',
+          'salutation' => 'required|string|max:40',
           'send_at' => 'date|after:today',
           'dest_to.*' => ['required', new EnumValue(Role::class, false)],
           'dest_cc.*' => [ new EnumValue(Role::class, false)],
