@@ -23,7 +23,7 @@ class MessagesTableSeeder extends Seeder
         $user = User::where('name','admin')->first();
         foreach (Region::all() as $r){
             $msg = new Message();
-            $msg->title = 'Welcome Message '.$r->code;
+            $msg->title = 'Welcome Message '.$r->name;
             $msg->greeting = 'Welcome';
             $msg->body = 'Welcome to a new release of Dunkomatic !';
             $msg->salutation = 'Have Fun !';

@@ -15,9 +15,9 @@
       <!-- Time -->
         <span class="time"><i class="fas fa-clock"></i> {{ \Carbon\CarbonImmutable::parse($msg['created_at'])->locale( app()->getLocale() )->isoFormat('HH:mm:ss') }}</span>
         <!-- Header. Optional -->
-        <h3 class="timeline-header"><strong>{{__('From')}} {{ $msg['author'] }}</strong>: {{ $msg['subject'] }}</h3>
+        <h3 class="timeline-header bg-dark"><strong>{{__('From')}} {{ $msg['author'] }}</strong>: {{ $msg['subject'] }}</h3>
         <!-- Body -->
-        <div class="timeline-body">
+        <div class="timeline-body bg-light">
           {!! $msg['body'] !!}
         </div>
       </div>
@@ -29,4 +29,3 @@
       <i class="fas fa-clock bg-gray"></i>
     </div>
   </div>
-  Extra style

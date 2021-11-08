@@ -49,6 +49,10 @@ class HomeController extends Controller
       $md['created_at'] = $m->created_at;
       $mi['items'][] = $md;
 
+      if ( $m->created_at->diffInDays() > 8  ){
+        $m->markAsRead();
+      }
+
     }
 
     $msglist[] = $mi;
