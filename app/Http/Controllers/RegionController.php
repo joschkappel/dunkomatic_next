@@ -219,7 +219,7 @@ class RegionController extends Controller
         $region->refresh();
         Log::notice('region updated.', ['region-id' => $region->id]);
 
-        return redirect()->route('home', ['language' => app()->getLocale()]);
+        return redirect()->route('region.dashboard', ['language' => app()->getLocale(), 'region'=>$region]);
     }
 
     /**

@@ -302,33 +302,32 @@
                 useCurrent: true,
                 format: 'L',
                 locale: '{{ app()->getLocale() }}',
-                defaultDate: moment('{{ $region->close_assignment_at }}').format('L')
+                defaultDate: moment('{{ $region->close_assignment_at ?? now()->modify("+1 day") }}')
             });
             $('#closeregistration').datetimepicker({
                 useCurrent: false,
                 format: 'L',
                 locale: '{{ app()->getLocale() }}',
-                defaultDate: moment('{{ $region->close_registration_at }}').format('L')
+                defaultDate: moment('{{ $region->close_registration_at ?? now()->modify("+2 week") }}')
             });
             $('#closeselection').datetimepicker({
                 useCurrent: false,
                 format: 'L',
                 locale: '{{ app()->getLocale() }}',
-                defaultDate: moment('{{ $region->close_selection_at }}').format('L')
+                defaultDate: moment('{{ $region->close_selection_at ?? now()->modify("+4 week") }}')
             });
             $('#closescheduling').datetimepicker({
                 useCurrent: false,
                 format: 'L',
                 locale: '{{ app()->getLocale() }}',
-                defaultDate: moment('{{ $region->close_scheduling_at }}').format('L')
+                defaultDate: moment('{{ $region->close_scheduling_at ?? now()->modify("+6 week") }}')
             });
             $('#closereferees').datetimepicker({
                 useCurrent: false,
                 format: 'L',
                 locale: '{{ app()->getLocale() }}',
-                defaultDate: moment('{{ $region->close_referees_at }}').format('L')
+                defaultDate: moment('{{ $region->close_referees_at ?? now()->modify("+8 week") }}')
             });
-
 
             $("#selNolead").select2({
                 theme: 'bootstrap4',

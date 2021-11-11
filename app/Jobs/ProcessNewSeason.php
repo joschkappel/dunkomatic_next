@@ -18,6 +18,8 @@ use App\Models\League;
 use App\Models\User;
 use App\Models\Member;
 
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\NewSeason;
 
@@ -42,6 +44,7 @@ class ProcessNewSeason implements ShouldQueue
      */
     public function handle()
     {
+        Log::info('[JOB][NEW SEASON] started.', ['region-id' => $this->region->id]);
         // determine new season year7year+1
         $cur_year = Carbon::now()->format('Y');
 
@@ -49,7 +52,9 @@ class ProcessNewSeason implements ShouldQueue
         $next_season = $cur_year . '/' . Str::substr($next_year,-2);
 
         // settings season
+        Log::notice('[JOB][NEW SEASON] season name modified.', ['region-id' => $this->region->id, 'old'=> Setting::where('name','season') , 'new'=>$next_season]);
         Setting::where('name','season')->update(['value' => $next_season]);
+
 
          // reset leagues
         $league = League::all();
@@ -66,26 +71,34 @@ class ProcessNewSeason implements ShouldQueue
                         'league_prev' => $l->shortname,
                         'league_id' => null ]);
           }
+          Log::notice('[JOB][NEW SEASON] teams de-registered.', ['region-id' => $this->region->id, 'league-id'=>$l->id]);
 
           $this->open_assignment($l);
           $l->games()->delete();
+          Log::notice('[JOB][NEW SEASON] league games deleted.', ['region-id' => $this->region->id, 'league-id'=>$l->id]);
+
         }
 
         // clean up report folders
-
-
-        // delete games
-
+        Log::notice('[JOB][NEW SEASON] report folders cleanedd.', ['region-id' => $this->region->id]);
 
         // move schedules 1 year forward
+        Log::notice('[JOB][NEW SEASON] schedules fwd by 1 year.', ['region-id' => $this->region->id]);
+
+        // move region league state end date 1 year fowrward
+        Log::notice('[JOB][NEW SEASON] region league state dates fwd by 1 year.', ['region-id' => $this->region->id]);
+
+        // notify region admin on these cahgnes and ask to check/correct
 
 
         // send notification
         $users = User::whereNotNull('approved_at')->whereNotNull('email_verified_at')->get();
         Notification::send( $users, new NewSeason($next_season));
+        Log::info('[NOTIFICATION] new season started.', [ 'users'=>$users->pluck('id')]);
 
         $members = Member::all();
         Notification::send( $members, new NewSeason($next_season));
+        Log::info('[NOTIFICATION] new season started.', [ 'members'=>$members->pluck('id')]);
 
     }
 }
