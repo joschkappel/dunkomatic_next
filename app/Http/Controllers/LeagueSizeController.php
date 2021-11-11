@@ -16,14 +16,13 @@ class LeagueSizeController extends Controller
      */
     public function index(Request $request)
     {
-
-      Log::debug(print_r($request->all(),true));
       if ($request['term']){
         $sizes = LeagueSize::where('description', 'like', '%'.$request['term'].'%')->orderBy('size', 'ASC')->get();
       } else {
         $sizes = LeagueSize::orderBy('size', 'ASC')->get();
       }
-      Log::debug('got sizes '.count($sizes));
+      Log::info('preparing select2 league size list.', ['count' => count($sizes), 'search-term' => $request['term'] ?? '' ]);
+
       $response = array();
 
       foreach($sizes as $size){

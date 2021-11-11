@@ -26,7 +26,6 @@ class Team extends Model
   public static function getCreateRules()
   {
     return [
-    'club_id' => 'required|exists:clubs,id',
     'team_no' => 'required|integer|min:1|max:9',
     'training_day'   => 'required|integer|min:1|max:5',
     'training_time'  => array( 'required','date_format:H:i', new GameMinute, new GameHour),

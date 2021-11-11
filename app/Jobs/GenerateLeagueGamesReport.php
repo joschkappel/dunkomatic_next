@@ -11,7 +11,6 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Helpers\CalendarComposer;
 use Illuminate\Support\Facades\Storage;
 
-use Illuminate\Support\Str;
 use App\Exports\LeagueGamesExport;
 
 use Illuminate\Bus\Queueable;
@@ -20,6 +19,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+
+use Illuminate\Support\Facades\Log;
 
 class GenerateLeagueGamesReport implements ShouldQueue
 {
@@ -81,7 +82,7 @@ class GenerateLeagueGamesReport implements ShouldQueue
 
         return;
       }
-
+      Log::info('[JOB][LEAGUE GAMES REPORTS] started.', ['region-id' => $this->region->id, 'league-id'=>$this->league->id]);
 
       foreach ( $this->region->fmt_league_reports->getFlags() as $rtype  ){
         switch ( $this->scope ){

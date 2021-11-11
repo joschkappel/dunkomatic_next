@@ -14,6 +14,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class ProcessLeagueStateChanges implements ShouldQueue
 {
@@ -39,7 +40,9 @@ class ProcessLeagueStateChanges implements ShouldQueue
      */
     public function handle()
     {
-        // check for auo-close assignemnts
+        Log::info('[JOB][LEAGUE AUTO STATE CHANGE] started.', ['region-id' => $this->region->id]);
+
+        // check for auto-close assignemnts
         $leagues = $this->region->leagues;
 
         // set close date defaults to future if empty

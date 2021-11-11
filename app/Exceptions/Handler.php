@@ -3,6 +3,9 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
+
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -36,6 +39,10 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception)
     {
+        if ($exception instanceof ValidationException) {
+            Log::error('[VALIDATION ERROR]',['ip'=> request()->ip(), 'path' => request()->path(), 'errors'=>$exception->errors()]);
+        }
+
         parent::report($exception);
     }
 

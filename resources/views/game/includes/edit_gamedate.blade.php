@@ -85,7 +85,7 @@
                 $("#modalEditGamedate").on('show.bs.modal', function(e) {
                     var urlgyms = "{{ route('gym.sb.club', ['club' => $club->id]) }}";
                     var gymSelect = $('#selGym');
-                    var urlgym = "{{ route('gym.sb.gym', ['club' => $club->id, 'gym' => ':gymid:']) }}";
+                    var urlgym = "{{ route('gym.sb.gym', ['gym' => ':gymid:']) }}";
                     urlgym = urlgym.replace(':gymid:', $("#gym_id").val());
 
                     $("#selGym").select2({

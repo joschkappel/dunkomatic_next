@@ -57,6 +57,7 @@ class HomeController extends Controller
 
     $msglist[] = $mi;
     array_shift($msglist);
+    Log::info('preparing unread message list.',['count'=>count($msglist)]);
 
     return view('home', ['msglist' => $msglist]);
   }

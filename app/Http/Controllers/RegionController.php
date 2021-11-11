@@ -20,7 +20,6 @@ use App\Models\Membership;
 use App\Models\Game;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\URL;
 
 use Illuminate\Support\Facades\DB;
 
@@ -37,7 +36,7 @@ class RegionController extends Controller
      */
     public function index()
     {
-        Log::info('listing regions');
+        Log::info('showing region list');
         return view('region.region_list');
     }
 
@@ -46,8 +45,12 @@ class RegionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function dashboard($language, Region $region)
+    public function dashboard(Request $request, $language, Region $region)
     {
+        if (!Bouncer::canAny(['create-regions', 'update-regions'])) {
+            Log::warning('[ACCESS DENIED]', ['url' => $request->path(), 'ip' => $request->ip()]);
+            abort(403);
+        }
         $data['region'] = Region::withCount('clubs', 'gyms', 'teams', 'leagues', 'childRegions')->find($region->id);
         $data['members'] = Member::whereIn('id', $region->members()->pluck('member_id'))->with('memberships')->get();
         $data['member_count'] = $region->clubs()->with('members')->get()->pluck('members.*.id')->flatten()->concat(
@@ -59,13 +62,14 @@ class RegionController extends Controller
         $data['games_count'] = $region->clubs()->with('games_home')->get()->pluck('games_home.*.id')->flatten()->count();
         $data['games_noref_count'] = $region->clubs()->with('games_noreferee')->get()->pluck('games_noreferee.*.id')->flatten()->count();
 
+        Log::info('showing region dashboard', ['region-id' => $region->id]);
         return view('region.region_dashboard', $data);
     }
 
 
     public function create()
     {
-        Log::info('new region');
+        Log::info('create new region');
         return view('region.region_new');
     }
 
@@ -82,22 +86,24 @@ class RegionController extends Controller
             'name' => 'required',
             'code'  => 'required',
         ]);
+        Log::info('region form data validated OK.');
 
-        Log::info(print_r($data, true));
         if (isset($data['region_id'])) {
-            $data['hq'] = Region::find($data['region_id'])->code;
+            $data['hq'] = Region::findOrFail($data['region_id'])->code;
             unset($data['region_id']);
         }
 
-        $check = Region::create($data);
+        $region = Region::create($data);
+        Log::notice('new region created.', ['region-id' => $region->id]);
+
         return redirect()->route('region.index', ['language' => app()->getLocale()]);
     }
 
     public function datatable($language)
     {
         $regions = Region::with('regionadmin')->withCount('clubs', 'leagues', 'teams', 'gyms')->get();
-        Log::info('regions found:' . $regions->count());
 
+        Log::info('preparing region list');
         $regionlist = datatables()::of($regions);
 
         return $regionlist
@@ -125,11 +131,10 @@ class RegionController extends Controller
     {
         $regions = Region::query()->get();
 
-        Log::debug('got regions ' . count($regions));
+        Log::info('preparing select2 region (with admins) list', ['count' => count($regions)]);
         $response = array();
 
         foreach ($regions as $region) {
-            Log::debug(print_r($region, true));
             if ($region->regionadmin()->exists()) {
                 $response[] = array(
                     "id" => $region->id,
@@ -138,7 +143,6 @@ class RegionController extends Controller
             }
         }
 
-
         return Response::json($response);
     }
 
@@ -146,17 +150,15 @@ class RegionController extends Controller
     {
         $regions = Region::whereNull('hq')->get();
 
-        Log::debug('got regions ' . count($regions));
+        Log::info('preparing select2 top region list', ['count' => count($regions)]);
         $response = array();
 
         foreach ($regions as $region) {
-            Log::debug(print_r($region, true));
             $response[] = array(
                 "id" => $region->id,
                 "text" => $region->name
             );
         }
-        Log::debug(print_r($response, true));
 
         return Response::json($response);
     }
@@ -179,7 +181,7 @@ class RegionController extends Controller
      */
     public function edit($language, Region $region)
     {
-        Log::info('Editing region' . $region->code);
+        Log::info('editing region.', ['region-id' => $region->id]);
         return view('region/region_edit', ['region' => $region, 'frequencytype' => JobFrequencyType::getInstances(), 'filetype' => ReportFileType::getInstances()]);
     }
 
@@ -192,8 +194,6 @@ class RegionController extends Controller
      */
     public function update_details(Request $request, Region $region)
     {
-        Log::debug(print_r($request->all(), true));
-
         $data = $request->validate([
             'name' => 'required|max:40',
             'game_slot' => 'required|integer|in:60,75,90,105,120,135,150',
@@ -213,10 +213,11 @@ class RegionController extends Controller
             'close_scheduling_at' => 'sometimes|required|date|after:close_selection_at',
             'close_referees_at' => 'sometimes|required|date|after:close_scheduling_at',
         ]);
+        Log::info('region details form data validated OK.');
 
-        Log::debug(print_r($data, true));
-
-        $check = Region::find($region->id)->update($data);
+        $check = $region->update($data);
+        $region->refresh();
+        Log::notice('region updated.', ['region-id' => $region->id]);
 
         return redirect()->route('home', ['language' => app()->getLocale()]);
     }
@@ -229,14 +230,21 @@ class RegionController extends Controller
      */
     public function destroy(Region $region)
     {
-        Log::debug('about to delete region ' . $region->name);
-
         $region->users()->delete();
+        Log::info('region users deleted', ['region-id' => $region->id]);
+
         $region->schedules()->delete();
+        Log::info('region schedules deleted', ['region-id' => $region->id]);
+
         // $region->messages()->delete();
         $region->members()->delete();
+        Log::info('region members deleted', ['region-id' => $region->id]);
+
         $region->memberships()->delete();
+        Log::info('region memberships deleted', ['region-id' => $region->id]);
+
         $region->delete();
+        Log::notice('region deleted', ['region-id' => $region->id]);
 
         return redirect()->route('region.index', app()->getLocale());
     }
@@ -250,6 +258,8 @@ class RegionController extends Controller
      */
     public function league_state_chart(Region $region)
     {
+
+        Log::info('collecting league state chart data.', ['region-id' => $region->id]);
 
         $data = array();
         $data['labels'] = [];
@@ -280,7 +290,7 @@ class RegionController extends Controller
      */
     public function league_socio_chart(Region $region)
     {
-
+        Log::info('collecting league social chart data.', ['region-id' => $region->id]);
         $data = array();
         $data['labels'] = [];
         $datasets = array();
@@ -318,6 +328,7 @@ class RegionController extends Controller
     public function club_team_chart(Region $region)
     {
 
+        Log::info('collecting club teams chart data.', ['region-id' => $region->id]);
         $data = array();
         $data['labels'] = [];
         $datasets = array();
@@ -340,9 +351,7 @@ class RegionController extends Controller
         $select .= " AND t.league_id = l.id ";
         $select .= " GROUP BY c.shortname, l.age_type";
         $select .= " ORDER BY c.shortname ASC, l.age_type ASC";
-        Log::debug(print_r($select, true));
 
-        // Log::debug($select);
         $rs = collect(DB::select($select));
         $data['labels'] = $rs->pluck('shortname')->unique()->values()->toArray();
 
@@ -365,7 +374,7 @@ class RegionController extends Controller
      */
     public function club_member_chart(Region $region)
     {
-
+        Log::info('collecting club member chart data.',['region-id'=>$region->id]);
         $data = array();
         $data['labels'] = [];
         $datasets = array();
@@ -391,7 +400,7 @@ class RegionController extends Controller
                 ->get()
                 ->countBy('role_id');
 
-            foreach ( $roleList as $r) {
+            foreach ($roleList as $r) {
                 $datasets[$r]['data'][] = $mships[$r] ?? 0;
             }
         }
@@ -411,6 +420,7 @@ class RegionController extends Controller
      */
     public function game_noreferee_chart(Region $region)
     {
+        Log::info('collecting game without referee chart data.',['region-id'=>$region->id]);
 
         $data = array();
         $data['labels'] = [];
@@ -434,8 +444,8 @@ class RegionController extends Controller
         // initialize dataset 0
         foreach ($alldates as $gday) {
             $data['labels'][] = Carbon::parse($gday)->isoFormat('L');
-            $datasets[0]['data'][] = (isset($rsbydate[ $gday->toDateTimeString()])) ? $rsbydate[ $gday->toDateTimeString()]->gcnt : 0;
-            $datasets[1]['data'][] = (isset($rs1bydate[ $gday->toDateTimeString()])) ? $rs1bydate[ $gday->toDateTimeString()]->gcnt : 0;
+            $datasets[0]['data'][] = (isset($rsbydate[$gday->toDateTimeString()])) ? $rsbydate[$gday->toDateTimeString()]->gcnt : 0;
+            $datasets[1]['data'][] = (isset($rs1bydate[$gday->toDateTimeString()])) ? $rs1bydate[$gday->toDateTimeString()]->gcnt : 0;
         }
 
         $data['datasets'] = $datasets;

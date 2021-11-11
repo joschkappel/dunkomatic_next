@@ -170,9 +170,8 @@
                 }
 
                 function selectGymForTeam () {
-                    var urlgym = "{{ route('gym.sb.gym', ['club' => ':clubid:', 'gym' => ':gymid:']) }}";
+                    var urlgym = "{{ route('gym.sb.gym', ['gym' => ':gymid:']) }}";
                     urlgym = urlgym.replace(':gymid:', $("#gym_id").val());
-                    urlgym = urlgym.replace(':clubid:', $("#club_id_home").val());
 
                     $.ajax({
                         type: 'GET',

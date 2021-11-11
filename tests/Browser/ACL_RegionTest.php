@@ -27,14 +27,13 @@ class ACL_RegionTest extends DuskTestCase
         parent::setUp();
         $this->artisan('db:seed', ['--class' => 'TestDatabaseSeeder']);
 
-        static::$region = Region::where('code','HBVDA')->first();
+        static::$region = Region::where('code', 'HBVDA')->first();
 
         static::$member = Member::factory()->create();
         static::$region->memberships()->create(['role_id' => 4, 'member_id' => static::$member->id]);
 
         $member = Member::factory()->create();
         static::$user = User::factory()->approved()->for(static::$region)->for($member)->create();
-
     }
 
     use withFaker;
@@ -48,8 +47,8 @@ class ACL_RegionTest extends DuskTestCase
     public function superadmin_acls()
     {
         $user = static::$user;
-        Bouncer::retract( $user->getRoles()  )->from($user);
-        Bouncer::assign( 'superadmin')->to($user);
+        Bouncer::retract($user->getRoles())->from($user);
+        Bouncer::assign('superadmin')->to($user);
         Bouncer::refreshFor($user);
 
         $this->access_regionlist($user);
@@ -65,13 +64,12 @@ class ACL_RegionTest extends DuskTestCase
     public function regionadmin_acls()
     {
         $user = static::$user;
-        Bouncer::retract( $user->getRoles()  )->from($user);
-        Bouncer::assign( 'regionadmin')->to($user);
+        Bouncer::retract($user->getRoles())->from($user);
+        Bouncer::assign('regionadmin')->to($user);
         Bouncer::refreshFor($user);
 
         $this->access_regionlist($user);
         $this->access_regiondashboard($user);
-
     }
 
     /**
@@ -83,16 +81,15 @@ class ACL_RegionTest extends DuskTestCase
     public function regionobserver_acls()
     {
         $user = static::$user;
-        Bouncer::retract( $user->getRoles()  )->from($user);
-        Bouncer::assign( 'regionobserver')->to($user);
+        Bouncer::retract($user->getRoles())->from($user);
+        Bouncer::assign('regionobserver')->to($user);
         Bouncer::refreshFor($user);
 
         $this->access_regionlist($user);
         $this->access_regiondashboard($user);
-
     }
 
-   /**
+    /**
      * @test
      * @group region
      * @group acl
@@ -101,16 +98,15 @@ class ACL_RegionTest extends DuskTestCase
     public function clubadmin_acls()
     {
         $user = static::$user;
-        Bouncer::retract( $user->getRoles()  )->from($user);
-        Bouncer::assign( 'clubadmin')->to($user);
+        Bouncer::retract($user->getRoles())->from($user);
+        Bouncer::assign('clubadmin')->to($user);
         Bouncer::refreshFor($user);
 
         $this->access_regionlist($user);
         $this->access_regiondashboard($user);
-
     }
 
-   /**
+    /**
      * @test
      * @group region
      * @group acl
@@ -119,15 +115,14 @@ class ACL_RegionTest extends DuskTestCase
     public function clubobserver_acls()
     {
         $user = static::$user;
-        Bouncer::retract( $user->getRoles()  )->from($user);
-        Bouncer::assign( 'clubobserver')->to($user);
+        Bouncer::retract($user->getRoles())->from($user);
+        Bouncer::assign('clubobserver')->to($user);
         Bouncer::refreshFor($user);
 
         $this->access_regionlist($user);
         $this->access_regiondashboard($user);
-
     }
-   /**
+    /**
      * @test
      * @group region
      * @group acl
@@ -136,13 +131,12 @@ class ACL_RegionTest extends DuskTestCase
     public function leagueadmin_acls()
     {
         $user = static::$user;
-        Bouncer::retract( $user->getRoles()  )->from($user);
-        Bouncer::assign( 'leagueadmin')->to($user);
+        Bouncer::retract($user->getRoles())->from($user);
+        Bouncer::assign('leagueadmin')->to($user);
         Bouncer::refreshFor($user);
 
         $this->access_regionlist($user);
         $this->access_regiondashboard($user);
-
     }
     /**
      * @test
@@ -153,15 +147,14 @@ class ACL_RegionTest extends DuskTestCase
     public function leagueobserver_acls()
     {
         $user = static::$user;
-        Bouncer::retract( $user->getRoles()  )->from($user);
-        Bouncer::assign( 'leagueobserver')->to($user);
+        Bouncer::retract($user->getRoles())->from($user);
+        Bouncer::assign('leagueobserver')->to($user);
         Bouncer::refreshFor($user);
 
         $this->access_regionlist($user);
         $this->access_regiondashboard($user);
-
     }
-   /**
+    /**
      * @test
      * @group region
      * @group acl
@@ -170,15 +163,14 @@ class ACL_RegionTest extends DuskTestCase
     public function guest_acls()
     {
         $user = static::$user;
-        Bouncer::retract( $user->getRoles()  )->from($user);
-        Bouncer::assign( 'guest')->to($user);
+        Bouncer::retract($user->getRoles())->from($user);
+        Bouncer::assign('guest')->to($user);
         Bouncer::refreshFor($user);
 
         $this->access_regionlist($user);
         $this->access_regiondashboard($user);
-
     }
-   /**
+    /**
      * @test
      * @group region
      * @group acl
@@ -187,71 +179,66 @@ class ACL_RegionTest extends DuskTestCase
     public function candidate_acls()
     {
         $user = static::$user;
-        Bouncer::retract( $user->getRoles()  )->from($user);
-        Bouncer::assign( 'candidate')->to($user);
+        Bouncer::retract($user->getRoles())->from($user);
+        Bouncer::assign('candidate')->to($user);
         Bouncer::refreshFor($user);
 
         $this->access_regionlist($user);
         $this->access_regiondashboard($user);;
-
     }
 
 
-    private function access_regionlist( $user )
+    private function access_regionlist($user)
     {
         $region = static::$region;
 
         $this->browse(function ($browser) use ($user, $region) {
-            $browser->loginAs($user)->visitRoute('region.index',['language'=>'de']);
+            $browser->loginAs($user)->visitRoute('region.index', ['language' => 'de']);
 
-            if ( $user->can('view-regions') ) {
-                $browser->assertRouteIs('region.index',['language'=>'de']);
-                ($user->can('create-regions')) ? $browser->assertSee(__('region.action.create',$locale=['de'])) : $browser->assertDontSee(__('region.action.create',$locale=['de']));
+            if ($user->can('view-regions')) {
+                $browser->assertRouteIs('region.index', ['language' => 'de']);
+                ($user->can('create-regions')) ? $browser->assertSee(__('region.action.create', $locale = ['de'])) : $browser->assertDontSee(__('region.action.create', $locale = ['de']));
                 $browser->waitFor('.table');
 
-                if (  ($user->can('manage', $region)) and ($user->canAny(['create-regions', 'update-regions'])) ) {
+                if (($user->can('manage', $region)) and ($user->canAny(['create-regions', 'update-regions']))) {
                     $browser->assertSeeLink($region->code);
                     $browser->clickLink($region->code)
-                            ->assertRouteIs('region.dashboard', ['language'=>'de','region'=>$region->id]);
+                        ->assertRouteIs('region.dashboard', ['language' => 'de', 'region' => $region->id]);
                 } else {
                     $browser->assertDontSeeLink($region->code)
-                            ->assertSee($region->code);
+                        ->assertSee($region->code);
                 }
-
             } else {
                 $browser->assertSee('403');
             }
         });
     }
 
-    private function access_regiondashboard( $user)
+    private function access_regiondashboard($user)
     {
         $this->browse(function ($browser) use ($user) {
-            $browser->loginAs($user)->visitRoute('region.dashboard',['language'=>'de', 'region'=>static::$region]); // ->screenshot($user->getRoles()[0]);
+            $browser->loginAs($user)->visitRoute('region.dashboard', ['language' => 'de', 'region' => static::$region]); // ->screenshot($user->getRoles()[0]);
             $member = static::$member;
             $region = static::$region;
 
-            if  ( $user->canAny(['create-regions', 'update-regions']) ){
-                ($user->can('update-regions')) ? $browser->assertSee(__('region.action.edit',$locale=['de'])) : $browser->assertDontSee(__('region.action.edit',$locale=['de']));
-                ($user->can('create-regions')) ? $browser->assertSee(__('region.action.delete',$locale=['de'])) : $browser->assertDontSee(__('region.action.delete',$locale=['de']));
-                ($user->can('create-members')) ? $browser->assertSee(__('region.member.action.create',$locale=['de'])) : $browser->assertDontSee(__('region.member.action.create',$locale=['de']));
+            if ($user->canAny(['create-regions', 'update-regions'])) {
+                ($user->can('update-regions')) ? $browser->assertSee(__('region.action.edit', $locale = ['de'])) : $browser->assertDontSee(__('region.action.edit', $locale = ['de']));
+                ($user->can('create-regions')) ? $browser->assertSee(__('region.action.delete', $locale = ['de'])) : $browser->assertDontSee(__('region.action.delete', $locale = ['de']));
+                ($user->can('create-members')) ? $browser->assertSee(__('region.member.action.create', $locale = ['de'])) : $browser->assertDontSee(__('region.member.action.create', $locale = ['de']));
+
+                $browser->with('#membersCard', function ($memberCard) use ($user, $member) {
+                    $memberCard->click('.btn-tool')->waitFor('.btn-tool');
+                    ($user->can('create-members')) ? $memberCard->assertButtonEnabled('#deleteMember') :  $memberCard->assertButtonDisabled('#deleteMember');
+                    ($user->can('update-members')) ? $memberCard->assertSeeLink($member->name) : $memberCard->assertDontSeeLink($member->name);
+                    ($user->can('update-members')) ? $memberCard->assertSeeLink(__('role.send.invite')) : $memberCard->assertDontSeeLink(__('role.send.invite'));
+                    ($user->can('update-members')) ? $memberCard->assertButtonEnabled('#addMembership') : $memberCard->assertButtonDisabled('#addMembership');
+                    ($user->can('update-members')) ? $memberCard->assertButtonEnabled('#modMembership') : $memberCard->assertButtonDisabled('#modMembership');
+                });
+                $browser->with('#refereeCard', function ($gameCard) use ($user) {
+                    $gameCard->click('.btn-tool')->waitFor('.btn-tool');
+                    ($user->can('update-games')) ? $gameCard->assertSeeLink(__('game.action.assign-referees')) : $gameCard->assertDontSeeLink(__('game.action.assign-referees'));
+                });
             }
-
-            $browser->with('#membersCard', function ($memberCard) use ($user, $member) {
-                $memberCard->click('.btn-tool')->waitFor('.btn-tool');
-                ($user->can('create-members')) ? $memberCard->assertButtonEnabled('#deleteMember') :  $memberCard->assertButtonDisabled('#deleteMember');
-                ($user->can('update-members')) ? $memberCard->assertSeeLink($member->name) : $memberCard->assertDontSeeLink($member->name);
-                ($user->can('update-members')) ? $memberCard->assertSeeLink(__('role.send.invite')) : $memberCard->assertDontSeeLink(__('role.send.invite'));
-                ($user->can('update-members')) ? $memberCard->assertButtonEnabled('#addMembership') : $memberCard->assertButtonDisabled('#addMembership');
-                ($user->can('update-members')) ? $memberCard->assertButtonEnabled('#modMembership') : $memberCard->assertButtonDisabled('#modMembership');
-            });
-            $browser->with('#refereeCard', function ($gameCard) use ($user) {
-                $gameCard->click('.btn-tool')->waitFor('.btn-tool');
-                ($user->can('update-games')) ? $gameCard->assertSeeLink(__('game.action.assign-referees')) : $gameCard->assertDontSeeLink(__('game.action.assign-referees')) ;
-            });
-
         });
-
     }
-
 }

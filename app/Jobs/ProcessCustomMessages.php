@@ -36,7 +36,6 @@ class ProcessCustomMessages implements ShouldQueue
     public function __construct(Message $message)
     {
         $this->message = $message;
-        Log::debug('Starting Job.', ['message' => $this->message]);
     }
 
     /**
@@ -46,7 +45,7 @@ class ProcessCustomMessages implements ShouldQueue
      */
     public function handle()
     {
-        Log::debug('Job working on message', ['message' => $this->message]);
+        Log::info('[JOB][CUSTOM MESSAGE] started.', ['message' => $this->message]);
         $mdest = $this->message->message_destinations()->get();
 
         $to_list = array();
@@ -62,14 +61,14 @@ class ProcessCustomMessages implements ShouldQueue
                 // get all club admim members
                 $members = Club::whereIn('id', $clubs)->members()->wherePivot('role_id', $d->role_id)->get(['email1', 'firstname', 'lastname'])->first();
                 $drop_mail = true;
-                Log::debug('club members to notify', ['members' => $members->pluck('email1')]);
+                Log::debug('[JOB][CUSTOM MESSAGE] club members to notify.', ['members' => $members->pluck('email1')]);
             } else if ($d->role_id->is(Role::LeagueLead)) {
                 // get in scope leagues
                 $leagues = $this->message->region->leagues()->pluck('id');
                 // get all league admim members
                 $members = League::whereIn('id', $leagues)->members()->wherePivot('role_id', Role::LeagueLead)->get(['email1', 'firstname', 'lastname'])->first();
                 $drop_mail = true;
-                Log::debug('league members to notify', ['members' => $members]);
+                Log::debug('[JOB][CUSTOM MESSAGE] league members to notify.', ['members' => $members]);
             } else if ($d->role_id->is(Role::Admin)) {
                 $users = $this->message->region->regionadmin;
                 foreach ($users as $u) {
@@ -110,6 +109,7 @@ class ProcessCustomMessages implements ShouldQueue
             Mail::to($to_list)
                 ->cc($cc_list)
                 ->send(new CustomMailMessage($this->message));
+            Log::notice('custom mail sent',['message-id'=>$this->message->id, 'to_count'=>count($to_list), 'cc_count'=>count($cc_list)]);
         }
 
         $this->message->update(['sent_at' => Carbon::today()]);
@@ -120,5 +120,6 @@ class ProcessCustomMessages implements ShouldQueue
             $msg .= ', '.__('with copy to').' '. implode(', ', $cc_roles);
         }
         $author->notify(new AppActionMessage(__('Message').' "'. $this->message->title . '" '.__('sent'), $msg));
+        Log::info('[NOTIFICATION][MEMBER] custom message sent.', ['member-id' => $author->id]);
     }
 }
