@@ -22,4 +22,6 @@ return [
   'tl_to' => 'Message from ',
   'tl_cc' => 'Message Copy from ',
   'body.enter' => 'Enter your message text here...',
+  'delete' => 'Mark as read',
+  'read_more' => 'Read More'
 ];

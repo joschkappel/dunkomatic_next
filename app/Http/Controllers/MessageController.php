@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Message;
+use Illuminate\Notifications\DatabaseNotification;
 use App\Models\User;
 use App\Models\Region;
 use Illuminate\Http\Request;
@@ -12,7 +13,6 @@ use App\Enums\MessageType;
 use BenSampo\Enum\Rules\EnumValue;
 use Datatables;
 use Carbon\Carbon;
-use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 
 use App\Jobs\ProcessCustomMessages;
@@ -101,7 +101,7 @@ class MessageController extends Controller
     public function store(Request $request, Region $region, User $user)
     {
         $data = $request->validate([
-            'title' => 'required|string|max:40',
+            'title' => 'required|string|max:60',
             'body' => 'required|string',
             'greeting' => 'required|string|max:40',
             'salutation' => 'required|string|max:40',
@@ -172,7 +172,7 @@ class MessageController extends Controller
     {
 
         $data = $request->validate([
-            'title' => 'required|string|max:40',
+            'title' => 'required|string|max:60',
             'body' => 'required|string',
             'greeting' => 'required|string|max:40',
             'salutation' => 'required|string|max:40',
@@ -213,6 +213,20 @@ class MessageController extends Controller
 
         return redirect()->route('message.index', ['language' => app()->getLocale(), 'region' => $message->region, 'user' => $message->user]);
     }
+
+    /**
+     * Mark a message as read
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param   DatabaseNotification $message
+     * @return \Illuminate\Http\Response
+     */
+    public function mark_as_read(DatabaseNotification $message)
+    {
+       $message->markAsRead();
+       return back();
+    }
+
 
     /**
      * sedn notification for this message
