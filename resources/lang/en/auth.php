@@ -12,6 +12,7 @@ return [
     'register_a_new_membership'   => 'Register a new membership',
     'i_forgot_my_password'        => 'I forgot my password',
     'i_already_have_a_membership' => 'I already have a membership',
+    'failed'                      => "Mh, something's wrong  with this eMail/password pair.",
     'sign_in'                     => 'Sign In',
     'log_out'                     => 'Log Out',
     'toggle_navigation'           => 'Toggle navigation',
