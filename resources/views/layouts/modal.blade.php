@@ -1,7 +1,7 @@
 
-<div class="modal fade right" id="{{ $modalId }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+<div class="modal fade right" id="{{ $modalId }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
     aria-hidden="true" data-backdrop="false">
-    <div class="modal-dialog modal-side modal-bottom-right modal-notify modal-info" role="document">
+    <div class="modal-dialog modal-dialog-scrollable modal-side modal-bottom-right modal-notify modal-info" role="document">
         <!--Content-->
         <div class="modal-content">
             <!--Header-->
@@ -62,14 +62,14 @@
                     dataType: 'json',
                     data: {
                         _token: "{{ csrf_token() }}",
-                        _method: '{{ $modalFormMethod }}', 
+                        _method: '{{ $modalFormMethod }}',
                         @yield('modal_js_data')
                     },
                     success: function(result){
                         @if ($stayOnSuccess)
                             $('.alert-danger').hide();
                             $('.alert-success').show()
-                        @else 
+                        @else
                             $('.alert-danger').hide();
                             $('#{{ $modalId }}').modal('hide');
                             location.reload();

@@ -16,6 +16,7 @@
                 <div class="card-body">
                     {{-- <p class="mb-0">{{ __('You are logged in!') }}</p> --}}
                     @include('message.includes.message_timeline')
+                    @include('message.includes.message_show')
                 </div>
             </div>
         </div>
@@ -27,6 +28,14 @@
 @stop
 
 @section('js')
-    <script> console.log('Hi!'); </script>
-
+    <script> console.log('Hi there! going Dunkomatic now'); </script>
+    <script>
+        $(document).on('click', '#btnShowMessage', function () {
+            $('#modalShowMessageTitle').html( $(this).data("title") );
+            $('#msgSalutation').html( $(this).data("salutation") );
+            $('#msgBody').html( $(this).data("body") );
+            $('#msgGreeting').html( $(this).data("greeting") );
+            $('#modalShowMessage').modal('show');
+        });
+    </script>
 @stop

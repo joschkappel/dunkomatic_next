@@ -22,4 +22,6 @@ return [
   'tl_to' => 'Nachricht von ',
   'tl_cc' => 'Nachricht-Kopie von ',
   'body.enter' => 'Hier steht deine Nachricht...',
+  'delete' => 'Als gelesen markieren',
+  'read_more' => 'Ganze Nachricht lesen'
 ];
