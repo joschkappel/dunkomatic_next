@@ -25,7 +25,7 @@ class EnsureEmailIsVerified
             ($request->user() instanceof MustVerifyEmail &&
                 !$request->user()->hasVerifiedEmail())
         ) {
-            Log::warning('ACCESS DENIED: user email not verified.', ['user-id'=> $request->user()->id ]);
+            Log::warning('[ACCESS DENIED] user email not verified.', ['user-id'=> $request->user()->id ]);
             return $request->expectsJson()
                 ? abort(403, 'Your email address is not verified.')
                 : Redirect::guest(URL::route($redirectToRoute ?: 'verification.notice', ['language' => app()->getLocale()]));
