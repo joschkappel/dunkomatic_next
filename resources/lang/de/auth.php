@@ -14,6 +14,7 @@ return [
     'i_already_have_a_membership' => 'Ich bin bereits registriert',
     'sign_in'                     => 'Anmelden',
     'log_out'                     => 'Abmelden',
+    'failed'                      => 'Mh, irgendwas stimmt mit dieser eMail/Passwort Kombination nicht.',
     'toggle_navigation'           => 'Navigation umschalten',
     'login_message'               => 'Bitte melde Dich an, um auf den geschützten Bereich zuzugreifen',
     'register_message'            => 'Bitte fülle das Formular aus, um ein neues Konto zu registrieren',
