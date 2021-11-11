@@ -136,7 +136,7 @@ class RegionControllerTest extends TestCase
 
        $response
            ->assertStatus(302)
-           ->assertHeader('Location', route('home',['language'=>'de']));
+           ->assertHeader('Location', route('region.dashboard',['language'=>'de','region'=>$this->region]));
        $this->assertDatabaseHas('regions', ['name' => 'HBVDAupdated']);
 
     }
@@ -197,7 +197,7 @@ class RegionControllerTest extends TestCase
 
         // $response->dumpHeaders();
         $response->assertStatus(302)
-                ->assertHeader('Location', route('home',['language'=>'de']));
+                ->assertHeader('Location', route('region.dashboard',['language'=>'de','region'=>$this->region]));
 
 
         $club = $this->region->clubs()->first();
