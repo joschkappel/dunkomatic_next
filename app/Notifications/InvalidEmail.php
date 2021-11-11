@@ -24,7 +24,7 @@ class InvalidEmail extends Notification
      *
      * @return void
      */
-    public function __construct(Club $club, Member $cc, $emaillist)
+    public function __construct(Club $club, ?Member $cc, $emaillist)
     {
         $this->cc = $cc;
         $this->emaillist = $emaillist;

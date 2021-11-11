@@ -28,6 +28,7 @@ class ClubController extends Controller
      */
     public function index($language, Region $region)
     {
+        Log::info('showing club list.');
         return view('club/club_list', ['region' => $region]);
     }
 
@@ -39,6 +40,7 @@ class ClubController extends Controller
     public function list(Region $region)
     {
         if ($region->is_top_level) {
+            Log::notice('getting clubs for top level region.');
             $clubs = Club::whereIn('region_id', $region->childRegions()->pluck('id'))->withCount([
                 'leagues', 'teams', 'registered_teams', 'selected_teams', 'games_home',
                 'games_home_notime', 'games_home_noshow'
@@ -46,6 +48,7 @@ class ClubController extends Controller
                 ->orderBy('shortname', 'ASC')
                 ->get();
         } else {
+            Log::notice('getting clubs for base level region.');
             $clubs = Club::where('region_id', $region->id)->withCount([
                 'leagues', 'teams', 'registered_teams', 'selected_teams', 'games_home',
                 'games_home_notime', 'games_home_noshow'
@@ -55,6 +58,7 @@ class ClubController extends Controller
         }
         // Log::debug(print_r($clubs,true));
 
+        Log::info('preparing club list');
         $clublist = datatables()::of($clubs);
 
         return $clublist
@@ -119,9 +123,10 @@ class ClubController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function dashboard($language, Club $club)
+    public function dashboard(Request $request, $language, Club $club)
     {
         if ((Bouncer::cannot('manage', $club)) and  (!Bouncer::canAny(['create-clubs', 'update-clubs']))) {
+            Log::warning('[ACCESS DENIED]',['url'=> $request->path(), 'ip'=> $request->ip() ]);
             abort(403);
         }
         $data['club'] = $club;
@@ -145,6 +150,8 @@ class ClubController extends Controller
 
         //Log::debug(print_r($reports,true));
         $data['files'] = $reports;
+
+        Log::info('showing club dashboard',['club-id'=>$club->id]);
         return view('club/club_dashboard', $data);
     }
 
@@ -161,6 +168,7 @@ class ClubController extends Controller
         $data['teams'] = $data['club']->teams()->with('league')->get()->sortBy('league.shortname');
         $data['memberships'] = $data['club']->memberships()->with('member')->get();
 
+        Log::info('showing club briefing',['club-id'=>$club->id]);
         return view('club/club_briefing', $data);
     }
 
@@ -172,12 +180,14 @@ class ClubController extends Controller
     public function sb_region(Region $region)
     {
         if ($region->is_top_level) {
+            Log::notice('getting clubs for top level region');
             $clubs = Club::whereIn('region_id', $region->childRegions->pluck('id'))->orderBy('shortname', 'ASC')->get();
         } else {
+            Log::notice('getting clubs for base level region');
             $clubs = $region->clubs()->orderBy('shortname', 'ASC')->get();
         }
 
-        Log::debug('got clubs ' . count($clubs));
+        Log::info('preparing select2 club list.', ['count' => count($clubs)] );
         $response = array();
 
         foreach ($clubs as $club) {
@@ -208,7 +218,7 @@ class ClubController extends Controller
 
         $leagues = $club->leagues()->orderBy('shortname', 'ASC')->get();
 
-        Log::debug('got leagues ' . count($leagues));
+        Log::info('preparing select2 league list for a club', ['club-id'=> $club->id, 'count' => count($leagues)] );
         $response = array();
 
         foreach ($leagues as $league) {
@@ -241,9 +251,11 @@ class ClubController extends Controller
     public function store(Request $request, Region $region)
     {
         $data = $request->validate(Club::getCreateRules());
+        Log::info('club form data validated OK.');
 
         $club = new Club($data);
         $region->clubs()->save($club);
+        Log::notice('new club created.', ['club-id'=>$club->id]);
 
         return redirect()->route('club.index', ['language' => app()->getLocale(), 'region' => $region]);
     }
@@ -267,7 +279,7 @@ class ClubController extends Controller
      */
     public function edit($language, Club $club)
     {
-        Log::debug('editing club ', ['shortname' => $club->shortname]);
+        Log::info('editing club.', ['club-id' => $club->id]);
         return view('club/club_edit', ['club' => $club]);
     }
 
@@ -279,7 +291,7 @@ class ClubController extends Controller
      */
     public function list_homegame($language, Club $club)
     {
-        Log::debug('listing hgames for club ' . $club->id);
+        Log::info('listing homegames for club ',['club-id'=> $club->id] );
         return view('game/gamehome_list', ['club' => $club]);
     }
 
@@ -296,17 +308,13 @@ class ClubController extends Controller
             'shortname' => array('required', 'string', Rule::unique('clubs')->ignore($club->id), 'max:4', 'min:4', new Uppercase),
             'name' => 'required|max:255',
             'url' => 'required|url|max:255',
-            'region' => 'required|max:5|exists:regions,code',
             'club_no' => array('required', Rule::unique('clubs')->ignore($club->id), 'max:7'),
         ]);
+        Log::info('club form data validated OK.');
 
-        $data['region_id'] = Region::where('code', $data['region'])->first()->id;
-        unset($data['region']);
-        if (!$club->id) {
-            return redirect()->route('club.index', ['language' => app()->getLocale(), 'region' => $data['region_id']]);
-        }
-
-        $check = Club::find($club->id)->update($data);
+        $check = $club->update($data);
+        $club->refresh();
+        Log::notice('club updated.', ['club-id'=> $club->id]);
         return redirect()->route('club.dashboard', ['language' => app()->getLocale(), 'club' => $club]);
     }
 
@@ -319,19 +327,26 @@ class ClubController extends Controller
 
     public function destroy(Club $club)
     {
-        Log::info(print_r($club->id, true));
-        // delete all dependent items
 
+        // delete all dependent items
         $club->teams()->delete();
+        Log::info('club teams deleted',['club-id'=>$club->id]);
+
         $club->gyms()->delete();
+        Log::info('club gyms deleted',['club-id'=>$club->id]);
+
         $club->leagues()->detach();
+        Log::info('club leagues detached',['club-id'=>$club->id]);
+
         $mships = $club->memberships()->get();
         foreach ($mships as $ms) {
             $ms->delete();
         }
+        Log::info('club memberships deleted',['club-id'=>$club->id]);
 
         $region = $club->region;
         $club->delete();
+        Log::notice('club deleted',['club-id'=>$club->id]);
 
         return redirect()->route('club.index', ['language' => app()->getLocale(), 'region' => $region]);
     }

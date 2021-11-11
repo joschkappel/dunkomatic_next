@@ -56,7 +56,7 @@ class ProcessNewSeason implements ShouldQueue
 
         foreach ($league as $l){
           // delete league clubs (dont delete, as this keeps stable over seasons)
-          // League::find($l->id)->clubs()->delete();
+          // $l->clubs()->delete();
 
           // reset teams
           foreach ($l->teams as $t){
@@ -74,9 +74,16 @@ class ProcessNewSeason implements ShouldQueue
         // clean up report folders
 
 
+        // delete games
+
+
+        // move schedules 1 year forward
+
+
         // send notification
         $users = User::whereNotNull('approved_at')->whereNotNull('email_verified_at')->get();
         Notification::send( $users, new NewSeason($next_season));
+
         $members = Member::all();
         Notification::send( $members, new NewSeason($next_season));
 

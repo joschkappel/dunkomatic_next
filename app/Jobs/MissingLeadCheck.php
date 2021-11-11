@@ -42,7 +42,7 @@ class MissingLeadCheck implements ShouldQueue
      */
     public function handle()
     {
-      Log::info('job running: missing lead checks for region '.$this->region->code);
+      Log::info('[JOB][MISSING ADMINS] started.', ['region-id' => $this->region->id]);
 
       $clubs_nolead = array();
       $leagues_nolead = array();
@@ -65,6 +65,9 @@ class MissingLeadCheck implements ShouldQueue
 
       if ( (count($clubs_nolead) > 0 ) or (count($leagues_nolead)>0 )){
         $this->region_admin->notify( new MissingLead($clubs_nolead, $leagues_nolead) );
+        Log::warning('[JOB][MISSING ADMINS] clubs without clublead/admin.', ['region-id' => $this->region->id, 'club-ids'=>$clubs_nolead ]);
+        Log::warning('[JOB][MISSING ADMINS] leagues without leaguelead/admin.', ['region-id' => $this->region->id, 'league-ids'=>$leagues_nolead ]);
+        Log::info('[NOTIFICATION][MEMBER] missing admins.', ['member-id' => $this->region_admin->id]);
       }
     }
 }

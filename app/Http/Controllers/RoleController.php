@@ -20,8 +20,6 @@ class RoleController extends Controller
      */
     public function index(Request $request)
     {
-      Log::debug(print_r($request->all(),true));
-
       if ( isset($request->scope) and ($request->scope == Club::class )){
         $roles[] = Role::coerce('ClubLead');
         $roles[] = Role::coerce('RefereeLead');
@@ -33,11 +31,12 @@ class RoleController extends Controller
         $roles[] = Role::coerce('LeagueLead');
       } elseif ( isset($request->scope) and ($request->scope == Region::class )){
         $roles[] = Role::coerce('RegionLead');
+        $roles[] = Role::coerce('RegionTeam');
       } else {
         $roles = Role::getInstances();
       };
 
-      Log::debug('got roles '.count($roles));
+      Log::info('preparing select2 role list.', ['count' => count($roles)] );
       $response = array();
 
       foreach($roles as $role){

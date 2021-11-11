@@ -21,7 +21,7 @@ class GameController extends Controller
 
       public function index($language, Region $region )
       {
-
+        Log::info('showing game list.');
         return view('game/game_list', ['region' => $region]);
       }
 
@@ -33,6 +33,7 @@ class GameController extends Controller
         //$games = Game::whereIn('club_id_home', $clubs)->orWhereIn('club_id_guest',$clubs)->orderBy('game_date')->get();
         $games = Game::whereIn('club_id_home', $clubs)->orderBy('game_date')->get();
 
+        Log::info('preparing game list');
         $glist = datatables()::of($games);
 
         $glist =  $glist

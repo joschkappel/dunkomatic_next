@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\Club;
+
 use App\Models\Region;
 use App\Models\League;
 use App\Models\Game;
@@ -13,7 +13,6 @@ use App\Enums\Role;
 use App\Notifications\ClubReportsAvailable;
 
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Bus\Queueable;
@@ -22,6 +21,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
+use Illuminate\Support\Facades\Log;
 
 class ProcessClubReports implements ShouldQueue
 {
@@ -59,6 +59,7 @@ class ProcessClubReports implements ShouldQueue
         // get all clubs with games
         $clubs = $this->region->clubs()->get();
         $region = Region::find($this->region->id);
+        Log::info('batch jobs - kicking off club report generator.', ['region-id' => $region->id]);
 
         foreach ($clubs as $c){
 
@@ -91,6 +92,7 @@ class ProcessClubReports implements ShouldQueue
               if ($c->memberIsA(Role::ClubLead)){
                 $clead = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
                 $clead->notify(new ClubReportsAvailable($c));
+                Log::info('[NOTIFICATION] club reports available.', ['member-id' => $clead->id]);
               }
           })->name('Club Reports '.$c->shortname)
             ->onConnection('redis')

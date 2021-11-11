@@ -2,8 +2,7 @@
 
 @section('content')
 <x-card-form cardTitle="{{ __('team.title.new', ['club' => $club->shortname])  }}" formAction="{{ route('club.team.store',['club' => $club]) }}" formMethod="POST">
-    <input type="hidden" name="_method" value="POST">
-    <input type="hidden" name="club_id" value="{{ $club->id }}">
+    @method("POST")
     <div class="form-group row ">
         <label for='selTeamNo' class="col-sm-4 col-form-label">@lang('team.no')</label>
         <div class="col-sm-6">

@@ -12,7 +12,6 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Helpers\CalendarComposer;
 use Illuminate\Support\Facades\Storage;
 
-use Illuminate\Support\Str;
 use App\Exports\ClubGamesExport;
 use App\Exports\ClubHomeGamesExport;
 use App\Exports\ClubRefereeGamesExport;
@@ -23,6 +22,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+
+use Illuminate\Support\Facades\Log;
 
 class GenerateClubGamesReport implements ShouldQueue
 {
@@ -87,6 +88,7 @@ class GenerateClubGamesReport implements ShouldQueue
 
         return;
       }
+      Log::info('[JOB][CLUB GAMES REPORTS] started.', ['region-id' => $this->region->id, 'club-id'=>$this->club->id]);
 
       if ($this->rtype->hasFlag(ReportFileType::PDF)){
         Excel::store(new ClubGamesExport($this->club->id, new ReportScope($this->scope), (isset($this->league->id))?$this->league->id : NULL ), $this->rpt_name, NULL, \Maatwebsite\Excel\Excel::MPDF );

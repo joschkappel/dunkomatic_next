@@ -4,6 +4,7 @@ namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use App\Http\Middleware\SetLanguage;
+use App\Http\Middleware\SetLogContext;
 
 class Kernel extends HttpKernel
 {
@@ -68,6 +69,7 @@ class Kernel extends HttpKernel
         'approved' => \App\Http\Middleware\CheckApproved::class,
         'set.language' => \App\Http\Middleware\SetLanguage::class,
         'set.region' => \App\Http\Middleware\SetRegion::class,
+        'set.logcontext' => \App\Http\Middleware\SetLogContext::class,
     ];
 
 

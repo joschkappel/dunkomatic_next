@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\League;
-use App\Enums\Role;
+use Illuminate\Support\Facades\Log;
 use BenSampo\Enum\Rules\EnumValue;
 use App\Enums\LeagueStateChange;
 
@@ -29,6 +29,7 @@ class LeagueStateController extends Controller
         $data = $request->validate([
             'action' => ['required', new EnumValue(LeagueStateChange::class, false)],
         ]);
+        Log::info('new league state form data validated OK.', ['league-id'=>$league->id]);
 
         switch ($data['action']) {
             case LeagueStateChange::CloseAssignment():

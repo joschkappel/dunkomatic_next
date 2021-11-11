@@ -17,14 +17,15 @@ class LeagueSizeSchemeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index( )
+    public function index()
     {
-      return view('league/league_scheme_list');
+        Log::info('showing laegue size scheme list.');
+        return view('league/league_scheme_list');
     }
 
-    public function list_piv(LeagueSize $size )
+    public function list_piv(LeagueSize $size)
     {
-        Log::debug('get league team scheme for '.$size->description.' teams');
+        Log::info('preparing laegue scheme pivot table.', ['league-size-id'=>$size->id]);
 
         //$scheme = datatables()::of(LeagueTeamScheme::query()->where('size', '=', $size));
 
@@ -46,14 +47,13 @@ class LeagueSizeSchemeController extends Controller
           max(case when team_home = '15' then team_guest else ' ' end) as '15',
           max(case when team_home = '16' then team_guest else ' ' end) as '16'
         from league_size_schemes
-        where league_size_id='".$size->id."'
+        where league_size_id='" . $size->id . "'
         group by game_day"));
 
-      //  Log::debug(print_r($test, true));
+        //  Log::debug(print_r($test, true));
 
         $returnhtml =  view("league/includes/league_scheme_pivot", ["scheme" => $scheme])->render();
         // Log::debug(print_r($returnhtml, true));
         return Response::json($returnhtml);
-      }
-
+    }
 }

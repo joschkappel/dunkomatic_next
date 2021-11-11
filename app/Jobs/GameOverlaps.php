@@ -12,8 +12,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Region;
-use App\Models\Club;
-use App\Models\Member;
 
 class GameOverlaps implements ShouldQueue
 {
@@ -29,8 +27,8 @@ class GameOverlaps implements ShouldQueue
      */
     public function __construct(Region $region)
     {
-      $this->region = $region;
-      $this->region_admin = $region->regionadmin()->first();
+        $this->region = $region;
+        $this->region_admin = $region->regionadmin()->first();
     }
 
     /**
@@ -40,28 +38,26 @@ class GameOverlaps implements ShouldQueue
      */
     public function handle()
     {
-      Log::info('job running: game day validation checks for region '.$this->region->code);
-      $clubs = $this->region->clubs()->get();
-      $game_slot = $this->region->game_slot;
-      $min_slot = $game_slot - 1 ;
+        Log::info('[JOB][OVERLAPPING GAMES] started.', ['region-id' => $this->region->id]);
+        $clubs = $this->region->clubs()->get();
+        $game_slot = $this->region->game_slot;
+        $min_slot = $game_slot - 1;
 
-      foreach ($clubs as $c){
-        $select = 'SELECT distinct ga.id
+        foreach ($clubs as $c) {
+            $select = 'SELECT distinct ga.id
                FROM games ga
-               JOIN games gb on ga.game_time <= date_add(gb.game_time, INTERVAL '.$min_slot.' minute)
-                   and date_add(ga.game_time,interval '.$min_slot.' minute) >= gb.game_time
+               JOIN games gb on ga.game_time <= date_add(gb.game_time, INTERVAL ' . $min_slot . ' minute)
+                   and date_add(ga.game_time,interval ' . $min_slot . ' minute) >= gb.game_time
                    and ga.club_id_home=gb.club_id_home and ga.gym_no = gb.gym_no and ga.game_date = gb.game_date
                    and ga.id != gb.id
-               WHERE ga.club_id_home='.$c->id.' ORDER BY ga.game_date DESC, ga.club_id_home ASC';
+               WHERE ga.club_id_home=' . $c->id . ' ORDER BY ga.game_date DESC, ga.club_id_home ASC';
 
-         $ogames = collect(DB::select($select))->pluck('id');
+            $ogames = collect(DB::select($select))->pluck('id');
 
 
-         if ( count($ogames)>0 ){
-           Log::info('checking '.$game_slot.' min for '.$c->shortname.' - '.print_r($ogames,true));
-         }
-
-      }
-
+            if (count($ogames) > 0) {
+                Log::warning('[JOB][OVERLAPPING GAMES] found overlapping games.', ['club-id' => $c->id, 'gameslot'=>$game_slot, 'count' => count($ogames)]);
+            }
+        }
     }
 }

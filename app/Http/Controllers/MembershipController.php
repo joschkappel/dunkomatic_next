@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Log;
 class MembershipController extends Controller
 {
 
-   /**
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -25,48 +25,49 @@ class MembershipController extends Controller
      */
     public function store(Request $request)
     {
-      Log::debug(print_r($request->all(),true));
+        $entity_type = $request['entity_type'];
+        unset($request['entity_type']);
+        $entity_id = $request['entity_id'];
+        unset($request['entity_id']);
 
-      $entity_type = $request['entity_type'];
-      unset($request['entity_type']);
-      $entity_id = $request['entity_id'];
-      unset($request['entity_id']);
+        $data = $request->validate([
+            'member_id' => 'required|exists:members,id',
+            'role_id' => ['required', new EnumValue(Role::class, false)],
+            'function'  => 'nullable|max:40',
+            'email'     => 'nullable|max:60|email:rfc,dns'
+        ]);
+        Log::info('membership form data validated OK.');
 
-      $data = $request->validate( [
-        'member_id' => 'required|exists:members,id',
-        'role_id' => ['required', new EnumValue(Role::class, false)],
-        'function'  => 'nullable|max:40',
-        'email'     => 'nullable|max:60|email:rfc,dns'
-      ] );
+        $member = Member::findOrFail($data['member_id']);
 
-      $member = Member::find($data['member_id']);
-
-      if ($entity_type == Club::class){
-        $club = Club::find($entity_id);
-        $club->memberships()->create($data);
-        return redirect()->action('ClubController@dashboard', ['language' => app()->getLocale(), 'club' => $club]);
-      } elseif ($entity_type == League::class){
-        $league = League::find($entity_id);
-        $league->memberships()->create($data);
-        return redirect()->action('LeagueController@dashboard', ['language' => app()->getLocale(), 'league' => $league]);
-      } elseif ($entity_type == Region::class){        
-        $region = Region::find($entity_id);
-        $region->memberships()->create($data);
-      }
-
+        if ($entity_type == Club::class) {
+            $club = Club::findOrFail($entity_id);
+            $ms = $club->memberships()->create($data);
+            Log::notice('club membership created.', ['club-id'=> $club->id, 'member-id'=>$member->id, 'membership-id'=>$ms->id]);
+            return redirect()->action('ClubController@dashboard', ['language' => app()->getLocale(), 'club' => $club]);
+        } elseif ($entity_type == League::class) {
+            $league = League::findOrFail($entity_id);
+            $ms = $league->memberships()->create($data);
+            Log::notice('league membership created.', ['league-id'=> $league->id, 'member-id'=>$member->id, 'membership-id'=>$ms->id]);
+            return redirect()->action('LeagueController@dashboard', ['language' => app()->getLocale(), 'league' => $league]);
+        } elseif ($entity_type == Region::class) {
+            $region = Region::findOrFail($entity_id);
+            $ms = $region->memberships()->create($data);
+            Log::notice('region membership created.', ['region-id'=> $region->id, 'member-id'=>$member->id, 'membership-id'=>$ms->id]);
+        }
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Membership  $membership
      * @return \Illuminate\Http\Response
      */
-    public function destroy( Membership $membership)
+    public function destroy(Membership $membership)
     {
         // delete role
         $membership->delete();
-        Log::info('membership deleted');
+        Log::notice('membership deleted.',['membership-id'=>$membership->id]);
 
         return true;
     }
@@ -77,15 +78,17 @@ class MembershipController extends Controller
      * @param  \App\Membership  $member
      * @return \Illuminate\Http\Response
      */
-    public function update( Request $request, Membership $membership)
+    public function update(Request $request, Membership $membership)
     {
-      $data = $request->validate([
-        'function'  => 'nullable|max:40',
-        'email'     => 'nullable|max:60|email:rfc,dns',
+        $data = $request->validate([
+            'function'  => 'nullable|max:40',
+            'email'     => 'nullable|max:60|email:rfc,dns',
         ]);
-        // Log::debug(print_r($membership,true));
-      $check = $membership->update($data);
+        Log::info('membership form data validated OK.');
 
-      return redirect()->back();
+        $check = $membership->update($data);
+        Log::notice('membership updated.',['membership-id'=>$membership->id]);
+
+        return redirect()->back();
     }
 }

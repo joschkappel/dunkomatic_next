@@ -6,7 +6,6 @@ use App\Models\Club;
 use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Response;
 
 class ClubTeamController extends Controller
 {
@@ -23,9 +22,9 @@ class ClubTeamController extends Controller
 
     public function pickchar($language, Club $club)
     {
-      $club = Club::where('id', $club->id)->with('teams.league.teams')->with('teams.league.schedule')->first();
-      //dd($club);
-      return view('club.club_pickchar', ['club'=>$club]);
+        $club = $club->with('teams.league.teams')->with('teams.league.schedule')->first();
+        Log::info('showing club team league char chart.', ['club-id' => $club->id]);
+        return view('club.club_pickchar', ['club' => $club]);
     }
 
     /**
@@ -36,7 +35,8 @@ class ClubTeamController extends Controller
      */
     public function create($language, Club $club)
     {
-      return view('team/team_new', ['club' => $club]);
+        Log::info('create new team for club', ['club-id' => $club->id]);
+        return view('team/team_new', ['club' => $club]);
     }
 
     /**
@@ -48,15 +48,17 @@ class ClubTeamController extends Controller
      */
     public function store(Request $request, Club $club)
     {
-      Log::debug(print_r($request->all(),true));
+        $data = $request->validate(Team::getCreateRules());
+        Log::info('team form data validated OK.');
 
-      $data = $request->validate( Team::getCreateRules() );
+        $team = new Team($data);
+        $club->teams()->save($team);
+        Log::notice('new team created for club', ['club-id'=>$club->id, 'team-id'=>$team->id]);
 
-      $check = Team::create($data);
-
-      return redirect()->action(
-              'ClubController@dashboard', ['language'=>app()->getLocale(), 'club' => $club->id]
-      );
+        return redirect()->action(
+            'ClubController@dashboard',
+            ['language' => app()->getLocale(), 'club' => $club->id]
+        );
     }
 
     /**
@@ -74,60 +76,58 @@ class ClubTeamController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Club  $club
      * @param  \App\Models\Team  $team
      * @return \Illuminate\Http\Response
      */
-    public function edit($language, Club $club, Team $team)
+    public function edit($language, Team $team)
     {
+        Log::info('editing team.', ['team-id'=>$team->id]);
+        $team->load('club', 'league');
 
-      //Log::debug(print_r($team,true));
-      $team->load('club','league');
-
-      return view('team/team_edit', ['team' => $team]);
+        return view('team/team_edit', ['team' => $team]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Club  $club
      * @param  \App\Models\Team  $team
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Club $club, Team $team)
+    public function update(Request $request, Team $team)
     {
-        Log::debug(print_r($request->all(),true));
-        // reset time values if invalid
-        if ($request['training_time'] == 'Invalid date'){
-          $request['training_time'] = null;
+        if ($request['training_time'] == 'Invalid date') {
+            $request['training_time'] = null;
         }
-        if ($request['preferred_game_time'] == 'Invalid date'){
-          $request['preferred_game_time'] = null;
+        if ($request['preferred_game_time'] == 'Invalid date') {
+            $request['preferred_game_time'] = null;
         }
-        Log::debug(print_r($request->all(),true));
-        $data = $request->validate( Team::getUpdateRules() );
+        $data = $request->validate(Team::getUpdateRules());
+        Log::info('team form data validated OK.');
 
-        Log::debug('UPDATING');
-        $check = Team::where('id', $team->id)->update($data);
+        $check = $team->update($data);
+        $team->refresh();
+        Log::notice('team updated', ['team-id'=> $team->id]);
 
         return redirect()->action(
-                'ClubController@dashboard', ['language'=>app()->getLocale(), 'club' => $team->club_id]
+            'ClubController@dashboard',
+            ['language' => app()->getLocale(), 'club' => $team->club_id]
         );
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Club  $club
      * @param  \App\Models\Team  $team
      * @return \Illuminate\Http\Response
      */
-    public function destroy( Club $club, Team $team)
+    public function destroy(Team $team)
     {
-        // TBDnremove from league
+        // TBD remove from league ?? or remove games ?
 
-        Team::find($team->id)->delete();
+        $check = $team->delete();
+        Log::notice('team deleted.', ['team-id'=>$team->id]);
+
         return redirect()->back();
     }
 }

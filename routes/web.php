@@ -26,7 +26,7 @@ Route::get('/health', function () {
 Route::group([
     'prefix' => '{language}',
     'where' => ['language' => '[a-zA-Z]{2}'],
-    'middleware' => ['set.language','set.region']
+    'middleware' => ['set.language','set.region','set.logcontext']
 ], function () {
 
     Route::get('/', function () {
@@ -138,9 +138,9 @@ Route::group([
     });
 });
 
-Route::get('region/admin/sb', 'RegionController@admin_sb')->name('region.admin.sb');
+Route::get('region/admin/sb', 'RegionController@admin_sb')->name('region.admin.sb')->middleware('set.logcontext');
 
-Route::middleware(['auth','set.region'])->group(function () {
+Route::middleware(['auth','set.region','set.logcontext'])->group(function () {
     // APIs , no locale or language required !
     Route::redirect('home', '/de/home');
 
@@ -166,7 +166,7 @@ Route::middleware(['auth','set.region'])->group(function () {
     Route::get('club/{club}/league/sb', 'ClubController@sb_league')->name('club.sb.league');
 
     Route::get('club/{club}/game/chart_home', 'ClubGameController@chart_home')->name('club.game.chart_home');
-    Route::get('club/{club}/list/gym/{gym}', 'ClubGymController@sb_gym')->name('gym.sb.gym');
+    Route::get('gym/{gym}/list', 'ClubGymController@sb_gym')->name('gym.sb.gym');
     Route::get('club/{club}/list/gym', 'ClubGymController@sb_club')->name('gym.sb.club');
     Route::get('team/{team}/list/gym', 'ClubGymController@sb_team')->name('gym.sb.team');
     Route::resource('club.gym', 'ClubGymController')->shallow()->only('store', 'update', 'destroy');
