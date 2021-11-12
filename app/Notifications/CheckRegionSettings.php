@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Notifications;
+use App\Models\Region;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -8,20 +9,22 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
 
-class NewSeason extends Notification
+class CheckRegionSettings extends Notification
 {
     use Queueable;
 
     protected $season;
+    protected $region;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($season)
+    public function __construct($season, Region $region)
     {
         $this->season = $season;
+        $this->region = $region;
     }
 
     /**
@@ -48,11 +51,12 @@ class NewSeason extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject( __('notifications.newseason.subject'))
+                    ->subject( __('notifications.checkregionsetting.subject'))
                     ->greeting( __('notifications.user.greeting', ['username' => $notifiable->name]) )
-                    ->line( __('notifications.newseason.line1', [ 'season' => $this->season ]) )
-                    ->line( __('notifications.newseason.line2') )
-                    ->line( __('notifications.newseason.line3') )
+                    ->line( __('notifications.checkregionsetting.line1',['season'=>$this->season]) )
+                    ->line( __('notifications.checkregionsetting.line2', ['region'=>$this->region->code]) )
+                    ->action( __('notifications.checkregionsetting.action') , route('region.edit', ['language'=> app()->getLocale(), 'region'=> $this->region] ) )
+                    ->line( __('notifications.checkregionsetting.line3') )
                     ->salutation( __('notifications.app.salutation') );
     }
 
@@ -64,12 +68,14 @@ class NewSeason extends Notification
      */
     public function toArray($notifiable)
     {
-      $lines =  '<p>'.__('notifications.newseason.line1', [ 'season' => $this->season ]).'</p>';
-      $lines .= '<p>'.__('notifications.newseason.line2').' </p>';
-      $lines .= '<p class="text-info">'.__('notifications.newseason.line3').'</p>';
+      $lines =  '<p>'.__('notifications.checkregionsetting.line1',['season'=>$this->season]).'</p>';
+      $lines .= '<p>'.__('notifications.checkregionsetting.line2', ['region'=>$this->region->code]).' </p>';
+      $lines .= '<div><a class="btn btn-primary" href="'.route('region.edit', ['language'=> app()->getLocale(), 'region'=> $this->region] ).'">'.__('notifications.checkregionsetting.action').'</a></div>';
+      $lines .= '<p>'.__('notifications.checkregionsetting.line3').' </p>';
+
 
       return [
-          'subject' => __('notifications.newseason.subject'),
+          'subject' => __('notifications.checkregionsetting.subject'),
           'greeting' => __('notifications.user.greeting', ['username' => $notifiable->name]),
           'lines' => $lines,
           'salutation' => __('notifications.app.salutation')

@@ -22,7 +22,7 @@
         </div>
         <div class="timeline-footer">
             @if ($msg->type != 'App\Notifications\AppActionMessage')
-            <button class="btn btn-primary btn-sm" id="btnShowMessage" data-title="{{ $msg->data['subject'] }}" data-body="{{ $msg->data['lines']}}" data-greeting="{{ $msg->data['greeting']}}" data-salutation="{{ $msg->data['salutation']}}" >{{ __('message.read_more') }}</button>
+            <button class="btn btn-primary btn-sm" id="btnShowMessage" data-title="{{ $msg->data['subject'] }}" data-body="{{ $msg->data['lines']}}" data-greeting="{{ $msg->data['greeting'] ?? ''}}" data-salutation="{{ $msg->data['salutation'] ?? ''}}" >{{ __('message.read_more') }}</button>
             @endif
             <a class="btn btn-danger btn-sm" href="{{ route('message.mark_as_read', ['message'=>$msg->id])}}">{{ __('message.delete')}}</a>
         </div>

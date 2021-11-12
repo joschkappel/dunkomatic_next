@@ -36,6 +36,12 @@ return [
     'newseason.line2'   =>  'Some work and fun is ahead of you.',
     'newseason.line3'   =>  'Stay tuned and watch your message board or inbox !',
 
+    'checkregionsetting.subject' => 'New Season has Started',
+    'checkregionsetting.line1' => 'The new season :season has been kicked off in DunkOmatic.',
+    'checkregionsetting.line2' => 'All dates in the settings of your region :REGION have been auto-adjusted and moved on year ahead.',
+    'checkregionsetting.line3' => 'Please verify these dates and adjust accoprdingly.',
+    'checkregionsetting.action' => 'Regionsettings',
+
     'missinglead.subject'   =>  'Missing League- or CLubleads',
     'missinglead.line1' =>  'Clubs without any admin:',
     'missinglead.line2' =>  'Leagues without any admin:',

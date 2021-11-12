@@ -31,10 +31,16 @@ return [
     'approveuser.line1' =>  'Die Bezirksleitung des Bezirks :REGION hat Deine Registrierung akzeptiert!',
     'approveuser.line2' =>  'Stelle sicher, dass Du deine eMail verifiziert hast und Viel Spaß mit Dunkomatic !',
 
-    'newseason.subject' =>  'Neue Spielsaison Gestartet',
+    'newseason.subject' =>  'Neue Spielsaison gestartet',
     'newseason.line1'   =>  'Die neue Spielsaison :season wurde in DunkOmatic getstartet.',
     'newseason.line2'   =>  'Etwas Arbeit und eine Menge Spass kommen auf Dich zu.',
     'newseason.line3'   =>  'Bleib dran und prüfe deine Nachrichten oder eMails regelmäßig !',
+
+    'checkregionsetting.subject' => 'Neue Spielsaison gestartet',
+    'checkregionsetting.line1' => 'Die neue Spielsaison :season ist gestartet.',
+    'checkregionsetting.line2' => 'Die Datumsangaben in den Einstellungen deines Bezirks :REGION wurden automatisch geändert und um ein Jahr verschoben.',
+    'checkregionsetting.line3' => 'Bitte überprüfe die Daten und passe sie gegebenenfalls an.',
+    'checkregionsetting.action' => 'Bezirkseinstellungen',
 
     'missinglead.subject'   =>  'Fehlende Abteilungs- und Staffelleiter',
     'missinglead.line1' =>  'Vereine ohne Abteilnugsleiter:',
