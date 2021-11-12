@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
-class TestDatabaseSeeder extends Seeder
+class SysTestDatabaseSeeder extends Seeder
 {
     /**
      * Seed the application's database.
@@ -13,6 +13,8 @@ class TestDatabaseSeeder extends Seeder
      */
     public function run()
     {
+        // $this->call(UserSeeder::class);
+
         // load base tables
         $this->call([
             base\BouncerSeeder::class,
@@ -22,13 +24,15 @@ class TestDatabaseSeeder extends Seeder
             base\LeagueSizeCharsTableSeeder::class,
             base\LeagueSizeSchemesTableSeeder::class,
             dev\UsersTableSeeder::class,
-            test\UserSeeder::class,
             base\MessagesTableSeeder::class,
         ]);
 
-        // load test tables
+        // migrate tables from v1
         $this->call([
-            base\LeagueStateTableSeeder::class,
+            systest\SchedulesSeeder::class,
+            systest\MembersSeeder::class,
+            systest\ClubsSeeder::class,
+            systest\LeaguesSeeder::class,
         ]);
     }
 }
