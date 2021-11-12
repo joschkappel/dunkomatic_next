@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 use App\Models\Setting;
 use App\Models\Region;
@@ -163,7 +164,7 @@ class AppServiceProvider extends ServiceProvider
                 'text'  => __('region.menu.list'),
                 'icon'  => 'fas fa-list',
                 'icon_color' => 'danger',
-                'url' => route('region.index', ['language' => app()->getLocale()]),
+                'route' => ['region.index', ['language' => app()->getLocale()]],
                 'can' => 'view-regions',
                 'shift' => 'ml-3'
             ];
@@ -174,7 +175,7 @@ class AppServiceProvider extends ServiceProvider
 
             foreach ($allowed_regions as $r) {
                 $smenu['text'] = $r->code;
-                $smenu['url']  = route('region.dashboard', ['language' => app()->getLocale(), 'region' => $r]);
+                $smenu['route']  = ['region.dashboard', ['language' => app()->getLocale(), 'region' => $r]];
                 $smenu['icon_color'] = 'danger';
                 $smenu['icon'] =  'fas fa-list';
                 $smenu['shift'] = 'ml-3';
@@ -184,7 +185,7 @@ class AppServiceProvider extends ServiceProvider
 
             $smenu = [
                 'text' => trans_choice('schedule.scheme', 2),
-                'url'  => route('scheme.index', app()->getLocale()),
+                'route'  => ['scheme.index', ['language'=>app()->getLocale()]],
                 'icon' => 'fas fa-people-arrows',
                 'icon_color' => 'danger',
                 'shift' => 'ml-3'
@@ -203,20 +204,23 @@ class AppServiceProvider extends ServiceProvider
             // MENU - ADMIN
             $event->menu->add([
                 'icon' => 'fas fa-paperclip',
-                'icon-color' => 'dark',
+                'icon_color' => 'blue',
                 'text' => __('Administration'),
+                'classes'  => 'text-danger text-uppercase',
                 'submenu' => [
                     [
                         'text'  => __('Approve Users'),
                         'icon'  => 'fas fa-thumbs-up',
-                        'url' => route('admin.user.index.new', ['language'=>app()->getLocale(),'region'=>session('cur_region')]),
+                        'icon_color' => 'blue',
+                        'route' => ['admin.user.index.new', ['language'=>app()->getLocale(),'region'=>session('cur_region')]],
                         'can'  => 'udpate-users',
                         'shift' => 'ml-3'
                     ],
                     [
                         'text'  => __('Manage Users'),
                         'icon'  => 'fas fa-users',
-                        'url' => route('admin.user.index', ['language'=>app()->getLocale(),'region'=>session('cur_region')]),
+                        'icon_color' => 'blue',
+                        'route' => ['admin.user.index', ['language'=>app()->getLocale(),'region'=>session('cur_region')]],
                         'can'  => 'view-users',
                         'shift' => 'ml-3'
                     ],
@@ -224,13 +228,15 @@ class AppServiceProvider extends ServiceProvider
                     [
                         'text'  => __('Audit Trail'),
                         'icon'  => 'fas fa-stream',
-                        'url' => route('admin.audit.index', app()->getLocale()),
+                        'icon_color' => 'blue',
+                        'route' => ['admin.audit.index', ['language'=>app()->getLocale()]],
                         'shift' => 'ml-3'
                     ],
                     [
                         'text'  => __('message.menu.list'),
                         'icon'  => 'fas fa-envelope',
-                        'url' => route('message.index', ['language'=>app()->getLocale(), 'region'=>session('cur_region'), 'user'=>Auth::user()]),
+                        'icon_color' => 'blue',
+                        'route' => ['message.index', ['language'=>app()->getLocale(), 'region'=>session('cur_region'), 'user'=>Auth::user()]],
                         'shift' => 'ml-3'
                     ],
 
@@ -253,7 +259,7 @@ class AppServiceProvider extends ServiceProvider
             };
 
             $event->menu->add([
-                'text' => __('season') . ' ' . config('global.season'),
+                'text' => Str::upper(__('Season')) . ' ' . config('global.season'),
                 'topnav' => true,
                 'route' => ['home', ['language' => app()->getLocale()]],
             ]);
