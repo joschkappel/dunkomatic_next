@@ -23,7 +23,7 @@ jobs:
         cp .env.dusk.git .env
         cp tests/DuskTestCase.php.git tests/DuskTestCase.php
         chmod -R 777 storage bootstrap/cache
-        mkdir -p storage/app/exports/2020_21/HBVDA
+        mkdir -m 777 -p storage/app/exports/2020_21/HBVDA/vereine
     - name: install dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --prefer-dist
     - name: Create Database
