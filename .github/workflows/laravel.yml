@@ -25,6 +25,7 @@ jobs:
         chmod -R 777 storage bootstrap/cache
         mkdir -m 777 -p storage/app/exports/2020_21/HBVDA/vereine
         mkdir -m 777 -p storage/app/exports/2020_21/HBVDA/runden
+        mkdir -m 777 -p storage/app/backup
     - name: install dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --prefer-dist
     - name: Create Database

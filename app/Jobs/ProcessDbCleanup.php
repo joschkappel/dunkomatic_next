@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 
 class ProcessDbCleanup implements ShouldQueue
@@ -37,6 +38,10 @@ class ProcessDbCleanup implements ShouldQueue
     {
         $aweekago = Carbon::today()->subDays(7)->toDateString();
         $amonthago = Carbon::today()->subDays(30)->toDateString();
+
+        // first dump the DB
+        Artisan::call('db:backup');
+        Log::notice('[JOB][DB CLEANUP] creating DB backup.');
 
         // drop all outdated (one week) messages;
         $old_msgs = Message::whereDate('sent_at', '<', $aweekago)->get();
