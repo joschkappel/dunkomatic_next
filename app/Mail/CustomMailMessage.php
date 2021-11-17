@@ -29,7 +29,7 @@ class CustomMailMessage extends Mailable
       $this->message = $message;
 
       $user = $message->user;
-      Log::info('Send eMail to ',['user'=>$user->email]);
+      Log::info('[EMAIL] Sending to.',['user'=>$user->email]);
       $this->sender_name = $user['name'];
       $this->sender_email = $user['email'];
 

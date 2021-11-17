@@ -51,15 +51,18 @@ class InvalidEmail extends Notification
     public function toMail($notifiable)
     {
         $mail = (new MailMessage)
-                    ->cc($this->cc->email1)
                     ->level('error')
-                    ->subject( __('notifications.invalidemail.subject') )
+                    ->subject( __('notifications.invalidemail.subject', ['clubcode'=>$this->club->shortname]) )
                     ->greeting( __('notifications.user.greeting', ['username'=>$notifiable->name]) )
-                    ->line(__('notifications.invalidemail.line'));
+                    ->line(__('notifications.invalidemail.line', ['clubname'=>$this->club->name]) );
+        if ( isset($this->cc) and ($this->cc->email1 != '') ){
+            $mail->cc($this->cc->email1);
+        }
+
         foreach ($this->emaillist as $l){
           $mail = $mail->line($l);
         };
-        $mail = $mail->action(__('notifications.invalidemail.action'),route('club.dashboard', ['language'=>app()->getLocale(), 'id'=>$this->club->id]));
+        $mail = $mail->action(__('notifications.invalidemail.action'),route('club.dashboard', ['language'=>app()->getLocale(), 'club'=>$this->club->id]));
 
         return $mail;
     }

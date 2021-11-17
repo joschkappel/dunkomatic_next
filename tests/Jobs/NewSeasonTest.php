@@ -18,7 +18,7 @@ use App\Enums\LeagueState;
 
 
 
-class NewSeasonJobTest extends SysTestCase
+class NewSeasonTest extends SysTestCase
 {
 
 
@@ -32,8 +32,6 @@ class NewSeasonJobTest extends SysTestCase
      */
     public function run_job()
     {
-        Queue::fake();
-
         Notification::fake();
         Notification::assertNothingSent();
 
@@ -42,19 +40,16 @@ class NewSeasonJobTest extends SysTestCase
         app()->call([$job_instance, 'handle']);
 
         // check that teams are reset
-        $this->assertDatabaseHas('teams', ['league_no' => null,'league_id'=>null ]);
+        $this->assertDatabaseHas('teams', ['league_no' => null, 'league_id' => null]);
         // check that gaems are truncated
         $this->assertDatabaseCount('games', 0);
         // check that league status is reset
-        $this->assertDatabaseHas('leagues', ['state' => LeagueState::Assignment()  ]);
+        $this->assertDatabaseHas('leagues', ['state' => LeagueState::Assignment()]);
 
-        Notification::assertSentTo( [Membership::where('role_id', Role::RegionLead() )->first()->member], CheckRegionSettings::class );
-        Notification::assertSentTo( User::whereNotNull('approved_at')->whereNotNull('email_verified_at')->get(), NewSeason::class );
-        Notification::assertSentTo( Member::all(), NewSeason::class );
+        Notification::assertSentTo([Membership::where('role_id', Role::RegionLead())->first()->member], CheckRegionSettings::class);
+        Notification::assertSentTo(User::whereNotNull('approved_at')->whereNotNull('email_verified_at')->get(), NewSeason::class);
+        Notification::assertSentTo(Member::all(), NewSeason::class);
 
-        Queue::assertNothingPushed();
         $this->travelBack();
-
-
     }
 }

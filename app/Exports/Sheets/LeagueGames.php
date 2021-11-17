@@ -7,7 +7,6 @@ use App\Models\League;
 use App\Models\Team;
 use App\Models\Club;
 use App\Models\Gym;
-use App\Enums\ReportScope;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithTitle;
@@ -38,13 +37,12 @@ class LeagueGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
     protected $r_b_2_s;
     protected $r_b_2_e;
 
-    public function __construct(League $league, ReportScope $scope)
+    public function __construct(League $league)
     {
         $this->gdate = null;
         $this->league = $league;
-        $this->scope = $scope;
 
-        Log::info('sheet for '.$this->league->name);
+        Log::info('[EXCEL EXPORT] creating sheet.', ['league-id'=>$this->league->id]);
     }
 
     /**
@@ -52,9 +50,7 @@ class LeagueGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
      */
     public function title(): string
     {
-      if ( $this->scope == ReportScope::ms_all()) {
-        return 'Rundenspielplan ' . $this->league->shortname;
-      }
+       return 'Rundenspielplan ' . $this->league->shortname;
     }
 
     public function view(): View
@@ -94,11 +90,11 @@ class LeagueGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
         $this->r_b_2_s = $this->r_h_2;
         $this->r_b_2_e = $this->r_h_2 + ( $clubs->count() + (2*$g) + (2*$t) );
 
-        Log::info($this->r_b_1_e);
+/*         Log::info($this->r_b_1_e);
         Log::info($this->r_t_2);
         Log::info($this->r_h_2);
         Log::info($this->r_b_2_s);
-        Log::info($this->r_b_2_e);
+        Log::info($this->r_b_2_e); */
 
         return view('reports.game_league', ['games'=>$games,'clubs'=>$clubs,'league'=>$this->league, 'gdate'=>$this->gdate]);
     }

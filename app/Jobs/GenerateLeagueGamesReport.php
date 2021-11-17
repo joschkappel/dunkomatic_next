@@ -38,35 +38,17 @@ class GenerateLeagueGamesReport implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Region $region, League $league, ReportFileType $rtype, ReportScope $scope)
+    public function __construct(Region $region, League $league, ReportFileType $rtype)
     {
         // set report scope
         $this->region = $region;
         $this->league = $league;
-        $this->scope = $scope->value;
         $this->rtype = $rtype;
 
         // make sure folders are there
         $this->export_folder = $region->league_folder;
-        $this->rpt_name = $this->export_folder.'/'.$this->league->shortname;
-
-        switch ($this->scope) {
-          case ReportScope::ms_all:
-            $this->rpt_name .= '_games.';
-            break;
-          case ReportScope::ss_club_all:
-            $this->rpt_name .= '_games_all.';
-            break;
-          case ReportScope::ss_club_home:
-            $this->rpt_name .= '_games_home.';
-            break;
-          case ReportScope::ss_club_referee:
-            $this->rpt_name .= '_games_referee.';
-            break;
-          case ReportScope::ss_club_league:
-            $this->rpt_name .= '_'.$this->league->shortname.'_games.';
-            break;
-        }
+        $this->rpt_name = $this->export_folder . '/' . $this->league->shortname;
+        $this->rpt_name .= '_games.';
         $this->rpt_name .= $this->rtype->description;
     }
 
@@ -77,30 +59,28 @@ class GenerateLeagueGamesReport implements ShouldQueue
      */
     public function handle()
     {
-      if ($this->batch()->cancelled()) {
-        // Detected cancelled batch...
-
-        return;
-      }
-      Log::info('[JOB][LEAGUE GAMES REPORTS] started.', ['region-id' => $this->region->id, 'league-id'=>$this->league->id]);
-
-      foreach ( $this->region->fmt_league_reports->getFlags() as $rtype  ){
-        switch ( $this->scope ){
-          case ReportScope::ms_all:
-            if ($rtype->hasFlag(ReportFileType::PDF)){
-              Excel::store(new LeagueGamesExport($this->league->id, new ReportScope($this->scope)), $this->rpt_name, NULL, \Maatwebsite\Excel\Excel::MPDF );
-            } elseif ($rtype->hasFlag(ReportFileType::ICS)){
-              // do calendar files
-              $calendar = CalendarComposer::createLeagueCalendar($this->league);
-              if ($calendar != null){
-                Storage::put($this->rpt_name, $calendar->get());
-              }
-            } else {
-              Excel::store(new LeagueGamesExport($this->league->id, new ReportScope($this->scope)), $this->rpt_name );
+        if ($this->batch() !== null) {
+            if ($this->batch()->cancelled()) {
+                // Detected cancelled batch...
+                return;
             }
-            break;
         }
-      }
 
+        Log::info('[JOB][LEAGUE GAMES REPORTS] started.', [
+            'region-id' => $this->region->id,
+            'league-id' => $this->league->id,
+            'format' => $this->rtype->key]);
+
+        if ($this->rtype->hasFlag(ReportFileType::PDF)) {
+            Excel::store(new LeagueGamesExport($this->league->id ), $this->rpt_name, NULL, \Maatwebsite\Excel\Excel::MPDF);
+        } elseif ($this->rtype->hasFlag(ReportFileType::ICS)) {
+            // do calendar files
+            $calendar = CalendarComposer::createLeagueCalendar($this->league);
+            if ($calendar != null) {
+                Storage::put($this->rpt_name, $calendar->get());
+            }
+        } else {
+            Excel::store(new LeagueGamesExport($this->league->id), $this->rpt_name);
+        }
     }
 }

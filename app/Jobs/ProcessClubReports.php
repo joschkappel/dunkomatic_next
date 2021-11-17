@@ -27,11 +27,12 @@ class ProcessClubReports implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private $region;
+    protected $region;
 
     /**
      * Create a new job instance.
      *
+     * @param  App\Models\Region  $region
      * @return void
      */
     public function __construct(Region $region)
@@ -39,14 +40,13 @@ class ProcessClubReports implements ShouldQueue
         // set report scope
         $this->region = $region;
 
-        if ( Storage::exists($region->club_folder) ){
-          // remove old reports
-          //Storage::deleteDirectory($region->club_folder, false);
+        if (Storage::exists($region->club_folder)) {
+            // remove old reports
+            //Storage::deleteDirectory($region->club_folder, false);
         } else {
-          // make sure folders are there
-          Storage::makeDirectory($region->club_folder);
+            // make sure folders are there
+            Storage::makeDirectory($region->club_folder);
         };
-
     }
 
     /**
@@ -58,46 +58,48 @@ class ProcessClubReports implements ShouldQueue
     {
         // get all clubs with games
         $clubs = $this->region->clubs()->get();
-        $region = Region::find($this->region->id);
-        Log::info('batch jobs - kicking off club report generator.', ['region-id' => $region->id]);
+        Log::info('[JOB] kicking off club report batches.', ['region-id' => $this->region->id]);
 
-        foreach ($clubs as $c){
+        foreach ($clubs as $c) {
 
-          // delete old files
-          //Storage::delete(File::glob(storage_path().'/app/'.$this->region->club_folder.'/'.$c->shortname.'*'));
+            // delete old files
+            //Storage::delete(File::glob(storage_path().'/app/'.$this->region->club_folder.'/'.$c->shortname.'*'));
 
-          // build list of report jobs based on format
-          $rpt_jobs = array();
-          foreach ( $this->region->fmt_club_reports->getFlags() as $rtype  ){
-            if ($rtype->hasFlag(ReportFileType::XLSX) or $rtype->hasFlag(ReportFileType::XLS) or $rtype->hasFlag(ReportFileType::ODS)){
-              $rpt_jobs[] = new GenerateClubGamesReport($region, $c, $rtype, ReportScope::ms_all() );
-            } elseif ($rtype->hasFlag(ReportFileType::CSV)){
-              $rpt_jobs[] = new GenerateClubGamesReport($region, $c, $rtype, ReportScope::ss_club_all() );
-              $rpt_jobs[] = new GenerateClubGamesReport($region, $c, $rtype, ReportScope::ss_club_home() );
-            } elseif ($rtype->hasFlag(ReportFileType::PDF) or $rtype->hasFlag(ReportFileType::HTML) or $rtype->hasFlag(ReportFileType::ICS)){
-              $rpt_jobs[] = new GenerateClubGamesReport($region, $c, $rtype, ReportScope::ss_club_all() );
-              $rpt_jobs[] = new GenerateClubGamesReport($region, $c, $rtype, ReportScope::ss_club_home() );
-              $rpt_jobs[] = new GenerateClubGamesReport($region, $c, $rtype, ReportScope::ss_club_referee() );
+            // build list of report jobs based on format
+            $rpt_jobs = array();
+            foreach ($this->region->fmt_club_reports->getFlags() as $rtype) {
+                if ($rtype->hasFlag(ReportFileType::XLSX) or $rtype->hasFlag(ReportFileType::XLS) or $rtype->hasFlag(ReportFileType::ODS)) {
+                    $ext = 'xls';
+                    $rpt_jobs[] = new GenerateClubGamesReport($this->region, $c, $rtype, ReportScope::ms_all());
+                } elseif ($rtype->hasFlag(ReportFileType::CSV)) {
+                    $ext = 'csv';
+                    $rpt_jobs[] = new GenerateClubGamesReport($this->region, $c, $rtype, ReportScope::ss_club_all());
+                    $rpt_jobs[] = new GenerateClubGamesReport($this->region, $c, $rtype, ReportScope::ss_club_home());
+                } elseif ($rtype->hasFlag(ReportFileType::PDF) or $rtype->hasFlag(ReportFileType::HTML) or $rtype->hasFlag(ReportFileType::ICS)) {
+                    $ext = 'pdf';
+                    $rpt_jobs[] = new GenerateClubGamesReport($this->region, $c, $rtype, ReportScope::ss_club_all());
+                    $rpt_jobs[] = new GenerateClubGamesReport($this->region, $c, $rtype, ReportScope::ss_club_home());
+                    $rpt_jobs[] = new GenerateClubGamesReport($this->region, $c, $rtype, ReportScope::ss_club_referee());
 
-              $leagues = Game::where('club_id_home',$c->id)->with('league')->get()->pluck('league.id')->unique();
-              foreach ($leagues as $l){
-                $rpt_jobs[] = new GenerateClubGamesReport($region, $c, $rtype, ReportScope::ss_club_league(), League::find($l) );
-              }
-            }
-          };
+                    $leagues = Game::where('club_id_home', $c->id)->with('league')->get()->pluck('league.id')->unique();
+                    foreach ($leagues as $l) {
+                        $rpt_jobs[] = new GenerateClubGamesReport($this->region, $c, $rtype, ReportScope::ss_club_league(), League::find($l));
+                    }
+                }
+            };
 
-          $batch = Bus::batch($rpt_jobs)
-            ->then(function (Batch $batch) use ($c) {
-              // All jobs completed successfully...
-              if ($c->memberIsA(Role::ClubLead)){
-                $clead = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
-                $clead->notify(new ClubReportsAvailable($c));
-                Log::info('[NOTIFICATION] club reports available.', ['member-id' => $clead->id]);
-              }
-          })->name('Club Reports '.$c->shortname)
-            ->onConnection('redis')
-            ->onQueue('exports')
-            ->dispatch();
+            $batch = Bus::batch($rpt_jobs)
+                ->then(function (Batch $batch) use ($c, $ext) {
+                    // All jobs completed successfully...
+                    if ($c->memberIsA(Role::ClubLead)) {
+                        $clead = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
+                        $clead->notify(new ClubReportsAvailable($c));
+                        Log::info('[NOTIFICATION] club '.$ext.' reports available.', ['member-id' => $clead->id]);
+                    }
+                })->name('Club '.$ext .' Reports ' . $c->shortname)
+                ->onConnection('redis')
+                ->onQueue('exports')
+                ->dispatch();
         }
     }
 }

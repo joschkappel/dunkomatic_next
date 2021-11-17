@@ -60,8 +60,8 @@ return [
     'clubrptavail.line'   =>  'The game reports for club :club have been generated and are ready for you to download.',
     'clubrptavail.action'     =>  'Download Reports',
 
-    'invalidemail.subject'  =>  'Invalid eMail Adresses',
-    'invalidemail.line'  =>  'The following club members registered an invalid eMail address:',
+    'invalidemail.subject'  =>  'Invalid eMail Adresses :CLUBCODE',
+    'invalidemail.line'  =>  'The following members of club :clubname have been registered with an invalid eMail address.',
     'invalidemail.action'  =>  'Update eMail Adresses',
 
     'registerteams.subject'  =>  'Team Registration for League :LEAGUE',

@@ -53,9 +53,9 @@ class ProcessLeagueReports implements ShouldQueue
     {
 
         // get all leagues with games
-        $leagues = $this->region->leagues()->get();
-        $region = Region::find($this->region->id);
-        Log::info('batch jobs - kicking off league report generator.', ['region-id' => $region->id]);
+        $leagues = $this->region->leagues;
+        $region = $this->region;
+        Log::info('[JOB] kicking off league report batch jobs.', ['region-id' => $region->id]);
 
         foreach ($leagues as $l) {
 

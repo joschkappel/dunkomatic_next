@@ -2,13 +2,10 @@
 
 namespace App\Exports;
 
-use App\Models\Game;
 use App\Models\League;
-use App\Enums\ReportScope;
 
 use App\Exports\Sheets\LeagueGames;
 
-use App\Exports\Sheets\Title;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
@@ -20,10 +17,9 @@ class LeagueGamesExport implements WithMultipleSheets
     protected $scope;
     protected $league;
 
-    public function __construct($league_id, ReportScope $scope)
+    public function __construct($league_id)
     {
         $this->league = League::find($league_id);
-        $this->scope = $scope;
     }
 
     /**
@@ -32,9 +28,7 @@ class LeagueGamesExport implements WithMultipleSheets
     public function sheets(): array
     {
 
-      if ( $this->scope == ReportScope::ms_all()){
-        $sheets[] = new LeagueGames($this->league, ReportScope::ms_all());
-      }
+        $sheets[] = new LeagueGames($this->league);
 
         return $sheets;
     }

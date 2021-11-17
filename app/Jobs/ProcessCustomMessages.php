@@ -57,31 +57,41 @@ class ProcessCustomMessages implements ShouldQueue
         foreach ($mdest as $d) {
             if ($d->role_id->in([Role::ClubLead, Role::RefereeLead, Role::JuniorsLead, Role::GirlsLead, Role::RegionLead, Role::RegionTeam])) {
                 // get in scope clubs
-                $clubs = $this->message->region->clubs()->pluck('id');
-                // get all club admim members
-                $members = Club::whereIn('id', $clubs)->members()->wherePivot('role_id', $d->role_id)->get(['email1', 'firstname', 'lastname'])->first();
+                $clubs = $this->message->region->clubs;
+                $members = collect();
+
+                foreach ($clubs as $c){
+                    // get all club admin members
+                    $club_members = $c->members()->wherePivot('role_id', $d->role_id)->get(['email1', 'firstname', 'lastname']);
+                    $members = $members->concat($club_members);
+                }
+
                 $drop_mail = true;
                 Log::debug('[JOB][CUSTOM MESSAGE] club members to notify.', ['members' => $members->pluck('email1')]);
             } else if ($d->role_id->is(Role::LeagueLead)) {
                 // get in scope leagues
-                $leagues = $this->message->region->leagues()->pluck('id');
-                // get all league admim members
-                $members = League::whereIn('id', $leagues)->members()->wherePivot('role_id', Role::LeagueLead)->get(['email1', 'firstname', 'lastname'])->first();
+                $leagues = $this->message->region->leagues;
+                $members = collect();
+
+                foreach ($leagues as $l){
+                    // get all league admim members
+                    $league_members = $l->members()->wherePivot('role_id', Role::LeagueLead)->get(['email1', 'firstname', 'lastname']);
+                    $members = $members->concat($league_members);
+                }
+
                 $drop_mail = true;
                 Log::debug('[JOB][CUSTOM MESSAGE] league members to notify.', ['members' => $members]);
             } else if ($d->role_id->is(Role::Admin)) {
-                $users = $this->message->region->regionadmin;
-                foreach ($users as $u) {
-                    $u->user->notify(new CustomDbMessage($this->message));
-                }
-                $to_roles[] = Role::getDescription($d->role_id) . ' ' . $this->region->code;
+                $members = $this->message->region->regionadmin;
+                $drop_mail = true;
+                Log::debug('[JOB][CUSTOM MESSAGE] region members to notify.', ['members' => $members]);
             } else if ($d->role_id->is(Role::User)) {
-                Log::info('will create user notifications in DB');
                 $users = $this->message->region->users;
                 foreach ($users as $u) {
                     $u->notify(new CustomDbMessage($this->message));
                 }
                 $to_roles[] = Role::getDescription($d->role_id) . ' ' . $this->message->region->code;
+                Log::info('[JOB][CUSTOM MESSAGE] create user notifications in DB.',['users'=>$users]);
             }
 
             if ($drop_mail) {
@@ -109,7 +119,7 @@ class ProcessCustomMessages implements ShouldQueue
             Mail::to($to_list)
                 ->cc($cc_list)
                 ->send(new CustomMailMessage($this->message));
-            Log::notice('custom mail sent',['message-id'=>$this->message->id, 'to_count'=>count($to_list), 'cc_count'=>count($cc_list)]);
+            Log::notice('[JOB][EMAIL] custom email sent.',['message-id'=>$this->message->id, 'to_count'=>count($to_list), 'cc_count'=>count($cc_list)]);
         }
 
         $this->message->update(['sent_at' => Carbon::today()]);
@@ -120,6 +130,6 @@ class ProcessCustomMessages implements ShouldQueue
             $msg .= ', '.__('with copy to').' '. implode(', ', $cc_roles);
         }
         $author->notify(new AppActionMessage(__('Message').' "'. $this->message->title . '" '.__('sent'), $msg));
-        Log::info('[NOTIFICATION][MEMBER] custom message sent.', ['member-id' => $author->id]);
+        Log::info('[JOB][NOTIFICATION][MEMBER] custom message sent.', ['member-id' => $author->id]);
     }
 }

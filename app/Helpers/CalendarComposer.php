@@ -17,7 +17,7 @@ class CalendarComposer
 
     public static function createLeagueCalendar(League $league): ?Calendar
     {
-
+        Log::notice('[CALENDAR EXPORT] creating calendar events.',['league-id'=>$league->id]);
         // get games
         $games =  Game::where('league_id', $league->id)
             ->whereNotNull('game_date')
@@ -31,7 +31,7 @@ class CalendarComposer
             ->get();
 
         if ($games->count() > 0) {
-            Log::notice('games found for league.',['league-id'=>$league->id, 'count'=>$games->count()]);
+            Log::notice('[CALENDAR EXPORT] games found for league.',['league-id'=>$league->id, 'count'=>$games->count()]);
             $calendar = Calendar::create()
                 ->name($league->shortname)
                 ->description('HBV-DA ' . $league->name . ' Spiele Saison 20/21');
@@ -56,13 +56,14 @@ class CalendarComposer
 
             return $calendar;
         } else {
-            Log::warning('no games found for league.',['league-id'=>$league->id]);
+            Log::warning('[CALENDAR EXPORT] no games found for league.',['league-id'=>$league->id]);
             return null;
         }
     }
 
     public static function createClubCalendar(Club $club): ?Calendar
     {
+        Log::notice('[CALENDAR EXPORT] creating calendar events.',['club-id'=>$club->id]);
         // get games
         $club_id = $club->id;
         $games =  Game::where(function ($query) use ($club_id) {
@@ -80,7 +81,7 @@ class CalendarComposer
             ->get();
 
         if ($games->count() > 0) {
-            Log::notice('games found for club.',['club-id'=>$club->id, 'count'=>$games->count()]);
+            Log::notice('[CALENDAR EXPORT] games found for club.',['club-id'=>$club->id, 'count'=>$games->count()]);
 
             $calendar = Calendar::create()
                 ->name($club->shortname)
@@ -106,13 +107,14 @@ class CalendarComposer
 
             return $calendar;
         } else {
-            Log::warning('no games found for club.',['club-id'=>$club->id]);
+            Log::warning('[CALENDAR EXPORT] no games found for club.',['club-id'=>$club->id]);
             return null;
         }
     }
 
     public static function createClubHomeCalendar(Club $club): ?Calendar
     {
+        Log::notice('[CALENDAR EXPORT] creating calendar events.',['club-id'=>$club->id]);
         // get games
         $games =  Game::where('club_id_home', $club->id)
             ->whereNotNull('game_date')
@@ -126,7 +128,7 @@ class CalendarComposer
             ->get();
 
         if ($games->count() > 0) {
-            Log::notice('home games found for club.',['club-id'=>$club->id, 'count'=>$games->count()]);
+            Log::notice('[CALENDAR EXPORT] home games found for club.',['club-id'=>$club->id, 'count'=>$games->count()]);
 
             $calendar = Calendar::create()
                 ->name($club->shortname)
@@ -152,13 +154,14 @@ class CalendarComposer
 
             return $calendar;
         } else {
-            Log::warning('no home games found for club.',['club-id'=>$club->id]);
+            Log::warning('[CALENDAR EXPORT] no home games found for club.',['club-id'=>$club->id]);
             return null;
         }
     }
 
     public static function createClubLeagueCalendar(Club $club, League $league): ?Calendar
     {
+        Log::notice('[CALENDAR EXPORT] creating calendar events.',['club-id'=>$club->id, 'league-id'=>$league->id]);
         // get games
         $club_id = $club->id;
 
@@ -178,7 +181,7 @@ class CalendarComposer
             ->get();
 
         if ($games->count() > 0) {
-            Log::notice('league games found for club.',['club-id'=>$club->id, 'league-id'=>$league->id, 'count'=>$games->count()]);
+            Log::notice('[CALENDAR EXPORT] league games found for club.',['club-id'=>$club->id, 'league-id'=>$league->id, 'count'=>$games->count()]);
 
             $calendar = Calendar::create()
                 ->name($club->shortname)
@@ -204,13 +207,14 @@ class CalendarComposer
 
             return $calendar;
         } else {
-            Log::warning('no games found for club and league.',['club-id'=>$club->id, 'league-id'=>$league->id]);
+            Log::warning('[CALENDAR EXPORT] no games found for club and league.',['club-id'=>$club->id, 'league-id'=>$league->id]);
             return null;
         }
     }
 
     public static function createClubRefereeCalendar(Club $club): ?Calendar
     {
+        Log::notice('[CALENDAR EXPORT] creating calendar events.',['club-id'=>$club->id]);
         // get games
         $club_id = $club->id;
         $shortname = $club->shortname;
@@ -233,7 +237,7 @@ class CalendarComposer
             ->get();
 
         if ($games->count() > 0) {
-            Log::notice('referee games found for club.',['club-id'=>$club->id, 'count'=>$games->count()]);
+            Log::notice('[CALENDAR EXPORT] referee games found for club.',['club-id'=>$club->id, 'count'=>$games->count()]);
 
             $calendar = Calendar::create()
                 ->name($club->shortname)
@@ -259,7 +263,7 @@ class CalendarComposer
 
             return $calendar;
         } else {
-            Log::warning('no referee games found for club.',['club-id'=>$club->id]);
+            Log::warning('[CALENDAR EXPORT] no referee games found for club.',['club-id'=>$club->id]);
             return null;
         }
     }

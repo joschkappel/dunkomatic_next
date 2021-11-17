@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Support;
-use Illuminate\Support\Facades\Artisan;
+
+use Database\Seeders\TestDatabaseSeeder;
 use Illuminate\Support\Facades\Log;
 
 trait MigrateFreshSeedOnce
@@ -18,10 +19,8 @@ trait MigrateFreshSeedOnce
     {
         parent::setUp();
         if (!static::$setUpHasRunOnce) {
-            Artisan::call('migrate:fresh');
-            Artisan::call(
-                'db:seed', ['--class' => 'TestDatabaseSeeder']
-            );
+            $this->artisan('migrate:fresh');
+            $this->seed(TestDatabaseSeeder::class);
             Log::info('TestDB reset');
             static::$setUpHasRunOnce = true;
          }

@@ -7,7 +7,6 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Database\Seeders\TestDatabaseSeeder;
 use Database\Seeders\SysTestDatabaseSeeder;
 
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 
 abstract class SysTestCase extends BaseTestCase
@@ -22,15 +21,16 @@ abstract class SysTestCase extends BaseTestCase
         parent::setUp();
         // seed the database
 
-        Artisan::call('migrate:fresh');
+        $this->artisan('migrate:fresh');
         $this->seed(SysTestDatabaseSeeder::class);
-        Log::info('TestDB seeded');
+        Log::notice('[TESTING] SysTest DB seeded');
     }
 
     public function tearDown(): void
     {
-        Artisan::call('migrate:fresh');
+        $this->artisan('migrate:fresh');
         $this->seed(TestDatabaseSeeder::class);
+        Log::info('[TESTING] Test DB seeded');
 
         parent::tearDown();
         //

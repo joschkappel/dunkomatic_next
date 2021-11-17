@@ -39,7 +39,7 @@ class ClubGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
         $this->gdate = null;
         $this->scope = $scope;
 
-        Log::info('sheet for '.$this->club->name);
+        Log::info('[EXCEL EXPORT] creating sheet.', ['club-id'=>$this->club->id]);
     }
 
     /**

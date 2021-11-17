@@ -60,8 +60,8 @@ return [
     'clubrptavail.line'  =>  'Die Spielpläne für den Verein :club wurden erzeugt und stehen zum Download bereit!.',
     'clubrptavail.action'   =>  'Download Reports',
 
-    'invalidemail.subject'  =>  'Fehlerhafte eMail Adressen',
-    'invalidemail.line' =>  'Bei folgenden Vereinsmitarbeitern wurden fehlerhafte eMail Adressen angegeben:',
+    'invalidemail.subject'  =>  'Fehlerhafte eMail Adressen :CLUBCODE',
+    'invalidemail.line' =>  'Bei folgenden Vereinsmitarbeitern des Vereins :clubname wurden fehlerhafte eMail Adressen angegeben.',
     'invalidemail.action'   =>  'eMail Adressen Korrigieren',
 
     'registerteams.subject'  =>  'Mannschaftsmeldung für Spielrunde :LEAGUE',
