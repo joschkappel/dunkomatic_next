@@ -1,7 +1,7 @@
 
 <div class="modal fade right" id="{{ $modalId }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-    aria-hidden="true" data-backdrop="false">
-    <div class="modal-dialog modal-dialog-scrollable modal-side modal-bottom-right modal-notify modal-info" role="document">
+    aria-hidden="true">
+    <div class="modal-dialog modal-side modal-bottom-right modal-notify modal-info" role="document">
         <!--Content-->
         <div class="modal-content">
             <!--Header-->
