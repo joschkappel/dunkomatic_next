@@ -73,11 +73,7 @@ return [
     'selectleagueno.line2'    =>  'Du kannst jetzt die Spielziffer für deine Mannschaften wählen.',
     'selectleagueno.action'   =>  'Ziffernwahl',
 
-
     'league.salutation' =>  'Viele Grüße, Deine Staffelleitung :leaguelead',
-
-
-
 
     'clubdeassigned.subject'    =>  'Mannschaftslöschung :LEAGUE',
     'clubdeassigned.line1'  =>  'Deine Mannschaft :TEAM wurde von der Spielrunde :LEAGUE zurückgezogen.',
@@ -94,4 +90,14 @@ return [
     'inviteuser.action' =>  'Als Benutzer Registrieren',
     'inviteuser.line1'  =>  ':sendername hat Dich als Benutzer für DunkOMatic eingeladen.',
     'inviteuser.line2'  =>  'Mit betätigen des Knopfes kannst Du Dich als Benutzer registrieren.',
+
+    'overlappinggames.subject'  => 'Überlappende Heimspielansetzungen',
+    'overlappinggames.line1'  => 'Wir haben :games_count überlappende Heimspielansetzungen für deinen Verein :CLUB gefunden.',
+    'overlappinggames.line2'  => 'Wenn Du auf die Spalte ":overlapcolumn" klickst, kannst Du die überlappenden Spiele sehen und ändern.',
+    'overlappinggames.action'  => 'Spielbeginn Ändern',
+
+    'unscheduledgames.subject'  => 'Heimspielansetzungen',
+    'unscheduledgames.line1'  => 'Wir haben :games_count fehlende Heimspielansetzungen für deinen Verein :CLUB gefunden.',
+    'unscheduledgames.line2'  => 'Wenn Du auf die Spalte ":gametimecolumn" klickst, kannst Du die Spiele mit fehlender Uhrzeit sehen und ändern.',
+    'unscheduledgames.action'  => 'Spielbeginn Festlegen',
 ];

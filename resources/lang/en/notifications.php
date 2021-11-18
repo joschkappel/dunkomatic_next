@@ -91,4 +91,13 @@ return [
     'inviteuser.line1'  =>  ':sendername has invited you as user of DunkOMatic.',
     'inviteuser.line2'  =>  'Click the button below to get to the registration page.',
 
+    'overlappinggames.subject'  => 'Overlapping Home Games',
+    'overlappinggames.line1'  => 'We found :games_count overlapping home games scheduled for your club :CLUB.',
+    'overlappinggames.line2'  => 'When you click on column ":overlapcolumn", you can see the overlapping games highlighted and may now modify those.',
+    'overlappinggames.action'  => 'Modify Game Start',
+
+    'unscheduledgames.subject'  => 'Home Games Scheduling',
+    'unscheduledgames.line1'  => 'We found :games_count unscheduled home games for your club :CLUB.',
+    'unscheduledgames.line2'  => 'When you click on column ":gaemtimecolumn", you can see the games with no start time and may now modify those.',
+    'unscheduledgames.action'  => 'Enter Game Start Time',
 ];

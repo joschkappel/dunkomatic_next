@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Region;
+use App\Enums\Role;
+use App\Notifications\ClubUnscheduledGames;
 
 
 class GameNotScheduled implements ShouldQueue
@@ -51,6 +53,16 @@ class GameNotScheduled implements ShouldQueue
 
             if (count($ogames) > 0) {
                 Log::warning('[JOB][UNSCHEDULED GAMES] found games with no date and time.',[ 'club-id'=>$c->id, 'count'=> count($ogames) ]);
+                $members = $c->members->where('pivot.role_id', Role::ClubLead);
+                foreach ($members as $m){
+                    $m->notify( new ClubUnscheduledGames($c, count($ogames)) );
+                    if ($m->user()->exists()){
+                        $m->user->notify(new ClubUnscheduledGames($c, count($ogames)) );
+                    }
+                }
+                Log::info('[NOTIFICATION][MEMBER] unscheduled games.', ['member-id' => $members->pluck('id') ]);
+            } else {
+                Log::info('[JOB][UNSCHEDULED GAMES] all games OK.', ['club-id' => $c->id]);
             }
         }
     }
