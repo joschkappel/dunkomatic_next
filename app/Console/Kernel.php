@@ -74,7 +74,7 @@ class Kernel extends ConsoleKernel
     *
     *
     */
-    protected function scheduleRegionTask($schedule, $job, $frequency)
+    protected function scheduleRegionTask(Schedule $schedule, $job, $frequency)
     {
       // uncomment for easy testing of jobs
       // $schedule->job($job,'janitor')->everyFiveMinutes();

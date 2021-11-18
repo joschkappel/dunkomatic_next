@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\League;
 use App\Models\Club;
 use App\Models\Team;
+use App\Models\User;
 
 class ClubDeAssigned extends Notification
 {
@@ -29,11 +30,11 @@ class ClubDeAssigned extends Notification
      */
     public function __construct(League $league, Club $club, Team $team, $sender_name, $receive_name)
     {
-      $this->league = $league;
-      $this->club = $club;
-      $this->team = $team;
-      $this->sender_name = $sender_name;
-      $this->receiver_name = $receive_name;
+        $this->league = $league;
+        $this->club = $club;
+        $this->team = $team;
+        $this->sender_name = $sender_name;
+        $this->receiver_name = $receive_name;
     }
 
     /**
@@ -44,11 +45,11 @@ class ClubDeAssigned extends Notification
      */
     public function via($notifiable)
     {
-      if ( get_class($notifiable) == 'App\Models\User') {
-        return ['database'];
-      } else {
-        return ['mail'];
-      }
+        if (get_class($notifiable) == User::class) {
+            return ['database'];
+        } else {
+            return ['mail'];
+        }
     }
 
     /**
@@ -59,13 +60,13 @@ class ClubDeAssigned extends Notification
      */
     public function toMail($notifiable)
     {
-      return (new MailMessage)
-                  ->level('info')
-                  ->subject( __('notifications.clubdeassigned.subject', ['league'=>$this->league->shortname]) )
-                  ->greeting( __('notifications.user.greeting', ['username'=>$this->receiver_name]) )
-                  ->line( __('notifications.clubdeassigned.line1', ['team'=>$this->club->shortname.$this->team->team_no, 'league'=>$this->league->name]) )
-                  ->line( __('notifications.clubdeassigned.line2') )
-                  ->salutation( __('notifications.league.salutation', ['leaguelead'=>$this->sender_name]) );
+        return (new MailMessage)
+            ->level('info')
+            ->subject(__('notifications.clubdeassigned.subject', ['league' => $this->league->shortname]))
+            ->greeting(__('notifications.user.greeting', ['username' => $this->receiver_name]))
+            ->line(__('notifications.clubdeassigned.line1', ['team' => $this->club->shortname . $this->team->team_no, 'league' => $this->league->name]))
+            ->line(__('notifications.clubdeassigned.line2'))
+            ->salutation(__('notifications.league.salutation', ['leaguelead' => $this->sender_name]));
     }
 
     /**
@@ -76,14 +77,14 @@ class ClubDeAssigned extends Notification
      */
     public function toArray($notifiable)
     {
-      $lines =  '<p>'.__('notifications.clubdeassigned.line1', ['team'=>$this->club->shortname.$this->team->team_no, 'league'=>$this->league->name]).'</p>';
-      $lines .= '<p>'.__('notifications.clubdeassigned.line2').'</p>';
+        $lines =  '<p>' . __('notifications.clubdeassigned.line1', ['team' => $this->club->shortname . $this->team->team_no, 'league' => $this->league->name]) . '</p>';
+        $lines .= '<p>' . __('notifications.clubdeassigned.line2') . '</p>';
 
-      return [
-          'subject' => __('notifications.clubdeassigned.subject', ['league'=>$this->league->shortname]),
-          'greeting' => __('notifications.user.greeting', ['username'=>$this->receiver_name]),
-          'lines' => $lines,
-          'salutation' => __('notifications.league.salutation', ['leaguelead'=>$this->sender_name]),
-      ];
+        return [
+            'subject' => __('notifications.clubdeassigned.subject', ['league' => $this->league->shortname]),
+            'greeting' => __('notifications.user.greeting', ['username' => $this->receiver_name]),
+            'lines' => $lines,
+            'salutation' => __('notifications.league.salutation', ['leaguelead' => $this->sender_name]),
+        ];
     }
 }

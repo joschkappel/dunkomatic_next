@@ -31,18 +31,18 @@ class UserObserver
     {
 
         if (($user->isDirty('approved_at')) and ($user->approved_at != null)) {
-            Log::info('observer: user updated - approved', ['user-id' => $user->id]);
+            Log::info('[OBSERVER] user updated - approved', ['user-id' => $user->id]);
             if (!$user->member()->exists()) {
                 // else create the member witha  role = user
                 $member = new Member(['lastname' => $user->name, 'email1' => $user->email]);
                 $member->save();
                 $member->user()->save($user);
-                Log::notice('observer: user updated - member with role user created', ['user-id' => $user->id, 'member-id'=>$member->id]);
+                Log::notice('[OBSERVER] user updated - member with role user created', ['user-id' => $user->id, 'member-id'=>$member->id]);
             }
         }
 
         if ($user->member()->exists()) {
-            Log::info('observer: user updated - member exists', ['user-id' => $user->id]);
+            Log::info('[OBSERVER] user updated - member exists', ['user-id' => $user->id]);
             $member = $user->member;
             $member->clubs()->wherePivot('role_id', Role::User)->detach();
             $member->leagues()->wherePivot('role_id', Role::User)->detach();
@@ -72,12 +72,12 @@ class UserObserver
             $member = Member::find($user->member->id);
             $member->memberships()->delete();
             $member->delete();
-            Log::notice('observer: user deleted - delete associated member', ['user-id' => $user->id, 'member-id'=>$member->id]);
+            Log::notice('[OBSERVER] user deleted - delete associated member', ['user-id' => $user->id, 'member-id'=>$member->id]);
         } else {
             // delete only the user and detach from member
             $member = Member::find($user->member->id);
             $member->memberships()->where('role_id', Role::User)->delete();
-            Log::notice('observer: user deleted - delete user membership', ['user-id' => $user->id, 'member-id'=>$member->id]);
+            Log::notice('[OBSERVER] user deleted - delete user membership', ['user-id' => $user->id, 'member-id'=>$member->id]);
         }
     }
 

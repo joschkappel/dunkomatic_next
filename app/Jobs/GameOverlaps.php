@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Region;
+use App\Enums\Role;
+use App\Notifications\ClubOverlappingGames;
 
 class GameOverlaps implements ShouldQueue
 {
@@ -57,6 +59,17 @@ class GameOverlaps implements ShouldQueue
 
             if (count($ogames) > 0) {
                 Log::warning('[JOB][OVERLAPPING GAMES] found overlapping games.', ['club-id' => $c->id, 'gameslot'=>$game_slot, 'count' => count($ogames)]);
+
+                $members = $c->members->where('pivot.role_id', Role::ClubLead);
+                foreach ($members as $m){
+                    $m->notify( new ClubOverlappingGames($c, count($ogames)) );
+                    if ($m->user()->exists()){
+                        $m->user->notify(new ClubOverlappingGames($c, count($ogames)) );
+                    }
+                }
+                Log::info('[NOTIFICATION][MEMBER] overlapping games.', ['member-id' => $members->pluck('id') ]);
+            } else {
+                Log::info('[JOB][OVERLAPPING GAMES] all games OK.', ['club-id' => $c->id, 'gameslot'=>$game_slot]);
             }
         }
     }
