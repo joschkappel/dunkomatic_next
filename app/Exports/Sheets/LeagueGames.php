@@ -42,7 +42,7 @@ class LeagueGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
         $this->gdate = null;
         $this->league = $league;
 
-        Log::info('[EXCEL EXPORT] creating sheet.', ['league-id'=>$this->league->id]);
+        Log::info('[EXCEL EXPORT] creating LEAGUE GAMES sheet.', ['league-id'=>$this->league->id]);
     }
 
     /**
@@ -50,7 +50,7 @@ class LeagueGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
      */
     public function title(): string
     {
-       return 'Rundenspielplan ' . $this->league->shortname;
+       return __('reports.games.league').' '.$this->league->shortname;
     }
 
     public function view(): View

@@ -22,7 +22,7 @@ class CalendarController extends Controller
 
       return response($calendar->get(), 200, [
          'Content-Type' => 'text/calendar',
-         'Content-Disposition' => 'attachment; filename="'.$league->region.'-'.$league->shortname.'.ics"',
+         'Content-Disposition' => 'attachment; filename="'.$league->region->code.'-'.$league->shortname.'.ics"',
          'charset' => 'utf-8',
       ]);
     }
@@ -39,7 +39,7 @@ class CalendarController extends Controller
 
       return response($calendar->get(), 200, [
          'Content-Type' => 'text/calendar',
-         'Content-Disposition' => 'attachment; filename="'.$club->region.'-'.$club->shortname.'.ics"',
+         'Content-Disposition' => 'attachment; filename="'.$club->region->code.'-'.$club->shortname.'.ics"',
          'charset' => 'utf-8',
       ]);
     }

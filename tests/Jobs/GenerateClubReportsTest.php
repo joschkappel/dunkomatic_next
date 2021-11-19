@@ -70,7 +70,7 @@ class GenerateClubReportsTest extends SysTestCase
      * run job generate xlsx repoerst
      *
      * @test
-     * @group job
+     * @group jobx
      *
      * @return void
      */

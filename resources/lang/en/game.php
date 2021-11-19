@@ -37,4 +37,5 @@ return [
   'menu.list' => 'List',
   'title.list' => 'All Games for :REGION',
   'menu.referees' => 'Referee Assignment',
+  'starts_in' => 'start in :hours hours',
 ];

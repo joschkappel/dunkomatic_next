@@ -157,13 +157,13 @@ class BouncerSeeder extends Seeder
         Bouncer::allow($leagueobserver)->to($view_members);
 
         $guest = Bouncer::role()->firstOrCreate(['name' => 'guest','title' => 'Guest',]);
-        Bouncer::forbid($guest)->everything();
+        //Bouncer::forbid($guest)->everything();
         Bouncer::allow($guest)->to($view_clubs);
         Bouncer::allow($guest)->to($view_games);
         Bouncer::allow($guest)->to($view_leagues);
 
         $candidate = Bouncer::role()->firstOrCreate(['name' => 'candidate','title' => 'Candidate',]);
-        Bouncer::forbid($candidate)->everything();
+        // Bouncer::forbid($candidate)->everything();
         Bouncer::allow($candidate)->to($register);
 
     }

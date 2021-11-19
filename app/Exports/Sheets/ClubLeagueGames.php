@@ -44,7 +44,7 @@ class ClubLeagueGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
         $this->gdate = null;
         $this->league = $league;
 
-        Log::info('[EXCEL EXPORT] creating sheet.', ['league-id'=>$this->league->id]);
+        Log::info('[EXCEL EXPORT] creating TEAM GAMES sheet.', ['club-id'=>$this->club->id, 'league-id'=>$this->league->id]);
     }
 
     /**
@@ -52,7 +52,7 @@ class ClubLeagueGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
      */
     public function title(): string
     {
-        return 'Team ' . $this->league->shortname;
+        return trans_choice('team.team',1).' ' . $this->league->shortname;
     }
 
     public function view(): View

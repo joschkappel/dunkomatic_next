@@ -143,7 +143,7 @@ class ClubController extends Controller
         $data['games_home_noshow'] = $data['club']->games_home_noshow()->count();
         //Log::debug(print_r($data['games_home'],true ));
 
-        $directory = Auth::user()->region->club_folder;
+        $directory = $club->region->club_folder;
         $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($club) {
             return (strpos($value, $club->shortname) !== false);
         });

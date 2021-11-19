@@ -39,7 +39,7 @@ class ClubGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
         $this->gdate = null;
         $this->scope = $scope;
 
-        Log::info('[EXCEL EXPORT] creating sheet.', ['club-id'=>$this->club->id]);
+        Log::info('[EXCEL EXPORT] creating CLUB GAMES sheet.', ['club-id'=>$this->club->id]);
     }
 
     /**
@@ -48,11 +48,11 @@ class ClubGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
     public function title(): string
     {
       if ( $this->scope == ReportScope::ss_club_home()) {
-        return 'Heimspielplan ' . $this->club->shortname;
+        return __('reports.games.home').' ' . $this->club->shortname;
       } elseif ( $this->scope == ReportScope::ss_club_all()) {
-        return 'Gesamtspielplan ' . $this->club->shortname;
+        return __('reports.games.all').' ' . $this->club->shortname;
       } elseif ( $this->scope == ReportScope::ss_club_referee()) {
-        return 'Schiedsrichterplan ' . $this->club->shortname;
+        return __('reports.games.referee').' ' . $this->club->shortname;
       }
     }
 

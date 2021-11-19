@@ -46,7 +46,7 @@ class ClubGamesExport implements WithMultipleSheets
         $sheets[] = new ClubGames($this->club, ReportScope::ss_club_home());
         $sheets[] = new ClubGames($this->club, ReportScope::ss_club_referee());
 
-        $leagues = Game::where('club_id_home',$this->club->id)->with('league')->get()->pluck('league.id')->unique();
+        $leagues = Game::where('club_id_home',$this->club->id)->get()->pluck('league_id')->unique();
         foreach ($leagues as $l){
           $sheets[] = new ClubLeagueGames($this->club, League::find($l));
         }
