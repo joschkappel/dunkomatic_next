@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Models\League;
 use App\Models\Club;
 use App\Models\Game;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Log;
 
 use Spatie\IcalendarGenerator\Components\Calendar;
@@ -34,22 +35,22 @@ class CalendarComposer
             Log::notice('[CALENDAR EXPORT] games found for league.',['league-id'=>$league->id, 'count'=>$games->count()]);
             $calendar = Calendar::create()
                 ->name($league->shortname)
-                ->description('HBV-DA ' . $league->name . ' Spiele Saison 20/21');
+                ->description( $league->region->code.' '. $league->name . ' '.__('Season').' '.Setting::where('name', 'season')->first()->value);
 
             $eventlist = array();
             // add games as calendar events
             foreach ($games as $g) {
                 $eventlist[] = Event::create()
                     ->name($g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest)
-                    ->description('game desc / referee ?')
+                    ->description( $g->league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 ?? '')
                     ->uniqueIdentifier($g->league->shortname . $g->game_no)
                     ->createdAt(Carbon::now())
                     ->startsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT')))
                     ->endsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT'))->addHours(2))
                     ->address($g->gym->street . ', ' . $g->gym->zip . ' ' . $g->gym->city)
                     ->addressName($g->gym->name)
-                    ->organizer('dunkomatic@gmail.com', 'dunkOmatic')
-                    ->alertMinutesBefore(120, $g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest . ' beginnt in 2 Stunden');
+                    ->organizer( config('app.contact'), config('app.name') )
+                    ->alertMinutesBefore(120, $g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
             }
 
             $calendar = $calendar->event($eventlist);
@@ -85,22 +86,22 @@ class CalendarComposer
 
             $calendar = Calendar::create()
                 ->name($club->shortname)
-                ->description('HBV-DA ' . $club->name . ' Spiele Saison 20/21');
+                ->description( $club->region->code.' '.$club->name.' '.__('Season').' '.Setting::where('name', 'season')->first()->value );
 
             $eventlist = array();
             // add games as calendar events
             foreach ($games as $g) {
                 $eventlist[] = Event::create()
                     ->name($g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest)
-                    ->description('game desc / referee ?')
+                    ->description($g->league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 ?? '')
                     ->uniqueIdentifier($g->league->shortname . $g->game_no)
                     ->createdAt(Carbon::now())
                     ->startsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT')))
                     ->endsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT'))->addHours(2))
                     ->address($g->gym->street . ', ' . $g->gym->zip . ' ' . $g->gym->city)
                     ->addressName($g->gym->name)
-                    ->organizer('dunkomatic@gmail.com', 'dunkOmatic')
-                    ->alertMinutesBefore(120, $g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest . ' beginnt in 2 Stunden');
+                    ->organizer(config('app.contact'), config('app.name') )
+                    ->alertMinutesBefore(120, $g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
             }
 
             $calendar = $calendar->event($eventlist);
@@ -132,22 +133,22 @@ class CalendarComposer
 
             $calendar = Calendar::create()
                 ->name($club->shortname)
-                ->description('HBV-DA ' . $club->name . ' Spiele Saison 20/21');
+                ->description($club->region->code.' '.$club->name.' '.__('Season').' '.Setting::where('name', 'season')->first()->value );
 
             $eventlist = array();
             // add games as calendar events
             foreach ($games as $g) {
                 $eventlist[] = Event::create()
                     ->name($g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest)
-                    ->description('game desc / referee ?')
+                    ->description($g->league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 ?? '')
                     ->uniqueIdentifier($g->league->shortname . $g->game_no)
                     ->createdAt(Carbon::now())
                     ->startsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT')))
                     ->endsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT'))->addHours(2))
                     ->address($g->gym->street . ', ' . $g->gym->zip . ' ' . $g->gym->city)
                     ->addressName($g->gym->name)
-                    ->organizer('dunkomatic@gmail.com', 'dunkOmatic')
-                    ->alertMinutesBefore(120, $g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest . ' beginnt in 2 Stunden');
+                    ->organizer(config('app.contact'), config('app.name') )
+                    ->alertMinutesBefore(120, $g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
             }
 
             $calendar = $calendar->event($eventlist);
@@ -185,22 +186,22 @@ class CalendarComposer
 
             $calendar = Calendar::create()
                 ->name($club->shortname)
-                ->description('HBV-DA ' . $club->name . ' Runde ' . $league->name . ' Spiele Saison 20/21');
+                ->description($club->region->code.' '.$club->name.' '.$league->name.' '.__('Season').' '.Setting::where('name', 'season')->first()->value );
 
             $eventlist = array();
             // add games as calendar events
             foreach ($games as $g) {
                 $eventlist[] = Event::create()
                     ->name($g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest)
-                    ->description('game desc / referee ?')
+                    ->description($g->league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 ?? '')
                     ->uniqueIdentifier($g->league->shortname . $g->game_no)
                     ->createdAt(Carbon::now())
                     ->startsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT')))
                     ->endsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT'))->addHours(2))
                     ->address($g->gym->street . ', ' . $g->gym->zip . ' ' . $g->gym->city)
                     ->addressName($g->gym->name)
-                    ->organizer('dunkomatic@gmail.com', 'dunkOmatic')
-                    ->alertMinutesBefore(120, $g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest . ' beginnt in 2 Stunden');
+                    ->organizer(config('app.contact'), config('app.name') )
+                    ->alertMinutesBefore(120, $g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
             }
 
             $calendar = $calendar->event($eventlist);
@@ -241,22 +242,22 @@ class CalendarComposer
 
             $calendar = Calendar::create()
                 ->name($club->shortname)
-                ->description('HBV-DA ' . $club->name . ' Spiele Saison 20/21');
+                ->description($club->region->code.' '.$club->name.' '.__('Season').' '.Setting::where('name', 'season')->first()->value );
 
             $eventlist = array();
             // add games as calendar events
             foreach ($games as $g) {
                 $eventlist[] = Event::create()
                     ->name($g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest)
-                    ->description('game desc / referee ?')
+                    ->description($g->league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 ?? '')
                     ->uniqueIdentifier($g->league->shortname . $g->game_no)
                     ->createdAt(Carbon::now())
                     ->startsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT')))
                     ->endsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT'))->addHours(2))
                     ->address($g->gym->street . ', ' . $g->gym->zip . ' ' . $g->gym->city)
                     ->addressName($g->gym->name)
-                    ->organizer('dunkomatic@gmail.com', 'dunkOmatic')
-                    ->alertMinutesBefore(120, $g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest . ' beginnt in 2 Stunden');
+                    ->organizer(config('app.contact'), config('app.name') )
+                    ->alertMinutesBefore(120, $g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
             }
 
             $calendar = $calendar->event($eventlist);

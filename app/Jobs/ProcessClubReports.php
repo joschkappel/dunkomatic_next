@@ -68,7 +68,7 @@ class ProcessClubReports implements ShouldQueue
             // build list of report jobs based on format
             $rpt_jobs = array();
             foreach ($this->region->fmt_club_reports->getFlags() as $rtype) {
-                if ($rtype->hasFlag(ReportFileType::XLSX) or $rtype->hasFlag(ReportFileType::XLS) or $rtype->hasFlag(ReportFileType::ODS)) {
+                if ($rtype->hasFlag(ReportFileType::XLSX) or $rtype->hasFlag(ReportFileType::ODS)) {
                     $ext = 'xls';
                     $rpt_jobs[] = new GenerateClubGamesReport($this->region, $c, $rtype, ReportScope::ms_all());
                 } elseif ($rtype->hasFlag(ReportFileType::CSV)) {
