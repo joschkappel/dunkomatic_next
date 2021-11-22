@@ -73,14 +73,11 @@ class ProcessClubReports implements ShouldQueue
 
             foreach ($rtypes as $rtype) {
                 if ($rtype->hasFlag(ReportFileType::XLSX) or $rtype->hasFlag(ReportFileType::ODS)) {
-                    $ext = 'xls';
                     $rpt_jobs[] = new GenerateClubGamesReport($this->region, $c, $rtype, ReportScope::ms_all());
                 } elseif ($rtype->hasFlag(ReportFileType::CSV)) {
-                    $ext = 'csv';
                     $rpt_jobs[] = new GenerateClubGamesReport($this->region, $c, $rtype, ReportScope::ss_club_all());
                     $rpt_jobs[] = new GenerateClubGamesReport($this->region, $c, $rtype, ReportScope::ss_club_home());
                 } elseif ($rtype->hasFlag(ReportFileType::PDF) or $rtype->hasFlag(ReportFileType::HTML) or $rtype->hasFlag(ReportFileType::ICS)) {
-                    $ext = 'pdf';
                     $rpt_jobs[] = new GenerateClubGamesReport($this->region, $c, $rtype, ReportScope::ss_club_all());
                     $rpt_jobs[] = new GenerateClubGamesReport($this->region, $c, $rtype, ReportScope::ss_club_home());
                     $rpt_jobs[] = new GenerateClubGamesReport($this->region, $c, $rtype, ReportScope::ss_club_referee());
@@ -95,14 +92,14 @@ class ProcessClubReports implements ShouldQueue
             $note = new ClubReportsAvailable($c);
 
             $batch = Bus::batch($rpt_jobs)
-                ->then(function (Batch $batch) use ($c, $ext, $note) {
+                ->then(function (Batch $batch) use ($c, $note) {
                     // All jobs completed successfully...
                     if ($c->memberIsA(Role::ClubLead)) {
                         $clead = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
                         $clead->notify( $note);
-                        Log::info('[NOTIFICATION] club '.$ext.' reports available.', ['member-id' => $clead->id]);
+                        Log::info('[NOTIFICATION] club reports available.', ['member-id' => $clead->id]);
                     }
-                })->name('Club '.$ext .' Reports ' . $c->shortname)
+                })->name('Club Reports ' . $c->shortname)
                 ->onConnection('redis')
                 ->onQueue('exports')
                 ->dispatch();
