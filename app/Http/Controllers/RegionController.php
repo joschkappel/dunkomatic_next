@@ -182,7 +182,10 @@ class RegionController extends Controller
     public function edit($language, Region $region)
     {
         Log::info('editing region.', ['region-id' => $region->id]);
-        return view('region/region_edit', ['region' => $region, 'frequencytype' => JobFrequencyType::getInstances(), 'filetype' => ReportFileType::getInstances()]);
+        $filetypes = ReportFileType::getInstances();
+        unset($filetypes[ReportFileType::ICS()->key]);
+
+        return view('region/region_edit', ['region' => $region, 'frequencytype' => JobFrequencyType::getInstances(), 'filetype' => $filetypes ]);
     }
 
     /**

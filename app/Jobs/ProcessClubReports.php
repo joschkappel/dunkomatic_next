@@ -67,7 +67,11 @@ class ProcessClubReports implements ShouldQueue
 
             // build list of report jobs based on format
             $rpt_jobs = array();
-            foreach ($this->region->fmt_club_reports->getFlags() as $rtype) {
+            $rtypes = $this->region->fmt_club_reports->getFlags();
+            // add calendar format as default.
+            $rtypes[] = ReportFileType::ICS();
+
+            foreach ($rtypes as $rtype) {
                 if ($rtype->hasFlag(ReportFileType::XLSX) or $rtype->hasFlag(ReportFileType::ODS)) {
                     $ext = 'xls';
                     $rpt_jobs[] = new GenerateClubGamesReport($this->region, $c, $rtype, ReportScope::ms_all());
@@ -88,12 +92,14 @@ class ProcessClubReports implements ShouldQueue
                 }
             };
 
+            $note = new ClubReportsAvailable($c);
+
             $batch = Bus::batch($rpt_jobs)
-                ->then(function (Batch $batch) use ($c, $ext) {
+                ->then(function (Batch $batch) use ($c, $ext, $note) {
                     // All jobs completed successfully...
                     if ($c->memberIsA(Role::ClubLead)) {
                         $clead = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
-                        $clead->notify(new ClubReportsAvailable($c));
+                        $clead->notify( $note);
                         Log::info('[NOTIFICATION] club '.$ext.' reports available.', ['member-id' => $clead->id]);
                     }
                 })->name('Club '.$ext .' Reports ' . $c->shortname)
