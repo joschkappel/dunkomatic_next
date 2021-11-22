@@ -267,7 +267,7 @@
                                 <i class="far fa-edit"></i> @lang('league.action.game.list')</a>
                             <a href="{{ route('cal.league', ['language' => app()->getLocale(), 'league' => $league]) }}"
                                 class="btn btn-outline-primary float-right mr-2">
-                                <i class="fas fa-calendar-alt"></i> iCAL</a>
+                                <i class="fas fa-calendar-alt"></i> {{ __('reports.ical.league')}}</a>
                             @endcan
                             @if( (Auth::user()->can('update-games')) and (  $league->state->is(App\Enums\LeagueState::Referees())) )
                             <button type="button" class="btn btn-outline-danger float-right mr-2" id="deleteNoshowGames"><i class="fa fa-trash"></i> @lang('game.action.delete.noshow')

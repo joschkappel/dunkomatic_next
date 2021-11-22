@@ -135,6 +135,8 @@ Route::group([
 
         Route::get('calendar/league/{league}', 'CalendarController@cal_league')->name('cal.league')->middleware('can:view-games');
         Route::get('calendar/club/{club}', 'CalendarController@cal_club')->name('cal.club')->middleware('can:view-games');
+        Route::get('calendar/club/{club}/home', 'CalendarController@cal_club_home')->name('cal.club.home')->middleware('can:view-games');
+        Route::get('calendar/club/{club}/referee', 'CalendarController@cal_club_referee')->name('cal.club.referee')->middleware('can:view-games');
     });
 });
 

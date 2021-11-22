@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
  * @method static static PDF()
  * @method static static HTML()
  * @method static static XLSX()
- //* @method static static XLS()
+ //* @method static static XLS()  - not supported anymor has bug when creating team game sheets
  * @method static static ODS()
  * @method static static CSV()
  * @method static static ICS()

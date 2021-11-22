@@ -288,6 +288,9 @@ class ACL_ClubTest extends DuskTestCase
                     $gameCard->click('.btn-tool')->waitFor('.btn-tool');
                     ($user->can('update-games')) ? $gameCard->assertSeeLink(__('club.action.edit-homegame')) : $gameCard->assertDontSeeLink(__('club.action.edit-homegame')) ;
                     ($user->can('view-games')) ? $gameCard->assertSeeLink(__('club.action.chart-homegame')) : $gameCard->assertDontSeeLink(__('club.action.chart-homegame'));
+                    ($user->can('view-games')) ? $gameCard->assertSeeLink( __('reports.ical.club.all')) : $gameCard->assertDontSeeLink( __('reports.ical.club.all'));
+                    ($user->can('view-games')) ? $gameCard->assertSeeLink( __('reports.ical.club.home')) : $gameCard->assertDontSeeLink( __('reports.ical.club.home'));
+                    ($user->can('view-games')) ? $gameCard->assertSeeLink( __('reports.ical.club.referee')) : $gameCard->assertDontSeeLink( __('reports.ical.club.referee'));
                 });
             } else {
                 $browser->assertSee('403');

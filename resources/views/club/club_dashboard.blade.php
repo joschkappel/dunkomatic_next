@@ -337,6 +337,15 @@
                             <i class="far fa-edit"></i> @lang('club.action.edit-homegame')</a>
                         @endcan
                         @can('view-games')
+                        <a href="{{ route('cal.club', ['language' => app()->getLocale(), 'club' => $club]) }}"
+                            class="btn btn-outline-primary float-right mr-2">
+                            <i class="fas fa-calendar-alt"></i> {{ __('reports.ical.club.all')}}</a>
+                        <a href="{{ route('cal.club.home', ['language' => app()->getLocale(), 'club' => $club]) }}"
+                            class="btn btn-outline-primary float-right mr-2">
+                            <i class="fas fa-calendar-alt"></i> {{ __('reports.ical.club.home')}}</a>
+                        <a href="{{ route('cal.club.referee', ['language' => app()->getLocale(), 'club' => $club]) }}"
+                            class="btn btn-outline-primary float-right mr-2">
+                            <i class="fas fa-calendar-alt"></i> {{ __('reports.ical.club.referee')}}</a>
                         <a href="{{ route('club.game.chart', ['language' => app()->getLocale(), 'club' => $club]) }}"
                             class="btn btn-outline-primary float-right mr-2">
                             <i class="far fa-chart-bar"></i> @lang('club.action.chart-homegame')</a>

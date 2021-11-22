@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\ReportFileType;
 use App\Models\Region;
 use App\Jobs\GenerateLeagueGamesReport;
 use App\Notifications\LeagueReportsAvailable;
@@ -55,6 +56,10 @@ class ProcessLeagueReports implements ShouldQueue
         // get all leagues with games
         $leagues = $this->region->leagues;
         $region = $this->region;
+        $rtypes = $this->region->fmt_league_reports->getFlags();
+        // add ICS format as default
+        $rtypes[] = ReportFileType::ICS();
+
         Log::info('[JOB] kicking off league report batch jobs.', ['region-id' => $region->id]);
 
         foreach ($leagues as $l) {
@@ -63,17 +68,18 @@ class ProcessLeagueReports implements ShouldQueue
             //Storage::delete(File::glob(storage_path().'/app/'.$this->region->league_folder.'/'.$l->shortname.'*'));
 
             $rpt_jobs = array();
-            foreach ($this->region->fmt_league_reports->getFlags() as $rtype) {
+            foreach ($rtypes as $rtype) {
                 $rpt_jobs[] = new GenerateLeagueGamesReport($region, $l, $rtype, ReportScope::ms_all());
             };
 
+            $note = new LeagueReportsAvailable($l);
+
             $batch = Bus::batch($rpt_jobs)
-                ->then(function (Batch $batch) use ($l) {
+                ->then(function (Batch $batch) use ($l, $note) {
                     // All jobs completed successfully...
                     if ($l->memberIsA(Role::LeagueLead)) {
                         $llead = $l->members()->wherePivot('role_id', Role::LeagueLead)->first();
-
-                        $llead->notify(new LeagueReportsAvailable($l));
+                        $llead->notify($note);
                         Log::info('[NOTIFICATION] league reports available.', ['member-id' => $llead->id]);
                     }
                 })->name('League Reports ' . $l->shortname)
