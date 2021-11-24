@@ -12,6 +12,11 @@ return [
     'newuser.line'      =>  'A new user has registered with email :email. Please validate and approve or reject.',
     'newuser.action'    =>  'Validate New User',
 
+    'welcome.subject' => 'Welcome to '.config('app.name'),
+    'welcome.line1' => 'You are entitled to work as :userroles for :region. ',
+    'welcome.line2' => 'You will find important news after each login at the home page. If yo uclikc on the logo in the top left corner you can get to the home screen anytime again. ',
+    'welcome.line3' => 'You are allowed to modify data of these clubs and leagues: <ul><li> :clubs </li><li> :leagues </li></ul> Data of all other clubs and leagues you can find in the briefing dashboards.',
+
     'verifyemail.subject'   =>  'Verify Your eMail Address',
     'verifyemail.action'    =>  'Verify eMail',
     'verifyemail.line1'     =>  'Please click the button below to verify your email address.',

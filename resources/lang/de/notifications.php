@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'app.salutation'    => 'Viele Grüße',
+    'app.salutation'    => 'Viele Grüße und Spaß !',
     'app.greeting'    => 'Hallo !',
     'app.actionurl'     =>  'Wenn Du den Knopf ":actionText" nicht betätigen möchtest, kannst Du auch den folgenden Link in deinen Browser kopieren:',
 
@@ -12,7 +12,12 @@ return [
     'newuser.line'      =>  'Ein neuer Benutzer hat sich mit der eMail :email registriert. Bitte bestätige die Registrierung.',
     'newuser.action'    =>  'Neuen Benutzer Validieren',
 
-    'verifyemail.subject'   =>  'DunkOmatic Registrierung - Bestätigung Deiner eMail Addresse',
+    'welcome.subject' => 'Willkommen bei '.config('app.name'),
+    'welcome.line1' => 'Du bist als :userroles für den :region eingetragen. ',
+    'welcome.line2' => 'Wichtige Mitteilungen siehst Du bei jedem Login auf der Home Seite. Die kannst Du auch durch klick auf das <strong>Logo</strong> oben links jederzeit erreichen. ',
+    'welcome.line3' => 'Du kannst die Daten folgender Vereine und Spielrunden ändern: <ul><li> :clubs </li><li> :leagues </li></ul> Die Daten aller anderer Vereine und Ligen kannst Du in den jeweiligen Steckbriefen sehen.',
+
+    'verifyemail.subject'   =>  config('app.name').' Registrierung - Bestätigung Deiner eMail Addresse',
     'verifyemail.action'    =>  'eMail Bestätigen',
     'verifyemail.line1' =>  'Bitte bestätige Deine eMail Adresse unten.',
     'verifyemail.line2' =>  'Falls Du kein Benutzerkonto registriert hast, ist keine weitere Aktion notwendig.',
@@ -28,11 +33,11 @@ return [
     'rejectuser.line2'  =>  'Für Rückfragen wende Dich bitte an folgende eMail Adresse :email',
 
     'approveuser.subject'   => 'Registrierungsanfrage Akzeptiert',
-    'approveuser.line1' =>  'Die Bezirksleitung des Bezirks :REGION hat Deine Registrierung akzeptiert!',
-    'approveuser.line2' =>  'Stelle sicher, dass Du deine eMail verifiziert hast und Viel Spaß mit Dunkomatic !',
+    'approveuser.line1' =>  'Die Bezirksleitung des :REGION hat Deine Registrierung akzeptiert! ',
+    'approveuser.line2' =>  'Stelle sicher, dass Du deine eMail verifiziert hast und Viel Spaß mit '.config('app.name'),
 
     'newseason.subject' =>  'Neue Spielsaison gestartet',
-    'newseason.line1'   =>  'Die neue Spielsaison :season wurde in DunkOmatic getstartet.',
+    'newseason.line1'   =>  'Die neue Spielsaison :season wurde in '.config('app.name').' gestartet.',
     'newseason.line2'   =>  'Etwas Arbeit und eine Menge Spass kommen auf Dich zu.',
     'newseason.line3'   =>  'Bleib dran und prüfe deine Nachrichten oder eMails regelmäßig !',
 
@@ -86,10 +91,10 @@ return [
     'charpickenabled.closed'    =>  'beendet',
     'charpickenabled.action'    =>  'Ziffernwahl',
 
-    'inviteuser.subject'    => 'Einladung für DunkoMatic',
+    'inviteuser.subject'    => 'Einladung für '.config('app.name'),
     'inviteuser.action' =>  'Als Benutzer Registrieren',
-    'inviteuser.line1'  =>  ':sendername hat Dich als Benutzer für DunkOMatic eingeladen.',
-    'inviteuser.line2'  =>  'Mit betätigen des Knopfes kannst Du Dich als Benutzer registrieren.',
+    'inviteuser.line1'  =>  ':sendername hat Dich als Benutzer für '.config('app.name').' eingeladen.',
+    'inviteuser.line2'  =>  'Mit Betätigen des Knopfes kannst Du Dich als Benutzer registrieren.',
 
     'overlappinggames.subject'  => 'Überlappende Heimspielansetzungen',
     'overlappinggames.line1'  => 'Wir haben :games_count überlappende Heimspielansetzungen für deinen Verein :CLUB gefunden.',

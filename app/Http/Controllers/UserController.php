@@ -17,6 +17,7 @@ use Illuminate\Validation\Rule;
 
 use App\Notifications\RejectUser;
 use App\Notifications\ApproveUser;
+use App\Notifications\UserWelcome;
 use Carbon\Carbon;
 
 class UserController extends Controller
@@ -282,7 +283,7 @@ class UserController extends Controller
             }
 
 
-            $user->notify(new ApproveUser(Auth::user(), $user));
+            $user->notify(new ApproveUser(Auth::user()));
         } else {
             $user->update(['rejected_at' => now(), 'approved_at' => null, 'reason_reject' => $data['reason_reject']]);
             Log::notice('user rejected.', ['user-id' => $user->id]);

@@ -3,10 +3,14 @@
 namespace App\Notifications;
 
 use App\Models\User;
+use App\Models\Club;
+use App\Models\League;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Str;
 
 class ApproveUser extends Notification
 {
@@ -19,10 +23,9 @@ class ApproveUser extends Notification
      *
      * @return void
      */
-    public function __construct(User $radmin_user, User $new_user)
+    public function __construct(User $radmin_user)
     {
       $this->radmin_user = $radmin_user;
-      $this->new_user = $new_user;
     }
 
     /**
@@ -33,7 +36,7 @@ class ApproveUser extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -46,11 +49,10 @@ class ApproveUser extends Notification
     {
         return (new MailMessage)
             ->subject( __('notifications.approveuser.subject') )
-            ->greeting( __('notifications.user.greeting', ['username' => $this->new_user->name]) )
-            ->line( __('notifications.approveuser.line1', ['region'=>$this->radmin_user->region->name]) )
+            ->greeting( __('notifications.user.greeting', ['username' => $notifiable->name]) )
+            ->line( __('notifications.approveuser.line1', ['region'=>$notifiable->region->name]) )
             ->line( __('notifications.approveuser.line2' ));
     }
-
     /**
      * Get the array representation of the notification.
      *
@@ -59,8 +61,19 @@ class ApproveUser extends Notification
      */
     public function toArray($notifiable)
     {
+        $ca = Str::replaceLast(',', ' '.__('and'), Club::whereIn('id', $notifiable->getAbilities()->where('entity_type', Club::class)->pluck('entity_id') )->pluck('shortname')->implode(', ')) ?? '--';
+        $la = Str::replaceLast(',', ' '.__('and'), League::whereIn('id', $notifiable->getAbilities()->where('entity_type', League::class)->pluck('entity_id') )->pluck('shortname')->implode(', ')) ?? '--';
+
+        $lines = __('notifications.welcome.line1', ['userroles'=>Str::replaceLast(',', ' '.__('and'), $notifiable->getRoles()->implode(', ')), 'region'=>$notifiable->region->name]);
+        $lines .= __('notifications.welcome.line2');
+        $lines .= __('notifications.welcome.line3', ['clubs'=>$ca , 'leagues'=>$la ]);
+
         return [
-            //
+            'greeting' => __('notifications.user.greeting', ['username'=>$notifiable->name]),
+            'subject' => __('notifications.welcome.subject'),
+            'lines' => $lines,
+            'salutation' => __('notifications.app.salutation'),
         ];
     }
+
 }
