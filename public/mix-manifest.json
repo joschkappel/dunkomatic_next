@@ -1,4 +1,8 @@
 {
     "/js/app.js": "/js/app.js",
-    "/css/app.css": "/css/app.css"
+    "/css/app.css": "/css/app.css",
+    "/css/vendor.css": "/css/vendor.css",
+    "/js/vendor.js": "/js/vendor.js",
+    "/lang/vendor/datatables.net/de.json": "/lang/vendor/datatables.net/de.json",
+    "/lang/vendor/datatables.net/en.json": "/lang/vendor/datatables.net/en.json"
 }

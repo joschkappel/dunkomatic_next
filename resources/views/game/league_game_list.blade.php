@@ -36,7 +36,7 @@
                 processing: true,
                 serverSide: false,
                 responsive: true,
-                language: { "url": "{{URL::asset('vendor/datatables.net/i18n/'.app()->getLocale().'.json')}}" },
+                language: { "url": "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}" },
                 ordering: true,
                 stateSave: true,
                 dom: 'Bflrtip',
@@ -59,7 +59,7 @@
                 order: [
                     [1, 'asc']
                 ],
-                language: { "url": "{{URL::asset('vendor/datatables.net/i18n/'.app()->getLocale().'.json')}}" },
+                language: { "url": "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}" },
                 ajax: '{{ route('league.game.dt', ['language' => app()->getLocale(), 'league' => $league]) }}',
                 columns: [{
                         data: 'id',

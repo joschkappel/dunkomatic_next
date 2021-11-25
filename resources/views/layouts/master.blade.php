@@ -23,14 +23,15 @@
     @yield('app_css_pre')
 
     {{-- Base Stylesheets --}}
-    <link rel="stylesheet" href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}">
+{{--     <link rel="stylesheet" href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/dist/css/adminlte.min.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-    <link rel="stylesheet" href="{{ asset('vendor/flag-icon-css/css/flag-icon.min.css') }}">
-    {{-- Configured Stylesheets --}}
-    @include('layouts.plugins', ['type' => 'css'])
-    {{-- Custom Stylesheets  --}}
+    <link rel="stylesheet" href="{{ asset('vendor/flag-icon-css/css/flag-icon.min.css') }}"> --}}
+    {{-- @include('layouts.plugins', ['type' => 'css']) --}}
+   {{-- Custom Stylesheets  --}}
+   <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+   <link rel="stylesheet" href="{{ asset('css/vendor.css') }}">
     @yield('app_css')
 
     {{-- Favicon --}}
@@ -66,13 +67,15 @@
     @yield('body')
 
     {{-- Base Scripts --}}
-    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+{{--     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
-    {{-- Configured Scripts --}}
-    @include('layouts.plugins', ['type' => 'js'])
+--}}
 
-    <script src="{{ asset('vendor/adminlte/dist/js/adminlte.min.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/vendor.js') }}"></script>
+    {{-- @include('layouts.plugins', ['type' => 'js'])
+    <script src="{{ asset('vendor/adminlte/dist/js/adminlte.min.js') }}"></script> --}}
 
     {{-- Custom Scripts --}}
     @yield('app_js')

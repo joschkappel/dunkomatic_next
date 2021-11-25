@@ -1,4 +1,4 @@
-/* This is a compiled file, to make changes persist, consider editing under the templates directory */
+/* This is a compiled file, you should be editing the file in the templates directory */
 .pace {
   -webkit-pointer-events: none;
   pointer-events: none;
@@ -37,10 +37,6 @@
   border-color: #2299dd transparent transparent;
   border-radius: 50%;
 
-  -webkit-box-sizing: content-box;
-  -moz-box-sizing: content-box;
-  box-sizing: content-box;
-
   -webkit-animation: spin 1s linear infinite;
   -moz-animation: spin 1s linear infinite;
   -o-animation: spin 1s linear infinite;
@@ -59,10 +55,6 @@
   border-style: solid;
   border-color: #2299dd transparent transparent;
   border-radius: 50%;
-
-  -webkit-box-sizing: content-box;
-  -moz-box-sizing: content-box;
-  box-sizing: content-box;
 }
 
 @-webkit-keyframes spin {

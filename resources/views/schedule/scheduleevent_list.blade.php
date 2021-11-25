@@ -71,7 +71,7 @@
         responsive: true,
         pageLength: 50,
         searching: false,
-        language: { "url": "{{URL::asset('vendor/datatables.net/i18n/'.app()->getLocale().'.json')}}" },
+        language: { "url": "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}" },
         order: [
             [1, 'asc']
         ],
@@ -119,7 +119,7 @@
         $('#game_date').datetimepicker({
             format: 'L',
             locale: '{{ app()->getLocale()}}',
-            defaultDate: moment($(this).data('game-date')).format('l'),
+            defaultDate: moment($(this).data('game-date')),
             minDate: startDate,
             maxDate: endDate,
         });

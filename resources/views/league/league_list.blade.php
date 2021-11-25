@@ -31,7 +31,7 @@
          processing: true,
          serverSide: true,
          responsive: true,
-         language: { "url": "{{URL::asset('vendor/datatables.net/i18n/'.app()->getLocale().'.json')}}" },
+         language: { "url": "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}" },
          order: [[1,'asc']],
          ajax: '{{ route('league.list', ['language'=>app()->getLocale(),'region'=>$region]) }}',
          columns: [

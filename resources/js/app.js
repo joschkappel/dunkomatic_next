@@ -6,27 +6,52 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
 
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
+try {
+    global.moment = require('moment');
+    require('tempusdominus-bootstrap');
 
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
+    require('bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js');
+    require('bootstrap-fileinput');
+    require('bootstrap-fileinput/js/locales/de.js');
+    require('bootstrap4-duallistbox');
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+    //selectbox
+    require('select2');
 
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
+    // bootstrap datatables...
+    require( 'jszip' );
+    require( 'datatables.net-bs4' );
+    require( 'datatables.net-buttons-bs4' );
+    require( 'datatables.net-buttons/js/buttons.colVis.js' );
+    require( 'datatables.net-buttons/js/buttons.flash.js' );
+    require( 'datatables.net-buttons/js/buttons.html5.js' );
+    require( 'datatables.net-buttons/js/buttons.print.js' );
+    require( 'datatables.net-colreorder-bs4' );
+    require( 'datatables.net-fixedcolumns-bs4' );
+    require( 'datatables.net-fixedheader-bs4' );
+    require( 'datatables.net-responsive-bs4' );
+    require( 'datatables.net-rowreorder-bs4' );
+    require( 'datatables.net-scroller-bs4' );
+    require( 'datatables.net-select-bs4' );
+    // bs4 no js - require direct component
+    // styling only packages for bs4
+    require( 'datatables.net-keytable' );
+    require( 'datatables.net-rowgroup' );
+    // pdfMake
+    var pdfMake = require('pdfmake/build/pdfmake.js');
+    var pdfFonts = require('pdfmake/build/vfs_fonts.js');
+    pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-const app = new Vue({
-    el: '#app',
-});
+    // charts
+    require('chartjs');
+    require('chartjs-plugin-colorschemes');
+
+    // others
+    require('toastr');
+    require('ion-rangeslider');
+
+
+} catch (e) {
+    console.log(e);
+}

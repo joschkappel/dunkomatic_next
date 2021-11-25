@@ -1,8 +1,49 @@
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Nunito');
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic');
 
 // Variables
 @import 'variables';
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+@import '~tempusdominus-bootstrap/src/sass/tempusdominus-bootstrap-build';
+@import '~bootstrap-fileinput/scss/fileinput';
+@import '~bootstrap-fileinput/scss/themes/explorer-fas/theme';
+@import '~bootstrap-colorpicker/src/sass/colorpicker';
+@import '~bootstrap4-duallistbox/dist/bootstrap-duallistbox.css';
+//@import '~icheck-bootstrap/icheck-bootstrap.css';
+
+// select2
+@import '~select2/dist/css/select2.css';
+@import '~select2-bootstrap4-theme/dist/select2-bootstrap4.css';
+
+// rangeslider
+@import '~ion-rangeslider/css/ion.rangeSlider.css';
+
+
+// datatables
+@import '~datatables.net-bs4/css/dataTables.bootstrap4.css';
+@import '~datatables.net-buttons-bs4/css/buttons.bootstrap4.css';
+@import '~datatables.net-colreorder-bs4/css/colReorder.bootstrap4.css';
+@import '~datatables.net-fixedcolumns-bs4/css/fixedColumns.bootstrap4.css';
+@import '~datatables.net-fixedheader-bs4/css/fixedHeader.bootstrap4.css';
+@import '~datatables.net-keytable-bs4/css/keyTable.bootstrap4.css';
+@import '~datatables.net-responsive-bs4/css/responsive.bootstrap4.css';
+@import '~datatables.net-rowgroup-bs4/css/rowGroup.bootstrap4.css';
+@import '~datatables.net-rowreorder-bs4/css/rowReorder.bootstrap4.css';
+@import '~datatables.net-scroller-bs4/css/scroller.bootstrap4.css';
+@import '~datatables.net-select-bs4/css/select.bootstrap4.css';
+
+
+// fontawsome
+@import "~fontawesome-free/scss/fontawesome";
+@import "~fontawesome-free/scss/regular";
+@import "~fontawesome-free/scss/solid";
+@import "~fontawesome-free/scss/brands";
+// flag icons
+@import "~flag-icon-css/sass/flag-icons";
+// others
+@import '~toastr/toastr';
+@import '~summernote/dist/summernote-bs4.min.css';
+

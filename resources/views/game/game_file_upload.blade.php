@@ -38,10 +38,6 @@
 
 @section('js')
 
-    @if ( app()->getLocale() == "de"){
-    <script src="{{ URL::asset('vendor/kartik-v/bootstrap-fileinput/js/locales/de.js') }}"></script>
-    @endif
-
     <script>
         $('#gfile').fileinput({
             theme: 'fas',
