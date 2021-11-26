@@ -116,13 +116,13 @@
         $("#greeting").val('{{ (old('greeting')!='') ? old('greeting') : $message['message']->greeting }}');
         $("#salutation").val('{{ (old('salutation')!='') ? old('salutation') : $message['message']->salutation }}');
         $("#selDestTo").select2({
-            theme: 'bootstrap4',
+            width: '100%',
             multiple: true,
             allowClear: false,
         });
         $("#selDestTo").val({{ json_encode(Arr::flatten($message['dest_to'])) }} ).change();
         $("#selDestCc").select2({
-            theme: 'bootstrap4',
+            width: '100%',
             multiple: true,
             allowClear: false,
         });

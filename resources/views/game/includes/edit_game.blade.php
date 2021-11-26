@@ -151,7 +151,7 @@
 
                     $("#selGym").select2({
                         placeholder: "{{ __('gym.action.select') }}...",
-                        theme: 'bootstrap4',
+                        width: '100%',
                         multiple: false,
                         allowClear: false,
                         dropdownParent: $('#modalEditGame'),
@@ -235,7 +235,7 @@
 
                 $("#selGym").select2({
                     placeholder: "{{ __('gym.action.select') }}...",
-                    theme: 'bootstrap4',
+                    width: '100%',
                     multiple: false,
                     allowClear: false,
                     dropdownParent: $('#modalEditGame'),
@@ -259,7 +259,7 @@
 
                 $("#team_id_home").select2({
                     placeholder: "select hoeme team",
-                    theme: 'bootstrap4',
+                    width: '100%',
                     multiple: false,
                     allowClear: false,
                     dropdownParent: $('#modalEditGame'),
@@ -285,7 +285,7 @@
                 @if ($league->schedule->custom_events)
                 $("#team_id_guest").select2({
                     placeholder: "select guest team",
-                    theme: 'bootstrap4',
+                    width: '100%',
                     multiple: false,
                     allowClear: false,
                     dropdownParent: $('#modalEditGame'),

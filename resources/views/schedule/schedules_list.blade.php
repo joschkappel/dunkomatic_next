@@ -36,7 +36,7 @@ td.highlight {
                  processing: true,
                  serverSide: false,
                  responsive: true,
-                 language: { "url": "{{URL::asset('vendor/datatables.net/i18n/'.app()->getLocale().'.json')}}" },
+                 language: { "url": "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}" },
                  ordering: false,
                  paging: false,
                 stateSave: true,

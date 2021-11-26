@@ -1,4 +1,4 @@
-<x-modal modalId="modalWithdrawTeam" modalTitle="{{ __('league.action.withdraw', ['league'=>$league->shortname]) }}" modalMethod="DELETE">                
+<x-modal modalId="modalWithdrawTeam" modalTitle="{{ __('league.action.withdraw', ['league'=>$league->shortname]) }}" modalMethod="DELETE">
     <div class="form-group row">
         <div class="col-sm-8">
         <div class="input-group mb-3">
@@ -15,7 +15,7 @@
 
       $(".js-example-placeholder-single").select2({
           placeholder: "{{ __('team.action.select')}}...",
-          theme: 'bootstrap4',
+          width: '100%',
           allowClear: false,
           minimumResultsForSearch: -1,
           ajax: {

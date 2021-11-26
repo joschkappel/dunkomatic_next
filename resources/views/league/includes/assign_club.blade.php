@@ -1,4 +1,4 @@
-<x-modal modalId="modalAssignClub" modalTitle="{{ __('club.action.assign', ['league'=>$league->shortname]) }}">                
+<x-modal modalId="modalAssignClub" modalTitle="{{ __('club.action.assign', ['league'=>$league->shortname]) }}">
         <input type="hidden" name="item_id" id="itemid" value=""  />
         <div class="form-group row">
             <label for="selClub" class="col-sm-4 col-form-label">{{ trans_choice('club.club',1)}}</label>
@@ -15,7 +15,7 @@
 
       $(".js-club-single").select2({
           placeholder: "{{ __('club.action.select')}}...",
-          theme: 'bootstrap4',
+          width: '100%',
           allowClear: false,
           minimumResultsForSearch: 5,
           ajax: {

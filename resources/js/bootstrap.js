@@ -7,10 +7,20 @@ window._ = require('lodash');
  */
 
 try {
-    window.Popper = require('popper.js').default;
+    window.Popper = require('@popperjs/core').default;
     window.$ = window.jQuery = require('jquery');
 
+    // basisc
     require('bootstrap');
+    require('overlayscrollbars');
+    window.toastr = require('toastr');
+    window.toastr.options.closeButton = true;
+    window.toastr.options.closeMethod = 'fadeOut';
+    window.toastr.options.closeDuration = 60;
+    window.toastr.options.closeEasing = 'swing';
+    window.toastr.options.progressBar = true;
+
+
 } catch (e) {}
 
 /**

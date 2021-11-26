@@ -79,7 +79,7 @@
     });
     $(".js-sel-gymno").select2({
           placeholder: "@lang('gym.no')...",
-          theme: 'bootstrap4',
+          width: '100%',
           multiple: false,
           allowClear: false,
       });

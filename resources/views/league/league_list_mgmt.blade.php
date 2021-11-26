@@ -91,11 +91,7 @@
 @section('js')
     <script>
         $(function() {
-            toastr.options.closeButton = true;
-            toastr.options.closeMethod = 'fadeOut';
-            toastr.options.closeDuration = 60;
-            toastr.options.closeEasing = 'swing';
-            toastr.options.progressBar = true;
+
             //var demo1 = $('select[name="duallistbox_demo1[]"]').bootstrapDualListbox();
 
 
@@ -103,7 +99,7 @@
                 processing: true,
                 serverSide: true,
                 responsive: true,
-                language: { "url": "{{URL::asset('vendor/datatables.net/i18n/'.app()->getLocale().'.json')}}" },
+                language: { "url": "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}" },
                 order: [
                     [1, 'asc']
                 ],

@@ -114,13 +114,13 @@
             });
 
             $("#selAgeType").select2({
-                theme: 'bootstrap4',
+                width: '100%',
                 multiple: false,
                 allowClear: false,
                 minimumResultsForSearch: -1,
             });
             $("#selGenderType").select2({
-                theme: 'bootstrap4',
+                width: '100%',
                 multiple: false,
                 allowClear: false,
                 minimumResultsForSearch: -1,
@@ -128,7 +128,7 @@
 
             $(".js-selSize").select2({
                 placeholder: "@lang('schedule.action.size.select')...",
-                theme: 'bootstrap4',
+                width: '100%',
                 allowClear: true,
                 minimumResultsForSearch: -1,
                 ajax: {
@@ -146,7 +146,7 @@
 
             $(".js-sel-schedule").select2({
                 placeholder: "pls selec size first",
-                theme: 'bootstrap4',
+                width: '100%',
                 multiple: false,
                 allowClear: true,
                 minimumResultsForSearch: -1
@@ -160,7 +160,7 @@
 
                 $(".js-sel-schedule").val(null).trigger('change');
                 $(".js-sel-schedule").select2({
-                    theme: 'bootstrap4',
+                    width: '100%',
                     multiple: false,
                     allowClear: false,
                     minimumResultsForSearch: 5,

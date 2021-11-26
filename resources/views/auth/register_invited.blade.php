@@ -116,7 +116,7 @@
 
             $("#selRegion").select2({
                 multiple: false,
-                theme: 'bootstrap4',
+                width: '100%',
                 allowClear: false,
                 minimumResultsForSearch: 10,
                 placeholder: "{{__('club.region')}}",
@@ -144,7 +144,7 @@
 
             $("#selLocale").select2({
                 multiple: false,
-                theme: 'bootstrap4',
+                width: '100%',
                 allowClear: false,
                 templateSelection: formatLocale
             });

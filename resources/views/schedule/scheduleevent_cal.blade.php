@@ -1,7 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.FullCalendar',true)
-
 @section('content')
 <x-card-form cardTitle="{{ __('schedule.title.calendar', ['region' => session('cur_region')->name ]) }}" :omitSubmit="true" colWidth="10">
   <div id='calendar'></div>
@@ -19,7 +17,7 @@
           var calendarEl = document.getElementById('calendar');
           var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'listYear',
-                locale: '{{app()->getLocale()}}',
+                locale: '{{ app()->getLocale()}}',
                 themeSystem: 'bootstrap',
                 headerToolbar: {
                       left: 'prev,next today',

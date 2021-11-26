@@ -55,7 +55,7 @@ jochenk
     $(function() {
         //Initialize Select2 Elements
         $('.js-single-size').select2({
-            theme: 'bootstrap4',
+            width: '100%',
             multiple: false,
             allowClear: false
         });

@@ -6,8 +6,8 @@
                     name='selRole'></select>
                 @error('selRole')
                     <div class="invalid-feedback">{{ $message }}</div>
-                @enderror                 
-                </div>                       
+                @enderror
+                </div>
             </div>
         </div>
         <div class="form-group row">
@@ -39,7 +39,7 @@
         $(function() {
             $(".js-role-single").select2({
                 placeholder: "@lang('role.action.select')...",
-                theme: 'bootstrap4',
+                width: '100%',
                 multiple: false,
                 allowClear: false,
                 ajax: {

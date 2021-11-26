@@ -59,7 +59,7 @@
     };
 
     $("#selLocale").select2({
-            theme: 'bootstrap4',
+            width: '100%',
             multiple: false,
             allowClear: false,
             templateSelection: formatLocale

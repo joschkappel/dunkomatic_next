@@ -177,21 +177,21 @@
 
         $("#selTday").select2({
             placeholder: "Select training day...",
-            theme: 'bootstrap4',
+            width: '100%',
             multiple: false,
             allowClear: false,
             minimumResultsForSearch: 20
         });
         $("#selGday").select2({
             placeholder: "Select preferred game day...",
-            theme: 'bootstrap4',
+            width: '100%',
             multiple: false,
             allowClear: true,
             minimumResultsForSearch: 20
         });
         $("#selTeamNo").select2({
             placeholder: "Select team number...",
-            theme: 'bootstrap4',
+            width: '100%',
             multiple: false,
             allowClear: false,
             minimumResultsForSearch: 20

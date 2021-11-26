@@ -184,7 +184,7 @@
       });
       $(".js-sel-role").select2({
           placeholder: "@lang('role.action.select')...",
-          theme: 'bootstrap4',
+          width: '100%',
           multiple: false,
           allowClear: false,
           ajax: {
@@ -207,7 +207,7 @@
 
       $(".js-sel-member").select2({
           placeholder: "@lang('role.member.action.select')...",
-          theme: 'bootstrap4',
+          width: '100%',
           multiple: false,
           allowClear: true,
           minimumResultsForSearch: -1,
