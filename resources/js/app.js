@@ -9,6 +9,7 @@ require('./bootstrap');
 
 try {
     global.moment = require('moment');
+    require('moment-timezone');
     require('tempusdominus-bootstrap');
 
     require('bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js');
@@ -48,7 +49,7 @@ try {
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
     // charts
-    require('chartjs');
+    require('chart.js');
     require('chartjs-plugin-colorschemes');
 
     // others
