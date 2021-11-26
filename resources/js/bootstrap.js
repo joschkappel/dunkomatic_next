@@ -14,6 +14,11 @@ try {
     require('bootstrap');
     require('overlayscrollbars');
     window.toastr = require('toastr');
+    window.toastr.options.closeButton = true;
+    window.toastr.options.closeMethod = 'fadeOut';
+    window.toastr.options.closeDuration = 60;
+    window.toastr.options.closeEasing = 'swing';
+    window.toastr.options.progressBar = true;
 
 
 } catch (e) {}

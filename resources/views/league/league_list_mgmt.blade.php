@@ -91,11 +91,7 @@
 @section('js')
     <script>
         $(function() {
-            toastr.options.closeButton = true;
-            toastr.options.closeMethod = 'fadeOut';
-            toastr.options.closeDuration = 60;
-            toastr.options.closeEasing = 'swing';
-            toastr.options.progressBar = true;
+
             //var demo1 = $('select[name="duallistbox_demo1[]"]').bootstrapDualListbox();
 
 
