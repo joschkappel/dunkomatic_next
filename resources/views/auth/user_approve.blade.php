@@ -151,13 +151,13 @@
         });
         $(".js-role").select2({
             placeholder: "@lang('auth.user.role.action.select')...",
-            theme: 'bootstrap4',
+            width: '100%',
             multiple: false,
             allowClear: true,
         });
         $("#selClubs").select2({
             placeholder: "@lang('club.action.select')...",
-            theme: 'bootstrap4',
+            width: '100%',
             multiple: true,
             allowClear: true,
             ajax: {
@@ -174,7 +174,7 @@
         });
         $("#selRegions").select2({
             placeholder: "@lang('region.action.select')...",
-            theme: 'bootstrap4',
+            width: '100%',
             multiple: true,
             allowClear: true,
             ajax: {
@@ -191,7 +191,7 @@
         });
         $("#selLeagues").select2({
             placeholder: "@lang('league.action.select')...",
-            theme: 'bootstrap4',
+            width: '100%',
             multiple: true,
             allowClear: true,
             ajax: {

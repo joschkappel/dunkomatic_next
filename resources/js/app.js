@@ -18,6 +18,10 @@ try {
 
     //selectbox
     require('select2');
+    require('select2/dist/js/i18n/de.js');
+    jQuery(function () {
+        $(".select2").select2({ theme: 'bootstrap4', focus: true });
+     })
 
     // bootstrap datatables...
     require( 'jszip' );
@@ -50,7 +54,6 @@ try {
     // others
     require('toastr');
     require('ion-rangeslider');
-
 
 } catch (e) {
     console.log(e);

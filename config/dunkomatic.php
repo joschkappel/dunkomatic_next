@@ -117,8 +117,6 @@ return [
                 ]
             ]
         ],
-/*         'Duallistbox' => [
-
 
         'FullCalendar' => [
             'name' => 'FullCalendar',
@@ -138,12 +136,7 @@ return [
                     'type' => 'js',
                     'asset' => true,
                     'location' => 'vendor/fullcalendar/locales-all.min.js'
-                ],
-                [
-                    'type' => 'js',
-                    'asset' => true,
-                    'location' => 'vendor/moment/moment.min.js'
-                ],
+                ]
             ],
         ],
 

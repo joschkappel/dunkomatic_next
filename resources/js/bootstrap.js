@@ -12,6 +12,7 @@ try {
 
     // basisc
     require('bootstrap');
+    require('overlayscrollbars');
 
 
 } catch (e) {}

@@ -35,7 +35,7 @@
         <label for='selRegions' class="col-sm-4 col-form-label">{{ trans_choice('region.region',2)}}</label>
         <div class="col-sm-6">
         <div class="input-group mb-3">
-            <select class='js-region-placeholder-single js-states form-control select2 @error('region_ids') /> is-invalid @enderror' multiple="multiple"  id='selRegions' name="region_ids[]">
+            <select class='js-region-placeholder-single form-control select2' multiple="multiple"  id='selRegions' name="region_ids[]">
                 @foreach ( $user['regions'] as $k=>$v )
                     <option value="{{ $v }}" selected>{{ $k }}</option>
                 @endforeach
@@ -50,7 +50,7 @@
         <label for='selClubRole' class="col-sm-4 col-form-label">{{ __('auth.club.user.role')}}</label>
         <div class="col-sm-6">
             <div class="input-group mb-3">
-                <select class='js-role js-states form-control select2 @error('clubrole') /> is-invalid @enderror' id='selClubRole' name="clubrole">
+                <select class='js-role form-control select2's id='selClubRole' name="clubrole">
                 @foreach ( Silber\Bouncer\Database\Role::whereIn('name',['clubadmin', 'clubobserver'])->get() as $role )
                 <option value="{{$role->id}}" @if ( $user->isAn($role->name) ) selected @endif>{{ __('auth.user.role.'.$role->name) }}</option>
                 @endforeach
@@ -64,16 +64,12 @@
     <div class="form-group row ">
         <label for='selClubs' class="col-sm-4 col-form-label">{{ trans_choice('club.club',2)}}</label>
         <div class="col-sm-6">
-        <div class="input-group mb-3">
-            <select class='js-clubs-placeholder-single js-states form-control select2 @error('club_ids') /> is-invalid @enderror' multiple="multiple"  id='selClubs' name="club_ids[]">
+            <select class='js-clubs-placeholder-single form-control select2' multiple="multiple"  id='selClubs' name="club_ids[]">
                 @foreach ( $user['clubs'] as $k=>$v )
                     <option value="{{ $v }}" selected>{{ $k }}</option>
                 @endforeach
             </select>
-            @error('club_ids')
-            <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-            </div>
+
         </div>
     </div>
     <div class="form-group row ">
@@ -95,14 +91,11 @@
         <label for='selLeagues' class="col-sm-4 col-form-label">{{ trans_choice('league.league',2)}}</label>
         <div class="col-sm-6">
         <div class="input-group mb-3">
-            <select class='js-leagues-placeholder-single js-states form-control select2 @error('league_ids') /> is-invalid @enderror' multiple="multiple" id='selLeagues' name="league_ids[]">
+            <select class='js-leagues-placeholder-single js-states form-control select2' multiple="multiple" id='selLeagues' name="league_ids[]">
                 @foreach ($user['leagues'] as $k=>$v)
                 <option value="{{$v}}" selected>{{ $k }}</option>
                 @endforeach
             </select>
-            @error('league_ids')
-            <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
             </div>
         </div>
     </div>
@@ -117,16 +110,17 @@
         });
         $(".js-role").select2({
             placeholder: "@lang('auth.user.role.action.select')...",
-            theme: 'bootstrap4',
+            width: '100%',
             multiple: false,
             allowClear: true,
+            minimumResultsForSearch: -1,
         });
         $("#selClubs").select2({
             placeholder: "@lang('club.action.select')...",
-            theme: 'bootstrap4',
+            width: '100%',
             multiple: true,
             allowClear: false,
-            minimumResultsForSearch: 20,
+            minimumResultsForSearch: -1,
             ajax: {
                     url: "{{ route('club.sb.region', ['region'=>$user->region->id])}}",
                     type: "get",
@@ -141,7 +135,7 @@
         });
         $("#selRegions").select2({
             placeholder: "@lang('region.action.select')...",
-            theme: 'bootstrap4',
+            width: '100%',
             multiple: true,
             allowClear: true,
             ajax: {
@@ -159,7 +153,7 @@
 
         $("#selLeagues").select2({
             placeholder: "@lang('league.action.select')...",
-            theme: 'bootstrap4',
+            width: '100%',
             multiple: true,
             allowClear: false,
             minimumResultsForSearch: 20,

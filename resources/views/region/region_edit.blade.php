@@ -41,7 +41,7 @@
             </div>
         </div>
         <div class="tab-pane fade " id="checks" role="tabpanel" aria-labelledby="checks-tab">
-            <div class="form-row m-2">
+            <div class="form-row m-2" >
                 <label for="selNolead"
                     class="col-sm-6 col-form-label">@lang('region.job.noleads')</label>
                 <div class="col-sm-4">
@@ -330,51 +330,51 @@
             });
 
             $("#selNolead").select2({
-                theme: 'bootstrap4',
                 multiple: false,
                 allowClear: false,
+                width: '100%',
             });
             $("#selNotime").select2({
-                theme: 'bootstrap4',
                 multiple: false,
                 allowClear: false,
+                width: '100%',
             });
             $("#selEmailCheck").select2({
-                theme: 'bootstrap4',
                 multiple: false,
                 allowClear: false,
+                width: '100%',
             });
             $("#selOverlaps").select2({
-                theme: 'bootstrap4',
                 multiple: false,
                 allowClear: false,
+                width: '100%',
             });
             $("#selLeagueReport").select2({
-                theme: 'bootstrap4',
                 multiple: false,
                 allowClear: false,
+                width: '100%',
             });
             $("#selLeagueReportFmt").select2({
-                theme: 'bootstrap4',
                 multiple: true,
                 maximumSelectionLength: 2,
                 language: '{{ \Str::lower(app()->getLocale()) }}',
                 allowClear: false,
+                width: '100%',
             });
             $("#selLeagueReportFmt").val({{ collect($region->fmt_league_reports->getFlags())->pluck('value') }})
                 .change();
 
             $("#selClubReport").select2({
-                theme: 'bootstrap4',
                 multiple: false,
                 allowClear: false,
+                width: '100%',
             });
             $("#selClubReportFmt").select2({
-                theme: 'bootstrap4',
                 multiple: true,
                 maximumSelectionLength: 2,
                 language: '{{ \Str::lower(app()->getLocale()) }}',
                 allowClear: false,
+                width: '100%',
             });
             $("#selClubReportFmt").val({{ collect($region->fmt_club_reports->getFlags())->pluck('value') }})
                 .change();

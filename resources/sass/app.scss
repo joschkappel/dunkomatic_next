@@ -12,11 +12,12 @@
 @import '~bootstrap-fileinput/scss/themes/explorer-fas/theme';
 @import '~bootstrap-colorpicker/src/sass/colorpicker';
 @import '~bootstrap4-duallistbox/dist/bootstrap-duallistbox.css';
-//@import '~icheck-bootstrap/icheck-bootstrap.css';
+@import '~icheck-bootstrap/icheck-bootstrap.css';
 
 // select2
-@import '~select2/dist/css/select2.css';
-@import '~select2-bootstrap4-theme/dist/select2-bootstrap4.css';
+@import '~select2-bootstrap4-theme/dist/select2-bootstrap4.min.css';
+@import '~select2/dist/css/select2.min.css';
+
 
 // rangeslider
 @import '~ion-rangeslider/css/ion.rangeSlider.css';
@@ -46,4 +47,5 @@
 // others
 @import '~toastr/toastr';
 @import '~summernote/dist/summernote-bs4.min.css';
+@import '~overlayscrollbars/css/OverlayScrollbars.css';
 

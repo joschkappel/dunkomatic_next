@@ -36,7 +36,7 @@
 
             $("#selRegion").select2({
                 multiple: false,
-                theme: 'bootstrap4',
+                width: '100%',
                 allowClear: true,
                 placeholder: "{{__('club.region')}}",
                 ajax: {

@@ -113,13 +113,13 @@
         });
 
         $("#selDestTo").select2({
-            theme: 'bootstrap4',
+            width: '100%',
             multiple: true,
             allowClear: false,
         });
 
         $("#selDestCc").select2({
-            theme: 'bootstrap4',
+            width: '100%',
             multiple: true,
             allowClear: false,
         });

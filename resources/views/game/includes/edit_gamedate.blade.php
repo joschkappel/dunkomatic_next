@@ -90,7 +90,7 @@
 
                     $("#selGym").select2({
                         placeholder: "{{ __('gym.action.select') }}...",
-                        theme: 'bootstrap4',
+                        width: '100%',
                         multiple: false,
                         allowClear: false,
                         dropdownParent: $('#modalEditGamedate'),

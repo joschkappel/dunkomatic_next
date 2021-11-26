@@ -23,7 +23,7 @@
 
       $(".js-freechar-single").select2({
           placeholder: "@lang('league.sb_freechar')...",
-          theme: 'bootstrap4',
+          width: '100%',
           allowClear: false,
           minimumResultsForSearch: -1,
           ajax: {
@@ -40,7 +40,7 @@
       });
       $(".js-team-single").select2({
           placeholder: "{{ __('club.action.select')}}...",
-          theme: 'bootstrap4',
+          width: '100%',
           allowClear: false,
           minimumResultsForSearch: 5,
           ajax: {
