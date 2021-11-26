@@ -13,6 +13,7 @@ try {
     // basisc
     require('bootstrap');
     require('overlayscrollbars');
+    window.toastr = require('toastr');
 
 
 } catch (e) {}

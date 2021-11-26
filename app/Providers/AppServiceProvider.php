@@ -132,6 +132,9 @@ class AppServiceProvider extends ServiceProvider
             $smenu['icon'] = 'fa fa-calendar';
             $smenu['icon_color'] = 'green';
             $smenu['shift'] = 'ml-3';
+            unset($smenu['url']);
+            unset($smenu['can']);
+            unset($smenu['shift']);
             $smenu['submenu'] = [
                     [
                         'text' => __('Manage'),

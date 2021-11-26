@@ -53,7 +53,6 @@ try {
     require('chartjs-plugin-colorschemes');
 
     // others
-    require('toastr');
     require('ion-rangeslider');
 
 } catch (e) {
