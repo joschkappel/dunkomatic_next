@@ -54,6 +54,7 @@ try {
 
     // others
     require('ion-rangeslider');
+    require('./adminlte')
 
 } catch (e) {
     console.log(e);

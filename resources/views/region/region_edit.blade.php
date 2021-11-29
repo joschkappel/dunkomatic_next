@@ -1,8 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.RangeSlider', true)
-@section('plugins.ICheck', true)
-
 @section('content')
 <x-card-form cardTitle="{{ __('region.title.edit', ['region' => session('cur_region')->name ]) }}" formAction="{{ route('region.update_details', ['region' => $region]) }}" formMethod="PUT">
     <ul class="nav nav-tabs" id="myTab" role="tablist">

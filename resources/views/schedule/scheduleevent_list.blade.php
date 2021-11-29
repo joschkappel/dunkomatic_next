@@ -1,8 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Datatables',true)
-@section('plugins.RangeSlider',true)
-
 @section('content')
 <div class="container-fluid">
     <div class="row">

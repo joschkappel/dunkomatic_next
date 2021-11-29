@@ -1,8 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Datatables', true)
-@section('plugins.DatatableButtons', true)
-
 @section('content')
 <x-card-list cardTitle="{{ __('game.title.list', ['region'=>$region->name ]) }}">
     <th>ID</th>

@@ -1,7 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.FileUpload', true)
-
 @section('content')
 <x-card-form cardTitle="{{ $cardTitle }}" formAction="{{ $uploadRoute }}" :isMultipart="true">
     @if ( Session::has('status') )

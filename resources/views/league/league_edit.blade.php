@@ -1,7 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.ICheck', true)
-
 @section('content')
 <x-card-form cardTitle="{{ __('league.title.edit', ['league'=>$league->shortname ]) }}" formAction="{{ route('league.update', ['language' => app()->getLocale(), 'league' => $league]) }}" formMethod="PUT">
     <div class="form-group row">

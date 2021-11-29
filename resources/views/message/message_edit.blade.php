@@ -1,7 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Summernote', true)
-
 @section('content')
 <x-card-form cardTitle="{{ __('message.title.edit') }}" formAction="{{ route('message.update',['message'=>$message['message']]) }}" formMethod="PUT">
     <div class="form-group row">

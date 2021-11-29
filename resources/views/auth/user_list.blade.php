@@ -1,7 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Datatables', true)
-
 @section('content')
 <x-card-list cardTitle="{{ __('auth.title.list', ['region' => $region->name ]) }}">
     <th>Id</th>

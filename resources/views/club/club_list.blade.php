@@ -1,7 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Datatables', true)
-
 @section('content')
 <x-card-list cardTitle="{{ __('club.title.list', ['region' => $region->name ]) }}" cardNewAction="{{ route('club.create', ['language'=>app()->getLocale(), 'region'=>$region]) }}" cardNewTitle="{{ __('club.action.create') }}" cardNewAbility="create-clubs">
     <th>Id</th>

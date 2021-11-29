@@ -1,8 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Pace', true)
-@section('plugins.Chartjs', true)
-
 @section('content')
 <x-card-form cardTitle="{{ __('club.title.gamehome.chart') }}" :omitSubmit="true" colWidth="12">
     <canvas id="myChart" height="120" width="200"></canvas>
@@ -12,8 +9,6 @@
 
 @section('js')
 <script >
-    $(document).ajaxStart(function() { Pace.restart(); });
-
     $(function() {
       $('#frmClose').click(function(e){
         history.back();

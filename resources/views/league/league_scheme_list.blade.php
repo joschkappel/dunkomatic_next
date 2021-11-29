@@ -1,7 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Datatables', true)
-
 @section('content_header')
 
 @stop

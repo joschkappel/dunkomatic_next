@@ -1,15 +1,11 @@
 @extends('layouts.page')
 
-@section('plugins.Datatables', true)
-@section('plugins.Toastr', true)
-@section('plugins.Duallistbox', true)
-
 @section('content')
     <div class="row">
         <div class="col-6">
             <div class="collapse" id="collapseAssignment">
 
-                <div class="card card-info">
+                <div class="card card-outline card-primary">
                     <h5 class="card-header">{{ __('league.action.open.assignment')}}</h5>
                     <form id="frmAssignClubs" action="#" method="post">
 
@@ -38,26 +34,17 @@
     </div>
     <div class="row">
         <div class="col-12">
-            <div class="card card-secondary">
-                @if ($errors->any())
-                    <div class="alert alert-danger" role="alert">
-                        @lang('Please fix the following errors')
-                        <ul>
-                            @foreach ($errors->all() as $e)
-                                <li>{{ $e }}</li>
-                            @endforeach
-                        </ul>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title font-weight-bold">@lang('league.title.management')</h3>
+                    <div class="card-tools">
+                        <span>
+                            @can('create-leagues')
+                            <a href="{{ route('league.create', ['language'=>app()->getLocale(), 'region'=>$region]) }}" class="btn btn-success"><i
+                                class="fas fa-plus-circle pr-2"></i>@lang('league.action.create')</a>
+                            @endcan
+                        </span>
                     </div>
-                @endif
-                <h4 class="card-header">@lang('league.title.management')</h4>
-
-                <!-- /.card-header -->
-
-                <div class="card-tools p-2">
-                    @can('create-leagues')
-                    <a href="{{ route('league.create', ['language'=>app()->getLocale(), 'region'=>$region]) }}" class="text-center btn btn-success mb-3"><i
-                            class="fas fa-plus-circle pr-2"></i>@lang('league.action.create')</a>
-                    @endcan
                 </div>
                 <div class="card-body">
                     <table width="100%" class="table table-hover table-bordered table-sm" id="tblAssignClubs">

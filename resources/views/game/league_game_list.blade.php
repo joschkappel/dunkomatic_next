@@ -1,9 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Datatables', true)
-@section('plugins.DatatableButtons', true)
-
-
 @section('content')
 <x-card-list cardTitle="{{ __('league.title.game', ['league'=>$league->shortname]) }}">
                                     <th>id</th>

@@ -1,8 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Datatables', true)
-@section('plugins.Toastr', true)
-
 @section('content_header')
     <div class="container-fluid">
         <div class="row ">

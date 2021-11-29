@@ -1,9 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Pace', true)
-@section('plugins.Chartjs', true)
-@section('plugins.Datatables', true)
-
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="container-fluid">
@@ -72,7 +68,7 @@
                    <td> @if ($t->preferred_league_no == 16)<i class="fas fa-asterisk text-warning"></i>@endif @if ($t->league->size < 16) <i class="far fa-times-circle text-secondary"></i> @else @if ($t->league_no == 16) <i class="far fa-dot-circle fa-lg text-success"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('Q')) <i class="far fa-frown text-danger"</i> @endif @endif</td>
                    <td></td>
                  </tr>
-                @else 
+                @else
                  <tr>
                    <td hidden>{{ $t->league['id'] }}</td>
                    <td hidden>{{ $t->id }}</td>
@@ -123,8 +119,6 @@
 @section('js')
 
 <script>
-  $(document).ajaxStart(function() { Pace.restart(); });
-
   $(function() {
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {

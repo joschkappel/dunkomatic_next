@@ -1,6 +1,4 @@
 
-@section('plugins.RangeSlider', true)
-
 @extends('layouts.modal', ['modalId' => 'modalEditGame', 'modalFormId' => 'formGame', 'modalFormMethod' => 'PUT', 'stayOnSuccess' => true ])
 
 @section('modal_content')

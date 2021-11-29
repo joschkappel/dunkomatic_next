@@ -1,13 +1,11 @@
 @extends('layouts.page')
 
-@section('plugins.Pace', true)
-
 @section('content_header')
     <div class="container-fluid">
         <div class="row ">
             <div class="col-sm">
                 <!-- small card CLUB -->
-                <div class="small-box bg-primary">
+                <div class="small-box bg-primary ">
                     <div class="inner">
                         <div class="row">
                             <input type="hidden" id="entitytype" value="App\Models\Club">
@@ -118,12 +116,13 @@
                 </div>
             </div>
         </div>
+
     </div>
     <!-- /.container-fluid -->
 @stop
 
 @section('content')
-    <div class="container-fluid">
+    <div class="container-fluid ">
         <div class="row">
             <div class="col-md-6 pd-2">
                 <!-- card MEMBERS -->
@@ -402,23 +401,20 @@
                 var team_id = $(this).data('team-id');
                 var club_id = $(this).data('club-id');
                 var league_id = $(this).data('league-id');
-                Pace.restart();
-                Pace.track(function() {
-                    $.ajax({
-                        type: 'POST',
-                        url: "{{ route('team.deassign-league') }}",
-                        dataType: 'json',
-                        data: {
-                            club_id: club_id,
-                            team_id: team_id,
-                            league_id: league_id,
-                            _token: "{{ csrf_token() }}",
-                            _method: 'DELETE'
-                        },
-                        success: function(response) {
-                            location.reload()
-                        },
-                    });
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('team.deassign-league') }}",
+                    dataType: 'json',
+                    data: {
+                        club_id: club_id,
+                        team_id: team_id,
+                        league_id: league_id,
+                        _token: "{{ csrf_token() }}",
+                        _method: 'DELETE'
+                    },
+                    success: function(response) {
+                        location.reload()
+                    },
                 });
             });
             $("button#deleteMember").click(function() {

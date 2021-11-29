@@ -1,10 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Pace', true)
-@section('plugins.Chartjs', true)
-@section('plugins.RangeSlider',true)
-
-
 @section('content')
 <div class="container-fluid">
     <div class="row">
@@ -70,8 +65,6 @@
 
 @section('js')
 <script >
-    $(document).ajaxStart(function() { Pace.restart(); });
-
     $(function() {
         var leagues = [];
         var c_day = [];

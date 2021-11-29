@@ -1,9 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.ICheck', true)
-@section('plugins.Colorpicker', true)
-@section('plugins.RangeSlider',true)
-
 @section('content')
 <x-card-form cardTitle="{{ __('schedule.title.new') }}" formAction="{{ route('schedule.store') }}">
     <div class="form-group row ">

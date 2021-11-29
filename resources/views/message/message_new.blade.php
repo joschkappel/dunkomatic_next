@@ -1,7 +1,5 @@
 @extends('layouts.page')
 
-@section('plugins.Summernote', true)
-
 @section('content')
 <x-card-form cardTitle="{{ __('message.title.new', ['region'=> $region->name ]) }}" formAction="{{ route('message.store',['user'=>$user,'region'=>$region]) }}">
                         <div class="form-group row">
