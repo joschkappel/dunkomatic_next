@@ -47,10 +47,12 @@
         "owen-it/laravel-auditing": "^10.0",
         "phpunit/phpunit": "=9.5.8",
         "predis/predis": "^1.0",
+        "rappasoft/laravel-authentication-log": "^1.2",
         "silber/bouncer": "^v1.0.0-rc.9",
         "spatie/icalendar-generator": "2.3.0",
         "stuk/jszip": "^3.0",
         "symfony/http-kernel": "^5.1.5",
+        "torann/geoip": "^3.0",
         "twbs/bootstrap": "4.6.1",
         "yajra/laravel-datatables-oracle": "^9.10"
     },

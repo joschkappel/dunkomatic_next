@@ -21,14 +21,20 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="selLocale" class="col-sm-4 col-form-label">prferred language</label>
+                            <label for="selLocale" class="col-sm-4 col-form-label">{{__('auth.user.preferred.language')}}</label>
                             <div class="col-sm-4">
-                            <div class="input-group mb-3">
-                              <select class='js-sel-locale js-states form-control select2' id='selLocale' name="locale">
-                                 <option @if (Auth::user()->locale == 'en') selected @endif value="en">{{__('english')}}</option>
-                                 <option @if (Auth::user()->locale == 'de') selected @endif value="de">{{__('deutsch')}}</option>
-                              </select>
+                              <div class="input-group mb-3">
+                                <select class='js-sel-locale form-control select2' id='selLocale' name="locale">
+                                    <option @if (Auth::user()->locale == 'en') selected @endif value="en">{{__('english')}}</option>
+                                    <option @if (Auth::user()->locale == 'de') selected @endif value="de">{{__('deutsch')}}</option>
+                                </select>
                               </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="lastlogin" class="col-sm-4 col-form-label">@lang('auth.lastlogin_at')</label>
+                            <div class="col-sm-6">
+                                <input type="text" readonly class="form-control" id="lastlogin" value="{{ Carbon\Carbon::parse(Auth::user()->lastLoginAt())->diffForHumans( Carbon\Carbon::now() )}}">
                             </div>
                         </div>
 </x-card-form>
@@ -37,6 +43,7 @@
 
 @section('js')
 <script>
+    $(function() {
     $('#frmClose').click(function(e){
         history.back();
     });
@@ -62,7 +69,9 @@
             width: '100%',
             multiple: false,
             allowClear: false,
+            minimumResultsForSearch: Infinity,
             templateSelection: formatLocale
         });
+    });
 </script>
 @stop
