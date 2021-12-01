@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Jobs;
 
 use App\Jobs\ProcessDbCleanup;
 use Illuminate\Notifications\DatabaseNotification;

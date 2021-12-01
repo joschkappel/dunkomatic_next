@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Rappasoft\LaravelAuthenticationLog\Traits\AuthenticationLoggable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,7 +22,7 @@ use Illuminate\Contracts\Translation\HasLocalePreference;
 
 class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword, HasLocalePreference
 {
-    use Notifiable, HasFactory, HasRolesAndAbilities;
+    use Notifiable, HasFactory, HasRolesAndAbilities, AuthenticationLoggable;
 
     /**
      * Get the user's preferred locale.
@@ -184,5 +185,9 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
       } else {
         return collect();
       }
+    }
+    public function notifyAuthenticationLogVia()
+    {
+        return ['mail'];
     }
 }

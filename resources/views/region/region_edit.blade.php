@@ -329,31 +329,37 @@
             $("#selNolead").select2({
                 multiple: false,
                 allowClear: false,
+                minimumResultsForSearch: Infinity,
                 width: '100%',
             });
             $("#selNotime").select2({
                 multiple: false,
                 allowClear: false,
+                minimumResultsForSearch: Infinity,
                 width: '100%',
             });
             $("#selEmailCheck").select2({
                 multiple: false,
                 allowClear: false,
+                minimumResultsForSearch: Infinity,
                 width: '100%',
             });
             $("#selOverlaps").select2({
                 multiple: false,
                 allowClear: false,
+                minimumResultsForSearch: Infinity,
                 width: '100%',
             });
             $("#selLeagueReport").select2({
                 multiple: false,
                 allowClear: false,
+                minimumResultsForSearch: Infinity,
                 width: '100%',
             });
             $("#selLeagueReportFmt").select2({
                 multiple: true,
                 maximumSelectionLength: 2,
+                minimumResultsForSearch: Infinity,
                 language: '{{ \Str::lower(app()->getLocale()) }}',
                 allowClear: false,
                 width: '100%',
@@ -364,11 +370,13 @@
             $("#selClubReport").select2({
                 multiple: false,
                 allowClear: false,
+                minimumResultsForSearch: Infinity,
                 width: '100%',
             });
             $("#selClubReportFmt").select2({
                 multiple: true,
                 maximumSelectionLength: 2,
+                minimumResultsForSearch: Infinity,
                 language: '{{ \Str::lower(app()->getLocale()) }}',
                 allowClear: false,
                 width: '100%',

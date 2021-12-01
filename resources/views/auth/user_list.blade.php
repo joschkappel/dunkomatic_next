@@ -8,6 +8,7 @@
     <th>@lang('auth.user.roles')</th>
     <th>@lang('auth.user.clubs')</th>
     <th>@lang('auth.user.leagues')</th>
+    <th>@lang('auth.lastlogin_at')</th>
     <th>{{ __('Created at') }}</th>
     <th>{{ __('Email verfified at') }}</th>
     <th>{{ __('Approved at') }}</th>
@@ -61,6 +62,14 @@
                 {
                     data: 'leagues',
                     name: 'leagues'
+                },
+                {
+                    data: {
+                        _: 'lastlogin_at.filter',
+                        display: 'lastlogin_at.display',
+                        sort: 'lastlogin_at.ts'
+                    },
+                    name: 'lastlogin_at.ts'
                 },
                 {
                     data: {

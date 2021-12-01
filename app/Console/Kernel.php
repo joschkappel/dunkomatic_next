@@ -41,6 +41,7 @@ class Kernel extends ConsoleKernel
         $schedule->job(new ProcessDbCleanup(), 'janitor')->weekly();//everyFiveMinutes()
         $schedule->job(new ProcessNewSeason(),'janitor')->yearly();
         $schedule->command('telescope:prune')->daily();
+        $schedule->command('authentication-log:purge')->monthly();
 
         // schedule region specific jobs
         $regions = Region::all();

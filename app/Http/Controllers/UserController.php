@@ -93,6 +93,21 @@ class UserController extends Controller
                     );
                 }
             })
+            ->addColumn('lastlogin_at', function ($userlist) use ($language) {
+                if ($userlist->lastSuccessfulLoginAt()) {
+                    return array(
+                        'display' => Carbon::parse($userlist->lastSuccessfulLoginAt())->locale($language)->isoFormat('LLL'),
+                        'ts' => Carbon::parse($userlist->lastSuccessfulLoginAt())->timestamp,
+                        'filter' => Carbon::parse($userlist->lastSuccessfulLoginAt())->locale($language)->isoFormat('LLL')
+                    );
+                } else {
+                    return array(
+                        'display' => null,
+                        'ts' => 0,
+                        'filter' => null
+                    );
+                }
+            })
             ->editColumn('email_verified_at', function ($userlist) use ($language) {
                 if ($userlist->email_verified_at) {
                     return array(

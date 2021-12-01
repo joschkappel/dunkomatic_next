@@ -2,9 +2,10 @@
 
 namespace Tests\Feature\Auth;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 use App\Models\Region;
+use Rappasoft\LaravelAuthenticationLog\Notifications\FailedLogin;
 
 use TestDatabaseSeeder;
 
@@ -14,6 +15,7 @@ class LoginTest extends TestCase
      // use RefreshDatabase;
 
     /** @test **/
+
      public function test_user_can_view_a_login_form()
      {
          $response = $this->get('/de/login');
@@ -61,6 +63,9 @@ class LoginTest extends TestCase
        $region = Region::where('code','HBVDA')->first();
        $this->assertDatabaseHas('users', ['region_id' => $region->id]);
 
+       Notification::fake();
+       Notification::assertNothingSent();
+
        $region_user = $region->regionadmin->first()->user()->first();
 
          $response = $this->from('/de/login')->post('/de/login', [
@@ -73,6 +78,11 @@ class LoginTest extends TestCase
          $this->assertTrue(session()->hasOldInput('email'));
          $this->assertFalse(session()->hasOldInput('password'));
          $this->assertGuest();
+
+         Notification::assertSentTo(
+            [$region_user], FailedLogin::class
+        );
+
      }
 
 }

@@ -33,5 +33,11 @@
   "containing": "davon",
   "sent": "gesendet",
   "with copy to": "mit Kopie an",
-  "Season": "Spielsaison"
+  "Season": "Spielsaison",
+  "Hello": "Hallo",
+  "There has been a failed login attempt to your :app account.": "Jemand hat vergeblich versucht sich mit Deinem Benutzernamen bei :app anzumelden.",
+  "Account": "Benutzerkonto",
+  "If this was you, you can ignore this alert. If you suspect any suspicious activity on your account, please change your password.": "Falls das Du warst ignoriere diese Meldung. Ansonsten ändere bitte Dein Passwort.",
+  "Regards": "Viele Grüße"
+
 }
