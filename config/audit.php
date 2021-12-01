@@ -120,7 +120,7 @@ return [
     'drivers' => [
         'database' => [
             'table'      => 'audits',
-            'connection' => null,
+            'connection' => dunknxt,
         ],
     ],
 

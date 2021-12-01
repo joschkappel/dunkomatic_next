@@ -75,7 +75,7 @@
                                     </div>
                                 </div>
                                 <div class="col-4">
-                                    <button dusk="login" type="submit" class="btn btn-primary btn-block btn-flat">
+                                    <button dusk="login" type="submit" class="btn btn-primary">
                                         {{ __('auth.sign_in') }}
                                     </button>
                                 </div>

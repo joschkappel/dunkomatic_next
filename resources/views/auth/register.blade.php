@@ -37,6 +37,8 @@
                         <form action="{{ $register_url }}" method="post">
                             {{ csrf_field() }}
 
+                            <div class="form-group row ">
+                                <div class="col-sm">
                             <div class="input-group mb-3">
                                 <input type="text" name="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" value="{{ old('name') }}"
                                         placeholder="{{ __('auth.full_name') }}" autofocus>
@@ -52,6 +54,8 @@
                                     </div>
                                 @endif
                             </div>
+                        </div>
+                        </div>
                             <div class="input-group mb-3">
                                 <input type="email" name="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" value="{{ old('email') }}"
                                         placeholder="{{ __('auth.email') }}">
@@ -94,15 +98,13 @@
                                     </div>
                                 @endif
                             </div>
-                            <div class="input-group mb-3">
-                                <select class='sel-region js-states form-control select2' id='selRegion' name='region_id'>
-                                </select>
-                                <span class="input-group-btn">
-                                <button class="btn btn-default" type="button" data-select2-open="region_id">
-                                    <span class="fas fa-globe-europe"></span>
-                                </button>
-                                </span>
+                            <div class="form-group ">
+                                <div class="input-group input-group-sm">
+                                    <select class='sel-region form-control select2' id='selRegion' name='region_id'>
+                                    </select>
+                                </div>
                             </div>
+
                             <div class="input-group mb-3">
                                 <input type="input" name="reason_join" class="form-control {{ $errors->has('reason_join') ? 'is-invalid' : '' }}" value="{{ old('reason_join') }}"
                                         placeholder="{{ __('auth.reason_join') }}">
@@ -117,18 +119,15 @@
                                     </div>
                                 @endif
                             </div>
-                            <div class="input-group mb-3">
+                            <div class="form-group ">
+                                <div class="input-group input-group-sm">
                                 <select class='sel-locale js-states form-control select2' id='selLocale' name='locale'>
                                 <option @if ( app()->getLocale() == 'en') selected @endif value="en">{{__('english')}}</option>
                                 <option @if ( app()->getLocale() == 'de') selected @endif value="de">{{__('deutsch')}}</option>
                                 </select>
-                                <span class="input-group-btn">
-                                <button class="btn btn-default" type="button" data-select2-open="locale">
-                                    <span class="fas fa-language"></span>
-                                </button>
-                                </span>
+                                </div>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-block btn-flat">
+                            <button type="submit" class="btn btn-primary btn-block">
                                 {{ __('auth.register') }}
                             </button>
                         </form>
@@ -150,13 +149,13 @@
 
 @stack('js')
     <script>
-        $(document).ready(function(){
+        $(function() {
 
             $("#selRegion").select2({
                 multiple: false,
                 width: '100%',
                 allowClear: false,
-                minimumResultsForSearch: 10,
+                minimumResultsForSearch: Infinity,
                 placeholder: "{{__('club.region')}}",
                 ajax: {
                     url: "{{ route('region.admin.sb')}}",
@@ -184,6 +183,7 @@
                 multiple: false,
                 width: '100%',
                 allowClear: false,
+                minimumResultsForSearch: Infinity,
                 templateSelection: formatLocale
             });
         });
