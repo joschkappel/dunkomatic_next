@@ -23,5 +23,7 @@ return [
     'updated' => 'hat :type :typename geändert',
     'audittrail' => 'Aktionsprotokoll',
     'unknown.type' => 'unbekanntes Objekt',
-    'unknown.instance' => 'Objekt ist weg (siehe Details)',
+    'unknown.instance' => 'Objekt wurde inzwischen gelöscht 😞',
+    'last' => 'Letzte Änderung am :audit_created_at, von :user_name.',
+    'unavailable' => 'Es liegen keine Änderungen vor'
 ];

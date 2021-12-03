@@ -82,9 +82,9 @@
                       {{ $a->getModified(true, JSON_PRETTY_PRINT) }}
                   </div>
            --}}        <!-- Placement of additional controls. Optional -->
-                  <div class="timeline-footer">
+{{--                   <div class="timeline-footer">
                     <a class="btn btn-primary btn-sm">Read more</a>
-                  </div>
+                  </div> --}}
                 </div>
 
               </div>

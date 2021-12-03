@@ -15,31 +15,38 @@ class CardForm extends Component
     public $cardTitle;
 
     /**
-     * The form action / route to use 
+     * The card header note
      *
      * @var string
      */
-    public $formAction;    
+    public $cardChangeNote;
 
     /**
-     * The form HTTP method to use 
+     * The form action / route to use
      *
      * @var string
      */
-    public $formMethod; 
+    public $formAction;
+
+    /**
+     * The form HTTP method to use
+     *
+     * @var string
+     */
+    public $formMethod;
 
     /**
      * Omit the cancel button
      *
      * @var bool
      */
-    public $omitCancel; 
+    public $omitCancel;
     /**
      * Omit the submitl button
      *
      * @var bool
      */
-    public $omitSubmit; 
+    public $omitSubmit;
     /**
      * column / form width
      *
@@ -51,18 +58,19 @@ class CardForm extends Component
      *
      * @var bool
      */
-    public $isMultipart;  
+    public $isMultipart;
 
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($cardTitle, 
-                                $formAction='', 
-                                $formMethod='POST',  
-                                $omitCancel=False, 
-                                $omitSubmit=False, 
+    public function __construct($cardChangeNote='',
+                                $cardTitle,
+                                $formAction='',
+                                $formMethod='POST',
+                                $omitCancel=False,
+                                $omitSubmit=False,
                                 $colWidth='6',
                                 $isMultipart=False)
     {
@@ -73,6 +81,7 @@ class CardForm extends Component
         $this->omitSubmit = $omitSubmit;
         $this->colWidth = $colWidth;
         $this->isMultipart = $isMultipart;
+        $this->cardChangeNote = $cardChangeNote;
     }
 
     /**
