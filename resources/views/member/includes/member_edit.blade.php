@@ -1,4 +1,4 @@
-    <x-card-form cardTitle="{{ __('role.title.edit', ['member'=> $member->name ]) }}" formAction="{{ route('member.update', ['member' => $member]) }}" formMethod="PUT" :omitCancel="true">
+    <x-card-form colWidth=12 cardTitle="{{ __('role.title.edit', ['member'=> $member->name ]) }}" formAction="{{ route('member.update', ['member' => $member]) }}" formMethod="PUT" :omitCancel="true">
         <input type="hidden" id="backto" name="backto" value="{{ route('admin.user.show', ['language'=>app()->getLocale(), 'user'=>$member->user]) }}"></input>
         <div class="form-group row">
             <div class="col-sm-6">

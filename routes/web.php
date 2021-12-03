@@ -45,9 +45,6 @@ Route::group([
         Route::get('user/{user}/edit', 'UserController@edit')->name('admin.user.edit')->middleware('auth')->middleware('can:update-users');
         Route::get('user/{user}/show', 'UserController@show')->name('admin.user.show')->middleware('can:update-users');
 
-        Route::get('audit', 'AuditController@index')->name('admin.audit.index')->middleware('auth');
-        Route::get('audit/dt', 'AuditController@datatable')->name('admin.audit.dt')->middleware('auth');
-
         Route::get('region', 'RegionController@index')->name('region.index')->middleware('can:view-regions');
         Route::get('region/create', 'RegionController@create')->name('region.create')->middleware('can:create-regions');
         Route::get('region/{region}', 'RegionController@show')->name('region.show')->middleware('can:view-regions');
@@ -69,7 +66,12 @@ Route::group([
         Route::get('club/{club}/game/chart', 'ClubGameController@chart')->name('club.game.chart')->middleware('can:view-games');;
         Route::get('club/{club}/team/pickchar', 'ClubTeamController@pickchar')->name('club.team.pickchar')->middleware('can:update-teams');;
 
+        Route::get('audit/{audit}', 'AuditController@show')->name('audit.show');
+
         Route::group(['prefix' => 'region/{region}'], function () {
+            Route::get('audit', 'AuditController@index')->name('audit.index');
+            Route::get('audits/dt', 'AuditController@datatable')->name('audits.dt');
+
             Route::get('club', 'ClubController@index')->name('club.index')->middleware('can:view-clubs');
             Route::get('club/create', 'ClubController@create')->name('club.create')->middleware('can:create-clubs');
             Route::get('league/list', 'LeagueController@list')->name('league.list')->middleware('can:view-leagues');

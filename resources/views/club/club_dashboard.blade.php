@@ -12,6 +12,11 @@
                             <div class="col-sm-6 pd-2">
                                 <h3>{{ $club->shortname }}</h3>
                                 <h5>{{ $club->name }}</h5>
+                                <div class="text-xs text-nowrap">{{ $club->audits()->exists() ?
+                                     __('audit.last', [ 'audit_created_at' => Carbon\Carbon::parse($club->audits()->latest()->first()->created_at)->locale(app()->getLocale())->isoFormat('LLL'),
+                                                        'user_name' => $club->audits()->latest()->first()->user->name ] ) :
+                                     __('audit.unavailable')  }}
+                                </div>
                             </div>
                         </div>
                     </div>

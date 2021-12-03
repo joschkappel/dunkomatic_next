@@ -232,7 +232,7 @@ class AppServiceProvider extends ServiceProvider
                         'text'  => __('Audit Trail'),
                         'icon'  => 'fas fa-stream',
                         'icon_color' => 'blue',
-                        'route' => ['admin.audit.index', ['language'=>app()->getLocale()]],
+                        'route' => ['audit.index', ['language'=>app()->getLocale(), 'region'=>session('cur_region')]],
                         'shift' => 'ml-3'
                     ],
                     [

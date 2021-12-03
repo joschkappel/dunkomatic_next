@@ -18,6 +18,11 @@
                             @lang('Please fix the following errors')
                         </div>
                         @endif
+                        @if ($cardChangeNote != '')
+                            <div class="form-group row ">
+                             <div class="col-sm-4 text-xs text-info text-nowrap">{{ $cardChangeNote }}</div>
+                            </div>
+                        @endif
 
                         {{ $slot }}
 
