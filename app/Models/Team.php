@@ -11,10 +11,21 @@ use App\Models\Game;
 
 use App\Rules\GameMinute;
 use App\Rules\GameHour;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Team extends Model
+class Team extends Model implements Auditable
 {
-  use HasFactory;
+  use \OwenIt\Auditing\Auditable, hasFactory;
+
+  public function generateTags(): array
+  {
+      return [
+          $this->name,
+          $this->club->shortname,
+          $this->league->shortname ?? '',
+          '('.$this->club->region->code.')'
+      ];
+  }
 
   protected $fillable = [
         'id','league_char','league_no','team_no','league_id','club_id','changeable', 'league_prev',
@@ -76,4 +87,8 @@ class Team extends Model
       return $this->hasMany(Game::class,'team_id_guest');
   }
 
+  public function getNameAttribute()
+  {
+    return $this->club->shortname.$this->team_no;
+  }
 }

@@ -27,7 +27,7 @@ class Club extends Model implements Auditable
     {
         return [
             $this->shortname,
-            $this->region
+            '('.$this->region->code.')'
         ];
     }
     protected $fillable = [

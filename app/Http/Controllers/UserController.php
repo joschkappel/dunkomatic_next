@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Club;
 use App\Models\League;
 use App\Models\Region;
+use OwenIt\Auditing\Models\Audit;
 
 use Bouncer;
 use Silber\Bouncer\Database\Role;
@@ -174,8 +175,9 @@ class UserController extends Controller
     public function show($language, User $user)
     {
         $member = $user->member;
+        $audits = Audit::where('user_id', $user->id)->orderBy('created_at')->get();
         Log::info('show user details', ['user-id'=>$user->id]);
-        return view('auth/user_profile', ['user' => $user, 'member' => $member]);
+        return view('auth/user_profile', ['user' => $user, 'member' => $member, 'audits'=>$audits]);
     }
 
     public function edit($language, User $user)
