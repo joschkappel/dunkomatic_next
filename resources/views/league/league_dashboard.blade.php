@@ -14,7 +14,7 @@
                                 <h5>{{ $league->name }} </h5>
                                 <div class="text-xs text-nowrap">{{ $league->audits()->exists() ?
                                     __('audit.last', [ 'audit_created_at' => Carbon\Carbon::parse($league->audits()->latest()->first()->created_at)->locale(app()->getLocale())->isoFormat('LLL'),
-                                                       'user_name' => $league->audits()->latest()->first()->user->name ] ) :
+                                                       'user_name' => $league->audits()->latest()->first()->user->name ?? config('app.name')] ) :
                                     __('audit.unavailable')  }}
                                </div>
                             </div>

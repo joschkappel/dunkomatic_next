@@ -38,13 +38,15 @@ class AuditController extends Controller
                     return Carbon::parse($a->created_at)->locale($language)->isoFormat('l LTS');
                 })
                 ->editColumn('event', function ($a) {
+                    // TBD sorting
                     return __($a->event);
                 })
                 ->editColumn('auditable_type', function ($a) {
+                    // TBD sorting  ( + check sorting for username)
                     return __('audit.'.$a->auditable_type);
                 })
                 ->addColumn('mod_values', function ($a) {
-                    return Str::limit( $a->getModified(true) , 80);
+                    return Str::limit( json_encode($a->old_values) .' -> '. json_encode($a->new_values) , 80);
                 })
                 ->make(true);
 

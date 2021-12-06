@@ -29,7 +29,7 @@
                 columns: [
                     { data: 'id',name: 'id', visible: true},
                     { data: 'created_at',name: 'created_at', visible: true},
-                    { data: 'user.name',name: 'username', visible: true},
+                    { data: 'user.name',name: 'username', visible: true, defaultContent: '{{config("app.name")}}'},
                     { data: 'event',name: 'event', visible: true},
                     { data: 'auditable_type',name: 'type', visible: true},
                     { data: 'tags',name: 'tags', visible: true},

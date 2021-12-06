@@ -19,7 +19,7 @@
             <div class="col-md-3">
                 <strong>@lang('audit.user')</strong>
             </div>
-            <div class="col-md-9">{{ $audit->getMetadata()['user_name'] }}</div>
+            <div class="col-md-9">{{ $audit->getMetadata()['user_name'] ?? config('app.name') }}</div>
         </div>
         <div class="row">
             <div class="col-md-3">
@@ -61,8 +61,8 @@
             @foreach ($audit->getModified() as $attribute => $modified)
                 <tr">
                     <td><strong>{{ $attribute }}</strong></td>
-                    <td class="text-danger">{{ $modified['old'] ?? '' }}</td>
-                    <td class="text-success">{{ $modified['new'] ?? '' }}</td>
+                    <td class="text-danger">{{ $audit->old_values[$attribute] ?? '' }}</td>
+                    <td class="text-success">{{ $audit->new_values[$attribute] ?? '' }}</td>
                 </tr>
             @endforeach
         </tbody>

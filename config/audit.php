@@ -60,7 +60,7 @@ return [
         'created',
         'updated',
         'deleted',
-        'restored',
+        // 'restored',
     ],
 
     /*
@@ -133,5 +133,5 @@ return [
     |
     */
 
-    'console' => false,
+    'console' => true,
 ];

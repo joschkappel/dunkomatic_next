@@ -4,7 +4,7 @@
 @php
     $team_lastmod = $team->audits()->exists() ?
                     __('audit.last', [ 'audit_created_at' => Carbon\Carbon::parse($team->audits()->latest()->first()->created_at)->locale(app()->getLocale())->isoFormat('LLL'),
-                                                       'user_name' => $team->audits()->latest()->first()->user->name ] ) :
+                                                       'user_name' => $team->audits()->latest()->first()->user->name ?? config('app.name')] ) :
                     __('audit.unavailable') ;
 @endphp
 <x-card-form cardChangeNote="{{$team_lastmod}}"  cardTitle="{{ __('team.title.modify', ['team'=> $team->club['shortname'].' '.$team->team_no ]) }}" formAction="{{ route('team.update',['team' => $team]) }}" formMethod="PUT" >
