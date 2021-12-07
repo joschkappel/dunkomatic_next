@@ -2,7 +2,7 @@
     <div class="card card-outline card-dark collapsed-card" id="membersCard">
         <div class="card-header align-content-between">
             <h4 class="card-title pt-2"><i class="fas fa-user-tie fa-lg"></i> @lang('role.member') <span
-                    class="badge badge-pill badge-info">{{ count($members) }}</span></h4>
+                    class="badge badge-pill badge-primary">{{ count($members) }}</span></h4>
             <div class="card-tools">
                 @can('create-members')
                 <a href="{{ route('membership.'.$entityType.'.create', ['language' => app()->getLocale(), $entityType => $entity])}}"

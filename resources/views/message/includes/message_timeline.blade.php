@@ -4,18 +4,36 @@
         <span class="bg-danger">Reminders</span>
     </div>
     <div>
-        <!-- Before each timeline item corresponds to one icon on the left scale -->
-        <i class="fas fa-bell bg-danger "></i>
-        <!-- Timeline item -->
-        <div class="timeline-item">
-        </div>
+        @if ($reminders)
+            <!-- Before each timeline item corresponds to one icon on the left scale -->
+            <i class="fas fa-bell bg-danger "></i>
+            <!-- Timeline item -->
+            @foreach ($reminders as $r)
+                <div class="timeline-item">
+                    <div class="timeline-body">{{ $r['msg'] }}</div>
+                    <div class="timeline-footer">
+                        @if ($r['action'] != '')
+                        <a class="btn btn-primary btn-sm" href="{{ $r['action'] }}">{{$r['actiontext']}}</a>
+                        @endif
+                    </div>
+                </div>
+            @endforeach
+        @endif
     </div>
     <div>
         <!-- Before each timeline item corresponds to one icon on the left scale -->
         <i class="fas fa-info bg-info "></i>
         <!-- Timeline item -->
+        @foreach ($infos as $i)
         <div class="timeline-item">
+            <div class="timeline-body">{{ $i['msg'] }}</div>
+            <div class="timeline-footer">
+                @if ($i['action'] != '')
+                <a class="btn btn-primary btn-sm" href="{{ $i['action'] }}">{{ $i['actiontext']}}</a>
+                @endif
+            </div>
         </div>
+        @endforeach
     </div>
     @foreach ( $msglist as $msgdate)
     <!-- Timeline time label -->

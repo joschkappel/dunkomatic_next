@@ -23,5 +23,12 @@ return [
   'tl_cc' => 'Message Copy from ',
   'body.enter' => 'Enter your message text here...',
   'delete' => 'Mark as read',
-  'read_more' => 'Read More'
+  'read_more' => 'Read More',
+  'reminder.approvals' => ':approvals new user is waiting for your approval.|:approvals new users are waiting for your approval.',
+  'reminder.deadline.assignment' => 'Club assignment deadline :deadline',
+  'reminder.deadline.registration' => 'Team registration deadline  :deadline',
+  'reminder.deadline.selection' => 'Team League Character assignment deadline  :deadline',
+  'reminder.deadline.scheduling' => 'Home Game Scheduling deadline  :deadline',
+  'reminder.deadline.referees' => 'Referee assignment deadline  :deadline'
+
 ];
