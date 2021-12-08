@@ -2,6 +2,11 @@
 
 return [
   'message' => 'Message|Messages',
+  'reminder' => 'This weeks tasks',
+  'note' => 'To do next',
+  'message.empty' => 'Inbox is empty',
+  'reminder.empty' => 'No tasks his week',
+  'note.empty' => 'No notes found',
   'menu.list' => 'Messages',
   'title.new' => 'Create a new message for :REGION',
   'title.list' => 'List of all messages of user :USER for :REGION',

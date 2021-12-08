@@ -47,6 +47,15 @@ class HomeController extends Controller
         $reminders  = [];
         $infos  = [];
 
+        if (! $user->member->first()->is_complete ) {
+            $msg = [];
+            $msg['msg'] =  __('auth.complete.profile');
+            $msg['action'] = route(@config('dunkomatic.profile_url'), ['language'=>app()->getLocale(),'user'=>$user]);
+            $msg['actiontext'] = __('auth.action.complete.profile');
+            $reminders[] = $msg;
+        }
+
+
         if ($user->isA('regionadmin','superadmin')){
             // check new users waiting for approval
             $users_to_approve = $user->region->users->whereNull('approved_at')->count();
@@ -54,7 +63,7 @@ class HomeController extends Controller
                 $msg = [];
                 $msg['msg'] =  trans_choice('message.reminder.approvals', $users_to_approve, ['approvals'=>$users_to_approve]);
                 $msg['action'] = route('admin.user.index.new', ['language'=>app()->getLocale(),'region'=>$user->region]);
-                $msg['actiontext'] = __('Approve Users');
+                $msg['actiontext'] = __('auth.title.approve');
                 $reminders[] = $msg;
             }
 
@@ -66,7 +75,7 @@ class HomeController extends Controller
                 if ($user->region->close_assignment_at <= now()->addWeeks(1) ){
                     $msg['msg'] =  __('message.reminder.deadline.assignment', ['deadline'=> $user->region->close_assignment_at->diffForHumans(['parts'=>3,'join'=>true])   ]);
                     $msg['action'] = route('league.index_mgmt', ['language'=>app()->getLocale(),'region'=>$user->region]);
-                    $msg['actiontext'] = __('league.menu.manage');
+                    $msg['actiontext'] = trans_choice('league.league',2).' '.__('league.menu.manage');
                     $reminders[] = $msg;
                 } else {
                     $msg['msg'] =  __('message.reminder.deadline.assignment', ['deadline'=> $user->region->close_assignment_at->diffForHumans(['parts'=>1])   ]);

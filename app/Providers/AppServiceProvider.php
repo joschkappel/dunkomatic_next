@@ -212,7 +212,7 @@ class AppServiceProvider extends ServiceProvider
                 'classes'  => 'text-danger text-uppercase',
                 'submenu' => [
                     [
-                        'text'  => __('Approve Users'),
+                        'text'  => __('auth.title.approve'),
                         'icon'  => 'fas fa-thumbs-up',
                         'icon_color' => 'blue',
                         'route' => ['admin.user.index.new', ['language'=>app()->getLocale(),'region'=>session('cur_region')]],
@@ -220,7 +220,7 @@ class AppServiceProvider extends ServiceProvider
                         'shift' => 'ml-3'
                     ],
                     [
-                        'text'  => __('Manage Users'),
+                        'text'  => __('auth.title.list'),
                         'icon'  => 'fas fa-users',
                         'icon_color' => 'blue',
                         'route' => ['admin.user.index', ['language'=>app()->getLocale(),'region'=>session('cur_region')]],

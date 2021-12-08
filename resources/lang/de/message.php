@@ -2,6 +2,11 @@
 
 return [
   'message' => 'Nachricht|Nachrichten',
+  'reminder' => 'Aufgaben für diese Woche',
+  'note' => 'Was demnächst ansteht',
+  'message.empty' => 'Die Inbox ist leer',
+  'reminder.empty' => 'Nichts zu tun für diese Woche',
+  'note.empty' => 'Ich habe keine Infos gefunden',
   'menu.list' => 'Nachrichten',
   'title.new' => 'Schreibe eine neue Nachricht für den :REGION',
   'title.list' => 'Liste aller Nachrichten für Benutzer :USER für :REGION',
