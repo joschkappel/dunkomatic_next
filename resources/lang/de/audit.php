@@ -3,6 +3,7 @@
 return [
     'title.list' => 'Protokolliste aller Aktionen für :region',
     'title.show' => 'Protokolleintrag Details',
+    'list.empty' => 'Es wurden keine Änderungen vorgenommen',
     'type' => 'Objekt',
     'tags' => 'Tags',
     'url' => 'URL',

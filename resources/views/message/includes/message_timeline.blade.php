@@ -1,21 +1,17 @@
-  <!-- Main node for this component -->
+<div class="card card-outline card-success">
+    <div class="card-header">
+        <h4 class="card-title font-weight-bold pt-2"><i class="fas fa-envelope text-success mx-2"></i>{{ trans_choice('message.message',2) }}</h4>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+<!-- Main node for this component -->
   <div class="timeline">
     <div class="time-label">
-        <span class="bg-danger">Reminders</span>
-    </div>
-    <div>
-        <!-- Before each timeline item corresponds to one icon on the left scale -->
-        <i class="fas fa-bell bg-danger "></i>
-        <!-- Timeline item -->
-        <div class="timeline-item">
-        </div>
-    </div>
-    <div>
-        <!-- Before each timeline item corresponds to one icon on the left scale -->
-        <i class="fas fa-info bg-info "></i>
-        <!-- Timeline item -->
-        <div class="timeline-item">
-        </div>
+    @empty ($msglist)
+        <span class="bg-info">{{__('message.message.empty')}}</span>
+    @else
+        <span class="bg-success">{{__('Eingang am')}}</span>
+    @endempty
     </div>
     @foreach ( $msglist as $msgdate)
     <!-- Timeline time label -->
@@ -51,3 +47,5 @@
       <i class="fas fa-clock bg-gray"></i>
     </div>
   </div>
+</div>
+</div>

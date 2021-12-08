@@ -49,14 +49,14 @@
                         <span class="info-box-icon bg-info"><i class="fas fa-basketball-ball"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text text-lg">{{ trans_choice('club.club',$region->clubs_count) }}</span>
-                            <span class="info-box-number text-xl"><a href="{{ route('club.index', ['language' => app()->getLocale(),'region'=>$region]); }}">{{ $region->clubs_count }}</a></span>
+                            <span class="info-box-number text-md"><a href="{{ route('club.index', ['language' => app()->getLocale(),'region'=>$region]); }}">{{ $region->clubs_count }}</a></span>
                         </div>
                     </div>
                     <div class="info-box">
                         <span class="info-box-icon bg-info"><i class="fas fa-user-tie"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text text-lg">{{ __('role.member') }}</span>
-                            <span class="info-box-number text-xl"><a href="{{ route('member.index', ['language' => app()->getLocale(), 'region'=>$region]); }}">{{ $member_count }}</a></span>
+                            <span class="info-box-number text-md"><a href="{{ route('member.index', ['language' => app()->getLocale(), 'region'=>$region]); }}">{{ $member_count }}</a></span>
                         </div>
                     </div>
                 </div>
@@ -65,14 +65,14 @@
                         <span class="info-box-icon bg-info"><i class="fas fa-trophy"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text text-lg">{{ trans_choice('league.league',$region->leagues_count) }}</span>
-                            <span class="info-box-number text-xl"><a href="{{ route('league.index', ['language' => app()->getLocale(), 'region'=>$region]); }}">{{ $region->leagues_count }}</a></span>
+                            <span class="info-box-number text-md"><a href="{{ route('league.index', ['language' => app()->getLocale(), 'region'=>$region]); }}">{{ $region->leagues_count }}</a></span>
                         </div>
                     </div>
                     <div class="info-box">
                         <span class="info-box-icon bg-info"><i class="fas fa-running"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text text-lg">{{ trans_choice('game.game', $games_count) }}</span>
-                            <span class="info-box-number text-xl"><a href="{{ route('game.index', ['language' => app()->getLocale(),'region'=>$region]) }}">{{ $games_count }}</a></span>
+                            <span class="info-box-number text-md"><a href="{{ route('game.index', ['language' => app()->getLocale(),'region'=>$region]) }}">{{ $games_count }}</a></span>
                         </div>
 
                     </div>
@@ -93,8 +93,8 @@
                 <!-- card REFEREES -->
                 <div class="card card-outline card-dark collapsed-card" id="refereeCard">
                     <div class="card-header">
-                        <h4 class="card-title mt-2"><i class="fas fa-hand-paper fa-lg"></i> {{ __('game.menu.referees') }} <span
-                                class="badge badge-pill badge-info">{{ $games_noref_count }}</span></h4>
+                        <h4 class="card-title mt-2"><i class="fas fa-stopwatch fa-lg"></i> {{ __('game.menu.referees') }} <span
+                                class="badge badge-pill badge-primary">{{ $games_noref_count }}</span></h4>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
                                     class="fas fa-plus"></i>
@@ -129,7 +129,7 @@
             <!-- card CLUB ANALYSIS -->
             <div class="card card-outline card-info ">
                 <div class="card-header">
-                <h4 class="card-title"><i class="fas fa-basketball-ball"></i> @lang('region.chart.clubstats')</h4>
+                <h4 class="card-title"><i class="fas fa-chart-line"></i> @lang('region.chart.clubstats')</h4>
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
                     </button>
@@ -161,7 +161,7 @@
             <!-- card LEAGUE ANALYSIS -->
             <div class="card card-outline card-info collapsed-card">
                 <div class="card-header">
-                    <h4 class="card-title"><i class="fas fa-trophy"></i> @lang('region.chart.leaguestats') </h4>
+                    <h4 class="card-title"><i class="fas fa-chart-line"></i> @lang('region.chart.leaguestats') </h4>
                     <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
                     </button>

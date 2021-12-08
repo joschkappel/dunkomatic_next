@@ -2,6 +2,11 @@
 
 return [
   'message' => 'Nachricht|Nachrichten',
+  'reminder' => 'Aufgaben für diese Woche',
+  'note' => 'Was demnächst ansteht',
+  'message.empty' => 'Die Inbox ist leer',
+  'reminder.empty' => 'Nichts zu tun für diese Woche',
+  'note.empty' => 'Ich habe keine Infos gefunden',
   'menu.list' => 'Nachrichten',
   'title.new' => 'Schreibe eine neue Nachricht für den :REGION',
   'title.list' => 'Liste aller Nachrichten für Benutzer :USER für :REGION',
@@ -23,5 +28,11 @@ return [
   'tl_cc' => 'Nachricht-Kopie von ',
   'body.enter' => 'Hier steht deine Nachricht...',
   'delete' => 'Als gelesen markieren',
-  'read_more' => 'Ganze Nachricht lesen'
+  'read_more' => 'Ganze Nachricht lesen',
+  'reminder.approvals' => 'Da wartet :approvals neuer Benutzer auf Dein OK.|Da warten :approvals neue Benutzer auf Dein OK.',
+  'reminder.deadline.assignment' => 'Vereinszuordnung endet :deadline',
+  'reminder.deadline.registration' => 'Mannschaftsmeldung endet :deadline',
+  'reminder.deadline.selection' => 'Ziffernwahl endet :deadline',
+  'reminder.deadline.scheduling' => 'Termineingabe für Heimpspiele endet :deadline',
+  'reminder.deadline.referees' => 'Schiedsrichtereinteilung endet :deadline'
 ];

@@ -3,6 +3,7 @@
 return [
     'title.list' => 'Audittrail of all actions for  :region',
     'title.show' => 'Audittrail Item Details',
+    'list.empty' => 'No audit trails found',
     'type' => 'Objecttype',
     'tags' => 'Tags',
     'url' => 'URL',
