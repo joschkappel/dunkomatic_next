@@ -8,7 +8,7 @@
             @foreach ($reminders as $r)
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     @if ($r['action'] != '')
-                    <a href="{{ $r['action'] }}" class="list-group-item list-group-item-action @if ($loop->first) active @endif">{{ $r['msg'] }}</a>
+                    <a href="{{ $r['action'] }}" class="list-group-item list-group-item-action @if ($loop->first) active @endif rounded">{{ $r['msg'] }}</a>
                     @else
                     {{ $r['msg'] }}
                     @endif

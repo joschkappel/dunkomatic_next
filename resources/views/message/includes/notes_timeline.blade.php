@@ -7,12 +7,7 @@
             <ul class="list-group list-group-flush">
             @foreach ($infos as $i)
                 <li class="list-group-item d-flex-sm justify-content-between align-items-center">
-
-                    @if ($i['action'] != '')
-                    <a href="{{ $i['action'] }}" class="list-group-item list-group-item-action ">{{ $i['msg'] }}</a>
-                    @else
                     {{ $i['msg'] }}
-                    @endif
                 </li>
             @endforeach
             @empty ($infos)

@@ -51,7 +51,6 @@ class HomeController extends Controller
             $msg = [];
             $msg['msg'] =  __('auth.complete.profile');
             $msg['action'] = route(@config('dunkomatic.profile_url'), ['language'=>app()->getLocale(),'user'=>$user]);
-            $msg['actiontext'] = __('auth.action.complete.profile');
             $reminders[] = $msg;
         }
 
@@ -63,7 +62,6 @@ class HomeController extends Controller
                 $msg = [];
                 $msg['msg'] =  trans_choice('message.reminder.approvals', $users_to_approve, ['approvals'=>$users_to_approve]);
                 $msg['action'] = route('admin.user.index.new', ['language'=>app()->getLocale(),'region'=>$user->region]);
-                $msg['actiontext'] = __('auth.title.approve');
                 $reminders[] = $msg;
             }
 
@@ -75,7 +73,6 @@ class HomeController extends Controller
                 if ($user->region->close_assignment_at <= now()->addWeeks(1) ){
                     $msg['msg'] =  __('message.reminder.deadline.assignment', ['deadline'=> $user->region->close_assignment_at->diffForHumans(['parts'=>3,'join'=>true])   ]);
                     $msg['action'] = route('league.index_mgmt', ['language'=>app()->getLocale(),'region'=>$user->region]);
-                    $msg['actiontext'] = trans_choice('league.league',2).' '.__('league.menu.manage');
                     $reminders[] = $msg;
                 } else {
                     $msg['msg'] =  __('message.reminder.deadline.assignment', ['deadline'=> $user->region->close_assignment_at->diffForHumans(['parts'=>1])   ]);
@@ -90,7 +87,6 @@ class HomeController extends Controller
                 if ($user->region->close_referees_at <= now()->addWeeks(1) ){
                     $msg['msg'] =  __('message.reminder.deadline.referees', ['deadline'=> $user->region->close_referees_at->diffForHumans(['parts'=>3,'join'=>true]) ]);
                     $msg['action'] = route('game.index', ['language'=>app()->getLocale(),'region'=>$user->region]);
-                    $msg['actiontext'] = __('game.action.assign-referees');
                     $reminders[] = $msg;
                 } else {
                     $msg['msg'] =  __('message.reminder.deadline.referees', ['deadline'=> $user->region->close_referees_at->diffForHumans(['parts'=>1]) ]);
