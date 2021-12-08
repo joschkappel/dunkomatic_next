@@ -5,16 +5,15 @@
     <!-- /.card-header -->
     <div class="card-body">
             <ul class="list-group list-group-flush">
-            @foreach ($infos as $i)
+            @forelse ($infos as $i)
                 <li class="list-group-item d-flex-sm justify-content-between align-items-center">
                     {{ $i['msg'] }}
                 </li>
-            @endforeach
-            @empty ($infos)
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                {{ __('message.note.empty')}}
-            </li>
-            @endempty
+            @empty
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ __('message.note.empty')}}
+                </li>
+            @endforelse
         </ul>
         <!-- The last icon means the story is complete -->
     </div>

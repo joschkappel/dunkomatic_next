@@ -50,12 +50,7 @@
                 @endphp
                 <div class="timeline">
                     <!-- Timeline time label -->
-                    @if($audits->count() == 0)
-                        <div class="time-label">
-                            <span class="bg-info">{{ __('audit.list.empty') }}</span>
-                        </div>
-                    @endif
-                    @foreach ( $audits as $a )
+                    @forelse ( $audits as $a )
                         @if ($a->created_at->isoFormat('ll')  != $adate)
                             <div class="time-label">
                                 <span class="bg-green">{{ \Carbon\CarbonImmutable::parse($a->created_at)->locale( app()->getLocale() )->isoFormat('ll') }}</span>
@@ -84,7 +79,11 @@
                                 <h3 class="timeline-header"><a href="#">{{ App\Models\User::find($a->user_id)->name}}</a> {!! __('audit.'.$a->event, ['type'=> __('audit.'.$a->auditable_type), 'typename'=>'<span class="text-primary inline">'.$tname.'</span>' ]) !!} </h3>
                             </div>
                         </div>
-                    @endforeach
+                    @empty
+                        <div class="time-label">
+                            <span class="bg-info">{{ __('audit.list.empty') }}</span>
+                        </div>
+                    @endforelse
                     <!-- The last icon means the story is complete -->
                     <div>
                         <i class="fas fa-clock bg-gray"></i>
