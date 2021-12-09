@@ -36,37 +36,17 @@ class ProcessDbCleanup implements ShouldQueue
      */
     public function handle()
     {
-        $aweekago = Carbon::today()->subDays(7)->toDateString();
-        $amonthago = Carbon::today()->subDays(30)->toDateString();
-
         // first dump the DB
         Artisan::call('db:backup');
         Log::notice('[JOB][DB CLEANUP] creating DB backup.');
 
+        Artisan::call('model:prune');
         // drop all outdated (one week) messages;
-        $old_msgs = Message::whereDate('sent_at', '<', $aweekago)->get();
-        foreach ($old_msgs as $om) {
-            $om->message_destinations()->delete();
-            $om->delete();
-        }
-        Log::notice('[JOB][DB CLEANUP] deleting messages.', ['count' => count($old_msgs)]);
-
         // drop all users (incl messages and members) that have been rejected a week ago;
-        $old_users = User::whereDate('rejected_at', '<', $aweekago)->get();
-        foreach ($old_users as $ou) {
-            $ou->delete();
-        }
-        Log::notice('[JOB][DB CLEANUP] deleting rejected users.', ['count' => count($old_users)]);
-
         // drop all users (incl messages and members) that havent verfied their email since a month;
-        $old_users = User::whereNull('email_verified_at')->whereDate('created_at', '<', $amonthago)->get();
-        foreach ($old_users as $ou) {
-            $ou->delete();
-        }
-        Log::notice('[JOB][DB CLEANUP] deleting users with unverified email.', ['count' => count($old_users)]);
 
         // drop all read notifications
-        $old_notifs = DatabaseNotification::whereDate('read_at', '<', $aweekago)->delete();
+        $old_notifs = DatabaseNotification::whereDate('read_at', '<',now()->subWeek())->delete();
         Log::notice('[JOB][DB CLEANUP] deleting read notifications.', ['count' => $old_notifs]);
     }
 }

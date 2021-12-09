@@ -10,7 +10,7 @@ use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 use App\Models\Member;
@@ -19,10 +19,12 @@ use App\Models\Message;
 use App\Notifications\VerifyEmail;
 use App\Notifications\ResetPassword as ResetPasswordNotification;
 use Illuminate\Contracts\Translation\HasLocalePreference;
+use Illuminate\Database\Eloquent\Prunable;
+
 
 class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword, HasLocalePreference
 {
-    use Notifiable, HasFactory, HasRolesAndAbilities, AuthenticationLoggable;
+    use Notifiable, HasFactory, HasRolesAndAbilities, AuthenticationLoggable, Prunable;
 
     /**
      * Get the user's preferred locale.
@@ -189,5 +191,20 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     public function notifyAuthenticationLogVia()
     {
         return ['mail'];
+    }
+
+    /**
+     * Get the prunable model query.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function prunable()
+    {
+        Log::notice('[JOB][DB CLEANUP] pruning users.');
+        return static::where('rejected_at', '<', now()->subWeek())
+                        ->orWhere(function($query) {
+                            $query->whereNull('email_verified_at')
+                                ->where('created_at', '<', now()->subMonth());
+                        });
     }
 }
