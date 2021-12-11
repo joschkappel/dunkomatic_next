@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Club;
+use App\Models\League;
+use App\Models\Region;
+
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
@@ -95,7 +99,7 @@ class HomeController extends Controller
             }
         }
 
-        if ($user->isA('clubadmin','superadmin')){
+        if ($user->isA('clubadmin')){
             // check close registration deadline
             if ( ( $user->region->close_registration_at != null ) and ($user->region->close_registration_at > now() ) ) {
                 $msg = [];
@@ -134,6 +138,46 @@ class HomeController extends Controller
                     $msg['msg'] =  __('message.reminder.deadline.scheduling', ['deadline'=> $user->region->close_scheduling_at->diffForHumans(['parts'=>1])  ]);
                     $infos[] = $msg;
                 }
+            }
+        }
+
+//        if (Bouncer::can('manage', Region::class)){
+        if ($user->can('view-regions')){
+            $regions = $user->getAbilities()->where('entity_type', Region::class)->pluck('entity_id');
+            foreach ($regions as $r){
+                $region = Region::find($r);
+                if ($region->league_filecount > 0){
+                    $msg = [];
+                    $msg['msg'] =  __('message.reminder.download.region.leagues',['region'=>$region->code, 'count'=>$region->league_filecount]);
+                    $msg['action'] = route('region_league_archive.get', ['region'=>$region]);
+                    $reminders[] = $msg;
+                }
+                if ($region->teamware_filecount > 0){
+                    $msg = [];
+                    $msg['msg'] =  __('message.reminder.download.region.teamware',['region'=>$region->code, 'count'=>$region->teamware_filecount]);
+                    $msg['action'] = route('region_teamware_archive.get', ['region'=>$region]);
+                    $reminders[] = $msg;
+                }
+            }
+        }
+        $clubs = $user->getAbilities()->where('entity_type', Club::class)->pluck('entity_id');
+        foreach ($clubs as $c){
+            $club = Club::find($c);
+            if ( $club->filecount > 0){
+                $msg = [];
+                $msg['msg'] =  __('message.reminder.download.clubs',['club'=>$club->shortname, 'count'=>$club->filecount]);
+                $msg['action'] = route('club_archive.get', ['club'=>$club]);
+                $reminders[] = $msg;
+            }
+        }
+        $leagues = $user->getAbilities()->where('entity_type', League::class)->pluck('entity_id');
+        foreach ($leagues as $l){
+            $league = League::find($l);
+            if ( $league->filecount > 0){
+                $msg = [];
+                $msg['msg'] =  __('message.reminder.download.leagues',['league'=>$league->shortname, 'count'=>$league->filecount]);
+                $msg['action'] = route('league_archive.get', ['league'=>$league]);
+                $reminders[] = $msg;
             }
         }
 

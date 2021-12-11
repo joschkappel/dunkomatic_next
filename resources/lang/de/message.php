@@ -34,5 +34,9 @@ return [
   'reminder.deadline.registration' => 'Mannschaftsmeldung endet :deadline',
   'reminder.deadline.selection' => 'Ziffernwahl endet :deadline',
   'reminder.deadline.scheduling' => 'Termineingabe für Heimpspiele endet :deadline',
-  'reminder.deadline.referees' => 'Schiedsrichtereinteilung endet :deadline'
+  'reminder.deadline.referees' => 'Schiedsrichtereinteilung endet :deadline',
+  'reminder.download.region.teamware' => 'Lade deine <spawn class="badge badge-info"> :count </spawn> Teamware Dateien für Bezirk :REGION herunter',
+  'reminder.download.region.leagues' => 'Lade deine <spawn class="badge badge-info"> :count </spawn> Runden Dateien für Bezirk :REGION herunter',
+  'reminder.download.clubs' => 'Lade deine <spawn class="badge badge-info"> :count </spawn> Dateien für Verein :CLUB herunter',
+  'reminder.download.leagues' => 'Lade deine <spawn class="badge badge-info"> :count </spawn> Dateien für Runde :LEAGUE herunter'
 ];

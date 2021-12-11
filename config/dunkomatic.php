@@ -82,5 +82,6 @@ return [
 
     'report_folder_leagues' => 'runden',
     'report_folder_clubs' => 'vereine',
+    'report_folder_teamware' => 'teamware',
 
 ];

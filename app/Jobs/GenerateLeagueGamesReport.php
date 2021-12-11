@@ -5,13 +5,14 @@ namespace App\Jobs;
 use App\Models\League;
 use App\Models\Region;
 use App\Enums\ReportFileType;
-use App\Enums\ReportScope;
 
 use Maatwebsite\Excel\Facades\Excel;
 use App\Helpers\CalendarComposer;
 use Illuminate\Support\Facades\Storage;
 
 use App\Exports\LeagueGamesExport;
+use App\Exports\TeamwareTeamsExport;
+use App\Exports\TeamwareGamesExport;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Bus\Batchable;
@@ -50,6 +51,7 @@ class GenerateLeagueGamesReport implements ShouldQueue
         $this->rpt_name = $this->export_folder . '/' . $this->league->shortname;
         $this->rpt_name .= '_games.';
         $this->rpt_name .= $this->rtype->description;
+
     }
 
     /**
@@ -82,5 +84,6 @@ class GenerateLeagueGamesReport implements ShouldQueue
         } else {
             Excel::store(new LeagueGamesExport($this->league->id), $this->rpt_name);
         }
+
     }
 }

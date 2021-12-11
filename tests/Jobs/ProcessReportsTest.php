@@ -142,6 +142,7 @@ class ProcessReportsTest extends SysTestCase
         app()->call([$job_instance, 'handle']);
 
         Storage::assertExists($region->league_folder);
+        Storage::assertExists($region->teamware_folder);
 
         foreach ($leagues as $l) {
             Bus::assertBatched(function (PendingBatch $batch) use ($l) {
@@ -173,6 +174,7 @@ class ProcessReportsTest extends SysTestCase
         app()->call([$job_instance, 'handle']);
 
         Storage::assertExists($region->league_folder);
+        Storage::assertExists($region->teamware_folder);
 
         foreach ($leagues as $l) {
             Bus::assertBatched(function (PendingBatch $batch) use ($l) {
