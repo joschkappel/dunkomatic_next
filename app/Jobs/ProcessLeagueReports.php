@@ -8,6 +8,7 @@ use App\Jobs\GenerateLeagueGamesReport;
 use App\Notifications\LeagueReportsAvailable;
 use App\Enums\ReportScope;
 use App\Enums\Role;
+use App\Models\League;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Bus\Batch;
@@ -36,12 +37,13 @@ class ProcessLeagueReports implements ShouldQueue
         // set report scope
         $this->region = $region;
 
-        if (Storage::exists($region->league_folder)) {
-            // remove old reports
-            //Storage::deleteDirectory($region->league_folder, false);
-        } else {
+        if (! Storage::exists($region->league_folder)) {
             // make sure folders are there
             Storage::makeDirectory($region->league_folder);
+        };
+        if (! Storage::exists($region->teamware_folder)) {
+            // make sure folders are there
+            Storage::makeDirectory($region->teamware_folder);
         };
     }
 
@@ -71,6 +73,9 @@ class ProcessLeagueReports implements ShouldQueue
             foreach ($rtypes as $rtype) {
                 $rpt_jobs[] = new GenerateLeagueGamesReport($region, $l, $rtype, ReportScope::ms_all());
             };
+            // add teamware
+            $li = League::find($l);
+            $rpt_jobs[] = new GenerateTeamwareReport($l);
 
             $note = new LeagueReportsAvailable($l);
 

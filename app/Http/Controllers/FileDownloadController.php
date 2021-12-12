@@ -11,6 +11,7 @@ use ZipArchive;
 use App\Models\User;
 use App\Models\Club;
 use App\Models\League;
+use App\Models\Region;
 
 class FileDownloadController extends Controller
 {
@@ -110,6 +111,68 @@ class FileDownloadController extends Controller
             }
         } else {
             Log::error('no files found for league.', ['league-id' => $league->id]);
+            return abort(404);
+        }
+    }
+
+    public function get_region_league_archive(Region $region)
+    {
+        Log::info('region league file archive download.', ['region-id' => $region->id]);
+
+        if ($region->league_filecount > 0) {
+            $zip = new ZipArchive;
+            $filename = $region->code . '-runden-reports.zip';
+            $pf = storage_path('app/public/' . $filename);
+            Log::info('archive location.',['path'=>$pf]);
+
+            if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
+                $files = $region->teamware_filenames;
+                Log::debug(print_r($files, true));
+
+                foreach ($files as $f) {
+                    $f =  storage_path('app/' . $f);
+                    $check = $zip->addFile($f, basename($f));
+                }
+
+                $zip->close();
+                //  Storage::move(public_path($fileName), 'public/'.$fileName);
+                Log::notice('downloading ZIP archive for region teamware', ['region-id'=>$region->id, 'filecount'=>count($files)]);
+
+                return Storage::download('public/' . $filename);
+            }
+        } else {
+            Log::error('no files found for region.', ['region-id' => $region->id]);
+            return abort(404);
+        }
+    }
+
+    public function get_region_teamware_archive(Region $region)
+    {
+        Log::info('region teamware file archive download.', ['region-id' => $region->id]);
+
+        if ($region->teamware_filecount > 0) {
+            $zip = new ZipArchive;
+            $filename = $region->code . '-teamware-reports.zip';
+            $pf = storage_path('app/public/' . $filename);
+            Log::info('archive location.',['path'=>$pf]);
+
+            if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
+                $files = $region->league_filenames;
+                Log::debug(print_r($files, true));
+
+                foreach ($files as $f) {
+                    $f =  storage_path('app/' . $f);
+                    $check = $zip->addFile($f, basename($f));
+                }
+
+                $zip->close();
+                //  Storage::move(public_path($fileName), 'public/'.$fileName);
+                Log::notice('downloading ZIP archive for region leagues', ['region-id'=>$region->id, 'filecount'=>count($files)]);
+
+                return Storage::download('public/' . $filename);
+            }
+        } else {
+            Log::error('no files found for region.', ['region-id' => $region->id]);
             return abort(404);
         }
     }

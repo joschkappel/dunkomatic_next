@@ -246,21 +246,6 @@ class AppServiceProvider extends ServiceProvider
                 ]
             ]);
 
-            $league_files =  Auth::user()->league_filecount ?? 0;
-            $club_files =  Auth::user()->club_filecount ?? 0;
-            $all_files = $league_files + $club_files;
-
-            if ($all_files > 0) {
-                $event->menu->add([
-                    'text' => 'Downloads',
-                    'topnav_right' => true,
-                    'route' => ['user_archive.get', ['user' => Auth::user()->id]],
-                    'label'       => $all_files,
-                    'label_color' => 'info',
-                    //'can'  => 'view-clubs', // 'view-leagues'],
-                ]);
-            };
-
             $event->menu->add([
                 'text' => Str::upper(__('Season')) . ' ' . config('global.season'),
                 'topnav' => true,

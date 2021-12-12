@@ -16,6 +16,8 @@ use Silber\Bouncer\Database\HasRolesAndAbilities;
 use App\Models\Member;
 use App\Models\Region;
 use App\Models\Message;
+use App\Models\Club;
+use App\Models\League;
 use App\Notifications\VerifyEmail;
 use App\Notifications\ResetPassword as ResetPasswordNotification;
 use Illuminate\Contracts\Translation\HasLocalePreference;
@@ -135,7 +137,11 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     public function getLeagueFilecountAttribute()
     {
       $directory = $this->region->league_folder;
-      $llist = $this->member->leagues()->pluck('shortname')->implode('|');
+      if ($this->can('view-regions')){
+        $llist = $this->region->leagues()->pluck('shortname')->implode('|');
+      } else {
+        $llist = League::whereIn('id', $this->getAbilities()->where('entity_type', League::class)->pluck('entity_id'))->pluck('shortname')->implode('|');
+      }
       if ($llist !=  ""){
         $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
           return (preg_match('('.$llist.')', $value) === 1);
@@ -149,7 +155,49 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     public function getLeagueFilenamesAttribute()
     {
       $directory = $this->region->league_folder;
-      $llist = $this->member->leagues()->pluck('shortname')->implode('|');
+      if ($this->can('view-regions')){
+        $llist = $this->region->leagues()->pluck('shortname')->implode('|');
+      } else {
+        $llist = League::whereIn('id', $this->getAbilities()->where('entity_type', League::class)->pluck('entity_id'))->pluck('shortname')->implode('|');
+      }
+      if ($llist != ""){
+        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
+          return (preg_match('('.$llist.')', $value) === 1);
+          //return (strpos($value,$llist[0]) !== false);
+        });
+        return $reports;
+      } else {
+        return collect();
+      }
+    }
+    public function getTeamwareFilecountAttribute()
+    {
+      $directory = $this->region->teamware_folder;
+      if ($this->can('view-regions')){
+        $llist = $this->region->leagues()->pluck('shortname')->implode('|');
+      } else {
+        $llist = League::whereIn('id', $this->getAbilities()->where('entity_type', League::class)->pluck('entity_id'))->pluck('shortname')->implode('|');
+      }
+
+      if ($llist !=  ""){
+        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
+          return (preg_match('('.$llist.')', $value) === 1);
+          //return (strpos($value,$llist[0]) !== false);
+        });
+        return count($reports);
+      } else {
+        return 0;
+      }
+    }
+    public function getTeamwareFilenamesAttribute()
+    {
+      $directory = $this->region->teamware_folder;
+      if ($this->can('view-regions')){
+        $llist = $this->region->leagues()->pluck('shortname')->implode('|');
+      } else {
+        $llist = League::whereIn('id', $this->getAbilities()->where('entity_type', League::class)->pluck('entity_id'))->pluck('shortname')->implode('|');
+      }
+
       if ($llist != ""){
         $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
           return (preg_match('('.$llist.')', $value) === 1);
@@ -163,7 +211,7 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     public function getClubFilecountAttribute()
     {
       $directory = $this->region->club_folder;
-      $llist = $this->member->clubs()->pluck('shortname')->implode('|');
+      $llist = Club::whereIn('id', $this->getAbilities()->where('entity_type', Club::class)->pluck('entity_id'))->pluck('shortname')->implode('|');
       if ($llist != "" ){
         $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
           return (preg_match('('.$llist.')', $value) === 1);
@@ -177,7 +225,7 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     public function getClubFilenamesAttribute()
     {
       $directory = $this->region->club_folder;
-      $llist = $this->member->clubs()->pluck('shortname')->implode('|');
+      $llist = Club::whereIn('id', $this->getAbilities()->where('entity_type', Club::class)->pluck('entity_id'))->pluck('shortname')->implode('|');
       if ($llist != ""){
         $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
           return (preg_match('('.$llist.')', $value) === 1);

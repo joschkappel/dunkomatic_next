@@ -34,6 +34,10 @@ return [
   'reminder.deadline.registration' => 'Team registration deadline  :deadline',
   'reminder.deadline.selection' => 'Team League Character assignment deadline  :deadline',
   'reminder.deadline.scheduling' => 'Home Game Scheduling deadline  :deadline',
-  'reminder.deadline.referees' => 'Referee assignment deadline  :deadline'
+  'reminder.deadline.referees' => 'Referee assignment deadline  :deadline',
+  'reminder.download.region.teamware' => 'Download your <spawn class="badge badge-info"> :count </spawn> Teamware files for region :REGION',
+  'reminder.download.region.leagues' => 'Download your <spawn class="badge badge-info"> :count </spawn> League files for region :REGION',
+  'reminder.download.clubs' => 'Download your <spawn class="badge badge-info"> :count </spawn> files for club :CLUB',
+  'reminder.download.leagues' => 'Download your <spawn class="badge badge-info"> :count </spawn> files for league :LEAGUE'
 
 ];

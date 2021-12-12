@@ -142,11 +142,12 @@ class ProcessReportsTest extends SysTestCase
         app()->call([$job_instance, 'handle']);
 
         Storage::assertExists($region->league_folder);
+        Storage::assertExists($region->teamware_folder);
 
         foreach ($leagues as $l) {
             Bus::assertBatched(function (PendingBatch $batch) use ($l) {
                 return ($batch->name == 'League Reports ' . $l->shortname) &&
-                    ($batch->jobs->count() == 2) && ($batch->queue() == 'exports');
+                    ($batch->jobs->count() == 3) && ($batch->queue() == 'exports');
             });
         }
     }
@@ -173,11 +174,12 @@ class ProcessReportsTest extends SysTestCase
         app()->call([$job_instance, 'handle']);
 
         Storage::assertExists($region->league_folder);
+        Storage::assertExists($region->teamware_folder);
 
         foreach ($leagues as $l) {
             Bus::assertBatched(function (PendingBatch $batch) use ($l) {
                 return ($batch->name == 'League Reports ' . $l->shortname) &&
-                    ($batch->jobs->count() == 3) && ($batch->queue() == 'exports');
+                    ($batch->jobs->count() == 4) && ($batch->queue() == 'exports');
             });
         }
     }
