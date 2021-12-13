@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\User;
+use App\Models\Region;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -13,15 +14,18 @@ class RejectUser extends Notification
     use Queueable;
 
     private $radmin_user;
+    private $new_user;
+    private $region;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(User $radmin_user, User $new_user)
+    public function __construct(User $radmin_user, User $new_user, Region $region)
     {
       $this->radmin_user = $radmin_user;
+      $this->region = $region;
       $this->new_user = $new_user;
     }
 
@@ -48,7 +52,7 @@ class RejectUser extends Notification
             ->subject( __('notifications.rejectuser.subject') )
             ->greeting( __('notifications.user.greeting', ['username' => $this->new_user->name]) )
             ->line( __('notifications.rejectuser.line1',
-                ['region' => $this->radmin_user->region->name.' ('.$this->radmin_user->region->code.') ',
+                ['region' => $this->region->name.' ('.$this->region->code.') ',
                  'reason' => $this->new_user->reason_reject]) )
             ->line( __('notifications.rejectuser.line2', ['email' => $this->radmin_user->email]) );
     }

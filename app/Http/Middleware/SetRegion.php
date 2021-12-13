@@ -28,6 +28,10 @@ class SetRegion
             } else {
                 $request->session()->put('cur_region', $request->region );
             }
+        } else {
+            if (Auth::user()){
+                $request->session()->put('cur_region', Auth::user()->regions()->first() );
+            }
         }
 
         return $next($request);

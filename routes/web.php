@@ -267,7 +267,7 @@ Route::middleware(['auth','set.region','set.logcontext'])->group(function () {
     Route::get('file/exports/{season}/{region}/{type}/{file}', 'FileDownloadController@get_file')->name('file.get');
     Route::get('archive/region/{region}/league', 'FileDownloadController@get_region_league_archive')->name('region_league_archive.get');
     Route::get('archive/region/{region}/teamware', 'FileDownloadController@get_region_teamware_archive')->name('region_teamware_archive.get');
-    Route::get('archive/user/{user}', 'FileDownloadController@get_user_archive')->name('user_archive.get');
+    Route::get('archive/region/{region}/user/{user}', 'FileDownloadController@get_user_archive')->name('user_archive.get');
     Route::get('archive/club/{club}', 'FileDownloadController@get_club_archive')->name('club_archive.get');
     Route::get('archive/league/{league}', 'FileDownloadController@get_league_archive')->name('league_archive.get');
 });

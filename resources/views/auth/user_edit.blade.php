@@ -33,8 +33,8 @@
         <label for='selRegions' class="col-sm-4 col-form-label">{{ trans_choice('region.region',2)}}</label>
         <div class="col-sm-6">
         <div class="input-group mb-3">
-            <select class='js-region-placeholder-single form-control select2' multiple="multiple"  id='selRegions' name="region_ids[]">
-                @foreach ( $user['regions'] as $k=>$v )
+            <select class='js-region-placeholder-single form-control select2' disabled multiple="multiple"  id='selRegions' name="region_ids[]">
+                @foreach ( $user->regions()->pluck('id','code') as $k=>$v )
                     <option value="{{ $v }}" selected>{{ $k }}</option>
                 @endforeach
             </select>
@@ -63,7 +63,7 @@
         <label for='selClubs' class="col-sm-4 col-form-label">{{ trans_choice('club.club',2)}}</label>
         <div class="col-sm-6">
             <select class='js-clubs-placeholder-single form-control select2' multiple="multiple"  id='selClubs' name="club_ids[]">
-                @foreach ( $user['clubs'] as $k=>$v )
+                @foreach ( $user->clubs()->pluck('id','shortname') as $k=>$v )
                     <option value="{{ $v }}" selected>{{ $k }}</option>
                 @endforeach
             </select>
@@ -90,7 +90,7 @@
         <div class="col-sm-6">
         <div class="input-group mb-3">
             <select class='js-leagues-placeholder-single js-states form-control select2' multiple="multiple" id='selLeagues' name="league_ids[]">
-                @foreach ($user['leagues'] as $k=>$v)
+                @foreach ($user->leagues()->pluck('id','shortname') as $k=>$v)
                 <option value="{{$v}}" selected>{{ $k }}</option>
                 @endforeach
             </select>
@@ -120,7 +120,7 @@
             allowClear: false,
             minimumResultsForSearch: -1,
             ajax: {
-                    url: "{{ route('club.sb.region', ['region'=>$user->region->id])}}",
+                    url: "{{ route('club.sb.region', ['region'=>session('cur_region')])}}",
                     type: "get",
                     delay: 250,
                     processResults: function (response) {
@@ -156,7 +156,7 @@
             allowClear: false,
             minimumResultsForSearch: 20,
             ajax: {
-                    url: "{{ route('league.sb.region', ['region'=>$user->region->id])}}",
+                    url: "{{ route('league.sb.region', ['region'=>session('cur_region')])}}",
                     type: "get",
                     delay: 250,
                     processResults: function (response) {

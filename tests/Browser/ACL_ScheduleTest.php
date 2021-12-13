@@ -31,7 +31,8 @@ class ACL_ScheduleTest extends DuskTestCase
 
         static::$region = Region::where('code','HBVDA')->first();
         static::$member = Member::factory()->create();
-        static::$user = User::factory()->approved()->for(static::$region)->for(static::$member)->create();
+        static::$user = User::factory()->approved()->for(static::$member)->create();
+        Bouncer::allow(static::$user)->to('access',static::$region);
 
         static::$schedule = Schedule::factory()->create(['name' => 'testschedule']);
 

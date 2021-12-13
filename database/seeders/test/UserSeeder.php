@@ -17,32 +17,33 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $uid = DB::table('members')->insertGetId(['lastname'=>'approved','email1'=>'approved@gmail.com']);
-        DB::table('users')->insert([
+        $region = Region::where('code','HBVDA')->first();
+        $mid = DB::table('members')->insertGetId(['lastname'=>'approved','email1'=>'approved@gmail.com']);
+        $uid = DB::table('users')->insertGetId([
           'name' => 'approved',
           'user_old' => 'approved',
           'email' => 'approved@gmail.com',
           'email_verified_at' => now(),
           'approved_at' => now(),
-          'region_id' => Region::where('code','HBVDA')->first()->id,
           'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-          'member_id' => $uid
+          'member_id' => $mid
         ]);
         Bouncer::assign('regionadmin')->to(User::find($uid));
+        Bouncer::allow(User::find($uid))->to('access', $region);
 
 
-        $uid = DB::table('members')->insertGetId(['lastname'=>'notapproved','email1'=>'notapproved@gmail.com']);
-        DB::table('users')->insert([
+        $mid = DB::table('members')->insertGetId(['lastname'=>'notapproved','email1'=>'notapproved@gmail.com']);
+        $uid = DB::table('users')->insertGetId([
           'name' => 'notapproved',
           'user_old' => 'notapproved',
           'email' => 'notapproved@gmail.com',
           'email_verified_at' => now(),
           'approved_at' => null,
-          'region_id' => Region::where('code','HBVDA')->first()->id,
           'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-          'member_id' => $uid
+          'member_id' => $mid
         ]);
         Bouncer::assign('candidate')->to(User::find($uid));
+        Bouncer::allow(User::find($uid))->to('access', $region);
 
     }
 }

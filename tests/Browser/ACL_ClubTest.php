@@ -38,7 +38,8 @@ class ACL_ClubTest extends DuskTestCase
 
         static::$region = Region::where('code','HBVDA')->first();
         $member = Member::factory()->create();
-        static::$user = User::factory()->approved()->for(static::$region)->for($member)->create();
+        static::$user = User::factory()->approved()->for($member)->create();
+        Bouncer::allow(static::$user)->to('access',static::$region);
 
     }
 

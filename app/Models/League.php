@@ -81,6 +81,14 @@ class League extends Model implements Auditable
     {
         return $this->hasMany(Team::class);
     }
+    public function users()
+    {
+        // get all users with access to this league
+        $league = $this;
+        return User::all()->filter( function ($user) use ($league) {
+            return $user->can('access', $league);
+        });
+    }
 
     public function registered_teams()
     {

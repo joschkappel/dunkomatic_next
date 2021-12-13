@@ -26,7 +26,6 @@ class RegistrationTest extends TestCase
          // $this->seed(TestDatabaseSeeder::class);
          $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
          $region = Region::where('code','HBVDA')->first();
-         $this->assertDatabaseHas('users', ['region_id' => $region->id]);
 
          $region_admin = $region->regionadmin->first()->user()->first();
 

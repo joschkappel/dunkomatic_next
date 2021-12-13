@@ -44,17 +44,17 @@
     <div class="form-group row ">
         <label for='selRegions' class="col-sm-4 col-form-label">{{ __('region.preferred')}}</label>
         <div class="col-sm-6">
-            @empty($abilities->regions)
+            @empty($abilities['regions'])
             <div class="input-group mb-3">
-                <select class='js-regions-placeholder-single js-states form-control select2 @error('region_ids') /> is-invalid @enderror' id='selRegions' name="region_ids[]">
+                <select class='js-regions-placeholder-single form-control select2 @error('region_ids') /> is-invalid @enderror' disabled id='selRegions' name="region_ids[]">
                 </select>
                 @error('region_ids')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
-                </div>
+            </div>
             @endempty
-            @isset($abilities->regions)
-                <input type="input" readonly class="form-control" id="clubs" value="{{ $abilities->regions  }}">
+            @isset($abilities['regions'])
+                <input type="input" readonly class="form-control" id="clubs" value="{{ $abilities['regions']  }}">
             @endisset
         </div>
     </div>
@@ -122,7 +122,7 @@
             @endisset
         </div>
     </div>
-    <div class="form-group row">
+    <div class="form-group row">
         <label class="col-sm-4 col-form-label"></label>
         <div class="icheck-success icheck-inline ">
         <input type="checkbox" id="approved" name="approved" @if (old('approved') == 'on') checked @endif>
@@ -159,7 +159,7 @@
             multiple: true,
             allowClear: true,
             ajax: {
-                    url: "{{ route('club.sb.region', ['region'=>$user->region->id] )}}",
+                    url: "{{ route('club.sb.region', ['region'=>session('cur_region')] )}}",
                     type: "get",
                     delay: 250,
                     processResults: function (response) {
@@ -193,7 +193,7 @@
             multiple: true,
             allowClear: true,
             ajax: {
-                    url: "{{ route('league.sb.region', ['region'=>$user->region->id] )}}",
+                    url: "{{ route('league.sb.region', ['region'=>session('cur_region')] )}}",
                     type: "get",
                     delay: 250,
                     processResults: function (response) {

@@ -108,15 +108,17 @@ class AppServiceProvider extends ServiceProvider
             $smenu['shift'] = 'ml-3';
             $leaguemenu['submenu'][] = $smenu;
 
-            $allowed_leagues = League::whereIn('id', Auth::user()->getAbilities()->where('entity_type', League::class)->pluck('entity_id'))->get();
-            foreach ($allowed_leagues as $l) {
-                $smenu['text'] = $l->shortname;
-                $smenu['url']  = route('league.dashboard', ['language' => app()->getLocale(), 'league' => $l]);
-                $smenu['icon_color'] = 'yellow';
-                $smenu['icon'] =  'fas fa-list';
-                $smenu['shift'] = 'ml-3';
-                unset($smenu['can']);
-                $leaguemenu['submenu'][] = $smenu;
+            $leagues = session('cur_region')->leagues;
+            foreach ($leagues as $l) {
+                if (Auth::user()->can('access', $l)){
+                    $smenu['text'] = $l->shortname;
+                    $smenu['url']  = route('league.dashboard', ['language' => app()->getLocale(), 'league' => $l]);
+                    $smenu['icon_color'] = 'yellow';
+                    $smenu['icon'] =  'fas fa-list';
+                    $smenu['shift'] = 'ml-3';
+                    unset($smenu['can']);
+                    $leaguemenu['submenu'][] = $smenu;
+                }
             };
 
             $smenu['text'] =  __('league.menu.manage');;
@@ -173,8 +175,7 @@ class AppServiceProvider extends ServiceProvider
             ];
             $regionmenu[] = $smenu;
 
-            $allowed_regions = Region::whereIn('id', Auth::user()->getAbilities()->where('entity_type', Region::class)->pluck('entity_id'))->get();
-            $allowed_region[] = Auth::user()->region->id;
+            $allowed_regions = Region::whereIn('id', Auth::user()->getAbilities()->where('entity_type', Region::class)->pluck('entity_id') )->get();
 
             foreach ($allowed_regions as $r) {
                 $smenu['text'] = $r->code;
@@ -254,14 +255,14 @@ class AppServiceProvider extends ServiceProvider
 
 
             $regionmenu = array();
-            $regionmenu['text'] = session('cur_region', Auth::user()->region)->name;
+            $regionmenu['text'] = session('cur_region')->name;
             $regionmenu['icon'] = 'fas fa-globe-europe';
             $regionmenu['topnav_right'] = true;
 
             $regions = Region::all();
 
             foreach ($regions as $r) {
-                if ((Auth::user()->can('manage', $r)) or (Auth::user()->region->name == $r->name)) {
+                if (Auth::user()->can('access', $r)) {
                     $rs['text'] = $r->name;
                     // $rs['url'] = route('region.set', ['region' => $r->id]);
                     $rs['url'] = route(Route::currentRouteName(), array_merge(Route::current()->parameters(), ['region' => $r])  );

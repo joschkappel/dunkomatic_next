@@ -22,7 +22,7 @@ class CustomMessageTest extends SysTestCase
      * run job send message to users
      *
      * @test
-     * @group job
+     * @group jobx
      *
      * @return void
      */
@@ -36,7 +36,7 @@ class CustomMessageTest extends SysTestCase
         app()->call([$job_instance, 'handle']);
 
         // check that message has beeen sent to users
-        Notification::assertSentTo( $msg->region->users, CustomDbMessage::class);
+        Notification::assertSentTo( $msg->region->users(), CustomDbMessage::class);
         // check that autor is informed
         Notification::assertSentTo( $msg->user, AppActionMessage::class);
         // check that message is marked as SENT

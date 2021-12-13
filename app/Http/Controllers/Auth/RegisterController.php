@@ -100,16 +100,11 @@ class RegisterController extends Controller
             foreach ($leagues as $l) {
                 Bouncer::allow($user)->to('manage', $l);
             }
-            // RBAC - set access to region
-            $regions = $member->region;
-            foreach ($regions as $r) {
-                Bouncer::allow($user)->to('manage', $r);
-            }
         }
 
-        //RBAC - set user role
+        //RBAC - set user role and region
         Bouncer::assign('candidate')->to($user);
-
+        Bouncer::allow($user)->to('access', Region::find($data['region_id']));
 
         if (isset($data['invited_by']) and (Crypt::decryptString($data['invited_by']) == $data['email'])) {
             // invited users are auto-approved

@@ -61,7 +61,11 @@ class Region extends Model
 
     public function users()
     {
-        return $this->hasMany(User::class);
+        // return $this->hasMany(User::class);
+        $region = $this;
+        return User::all()->filter( function ($user) use ($region) {
+            return $user->can('access', $region);
+        });
     }
 
     public function schedules()
