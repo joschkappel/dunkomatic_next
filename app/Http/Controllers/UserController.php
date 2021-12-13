@@ -18,7 +18,6 @@ use Illuminate\Validation\Rule;
 
 use App\Notifications\RejectUser;
 use App\Notifications\ApproveUser;
-use App\Notifications\UserWelcome;
 use Carbon\Carbon;
 
 class UserController extends Controller
@@ -31,7 +30,7 @@ class UserController extends Controller
 
     public function datatable($language, Region $region)
     {
-        $users = $region->users()->get();
+        $users = $region->users();
 
         Log::info('preparing user list');
         $userlist = datatables()::of($users);
@@ -71,13 +70,14 @@ class UserController extends Controller
                 }
                 return substr($roles, 0, -2);
             })
-            ->addColumn('clubs', function ($userlist) {
-                $ca = $userlist->getAbilities()->where('entity_type', Club::class)->pluck('entity_id');
-                return Club::whereIn('id', $ca)->pluck('shortname')->implode(', ');
+            ->addColumn('clubs', function ($u) {
+                return $u->clubs()->implode('shortname',', ');
             })
-            ->addColumn('leagues', function ($userlist) {
-                $la = $userlist->getAbilities()->where('entity_type', League::class)->pluck('entity_id');
-                return League::whereIn('id', $la)->pluck('shortname')->implode(', ');
+            ->addColumn('leagues', function ($u) {
+                return $u->leagues()->implode('shortname',', ');
+            })
+            ->addColumn('regions', function ($u) {
+                return $u->regions()->implode('code',', ');
             })
             ->editColumn('created_at', function ($userlist) use ($language) {
                 if ($userlist->created_at) {
@@ -164,8 +164,7 @@ class UserController extends Controller
 
         $users = $region->users()
             ->whereNull('approved_at')
-            ->whereNull('rejected_at')
-            ->get();
+            ->whereNull('rejected_at');
         //  dd(DB::getQueryLog());
         Log::info('showing waiting new user list.');
 
@@ -186,23 +185,13 @@ class UserController extends Controller
         if ($user->approved_at == null) {
             $member = $user->member;
 
-            $c = $user->getAbilities()->where('entity_type', Club::class)->pluck('entity_id');
-            $abilities['clubs'] = Club::whereIn('id', $c)->get()->unique()->implode('shortname', ', ');
-            $l = $user->getAbilities()->where('entity_type', League::class)->pluck('entity_id');
-            $abilities['leagues'] = League::whereIn('id', $l)->get()->unique()->implode('shortname', ', ');
-            $r = $user->getAbilities()->where('entity_type', Region::class)->pluck('entity_id');
-            $abilities['regions'] = Region::whereIn('id', $r)->get()->unique()->implode('name', ', ');
+            $abilities['clubs'] = $user->clubs()->implode('shortname', ', ');
+            $abilities['leagues'] = $user->leagues()->implode('shortname', ', ');
+            $abilities['regions'] = $user->regions()->implode('code', ', ');
 
             Log::info('show user approval form', ['user-id'=>$user->id]);
             return view('auth/user_approve', ['user' => $user, 'member' => $member, 'abilities' => $abilities]);
         } else {
-            $c = $user->getAbilities()->where('entity_type', Club::class)->pluck('entity_id');
-            $user['clubs'] = Club::whereIn('id', $c)->pluck('id', 'shortname');
-            $l = $user->getAbilities()->where('entity_type', League::class)->pluck('entity_id');
-            $user['leagues'] = League::whereIn('id', $l)->pluck('leagues.id', 'leagues.shortname');
-            $r = $user->getAbilities()->where('entity_type', Region::class)->pluck('entity_id');
-            $user['regions'] = Region::whereIn('id', $r)->pluck('regions.id', 'regions.name');
-
             Log::info('show user edit form', ['user-id'=>$user->id]);
             return view('auth/user_edit', ['user' => $user]);
         }
@@ -266,7 +255,7 @@ class UserController extends Controller
             // RBAC - enable region access
             if (isset($data['region_ids'])) {
                 foreach ($data['region_ids'] as $r) {
-                    Bouncer::allow($user)->to('manage', Region::find($r));
+                    Bouncer::allow($user)->to('access', Region::find($r));
                 }
             };
 
@@ -305,12 +294,12 @@ class UserController extends Controller
             $user->update(['rejected_at' => now(), 'approved_at' => null, 'reason_reject' => $data['reason_reject']]);
             Log::notice('user rejected.', ['user-id' => $user->id]);
 
-            $user->notify(new RejectUser(Auth::user(), $user));
+            $user->notify(new RejectUser(Auth::user(), $user, session('cur_region')));
             Log::info('user notified - REJECTUSER.', ['user-id' => $user->id]);
 
         }
 
-        return redirect()->route('admin.user.index.new', ['language' => app()->getLocale(), 'region' => $user->region])->withMessage('User approved successfully');
+        return redirect()->route('admin.user.index.new', ['language' => app()->getLocale(), 'region' => session('cur_region')])->withMessage('User approved successfully');
     }
 
     public function allowance(Request $request, User $user)
@@ -332,7 +321,7 @@ class UserController extends Controller
         $user->abilities()->detach();
         if (isset($data['region_ids'])) {
             foreach ($data['region_ids'] as $r) {
-                Bouncer::allow($user)->to('manage', Region::find($r));
+                Bouncer::allow($user)->to('access', Region::find($r));
             }
         };
         if (isset($data['club_ids'])) {
@@ -360,7 +349,7 @@ class UserController extends Controller
             Bouncer::assign('guest')->to($user);
         }
 
-        return redirect()->route('admin.user.index', ['language' => app()->getLocale(), 'region' => $user->region]);
+        return redirect()->route('admin.user.index', ['language' => app()->getLocale(), 'region' => session('cur_region')]);
     }
 
     public function destroy(Request $request, User $user)
@@ -368,7 +357,7 @@ class UserController extends Controller
 
         $user->delete();
         Log::notice('user deleted.', ['user-id' => $user->id]);
-        return redirect()->route('admin.user.index', ['language' => app()->getLocale(), 'region' => $user->region]);
+        return redirect()->route('admin.user.index', ['language' => app()->getLocale(), 'region' => session('cur_region')]);
     }
 
     public function block(Request $request, User $user)
@@ -379,6 +368,6 @@ class UserController extends Controller
         Bouncer::assign('candidate')->to($user);
         Log::notice('user blocked.', ['user-id' => $user->id]);
 
-        return redirect()->route('admin.user.index', ['language' => app()->getLocale(), 'region' => $user->region]);
+        return redirect()->route('admin.user.index', ['language' => app()->getLocale(), 'region' => session('cur_region')]);
     }
 }

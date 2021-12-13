@@ -14,7 +14,10 @@ class LoginTest extends TestCase
 
      // use RefreshDatabase;
 
-    /** @test **/
+     /**
+      * @test
+      * @group auth
+      */
 
      public function test_user_can_view_a_login_form()
      {
@@ -24,13 +27,15 @@ class LoginTest extends TestCase
          $response->assertViewIs('auth.login');
      }
 
-    /** @test **/
+     /**
+      * @test
+      * @group auth
+      */
      public function test_user_cannot_view_a_login_form_when_authenticated()
      {
 
          $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
          $region = Region::where('code','HBVDA')->first();
-         $this->assertDatabaseHas('users', ['region_id' => $region->id]);
 
          $region_user = $region->regionadmin->first()->user()->first();
 
@@ -39,12 +44,14 @@ class LoginTest extends TestCase
          $response->assertRedirect('/de/home');
      }
 
-    /** @test **/
+     /**
+      * @test
+      * @group auth
+      */
      public function test_user_can_login_with_correct_credentials()
      {
        $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
        $region = Region::where('code','HBVDA')->first();
-       $this->assertDatabaseHas('users', ['region_id' => $region->id]);
 
        $region_user = $region->regionadmin->first()->user()->first();
 
@@ -57,11 +64,14 @@ class LoginTest extends TestCase
          $this->assertAuthenticatedAs($region_user);
      }
 
+     /**
+      * @test
+      * @group auth
+      */
      public function test_user_cannot_login_with_incorrect_password()
      {
        $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
        $region = Region::where('code','HBVDA')->first();
-       $this->assertDatabaseHas('users', ['region_id' => $region->id]);
 
        Notification::fake();
        Notification::assertNothingSent();

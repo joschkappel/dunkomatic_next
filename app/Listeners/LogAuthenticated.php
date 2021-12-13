@@ -14,7 +14,7 @@ class LogAuthenticated
   public function handle(Authenticated $event)
   {
       if ( ! session()->has('cur_region') ){
-        session(['cur_region' => $event->user->region]);
+        session(['cur_region' => $event->user->regions()->first()]);
       }
   }
 }

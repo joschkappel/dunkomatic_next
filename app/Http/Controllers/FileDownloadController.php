@@ -21,21 +21,22 @@ class FileDownloadController extends Controller
         return Storage::download('exports/' . $season . '/' . $region . '/' . $type . '/' . $file, $file);
     }
 
-    public function get_user_archive(User $user)
+    public function get_user_archive(Region $region, User $user)
     {
-        Log::info('user file archive download.', ['user-id' => $user->id]);
+        Log::info('user file archive download.', ['user-id' => $user->id, 'region-id' => $region->id]);
 
-        if ($user->league_filecount + $user->club_filecount > 0) {
+        if ($user->LeagueFilecount($region) + $user->ClubFilecount($region) + $user->TeamwareFilecount($region) > 0) {
             $zip = new ZipArchive;
-            $fileName = $user->region->code . '-reports-' . Str::slug($user->name, '-') . '.zip';
+            $fileName = $region->code . '-reports-' . Str::slug($user->name, '-') . '.zip';
             Storage::delete('public/' . $fileName);
 
             $pf = storage_path('app/public/' . $fileName);
             Log::info('archive location.',['path'=>$pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
-                $files = $user->league_filenames;
-                $files = $files->concat($user->club_filenames);
+                $files = $user->LeagueFilenames($region);
+                $files = $files->concat($user->ClubFilenames($region));
+                $files = $files->concat($user->TeamwareFilenames($region));
 
                 foreach ($files as $f) {
                     $f =  storage_path('app/' . $f);

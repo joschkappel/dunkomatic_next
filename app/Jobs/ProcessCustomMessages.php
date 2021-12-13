@@ -86,7 +86,7 @@ class ProcessCustomMessages implements ShouldQueue
                 $drop_mail = true;
                 Log::debug('[JOB][CUSTOM MESSAGE] region members to notify.', ['members' => $members]);
             } else if ($d->role_id->is(Role::User)) {
-                $users = $this->message->region->users;
+                $users = $this->message->region->users();
                 foreach ($users as $u) {
                     $u->notify(new CustomDbMessage($this->message));
                 }

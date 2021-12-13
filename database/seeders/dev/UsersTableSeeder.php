@@ -19,6 +19,8 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
+        $region = Region::where('code','HBVDA')->first();
+
         $mid = DB::table('members')->insertGetId(['lastname'=>'admin','email1'=>'admin@gmail.com']);
         $uid = DB::table('users')->insertGetId([
           'name' => 'admin',
@@ -26,11 +28,11 @@ class UsersTableSeeder extends Seeder
           'email' => 'admin@gmail.com',
           'email_verified_at' => now(),
           'approved_at' => now(),
-          'region_id' => Region::where('code','HBV')->first()->id,
           'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
           'member_id' => $mid
         ]);
         Bouncer::assign('superadmin')->to(User::find($uid));
+        Bouncer::allow(User::find($uid))->to('access', $region);
 
         $mid = DB::table('members')->insertGetId(['lastname'=>'regionadmin','email1'=>'regionadmin@gmail.com']);
         $uid = DB::table('users')->insertGetId([
@@ -39,12 +41,12 @@ class UsersTableSeeder extends Seeder
           'email' => 'regionadmin@gmail.com',
           'email_verified_at' => now(),
           'approved_at' => now(),
-          'region_id' => Region::where('code','HBVDA')->first()->id,
           'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
           'member_id' => $mid
         ]);
-        DB::table('memberships')->insert(['member_id'=>$mid,'role_id'=>Role::RegionLead,'membership_id'=>Region::where('code','HBVDA')->first()->id,'membership_type'=> Region::class ]);
+        DB::table('memberships')->insert(['member_id'=>$mid,'role_id'=>Role::RegionLead,'membership_id'=>$region->id,'membership_type'=> Region::class ]);
         Bouncer::assign('regionadmin')->to(User::find($uid));
+        Bouncer::allow(User::find($uid))->to('access', $region);
 
         $mid = DB::table('members')->insertGetId(['lastname'=>'regionassist','email1'=>'regionassist@gmail.com']);
         $uid = DB::table('users')->insertGetId([
@@ -53,12 +55,12 @@ class UsersTableSeeder extends Seeder
           'email' => 'regionobserver@gmail.com',
           'email_verified_at' => now(),
           'approved_at' => now(),
-          'region_id' => Region::where('code','HBVDA')->first()->id,
           'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
           'member_id' => $mid
         ]);
-        DB::table('memberships')->insert(['member_id'=>$mid,'role_id'=>Role::RegionLead,'membership_id'=>Region::where('code','HBVDA')->first()->id,'membership_type'=> Region::class ]);
+        DB::table('memberships')->insert(['member_id'=>$mid,'role_id'=>Role::RegionLead,'membership_id'=>$region->id,'membership_type'=> Region::class ]);
         Bouncer::assign('regionobserver')->to(User::find($uid));
+        Bouncer::allow(User::find($uid))->to('access', $region);
 
         $uid = DB::table('users')->insertGetId([
             'name' => 'clubadmin',
@@ -66,11 +68,11 @@ class UsersTableSeeder extends Seeder
             'email' => 'clubadmin@gmail.com',
             'email_verified_at' => now(),
             'approved_at' => now(),
-            'region_id' => Region::where('code','HBVDA')->first()->id,
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'member_id' => $mid
           ]);
           Bouncer::assign('clubadmin')->to(User::find($uid));
+          Bouncer::allow(User::find($uid))->to('access', $region);
 
           $uid = DB::table('users')->insertGetId([
             'name' => 'clubobserver',
@@ -78,11 +80,11 @@ class UsersTableSeeder extends Seeder
             'email' => 'clubobserver@gmail.com',
             'email_verified_at' => now(),
             'approved_at' => now(),
-            'region_id' => Region::where('code','HBVDA')->first()->id,
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'member_id' => $mid
           ]);
           Bouncer::assign('clubobserver')->to(User::find($uid));
+          Bouncer::allow(User::find($uid))->to('access', $region);
 
           $uid = DB::table('users')->insertGetId([
             'name' => 'leagueadmin',
@@ -90,11 +92,11 @@ class UsersTableSeeder extends Seeder
             'email' => 'leagueadmin@gmail.com',
             'email_verified_at' => now(),
             'approved_at' => now(),
-            'region_id' => Region::where('code','HBVDA')->first()->id,
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'member_id' => $mid
           ]);
           Bouncer::assign('leagueadmin')->to(User::find($uid));
+          Bouncer::allow(User::find($uid))->to('access', $region);
 
 
         $mid = DB::table('members')->insertGetId(['lastname'=>'user','email1'=>'user@gmail.com']);
@@ -104,7 +106,6 @@ class UsersTableSeeder extends Seeder
           'email' => 'user@gmail.com',
           'email_verified_at' => now(),
           'approved_at' => now(),
-          'region_id' => Region::where('code','HBVDA')->first()->id,
           'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
           'member_id' => $mid
         ]);
@@ -113,6 +114,7 @@ class UsersTableSeeder extends Seeder
         DB::table('memberships')->insert(['member_id'=>$mid,'role_id'=>Role::User,'membership_id'=>26,'membership_type'=>'App\Models\Club' ]);
 
         Bouncer::assign('guest')->to(User::find($uid));
+        Bouncer::allow(User::find($uid))->to('access', $region);
 
         // NO OLD USER MIGRATION !!
     }

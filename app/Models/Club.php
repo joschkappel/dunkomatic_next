@@ -74,6 +74,14 @@ class Club extends Model implements Auditable
         return $this->morphToMany(Member::class, 'membership')->withPivot('role_id', 'function');
         // test: Club::find(261)->members()->withPivot('role_id','function')->get();
     }
+    public function users()
+    {
+        // get all users with access to this club
+        $club = $this;
+        return User::all()->filter( function ($user) use ($club) {
+            return $user->can('access', $club);
+        });
+    }
 
     public function registered_teams()
     {

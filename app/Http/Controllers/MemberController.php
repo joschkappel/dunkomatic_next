@@ -185,7 +185,7 @@ class MemberController extends Controller
             $region->memberships()->create($mship);
             // auto-invite rgeion admin
             if ($mship['role_id'] = Role::RegionLead()) {
-                $member->notify(new InviteUser(Auth::user(), Auth::user()->region));
+                $member->notify(new InviteUser(Auth::user(), session('cur_region')));
                 Log::info('[NOTIFICATION] invite user.',['member-id'=>$member->id]);
             }
             return redirect()->route('region.index', ['language' => app()->getLocale()]);

@@ -8,6 +8,7 @@
     <th>@lang('auth.user.roles')</th>
     <th>@lang('auth.user.clubs')</th>
     <th>@lang('auth.user.leagues')</th>
+    <th>@lang('auth.user.regions')</th>
     <th>@lang('auth.lastlogin_at')</th>
     <th>{{ __('Created at') }}</th>
     <th>{{ __('Email verfified at') }}</th>
@@ -62,6 +63,10 @@
                 {
                     data: 'leagues',
                     name: 'leagues'
+                },
+                {
+                    data: 'regions',
+                    name: 'regions'
                 },
                 {
                     data: {

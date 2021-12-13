@@ -24,7 +24,7 @@ use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Prunable;
 
 
-class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword, HasLocalePreference
+class User extends Authenticatable implements MustVerifyEmail, CanResetPassword, HasLocalePreference
 {
     use Notifiable, HasFactory, HasRolesAndAbilities, AuthenticationLoggable, Prunable;
 
@@ -65,7 +65,7 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
      * @var array
      */
     protected $fillable = [
-        'id','name', 'email', 'password','region_id','approved_at','rejected_at','reason_join','reason_reject',
+        'id', 'name', 'email', 'password', 'approved_at', 'rejected_at', 'reason_join', 'reason_reject',
         'email_verified_at', 'locale'
     ];
 
@@ -90,11 +90,12 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
         'rejected_at' => 'datetime',
     ];
     // this is a recommended way to declare event handlers
-    public static function boot() {
+    public static function boot()
+    {
         parent::boot();
 
-        static::deleting(function($user) { // before delete() method call this
-                $user->messages()->delete();
+        static::deleting(function ($user) { // before delete() method call this
+            $user->messages()->delete();
         });
     }
 
@@ -106,9 +107,26 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
         return $this->belongsTo(Member::class);
     }
 
-    public function region()
+    public function regions()
     {
-        return $this->belongsTo(Region::class);
+        $user = $this;
+        return Region::all()->filter(function ($region) use ($user) {
+            return $user->can('access', $region);
+        });
+    }
+    public function clubs()
+    {
+        $user = $this;
+        return Club::all()->filter(function ($club) use ($user) {
+            return $user->can('access', $club);
+        });
+    }
+    public function leagues()
+    {
+        $user = $this;
+        return League::all()->filter(function ($league) use ($user) {
+            return $user->can('access', $league);
+        });
     }
 
     public function messages()
@@ -117,7 +135,7 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     }
     public function region_messages($region_id)
     {
-        return $this->messages()->where('region_id',$region_id);
+        return $this->messages()->where('region_id', $region_id);
     }
 
 
@@ -131,110 +149,109 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     */
     public function getIsRegionadminAttribute()
     {
-       return $this->member->isRegionAdmin;
+        return $this->member->isRegionAdmin;
     }
 
-    public function getLeagueFilecountAttribute()
+    public function LeagueFilecount(Region $region)
     {
-      $directory = $this->region->league_folder;
-      if ($this->can('view-regions')){
-        $llist = $this->region->leagues()->pluck('shortname')->implode('|');
-      } else {
-        $llist = League::whereIn('id', $this->getAbilities()->where('entity_type', League::class)->pluck('entity_id'))->pluck('shortname')->implode('|');
-      }
-      if ($llist !=  ""){
-        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
-          return (preg_match('('.$llist.')', $value) === 1);
-          //return (strpos($value,$llist[0]) !== false);
-        });
-        return count($reports);
-      } else {
-        return 0;
-      }
-    }
-    public function getLeagueFilenamesAttribute()
-    {
-      $directory = $this->region->league_folder;
-      if ($this->can('view-regions')){
-        $llist = $this->region->leagues()->pluck('shortname')->implode('|');
-      } else {
-        $llist = League::whereIn('id', $this->getAbilities()->where('entity_type', League::class)->pluck('entity_id'))->pluck('shortname')->implode('|');
-      }
-      if ($llist != ""){
-        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
-          return (preg_match('('.$llist.')', $value) === 1);
-          //return (strpos($value,$llist[0]) !== false);
-        });
-        return $reports;
-      } else {
-        return collect();
-      }
-    }
-    public function getTeamwareFilecountAttribute()
-    {
-      $directory = $this->region->teamware_folder;
-      if ($this->can('view-regions')){
-        $llist = $this->region->leagues()->pluck('shortname')->implode('|');
-      } else {
-        $llist = League::whereIn('id', $this->getAbilities()->where('entity_type', League::class)->pluck('entity_id'))->pluck('shortname')->implode('|');
-      }
+        $directory = $region->league_folder;
+        if ($this->can('access', $region)) {
+            $llist = $this->leagues()->pluck('shortname')->implode('|');
+        }
 
-      if ($llist !=  ""){
-        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
-          return (preg_match('('.$llist.')', $value) === 1);
-          //return (strpos($value,$llist[0]) !== false);
-        });
-        return count($reports);
-      } else {
-        return 0;
-      }
+        if ($llist !=  "") {
+            $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
+                return (preg_match('(' . $llist . ')', $value) === 1);
+                //return (strpos($value,$llist[0]) !== false);
+            });
+            return count($reports);
+        } else {
+            return 0;
+        }
     }
-    public function getTeamwareFilenamesAttribute()
+    public function LeagueFilenames(Region $region)
     {
-      $directory = $this->region->teamware_folder;
-      if ($this->can('view-regions')){
-        $llist = $this->region->leagues()->pluck('shortname')->implode('|');
-      } else {
-        $llist = League::whereIn('id', $this->getAbilities()->where('entity_type', League::class)->pluck('entity_id'))->pluck('shortname')->implode('|');
-      }
+        $directory = $region->league_folder;
+        if ($this->can('access', $region)) {
+            $llist = $this->leagues()->pluck('shortname')->implode('|');
+        }
+        if ($llist != "") {
+            $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
+                return (preg_match('(' . $llist . ')', $value) === 1);
+                //return (strpos($value,$llist[0]) !== false);
+            });
+            return $reports;
+        } else {
+            return collect();
+        }
+    }
+    public function TeamwareFilecount(Region $region)
+    {
+        $directory = $region->teamware_folder;
+        if ($this->can('access', $region)) {
+            $llist = $this->leagues()->pluck('shortname')->implode('|');
+        }
 
-      if ($llist != ""){
-        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
-          return (preg_match('('.$llist.')', $value) === 1);
-          //return (strpos($value,$llist[0]) !== false);
-        });
-        return $reports;
-      } else {
-        return collect();
-      }
+        if ($llist !=  "") {
+            $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
+                return (preg_match('(' . $llist . ')', $value) === 1);
+                //return (strpos($value,$llist[0]) !== false);
+            });
+            return count($reports);
+        } else {
+            return 0;
+        }
     }
-    public function getClubFilecountAttribute()
+    public function TeamwareFilenames(Region $region)
     {
-      $directory = $this->region->club_folder;
-      $llist = Club::whereIn('id', $this->getAbilities()->where('entity_type', Club::class)->pluck('entity_id'))->pluck('shortname')->implode('|');
-      if ($llist != "" ){
-        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
-          return (preg_match('('.$llist.')', $value) === 1);
-          //return (strpos($value,$llist[0]) !== false);
-        });
-        return count($reports);
-      } else {
-        return 0;
-      }
+        $directory = $region->teamware_folder;
+        if ($this->can('access', $region)) {
+            $llist = $this->leagues()->pluck('shortname')->implode('|');
+        }
+
+        if ($llist != "") {
+            $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
+                return (preg_match('(' . $llist . ')', $value) === 1);
+                //return (strpos($value,$llist[0]) !== false);
+            });
+            return $reports;
+        } else {
+            return collect();
+        }
     }
-    public function getClubFilenamesAttribute()
+    public function ClubFilecount(Region $region)
     {
-      $directory = $this->region->club_folder;
-      $llist = Club::whereIn('id', $this->getAbilities()->where('entity_type', Club::class)->pluck('entity_id'))->pluck('shortname')->implode('|');
-      if ($llist != ""){
-        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
-          return (preg_match('('.$llist.')', $value) === 1);
-          //return (strpos($value,$llist[0]) !== false);
-        });
-        return $reports;
-      } else {
-        return collect();
-      }
+        $directory = $region->club_folder;
+        if ($this->can('access', $region)) {
+            $llist = $this->clubs()->pluck('shortname')->implode('|');
+        }
+
+        if ($llist != "") {
+            $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
+                return (preg_match('(' . $llist . ')', $value) === 1);
+                //return (strpos($value,$llist[0]) !== false);
+            });
+            return count($reports);
+        } else {
+            return 0;
+        }
+    }
+    public function ClubFilenames(Region $region)
+    {
+        $directory = $region->club_folder;
+        if ($this->can('access', $region)) {
+            $llist = $this->clubs()->pluck('shortname')->implode('|');
+        }
+
+        if ($llist != "") {
+            $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
+                return (preg_match('(' . $llist . ')', $value) === 1);
+                //return (strpos($value,$llist[0]) !== false);
+            });
+            return $reports;
+        } else {
+            return collect();
+        }
     }
     public function notifyAuthenticationLogVia()
     {
@@ -250,9 +267,9 @@ class User extends Authenticatable implements  MustVerifyEmail, CanResetPassword
     {
         Log::notice('[JOB][DB CLEANUP] pruning users.');
         return static::where('rejected_at', '<', now()->subWeek())
-                        ->orWhere(function($query) {
-                            $query->whereNull('email_verified_at')
-                                ->where('created_at', '<', now()->subMonth());
-                        });
+            ->orWhere(function ($query) {
+                $query->whereNull('email_verified_at')
+                    ->where('created_at', '<', now()->subMonth());
+            });
     }
 }
