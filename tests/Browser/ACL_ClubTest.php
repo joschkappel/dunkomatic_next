@@ -8,7 +8,7 @@ use App\Models\Club;
 use App\Models\Member;
 use App\Enums\LeagueState;
 
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
@@ -77,7 +77,7 @@ class ACL_ClubTest extends DuskTestCase
 
         $this->access_clublist($user);
 
-        Bouncer::allow($user)->to('manage', static::$club );
+        Bouncer::allow($user)->to('access', static::$club );
         Bouncer::refreshFor($user);
         $this->access_clublist($user);
 
@@ -99,7 +99,7 @@ class ACL_ClubTest extends DuskTestCase
 
         $this->access_clublist($user);
 
-        Bouncer::allow($user)->to('manage', static::$club );
+        Bouncer::allow($user)->to('access', static::$club );
         Bouncer::refreshFor($user);
         $this->access_clublist($user);
 
@@ -121,7 +121,7 @@ class ACL_ClubTest extends DuskTestCase
 
         $this->access_clublist($user);
 
-        Bouncer::allow($user)->to('manage', static::$club );
+        Bouncer::allow($user)->to('access', static::$club );
         Bouncer::refreshFor($user);
         $this->access_clublist($user);
 
@@ -175,7 +175,7 @@ class ACL_ClubTest extends DuskTestCase
                 $browser->assertRouteIs('club.index',['language'=>'de','region'=>$region]);
                 ($user->can('create-clubs')) ? $browser->assertSee(__('club.action.create',$locale=['de'])) : $browser->assertDontSee(__('club.action.create',$locale=['de']));
                 $browser->waitFor('.table')->assertSeeLink($club->shortname)->clickLink($club->shortname);
-                (  ($user->can('manage', $club)) or  ($user->canAny(['create-clubs', 'update-clubs'])) ) ? $browser->assertRouteIs('club.dashboard', ['language'=>'de','club'=>$club->id]) :  $browser->assertRouteIs('club.briefing', ['language'=>'de','club'=>$club->id]);
+                ( $user->canAny(['create-clubs', 'update-clubs']))  ? $browser->assertRouteIs('club.dashboard', ['language'=>'de','club'=>$club->id]) :  $browser->assertRouteIs('club.briefing', ['language'=>'de','club'=>$club->id]);
             } else {
                 $browser->assertSee('403');
             }
@@ -191,7 +191,7 @@ class ACL_ClubTest extends DuskTestCase
             $gym = static::$gym;
             $member = static::$member;
 
-            if (($user->can('manage', $club)) or  ( $user->canAny(['create-clubs', 'update-clubs'])) ){
+            if ( $user->canAny(['create-clubs', 'update-clubs'])){
                 ($user->can('update-clubs')) ? $browser->assertSee(__('club.action.edit',$locale=['de'])) : $browser->assertDontSee(__('club.action.edit',$locale=['de']));
                 ($user->can('create-clubs')) ? $browser->assertSee(__('club.action.delete',$locale=['de'])) : $browser->assertDontSee(__('club.action.delete',$locale=['de']));
                 ($user->can('create-members')) ? $browser->assertSee(__('club.member.action.create',$locale=['de'])) : $browser->assertDontSee(__('club.member.action.create',$locale=['de']));

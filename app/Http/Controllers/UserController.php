@@ -8,7 +8,7 @@ use App\Models\League;
 use App\Models\Region;
 use OwenIt\Auditing\Models\Audit;
 
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 use Silber\Bouncer\Database\Role;
 
 use Illuminate\Http\Request;
@@ -261,7 +261,6 @@ class UserController extends Controller
                 $user->assign('guest');
             } else {
                 if (isset($data['regionadmin'])) {
-                    $user->retract('guest');
                     $user->assign('regionadmin');
                     unset($data['regionadmin']);
                 } else {
@@ -269,7 +268,6 @@ class UserController extends Controller
                 }
 
                 if (isset($data['clubadmin'])) {
-                    $user->retract('guest');
                     $user->assign('clubadmin');
                     unset($data['clubadmin']);
                 } else {
@@ -277,7 +275,6 @@ class UserController extends Controller
                 }
 
                 if (isset($data['leagueadmin'])) {
-                    $user->retract('guest');
                     $user->assign('leagueadmin');
                     unset($data['leagueadmin']);
                 } else {

@@ -10,7 +10,7 @@ use App\Models\League;
 use Illuminate\Http\Request;
 
 use Datatables;
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 use Illuminate\Support\Carbon;
 
 use Illuminate\Support\Facades\Log;

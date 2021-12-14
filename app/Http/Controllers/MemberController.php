@@ -11,7 +11,7 @@ use BenSampo\Enum\Rules\EnumValue;
 use App\Enums\Role;
 
 use Datatables;
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;

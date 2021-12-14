@@ -8,7 +8,7 @@ use App\Models\League;
 use App\Models\LeagueSize;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 use Tests\DuskTestCase;
 use Tests\Browser\Pages\League\NewLeague;

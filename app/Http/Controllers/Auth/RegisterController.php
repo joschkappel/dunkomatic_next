@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 
@@ -93,12 +93,12 @@ class RegisterController extends Controller
             // RBAC - set access to clubs
             $clubs = $member->clubs->unique();
             foreach ($clubs as $c) {
-                Bouncer::allow($user)->to('manage', $c);
+                Bouncer::allow($user)->to('access', $c);
             }
             // RBAC - set access to league
             $leagues = $member->leagues->unique();
             foreach ($leagues as $l) {
-                Bouncer::allow($user)->to('manage', $l);
+                Bouncer::allow($user)->to('access', $l);
             }
         }
 

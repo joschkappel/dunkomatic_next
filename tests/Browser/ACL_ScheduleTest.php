@@ -7,7 +7,7 @@ use App\Models\Member;
 use App\Models\User;
 use App\Models\Schedule;
 
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 

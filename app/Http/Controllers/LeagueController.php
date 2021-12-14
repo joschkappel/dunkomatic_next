@@ -15,7 +15,7 @@ use App\Enums\Role;
 use BenSampo\Enum\Rules\EnumValue;
 use App\Enums\LeagueState;
 use App\Enums\LeagueStateChange;
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -86,7 +86,7 @@ class LeagueController extends Controller
                 'size.display', 'state'
             ])
             ->editColumn('shortname', function ($l) {
-                if ((Bouncer::can('manage', $l)) or  (Bouncer::canAny(['create-leagues', 'update-leagues']))) {
+                if (Bouncer::canAny(['create-leagues', 'update-leagues'])) {
                     $link = '<a href="' . route('league.dashboard', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" >' . $l->shortname . '</a>';
                 } else {
                     $link = '<a href="' . route('league.briefing', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" class="text-info">' . $l->shortname . '</a>';
@@ -210,7 +210,7 @@ class LeagueController extends Controller
     public function dashboard(Request $request, $language, League $league)
     {
 
-        if ((Bouncer::cannot('manage', $league)) and  (!Bouncer::canAny(['create-leagues', 'update-leagues']))) {
+        if ( !Bouncer::canAny(['create-leagues', 'update-leagues'])) {
             Log::warning('[ACCESS DENIED]',['url'=> $request->path(), 'ip'=> $request->ip() ]);
             abort(403);
         }

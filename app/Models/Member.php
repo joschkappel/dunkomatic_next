@@ -37,24 +37,6 @@ class Member extends Model
       'email2' => 'nullable|max:60|email:rfc,dns',
   ];
 
-  /**
-   * Get tcompletion status
-   *
-   * @return string
-   */
-  public function getIsCompleteAttribute()
-  {
-    if ( (($this->firstname == '') and ($this->lastname == '') )
-          or ($this->email1 == '')
-          or (($this->mobile == '') and ($this->phone == ''))
-          or (($this->zipcode == '') and ($this->city == '') and ($this->street==''))
-       ){
-      return false;
-    } else {
-      return true;
-    }
-  }
-
   public function getNameAttribute()
   {
     return $this->firstname.' '.$this->lastname;

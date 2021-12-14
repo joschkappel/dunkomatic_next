@@ -12,7 +12,7 @@ use Illuminate\Validation\Rule;
 use App\Rules\Uppercase;
 
 use Datatables;
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
@@ -65,7 +65,7 @@ class ClubController extends Controller
             ->addIndexColumn()
             ->rawColumns(['shortname.display', 'name.display', 'assigned_rel.display', 'registered_rel.display', 'selected_rel.display'])
             ->editColumn('shortname', function ($data) {
-                if ((Bouncer::can('manage', $data)) or (Bouncer::canAny(['create-clubs', 'update-clubs']))) {
+                if (Bouncer::canAny(['create-clubs', 'update-clubs'])) {
                     $link = '<a href="' . route('club.dashboard', ['language' => Auth::user()->locale, 'club' => $data->id]) . '">' . $data->shortname . '</a>';
                 } else {
                     $link = '<a href="' . route('club.briefing', ['language' => Auth::user()->locale, 'club' => $data->id]) . '" class="text-info" >' . $data->shortname . '</a>';
@@ -125,7 +125,7 @@ class ClubController extends Controller
      */
     public function dashboard(Request $request, $language, Club $club)
     {
-        if ((Bouncer::cannot('manage', $club)) and  (!Bouncer::canAny(['create-clubs', 'update-clubs']))) {
+        if  ( !Bouncer::canAny(['create-clubs', 'update-clubs'])) {
             Log::warning('[ACCESS DENIED]',['url'=> $request->path(), 'ip'=> $request->ip() ]);
             abort(403);
         }

@@ -7,7 +7,7 @@ use App\Models\Region;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Tests\TestCase;
 
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 
 trait Authentication

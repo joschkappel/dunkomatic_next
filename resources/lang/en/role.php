@@ -13,6 +13,7 @@ return [
   'title.new' => 'Create a new member for :unittype :unitname',
   'title.edit' => 'Modify Details of member :member',
   'title.delete' => 'Delete a role from ',
+  'title.show' => 'Linked member :member',
   'member.title.select' => 'Select an existing Member ',
   'member.title.list' => 'Member List of :REGION',
   'confirm.delete' => 'Do you really want to delete this role ?',

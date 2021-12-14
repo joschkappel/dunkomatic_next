@@ -10,7 +10,7 @@
     {{-- User menu toggler --}}
     <a href="#" class="nav-link dropdown-toggle " data-toggle="dropdown">
         <span @if(config('menu.usermenu_image')) class="d-none d-md-inline" @endif>
-            @if (!Auth::user()->member()->first()->is_complete)   <i class="fas fa-exclamation-triangle text-danger"></i>@endif {{ Auth::user()->name }}
+            {{ Auth::user()->name }}
         </span>
     </a>
 
@@ -21,7 +21,7 @@
         @if(!View::hasSection('usermenu_header') && config('menu.usermenu_header'))
             <li class="user-header {{ config('menu.usermenu_header_class', 'bg-primary') }} h-auto">
                 <p class="mt-0 ">
-                      @if (!Auth::user()->member()->first()->is_complete)   <i class="fas fa-exclamation-triangle text-white"></i>@endif {{ Auth::user()->name }}
+                      {{ Auth::user()->name }}
                 </p>
             </li>
         @else

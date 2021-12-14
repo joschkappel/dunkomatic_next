@@ -9,7 +9,7 @@ use App\Models\League;
 use App\Models\User;
 use App\Traits\LeagueFSM;
 use App\Enums\LeagueState;
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 use Illuminate\Support\Facades\Log;
 
@@ -62,8 +62,7 @@ class ACL_LeagueTest extends DuskTestCase
         $member = Member::factory()->create();
         static::$user = User::factory()->approved()->for($member)->create();
         Bouncer::allow(static::$user)->to('access',static::$region);
-/*         Bouncer::allow(static::$user)->to('manage', static::$league );
-        Bouncer::refreshFor(static::$user); */
+
 
     }
 
@@ -103,7 +102,7 @@ class ACL_LeagueTest extends DuskTestCase
         $this->access_leaguemgmtlist($user);
         $this->access_leaguelist($user);
 
-        Bouncer::allow($user)->to('manage', static::$league );
+        Bouncer::allow($user)->to('access', static::$league );
         Bouncer::refreshFor($user);
         $this->access_leaguemgmtlist($user);
         $this->access_leaguelist($user);
@@ -127,7 +126,7 @@ class ACL_LeagueTest extends DuskTestCase
         $this->access_leaguemgmtlist($user);
         $this->access_leaguelist($user);
 
-        Bouncer::allow($user)->to('manage', static::$league );
+        Bouncer::allow($user)->to('access', static::$league );
         Bouncer::refreshFor($user);
         $this->access_leaguemgmtlist($user);
         $this->access_leaguelist($user);
@@ -152,7 +151,7 @@ class ACL_LeagueTest extends DuskTestCase
         $this->access_leaguemgmtlist($user);
         $this->access_leaguelist($user);
 
-        Bouncer::allow($user)->to('manage', static::$league );
+        Bouncer::allow($user)->to('access', static::$league );
         Bouncer::refreshFor($user);
         $this->access_leaguemgmtlist($user);
         $this->access_leaguelist($user);
@@ -225,7 +224,7 @@ class ACL_LeagueTest extends DuskTestCase
             if ( $user->can('view-leagues') ) {
                 $browser->assertRouteIs('league.index',['language'=>'de','region'=>$region]);
                 $browser->waitFor('.table')->assertSeeLink($league->shortname)->clickLink($league->shortname);
-                (  ($user->can('manage', $league)) or  ($user->canAny(['create-leagues', 'update-leagues'])) ) ? $browser->assertRouteIs('league.dashboard', ['language'=>'de','league'=>$league->id]) :  $browser->assertRouteIs('league.briefing', ['language'=>'de','league'=>$league->id]);
+                ($user->canAny(['create-leagues', 'update-leagues'])) ? $browser->assertRouteIs('league.dashboard', ['language'=>'de','league'=>$league->id]) :  $browser->assertRouteIs('league.briefing', ['language'=>'de','league'=>$league->id]);
             } else {
                 $browser->assertSee('403');
             }
@@ -240,7 +239,7 @@ class ACL_LeagueTest extends DuskTestCase
             $league = static::$league;
             // $browser->storeSource($user->getRoles()[0].'_leaguedashboard');
 
-            if (($user->can('manage', $league)) or  ( $user->canAny(['create-leagues', 'update-leagues'])) ){
+            if ( $user->canAny(['create-leagues', 'update-leagues'])){
                 ($user->can('update-leagues')) ? $browser->assertSee(__('league.action.edit',$locale=['de'])) : $browser->assertDontSee(__('league.action.edit',$locale=['de']));
                 ($user->can('create-leagues')) ? $browser->assertSee(__('league.action.delete',$locale=['de'])) : $browser->assertDontSee(__('league.action.delete',$locale=['de']));
                 ($user->can('create-members')) ? $browser->assertSee(__('league.member.action.create',$locale=['de'])) : $browser->assertDontSee(__('league.member.action.create',$locale=['de']));

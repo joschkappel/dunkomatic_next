@@ -18,7 +18,7 @@ use App\Models\Region;
 use App\Models\Club;
 use App\Models\League;
 
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class AppServiceProvider extends ServiceProvider
 {

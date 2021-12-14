@@ -41,7 +41,9 @@
                                         </div>
                                     </div>
             </x-card-form>
-            @include('member.includes.member_edit')
+            @isset( $member)
+              @include('member.includes.member_show')
+            @endisset
         </div>
         <div class="col-md-6 pd-2">
             <x-card-list cardTitle="{{ __('audit.audittrail') }}" >
