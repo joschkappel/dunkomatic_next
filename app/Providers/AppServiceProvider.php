@@ -282,7 +282,7 @@ class AppServiceProvider extends ServiceProvider
                 if (Auth::user()->can('access', $r)) {
                     $rs['text'] = $r->name;
                     // $rs['url'] = route('region.set', ['region' => $r->id]);
-                    $rs['url'] = route(Route::currentRouteName(), array_merge(Route::current()->parameters(), ['new_region' => $r])  );
+                    $rs['url'] = route(Route::currentRouteName(), array_merge(Route::current()->parameters(), ['new_region' => $r,'region' => $r])  );
                     $regionmenu['submenu'][] = $rs;
                 }
             }

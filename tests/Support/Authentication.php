@@ -27,7 +27,7 @@ trait Authentication
             $this->region = Region::where('code','HBVDA')->first();
             $this->region_user = $this->region->regionadmin->first()->user()->first();
 
-            Bouncer::retract( $this->region_user->getRoles()  )->from($this->region_user);
+            Bouncer::sync($this->region_user)->roles([]);
             Bouncer::assign( 'superadmin')->to($this->region_user);
             Bouncer::allow($this->region_user)->to('access',$this->region);
             Bouncer::refreshFor($this->region_user);
