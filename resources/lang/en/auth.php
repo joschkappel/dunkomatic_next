@@ -56,11 +56,8 @@ return [
     'user.role.action.select'   => 'Select a user role',
     'user.role.guest'           => 'Gast',
     'user.role.clubadmin'       => 'Club Admin',
-    'user.role.clubobserver'      => 'Club Observer',
     'user.role.regionadmin'     => 'Region Admin',
-    'user.role.regionobserver'    => 'Region Observer',
     'user.role.leagueadmin'     => 'League Admin',
-    'user.role.leagueobserver'     => 'League Observer',
     'user.role.candidate'       => 'Candidate',
     'user.role.superadmin'     => 'Administrator',
 ];

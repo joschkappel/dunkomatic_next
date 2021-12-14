@@ -3,7 +3,7 @@
 namespace App\Listeners;
 use Illuminate\Auth\Events\Authenticated;
 
-class LogAuthenticated
+class SetInitialRegion
 {
   /**
    * Handle the event.

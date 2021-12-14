@@ -111,30 +111,6 @@ class ACL_LeagueTest extends DuskTestCase
         $this->access_leaguedashboard($user);
     }
 
-    /**
-     * @test
-     * @group league
-     * @group acl
-     * @group regionobserver
-     */
-    public function regionobserver_acls()
-    {
-        $user = static::$user;
-        Bouncer::retract( $user->getRoles()  )->from($user);
-        Bouncer::assign( 'regionobserver')->to($user);
-        Bouncer::refreshFor($user);
-
-        $this->access_leaguemgmtlist($user);
-        $this->access_leaguelist($user);
-
-        Bouncer::allow($user)->to('manage', static::$league );
-        Bouncer::refreshFor($user);
-        $this->access_leaguemgmtlist($user);
-        $this->access_leaguelist($user);
-
-        $this->access_leaguedashboard($user);
-    }
-
    /**
      * @test
      * @group league
@@ -164,30 +140,6 @@ class ACL_LeagueTest extends DuskTestCase
      * @test
      * @group league
      * @group acl
-     * @group clubobserver
-     */
-    public function clubobserver_acls()
-    {
-        $user = static::$user;
-        Bouncer::retract( $user->getRoles()  )->from($user);
-        Bouncer::assign( 'clubobserver')->to($user);
-        Bouncer::refreshFor($user);
-
-        $this->access_leaguemgmtlist($user);
-        $this->access_leaguelist($user);
-
-        Bouncer::allow($user)->to('manage', static::$league );
-        Bouncer::refreshFor($user);
-        $this->access_leaguemgmtlist($user);
-        $this->access_leaguelist($user);
-
-        $this->access_leaguedashboard($user);
-
-    }
-   /**
-     * @test
-     * @group league
-     * @group acl
      * @group leagueadmin
      */
     public function leagueadmin_acls()
@@ -195,30 +147,6 @@ class ACL_LeagueTest extends DuskTestCase
         $user = static::$user;
         Bouncer::retract( $user->getRoles()  )->from($user);
         Bouncer::assign( 'leagueadmin')->to($user);
-        Bouncer::refreshFor($user);
-
-        $this->access_leaguemgmtlist($user);
-        $this->access_leaguelist($user);
-
-        Bouncer::allow($user)->to('manage', static::$league );
-        Bouncer::refreshFor($user);
-        $this->access_leaguemgmtlist($user);
-        $this->access_leaguelist($user);
-
-        $this->access_leaguedashboard($user);
-
-    }
-     /**
-     * @test
-     * @group league
-     * @group acl
-     * @group leagueobserver
-     */
-    public function leagueobserver_acls()
-    {
-        $user = static::$user;
-        Bouncer::retract( $user->getRoles()  )->from($user);
-        Bouncer::assign( 'leagueobserver')->to($user);
         Bouncer::refreshFor($user);
 
         $this->access_leaguemgmtlist($user);

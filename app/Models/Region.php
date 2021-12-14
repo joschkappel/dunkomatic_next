@@ -64,7 +64,7 @@ class Region extends Model
         // return $this->hasMany(User::class);
         $region = $this;
         return User::all()->filter( function ($user) use ($region) {
-            return $user->can('access', $region);
+            return ($user->isNotAn('superadmin')) and ($user->can('access', $region));
         });
     }
 

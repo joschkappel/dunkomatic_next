@@ -72,22 +72,6 @@ class ACL_ScheduleTest extends DuskTestCase
         $this->access_schedulelist($user);
     }
 
-    /**
-     * @test
-     * @group schedule
-     * @group acl
-     * @group regionobserver
-     */
-    public function regionobserver_acls()
-    {
-        $user = static::$user;
-        Bouncer::retract( $user->getRoles()  )->from($user);
-        Bouncer::assign( 'regionobserver')->to($user);
-        Bouncer::refreshFor($user);
-
-        $this->access_schedulelist($user);
-    }
-
    /**
      * @test
      * @group schedule
@@ -108,21 +92,6 @@ class ACL_ScheduleTest extends DuskTestCase
      * @test
      * @group schedule
      * @group acl
-     * @group clubobserver
-     */
-    public function clubobserver_acls()
-    {
-        $user = static::$user;
-        Bouncer::retract( $user->getRoles()  )->from($user);
-        Bouncer::assign( 'clubobserver')->to($user);
-        Bouncer::refreshFor($user);
-
-        $this->access_schedulelist($user);
-    }
-   /**
-     * @test
-     * @group schedule
-     * @group acl
      * @group leagueadmin
      */
     public function leagueadmin_acls()
@@ -130,21 +99,6 @@ class ACL_ScheduleTest extends DuskTestCase
         $user = static::$user;
         Bouncer::retract( $user->getRoles()  )->from($user);
         Bouncer::assign( 'leagueadmin')->to($user);
-        Bouncer::refreshFor($user);
-
-        $this->access_schedulelist($user);
-    }
-       /**
-     * @test
-     * @group schedule
-     * @group acl
-     * @group leagueobserver
-     */
-    public function leagueobserver_acls()
-    {
-        $user = static::$user;
-        Bouncer::retract( $user->getRoles()  )->from($user);
-        Bouncer::assign( 'leagueobserver')->to($user);
         Bouncer::refreshFor($user);
 
         $this->access_schedulelist($user);

@@ -11,7 +11,7 @@ use Illuminate\Notifications\Events\NotificationSent;
 use App\Models\Membership;
 use App\Observers\MembershipObserver;
 
-use App\Listeners\LogAuthenticated;
+use App\Listeners\SetInitialRegion;
 use App\Listeners\LogNotification;
 use App\Models\User;
 use App\Observers\UserObserver;
@@ -30,7 +30,7 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         Authenticated::class => [
-            LogAuthenticated::class,
+            SetInitialRegion::class,
         ],
         NotificationSent::class => [
             LogNotification::class,
