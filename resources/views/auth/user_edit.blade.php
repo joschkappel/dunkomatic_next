@@ -15,47 +15,41 @@
         </div>
     </div>
     <div class="form-group row ">
-        <label for='selRegionRole' class="col-sm-4 col-form-label">{{ __('auth.region.user.role')}}</label>
+        <div class="col-sm-4">
+        </div>
         <div class="col-sm-6">
-            <div class="input-group mb-3">
-                <select class='js-role js-states form-control select2 @error('regionrole') /> is-invalid @enderror' id='selRegionRole' name="regionrole">
-                @foreach ( Silber\Bouncer\Database\Role::whereIn('name',['regionadmin', 'regionobserver'])->get() as $role )
-                <option value="{{$role->id}}" @if ( $user->isAn($role->name) ) selected @endif>{{ __('auth.user.role.'.$role->name) }}</option>
-                @endforeach
-                </select>
-                @error('regionrole')
-                <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+            <div class="form-group  clearfix d-flex align-items-center">
+                <div class="icheck-danger d-inline">
+                    <input type="checkbox" id="regionadmin" name="regionadmin" @if ($user->isAn('regionadmin')) checked @endif>
+                    <label for="regionadmin">{{__('auth.user.role.regionadmin')}}</label>
+                </div>
             </div>
         </div>
     </div>
     <div class="form-group row ">
         <label for='selRegions' class="col-sm-4 col-form-label">{{ trans_choice('region.region',2)}}</label>
         <div class="col-sm-6">
-        <div class="input-group mb-3">
-            <select class='js-region-placeholder-single form-control select2' disabled multiple="multiple"  id='selRegions' name="region_ids[]">
-                @foreach ( $user->regions()->pluck('id','code') as $k=>$v )
-                    <option value="{{ $v }}" selected>{{ $k }}</option>
-                @endforeach
-            </select>
-            @error('region_ids')
-            <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
+            <div class="input-group mb-3">
+                <select class='js-region-placeholder-single form-control select2' disabled multiple="multiple"  id='selRegions' name="region_ids[]">
+                    @foreach ( $user->regions()->pluck('id','code') as $k=>$v )
+                        <option value="{{ $v }}" selected>{{ $k }}</option>
+                    @endforeach
+                </select>
+                @error('region_ids')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
         </div>
     </div>
     <div class="form-group row ">
-        <label for='selClubRole' class="col-sm-4 col-form-label">{{ __('auth.club.user.role')}}</label>
+        <div class="col-sm-4">
+        </div>
         <div class="col-sm-6">
-            <div class="input-group mb-3">
-                <select class='js-role form-control select2's id='selClubRole' name="clubrole">
-                @foreach ( Silber\Bouncer\Database\Role::whereIn('name',['clubadmin', 'clubobserver'])->get() as $role )
-                <option value="{{$role->id}}" @if ( $user->isAn($role->name) ) selected @endif>{{ __('auth.user.role.'.$role->name) }}</option>
-                @endforeach
-                </select>
-                @error('clubrole')
-                <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+            <div class="form-group  clearfix d-flex align-items-center">
+                <div class="icheck-primary d-inline">
+                    <input type="checkbox" id="clubadmin" name="clubadmin" @if ($user->isAn('clubadmin')) checked @endif>
+                    <label for="clubadmin">{{__('auth.user.role.clubadmin')}}</label>
+                </div>
             </div>
         </div>
     </div>
@@ -67,21 +61,17 @@
                     <option value="{{ $v }}" selected>{{ $k }}</option>
                 @endforeach
             </select>
-
         </div>
     </div>
     <div class="form-group row ">
-        <label for='selLeagueRole' class="col-sm-4 col-form-label">{{ __('auth.league.user.role')}}</label>
+        <div class="col-sm-4">
+        </div>
         <div class="col-sm-6">
-            <div class="input-group mb-3">
-                <select class='js-role js-states form-control select2 @error('leaguerole') /> is-invalid @enderror' id='selLeagueRole' name="leaguerole">
-                @foreach ( Silber\Bouncer\Database\Role::whereIn('name',['leagueadmin', 'leagueobserver'])->get() as $role )
-                <option value="{{$role->id}}" @if ( $user->isAn($role->name) ) selected @endif>{{ __('auth.user.role.'.$role->name) }}</option>
-                @endforeach
-                </select>
-                @error('leaguerole')
-                <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+            <div class="form-group  clearfix d-flex align-items-center">
+                <div class="icheck-info d-inline">
+                    <input type="checkbox" id="leagueadmin" name="leagueadmin" @if ($user->isAn('leagueadmin')) checked @endif>
+                    <label for="leagueadmin">{{__('auth.user.role.leagueadmin')}}</label>
+                </div>
             </div>
         </div>
     </div>
@@ -106,18 +96,11 @@
         $('#frmClose').click(function(e){
             history.back();
         });
-        $(".js-role").select2({
-            placeholder: "@lang('auth.user.role.action.select')...",
-            width: '100%',
-            multiple: false,
-            allowClear: true,
-            minimumResultsForSearch: -1,
-        });
         $("#selClubs").select2({
             placeholder: "@lang('club.action.select')...",
             width: '100%',
             multiple: true,
-            allowClear: false,
+            allowClear: true,
             minimumResultsForSearch: -1,
             ajax: {
                     url: "{{ route('club.sb.region', ['region'=>session('cur_region')])}}",
@@ -153,7 +136,7 @@
             placeholder: "@lang('league.action.select')...",
             width: '100%',
             multiple: true,
-            allowClear: false,
+            allowClear: true,
             minimumResultsForSearch: 20,
             ajax: {
                     url: "{{ route('league.sb.region', ['region'=>session('cur_region')])}}",

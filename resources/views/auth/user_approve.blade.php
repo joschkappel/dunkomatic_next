@@ -27,106 +27,92 @@
     </div>
     @endisset
     <div class="form-group row ">
-        <label for='selRegionRole' class="col-sm-4 col-form-label">{{ __('auth.user.regionrole')}}</label>
+        <div class="col-sm-4">
+        </div>
         <div class="col-sm-6">
-            <div class="input-group mb-3">
-                <select class='js-role js-states form-control select2 @error('regionrole') /> is-invalid @enderror' id='selRegionRole' name="regionrole">
-                @foreach ( Silber\Bouncer\Database\Role::whereIn('name',['regionadmin', 'regionobserver'])->get() as $role )
-                <option value="{{$role->id}}">{{ __('auth.user.role.'.$role->name) }}</option>
-                @endforeach
-                </select>
-                @error('regionrole')
-                <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+            <div class="form-group  clearfix d-flex align-items-center">
+                <div class="icheck-danger d-inline">
+                    <input type="checkbox" id="regionadmin" name="regionadmin">
+                    <label for="regionadmin">{{__('auth.user.role.regionadmin')}}</label>
+                </div>
             </div>
         </div>
     </div>
     <div class="form-group row ">
         <label for='selRegions' class="col-sm-4 col-form-label">{{ __('region.preferred')}}</label>
         <div class="col-sm-6">
-            @empty($abilities['regions'])
             <div class="input-group mb-3">
                 <select class='js-regions-placeholder-single form-control select2 @error('region_ids') /> is-invalid @enderror' disabled id='selRegions' name="region_ids[]">
+                @foreach ( $user->regions()->pluck('id','code') as $k=>$v )
+                <option value="{{ $v }}" selected>{{ $k }}</option>
+                @endforeach
                 </select>
                 @error('region_ids')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
-            @endempty
-            @isset($abilities['regions'])
-                <input type="input" readonly class="form-control" id="clubs" value="{{ $abilities['regions']  }}">
-            @endisset
         </div>
     </div>
     <div class="form-group row ">
-        <label for='selClubRole' class="col-sm-4 col-form-label">{{ __('auth.user.clubrole')}}</label>
+        <div class="col-sm-4">
+        </div>
         <div class="col-sm-6">
-            <div class="input-group mb-3">
-                <select class='js-role js-states form-control select2 @error('clubrole') /> is-invalid @enderror' id='selClubRole' name="clubrole">
-                @foreach ( Silber\Bouncer\Database\Role::whereIn('name',['clubadmin', 'clubobserver'])->get() as $role )
-                <option value="{{$role->id}}">{{ __('auth.user.role.'.$role->name) }}</option>
-                @endforeach
-                </select>
-                @error('clubrole')
-                <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+            <div class="form-group  clearfix d-flex align-items-center">
+                <div class="icheck-primary d-inline">
+                    <input type="checkbox" id="clubadmin" name="clubadmin">
+                    <label for="clubadmin">{{__('auth.user.role.clubadmin')}}</label>
+                </div>
             </div>
         </div>
     </div>
     <div class="form-group row ">
         <label for='selClubs' class="col-sm-4 col-form-label">{{ __('club.preferred')}}</label>
         <div class="col-sm-6">
-            @empty($abilities->clubs)
             <div class="input-group mb-3">
-                <select class='js-clubs-placeholder-single js-states form-control select2 @error('club_ids') /> is-invalid @enderror' id='selClubs' name="club_ids[]">
+                <select class='js-clubs-placeholder-single js-states form-control select2' multiple="multiple" id='selClubs' name="club_ids[]">
+                @foreach ( $user->clubs()->pluck('id','shortname') as $k=>$v )
+                    <option value="{{ $v }}" selected>{{ $k }}</option>
+                @endforeach
                 </select>
-                @error('club_ids')
-                <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-                </div>
-            @endempty
-            @isset($abilities->clubs)
-                <input type="input" readonly class="form-control" id="clubs" value="{{ $abilities->clubs  }}">
-            @endisset
+            </div>
         </div>
     </div>
     <div class="form-group row ">
-        <label for='selLeagueRole' class="col-sm-4 col-form-label">{{ __('auth.user.leaguerole')}}</label>
+        <div class="col-sm-4">
+        </div>
         <div class="col-sm-6">
-            <div class="input-group mb-3">
-                <select class='js-role js-states form-control select2 @error('leaguerole') /> is-invalid @enderror' id='selLeagueRole' name="leaguerole">
-                @foreach ( Silber\Bouncer\Database\Role::whereIn('name',['leagueadmin', 'leagueobserver'])->get() as $role )
-                <option value="{{$role->id}}">{{ __('auth.user.role.'.$role->name) }}</option>
-                @endforeach
-                </select>
-                @error('leaguerole')
-                <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+            <div class="form-group  clearfix d-flex align-items-center">
+                <div class="icheck-info d-inline">
+                    <input type="checkbox" id="leagueadmin" name="leagueadmin">
+                    <label for="leagueadmin">{{__('auth.user.role.leagueadmin')}}</label>
+                </div>
             </div>
         </div>
     </div>
     <div class="form-group row ">
         <label for='selLeagues' class="col-sm-4 col-form-label">{{ __('league.preferred')}}</label>
         <div class="col-sm-6">
-            @empty($abilities->leagues)
             <div class="input-group mb-3">
-                <select class='js-leagues-placeholder-single js-states form-control select2 @error('league_ids') /> is-invalid @enderror' id='selLeagues' name="league_ids[]">
+                <select class='js-leagues-placeholder-single js-states form-control select2' multiple="multiple" id='selLeagues' name="league_ids[]">
+                @foreach ($user->leagues()->pluck('id','shortname') as $k=>$v)
+                <option value="{{$v}}" selected>{{ $k }}</option>
+                @endforeach
                 </select>
                 @error('league_ids')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
                 </div>
-            @endempty
-            @isset($abilities->leagues)
-                    <input type="input" readonly class="form-control" id="leagues" value="{{ $abilities->leagues }}">
-            @endisset
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-4 col-form-label"></label>
-        <div class="icheck-success icheck-inline ">
-        <input type="checkbox" id="approved" name="approved" @if (old('approved') == 'on') checked @endif>
-        <label for="approved">{{ __('Approved')}} ?</label>
+        <div class="col-sm-6">
+            <div class="form-group  clearfix d-flex align-items-center">
+                <div class="icheck-success d-inline ">
+                    <input type="checkbox" id="approved" name="approved" @if (old('approved') == 'on') checked @endif>
+                    <label for="approved">{{ __('Approved')}} ?</label>
+                </div>
+            </div>
         </div>
     </div>
     <div class="form-group row">
@@ -146,12 +132,6 @@
     $(function() {
         $('#frmClose').click(function(e){
             history.back();
-        });
-        $(".js-role").select2({
-            placeholder: "@lang('auth.user.role.action.select')...",
-            width: '100%',
-            multiple: false,
-            allowClear: true,
         });
         $("#selClubs").select2({
             placeholder: "@lang('club.action.select')...",

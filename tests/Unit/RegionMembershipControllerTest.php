@@ -115,7 +115,7 @@ class RegionMembershipControllerTest extends TestCase
       $member = Member::where('lastname','testmember')->first();
       $this->assertDatabaseHas('members', ['id' => $member->id])
            ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-           ->assertDatabaseCount('memberships', 5);
+           ->assertDatabaseCount('memberships', 4);
 
       Notification::assertSentTo(
         [$member], InviteUser::class
@@ -156,7 +156,7 @@ class RegionMembershipControllerTest extends TestCase
 
       $this->assertDatabaseHas('members', ['id' => $member->id])
           ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-          ->assertDatabaseCount('memberships', 5);
+          ->assertDatabaseCount('memberships', 4);
 
       Notification::assertNothingSent();
     }
@@ -192,7 +192,7 @@ class RegionMembershipControllerTest extends TestCase
 
       $this->assertDatabaseHas('members', ['lastname' => 'testmember2'])
                ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-               ->assertDatabaseCount('memberships', 5);
+               ->assertDatabaseCount('memberships', 4);
     }
 
 

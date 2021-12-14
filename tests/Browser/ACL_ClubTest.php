@@ -84,28 +84,6 @@ class ACL_ClubTest extends DuskTestCase
         $this->access_clubdashboard($user);
     }
 
-    /**
-     * @test
-     * @group club
-     * @group acl
-     * @group regionobserver
-     */
-    public function regionobserver_acls()
-    {
-        $user = static::$user;
-        Bouncer::retract( $user->getRoles()  )->from($user);
-        Bouncer::assign( 'regionobserver')->to($user);
-        Bouncer::refreshFor($user);
-
-        $this->access_clublist($user);
-
-        Bouncer::allow($user)->to('manage', static::$club );
-        Bouncer::refreshFor($user);
-        $this->access_clublist($user);
-
-        $this->access_clubdashboard($user);
-    }
-
    /**
      * @test
      * @group club
@@ -132,28 +110,6 @@ class ACL_ClubTest extends DuskTestCase
      * @test
      * @group club
      * @group acl
-     * @group clubobserver
-     */
-    public function clubobserver_acls()
-    {
-        $user = static::$user;
-        Bouncer::retract( $user->getRoles()  )->from($user);
-        Bouncer::assign( 'clubobserver')->to($user);
-        Bouncer::refreshFor($user);
-
-        $this->access_clublist($user);
-
-        Bouncer::allow($user)->to('manage', static::$club );
-        Bouncer::refreshFor($user);
-        $this->access_clublist($user);
-
-        $this->access_clubdashboard($user);
-
-    }
-   /**
-     * @test
-     * @group club
-     * @group acl
      * @group leagueadmin
      */
     public function leagueadmin_acls()
@@ -161,28 +117,6 @@ class ACL_ClubTest extends DuskTestCase
         $user = static::$user;
         Bouncer::retract( $user->getRoles()  )->from($user);
         Bouncer::assign( 'leagueadmin')->to($user);
-        Bouncer::refreshFor($user);
-
-        $this->access_clublist($user);
-
-        Bouncer::allow($user)->to('manage', static::$club );
-        Bouncer::refreshFor($user);
-        $this->access_clublist($user);
-
-        $this->access_clubdashboard($user);
-
-    }
-   /**
-     * @test
-     * @group club
-     * @group acl
-     * @group leagueobserver
-     */
-    public function leagueobserver_acls()
-    {
-        $user = static::$user;
-        Bouncer::retract( $user->getRoles()  )->from($user);
-        Bouncer::assign( 'leagueobserver')->to($user);
         Bouncer::refreshFor($user);
 
         $this->access_clublist($user);

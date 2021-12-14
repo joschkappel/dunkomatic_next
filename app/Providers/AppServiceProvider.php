@@ -81,16 +81,22 @@ class AppServiceProvider extends ServiceProvider
             $smenu['shift'] = 'ml-3';
             $clubmenu['submenu'][] = $smenu;
 
-            $allowed_clubs = Club::whereIn('id', Auth::user()->getAbilities()->where('entity_type', Club::class)->pluck('entity_id'))->get();
-            foreach ($allowed_clubs as $c) {
-                $smenu['text'] = $c->shortname;
-                $smenu['url']  = route('club.dashboard', ['language' => app()->getLocale(), 'club' => $c]);
-                $smenu['icon_color'] = 'orange';
-                $smenu['icon'] =  'fas fa-list';
-                $smenu['shift'] = 'ml-3';
-                unset($smenu['can']);
-                $clubmenu[] = $smenu;
-            };
+            if (Auth::user()->isNotAn('superadmin')){
+                $allowed_clubs = Auth::user()->clubs();
+                foreach ($allowed_clubs as $c) {
+                    $smenu['text'] = $c->shortname;
+                    if (Auth::user()->can('update-clubs')){
+                        $smenu['url']  = route('club.dashboard', ['language' => app()->getLocale(), 'club' => $c]);
+                    } else {
+                        $smenu['url']  = route('club.briefing', ['language' => app()->getLocale(), 'club' => $c]);
+                    }
+                    $smenu['icon_color'] = 'orange';
+                    $smenu['icon'] =  'fas fa-list';
+                    $smenu['shift'] = 'ml-3';
+                    unset($smenu['can']);
+                    $clubmenu['submenu'][] = $smenu;
+                };
+            }
 
             $event->menu->add($clubmenu);
 
@@ -108,18 +114,24 @@ class AppServiceProvider extends ServiceProvider
             $smenu['shift'] = 'ml-3';
             $leaguemenu['submenu'][] = $smenu;
 
-            $leagues = session('cur_region')->leagues;
-            foreach ($leagues as $l) {
-                if (Auth::user()->can('access', $l)){
-                    $smenu['text'] = $l->shortname;
-                    $smenu['url']  = route('league.dashboard', ['language' => app()->getLocale(), 'league' => $l]);
-                    $smenu['icon_color'] = 'yellow';
-                    $smenu['icon'] =  'fas fa-list';
-                    $smenu['shift'] = 'ml-3';
-                    unset($smenu['can']);
-                    $leaguemenu['submenu'][] = $smenu;
-                }
-            };
+            if (Auth::user()->isNotAn('superadmin')){
+                $leagues = Auth::user()->leagues();
+                foreach ($leagues as $l) {
+                    if (Auth::user()->can('access', $l)){
+                        $smenu['text'] = $l->shortname;
+                        if (Auth::user()->can('update-leagues')){
+                            $smenu['url']  = route('league.dashboard', ['language' => app()->getLocale(), 'league' => $l]);
+                        } else {
+                            $smenu['url']  = route('league.briefing', ['language' => app()->getLocale(), 'league' => $l]);
+                        }
+                        $smenu['icon_color'] = 'yellow';
+                        $smenu['icon'] =  'fas fa-list';
+                        $smenu['shift'] = 'ml-3';
+                        unset($smenu['can']);
+                        $leaguemenu['submenu'][] = $smenu;
+                    }
+                };
+            }
 
             $smenu['text'] =  __('league.menu.manage');;
             $smenu['url']  = route('league.index_mgmt',['language' => app()->getLocale(), 'region'=> session('cur_region')]);
@@ -175,17 +187,22 @@ class AppServiceProvider extends ServiceProvider
             ];
             $regionmenu[] = $smenu;
 
-            $allowed_regions = Region::whereIn('id', Auth::user()->getAbilities()->where('entity_type', Region::class)->pluck('entity_id') )->get();
-
-            foreach ($allowed_regions as $r) {
-                $smenu['text'] = $r->code;
-                $smenu['route']  = ['region.dashboard', ['language' => app()->getLocale(), 'region' => $r]];
-                $smenu['icon_color'] = 'danger';
-                $smenu['icon'] =  'fas fa-list';
-                $smenu['shift'] = 'ml-3';
-                unset($smenu['can']);
-                $regionmenu[] = $smenu;
-            };
+            if (Auth::user()->isNotAn('superadmin')){
+                $allowed_regions = Auth::user()->regions();
+                foreach ($allowed_regions as $r) {
+                    $smenu['text'] = $r->code;
+                    if (Auth::user()->can('update-regions')){
+                        $smenu['route']  = ['region.dashboard', ['language' => app()->getLocale(), 'region' => $r]];
+                    } else {
+                        $smenu['route']  = ['region.dashboard', ['language' => app()->getLocale(), 'region' => $r]];
+                    }
+                    $smenu['icon_color'] = 'danger';
+                    $smenu['icon'] =  'fas fa-list';
+                    $smenu['shift'] = 'ml-3';
+                    unset($smenu['can']);
+                    $regionmenu[] = $smenu;
+                };
+            }
 
             $smenu = [
                 'text' => trans_choice('schedule.scheme', 2),
@@ -265,7 +282,7 @@ class AppServiceProvider extends ServiceProvider
                 if (Auth::user()->can('access', $r)) {
                     $rs['text'] = $r->name;
                     // $rs['url'] = route('region.set', ['region' => $r->id]);
-                    $rs['url'] = route(Route::currentRouteName(), array_merge(Route::current()->parameters(), ['region' => $r])  );
+                    $rs['url'] = route(Route::currentRouteName(), array_merge(Route::current()->parameters(), ['new_region' => $r])  );
                     $regionmenu['submenu'][] = $rs;
                 }
             }

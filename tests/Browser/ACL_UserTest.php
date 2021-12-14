@@ -74,23 +74,6 @@ class ACL_UserTest extends DuskTestCase
         $this->access_userapprovelist($user);
     }
 
-    /**
-     * @test
-     * @group user
-     * @group acl
-     * @group regionobserver
-     */
-    public function regionobserver_acls()
-    {
-        $user = static::$user;
-        Bouncer::retract( $user->getRoles()  )->from($user);
-        Bouncer::assign( 'regionobserver')->to($user);
-        Bouncer::refreshFor($user);
-
-        $this->access_userlist($user);
-        $this->access_userapprovelist($user);
-    }
-
    /**
      * @test
      * @group user
@@ -112,22 +95,6 @@ class ACL_UserTest extends DuskTestCase
      * @test
      * @group user
      * @group acl
-     * @group clubobserver
-     */
-    public function clubobserver_acls()
-    {
-        $user = static::$user;
-        Bouncer::retract( $user->getRoles()  )->from($user);
-        Bouncer::assign( 'clubobserver')->to($user);
-        Bouncer::refreshFor($user);
-
-        $this->access_userlist($user);
-        $this->access_userapprovelist($user);
-    }
-   /**
-     * @test
-     * @group user
-     * @group acl
      * @group leagueadmin
      */
     public function leagueadmin_acls()
@@ -135,22 +102,6 @@ class ACL_UserTest extends DuskTestCase
         $user = static::$user;
         Bouncer::retract( $user->getRoles()  )->from($user);
         Bouncer::assign( 'leagueadmin')->to($user);
-        Bouncer::refreshFor($user);
-
-        $this->access_userlist($user);
-        $this->access_userapprovelist($user);
-    }
-   /**
-     * @test
-     * @group user
-     * @group acl
-     * @group leagueobserver
-     */
-    public function leagueobserver_acls()
-    {
-        $user = static::$user;
-        Bouncer::retract( $user->getRoles()  )->from($user);
-        Bouncer::assign( 'leagueobserver')->to($user);
         Bouncer::refreshFor($user);
 
         $this->access_userlist($user);

@@ -20,19 +20,21 @@ class SetRegion
     public function handle(Request $request, Closure $next)
     {
 
-        if (($request->region) !== null) {
-            if ($request->query('region') !== null){
-                $region = Region::find($request->query('region'));
+        if (($request->new_region) !== null) {
+            $request->session()->put('cur_region', Region::find($request->new_region) );
+        }
+        /* else {
+
+            if ($request->query('new_region') !== null){
+                $region = Region::find($request->query('new_region'));
                 $request->session()->put('cur_region', $region );
                 return redirect(route(RouteServiceProvider::HOME, Auth::user()->locale));
             } else {
-                $request->session()->put('cur_region', $request->region );
+                if (Auth::user()){
+                    $request->session()->put('cur_region', Auth::user()->regions()->first() );
+                }
             }
-        } else {
-            if (Auth::user()){
-                $request->session()->put('cur_region', Auth::user()->regions()->first() );
-            }
-        }
+        } */
 
         return $next($request);
     }
