@@ -20,7 +20,7 @@ class DbCleanupTest extends SysTestCase
      * run job
      *
      * @test
-     * @group jobx
+     * @group job
      *
      * @return void
      */
