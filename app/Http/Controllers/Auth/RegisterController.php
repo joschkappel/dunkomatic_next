@@ -9,7 +9,7 @@ use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use App\Models\Region;
 use App\Models\Member;
-use App\Enums\Role;
+use App\Notifications\ApproveUser;
 
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
@@ -109,6 +109,10 @@ class RegisterController extends Controller
         if (isset($data['invited_by']) and (Crypt::decryptString($data['invited_by']) == $data['email'])) {
             // invited users are auto-approved
             $user->update(['approved_at' => now()]);
+            Log::notice('user approved.', ['user-id' => $user->id]);
+            $user->retract('candidate');
+            $user->assign('guest');
+            $user->notify(new ApproveUser(Region::find($data['region_id'])->regionadmin->first()->user, Region::find($data['region_id'])));
         } else {
 
             if (Region::find($data['region_id'])->regionadmin->first()->user->exists()) {

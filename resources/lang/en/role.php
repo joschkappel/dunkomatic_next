@@ -30,11 +30,11 @@ return [
   'user.account' => 'User account',
   'send.invite' => 'Invite',
   '1.short' => 'Club',
-  '0.short' => 'User',
   '2.short' => 'Referees',
   '3.short' => 'Leagues',
   '4.short' => 'Region',
   '5.short' => 'Girls',
   '6.short' => 'Youth',
   '7.short' => 'Region',
+  'hasuser' => 'THis member has got a user account'
 ];

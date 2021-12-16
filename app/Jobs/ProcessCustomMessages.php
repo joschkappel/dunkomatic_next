@@ -17,10 +17,12 @@ use App\Notifications\CustomDbMessage;
 use App\Notifications\AppActionMessage;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CustomMailMessage;
-use App\Enums\Role;
+use App\Enums\Role as EnumRole;
+use Silber\Bouncer\Database\Role as UserRole;
 use App\Enums\MessageType;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Notification;
 
 class ProcessCustomMessages implements ShouldQueue
 {
@@ -46,90 +48,92 @@ class ProcessCustomMessages implements ShouldQueue
     public function handle()
     {
         Log::info('[JOB][CUSTOM MESSAGE] started.', ['message' => $this->message]);
-        $mdest = $this->message->message_destinations()->get();
 
-        $to_list = array();
-        $cc_list = array();
-        $to_roles = array();
-        $cc_roles = array();
-        $drop_mail = false;
+        $to_members = collect();
+        $to_member_roles = array();
+        $cc_members = collect();
+        $cc_member_roles = array();
+        $to_users = collect();
 
-        foreach ($mdest as $d) {
-            if ($d->role_id->in([Role::ClubLead, Role::RefereeLead, Role::JuniorsLead, Role::GirlsLead, Role::RegionLead, Role::RegionTeam])) {
+        $clubs = $this->message->region->clubs;
+        $leagues = $this->message->region->leagues;
+        $regions = $this->message->region->get();
+
+        foreach ($this->message->to_members ?? [] as $tm) {
+            // send eMails to members
+            $tm = EnumRole::coerce(intval($tm));
+            $to_member_roles[] = $tm->description . ' ' . $this->message->region->code;
+
+            // collect all members based on role
+            if ( $tm->in([EnumRole::ClubLead(), EnumRole::RefereeLead(), EnumRole::JuniorsLead(), EnumRole::GirlsLead()]) ) {
                 // get in scope clubs
-                $clubs = $this->message->region->clubs;
-                $members = collect();
-
-                foreach ($clubs as $c){
-                    // get all club admin members
-                    $club_members = $c->members()->wherePivot('role_id', $d->role_id)->get(['email1', 'firstname', 'lastname']);
-                    $members = $members->concat($club_members);
+                foreach ($clubs as $c) {
+                    $to_members = $to_members->concat( $c->members()->wherePivot('role_id', $tm)->get()->transform(function ($item, $key) { return ['name'=>$item->name,'email'=>$item->email1];}) );
                 }
-
-                $drop_mail = true;
-                Log::debug('[JOB][CUSTOM MESSAGE] club members to notify.', ['members' => $members->pluck('email1')]);
-            } else if ($d->role_id->is(Role::LeagueLead)) {
+            } else if ( $tm->is(EnumRole::LeagueLead()) ) {
                 // get in scope leagues
-                $leagues = $this->message->region->leagues;
-                $members = collect();
-
-                foreach ($leagues as $l){
-                    // get all league admim members
-                    $league_members = $l->members()->wherePivot('role_id', Role::LeagueLead)->get(['email1', 'firstname', 'lastname']);
-                    $members = $members->concat($league_members);
+                foreach ($leagues as $l) {
+                    $to_members = $to_members->concat( $l->members()->wherePivot('role_id', EnumRole::LeagueLead)->get()->transform(function ($item, $key) { return ['name'=>$item->name,'email'=>$item->email1];}) );
                 }
-
-                $drop_mail = true;
-                Log::debug('[JOB][CUSTOM MESSAGE] league members to notify.', ['members' => $members]);
-            } else if ($d->role_id->is(Role::Admin)) {
-                $members = $this->message->region->regionadmin;
-                $drop_mail = true;
-                Log::debug('[JOB][CUSTOM MESSAGE] region members to notify.', ['members' => $members]);
-            } else if ($d->role_id->is(Role::User)) {
-                $users = $this->message->region->users();
-                foreach ($users as $u) {
-                    $u->notify(new CustomDbMessage($this->message));
-                }
-                $to_roles[] = Role::getDescription($d->role_id) . ' ' . $this->message->region->code;
-                Log::info('[JOB][CUSTOM MESSAGE] create user notifications in DB.',['users'=>$users]);
-            }
-
-            if ($drop_mail) {
-                $adrlist = array();
-                foreach ($members as $adr) {
-                    if ($adr != null){
-                        $a = array();
-                        $a['email'] = $adr->email1;
-                        $a['name'] = $adr->firstname . ' ' . $adr->lastname;
-                        $adrlist[] = $a;
-                    }
-                }
-                if ($d->type == MessageType::to()) {
-                    $to_list = array_merge($to_list, $adrlist);
-                    $to_roles[] = Role::getDescription($d->role_id) . ' ' . $this->message->region->code;
-                } else {
-                    $cc_list = array_merge($cc_list, $adrlist);
-                    $cc_roles[] = Role::getDescription($d->role_id) . ' ' . $this->message->region->code;
+            } else if ( $tm->in([ EnumRole::RegionLead(), EnumRole::RegionTeam() ]) ) {
+                // get in scope regions
+                foreach ($regions as $r) {
+                    $to_members = $to_members->concat( $r->members()->wherePivot('role_id', $tm)->get()->transform(function ($item, $key) { return ['name'=>$item->name,'email'=>$item->email1];}) );
                 }
             }
+            Log::info('[JOB][CUSTOM MESSAGE] members to email.', ['members' => $to_members->count()]);
+        }
+        foreach ($this->message->cc_members ?? [] as $cm) {
+            // send eMails to members
+            $cm = EnumRole::coerce(intval($cm));
+            $cc_member_roles[] = $cm->description . ' ' . $this->message->region->code;
+
+            // collect all members based on role
+            if ( $cm->in([EnumRole::ClubLead(), EnumRole::RefereeLead(), EnumRole::JuniorsLead(), EnumRole::GirlsLead()]) ) {
+                // get in scope clubs
+                foreach ($clubs as $c) {
+                    $cc_members = $cc_members->concat( $c->members()->wherePivot('role_id', $cm)->get()->transform(function ($item, $key) { return ['name'=>$item->name,'email'=>$item->email1];}) );
+                }
+            } elseif ( $cm->is(EnumRole::LeagueLead()) ) {
+                // get in scope leagues
+                foreach ($leagues as $l) {
+                    $cc_members = $cc_members->concat( $l->members()->wherePivot('role_id', EnumRole::LeagueLead)->get()->transform(function ($item, $key) { return ['name'=>$item->name,'email'=>$item->email1];}) );
+                }
+            } elseif ( $cm->in([ EnumRole::RegionLead(), EnumRole::RegionTeam() ]) ) {
+                // get in scope regions
+                foreach ($regions as $r) {
+                    $cc_members = $cc_members->concat( $r->members()->wherePivot('role_id', $cm)->get()->transform(function ($item, $key) { return ['name'=>$item->name,'email'=>$item->email1];}) );
+                }
+            }
+            Log::info('[JOB][CUSTOM MESSAGE] members cc email.', ['members' => $cc_members->count()]);
         }
 
-
-        if ($drop_mail) {
-            Mail::to($to_list)
-                ->cc($cc_list)
+        if (count($to_members) > 0) {
+            Mail::to($to_members)
+                ->cc($cc_members)
                 ->send(new CustomMailMessage($this->message));
-            Log::notice('[JOB][EMAIL] custom email sent.',['message-id'=>$this->message->id, 'to_count'=>count($to_list), 'cc_count'=>count($cc_list)]);
+            Log::notice('[JOB][EMAIL] custom email sent.', ['message-id' => $this->message->id, 'to_count' => count($to_members), 'cc_count' => count($cc_members)]);
+        }
+
+        $user_region = $this->message->region;
+        $user_roles = UserRole::whereIn('id', $this->message->to_users)->pluck('name');
+
+        foreach ($user_roles ?? [] as $ur){
+            $to_users = $to_users->concat( User::whereIs($ur)->get()->filter(function ($value, $key) use ($user_region) { return $value->can('access',$user_region);}) );
+        }
+        if (count($to_users) > 0){
+            Notification::sendNow($to_users, new CustomDbMessage($this->message));
+            Log::notice('[JOB][NOTIFICATION] custom note sent.', ['message-id' => $this->message->id, 'to_count' => count($to_users)]);
         }
 
         $this->message->update(['sent_at' => Carbon::today()]);
         $author = $this->message->user;
 
-        $msg = __('To').' '. implode(', ', $to_roles);
-        if (count($cc_roles) > 0) {
-            $msg .= ', '.__('with copy to').' '. implode(', ', $cc_roles);
+        $msg = __('To') . ' ' . implode(', ', $to_member_roles);
+        if (count($cc_member_roles) > 0) {
+            $msg .= ', ' . __('with copy to') . ' ' . implode(', ', $cc_member_roles);
         }
-        $author->notify(new AppActionMessage(__('Message').' "'. $this->message->title . '" '.__('sent'), $msg));
+        $author->notify(new AppActionMessage(__('Message') . ' "' . $this->message->title . '" ' . __('sent'), $msg));
         Log::info('[JOB][NOTIFICATION][MEMBER] custom message sent.', ['member-id' => $author->id]);
     }
 }

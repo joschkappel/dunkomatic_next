@@ -1,11 +1,11 @@
 @extends('layouts.page')
 
 @section('content')
-<x-card-form cardTitle="{{ __('message.title.edit') }}" formAction="{{ route('message.update',['message'=>$message['message']]) }}" formMethod="PUT">
+<x-card-form cardTitle="{{ __('message.title.edit') }}" formAction="{{ route('message.update',['message'=>$message]) }}" formMethod="PUT">
     <div class="form-group row">
         <label for="title" class="col-sm-2 col-form-label">@lang('message.title')</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" placeholder="@lang('message.title')" value="{{ (old('title')!='') ? old('title') : $message['message']->title }}">
+            <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" placeholder="@lang('message.title')" value="{{ (old('title')!='') ? old('title') : $message->title }}">
             @error('title')
             <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -56,12 +56,12 @@
         <label for="selDestTo" class="col-sm-2 col-form-label">@lang('message.dest_to')</label>
         <div class="col-sm-10">
         <div class="input-group mb-3">
-            <select class='js-sel-to js-states form-control select2 @error("dest_to") is-invalid @enderror' id='selDestTo' name="dest_to[]">
+            <select class='js-sel-to js-states form-control select2 @error("to_members") is-invalid @enderror' id='selDestTo' name="to_members[]">
                 @foreach ( $scopetype as $st )
                 <option value="{{ $st->value }}">{{ $st->description }}</option>
                 @endforeach
             </select>
-            @error("dest_to")
+            @error("to_members")
             <div class="invalid-feedback">{{ $message }}</div>
             @enderror
             </div>
@@ -71,12 +71,27 @@
         <label for="selDestCc" class="col-sm-2 col-form-label">@lang('message.dest_cc')</label>
         <div class="col-sm-10">
         <div class="input-group mb-3">
-            <select class='js-sel-cc js-states form-control select2 @error("dest_cc") is-invalid @enderror' id='selDestCc' name="dest_cc[]">
+            <select class='js-sel-cc js-states form-control select2 @error("cc_members") is-invalid @enderror' id='selDestCc' name="cc_members[]">
                 @foreach ( $scopetype as $st )
                 <option value="{{ $st->value }}">{{ $st->description }}</option>
                 @endforeach
             </select>
-            @error("dest_cc")
+            @error("cc_members")
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="selDestToUser" class="col-sm-2 col-form-label">@lang('message.dest_user_to')</label>
+        <div class="col-sm-10">
+        <div class="input-group mb-3">
+            <select class='js-sel-user-to form-control select2 @error("to_users") is-invalid @enderror' id='selDestToUser' name="to_users[]">
+                @foreach ( $user_scopetype as $k => $st )
+                <option value="{{ $k }}">{{ $st }}</option>
+                @endforeach
+            </select>
+            @error("to_users")
             <div class="invalid-feedback">{{ $message }}</div>
             @enderror
             </div>
@@ -108,31 +123,36 @@
           ],
         });
 
-        var content = '{!! (old('body')!='') ? old('body') : $message['message']->body !!}';
+        var content = '{!! (old('body')!='') ? old('body') : $message->body !!}';
         $('#summernote').summernote('code',content);
 
-        $("#greeting").val('{{ (old('greeting')!='') ? old('greeting') : $message['message']->greeting }}');
-        $("#salutation").val('{{ (old('salutation')!='') ? old('salutation') : $message['message']->salutation }}');
+        $("#greeting").val('{{ (old('greeting')!='') ? old('greeting') : $message->greeting }}');
+        $("#salutation").val('{{ (old('salutation')!='') ? old('salutation') : $message->salutation }}');
         $("#selDestTo").select2({
             width: '100%',
             multiple: true,
             allowClear: false,
         });
-        $("#selDestTo").val({{ json_encode(Arr::flatten($message['dest_to'])) }} ).change();
+        $("#selDestTo").val({!! json_encode($message->to_members) !!} ).trigger('change');
         $("#selDestCc").select2({
+            width: '100%',
+            multiple: true,
+            allowClear: true,
+        });
+        $("#selDestCc").val({!! json_encode($message->cc_members) !!} ).trigger('change');
+        $("#selDestToUser").select2({
             width: '100%',
             multiple: true,
             allowClear: false,
         });
-        $("#selDestCc").val({{ json_encode(Arr::flatten($message['dest_cc'])) }} ).change();
-
+        $("#selDestToUser").val({!! json_encode($message->to_users) !!} ).trigger('change');
 
         moment.locale('{{ app()->getLocale() }}');
 
         $('#send_at').datetimepicker({
             format: 'L',
             locale: '{{ app()->getLocale()}}',
-            defaultDate: moment('{{ $message['message']->send_at }}'),
+            defaultDate: moment('{{ $message->send_at }}'),
             // minDate: moment().add(1, 'd')
         });
 

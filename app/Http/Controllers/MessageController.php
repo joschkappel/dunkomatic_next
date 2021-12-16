@@ -8,7 +8,8 @@ use App\Models\User;
 use App\Models\Region;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use App\Enums\Role;
+use App\Enums\Role as EnumRole;
+use Silber\Bouncer\Database\Role as UserRole;
 use App\Enums\MessageType;
 use BenSampo\Enum\Rules\EnumValue;
 use Datatables;
@@ -89,7 +90,8 @@ class MessageController extends Controller
     public function create($language, Region $region, User $user)
     {
         Log::info('create new message');
-        return view('message/message_new', ['scopetype' => Role::getInstances(), 'user' => $user, 'region' => $region]);
+        $user_scopetype = UserRole::all()->pluck('name','id');
+        return view('message/message_new', ['user_scopetype'=>$user_scopetype, 'scopetype' => EnumRole::getInstances(), 'user' => $user, 'region' => $region]);
     }
 
     /**
@@ -106,36 +108,20 @@ class MessageController extends Controller
             'greeting' => 'required|string|max:40',
             'salutation' => 'required|string|max:40',
             'send_at' => 'required|date|after:today',
-            'dest_to.*' => ['required', new EnumValue(Role::class, false)],
-            'dest_cc.*' => [new EnumValue(Role::class, false)],
+            'to_members' => 'required_without:to_users',
+            'to_members.*' => [new EnumValue(EnumRole::class, false)],
+            'cc_members.*' => [new EnumValue(EnumRole::class, false)],
+            'to_users' => 'required_without:to_members|nullable',
+            'to_users.*' => 'required|exists:roles,id',
+
         ]);
         Log::info('message form data validated OK.');
 
-        $msg = new Message();
+        $msg = new Message($data);
         $msg->user()->associate($user);
         $msg->region()->associate($region);
-        $msg->title = $data['title'];
-        $msg->greeting = $data['greeting'];
-        $msg->body = $data['body'];
-        $msg->salutation = $data['salutation'];
-        $msg->send_at = $data['send_at'];
         $msg->save();
         Log::notice('new message created.', ['message-id'=>$msg->id]);
-
-        foreach ($data['dest_to'] as $d) {
-            $dest = $msg->message_destinations()->create([
-                'role_id' => Role::coerce(intval($d)),
-                'type' => MessageType::to(),
-            ]);
-            Log::notice('new message TO destination created.', ['messagedest-id'=>$dest->id]);
-        }
-        foreach ($data['dest_cc'] as $d) {
-            $dest = $msg->message_destinations()->create([
-                'role_id' => Role::coerce(intval($d)),
-                'type' => MessageType::cc(),
-            ]);
-            Log::notice('new message CC destination created.', ['messagedest-id'=>$dest->id]);
-        }
 
         return redirect()->route('message.index', ['language' => app()->getLocale(), 'user' => $user, 'region' => $region]);
     }
@@ -150,15 +136,9 @@ class MessageController extends Controller
     public function edit($language, Message $message)
     {
         Log::debug('editing message.', ['message-id' => $message->id]);
-        $dest_to = $message->message_destinations()->where('type', new MessageType(MessageType::to))->get()->pluck('role_id');
-        $dest_cc = $message->message_destinations()->where('type', new MessageType(MessageType::cc))->get()->pluck('role_id');
+        $user_scopetype = UserRole::all()->pluck('name','id');
 
-        $data = array();
-        $data['message'] = $message;
-        $data['dest_to'] = $dest_to;
-        $data['dest_cc'] = $dest_cc;
-
-        return view('message/message_edit', ['message' => $data, 'scopetype' => Role::getInstances()]);
+        return view('message/message_edit', ['message' => $message, 'scopetype' => EnumRole::getInstances(), 'user_scopetype'=>$user_scopetype]);
     }
 
     /**
@@ -177,39 +157,26 @@ class MessageController extends Controller
             'greeting' => 'required|string|max:40',
             'salutation' => 'required|string|max:40',
             'send_at' => 'date|after:today',
-            'dest_to.*' => ['required', new EnumValue(Role::class, false)],
-            'dest_cc.*' => [new EnumValue(Role::class, false)],
+            'to_members' => 'required_without:to_users',
+            'to_members.*' => [new EnumValue(EnumRole::class, false)],
+            'cc_members.*' => [new EnumValue(EnumRole::class, false)],
+            'to_users' => 'required_without:to_members|nullable',
+            'to_users.*' => 'sometimes|exists:roles,id',
         ]);
         Log::info('message form data validated OK.');
+        if ( ! isset($data['to_members']) ){
+            $data['to_members'] = null;
+        }
+        if ( ! isset($data['cc_members']) ){
+            $data['cc_members'] = null;
+        }
+        if ( ! isset($data['to_users']) ){
+            $data['to_users'] = null;
+        }
 
-        $message->title = $data['title'];
-        $message->greeting = $data['greeting'];
-        $message->body = $data['body'];
-        $message->salutation = $data['salutation'];
-        $message->send_at = $data['send_at'];
-
-        $message->save();
+        $message->update( $data );
         Log::notice('message updated.', ['message-id'=> $message->id]);
 
-        // delete old destintaion
-        $message->message_destinations()->delete();
-
-        foreach ($data['dest_to'] as $d) {
-            $dest = $message->message_destinations()->create([
-                'role_id' => Role::coerce(intval($d)),
-                'type' => MessageType::to(),
-            ]);
-            Log::notice('new message TO destination created.', ['messagedest-id'=>$dest->id]);
-        }
-        if (isset($data['dest_cc'])) {
-            foreach ($data['dest_cc'] as $d) {
-                $dest = $message->message_destinations()->create([
-                    'role_id' => Role::coerce(intval($d)),
-                    'type' => MessageType::cc(),
-                ]);
-                Log::notice('new message CC destination created.', ['messagedest-id'=>$dest->id]);
-            }
-        }
 
         return redirect()->route('message.index', ['language' => app()->getLocale(), 'region' => $message->region, 'user' => $message->user]);
     }

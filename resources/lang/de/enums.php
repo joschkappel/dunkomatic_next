@@ -21,15 +21,13 @@ return [
     ],
 
     Role::class => [
-      Role::User => 'Benutzer',
       Role::ClubLead => 'Abteilungsleiter',
       Role::RefereeLead => 'Schiedsrichterwart',
       Role::LeagueLead => 'Staffelleiter',
       Role::RegionTeam => 'Bezirksmitarbeiter',
       Role::GirlsLead => 'Verantwtl. Mädchenbasket',
       Role::JuniorsLead => 'Jugendwart',
-      Role::RegionLead => 'Bezirskvorstand',
-      Role::Admin => 'Systemverwalter'
+      Role::RegionLead => 'Bezirskvorstand'
     ],
 
     JobFrequencyType::class => [

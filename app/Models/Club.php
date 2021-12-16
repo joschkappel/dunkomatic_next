@@ -117,10 +117,6 @@ class Club extends Model implements Auditable
     {
         return $this->hasMany(Game::class, 'club_id_guest', 'id');
     }
-    public function scopeUserRegion($query)
-    {
-        return $query->where('region_id', Auth::user()->region->id);
-    }
     public function memberIsA($role_id)
     {
         return $this->members()->wherePivot('role_id', $role_id)->exists();
@@ -145,5 +141,9 @@ class Club extends Model implements Auditable
             //return (strpos($value,$llist[0]) !== false);
         });
         return $reports;
+    }
+    public function scopeForRegion($query, $region)
+    {
+        return $query->where('region_id', $region->id);
     }
 }

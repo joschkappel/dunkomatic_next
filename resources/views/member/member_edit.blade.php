@@ -3,6 +3,13 @@
 @section('content')
 <x-card-form cardTitle="{{ __('role.title.edit', ['member'=>$member->name]) }}" formAction="{{ route('member.update',['member' => $member]) }}" formMethod="PUT">
               <input type="hidden" id="backto" name="backto" value={{$backto}}>
+              @if ($member->user()->exists())
+              <div class="form-group row">
+                <div class="col-sm-12">
+                    <div class="alert alert-info" role="alert">{{__('role.hasuser')}}</div>
+                </div>
+              </div>
+              @endif
               <div class="form-group row">
                   <div class="col-sm-6">
                       <input type="text" class="form-control @error('firstname') is-invalid @enderror"

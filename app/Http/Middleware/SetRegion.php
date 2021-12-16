@@ -20,8 +20,14 @@ class SetRegion
     public function handle(Request $request, Closure $next)
     {
 
-        if (($request->new_region) !== null) {
+        if ( $request->new_region !== null) {
             $request->session()->put('cur_region', Region::find($request->new_region) );
+        } else {
+            if (($request->region != session('cur_region')) and ($request->region !== null)) {
+                $region = Region::find($request->region->id) ;
+                $request->session()->put('cur_region', $region);
+                session()->put('cur_region', $region );
+            }
         }
         /* else {
 

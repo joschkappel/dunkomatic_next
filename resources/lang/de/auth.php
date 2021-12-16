@@ -40,6 +40,7 @@ return [
     'profile'                     => 'Profil',
     'user.clubs'                  => 'Hat Zugriff auf Vereine',
     'user.leagues'                => 'Hat Zugriff auf Runden',
+    'user.regions'                => 'Hat Zugriff auf Bezirke',
     'user.roles'                  => 'Hat Rollen',
     'user'                       => 'Benutzer',
     'member_found'              => 'Es existiert ein Mitglied mit gleicher email:',

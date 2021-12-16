@@ -24,6 +24,9 @@ class CreateMessagesTable extends Migration
             $table->text('greeting');
             $table->longText('body');
             $table->text('salutation');
+            $table->text('to_members')->nullable();
+            $table->text('cc_members')->nullable();
+            $table->text('to_users')->nullable();
             $table->date('send_at')->nullable();
             $table->date('sent_at')->nullable();
         });

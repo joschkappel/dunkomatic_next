@@ -4,21 +4,19 @@
     </div>
     <!-- /.card-header -->
     <div class="card-body">
-            <ul class="list-group list-group-flush">
             @forelse ($reminders as $r)
-                <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="col-sm-12">
+                    <div class="alert alert-{{$r['action_color']}}" role="alert">{!! $r['msg'] !!}
                     @if ($r['action'] != '')
-                    <a href="{{ $r['action'] }}" class="list-group-item list-group-item-action @if ($loop->first) active @endif rounded">{!! $r['msg'] !!}</a>
-                    @else
-                    {{ $r['msg'] }}
+                        <a href="{{ $r['action'] }}" class="alert-link">{!! $r['action_msg'] !!}</a>
                     @endif
-                </li>
+                    </div>
+                </div>
             @empty
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    {{ __('message.reminder.empty')}}
-                </li>
+                <div class="col-sm-12">
+                    <div class="alert alert-info" role="alert">{{__('message.reminder.empty')}}</div>
+                </div>
             @endforelse
-            </ul>
         <!-- The last icon means the story is complete -->
     </div>
 </div>
