@@ -220,9 +220,6 @@ class MessageController extends Controller
      */
     public function destroy(Message $message)
     {
-        $message->message_destinations()->delete();
-        Log::info('message destintations deleted',['message-id'=>$message->id]);
-
         $message->delete();
         Log::notice('message deleted',['message-id'=>$message->id]);
 

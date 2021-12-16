@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\User;
 use App\Models\Region;
-use App\Models\MessageDestination;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

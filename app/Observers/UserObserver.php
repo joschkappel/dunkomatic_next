@@ -44,14 +44,14 @@ class UserObserver
     }
 
     /**
-     * Handle the User "deleted" event.
+     * Handle the User "deleting event.
      *
      * @param  \App\Models\User  $user
      * @return void
      */
-    public function deleted(User $user)
+    public function deleting(User $user)
     {
-        if ( ! $user->member->memberships()->exists() ) {
+        if ( $user->member !== null ) {
             // delete user, member and memberships - he is "Only" a user
             $member = Member::find($user->member->id);
             $member->delete();

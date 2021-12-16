@@ -98,6 +98,7 @@ class ClubControllerTest extends TestCase
       $club = Club::where('name','testclub')->first();
 
       $response = $this->authenticated()
+                        ->withSession(['cur_region' => $this->region])
                         ->get(route('club.edit',['language'=>'de', 'club'=>$club]));
 
       $response->assertStatus(200)
@@ -118,11 +119,11 @@ class ClubControllerTest extends TestCase
       //$this->withoutExceptionHandling();
       $club = Club::where('name','testclub')->first();
       $response = $this->authenticated()
+                        ->withSession(['cur_region' => $this->region])
                         ->put(route('club.update',['club'=>$club]),[
                           'name' => 'testclub2',
                           'shortname' => $club->shortname,
                           'url' => 'anyurl',
-                          'region' => $this->region->code,
                           'club_no' => $club->club_no
                         ]);
 
@@ -149,7 +150,6 @@ class ClubControllerTest extends TestCase
                           'name' => 'testclub2',
                           'shortname' => $club->shortname,
                           'url' => $club->url,
-                          'region' => $this->region->code,
                           'club_no' => $club->club_no
                         ]);
       $club->refresh();

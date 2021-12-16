@@ -98,8 +98,8 @@ class MessageControllerTest extends TestCase
                           'greeting' => 'hello',
                           'salutation' => 'all',
                           'send_at' => now(),
-                          'dest_to' => [Role::getRandomValue()],
-                          'dest_cc' => [Role::getRandomValue()],
+                          'to_members' => [Role::getRandomValue()],
+                          'cc_members' => [Role::getRandomValue()],
                         ]);
 
       $response->assertStatus(302)
@@ -128,7 +128,7 @@ class MessageControllerTest extends TestCase
       $response->assertStatus(200)
                ->assertViewIs('message.message_edit')
                ->assertViewHas('scopetype',Role::getInstances())
-               ->assertViewHas('message.message',$message);
+               ->assertViewHas('message',$message);
 
     }
     /**
@@ -175,8 +175,8 @@ class MessageControllerTest extends TestCase
                           'greeting' => $message->greeting,
                           'salutation' => 'du',
                           'send_at' => Carbon::now()->addDay(),
-                          'dest_to' => [Role::getRandomValue()],
-                          'dest_cc' => [Role::getRandomValue()],
+                          'to_members' => [Role::getRandomValue()],
+                          'cc_members' => [Role::getRandomValue()],
                         ]);
 
       $response->assertStatus(302)

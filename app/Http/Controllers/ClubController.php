@@ -250,7 +250,12 @@ class ClubController extends Controller
      */
     public function store(Request $request, Region $region)
     {
-        $data = $request->validate(Club::getCreateRules());
+        $data = $request->validate([
+            'shortname' => array('required', 'string', 'unique:clubs', 'max:4', 'min:4', new Uppercase),
+            'name' => 'required|max:255',
+            'url' => 'required|url|max:255',
+            'club_no' => 'required|unique:clubs|max:7',
+        ]);
         Log::info('club form data validated OK.');
 
         $club = new Club($data);

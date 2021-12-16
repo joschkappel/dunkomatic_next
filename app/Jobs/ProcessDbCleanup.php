@@ -8,9 +8,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-use Carbon\Carbon;
-use App\Models\Message;
-use App\Models\User;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;

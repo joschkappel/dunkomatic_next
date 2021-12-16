@@ -34,15 +34,6 @@ class Club extends Model implements Auditable
         'id', 'name', 'shortname', 'region_id', 'url', 'club_no'
     ];
 
-    public static function getCreateRules()
-    {
-        return  [
-            'shortname' => array('required', 'string', 'unique:clubs', 'max:4', 'min:4', new Uppercase),
-            'name' => 'required|max:255',
-            'url' => 'required|url|max:255',
-            'club_no' => 'required|unique:clubs|max:7',
-        ];
-    }
 
     public function gyms()
     {

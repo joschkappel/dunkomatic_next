@@ -108,7 +108,7 @@ class ClubMembershipControllerTest extends TestCase
 
       $this->assertDatabaseHas('members', ['id' => $member->id])
            ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-           ->assertDatabaseCount('memberships', 4);
+           ->assertDatabaseCount('memberships', 2);
     }
     /**
      * update NOT OK
@@ -140,7 +140,7 @@ class ClubMembershipControllerTest extends TestCase
 
       $this->assertDatabaseHas('members', ['id' => $member->id])
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 4);
+            ->assertDatabaseCount('memberships', 2);
     }
     /**
      * update OK
@@ -172,7 +172,7 @@ class ClubMembershipControllerTest extends TestCase
 
       $this->assertDatabaseHas('members', ['lastname' => 'testmember2'])
           ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-          ->assertDatabaseCount('memberships', 4);
+          ->assertDatabaseCount('memberships', 2);
 
     }
 
@@ -201,7 +201,7 @@ class ClubMembershipControllerTest extends TestCase
 
       $this->assertDatabaseHas('members', ['id' => $member->id])
         ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-        ->assertDatabaseCount('memberships', 4);
+        ->assertDatabaseCount('memberships', 2);
 
     }
 
@@ -231,7 +231,7 @@ class ClubMembershipControllerTest extends TestCase
 
       $this->assertDatabaseHas('members', ['id' => $member->id])
         ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-        ->assertDatabaseCount('memberships', 5);
+        ->assertDatabaseCount('memberships', 3);
     }
    /**
      * update mship NOT OK
@@ -257,7 +257,7 @@ class ClubMembershipControllerTest extends TestCase
 
       $this->assertDatabaseHas('members', ['id' => $member->id])
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 5);
+            ->assertDatabaseCount('memberships', 3);
     }
    /**
      * update mship OK
@@ -283,7 +283,7 @@ class ClubMembershipControllerTest extends TestCase
 
       $this->assertDatabaseHas('members', ['id' => $member->id])
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 5);
+            ->assertDatabaseCount('memberships', 3);
     }
     /**
      * destroy
@@ -307,7 +307,7 @@ class ClubMembershipControllerTest extends TestCase
 
       $this->assertDatabaseMissing('members', ['id' => $member2->id])
            ->assertDatabaseMissing('memberships', ['member_id' => $member2->id])
-           ->assertDatabaseCount('memberships', 3);
+           ->assertDatabaseCount('memberships', 1);
     }
     /**
      * db_cleanup
@@ -326,6 +326,6 @@ class ClubMembershipControllerTest extends TestCase
         $member2 = Member::where('lastname','testmember2')->delete();
 
         $this->assertDatabaseCount('clubs', 0);
-        $this->assertDatabaseCount('members', 5);
+        $this->assertDatabaseCount('members', 4);
    }
 }

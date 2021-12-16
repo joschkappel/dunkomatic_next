@@ -5,8 +5,7 @@
                             <div class="form-group row">
                                 <label for="region" class="col-sm-4 col-form-label">@lang('club.region')</label>
                                 <div class="col-sm-6">
-                                    <input type="text" readonly class="form-control"
-                                        id="region" value="{{ $region->name }}">
+                                    <input type="text" readonly class="form-control" value="{{ $region->name }}">
                                 </div>
                             </div>
                             <div class="form-group row">
