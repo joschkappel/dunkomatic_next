@@ -134,6 +134,7 @@ Route::group([
 
         Route::get('message/{message}/edit', 'MessageController@edit')->name('message.edit');
         Route::post('message/{message}/send', 'MessageController@send')->name('message.send');
+        Route::post('message/{message}/copy', 'MessageController@copy')->name('message.copy');
 
         Route::get('calendar/league/{league}', 'CalendarController@cal_league')->name('cal.league')->middleware('can:view-games');
         Route::get('calendar/club/{club}', 'CalendarController@cal_club')->name('cal.club')->middleware('can:view-games');

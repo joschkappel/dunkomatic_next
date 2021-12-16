@@ -51,6 +51,8 @@ class MessageController extends Controller
             ->addColumn('action', function ($data) {
                 $btn = '<button type="button" id="deleteMessage" name="deleteMessage" class="btn btn-outline-danger btn-sm" data-msg-id="' . $data->id . '"
                   data-msg-title="' . $data->title . '" data-toggle="modal" data-target="#modalDeleteMessage"><i class="fa fa-trash"></i></button>';
+                $btn .= '<button type="button" id="copyMessage" name="copyMessage" class="btn btn-outline-primary btn-sm m-2" data-msg-id="' . $data->id . '"
+                  ><i class="fas fa-copy"></i></button>';
                 return $btn;
             })
             ->addColumn('action_send', function ($data) {
@@ -207,6 +209,23 @@ class MessageController extends Controller
 
         ProcessCustomMessages::dispatchSync($message);
         //->delay(now()->addMinutes(1));
+
+        return true;
+    }
+
+    /**
+     * duplicate a message
+     *
+     * @param  $language
+     * @param  \App\Models\Message  $message
+     */
+    public function copy($language, Message $message)
+    {
+        Log::info('preparing to duplicate message.', ['message->id' => $message->id]);
+        $new_msg = $message->replicate();
+        $new_msg->sent_at = null;
+        $new_msg->send_at = now()->addDays(8);
+        $new_msg->save();
 
         return true;
     }
