@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Region;
 use App\Models\User;
 
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class UserSeeder extends Seeder
 {

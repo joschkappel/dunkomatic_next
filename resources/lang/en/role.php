@@ -13,6 +13,7 @@ return [
   'title.new' => 'Create a new member for :unittype :unitname',
   'title.edit' => 'Modify Details of member :member',
   'title.delete' => 'Delete a role from ',
+  'title.show' => 'Linked member :member',
   'member.title.select' => 'Select an existing Member ',
   'member.title.list' => 'Member List of :REGION',
   'confirm.delete' => 'Do you really want to delete this role ?',
@@ -29,11 +30,11 @@ return [
   'user.account' => 'User account',
   'send.invite' => 'Invite',
   '1.short' => 'Club',
-  '0.short' => 'User',
   '2.short' => 'Referees',
   '3.short' => 'Leagues',
   '4.short' => 'Region',
   '5.short' => 'Girls',
   '6.short' => 'Youth',
   '7.short' => 'Region',
+  'hasuser' => 'THis member has got a user account'
 ];

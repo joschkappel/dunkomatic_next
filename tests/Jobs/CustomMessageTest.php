@@ -8,11 +8,13 @@ use App\Jobs\ProcessCustomMessages;
 
 use App\Models\Region;
 use App\Enums\Role;
+use App\Models\User;
 use App\Mail\CustomMailMessage;
 use App\Notifications\AppActionMessage;
 use App\Notifications\CustomDbMessage;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Mail;
+use Bouncer;
 
 class CustomMessageTest extends SysTestCase
 {
@@ -22,7 +24,7 @@ class CustomMessageTest extends SysTestCase
      * run job send message to users
      *
      * @test
-     * @group jobx
+     * @group job
      *
      * @return void
      */
@@ -32,48 +34,19 @@ class CustomMessageTest extends SysTestCase
         Notification::assertNothingSent();
 
         $msg = Region::where('code','HBVDA')->first()->messages->first();
+        $msg->to_users = ['1'];
         $job_instance = resolve(ProcessCustomMessages::class, ['message'=>$msg]);
         app()->call([$job_instance, 'handle']);
 
         // check that message has beeen sent to users
-        Notification::assertSentTo( $msg->region->users(), CustomDbMessage::class);
+        Notification::assertSentTo( User::whereIs('superadmin')->get(), CustomDbMessage::class);
         // check that autor is informed
         Notification::assertSentTo( $msg->user, AppActionMessage::class);
         // check that message is marked as SENT
         $this->assertDatabaseMissing('messages', ['id'=>$msg->id, 'sent_at'=>null]);
 
     }
-    /**
-     * run job send message to admin
-     *
-     * @test
-     * @group job
-     *
-     * @return void
-     */
-    public function run_notify_admin_job()
-    {
-        Notification::fake();
-        Notification::assertNothingSent();
 
-        Mail::fake();
-        Mail::assertNothingSent();
-        Mail::assertNothingQueued();
-
-        $msg = Region::where('code','HBVDA')->first()->messages->first();
-        $msg->message_destinations->first()->update(['role_id'=> Role::Admin]);
-        $job_instance = resolve(ProcessCustomMessages::class, ['message'=>$msg]);
-        app()->call([$job_instance, 'handle']);
-
-        // check that email has beeen sent to users
-        Mail::assertSent(CustomMailMessage::class);
-        Mail::assertNotQueued( CustomMailMessage::class);
-        // check that autor is informed
-        Notification::assertSentTo( $msg->user, AppActionMessage::class);
-        // check that message is marked as SENT
-        $this->assertDatabaseMissing('messages', ['id'=>$msg->id, 'sent_at'=>null]);
-
-    }
     /**
      * run job send message to club lead
      *
@@ -92,7 +65,7 @@ class CustomMessageTest extends SysTestCase
         Mail::assertNothingQueued();
 
         $msg = Region::where('code','HBVDA')->first()->messages->first();
-        $msg->message_destinations->first()->update(['role_id'=> Role::ClubLead]);
+        $msg->to_members = [Role::ClubLead()->value];
         $job_instance = resolve(ProcessCustomMessages::class, ['message'=>$msg]);
         app()->call([$job_instance, 'handle']);
 
@@ -122,7 +95,7 @@ class CustomMessageTest extends SysTestCase
         Mail::assertNothingQueued();
 
         $msg = Region::where('code','HBVDA')->first()->messages->first();
-        $msg->message_destinations->first()->update(['role_id'=> Role::LeagueLead]);
+        $msg->to_members = [Role::LeagueLead()->value];
         $job_instance = resolve(ProcessCustomMessages::class, ['message'=>$msg]);
         app()->call([$job_instance, 'handle']);
 

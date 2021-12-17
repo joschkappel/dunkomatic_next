@@ -8,7 +8,7 @@ use App\Models\League;
 use App\Models\Region;
 use OwenIt\Auditing\Models\Audit;
 
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 use Silber\Bouncer\Database\Role;
 
 use Illuminate\Http\Request;
@@ -82,9 +82,9 @@ class UserController extends Controller
             ->editColumn('created_at', function ($userlist) use ($language) {
                 if ($userlist->created_at) {
                     return array(
-                        'display' => Carbon::parse($userlist->created_at)->locale($language)->isoFormat('LLL'),
+                        'display' => Carbon::parse($userlist->created_at)->locale($language)->isoFormat('lll'),
                         'ts' => Carbon::parse($userlist->created_at)->timestamp,
-                        'filter' => Carbon::parse($userlist->created_at)->locale($language)->isoFormat('LLL')
+                        'filter' => Carbon::parse($userlist->created_at)->locale($language)->isoFormat('lll')
                     );
                 } else {
                     return array(
@@ -97,9 +97,9 @@ class UserController extends Controller
             ->addColumn('lastlogin_at', function ($userlist) use ($language) {
                 if ($userlist->lastSuccessfulLoginAt()) {
                     return array(
-                        'display' => Carbon::parse($userlist->lastSuccessfulLoginAt())->locale($language)->isoFormat('LLL'),
+                        'display' => Carbon::parse($userlist->lastSuccessfulLoginAt())->locale($language)->isoFormat('lll'),
                         'ts' => Carbon::parse($userlist->lastSuccessfulLoginAt())->timestamp,
-                        'filter' => Carbon::parse($userlist->lastSuccessfulLoginAt())->locale($language)->isoFormat('LLL')
+                        'filter' => Carbon::parse($userlist->lastSuccessfulLoginAt())->locale($language)->isoFormat('lll')
                     );
                 } else {
                     return array(
@@ -112,9 +112,9 @@ class UserController extends Controller
             ->editColumn('email_verified_at', function ($userlist) use ($language) {
                 if ($userlist->email_verified_at) {
                     return array(
-                        'display' => Carbon::parse($userlist->email_verified_at)->locale($language)->isoFormat('LLL'),
+                        'display' => Carbon::parse($userlist->email_verified_at)->locale($language)->isoFormat('lll'),
                         'ts' => Carbon::parse($userlist->email_verified_at)->timestamp,
-                        'filter' => Carbon::parse($userlist->email_verified_at)->locale($language)->isoFormat('LLL')
+                        'filter' => Carbon::parse($userlist->email_verified_at)->locale($language)->isoFormat('lll')
                     );
                 } else {
                     return array(
@@ -127,9 +127,9 @@ class UserController extends Controller
             ->editColumn('approved_at', function ($userlist) use ($language) {
                 if ($userlist->approved_at) {
                     return array(
-                        'display' => Carbon::parse($userlist->approved_at)->locale($language)->isoFormat('LLL'),
+                        'display' => Carbon::parse($userlist->approved_at)->locale($language)->isoFormat('lll'),
                         'ts' => Carbon::parse($userlist->approved_at)->timestamp,
-                        'filter' => Carbon::parse($userlist->approved_at)->locale($language)->isoFormat('LLL')
+                        'filter' => Carbon::parse($userlist->approved_at)->locale($language)->isoFormat('lll')
                     );
                 } else {
                     return array(
@@ -142,9 +142,9 @@ class UserController extends Controller
             ->editColumn('rejected_at', function ($userlist) use ($language) {
                 if ($userlist->rejected_at) {
                     return array(
-                        'display' => Carbon::parse($userlist->rejected_at)->locale($language)->isoFormat('LLL'),
+                        'display' => Carbon::parse($userlist->rejected_at)->locale($language)->isoFormat('lll'),
                         'ts' => Carbon::parse($userlist->rejected_at)->timestamp,
-                        'filter' => Carbon::parse($userlist->rejected_at)->locale($language)->isoFormat('LLL')
+                        'filter' => Carbon::parse($userlist->rejected_at)->locale($language)->isoFormat('lll')
                     );
                 } else {
                     return array(
@@ -261,7 +261,6 @@ class UserController extends Controller
                 $user->assign('guest');
             } else {
                 if (isset($data['regionadmin'])) {
-                    $user->retract('guest');
                     $user->assign('regionadmin');
                     unset($data['regionadmin']);
                 } else {
@@ -269,7 +268,6 @@ class UserController extends Controller
                 }
 
                 if (isset($data['clubadmin'])) {
-                    $user->retract('guest');
                     $user->assign('clubadmin');
                     unset($data['clubadmin']);
                 } else {
@@ -277,7 +275,6 @@ class UserController extends Controller
                 }
 
                 if (isset($data['leagueadmin'])) {
-                    $user->retract('guest');
                     $user->assign('leagueadmin');
                     unset($data['leagueadmin']);
                 } else {

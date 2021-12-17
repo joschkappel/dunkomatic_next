@@ -13,12 +13,9 @@ use BenSampo\Enum\Contracts\LocalizedEnum;
  * @method static static RegionTeam()
  * @method static static JuniorsLead()
  * @method static static GirlsLead()
- * @method static static Admin()
- * @method static static User()
  */
 final class Role extends Enum implements LocalizedEnum
 {
-    const User =   0;
     const ClubLead =   1;
     const RefereeLead = 2;
     const LeagueLead = 3;
@@ -26,5 +23,4 @@ final class Role extends Enum implements LocalizedEnum
     const GirlsLead = 5;
     const JuniorsLead = 6;
     const RegionLead = 7;
-    const Admin = 8;
 }

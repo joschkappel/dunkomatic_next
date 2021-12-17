@@ -11,7 +11,7 @@ use BenSampo\Enum\Rules\EnumValue;
 use App\Enums\Role;
 
 use Datatables;
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
@@ -239,7 +239,7 @@ class MemberController extends Controller
      */
     public function invite(Member $member)
     {
-        $member->notify(new InviteUser(Auth::user(), Auth::user()->region));
+        $member->notify(new InviteUser(Auth::user(), session('cur_region')));
         Log::info('[NOTIFICATION] invite user.',['member-id'=>$member->id]);
 
         return redirect()->back();

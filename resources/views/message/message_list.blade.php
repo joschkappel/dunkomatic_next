@@ -69,6 +69,26 @@
                      });
             });
 
+            $(document).on('click', '#copyMessage', function () {
+               var url = "{{ route('message.copy', [ 'language'=>app()->getLocale(), 'message'=>':messageid:'])}}"
+               url = url.replace(':messageid:',$(this).data('msg-id') );
+               $.ajax( {
+                       url: url,
+                       type: "post",
+                       dataType: 'json',
+                       data: {
+                         _token: "{{ csrf_token() }}",
+                         _method: 'POST'
+                       },
+                       delay: 250,
+                       success: function (response) {
+                         location.reload();
+                         console.log('reload');
+                       },
+                       cache: false
+                     });
+            });
+
 
 </script>
 @endsection

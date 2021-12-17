@@ -14,6 +14,7 @@ return [
   'title.new' => 'Lege einen neuen Mitarbeiter für :unittype :unitname an',
   'title.delete' => 'Einen Mitarbeiter löschen',
   'title.edit' => 'Ändere die Daten des Mitarbeiters :member',
+  'title.show' => 'Verküpfter Mitarbeiter :member',
   'member.title.select' => 'Wähle einen existierenden Mitarbeiter ',
   'confirm.delete' => 'Willst Du diesen Miarbeiter wirklich löschen ?',
   'firstname' => 'Vorname',
@@ -29,11 +30,11 @@ return [
   'fax' => 'Fax-Nr.',
   'user.account' => 'Benutzerkonto anlegen',
   '1.short' => 'Abteilung',
-  '0.short' => 'Benutzer',
   '2.short' => 'Schiris',
   '3.short' => 'Staffeln',
   '4.short' => 'Bezirk',
   '5.short' => 'Mädchen',
   '6.short' => 'Jugend',
   '7.short' => 'Bezirk',
+  'hasuser' => 'Dieses Mitglied hat ein Benutzerkonto'
 ];

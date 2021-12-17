@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\User;
 use App\Models\Region;
-use App\Models\MessageDestination;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,10 +16,17 @@ class Message extends Model
     use HasFactory, Prunable;
 
     protected $fillable = [
-        'id','title','body', 'greeting', 'salutation', 'send_at', 'sent_at', 'user_id', 'region_id'
+        'id','title','body', 'greeting', 'salutation', 'send_at', 'sent_at', 'user_id', 'region_id',
+        'to_members', 'cc_members', 'to_users'
     ];
 
     protected $dates = ['send_at', 'sent_at'];
+
+    protected $casts = [
+        'to_members' => 'array',
+        'cc_members' => 'array',
+        'to_users' => 'array',
+    ];
 
     public function user()
     {
@@ -29,10 +35,6 @@ class Message extends Model
     public function region()
     {
         return $this->belongsTo(Region::class);
-    }
-    public function message_destinations()
-    {
-        return $this->hasMany(MessageDestination::class);
     }
 
     /**
@@ -44,16 +46,6 @@ class Message extends Model
     {
         Log::notice('[JOB][DB CLEANUP] pruning messages.');
         return static::where('sent_at', '<', now()->subWeek());
-    }
-
-    /**
-     * Prepare the model for pruning.
-     *
-     * @return void
-     */
-    protected function pruning()
-    {
-        $this->message_destinations()->delete();
     }
 
 }

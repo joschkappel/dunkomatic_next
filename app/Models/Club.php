@@ -34,15 +34,6 @@ class Club extends Model implements Auditable
         'id', 'name', 'shortname', 'region_id', 'url', 'club_no'
     ];
 
-    public static function getCreateRules()
-    {
-        return  [
-            'shortname' => array('required', 'string', 'unique:clubs', 'max:4', 'min:4', new Uppercase),
-            'name' => 'required|max:255',
-            'url' => 'required|url|max:255',
-            'club_no' => 'required|unique:clubs|max:7',
-        ];
-    }
 
     public function gyms()
     {
@@ -117,10 +108,6 @@ class Club extends Model implements Auditable
     {
         return $this->hasMany(Game::class, 'club_id_guest', 'id');
     }
-    public function scopeUserRegion($query)
-    {
-        return $query->where('region_id', Auth::user()->region->id);
-    }
     public function memberIsA($role_id)
     {
         return $this->members()->wherePivot('role_id', $role_id)->exists();
@@ -145,5 +132,9 @@ class Club extends Model implements Auditable
             //return (strpos($value,$llist[0]) !== false);
         });
         return $reports;
+    }
+    public function scopeForRegion($query, $region)
+    {
+        return $query->where('region_id', $region->id);
     }
 }

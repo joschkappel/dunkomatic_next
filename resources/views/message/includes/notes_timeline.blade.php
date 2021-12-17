@@ -4,17 +4,16 @@
     </div>
     <!-- /.card-header -->
     <div class="card-body">
-            <ul class="list-group list-group-flush">
             @forelse ($infos as $i)
-                <li class="list-group-item d-flex-sm justify-content-between align-items-center">
-                    {{ $i['msg'] }}
-                </li>
+            <div class="col-sm-12">
+                <div class="alert alert-{{$i['msg_color']}}" role="alert">{!! $i['msg'] !!}
+                </div>
+            </div>
             @empty
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    {{ __('message.note.empty')}}
-                </li>
+            <div class="col-sm-12">
+                <div class="alert alert-info" role="alert">{{__('message.note.empty')}}</div>
+            </div>
             @endforelse
-        </ul>
         <!-- The last icon means the story is complete -->
     </div>
 </div>

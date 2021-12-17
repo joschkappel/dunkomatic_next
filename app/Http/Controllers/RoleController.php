@@ -20,41 +20,31 @@ class RoleController extends Controller
      */
     public function index(Request $request)
     {
-      if ( isset($request->scope) and ($request->scope == Club::class )){
-        $roles[] = Role::coerce('ClubLead');
-        $roles[] = Role::coerce('RefereeLead');
-        $roles[] = Role::coerce('RegionTeam');
-        $roles[] = Role::coerce('JuniorsLead');
-        $roles[] = Role::coerce('GirlsLead');
+        if (isset($request->scope) and ($request->scope == Club::class)) {
+            $roles[] = Role::coerce('ClubLead');
+            $roles[] = Role::coerce('RefereeLead');
+            $roles[] = Role::coerce('RegionTeam');
+            $roles[] = Role::coerce('JuniorsLead');
+            $roles[] = Role::coerce('GirlsLead');
+        } elseif (isset($request->scope) and ($request->scope == League::class)) {
+            $roles[] = Role::coerce('LeagueLead');
+        } elseif (isset($request->scope) and ($request->scope == Region::class)) {
+            $roles[] = Role::coerce('RegionLead');
+            $roles[] = Role::coerce('RegionTeam');
+        } else {
+            $roles = Role::getInstances();
+        };
 
-      } elseif ( isset($request->scope) and ($request->scope == League::class )){
-        $roles[] = Role::coerce('LeagueLead');
-      } elseif ( isset($request->scope) and ($request->scope == Region::class )){
-        $roles[] = Role::coerce('RegionLead');
-        $roles[] = Role::coerce('RegionTeam');
-      } else {
-        $roles = Role::getInstances();
-      };
+        Log::info('preparing select2 role list.', ['count' => count($roles)]);
+        $response = array();
 
-      Log::info('preparing select2 role list.', ['count' => count($roles)] );
-      $response = array();
-
-      foreach($roles as $role){
-          if ($role->is(Role::User)){
+        foreach ($roles as $role) {
             $response[] = array(
-                  "id"=>$role->value,
-                  "text"=>$role->description,
-                  "disabled"=>true
-                );
-          } else {
-            $response[] = array(
-              "id"=>$role->value,
-              "text"=>$role->description,
+                "id" => $role->value,
+                "text" => $role->description,
             );
-          }
-      }
+        }
 
-      return Response::json($response);
+        return Response::json($response);
     }
-
 }

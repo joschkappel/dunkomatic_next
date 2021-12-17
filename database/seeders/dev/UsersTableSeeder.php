@@ -4,10 +4,11 @@ namespace Database\Seeders\dev;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Enums\Role;
+use App\Models\Club;
 use App\Models\User;
 use App\Models\Region;
 
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 
 class UsersTableSeeder extends Seeder
@@ -73,7 +74,6 @@ class UsersTableSeeder extends Seeder
           Bouncer::allow(User::find($uid))->to('access', $region);
 
 
-        $mid = DB::table('members')->insertGetId(['lastname'=>'user','email1'=>'user@gmail.com']);
         $uid = DB::table('users')->insertGetId([
           'name' => 'user',
           'user_old' => 'admin',
@@ -81,11 +81,7 @@ class UsersTableSeeder extends Seeder
           'email_verified_at' => now(),
           'approved_at' => now(),
           'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-          'member_id' => $mid
         ]);
-
-        DB::table('memberships')->insert(['member_id'=>$mid,'role_id'=>Role::User,'membership_id'=>25,'membership_type'=>'App\Models\Club' ]);
-        DB::table('memberships')->insert(['member_id'=>$mid,'role_id'=>Role::User,'membership_id'=>26,'membership_type'=>'App\Models\Club' ]);
 
         Bouncer::assign('guest')->to(User::find($uid));
         Bouncer::allow(User::find($uid))->to('access', $region);

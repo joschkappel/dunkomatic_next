@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 use Carbon\Carbon;
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 use Datatables;
 
 class RegionController extends Controller
@@ -110,7 +110,7 @@ class RegionController extends Controller
             ->addIndexColumn()
             ->rawColumns(['regionadmin', 'code'])
             ->editColumn('code', function ($data) {
-                if ((Bouncer::can('manage', $data)) and (Bouncer::canAny(['create-regions', 'update-regions']))) {
+                if (Bouncer::canAny(['create-regions', 'update-regions'])) {
                     return '<a href="' . route('region.dashboard', ['language' => Auth::user()->locale, 'region' => $data->id]) . '">' . $data->code . '</a>';
                 } else {
                     return $data->code;

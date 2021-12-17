@@ -41,43 +41,21 @@ class UserObserver
             }
         }
 
-        if ($user->member()->exists()) {
-            Log::info('[OBSERVER] user updated - member exists', ['user-id' => $user->id]);
-            $member = $user->member;
-            $member->clubs()->wherePivot('role_id', Role::User)->detach();
-            $member->leagues()->wherePivot('role_id', Role::User)->detach();
-
-            $abilities = $user->getAbilities();
-
-            foreach ($abilities as $a) {
-                if ($a->entity_type == Club::class) {
-                    $member->clubs()->attach($a->entity_id, array('role_id' => Role::User));
-                } elseif ($a->entity_type == League::class) {
-                    $member->leagues()->attach($a->entity_id, array('role_id' => Role::User));
-                }
-            }
-        }
     }
 
     /**
-     * Handle the User "deleted" event.
+     * Handle the User "deleting event.
      *
      * @param  \App\Models\User  $user
      * @return void
      */
-    public function deleted(User $user)
+    public function deleting(User $user)
     {
-        if ($user->member->memberships()->isNotRole(Role::User)->count() == 0) {
+        if ( $user->member !== null ) {
             // delete user, member and memberships - he is "Only" a user
             $member = Member::find($user->member->id);
-            $member->memberships()->delete();
             $member->delete();
             Log::notice('[OBSERVER] user deleted - delete associated member', ['user-id' => $user->id, 'member-id'=>$member->id]);
-        } else {
-            // delete only the user and detach from member
-            $member = Member::find($user->member->id);
-            $member->memberships()->where('role_id', Role::User)->delete();
-            Log::notice('[OBSERVER] user deleted - delete user membership', ['user-id' => $user->id, 'member-id'=>$member->id]);
         }
     }
 

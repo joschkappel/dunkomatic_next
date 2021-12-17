@@ -43,7 +43,7 @@ Route::group([
 
         Route::post('user/{user_id}/approve', 'UserController@approve')->name('admin.user.approve')->middleware('can:update-users');
         Route::get('user/{user}/edit', 'UserController@edit')->name('admin.user.edit')->middleware('auth')->middleware('can:update-users');
-        Route::get('user/{user}/show', 'UserController@show')->name('admin.user.show')->middleware('can:update-users');
+        Route::get('user/{user}/show', 'UserController@show')->name('admin.user.show')->middleware('can:update-profile');
 
         Route::get('region', 'RegionController@index')->name('region.index')->middleware('can:view-regions');
         Route::get('region/create', 'RegionController@create')->name('region.create')->middleware('can:create-regions');
@@ -134,6 +134,7 @@ Route::group([
 
         Route::get('message/{message}/edit', 'MessageController@edit')->name('message.edit');
         Route::post('message/{message}/send', 'MessageController@send')->name('message.send');
+        Route::post('message/{message}/copy', 'MessageController@copy')->name('message.copy');
 
         Route::get('calendar/league/{league}', 'CalendarController@cal_league')->name('cal.league')->middleware('can:view-games');
         Route::get('calendar/club/{club}', 'CalendarController@cal_club')->name('cal.club')->middleware('can:view-games');

@@ -5,7 +5,7 @@ namespace Tests\Browser;
 use App\Models\Region;
 use App\Models\Club;
 
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 

@@ -6,7 +6,7 @@ use App\Models\Region;
 use App\Models\Member;
 use App\Models\User;
 
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 

@@ -7,7 +7,7 @@ use App\Models\Club;
 use App\Models\League;
 use App\Models\Region;
 use App\Enums\Role;
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 use Illuminate\Support\Facades\Log;
 
@@ -25,13 +25,13 @@ class MembershipObserver
             Log::info('[OBSERVER] membership created - user exists',['membership-id'=>$membership->id]);
             $u =  $membership->member->user;
             if ($membership->membership_type == Club::class ){
-                Bouncer::allow($u)->to('manage', Club::find($membership->membership_id));
+                Bouncer::allow($u)->to('access', Club::find($membership->membership_id));
                 Log::info('[OBSERVER] membership created - allow club access',['membership-id'=>$membership->id, 'club-id'=>$membership->membership_id ]);
             } elseif ($membership->membership_type == League::class ){
-                Bouncer::allow($u)->to('manage', League::find($membership->membership_id));
+                Bouncer::allow($u)->to('access', League::find($membership->membership_id));
                 Log::info('[OBSERVER] membership created - allow league access',['membership-id'=>$membership->id, 'league-id'=>$membership->membership_id ]);
             } elseif ($membership->membership_type == Region::class ){
-                Bouncer::allow($u)->to('manage', Region::find($membership->membership_id));
+                Bouncer::allow($u)->to('access', Region::find($membership->membership_id));
                 Log::info('[OBSERVER] membership created - allow region access',['membership-id'=>$membership->id, 'region-id'=>$membership->membership_id ]);
             } else {
                 Log::error('unknown membership type',['membership-id'=>$membership->id, 'type'=>$membership->membership_type]);
@@ -71,13 +71,13 @@ class MembershipObserver
             if ($membership->member->memberships->where('membership_id',$membership->membership_id)->count() == 0){
                 $u =  $membership->member->user;
                 if ($membership->membership_type == Club::class ){
-                    Bouncer::disallow($u)->to('manage', Club::find($membership->membership_id));
+                    Bouncer::disallow($u)->to('access', Club::find($membership->membership_id));
                     Log::info('[OBSERVER] membership created - disallow club access',['membership-id'=>$membership->id, 'club-id'=>$membership->membership_id ]);
                 } elseif ($membership->membership_type == League::class ){
-                    Bouncer::disallow($u)->to('manage', League::find($membership->membership_id));
+                    Bouncer::disallow($u)->to('access', League::find($membership->membership_id));
                     Log::info('[OBSERVER] membership created - disallow league access',['membership-id'=>$membership->id, 'leauge-id'=>$membership->membership_id ]);
                 } elseif ($membership->membership_type == Region::class ){
-                    Bouncer::disallow($u)->to('manage', Region::find($membership->membership_id));
+                    Bouncer::disallow($u)->to('access', Region::find($membership->membership_id));
                     Log::info('[OBSERVER] membership created - disallow region access',['membership-id'=>$membership->id, 'region-id'=>$membership->membership_id ]);
                 } else {
                     Log::error('unknown membership type',['membership-id'=>$membership->id, 'type'=>$membership->membership_type]);

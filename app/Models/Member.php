@@ -37,24 +37,6 @@ class Member extends Model
       'email2' => 'nullable|max:60|email:rfc,dns',
   ];
 
-  /**
-   * Get tcompletion status
-   *
-   * @return string
-   */
-  public function getIsCompleteAttribute()
-  {
-    if ( (($this->firstname == '') and ($this->lastname == '') )
-          or ($this->email1 == '')
-          or (($this->mobile == '') and ($this->phone == ''))
-          or (($this->zipcode == '') and ($this->city == '') and ($this->street==''))
-       ){
-      return false;
-    } else {
-      return true;
-    }
-  }
-
   public function getNameAttribute()
   {
     return $this->firstname.' '.$this->lastname;
@@ -100,15 +82,15 @@ class Member extends Model
   }
   public function getMemberOfClubsAttribute()
   {
-    return $this->clubs()->wherePivotIn('role_id', [Role::ClubLead, Role::RefereeLead, Role::GirlsLead, Role::JuniorsLead, Role::User])->pluck('shortname')->unique()->implode(', ');
+    return $this->clubs()->wherePivotIn('role_id', [Role::ClubLead, Role::RefereeLead, Role::GirlsLead, Role::JuniorsLead])->pluck('shortname')->unique()->implode(', ');
   }
   public function getMemberOfLeaguesAttribute()
   {
-    return $this->leagues()->wherePivotIn('role_id', [Role::LeagueLead, Role::User])->pluck('shortname')->unique()->implode(', ');
+    return $this->leagues()->wherePivotIn('role_id', [Role::LeagueLead])->pluck('shortname')->unique()->implode(', ');
   }
   public function getMemberOfRegionAttribute()
   {
-    return $this->region()->wherePivotIn('role_id', [Role::RegionLead, Role::RegionTeam, Role::User])->pluck('code')->unique()->implode('-');
+    return $this->region()->wherePivotIn('role_id', [Role::RegionLead, Role::RegionTeam])->pluck('code')->unique()->implode('-');
   }
   public function getIsUserAttribute()
   {
@@ -125,6 +107,7 @@ class Member extends Model
       // Return name and email address...
       return [$this->email1 => $this->firstname.' '.$this->lastname];
   }
+
 
 
 }

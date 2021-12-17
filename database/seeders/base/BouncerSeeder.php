@@ -2,7 +2,7 @@
 
 namespace Database\Seeders\base;
 
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 use Illuminate\Database\Seeder;
 
 class BouncerSeeder extends Seeder
@@ -55,6 +55,7 @@ class BouncerSeeder extends Seeder
         $create_users = Bouncer::ability()->firstOrCreate(['name' => 'create-users','title' => 'Create/Delete users', ]);
         $update_users = Bouncer::ability()->firstOrCreate(['name' => 'update-users','title' => 'Update users', ]);
         $view_users = Bouncer::ability()->firstOrCreate(['name' => 'view-users','title' => 'View users', ]);
+        $update_profile = Bouncer::ability()->firstOrCreate(['name' => 'update-profile','title' => 'Update user profile', ]);
         // auth
         $register = Bouncer::ability()->firstOrCreate(['name' => 'register','title' => 'guest registration', ]);
 
@@ -135,6 +136,7 @@ class BouncerSeeder extends Seeder
         Bouncer::allow($guest)->to($view_clubs);
         Bouncer::allow($guest)->to($view_games);
         Bouncer::allow($guest)->to($view_leagues);
+        Bouncer::allow($guest)->to($update_profile);
 
         $candidate = Bouncer::role()->firstOrCreate(['name' => 'candidate','title' => 'Candidate',]);
         // Bouncer::forbid($candidate)->everything();

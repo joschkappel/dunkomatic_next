@@ -6,7 +6,7 @@ use App\Models\Game;
 use App\Models\Region;
 
 use Datatables;
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 use Carbon\Carbon;
 
 use Illuminate\Http\Request;

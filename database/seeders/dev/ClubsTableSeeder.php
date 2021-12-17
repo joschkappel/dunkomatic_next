@@ -8,7 +8,7 @@ use Faker\Factory;
 use App\Models\Region;
 use App\Models\User;
 use App\Models\Club;
-use Bouncer;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class ClubsTableSeeder extends Seeder
 {
@@ -39,8 +39,9 @@ class ClubsTableSeeder extends Seeder
       }
 
       $uid = User::where('name','user')->first();
-      Bouncer::allow($uid)->to('manage', Club::find(25));
-      Bouncer::allow($uid)->to('manage', Club::find(26));
+      Bouncer::allow($uid)->to('access', Club::find(25));
+      Bouncer::allow($uid)->to('access', Club::find(26));
+      Bouncer::refresh();
 
 
     }
