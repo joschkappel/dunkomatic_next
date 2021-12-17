@@ -31,10 +31,7 @@
             <div class="col-sm-4">
                 <!-- card MEMBERS -->
                 <div class="card card-outline card-dark h-50">
-                    <div class="card-header align-content-between">
-                        <h4 class="card-title pt-2"><i class="fas fa-user-tie fa-lg"></i> @lang('role.member') <span
-                                class="badge badge-pill badge-info">{{ count($memberships) }}</span></h4>
-                    </div>
+                    <x-card-header title="{{__('role.member')}}" icon="fas fa-user-tie"  :count="count($memberships)" :showtools="false"/>
                     <!-- /.card-header -->
                     <div class="card-body overflow-auto">
                         @foreach ( $memberships as $ms )
@@ -80,10 +77,7 @@
             <div class="col-sm-4">
                 <!-- card TEAMS -->
                 <div class="card card-outline card-dark h-50">
-                    <div class="card-header">
-                        <h4 class="card-title mt-2"><i class="fas fa-users fa-lg"></i> {{ trans_choice('team.team', 2) }} <span
-                                class="badge badge-pill badge-info">{{ count($teams) }}</span></h4>
-                    </div>
+                    <x-card-header title="{{trans_choice('team.team', 2)}}" icon="fas fa-users"  :count="count($teams)" :showtools="false"/>
                     <!-- /.card-header -->
                     <div class="card-body overflow-auto">
                         @foreach ( $teams->sortBy('league.shortname') as $t )
@@ -104,10 +98,7 @@
             <div class="col-sm-4">
                 <!-- card GYMS -->
                 <div class="card card-outline card-dark h-50">
-                    <div class="card-header">
-                        <h4 class="card-title mt-2"><i class="fas fa-building fa-lg"></i> {{ trans_choice('gym.gym', 2) }} <span
-                                class="badge badge-pill badge-info">{{ count($gyms) }}</span></h4>
-                    </div>
+                    <x-card-header title="{{trans_choice('gym.gym', 2)}}" icon="fas fa-building"  :count="count($gyms)" :showtools="false"/>
                     <!-- /.card-header -->
                     <div class="card-body overflow-auto">
                         @foreach ( $gyms->sortBy('gym_no') as $g )

@@ -37,6 +37,11 @@
                         </a>
                     @endif
                     @endcan
+                    @if ($club->filecount > 0)
+                    <a href="{{ route('club_archive.get', ['club' => $club]) }}" class="small-box-footer bg-secondary">
+                        @lang('club.action.download') <i class="fas fa-file-download"></i>
+                    </a>
+                    @endif
                 </div>
             </div>
             <div class="col-sm ">
@@ -135,22 +140,13 @@
                 <!-- /.card -->
                 <!-- card CLUB TEAM ASSIGNMENT -->
                 <div class="card card-outline card-dark collapsed-card" id="teamsCard">
-                    <div class="card-header">
-                        <h4 class="card-title pt-2"><i class="fas fa-basketball-ball fa-lg"></i> {{ trans_choice('team.team', 2) }}
-                            <span class="badge badge-pill badge-info">{{ count($teams) }}</span>
-                        </h4>
-                        <div class="card-tools">
+                    <x-card-header title="{{trans_choice('team.team', 2)}}" icon="fas fa-basketball-ball"  :count="count($teams)">
                             @can('create-teams')
                             <a href="{{ route('club.team.create', ['language' => app()->getLocale(), 'club' => $club]) }}"
                             class="btn btn-success">
                             <i class="fas fa-plus-circle"></i> @lang('team.action.create')</a>
                             @endcan
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                                    class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                        <!-- /.card-tools -->
-                    </div>
+                    </x-card-header>
                     <!-- /.card-header -->
                     <div class="card-body ">
                         <div class="row  justify-content-center">
@@ -263,22 +259,14 @@
             <div class="col-sm-6">
                 <!-- card GYMS -->
                 <div class="card card-outline card-dark collapsed-card" id="gymsCard">
-                    <div class="card-header">
-                        <h4 class="card-title mt-2"><i class="fas fa-building fa-lg"></i> {{ trans_choice('gym.gym', 2) }} <span
-                                class="badge badge-pill badge-info">{{ count($gyms) }}</span></h4>
-                        <div class="card-tools">
+                    <x-card-header title="{{trans_choice('gym.gym', 2)}}" icon="fas fa-building"  :count="count($gyms)">
                             @can('create-gyms')
                             <a href="{{ route('club.gym.create', ['language' => app()->getLocale(), 'club' => $club]) }}"
-                                class="btn btn-success">
+                                class="btn btn-success btn-sm text-md">
                                 <i class="fas fa-plus-circle"></i> @lang('gym.action.create')
                             </a>
                             @endcan
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                                    class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                        <!-- /.card-tools -->
-                    </div>
+                    </x-card-header>
                     <!-- /.card-header -->
                     <div class="card-body">
                         <ul class="list-group list-group-flush">
@@ -312,16 +300,7 @@
                 <!-- /.card -->
                 <!-- card GAMES -->
                 <div class="card card-outline card-dark collapsed-card" id="gamesCard">
-                    <div class="card-header">
-                        <h4 class="card-title"><i class="fas fa-trophy fa-lg"></i> @lang('game.home') <span
-                                class="badge badge-pill badge-info">{{ count($games_home) }}</span></h4>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                                    class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                        <!-- /.card-tools -->
-                    </div>
+                    <x-card-header title="{{__('game.home')}}" icon="fas fa-trophy"  :count="count($games_home)" />
                     <!-- /.card-header -->
                     <div class="card-body">
                         <div class="list-group overflow-auto">

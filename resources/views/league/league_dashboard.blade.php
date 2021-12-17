@@ -37,6 +37,11 @@
                         </a>
                     @endif
                     @endcan
+                    @if ($league->filecount > 0)
+                    <a href="{{ route('league_archive.get', ['league' => $league]) }}" class="small-box-footer bg-secondary">
+                        @lang('club.action.download') <i class="fas fa-file-download"></i>
+                    </a>
+                    @endif
                 </div>
             </div>
             <div class="col-sm ">
@@ -112,17 +117,7 @@
             <div class="col-md-6 pd-2">
                 <!-- card CLUB TEAM ASSIGNMENT -->
                 <div class="card card-outline card-dark " id="clubsCard">
-                    <div class="card-header">
-                        <h4 class="card-title pt-2"><i class="fas fa-basketball-ball fa-lg"></i> {{ trans_choice('team.team', 2) }}
-                            <span class="badge badge-pill badge-info">{{ $league->state_count['size'] }}</span>
-                        </h4>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                                    class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                        <!-- /.card-tools -->
-                    </div>
+                    <x-card-header title="{{trans_choice('team.team', 2)}}" icon="fas fa-basketball-ball"  :count="$league->state_count['size']" />
                     <!-- /.card-header -->
                     <div class="card-body">
                         <div class="row d-flex flex-row justify-content-between">
@@ -238,16 +233,7 @@
                 <!-- /.card -->
                 <!-- card GAMES -->
                 <div class="card card-outline card-dark collapsed-card" id="gamesCard">
-                    <div class="card-header">
-                        <h4 class="card-title"><i class="fas fa-trophy fa-lg"></i> {{ trans_choice('game.game', 2) }} <span
-                                class="badge badge-pill badge-info">{{ count($games) }}</span></h4>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                                    class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                        <!-- /.card-tools -->
-                    </div>
+                    <x-card-header title="{{trans_choice('game.game', 2)}}" icon="fas fa-trophy"  :count="count($games)" />
                     <!-- /.card-header -->
                     <div class="card-body">
                         <div class="list-group overflow-auto">
