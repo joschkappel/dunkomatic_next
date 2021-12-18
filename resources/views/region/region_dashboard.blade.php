@@ -92,16 +92,7 @@
         <div class="col-sm-6 pd-2">
                 <!-- card REFEREES -->
                 <div class="card card-outline card-dark collapsed-card" id="refereeCard">
-                    <div class="card-header">
-                        <h4 class="card-title mt-2"><i class="fas fa-stopwatch fa-lg"></i> {{ __('game.menu.referees') }} <span
-                                class="badge badge-pill badge-primary">{{ $games_noref_count }}</span></h4>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                                    class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                        <!-- /.card-tools -->
-                    </div>
+                    <x-card-header title="{{ __('game.menu.referees')}}" icon="fas fa-stopwatch"  :count="$games_noref_count" />
                     <!-- /.card-header -->
                     <div class="card-body">
 
@@ -127,15 +118,8 @@
     <div class="row">
         <div class="col-sm-12 pd-2">
             <!-- card CLUB ANALYSIS -->
-            <div class="card card-outline card-info ">
-                <div class="card-header">
-                <h4 class="card-title"><i class="fas fa-chart-line"></i> @lang('region.chart.clubstats')</h4>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                    </button>
-                </div>
-                <!-- /.card-tools -->
-                </div>
+            <div class="card card-outline card-info collapsed-card">
+                <x-card-header title="{{ __('region.chart.clubstats')}}" icon="fas fa-chart-line"  count="2" />
                 <!-- /.card-header -->
                 <div class="card-body">
                 <div class="row m-5">
@@ -154,20 +138,12 @@
             </div>
             <!-- /.card -->
         </div>
-        </div>
     </div>
     <div class="row">
         <div class="col-sm-12 pd-2">
             <!-- card LEAGUE ANALYSIS -->
             <div class="card card-outline card-info collapsed-card">
-                <div class="card-header">
-                    <h4 class="card-title"><i class="fas fa-chart-line"></i> @lang('region.chart.leaguestats') </h4>
-                    <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
-                    </button>
-                    </div>
-                    <!-- /.card-tools -->
-                </div>
+                <x-card-header title="{{ __('region.chart.leaguestats')}}" icon="fas fa-chart-line"  count="2" />
                 <!-- /.card-header -->
                 <div class="card-body">
                     <div class="row m-5">

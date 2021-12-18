@@ -11,6 +11,7 @@ return [
   'action.edit-homegame' => 'Edit Home Game Dates',
   'action.chart-homegame' => 'Home Games Overview',
   'action.import-homegame' => 'Import Home Game Dates',
+  'action.download' => 'Download Reports',
   'action.chosefile' => 'Chose a file to upload',
   'confirm.delete' => 'Do you really want to delete this club ?',
   'info.delete' => ':CLUB and its :noteam teams, :nomember members and :nogym gyms',

@@ -1,21 +1,13 @@
 <div>
     <div class="card card-outline card-dark collapsed-card" id="membersCard">
-        <div class="card-header align-content-between">
-            <h4 class="card-title pt-2"><i class="fas fa-user-tie fa-lg"></i> @lang('role.member') <span
-                    class="badge badge-pill badge-primary">{{ count($members) }}</span></h4>
-            <div class="card-tools">
+        <x-card-header title="{{__('role.member')}}" icon="fas fa-user-tie"  :count="count($members)">
                 @can('create-members')
                 <a href="{{ route('membership.'.$entityType.'.create', ['language' => app()->getLocale(), $entityType => $entity])}}"
                     class="btn btn-success">
                     <i class="fas fa-plus-circle"></i> @lang( $entityType.'.member.action.create')
                 </a>
                 @endcan
-                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                        class="fas fa-plus"></i>
-                </button>
-            </div>
-            <!-- /.card-tools -->
-        </div>
+        </x-card-header>
         <!-- /.card-header -->
         <div class="card-body">
             <ul class="list-group list-group-flush">
