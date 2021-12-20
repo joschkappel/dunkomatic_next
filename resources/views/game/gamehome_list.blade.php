@@ -52,8 +52,10 @@ $(function() {
           },
           { extend: 'print',
             exportOptions: { orthogonal: 'export', columns: ':visible' },
-          },
-          'import'
+          }
+          @if ( now()->isBefore( $club->region->close_scheduling_at ?? now()->addMinute(1) ) )
+            ,'import'
+          @endif
         ],
         order: [[ 2,'asc'],[ 3,'asc'], [ 4,'asc']],
         ajax: '{{ route('club.game.list_home',['language' => app()->getLocale(), 'club'=>$club]) }}',

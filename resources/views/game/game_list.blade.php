@@ -35,7 +35,7 @@
                  language: { "url": "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}" },
                  ordering: true,
                 stateSave: true,
-                @if (($region->close_scheduling_at <= now() ) and ($region->close_referees_at > now() ))
+                @if ( now()->between( $region->close_scheduling_at ?? now()->subMinutes(1), $region->close_referees_at ?? now()->addMinutes(1) ) )
                 dom: 'Bflrtip',
                 buttons: [
                     { extend: 'excelHtml5',

@@ -33,11 +33,14 @@ class Region extends Model
         'close_selection_at', 'close_scheduling_at', 'close_referees_at'
     ];
 
-    protected $dates = ['close_assignment_at', 'close_registration_at', 'close_selection_at', 'close_scheduling_at', 'close_referees_at'];
-
     protected $casts = [
         'fmt_league_reports' => ReportFileType::class,
         'fmt_club_reports' => ReportFileType::class,
+        'close_assignment_at' => 'date',
+        'close_registration_at' => 'date',
+        'close_selection_at' => 'date',
+        'close_scheduling_at' => 'date',
+        'close_referees_at' => 'date'
     ];
 
     public function clubs()
