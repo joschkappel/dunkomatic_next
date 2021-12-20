@@ -194,7 +194,7 @@ class AppServiceProvider extends ServiceProvider
                     if (Auth::user()->can('update-regions')){
                         $smenu['route']  = ['region.dashboard', ['language' => app()->getLocale(), 'region' => $r]];
                     } else {
-                        $smenu['route']  = ['region.dashboard', ['language' => app()->getLocale(), 'region' => $r]];
+                        $smenu['route']  = ['region.briefing', ['language' => app()->getLocale(), 'region' => $r]];
                     }
                     $smenu['icon_color'] = 'danger';
                     $smenu['icon'] =  'fas fa-list';

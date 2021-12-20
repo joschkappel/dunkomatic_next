@@ -51,6 +51,7 @@ Route::group([
         Route::get('region/{region}/edit', 'RegionController@edit')->name('region.edit')->middleware('can:update-regions');
         Route::get('regions/dt', 'RegionController@datatable')->name('region.list.dt')->middleware('can:view-regions');
         Route::get('region/{region}/dashboard', 'RegionController@dashboard')->name('region.dashboard');
+        Route::get('region/{region}/briefing', 'RegionController@briefing')->name('region.briefing')->middleware('can:view-regions');
         Route::get('region/{region}/game/upload', 'RegionGameController@upload')->name('region.upload.game');
         Route::post('region/{region}/game/ref/import', 'RegionGameController@import_referees')->name('region.import.refgame');
 
