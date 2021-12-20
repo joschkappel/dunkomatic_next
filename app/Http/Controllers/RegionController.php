@@ -67,6 +67,32 @@ class RegionController extends Controller
     }
 
 
+    /**
+     * Display a brief overview
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function briefing($language, Region $region)
+    {
+        $data['region'] = $region;
+
+
+        $data['memberships'] = $region->memberships()->with('member')->get();
+        $c_members = collect();
+        foreach ($region->clubs->sortBy('shortname') as $c) {
+            $c_members = $c_members->concat( $c->members()->wherePivot('role_id', Role::ClubLead())->get() );
+        }
+        $data['clubs'] = $c_members;
+        $l_members = collect();
+        foreach ($region->leagues->sortBy('shortname') as $l) {
+            $l_members = $l_members->concat( $l->members()->wherePivot('role_id', Role::LeagueLead())->get() );
+        }
+        $data['leagues'] = $l_members;
+
+        Log::info('showing region briefing',['region-id'=>$region->id]);
+        return view('region/region_briefing', $data);
+    }
+
     public function create()
     {
         Log::info('create new region');

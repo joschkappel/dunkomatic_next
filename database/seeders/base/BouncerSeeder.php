@@ -97,6 +97,7 @@ class BouncerSeeder extends Seeder
         Bouncer::allow($regionadmin)->to($view_users);
 
         $clubadmin = Bouncer::role()->firstOrCreate(['name' => 'clubadmin','title' => 'Manages Clubs',]);
+        Bouncer::allow($clubadmin)->to($view_regions);
         Bouncer::allow($clubadmin)->to($update_clubs);
         Bouncer::allow($clubadmin)->to($view_clubs);
 
@@ -119,6 +120,7 @@ class BouncerSeeder extends Seeder
         Bouncer::allow($clubadmin)->to($view_members);
 
         $leagueadmin = Bouncer::role()->firstOrCreate(['name' => 'leagueadmin','title' => 'Manages Leagues',]);
+        Bouncer::allow($leagueadmin)->to($view_regions);
         Bouncer::allow($leagueadmin)->to($update_leagues);
         Bouncer::allow($leagueadmin)->to($view_leagues);
 
@@ -133,6 +135,7 @@ class BouncerSeeder extends Seeder
 
         $guest = Bouncer::role()->firstOrCreate(['name' => 'guest','title' => 'Guest',]);
         //Bouncer::forbid($guest)->everything();
+        Bouncer::allow($guest)->to($view_regions);
         Bouncer::allow($guest)->to($view_clubs);
         Bouncer::allow($guest)->to($view_games);
         Bouncer::allow($guest)->to($view_leagues);
