@@ -6,11 +6,11 @@
             <th>@lang('game.game_date')</th>
             <th></th>
             @foreach ($schedules as $s )
-                @if ($s->region->is_base_level)
-                    <th class="bg-orange">{{$s->name}}</th>
-                @else
+                {{-- @if ($s->region->is_base_level) --}}
+                    <th class="bg-{{ $s->color }}">{{$s->name}}</th>
+              {{--   @else
                     <th class="bg-warning">{{$s->name}}</th>
-                @endif
+                @endif --}}
             @endforeach
 </x-card-list>
 @endsection

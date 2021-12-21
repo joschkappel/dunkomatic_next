@@ -56,24 +56,6 @@
             @endif
         </div>
     </div>
-    <div class="form-group row ">
-        <label for="eventcolor" class="col-sm-4 col-form-label">@lang('schedule.color')</label>
-        <div class="col-sm-6">
-            <div id="cp2" class="input-group">
-                <input type="text"
-                    class="form-control input-lg @error('eventcolor') is-invalid @enderror"
-                    id="eventcolor" name="eventcolor" placeholder="@lang('schedule.color')"
-                    value="{{ old('eventcolor') ? old('eventcolor') : $schedule->eventcolor }}">
-                <span class="input-group-append">
-                    <span class="input-group-text colorpicker-input-addon"><i></i></span>
-                </span>
-            </div>
-            @error('eventcolor')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-            <!-- /.input group -->
-        </div>
-    </div>
 </x-card-slot>
 @endsection
 
@@ -107,7 +89,6 @@
                 },
             });
 
-            $('#cp2').colorpicker();
             $(".js-sizes").select2({
                 placeholder: "@lang('schedule.action.size.select')...",
                 width: '100%',

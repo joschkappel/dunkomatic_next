@@ -63,12 +63,11 @@ class ScheduleControllerTest extends TestCase
       $response = $this->authenticated( )
                         ->post(route('schedule.store'), [
                           'name' => 'testschedule',
-                          'region_id' => $this->region->id,
-//                          'eventcolor' => $this->faker->hexColor(),
+                          'region_id' => $this->region->id
                       ]);
       $response
           ->assertStatus(302)
-          ->assertSessionHasErrors(['eventcolor','league_size_id']);
+          ->assertSessionHasErrors(['league_size_id']);
 
       $this->assertDatabaseMissing('schedules', ['name' => 'testschedule']);
     }
@@ -87,7 +86,6 @@ class ScheduleControllerTest extends TestCase
                         ->post(route('schedule.store'), [
                           'name' => 'testschedule',
                           'region_id' => $this->region->id,
-                          'eventcolor' => $this->faker->hexColor(),
                           'league_size_id' => 2,
                           'iterations' => 1
                       ]);
@@ -135,8 +133,7 @@ class ScheduleControllerTest extends TestCase
                           'name' => 'testschedule2'
                         ]);
 
-      $response->assertStatus(302)
-               ->assertSessionHasErrors(['eventcolor']);;
+      $response->assertStatus(302);
       //$response->dumpSession();
       $this->assertDatabaseMissing('schedules', ['name'=>'testschedule2']);
     }
@@ -156,7 +153,6 @@ class ScheduleControllerTest extends TestCase
       $response = $this->authenticated( )
                         ->put(route('schedule.update',['schedule'=>$schedule]),[
                           'name' => 'testschedule2',
-                          'eventcolor' => $schedule->eventcolor,
                           'league_size_id' => 2,
                           'iterations' => 1
                         ]);

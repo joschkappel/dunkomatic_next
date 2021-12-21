@@ -28,8 +28,7 @@ class SchedulesTableSeeder extends Seeder
           'region_id' => $r->id,
           'league_size_id' => LeagueSize::UNDEFINED,
           'custom_events' => true,
-          'created_at' => now(),
-          'eventcolor' => 'red'
+          'created_at' => now()
         ]);
       }
 

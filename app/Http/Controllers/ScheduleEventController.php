@@ -163,7 +163,7 @@ class ScheduleEventController extends Controller
             } else {
                 $title = '( ' . $event->game_day . ' ) (' . $event->schedule->region->code . ')  ' . $event->schedule->name;
             }
-            $eventlist[] = array("title" => $title, "start" => $start, "end" => $end, "allDay" => true, "color" => $event->schedule->eventcolor);
+            $eventlist[] = array("title" => $title, "start" => $start, "end" => $end, "allDay" => true, "color" => $event->schedule->color ?? 'green');
         }
         Log::info('preparing event list.', ['event count' => count($eventlist)]);
 
