@@ -76,8 +76,6 @@ return [
         '102' => 'deep orange',
         '112' => 'brown',
         '122' => 'gray',
-        '0' => 'white',
-        '1' => 'white',
     ),
 
     'report_folder_leagues' => 'runden',

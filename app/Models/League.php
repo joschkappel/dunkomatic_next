@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\LeagueAgeType;
+use App\Enums\LeagueColor;
 use App\Enums\LeagueGenderType;
 use App\Models\Game;
 use App\Models\Region;
@@ -14,7 +15,6 @@ use App\Enums\LeagueState;
 use App\Models\LeagueSize;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
 use OwenIt\Auditing\Contracts\Auditable;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -54,6 +54,7 @@ class League extends Model implements Auditable
         'state' => LeagueState::class,
         'age_type' => LeagueAgeType::class,
         'gender_type' => LeagueGenderType::class,
+        'above_region' => 'boolean',
     ];
 
 
@@ -136,6 +137,11 @@ class League extends Model implements Auditable
     {
         return $this->members()->wherePivot('role_id', $role_id)->exists();
     }
+    public function getColorAttribute()
+    {
+        // $league_colors[$this->above_region . $this->gender_type . $this->a
+        return LeagueColor::coerce([ $this->above_region, $this->gender_type->value, $this->age_type->value  ])->key;
+    }
     public function getSizeAttribute()
     {
         return isset($this->league_size->size) ? $this->league_size->size : null;
@@ -181,14 +187,5 @@ class League extends Model implements Auditable
             //return (strpos($value,$llist[0]) !== false);
         });
         return $reports;
-    }
-    public function getColorAttribute()
-    {
-        $league_colors = config('dunkomatic.league_colors');
-        if (isset($league_colors[$this->above_region . $this->gender_type . $this->age_type])) {
-            return $league_colors[$this->above_region . $this->gender_type . $this->age_type];
-        } else {
-            return $league_colors[$this->above_region];
-        }
     }
 }

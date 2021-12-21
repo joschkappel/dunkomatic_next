@@ -15,24 +15,6 @@
     <input type="hidden" class="form-control" readonly id="region_id" name="region_id"
         value="{{ session('cur_region')->id }}">
     <div class="form-group row ">
-        <label for="eventcolor" class="col-sm-4 col-form-label">@lang('schedule.color')</label>
-        <div class="col-sm-6">
-            <div id="cp2" class="input-group">
-                <input type="text"
-                    class="form-control input-lg @error('eventcolor') is-invalid @enderror"
-                    id="eventcolor" name="eventcolor" placeholder="@lang('schedule.color')"
-                    value="{{ old('eventcolor') ?? '#DDEE00' }}">
-                <span class="input-group-append">
-                    <span class="input-group-text colorpicker-input-addon"><i></i></span>
-                </span>
-            </div>
-            @error('eventcolor')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-            <!-- /.input group -->
-        </div>
-    </div>
-    <div class="form-group row ">
         <div class="col-sm-4">
         </div>
         <div class="col-sm-6">
@@ -95,7 +77,6 @@
 
 
 
-            $('#cp2').colorpicker();
             $(".js-selSize").select2({
                 placeholder: "@lang('schedule.action.size.select')...",
                 width: '100%',

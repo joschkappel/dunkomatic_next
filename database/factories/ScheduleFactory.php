@@ -26,8 +26,7 @@ class ScheduleFactory extends Factory
         return [
             'name' => $this->faker->words(2,true),
             'league_size_id' => 2,
-            'iterations' => 1, 
-            'eventcolor' => $this->faker->hexColor(),
+            'iterations' => 1,
             'region_id' => Region::where('code','HBVDA')->first()->id
         ];
     }

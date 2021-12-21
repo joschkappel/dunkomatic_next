@@ -4,7 +4,6 @@
 <x-card-list cardTitle="{{ __('schedule.title.list', ['region'=>$region->name ]) }}" cardNewAction="{{ route('schedule.create', ['language'=>app()->getLocale(),'region'=>$region]) }}" cardNewTitle="{{ __('schedule.action.create') }}" cardNewAbility="create-schedules">
     <th>Id</th>
     <th>Name</th>
-    <th>Eventcolor</th>
     <th>@lang('schedule.color')</th>
     <th>@lang('schedule.size')</th>
     <th>@lang('schedule.iterations')</th>
@@ -41,11 +40,6 @@
                     {
                         data: 'name',
                         name: 'name'
-                    },
-                    {
-                        data: 'eventcolor',
-                        name: 'eventcolor',
-                        visible: false
                     },
                     {
                         data: 'color',

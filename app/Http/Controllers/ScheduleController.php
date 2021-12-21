@@ -222,7 +222,7 @@ class ScheduleController extends Controller
                 }
             })
             ->addColumn('color', function ($data) {
-                return '<spawn style="background-color:' . $data->eventcolor . '">' . $data->eventcolor . '</div>';
+                return '<spawn style="background-color:' . $data->color . '">' . $data->color . '</div>';
             })
             ->addColumn('used_by_leagues', function ($data) {
                 return $data->leagues->pluck('shortname')->implode(', ');
