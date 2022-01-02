@@ -36,5 +36,7 @@ return [
   '5.short' => 'Girls',
   '6.short' => 'Youth',
   '7.short' => 'Region',
-  'hasuser' => 'THis member has got a user account'
+  'hasuser' => 'THis member has got a user account',
+  'address.download' => 'Download',
+  'address.title.list' => ':role contact details for :region'
 ];

@@ -17,6 +17,7 @@ mix.js('resources/js/app.js', 'public/js')
         'node_modules/fullcalendar/main.min.css'
         ], 'public/css/vendor.css')
     .combine([
+        'node_modules/jszip/dist/jszip.min.js',
         'node_modules/fullcalendar/main.min.js',
         'node_modules/fullcalendar/locales-all.min.js',
         'node_modules/summernote/dist/summernote-bs4.min.js',

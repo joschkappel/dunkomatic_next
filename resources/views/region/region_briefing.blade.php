@@ -46,6 +46,9 @@
                         @endforeach
                     </div>
                     <!-- /.card-body -->
+                    <div class="card-footer">
+                        <a class="btn btn-primary" href="{{ route('address.index_byrole', ['language'=>app()->getLocale(), 'region'=>$region, 'role'=> \App\Enums\Role::RegionLead ]) }}"><i class="fas fa-copy"></i> {{__('role.address.download')}}</a>
+                    </div>
                 </div>
             </div>
             <div class="col-sm-4">
@@ -66,6 +69,9 @@
                         @endforeach
                     </div>
                     <!-- /.card-body -->
+                    <div class="card-footer">
+                        <a class="btn btn-primary" href="{{ route('address.index_byrole', ['language'=>app()->getLocale(), 'region'=>$region, 'role'=> \App\Enums\Role::ClubLead ]) }}"><i class="fas fa-copy"></i> {{__('role.address.download')}}</a>
+                    </div>
                 </div>
                 <!-- /.card -->
             </div>
@@ -80,13 +86,16 @@
                                 <span class="info-box-icon bg-primary text-md p-2">{{ $l->leagues->first()->shortname }}</span>
                                 <div class="info-box-content">
                                     <span class="info-box-number">{{ $l->name }}</span>
-                                    <span class="info-box-text"><i class="fas fa-mobile"></i><a href="tel:{{ $l->mobile }}" target="_blank"> {{ $l->mobile}}</a> <i class="fas fa-phone"></i> <a href="tel:{{ $c->phone }}" target="_blank"> {{ $l->phone}}</a></span>
+                                    <span class="info-box-text"><i class="fas fa-mobile"></i><a href="tel:{{ $l->mobile }}" target="_blank"> {{ $l->mobile}}</a> <i class="fas fa-phone"></i> <a href="tel:{{ $l->phone }}" target="_blank"> {{ $l->phone}}</a></span>
                                     <span class="info-box-text"><i class="fas fa-at"></i><a href="mailto:{{ $l->email1 }}" target="_blank"> {{ $l->email1 }}</a></span>
                                 </div>
                             </div>
                         @endforeach
                     </div>
                     <!-- /.card-body -->
+                    <div class="card-footer">
+                        <a class="btn btn-primary" href="{{ route('address.index_byrole', ['language'=>app()->getLocale(), 'region'=>$region, 'role'=> \App\Enums\Role::LeagueLead ]) }}"><i class="fas fa-copy"></i> {{__('role.address.download')}}</a>
+                    </div>
                 </div>
                 <!-- /.card -->
             </div>
