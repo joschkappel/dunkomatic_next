@@ -14,14 +14,6 @@ return [
   'layout_fixed_navbar' => null,
   'layout_fixed_footer' => true,
 
-  'classes_auth_card' => 'card-outline card-info',
-  'classes_auth_header' => '',
-  'classes_auth_body' => '',
-  'classes_auth_footer' => '',
-  'classes_auth_icon' => '',
-  'classes_auth_btn' => 'btn-flat btn-primary',
-
-
   'classes_body' => '',
   'classes_brand' => '',
   'classes_brand_text' => '',
@@ -34,15 +26,17 @@ return [
   'classes_topnav_nav' => 'navbar-expand-md',
   'classes_topnav_container' => 'container',
 
-  'sidebar_mini' => true,
+  'sidebar_mini' => 'md',
   'sidebar_collapse' => true,
-  'sidebar_collapse_auto_size' => true,
+  'sidebar_collapse_auto_size' => false,
   'sidebar_collapse_remember' => true,
   'sidebar_collapse_remember_no_transition' => true,
   'sidebar_scrollbar_theme' => 'os-theme-light',
-  'sidebar_scrollbar_auto_hide' => 'l',
+  'sidebar_scrollbar_auto_hide' => 'm',
   'sidebar_nav_accordion' => true,
   'sidebar_nav_animation_speed' => 300,
+
+  // https://github.com/jeroennoten/Laravel-AdminLTE/wiki/Layout-and-Styling-Configuration
 
   'right_sidebar' => false,
   'right_sidebar_icon' => 'fas fa-cogs',

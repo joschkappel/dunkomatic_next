@@ -31,7 +31,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-6 align-self-center">
+        <div class="col-md-6 align-self-center">
             <div class="login-box center">
                 <div class="login-logo">
                     <a href="{{ $dashboard_url }}">{!! config('menu.logo') !!}</a>
