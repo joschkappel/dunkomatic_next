@@ -97,6 +97,9 @@ Route::group([
             Route::get('member', 'MemberController@index')->name('member.index')->middleware('can:view-members');
             Route::get('game', 'GameController@index')->name('game.index')->middleware('can:view-games');
             Route::get('game/datatable', 'GameController@datatable')->name('game.datatable')->middleware('can:view-games');
+
+            Route::get('address/role/{role}', 'AddressController@index_byrole')->name('address.index_byrole')->middleware('can:view-members');
+            Route::get('address/role/{role}/dt', 'AddressController@index_byrole_dt')->name('address.index_byrole.dt')->middleware('can:view-members');
         });
 
         Route::resource('club.gym', 'ClubGymController')->shallow()->except('store', 'update', 'destroy', 'show');
