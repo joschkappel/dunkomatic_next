@@ -1,7 +1,7 @@
 @extends('layouts.page')
 
 @section('content')
-<x-card-form cardTitle="{{ __('region.title.create') }}" formAction="{{ route('region.store') }}">
+<x-card-form colWidth=10 cardTitle="{{ __('region.title.create') }}" formAction="{{ route('region.store') }}">
     <div class="form-group row">
         <label for="code" class="col-sm-6 col-form-label">@lang('region.code')</label>
         <div class="col-sm-4">

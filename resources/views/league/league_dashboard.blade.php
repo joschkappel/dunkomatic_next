@@ -121,9 +121,9 @@
                     <!-- /.card-header -->
                     <div class="card-body">
                         <div class="row d-flex flex-row justify-content-between">
-                            <div class="col-sm-6 d-flex flex-column justify-content-sm-center">
+                            <div class="col-md-6 d-flex flex-column justify-content-center">
                                 <h5 class="sub-header">@lang('league.action.close.assignment')</h5>
-                                <div class="table-responsive-xs">
+                                <div class="table-responsive">
                                     <table class="table table-hover table-sm w-auto" id="table1">
                                         <thead class="thead-light">
                                             <tr>
@@ -167,12 +167,12 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="col-xs-1 border rounded border-secondary bg-secondary d-flex flex-row justify-content-sm-center">
+                            <div class="col-xs-1 border rounded border-secondary bg-secondary d-flex flex-row justify-content-center">
                               <span><i class="px-1"></i></span>
                             </div>
-                            <div class="col-sm-3 d-flex flex-column justify-content-sm-center">
+                            <div class="col-md-3 d-flex flex-column justify-content-center">
                                 <h5 class="sub-header">@lang('league.action.close.registration')</h5>
-                                <div class="table-responsive-xs">
+                                <div class="table-responsive">
                                     <table class="table table-hover table-sm w-auto" id="table2">
                                         <thead class="thead-light">
                                             <tr>

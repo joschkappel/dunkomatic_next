@@ -25,7 +25,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-6 align-self-center">
+        <div class="col-md-6 align-self-center">
 
             <div class="register-box center">
                 <div class="register-logo">

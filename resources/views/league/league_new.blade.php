@@ -1,12 +1,12 @@
 @extends('layouts.page')
 
 @section('content')
-<x-card-form cardTitle="{{ __('league.title.new', ['region'=>$region->code ]) }}" formAction="{{ route('league.store', ['region'=>$region]) }}">
+<x-card-form colWidth=6 cardTitle="{{ __('league.title.new', ['region'=>$region->code ]) }}" formAction="{{ route('league.store', ['region'=>$region]) }}">
     <input type="hidden" class="form-control id=" region_id" name="region_id"
         value="{{ $region->id }}">
     <div class="form-group row">
-        <label for="shortname" class="col-sm-4 col-form-label">@lang('league.shortname')</label>
-        <div class="col-sm-6">
+        <label for="shortname" class="col-md-4 col-form-label">@lang('league.shortname')</label>
+        <div class="col-md-6">
             <input type="text" class="form-control @error('shortname') is-invalid @enderror"
                 id="shortname" name="shortname" placeholder="@lang('league.shortname')"
                 value="{{ old('shortname') }}">
@@ -16,8 +16,8 @@
         </div>
     </div>
     <div class="form-group row">
-        <label for="name" class="col-sm-4 col-form-label">@lang('league.name')</label>
-        <div class="col-sm-6">
+        <label for="name" class="col-md-4 col-form-label">@lang('league.name')</label>
+        <div class="col-md-6">
             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
                 name="name" placeholder="@lang('league.name')" value="{{ old('name') }}">
             @error('name')
@@ -26,8 +26,8 @@
         </div>
     </div>
     <div class="form-group row ">
-        <label for='selSize' class="col-sm-4 col-form-label">@lang('schedule.size')</label>
-        <div class="col-sm-6">
+        <label for='selSize' class="col-md-4 col-form-label">@lang('schedule.size')</label>
+        <div class="col-md-6">
             <div class="input-group mb-3">
                 <select class="js-selSize js-states form-control select2 @error('league_size_id') is-invalid @enderror" id="selSize" name="league_size_id">
                     @if (old('league_size_id')!== null)
@@ -42,8 +42,8 @@
     </div>
     <div class="form-group row">
         <label for="selSchedule"
-            class="col-sm-4 col-form-label">{{ trans_choice('schedule.schedule', 1) }}</label>
-        <div class="col-sm-6">
+            class="col-md-4 col-form-label">{{ trans_choice('schedule.schedule', 1) }}</label>
+        <div class="col-md-6">
             <div class="input-group mb-3">
                 <select class="js-sel-schedule js-states form-control select2 @error('schedule_id') is-invalid @enderror" id="selSchedule" name="schedule_id">
                     @if (old('schedule_id')!== null)
@@ -57,8 +57,8 @@
         </div>
     </div>
     <div class="form-group row">
-        <label for="selAgeType" class="col-sm-4 col-form-label">@lang('league.agetype')</label>
-        <div class="col-sm-6">
+        <label for="selAgeType" class="col-md-4 col-form-label">@lang('league.agetype')</label>
+        <div class="col-md-6">
             <div class="input-group mb-3">
                 <select class='js-placeholder-single js-states form-control select2 @error('
                     age_type') is-invalid @enderror' id='selAgeType' name='age_type'>
@@ -74,8 +74,8 @@
     </div>
     <div class="form-group row">
         <label for="selGenderType"
-            class="col-sm-4 col-form-label">@lang('league.gendertype')</label>
-        <div class="col-sm-6">
+            class="col-md-4 col-form-label">@lang('league.gendertype')</label>
+        <div class="col-md-6">
             <div class="input-group mb-3">
                 <select class='js-placeholder-single js-states form-control select2 @error('
                     gender_type') is-invalid @enderror' id='selGenderType' name='gender_type'>
@@ -90,9 +90,9 @@
         </div>
     </div>
     <div class="form-group row ">
-        <div class="col-sm-4">
+        <div class="col-md-4">
         </div>
-        <div class="col-sm-6">
+        <div class="col-md-6">
             <div class="form-group  clearfix">
                 <div class="icheck-info d-inline">
                     <input type="checkbox" id="above_region" name="above_region">

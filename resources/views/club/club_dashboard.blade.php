@@ -134,7 +134,7 @@
 @section('content')
     <div class="container-fluid ">
         <div class="row">
-            <div class="col-md-6 pd-2">
+            <div class="col-sm-6 pd-2">
                 <!-- card MEMBERS -->
                 <x-member-card :members="$members" :entity="$club" entity-class="App\Models\Club" />
                 <!-- /.card -->
@@ -149,9 +149,9 @@
                     </x-card-header>
                     <!-- /.card-header -->
                     <div class="card-body ">
-                        <div class="row  justify-content-center">
-                            <div class="col-md-8 ">
-                                <div class="table-responsive-md">
+                        <div class="row  justify-content-left">
+                            <div class="col-12 ">
+                                <div class="table-responsive">
                                     <table class="table table-hover table-sm " id="table2">
                                         <thead class="thead-light">
                                             <tr>
