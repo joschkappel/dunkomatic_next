@@ -1,7 +1,7 @@
 @extends('layouts.page')
 
 @section('content')
-<x-card-form cardTitle="{{ __('region.title.edit', ['region' => session('cur_region')->name ]) }}" formAction="{{ route('region.update_details', ['region' => $region]) }}" formMethod="PUT">
+<x-card-form colWidth=10 cardTitle="{{ __('region.title.edit', ['region' => session('cur_region')->name ]) }}" formAction="{{ route('region.update_details', ['region' => $region]) }}" formMethod="PUT">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
             <a class="nav-link active" id="main-tab" data-toggle="tab" href="#main" role="tab"

@@ -7,7 +7,7 @@
                                                        'user_name' => $team->audits()->latest()->first()->user->name ?? config('app.name')] ) :
                     __('audit.unavailable') ;
 @endphp
-<x-card-form cardChangeNote="{{$team_lastmod}}"  cardTitle="{{ __('team.title.modify', ['team'=> $team->club['shortname'].' '.$team->team_no ]) }}" formAction="{{ route('team.update',['team' => $team]) }}" formMethod="PUT" >
+<x-card-form colWidth=8 cardChangeNote="{{$team_lastmod}}"  cardTitle="{{ __('team.title.modify', ['team'=> $team->club['shortname'].' '.$team->team_no ]) }}" formAction="{{ route('team.update',['team' => $team]) }}" formMethod="PUT" >
     <div class="form-group row ">
         <label for='selTeamNo' class="col-sm-4 col-form-label">@lang('team.no')</label>
         <div class="col-sm-6">
@@ -54,8 +54,8 @@
     {{-- dayOfWeek returns a number between 0 (sunday) and 6 (saturday) --}}
     {{-- dayOfWeekIso returns a number between 1 (monday) and 7 (sunday) --}}
     <div class="form-group row ">
-        <label for='selTday' class="col-sm-4 col-form-label">@lang('team.training')</label>
-        <div class="col-sm-3">
+        <label for='selTday' class="col-md-4 col-form-label">@lang('team.training')</label>
+        <div class="col-md-4">
         <div class="input-group mb-3">
             <select class='js-tday-placeholder-single js-states form-control select2 @error('training_day') is-invalid @enderror' id='selTday' name="training_day">
                 <option value="1" @if ( $team->training_day == '1' ) selected @endif>{{ Carbon\Carbon::now()->startOfWeek(Carbon\Carbon::MONDAY)->locale(Config::get('app.locale'))->dayName }}
@@ -70,7 +70,7 @@
             @enderror
             </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-md-4">
             <div class="input-group date" id="ttime" data-target-input="nearest">
                 <input type="text" class="form-control datetimepicker-input @error('training_time') is-invalid @enderror" data-target="#ttime" name="training_time" value="{{ $team->training_time }}"/>
                 <div class="input-group-append" data-target="#ttime" data-toggle="datetimepicker">
@@ -83,8 +83,8 @@
         </div>
     </div>
     <div class="form-group row ">
-        <label for='selGday' class="col-sm-4 col-form-label">@lang('team.game.preferred')</label>
-        <div class="col-sm-3">
+        <label for='selGday' class="col-md-4 col-form-label">@lang('team.game.preferred')</label>
+        <div class="col-md-4">
         <div class="input-group mb-3">
             <select class='js-gday-placeholder-single js-states form-control select2 @error('preferred_game_day') is-invalid @enderror' id='selGday' name="preferred_game_day">
                 {{-- <option value="1" @if ( $team->preferred_game_day == '1' ) selected @endif>{{ Carbon\Carbon::now()->startOfWeek(Carbon\Carbon::MONDAY)->locale(Config::get('app.locale'))->dayName }}
@@ -100,7 +100,7 @@
             @enderror
             </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-md-4">
             <div class="input-group date" id="gtime" data-target-input="nearest">
             <input type="text" class="form-control datetimepicker-input @error('preferred_game_time') is-invalid @enderror" data-target="#gtime" name="preferred_game_time"/>
             <div class="input-group-append" data-target="#gtime" data-toggle="datetimepicker">

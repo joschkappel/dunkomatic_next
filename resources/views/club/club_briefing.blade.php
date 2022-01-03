@@ -28,16 +28,48 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-4">
+            <div class="card-group">
                 <!-- card MEMBERS -->
-                <div class="card card-outline card-dark h-50">
-                    <x-card-header title="{{__('role.member')}}" icon="fas fa-user-tie"  :count="count($memberships)" :showtools="false"/>
-                    <!-- /.card-header -->
-                    <div class="card-body overflow-auto">
-                        @foreach ( $memberships as $ms )
-                            @if ( App\Enums\Role::coerce($ms->role_id)->is(App\Enums\Role::ClubLead) )
+                <div class="col-md">
+                    <div class="card card-outline card-dark p-2">
+                        <x-card-header title="{{__('role.member')}}" icon="fas fa-user-tie"  :count="count($memberships)" :showtools="false"/>
+                        <!-- /.card-header -->
+                        <div class="card-body overflow-auto">
+                            @forelse ( $memberships as $ms )
+                                @if ( App\Enums\Role::coerce($ms->role_id)->is(App\Enums\Role::ClubLead) )
+                                    <div class="info-box">
+                                        <span class="info-box-icon bg-primary text-md p-2">{{ __('role.'.$ms->role_id.'.short') }}</span>
+                                        <div class="info-box-content">
+                                            <span class="info-box-number">{{ $ms->member->name }}</span>
+                                            <span class="info-box-text"><i class="fas fa-mobile"></i><a href="tel:{{ $ms->member->mobile }}" target="_blank"> {{ $ms->member->mobile}}</a> <i class="fas fa-phone"></i> <a href="tel:{{ $ms->member->phone }}" target="_blank"> {{ $ms->member->phone}}</a></span>
+                                            <span class="info-box-text"><i class="fas fa-at"></i><a href="mailto:{{ $ms->member->email1 }}" target="_blank"> {{ $ms->member->email1 }}</a></span>
+                                        </div>
+                                    </div>
+                                @endif
+                            @empty
                                 <div class="info-box">
-                                    <span class="info-box-icon bg-primary text-md p-2">{{ __('role.'.$ms->role_id.'.short') }}</span>
+                                    <span class="info-box-icon bg-warning text-md p-2">🙁</span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text"><a href="#"> {{__('no entries found')}}</a></span>
+                                    </div>
+                                </div>
+                            @endforelse
+                            @foreach ( $memberships as $ms )
+                                @if ( App\Enums\Role::coerce($ms->role_id)->in([ App\Enums\Role::RegionLead, App\Enums\Role::RegionTeam ]) )
+                                    <div class="info-box">
+                                        <span class="info-box-icon bg-indigo text-md">{{ __('role.'.$ms->role_id.'.short') }}</span>
+                                        <div class="info-box-content">
+                                            <span class="info-box-number">{{ $ms->member->name }}</span>
+                                            <span class="info-box-text"><i class="fas fa-mobile"></i><a href="tel:{{ $ms->member->mobile }}" target="_blank"> {{ $ms->member->mobile}}</a> <i class="fas fa-phone"></i> <a href="tel:{{ $ms->member->phone }}" target="_blank"> {{ $ms->member->phone}}</a></span>
+                                            <span class="info-box-text"><i class="fas fa-at"></i><a href="mailto:{{ $ms->member->email1 }}" target="_blank"> {{ $ms->member->email1 }}</a></span>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endforeach
+                            @foreach ( $memberships as $ms )
+                            @if ( App\Enums\Role::coerce($ms->role_id)->in([ App\Enums\Role::RefereeLead, App\Enums\Role::GirlsLead, App\Enums\Role::LeagueLead, App\Enums\Role::JuniorsLead ]) )
+                                <div class="info-box">
+                                    <span class="info-box-icon bg-purple text-md p-2">{{ __('role.'.$ms->role_id.'.short') }}</span>
                                     <div class="info-box-content">
                                         <span class="info-box-number">{{ $ms->member->name }}</span>
                                         <span class="info-box-text"><i class="fas fa-mobile"></i><a href="tel:{{ $ms->member->mobile }}" target="_blank"> {{ $ms->member->mobile}}</a> <i class="fas fa-phone"></i> <a href="tel:{{ $ms->member->phone }}" target="_blank"> {{ $ms->member->phone}}</a></span>
@@ -45,78 +77,66 @@
                                     </div>
                                 </div>
                             @endif
-                        @endforeach
-                        @foreach ( $memberships as $ms )
-                            @if ( App\Enums\Role::coerce($ms->role_id)->in([ App\Enums\Role::RegionLead, App\Enums\Role::RegionTeam ]) )
-                                <div class="info-box">
-                                    <span class="info-box-icon bg-indigo text-md">{{ __('role.'.$ms->role_id.'.short') }}</span>
-                                    <div class="info-box-content">
-                                        <span class="info-box-number">{{ $ms->member->name }}</span>
-                                        <span class="info-box-text"><i class="fas fa-mobile"></i><a href="tel:{{ $ms->member->mobile }}" target="_blank"> {{ $ms->member->mobile}}</a> <i class="fas fa-phone"></i> <a href="tel:{{ $ms->member->phone }}" target="_blank"> {{ $ms->member->phone}}</a></span>
-                                        <span class="info-box-text"><i class="fas fa-at"></i><a href="mailto:{{ $ms->member->email1 }}" target="_blank"> {{ $ms->member->email1 }}</a></span>
-                                    </div>
-                                </div>
-                            @endif
-                        @endforeach
-                        @foreach ( $memberships as $ms )
-                        @if ( App\Enums\Role::coerce($ms->role_id)->in([ App\Enums\Role::RefereeLead, App\Enums\Role::GirlsLead, App\Enums\Role::LeagueLead, App\Enums\Role::JuniorsLead ]) )
-                            <div class="info-box">
-                                <span class="info-box-icon bg-purple text-md p-2">{{ __('role.'.$ms->role_id.'.short') }}</span>
-                                <div class="info-box-content">
-                                    <span class="info-box-number">{{ $ms->member->name }}</span>
-                                    <span class="info-box-text"><i class="fas fa-mobile"></i><a href="tel:{{ $ms->member->mobile }}" target="_blank"> {{ $ms->member->mobile}}</a> <i class="fas fa-phone"></i> <a href="tel:{{ $ms->member->phone }}" target="_blank"> {{ $ms->member->phone}}</a></span>
-                                    <span class="info-box-text"><i class="fas fa-at"></i><a href="mailto:{{ $ms->member->email1 }}" target="_blank"> {{ $ms->member->email1 }}</a></span>
-                                </div>
-                            </div>
-                        @endif
-                        @endforeach
+                            @endforeach
+                        </div>
+                        <!-- /.card-body -->
                     </div>
-                    <!-- /.card-body -->
                 </div>
             </div>
-            <div class="col-sm-4">
-                <!-- card TEAMS -->
-                <div class="card card-outline card-dark h-50">
+            <!-- card TEAMS -->
+            <div class="col-md">
+                <div class="card card-outline card-dark p-2">
                     <x-card-header title="{{trans_choice('team.team', 2)}}" icon="fas fa-users"  :count="count($teams)" :showtools="false"/>
                     <!-- /.card-header -->
                     <div class="card-body overflow-auto">
-                        @foreach ( $teams->sortBy('league.shortname') as $t )
-                        <div class="info-box">
-                            <span class="info-box-icon @if ( isset($t->league->region) ? $t->league->region->is_top_level : false ) bg-indigo @else bg-gray @endif text-md p-2"><i class="">{{ isset($t->league) ? $t->league->shortname : 'not registered'}}</i></span>
-                            <div class="info-box-content">
-                                <span class="info-box-number">{{ $t->coach_name }}</span>
-                                <span class="info-box-text"><i class="fas fa-phone"></i><a href="tel:{{ $t->coach_phone1 }}" target="_blank"> {{ $t->coach_phone1}}</a></span>
-                                <span class="info-box-text"><i class="fas fa-at"></i><a href="mailto:{{ $t->coach_email }}" target="_blank"> {{ $t->coach_email }}</a></span>
+                        @forelse ( $teams->sortBy('league.shortname') as $t )
+                            <div class="info-box">
+                                <span class="info-box-icon @if ( isset($t->league->region) ? $t->league->region->is_top_level : false ) bg-indigo @else bg-gray @endif text-md p-2"><i class="">{{ isset($t->league) ? $t->league->shortname : 'not registered'}}</i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-number">{{ $t->coach_name }}</span>
+                                    <span class="info-box-text"><i class="fas fa-phone"></i><a href="tel:{{ $t->coach_phone1 }}" target="_blank"> {{ $t->coach_phone1}}</a></span>
+                                    <span class="info-box-text"><i class="fas fa-at"></i><a href="mailto:{{ $t->coach_email }}" target="_blank"> {{ $t->coach_email }}</a></span>
+                                </div>
                             </div>
-                        </div>
-                        @endforeach
+                        @empty
+                            <div class="info-box">
+                                <span class="info-box-icon bg-warning text-md p-2">🙁</span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text"><a href="#"> {{__('no entries found')}}</a></span>
+                                </div>
+                            </div>
+                        @endforelse
                     </div>
                     <!-- /.card-body -->
                 </div>
-                <!-- /.card -->
             </div>
-            <div class="col-sm-4">
-                <!-- card GYMS -->
-                <div class="card card-outline card-dark h-50">
+            <!-- card GYMS -->
+            <div class="col-md">
+                <div class="card card-outline card-dark p-2">
                     <x-card-header title="{{trans_choice('gym.gym', 2)}}" icon="fas fa-building"  :count="count($gyms)" :showtools="false"/>
                     <!-- /.card-header -->
                     <div class="card-body overflow-auto">
-                        @foreach ( $gyms->sortBy('gym_no') as $g )
-                        <div class="info-box">
-                            <span class="info-box-icon bg-gray text-md p-2"><i class="">{{ $g->gym_no }}</i></span>
-                            <div class="info-box-content">
-                                <span class="info-box-number">{{ $g->name }}</span>
-                                <span class="info-box-text">
-                                    <i class="fas fa-map-marked-alt"></i><a href="{{ config('dunkomatic.maps_uri') }}{{ urlencode($g->address) }}" target="_blank"> {{ $g->address }}</a>
-                                </span>
+                        @forelse ( $gyms->sortBy('gym_no') as $g )
+                            <div class="info-box">
+                                <span class="info-box-icon bg-gray text-md p-2"><i class="">{{ $g->gym_no }}</i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-number">{{ $g->name }}</span>
+                                    <span class="info-box-text">
+                                        <i class="fas fa-map-marked-alt"></i><a href="{{ config('dunkomatic.maps_uri') }}{{ urlencode($g->address) }}" target="_blank"> {{ $g->address }}</a>
+                                    </span>
 
+                                </div>
                             </div>
-                        </div>
-                        @endforeach
+                        @empty
+                            <div class="info-box">
+                                <span class="info-box-icon bg-warning text-md p-2">🙁</span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text"><a href="#"> {{__('no entries found')}}</a></span>
+                                </div>
+                            </div>
+                        @endforelse
                     </div>
-                    <!-- /.card-body -->
                 </div>
-                <!-- /.card -->
             </div>
         </div>
     </div>
