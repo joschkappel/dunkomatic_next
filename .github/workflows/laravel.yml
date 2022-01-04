@@ -15,9 +15,9 @@ jobs:
     - name: get sourcees
       uses: actions/checkout@v2
     - name: Setup PHP environment
-      uses: nanasess/setup-php@v3.0.4
+      uses: nanasess/setup-php@v3.0.6
       with:
-        php-version: 7.4
+        php-version: 8.0
     - name: Copy ENV Laravel Configuration for CI
       run: |
         cp .env.dusk.git .env
