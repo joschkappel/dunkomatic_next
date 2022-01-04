@@ -109,7 +109,7 @@ return [
                 'port' => 514,
             ],
        ],
-       'gelf' => [
+/*        'gelf' => [
            'driver' => 'monolog',
            'level' => 'error',
            'handler' => GelfHandler::class,
@@ -120,7 +120,7 @@ return [
 #               'host' => 'graylog',
 #               'port' =>12201,
 
-      ],
+      ], */
     ],
 
 ];

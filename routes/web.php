@@ -191,7 +191,6 @@ Route::middleware(['auth','set.region','set.logcontext'])->group(function () {
         Route::get('schedule/sb', 'ScheduleController@sb_region')->name('schedule.sb.region');
         Route::get('member/sb', 'MemberController@sb_region')->name('member.sb.region');
 
-        Route::post('message', 'MessageController@store')->name('message.store');
         Route::post('user/{user}/message', 'MessageController@store')->name('message.store');
 
         Route::get('member/datatable', 'MemberController@datatable')->name('member.datatable')->middleware('can:view-members');
@@ -266,7 +265,6 @@ Route::middleware(['auth','set.region','set.logcontext'])->group(function () {
     Route::put('message/{message}', 'MessageController@update')->name('message.update');
     Route::get('message/{message}/markread', 'MessageController@mark_as_read')->name('message.mark_as_read');
     Route::delete('message/{message}', 'MessageController@destroy')->name('message.destroy');
-    Route::put('message/{message}/markread', 'MessageController@mark_as_read')->name('message.mark_as_read');
 
 
     Route::get('file/exports/{season}/{region}/{type}/{file}', 'FileDownloadController@get_file')->name('file.get');
