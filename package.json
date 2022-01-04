@@ -37,7 +37,7 @@
         "elliptic": ">=6.5.4",
         "fastclick": "^1.0.6",
         "filterizr": "^2.2.4",
-        "flag-icon-css": "^4.1.5",
+        "flag-icon-css": "^4.1.7",
         "flot": "^4.2.2",
         "fontawesome-free": "^1.0.1",
         "fullcalendar": "^5.10.1",

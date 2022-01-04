@@ -9,9 +9,9 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.3.0",
+        "php": "^8.0",
         "bensampo/laravel-enum": "^3.0",
-        "fakerphp/faker": "^1.12",
+        "fakerphp/faker": "^1.9.1",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "v2.0.4",
         "graylog2/gelf-php": "^1.5",
@@ -25,7 +25,7 @@
         "mockery/mockery": "^1.3.1",
         "mpdf/mpdf": "^8.0",
         "owen-it/laravel-auditing": "^10.0",
-        "phpunit/phpunit": "=9.5.8",
+        "phpunit/phpunit": "^9.3",
         "predis/predis": "^1.0",
         "rappasoft/laravel-authentication-log": "^1.2",
         "silber/bouncer": "^v1.0.0-rc.9",
@@ -36,7 +36,6 @@
         "yajra/laravel-datatables-oracle": "^9.10"
     },
     "require-dev": {
-        "beyondcode/laravel-er-diagram-generator": "^1.5",
         "facade/ignition": "^2.3.6",
         "laravel/dusk": "^6.9",
         "nunomaduro/collision": "^5.0",

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 abstract class SysTestCase extends BaseTestCase
 {
 
-    use CreatesApplication, RefreshDatabase;
+    use CreatesApplication;
 
     protected $seed = false;
 
@@ -28,11 +28,12 @@ abstract class SysTestCase extends BaseTestCase
 
     public function tearDown(): void
     {
+
         $this->artisan('migrate:fresh');
         $this->seed(TestDatabaseSeeder::class);
         Log::info('[TESTING] Test DB seeded');
 
         parent::tearDown();
-        //
+
     }
 }
