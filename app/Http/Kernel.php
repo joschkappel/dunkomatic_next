@@ -3,8 +3,7 @@
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
-use App\Http\Middleware\SetLanguage;
-use App\Http\Middleware\SetLogContext;
+
 
 class Kernel extends HttpKernel
 {
