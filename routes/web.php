@@ -1,8 +1,6 @@
 <?php
 
-use App\Http\Controllers\RegionController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -19,9 +17,11 @@ use Illuminate\Support\Facades\Auth;
 Route::get('/', function () {
     return redirect(app()->getLocale());
 })->name('start');
-Route::get('/health', function () {
+Route::get('healthy', function () {
     return 'OK';
 });
+
+Route::get('health', HealthCheckResultsController::class);
 
 Route::group([
     'prefix' => '{language}',

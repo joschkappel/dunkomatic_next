@@ -57,6 +57,8 @@ class Kernel extends ConsoleKernel
               $this->scheduleRegionTask($schedule, new ProcessLeagueStateChanges($r), JobFrequencyType::daily);
           }
         }
+
+        $schedule->command(\Spatie\Health\Commands\RunHealthChecksCommand::class)->everyMinute();
     }
 
     /**
