@@ -38,7 +38,7 @@ return [
         'enabled' => true,
 
         'notifications' => [
-            Spatie\Health\Notifications\CheckFailedNotification::class => ['slack'],
+            Spatie\Health\Notifications\CheckFailedNotification::class => ['slack','mail'],
         ],
 
         /*
@@ -57,7 +57,7 @@ return [
         'throttle_notifications_for_minutes' => 60,
 
         'mail' => [
-            'to' => 'your@example.com',
+            'to' => 'jkappel@onlinehome.de',
 
             'from' => [
                 'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
@@ -66,7 +66,7 @@ return [
         ],
 
         'slack' => [
-            'webhook_url' => config('logging.channels.slack.url', ''),
+            'webhook_url' => config('logging.channels.slack.url', 'https://hooks.slack.com/services/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'),
 
             /*
              * If this is set to null the default channel of the webhook will be used.
