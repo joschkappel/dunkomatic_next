@@ -66,7 +66,7 @@ return [
         ],
 
         'slack' => [
-            'webhook_url' => config('logging.channels.slack.url', 'https://hooks.slack.com/services/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'),
+            'webhook_url' => config('logging.channels.slack.url', ''),
 
             /*
              * If this is set to null the default channel of the webhook will be used.
