@@ -10,7 +10,10 @@ use Spatie\Health\Checks\Checks\DatabaseCheck;
 use Spatie\Health\Checks\Checks\RedisCheck;
 use Spatie\Health\Checks\Checks\PingCheck;
 use Spatie\CpuLoadHealthCheck\CpuLoadCheck;
+use Spatie\Health\Checks\Checks\CacheCheck;
+use Spatie\Health\Checks\Checks\DebugModeCheck;
 use Spatie\Health\Checks\Checks\ScheduleCheck;
+use Spatie\Health\Checks\Checks\EnvironmentCheck;
 
 
 class HealthServiceProvider extends ServiceProvider
@@ -34,14 +37,17 @@ class HealthServiceProvider extends ServiceProvider
     {
         Health::checks([
             UsedDiskSpaceCheck::new(),
-            DatabaseCheck::new(),
-            RedisCheck::new(),
-            PingCheck::new()->url('https://h2941512.stratoserver.net/healthyer'),
             CpuLoadCheck::new()
             ->failWhenLoadIsHigherInTheLast5Minutes(2.0)
             ->failWhenLoadIsHigherInTheLast15Minutes(1.5),
+            DbConnectionsCheck::new(),
+            DatabaseCheck::new(),
+            RedisCheck::new(),
+            PingCheck::new()->url('https://h2941512.stratoserver.net/healthy'),
             ScheduleCheck::new(),
-            DbConnectionsCheck::new()
+            EnvironmentCheck::new()->expectEnvironment('prod'),
+            CacheCheck::new(),
+            DebugModeCheck::new()
         ]);
     }
 }
