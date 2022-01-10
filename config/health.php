@@ -38,15 +38,14 @@ return [
         'enabled' => true,
 
         'notifications' => [
-            Spatie\Health\Notifications\CheckFailedNotification::class => ['slack','mail'],
+            Spatie\Health\Notifications\CheckFailedNotification::class => explode( ',', env('HEALTH_CHANNEL') ?? 'mail'),
         ],
 
         /*
          * Here you can specify the notifiable to which the notifications should be sent. The default
          * notifiable will use the variables specified in this config file.
          */
-        'notifiable' => Spatie\Health\Notifications\Notifiable::class,
-
+        'notifiable' =>  Spatie\Health\Notifications\Notifiable::class,
         /*
          * When checks start failing, you could potentially end up getting
          * a notification every minute.
@@ -66,16 +65,16 @@ return [
         ],
 
         'slack' => [
-            'webhook_url' => config('logging.channels.slack.url', ''),
+            'webhook_url' => config('logging.channels.slack.url', env('LOG_SLACK_WEBHOOK_URL')),
 
             /*
              * If this is set to null the default channel of the webhook will be used.
              */
-            'channel' => null,
+            'channel' => 'dunkomatic_next',
 
-            'username' => null,
+            'username' => 'Laravel Health',
 
-            'icon' => null,
+            'icon' => ':boom:',
         ],
     ],
 

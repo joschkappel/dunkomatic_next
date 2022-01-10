@@ -19,6 +19,9 @@ use App\Jobs\GameNotScheduled;
 use App\Models\Region;
 use App\Enums\JobFrequencyType;
 
+use Spatie\Health\Commands\RunHealthChecksCommand;
+use Spatie\Health\Commands\ScheduleCheckHeartbeatCommand;
+
 class Kernel extends ConsoleKernel
 {
     /**
@@ -58,7 +61,8 @@ class Kernel extends ConsoleKernel
           }
         }
 
-        $schedule->command(\Spatie\Health\Commands\RunHealthChecksCommand::class)->everyMinute();
+        $schedule->command(RunHealthChecksCommand::class)->everyMinute();
+        $schedule->command(ScheduleCheckHeartbeatCommand::class)->everyMinute();
     }
 
     /**
