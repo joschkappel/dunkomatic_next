@@ -28,8 +28,7 @@ Route::group([
     'where' => ['language' => '[a-zA-Z]{2}'],
     'middleware' => ['set.language',
                      'set.region',
-                     'set.logcontext',
-                     'cache.headers:public;max_age=2628000;etag']
+                     'set.logcontext']
 ], function () {
 
     Route::get('/', function () {
@@ -154,8 +153,7 @@ Route::get('region/admin/sb', 'RegionController@admin_sb')->name('region.admin.s
 
 Route::middleware(['auth',
                    'set.region',
-                   'set.logcontext',
-                   'cache.headers:public;max_age=2628000;etag'])->group(function () {
+                   'set.logcontext'])->group(function () {
     // APIs , no locale or language required !
     Route::redirect('home', '/de/home');
 

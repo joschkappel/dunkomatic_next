@@ -24,6 +24,8 @@ class Region extends Model
 {
     use HasFactory, CastsEnums;
 
+    protected $with = ['childRegions'];
+
     protected $fillable = [
         'id', 'code', 'name', 'hq', 'job_game_overlaps', 'game_slot',
         'job_game_notime', 'job_noleads', 'job_email_valid',
