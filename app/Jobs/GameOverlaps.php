@@ -41,7 +41,7 @@ class GameOverlaps implements ShouldQueue
     public function handle()
     {
         Log::info('[JOB][OVERLAPPING GAMES] started.', ['region-id' => $this->region->id]);
-        $clubs = $this->region->clubs()->get();
+        $clubs = $this->region->clubs()->with('members')->get();
         $game_slot = $this->region->game_slot;
         $min_slot = $game_slot - 1;
 

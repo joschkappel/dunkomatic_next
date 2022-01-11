@@ -12,11 +12,12 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Model;
 
 use App\Models\Setting;
 use App\Models\Region;
-use App\Models\Club;
-use App\Models\League;
+
+use Illuminate\Database\LazyLoadingViolationException;
 
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
@@ -43,7 +44,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(Dispatcher $events)
     {
         try {
-            $pdo = DB::connection()->getPdo();
+            $pdo = DB::getPdo();
             if (DB::connection()->getDatabaseName()) {
                 // Log::info('Yes! Successfully connected to the DB: ' . DB::connection()->getDatabaseName());
                 if (Schema::hasTable('settings')) {
@@ -64,6 +65,24 @@ class AppServiceProvider extends ServiceProvider
         } catch (\Exception $e) {
             Log::warning("Could not open connection to database server.  Please check your configuration.");
         }
+
+        // prepare to detect lazy laodings
+        Model::preventLazyLoading( config('app.env') !== 'prod' );
+        Model::handleLazyLoadingViolationUsing(function ($model, $relation) {
+            $class = get_class($model);
+
+            info("[LAZY LOADING] Attempted to lazy load [{$relation}] on model [{$class}].");
+
+            $exception = new LazyLoadingViolationException($model, $relation);
+            // dd($exception->getTraceAsString());
+            if ( ( Str::contains( $exception->getTraceAsString(), 'app/Http/Controllers' ) ) or
+                 ( Str::contains( $exception->getTraceAsString(), 'app/Jobs' ) ) or
+                 ( Str::contains( $exception->getTraceAsString(), 'app/Observers' ) )  ){
+                info("[LAZY LOADING] [IN CONTROLLER or JOB or OBSERVER]");
+                ( config('app.env') === 'local' ) ? throw $exception : report($exception);
+            }
+
+        });
 
         $events->listen(BuildingMenu::class, function (BuildingMenu $event) {
 

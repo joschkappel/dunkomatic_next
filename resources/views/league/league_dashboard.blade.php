@@ -54,11 +54,11 @@
                     </div>
                 </div>
                 <div class="info-box">
-                    @if (count($assigned_clubs) == 0)
+                    @if ($league->state_count['assigned'] == 0)
                         <span class="info-box-icon bg-danger"><i class="fas fa-basketball-ball"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text text-lg">@lang('club.entitled.no')</span>
-                        @elseif (count($assigned_clubs) == $league->size )
+                        @elseif ($league->state_count['assigned'] == $league->state_count['size'] )
                             <span class="info-box-icon bg-success"><i class="fas fa-basketball-ball"></i></span>
                             <div class="info-box-content">
                                 <span class="info-box-text text-lg">@lang('club.entitled.all')</span>
@@ -66,7 +66,7 @@
                                 <span class="info-box-icon bg-warning"><i class="fas fa-basketball-ball"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text text-lg">@lang('club.entitled.some', [ 'entitled' =>
-                                        count($assigned_clubs), 'total' => $league->size] )</span>
+                                        $league->state_count['assigned'], 'total' => $league->state_count['size']] )</span>
                     @endif
                 </div>
             </div>
@@ -78,7 +78,7 @@
                     <div class="info-box-content">
                         <span class="info-box-text text-lg">@lang('team.registered.no')</span>
                     </div>
-                @elseif ($league->state_count['registered'] == $league->size )
+                @elseif ($league->state_count['registered'] == $league->state_count['size'] )
                     <span class="info-box-icon bg-success"><i class="fas fa-users"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text text-lg">@lang('team.registered.all')</span>
@@ -88,7 +88,7 @@
                     <div class="info-box-content">
                         <span class="info-box-text text-lg">@lang('team.registered.some',
                             ['registered'=>$league->state_count['registered'],
-                            'total'=>$league->state_count['size']])</span>
+                            'total'=>$league->state_count['assigned']])</span>
                     </div>
                 @endif
             </div>
@@ -133,7 +133,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @for ($i = 1; $i <= $league->size; $i++)
+                                            @for ($i = 1; $i <= $league->state_count['size']; $i++)
                                                 <tr scope="row" dusk="rowClub{{ $i }}">
                                                     @isset($assigned_clubs[$i])
                                                         <td scope="row" class="text-center"><button id="deassignClub"
@@ -181,7 +181,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @for ($i = 1; $i <= $league->size; $i++)
+                                            @for ($i = 1; $i <= $league->state_count['size']; $i++)
                                                 <tr scope="row" dusk="rowTeam{{ $i }}">
                                                     @isset($selected_teams[$i])
                                                         <td class="text-center"><span class="badge badge-pill badge-dark">{{ $i }}</span></td>

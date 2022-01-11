@@ -18,6 +18,8 @@ class Schedule extends Model
 {
   use HasFactory;
 
+  protected $with = ['region'];
+
   protected $fillable = [
         'id','name','region_id','league_size_id','custom_events','iterations'
     ];
@@ -65,7 +67,7 @@ class Schedule extends Model
   }
   public function getColorAttribute()
   {
-      Log::debug('schedule color key', ['key'=>[ $this->region->is_top_level, $this->league_size->size, $this->iterations ]]);
+      //Log::debug('schedule color key', ['key'=>[ $this->region->is_top_level, $this->league_size->size, $this->iterations ]]);
       return ScheduleColor::coerce([ $this->region->is_top_level, $this->league_size->size, $this->iterations ])->key;
   }
 }

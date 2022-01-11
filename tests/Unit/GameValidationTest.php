@@ -39,7 +39,7 @@ class GameValidationTest extends TestCase
       static::$club = Club::factory()->hasTeams(2)->hasGyms(1)->create(['name'=>'testteamclub']);
       static::$club2 = Club::factory()->hasTeams(2)->hasGyms(1)->create(['name'=>'testteamclub2']);
       static::$league = League::factory()->custom()->create(['name'=>'testleague']);
-      
+
       foreach (static::$club->teams as $t){
         $t->league()->associate(static::$league)->save();
       }
@@ -120,8 +120,8 @@ class GameValidationTest extends TestCase
     public function gameForm(): array
     {
         return [
-            'gym missing' => ['gym_id', ''], 
-            'gym not existing' => ['gym_id', 5000], 
+            'gym missing' => ['gym_id', ''],
+            'gym not existing' => ['gym_id', 5000],
             'game date missing' => ['game_date', ''],
             'game date no date format' => ['game_date', 'AAAA'],
             'game date too old' => ['game_date', Carbon::now()->addDays(-10)],
@@ -134,7 +134,7 @@ class GameValidationTest extends TestCase
             'game no not unique' => ['game_no', 6 ],
             'team id home not existing' => ['team_id_home', 5000],
             'team id home same as guest' => ['team_id_home', static::$guest],
-            'team id guest not existing' => ['team_id_guest', 5000], 
+            'team id guest not existing' => ['team_id_guest', 5000],
             'team id guest same as home' => ['team_id_guest', static::$home],
         ];
     }

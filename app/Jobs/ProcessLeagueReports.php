@@ -74,7 +74,6 @@ class ProcessLeagueReports implements ShouldQueue
                 $rpt_jobs[] = new GenerateLeagueGamesReport($region, $l, $rtype, ReportScope::ms_all());
             };
             // add teamware
-            $li = League::find($l);
             $rpt_jobs[] = new GenerateTeamwareReport($l);
 
             $note = new LeagueReportsAvailable($l);

@@ -15,7 +15,7 @@ class DbConnectionsCheck extends Check
     {
 
         $available_connections = $this->getAvailableConnectionsPercentage();
-        Log::debug('DB connections availability',['%'=>$available_connections]);
+        // Log::debug('DB connections availability',['%'=>$available_connections]);
 
         $result = Result::make()
             ->meta(['available_db_connections_percentage' => $available_connections])

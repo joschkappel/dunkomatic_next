@@ -28,7 +28,7 @@ jobs:
         mkdir -m 777 -p storage/app/backup
     - name: install dependencies
       run: |
-        composer install -q --no-ansi --no-interaction --no-scripts --prefer-dist
+        composer install -q --no-ansi --no-interaction --no-scripts --prefer-dist -o
         rm -rf package-lock.json
         npm i -D --no-scripts && npm run prod
     - name: Create Database
@@ -61,7 +61,7 @@ jobs:
       run: php artisan serve  &
     - name: Test dusk server access
       run: |
-        curl http://127.0.0.1:8000/de/login
+        curl http://127.0.0.1:8000/healthy
     - name: Run Dusk Tests
       run: php artisan dusk --env=dusk.git
     - name: Archive dusk screenshots

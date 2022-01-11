@@ -51,11 +51,9 @@ class UserObserver
      */
     public function deleting(User $user)
     {
-        if ( $user->member !== null ) {
-            // delete user, member and memberships - he is "Only" a user
-            $member = Member::find($user->member->id);
-            $member->delete();
-            Log::notice('[OBSERVER] user deleted - delete associated member', ['user-id' => $user->id, 'member-id'=>$member->id]);
+        if ( $user->member()->exists() ) {
+            $user->member->delete();
+            Log::notice('[OBSERVER] user deleted - delete associated member', ['user-id' => $user->id, 'member-id'=>$user->member->id]);
         }
     }
 

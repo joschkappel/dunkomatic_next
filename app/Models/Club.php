@@ -23,6 +23,8 @@ class Club extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable, HasFactory;
 
+    protected $with = ['region'];
+
     public function generateTags(): array
     {
         return [

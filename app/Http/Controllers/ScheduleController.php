@@ -205,7 +205,7 @@ class ScheduleController extends Controller
      */
     public function list(Region $region)
     {
-        $schedule = $region->schedules()->with('league_size')->withCount('events')->get();
+        $schedule = $region->schedules()->with('league_size','leagues')->withCount('events')->get();
 
         Log::info('preparing schedule list');
         $stlist = datatables()::of($schedule);
@@ -215,7 +215,7 @@ class ScheduleController extends Controller
             ->addColumn('action', function ($data) {
                 if (!$data->leagues()->exists()) {
                     $btn = '<button type="button" id="deleteSchedule" name="deleteSchedule" class="btn btn-outline-danger btn-sm" data-schedule-id="' . $data->id . '"
-                    data-schedule-name="' . $data->name . '" data-events="' . count($data->events) . '" data-toggle="modal" data-target="#modalDeleteSchedule"><i class="fa fa-trash"></i></button>';
+                    data-schedule-name="' . $data->name . '" data-events="' . $data->events_count . '" data-toggle="modal" data-target="#modalDeleteSchedule"><i class="fa fa-trash"></i></button>';
                     return $btn;
                 } else {
                     return '';

@@ -688,8 +688,8 @@ class LeagueController extends Controller
                 $btnlist = '';
 
                 $ccnt = 1;
-                $t = $data->teams()->with('club')->get()->groupBy('shortname');
-                foreach ($data->clubs->groupBy('shortname') as $k => $c) {
+                $t = $data->load('teams.club')->get()->groupBy('shortname');
+                foreach ($data->load('clubs')->groupBy('shortname') as $k => $c) {
                     if ($t->get($k) == null) {
                         $diff = $c->count();
                     } else {

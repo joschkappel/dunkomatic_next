@@ -59,7 +59,7 @@ class ProcessNewSeason implements ShouldQueue
         Log::notice('[JOB][NEW SEASON] season name modified.', ['old' => $current_season, 'new' => Setting::where('name', 'season')->first()->value]);
 
         // reset leagues
-        $league = League::all();
+        $league = League::with('teams')->get();
 
         foreach ($league as $l) {
             // delete league clubs (dont delete, as this keeps stable over seasons)
@@ -110,7 +110,7 @@ class ProcessNewSeason implements ShouldQueue
         Log::notice('[JOB][NEW SEASON] All schedule events fwdd by 1 year.');
 
         // move region league state end date 1 year fowrward
-        $regions = Region::all();
+        $regions = Region::with('regionadmin')->get();
         foreach ($regions as $r){
             $close_assignment_at = $r->close_assignment_at ?? now();
             $close_assignment_at = $close_assignment_at->addYear(1)->addDays( $close_assignment_at->weekday() - $close_assignment_at->addYear(1)->weekday() );

@@ -28,6 +28,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
 {
     use Notifiable, HasFactory, HasRolesAndAbilities, AuthenticationLoggable, Prunable;
 
+    protected $with = ['member'];
+
     /**
      * Get the user's preferred locale.
      *
