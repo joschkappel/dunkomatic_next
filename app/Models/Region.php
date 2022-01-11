@@ -133,7 +133,8 @@ class Region extends Model
         $directory = $this->league_folder;
 
         $reports = collect();
-        foreach ($this->leagues as $league) {
+
+        foreach ( $this->loadMissing('leagues')->leagues as $league) {
             $shortname = $league->shortname;
             $reports = $reports->concat( collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname) {
                 return (preg_match('(' . $shortname . ')', $value) === 1);
@@ -147,7 +148,8 @@ class Region extends Model
         $directory = $this->league_folder;
 
         $reports = collect();
-        foreach ($this->leagues as $league) {
+
+        foreach ($this->loadMissing('leagues')->leagues as $league) {
             $shortname = $this->shortname;
             $reports = $reports->concat( collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname) {
                 return (preg_match('(' . $shortname . ')', $value) === 1);
