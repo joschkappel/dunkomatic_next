@@ -21,7 +21,15 @@ abstract class TestCase extends BaseTestCase
         $uses = parent::setUpTraits();
         if (isset($uses[Authentication::class])) {
             $this->setUpUser();
-        }
-    }
+        };
 
+        info( '[TEST STARTING] ['.implode(' - ', $this->getGroups()).'] '.$this->getName() );
+    }
+    public function tearDown(): void
+    {
+
+        info( '[TEST STOPPING] ['.implode(' - ', $this->getGroups()).'] '.$this->getName() );
+        parent::tearDown();
+
+    }
 }

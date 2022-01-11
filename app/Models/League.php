@@ -24,6 +24,9 @@ class League extends Model implements Auditable
 {
 
     use \OwenIt\Auditing\Auditable, hasFactory;
+
+    protected $with = ['region'];
+
     public function generateTags(): array
     {
         return [

@@ -23,15 +23,18 @@ abstract class SysTestCase extends BaseTestCase
 
         $this->artisan('migrate:fresh');
         $this->seed(SysTestDatabaseSeeder::class);
-        Log::notice('[TESTING] SysTest DB seeded');
+        info('[TESTING] SysTest DB seeded');
+        info('[TEST STARTING] ['.implode(' - ', $this->getGroups()).'] '.$this->getName() );
     }
 
     public function tearDown(): void
     {
 
+        info( '[TEST STOPPING] ['.implode(' - ', $this->getGroups()).'] '.$this->getName() );
         $this->artisan('migrate:fresh');
         $this->seed(TestDatabaseSeeder::class);
-        Log::info('[TESTING] Test DB seeded');
+        info('[TESTING] Test DB seeded');
+
 
         parent::tearDown();
 

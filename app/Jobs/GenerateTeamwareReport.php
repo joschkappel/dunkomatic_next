@@ -3,14 +3,11 @@
 namespace App\Jobs;
 
 use App\Models\League;
-use App\Models\Region;
-use App\Enums\ReportFileType;
 
 use Maatwebsite\Excel\Facades\Excel;
 use App\Helpers\CalendarComposer;
 use Illuminate\Support\Facades\Storage;
 
-use App\Exports\LeagueGamesExport;
 use App\Exports\TeamwareTeamsExport;
 use App\Exports\TeamwareGamesExport;
 
@@ -40,7 +37,7 @@ class GenerateTeamwareReport implements ShouldQueue
     public function __construct(League $league)
     {
         // set report scope
-        $this->league = $league;
+        $this->league = $league->load('region');
 
         // make sure folders are there
         $this->export_folder = $league->region->teamware_folder;

@@ -66,7 +66,7 @@ class MembershipObserver
      */
     public function deleted(Membership $membership)
     {
-        if ( $membership->member->isuser ){
+        if ( $membership->load('member')->isuser ){
             Log::info('[OBSERVER] membership deleted - user exists',['membership-id'=>$membership->id]);
             if ($membership->member->memberships->where('membership_id',$membership->membership_id)->count() == 0){
                 $u =  $membership->member->user;

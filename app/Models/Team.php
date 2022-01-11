@@ -17,10 +17,12 @@ class Team extends Model implements Auditable
 {
   use \OwenIt\Auditing\Auditable, hasFactory;
 
+  protected $with = ['club','league'];
+
   public function generateTags(): array
   {
       return [
-          $this->name,
+          $this->id,
           $this->club->shortname,
           $this->league->shortname ?? '',
           '('.$this->club->region->code.')'

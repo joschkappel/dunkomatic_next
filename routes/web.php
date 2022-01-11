@@ -26,7 +26,10 @@ Route::get('health', HealthCheckResultsController::class);
 Route::group([
     'prefix' => '{language}',
     'where' => ['language' => '[a-zA-Z]{2}'],
-    'middleware' => ['set.language','set.region','set.logcontext']
+    'middleware' => ['set.language',
+                     'set.region',
+                     'set.logcontext',
+                     'cache.headers:public;max_age=2628000;etag']
 ], function () {
 
     Route::get('/', function () {
@@ -149,7 +152,10 @@ Route::group([
 
 Route::get('region/admin/sb', 'RegionController@admin_sb')->name('region.admin.sb')->middleware('set.logcontext');
 
-Route::middleware(['auth','set.region','set.logcontext'])->group(function () {
+Route::middleware(['auth',
+                   'set.region',
+                   'set.logcontext',
+                   'cache.headers:public;max_age=2628000;etag'])->group(function () {
     // APIs , no locale or language required !
     Route::redirect('home', '/de/home');
 
