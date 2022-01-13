@@ -33,10 +33,5 @@ class ClubsTableSeeder extends Seeder
 
       }
 
-      $uid = User::where('name','user')->first();
-      Bouncer::allow($uid)->to('access', Club::find(25));
-      Bouncer::allow($uid)->to('access', Club::find(26));
-
-
     }
 }

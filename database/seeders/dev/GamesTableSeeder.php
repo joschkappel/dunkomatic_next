@@ -1,5 +1,5 @@
 <?php
-namespace Database\Seeders\prod;
+namespace Database\Seeders\dev;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
