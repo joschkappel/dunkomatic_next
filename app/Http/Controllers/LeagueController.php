@@ -688,23 +688,22 @@ class LeagueController extends Controller
                 $btnlist = '';
 
                 $ccnt = 1;
-                $t = $data->load('teams.club')->get()->groupBy('shortname');
-                foreach ($data->load('clubs')->groupBy('shortname') as $k => $c) {
-                    if ($t->get($k) == null) {
-                        $diff = $c->count();
-                    } else {
-                        $diff = $c->count() > $t->get($k)->count();
-                    }
+                $t = $data->loadMissing('teams')->teams->pluck('club.shortname')->countBy();
+                Log::debug('dump',['data'=>$t]);
+                foreach ($data->loadMissing('clubs')->clubs->pluck('shortname') as $k => $c) {
+                    Log::debug('dump2',['k'=>$k, 'c'=>$c]);
+                    $diff = $t->get($c) ?? 0;
                     if ($diff > 0) {
                         for ($i = 0; $i < $diff; $i++) {
-                            $btnlist .= '<button disabled  type="button" class="btn btn-outline-success btn-sm">' . $k . '</button> ';
+                            $btnlist .= '<button type="button" class="btn btn-info btn-sm">' . $c . '</button> ';
                         }
+                        $ccnt += $t->get($c);
                     };
-                    $ccnt += $c->count();
+
                 }
                 if ($data->state->is(LeagueState::Assignment())) {
-                    for ($i = $ccnt; $i <= $data->size; $i++) {
-                        $btnlist .= '<button type="button" class="btn btn-outline-warning btn-sm" >?</button> ';
+                    for ($i = $ccnt; $i <= $data->size ?? 0; $i++) {
+                        $btnlist .= '<button type="button" class="btn btn-danger btn-sm" >?</button> ';
                     }
                 }
 
@@ -724,7 +723,7 @@ class LeagueController extends Controller
                     } else {
                         $clr = 'btn-danger';
                     }
-                    $btnlist .= '<button disabled  type="button" class="btn ' . $clr . ' btn-sm">' . $lt . ' <span class="badge badge-pill badge-light">' . $lnr . '</span></button> ';
+                    $btnlist .= '<button type="button" class="btn ' . $clr . ' btn-sm">' . $lt . ' <span class="badge badge-pill badge-light">' . $lnr . '</span></button> ';
                     $ccnt += 1;
                 }
                 return $btnlist;
