@@ -40,7 +40,7 @@ class MemberController extends Controller
         )->unique();
 
         Log::info('preparing member list');
-        $mlist = datatables()::of(Member::whereIn('id', $members)->get());
+        $mlist = datatables()::of(Member::whereIn('id', $members)->with('user','memberships')->get());
 
         return $mlist
             ->rawColumns(['user_account', 'email1', 'phone'])
@@ -52,6 +52,13 @@ class MemberController extends Controller
             })
             ->addColumn('leagues', function ($data) {
                 return $data->memberofleagues;
+            })
+            ->addColumn('roles', function ($data) {
+                $role_ids = $data->memberships->pluck('role_id');
+                foreach ($role_ids as $k => $r){
+                    $role_ids[$k] = Role::coerce( intval($r) )->description;
+                }
+                return $role_ids->implode(', ');
             })
             ->addColumn('user_account', function ($data) {
                 if ($data->isuser) {

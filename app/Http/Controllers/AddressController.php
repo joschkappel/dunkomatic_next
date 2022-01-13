@@ -11,9 +11,10 @@ use Illuminate\Support\Facades\Log;
 
 class AddressController extends Controller
 {
+
     public function index_byrole($language, Region $region, $role)
     {
-        return view('address.address_list',['role'=>$role, 'region'=>$region]);
+        return view('address.address_role_list',['role'=>$role, 'region'=>$region]);
     }
     /**
      * datatable for addresses by region and role (eg all clubleads for region 2)

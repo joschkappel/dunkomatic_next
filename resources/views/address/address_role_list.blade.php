@@ -42,7 +42,7 @@
                     { extend: 'csv',
                         exportOptions: { orthogonal: 'export', columns: ':visible' },
                     },
-                    { extend: 'colvis'
+                    { extend: 'colvis',
                     },
                 ],
                  ajax: '{{ route('address.index_byrole.dt', ['region' => $region, 'language'=> app()->getLocale(), 'role'=> $role ]) }}',
