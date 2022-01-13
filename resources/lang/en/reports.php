@@ -11,4 +11,5 @@ return [
     'ical.club.all' => 'All',
     'ical.club.home' => 'Home',
     'ical.club.referee' => 'Referees',
+    'filtered' => 'Filtered by: ',
 ];

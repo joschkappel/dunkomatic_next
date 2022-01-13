@@ -53,7 +53,7 @@
                         </div>
                     </div>
                     <div class="info-box">
-                        <span class="info-box-icon bg-info"><i class="fas fa-user-tie"></i></span>
+                        <span class="info-box-icon bg-info"><a href="{{ route('member.index', ['language' => app()->getLocale(), 'region'=>$region]); }}"><i class="fas fa-user-tie"></i></a></span>
                         <div class="info-box-content">
                             <span class="info-box-text text-lg">{{ __('role.member') }}</span>
                             <span class="info-box-number text-md"><a href="{{ route('member.index', ['language' => app()->getLocale(), 'region'=>$region]); }}">{{ $member_count }}</a></span>

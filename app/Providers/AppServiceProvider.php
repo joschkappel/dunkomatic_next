@@ -85,8 +85,20 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $events->listen(BuildingMenu::class, function (BuildingMenu $event) {
+            // MAIN MENU REGION
+            $regionmenu = [
+                'text' => Str::length( session('cur_region')->name ) > 20 ? session('cur_region')->code : session('cur_region')->name,
+                'icon' => 'fas fa-globe-europe',
+                'icon_color' => 'danger'
+            ];
+            if (Auth::user()->can('update-regions')){
+                $regionmenu['route']  = ['region.dashboard', ['language' => app()->getLocale(), 'region' => session('cur_region')]];
+            } else {
+                $regionmenu['route']  = ['region.briefing', ['language' => app()->getLocale(), 'region' => session('cur_region')]];
+            }
+            $event->menu->add($regionmenu);
 
-            // MENU - CLUBS
+            // MAIN MENU - CLUBS
             $clubmenu = array();
             $clubmenu['text'] = trans_choice('club.club', 2);
             $clubmenu['icon_color'] = 'orange';
@@ -167,7 +179,6 @@ class AppServiceProvider extends ServiceProvider
             $smenu['shift'] = 'ml-3';
             unset($smenu['url']);
             unset($smenu['can']);
-            unset($smenu['shift']);
             $smenu['submenu'] = [
                     [
                         'text' => __('Manage'),
@@ -196,50 +207,15 @@ class AppServiceProvider extends ServiceProvider
 
             $event->menu->add($leaguemenu);
 
-            $smenu = [
-                'text'  => __('region.menu.list'),
-                'icon'  => 'fas fa-list',
-                'icon_color' => 'danger',
-                'route' => ['region.index', ['language' => app()->getLocale()]],
-                'can' => 'view-regions',
-                'shift' => 'ml-3'
+            // MAIN MENU MEMBERS
+            $membermenu = [
+                'text' => trans_choice('role.member',2),
+                'icon' => 'fas fa-users',
+                'icon_color' => 'green',
+                'can' => 'view-members',
+                'route' => ['member.index', ['language'=>app()->getLocale(), 'region'=>session('cur_region')]],
             ];
-            $regionmenu[] = $smenu;
-
-            if (Auth::user()->isNotAn('superadmin')){
-                $allowed_regions = Auth::user()->regions();
-                foreach ($allowed_regions as $r) {
-                    $smenu['text'] = $r->code;
-                    if (Auth::user()->can('update-regions')){
-                        $smenu['route']  = ['region.dashboard', ['language' => app()->getLocale(), 'region' => $r]];
-                    } else {
-                        $smenu['route']  = ['region.briefing', ['language' => app()->getLocale(), 'region' => $r]];
-                    }
-                    $smenu['icon_color'] = 'danger';
-                    $smenu['icon'] =  'fas fa-list';
-                    $smenu['shift'] = 'ml-3';
-                    unset($smenu['can']);
-                    $regionmenu[] = $smenu;
-                };
-            }
-
-            $smenu = [
-                'text' => trans_choice('schedule.scheme', 2),
-                'route'  => ['scheme.index', ['language'=>app()->getLocale()]],
-                'icon' => 'fas fa-people-arrows',
-                'icon_color' => 'danger',
-                'shift' => 'ml-3'
-            ];
-            $regionmenu[] = $smenu;
-
-
-            // MENU - REGION
-            $event->menu->add([
-                'text' => trans_choice('region.region', 2),
-                'icon' => 'fas fa-globe-europe',
-                'icon_color' => 'danger',
-                'submenu' => $regionmenu,
-            ]);
+            $event->menu->add($membermenu);
 
             // MENU - ADMIN
             $event->menu->add([
@@ -248,6 +224,14 @@ class AppServiceProvider extends ServiceProvider
                 'text' => __('Administration'),
                 'classes'  => 'text-danger text-uppercase',
                 'submenu' => [
+                    [
+                        'text'  => trans_choice('region.region',2),
+                        'icon'  => 'fas fa-globe-europe',
+                        'icon_color' => 'blue',
+                        'route' => ['region.index', ['language' => app()->getLocale()]],
+                        'can' => 'update-regions',
+                        'shift' => 'ml-3'
+                    ],
                     [
                         'text'  => __('auth.title.approve'),
                         'icon'  => 'fas fa-thumbs-up',
@@ -283,6 +267,15 @@ class AppServiceProvider extends ServiceProvider
                 ]
             ]);
 
+            // MENU LEAGUE SCHEMAS
+            $schememenu = [
+                'text' => trans_choice('schedule.scheme', 2),
+                'route'  => ['scheme.index', ['language'=>app()->getLocale()]],
+                'icon' => 'fas fa-people-arrows',
+                'icon_color' => 'danger',
+            ];
+            $event->menu->add($schememenu);
+
             $event->menu->add([
                 'text' => Str::upper(__('Season')) . ' ' . config('global.season'),
                 'topnav' => true,
@@ -291,7 +284,7 @@ class AppServiceProvider extends ServiceProvider
 
 
             $regionmenu = array();
-            $regionmenu['text'] = session('cur_region')->name;
+            $regionmenu['text'] = ' ';
             $regionmenu['icon'] = 'fas fa-globe-europe';
             $regionmenu['topnav_right'] = true;
 
