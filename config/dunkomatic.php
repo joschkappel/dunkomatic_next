@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'use_real_email' => env('APP_USE_EMAIL', false),
     'title' => 'DunkOmatic',
     'title_prefix' => '',
     'title_postfix' => 'Next',

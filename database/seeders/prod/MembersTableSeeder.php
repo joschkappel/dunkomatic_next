@@ -36,8 +36,8 @@ class MembersTableSeeder extends Seeder
             'street'          => $row->street,
             'phone'          => $row->phone1,
             'mobile'          => $row->mobile,
-            'email1'          => $row->email,
-            'email2'          => $row->email2,
+            'email1'          => config('dunkomatic.use_real_email', false) ? $row->email : config('app.contact'),
+            'email2'          => config('dunkomatic.use_real_email', false) ? $row->email2 : config('app.contact'),
             'fax'          => $row->fax1,
             'created_at'    => now()
           ]);
@@ -54,7 +54,7 @@ class MembersTableSeeder extends Seeder
               'membership_type'   => Club::class,
               'member_id'     => $mem_id,
               'role_id'       => $row->member_role_id +1,
-              'email'         => $row->email,
+              'email'         => config('dunkomatic.use_real_email', false) ? $row->email : config('app.contact'),
               'created_at'    => now()
             ]);
           }
@@ -73,7 +73,7 @@ class MembersTableSeeder extends Seeder
               'member_id'     => $mem_id,
               'role_id'       => $row->member_role_id +1,
               'function'      => $row->function,
-              'email'         => $row->email,
+              'email'         => config('dunkomatic.use_real_email', false) ? $row->email : config('app.contact'),
               'created_at'    => now()
             ]);
           }

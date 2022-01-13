@@ -4,7 +4,6 @@ namespace Database\Seeders\dev;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Enums\Role;
-use App\Models\Club;
 use App\Models\User;
 use App\Models\Region;
 

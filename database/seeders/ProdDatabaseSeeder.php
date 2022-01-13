@@ -3,7 +3,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder
+class ProdDatabaseSeeder extends Seeder
 {
     /**
      * Seed the application's database.
@@ -22,22 +22,20 @@ class DatabaseSeeder extends Seeder
           base\LeagueSizesTableSeeder::class,
           base\LeagueSizeCharsTableSeeder::class,
           base\LeagueSizeSchemesTableSeeder::class,
-          dev\UsersTableSeeder::class,
+          prod\UsersTableSeeder::class,
           base\MessagesTableSeeder::class,
         ]);
 
         // migrate tables from v1
         $this->call([
-          dev\ClubsTableSeeder::class,
-          dev\GymsTableSeeder::class,
+          prod\ClubsTableSeeder::class,
+          prod\GymsTableSeeder::class,
           prod\SchedulesTableSeeder::class,
           prod\ScheduleEventsTableSeeder::class,
           prod\LeaguesTableSeeder::class,
           prod\ClubLeagueTableSeeder::class,
           prod\TeamsTableSeeder::class,
-          dev\MembersTableSeeder::class,
-          dev\GamesTableSeeder::class,
-          base\LeagueStateTableSeeder::class,
+          prod\MembersTableSeeder::class,
         ]);
     }
 }

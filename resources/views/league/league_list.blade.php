@@ -27,7 +27,7 @@
 
          $('#table').DataTable({
          processing: true,
-         serverSide: true,
+         serverSide: false,
          responsive: true,
          language: { "url": "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}" },
          order: [[1,'asc']],
