@@ -298,7 +298,7 @@
             type: 'bar',
             data: { datasets: [{ data: [], }] },
             options: {
-              plugins: { colorschemes: { scheme: 'brewer.SetOne3' }, },
+              plugins: { colorschemes: { scheme: 'brewer.Spectral4' }, },
               responsive: true,
 
               title: {
@@ -312,21 +312,21 @@
             }
         });
 
-       var cmc_canvas = document.getElementById('clubmemberchart');
-       var cmc = cmc_canvas.getContext('2d');
+       var cmc = document.getElementById('clubmemberchart').getContext('2d');
        var clubmemberchart = new Chart(cmc, {
             type: 'bar',
-            data: { },
+            data: { datasets: [{ data: [], }] },
             options: {
-              plugins: { colorschemes: { scheme: 'brewer.RdYlGn10' }, },
+              plugins: { colorschemes: { scheme: 'brewer.SetOne7' }, },
               responsive: true,
-
               title: {
                 display: true,
                 text: '{{ __('region.chart.title.clubmembers') }}'
               },
               scales: {
-                y: { beginAtZero: true },
+                y: { beginAtZero: true, stacked: true },
+                x: { stacked: true }
+
               },
             }
         });
@@ -348,13 +348,14 @@
       load_chart( leaguesociochart, '{{ route('region.league.socio.chart', ['region' => $region->id]) }}' );
       load_chart( clubteamchart, '{{ route('region.club.team.chart', ['region' => $region->id]) }}' );
       load_chart( clubmemberchart, '{{ route('region.club.member.chart', ['region' => $region->id]) }}' );
+
       load_chart( missingrefereeschart, '{{ route('region.game.noreferee.chart', ['region' => $region->id]) }}' );
 
-      cmc_canvas.onclick = function(e) {
+/*       cmc_canvas.onclick = function(e) {
         var slice = clubmemberchart.getElementAtEvent(e);
         if (!slice.length) return;
         alert('you clicked on '+slice[0]._model.label);
-      };
+      }; */
 
 
   });

@@ -12,4 +12,5 @@ return [
     'ical.club.home' => 'Home',
     'ical.club.referee' => 'Referees',
     'filtered' => 'Filtered by: ',
+    'not_specified' => 'Not specified',
 ];

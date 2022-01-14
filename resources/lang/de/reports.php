@@ -12,4 +12,5 @@ return [
     'ical.club.home' => 'Heim',
     'ical.club.referee' => 'Schiri',
     'filtered' => 'Suchkriterium: ',
+    'not_specified' => 'Nicht angegeben',
 ];
