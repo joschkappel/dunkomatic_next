@@ -367,6 +367,11 @@ class RegionController extends Controller
             $datasets[$at]['label'] = LeagueAgeType::getDescription(LeagueAgeType::coerce($at));
             $datasets[$at]['data'] = [];
         }
+        $notspecified = max(LeagueAgeType::getValues()) + 1;
+        $datasets[$notspecified]['stack'] = 'Stack 1';
+        $datasets[$notspecified]['label'] = __('reports.not_specified');
+        $datasets[$notspecified]['data'] = [];
+
 
         /*       SELECT c.shortname, count(t.id)
       FROM clubs as c, teams as t
@@ -382,10 +387,19 @@ class RegionController extends Controller
         $select .= " ORDER BY c.shortname ASC, l.age_type ASC";
 
         $rs = collect(DB::select($select));
-        $data['labels'] = $rs->pluck('shortname')->unique()->values()->toArray();
 
-        foreach ($rs as $r) {
-            $datasets[$r->age_type]['data'][] = $r->total;
+        // get lcubs sorted by team count
+        $clubs = $region->clubs()->withCount('teams')->orderByDesc('teams_count')->orderBy('shortname')->pluck('teams_count','shortname');
+        $data['labels'] = $clubs->keys()->toArray();
+
+        foreach ($clubs as $c => $n) {
+            $tot = $n;
+            foreach ( LeagueAgeType::getInstances() as $a ){
+                $teams = $rs->where('shortname', $c)->where('age_type',$a->value)->first()->total ?? 0;
+                $datasets[$a->value]['data'][] = $teams;
+                $tot -= $teams;
+            }
+            $datasets[$notspecified]['data'][] = $tot ?? 0;
         }
         $data['datasets'] = $datasets;
 
@@ -421,15 +435,14 @@ class RegionController extends Controller
         ->map(function ($item, $key) {
             return collect($item)->count();
           }); */
-        $clubs = $region->clubs->sortBy('shortname');
-        $data['labels'] = $clubs->pluck('shortname')->toArray();
+        $rs = $region->clubs()->with('memberships')->orderBy('shortname')->get();
 
-        foreach ($clubs as $c) {
-            $mships = Membership::whereIn('member_id', $c->members()->pluck('member_id'))
-                ->get()
-                ->countBy('role_id');
+        $clubs = $region->clubs()->withCount('memberships')->orderByDesc('memberships_count')->orderBy('shortname')->pluck('memberships_count','shortname');
+        $data['labels'] = $clubs->keys()->toArray();
 
+        foreach ($clubs as $c => $n) {
             foreach ($roleList as $r) {
+                $mships = $rs->where('shortname',$c)->first()->memberships->countBy('role_id');
                 $datasets[$r]['data'][] = $mships[$r] ?? 0;
             }
         }
