@@ -19,7 +19,9 @@ abstract class DuskTestCase extends BaseTestCase
      */
     public static function prepare(): void
     {
-       static::startChromeDriver();
+        if (env('SELENIUM_ENABLED', false)) {
+            static::startChromeDriver();
+        }
     }
 
     /**
@@ -36,11 +38,19 @@ abstract class DuskTestCase extends BaseTestCase
             '--no-sandbox'
         ]);
 
-        return RemoteWebDriver::create(
-            'http://selenium:4444/wd/hub', DesiredCapabilities::chrome()->setCapability(
-            //'http://localhost:9515', DesiredCapabilities::chrome()->setCapability(
-                ChromeOptions::CAPABILITY, $options
-            )
-        );
+        if (env('SELENIUM_ENABLED', false)) {
+            return RemoteWebDriver::create(
+                'http://selenium:4444/wd/hub', DesiredCapabilities::chrome()->setCapability(
+                //'http://localhost:9515', DesiredCapabilities::chrome()->setCapability(
+                    ChromeOptions::CAPABILITY, $options
+                )
+            );
+        } else {
+            return RemoteWebDriver::create(
+                'http://localhost:9515', DesiredCapabilities::chrome()->setCapability(
+                    ChromeOptions::CAPABILITY, $options
+                )
+            );
+        }
     }
 }

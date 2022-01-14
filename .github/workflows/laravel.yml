@@ -21,7 +21,6 @@ jobs:
     - name: Copy ENV Laravel Configuration for CI
       run: |
         cp .env.dusk.git .env
-        cp tests/DuskTestCase.php.git tests/DuskTestCase.php
         chmod -R 777 storage bootstrap/cache
         mkdir -m 777 -p storage/app/exports/2020_21/HBVDA/vereine
         mkdir -m 777 -p storage/app/exports/2020_21/HBVDA/runden
