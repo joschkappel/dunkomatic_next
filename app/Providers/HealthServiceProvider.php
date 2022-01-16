@@ -43,11 +43,11 @@ class HealthServiceProvider extends ServiceProvider
             DbConnectionsCheck::new(),
             DatabaseCheck::new(),
             RedisCheck::new(),
-           // PingCheck::new()->url('https://h2941512.stratoserver.net/healthy'),
-            ScheduleCheck::new(),
-           // EnvironmentCheck::new()->expectEnvironment('prod'),
+            PingCheck::new()->url('https://h2941512.stratoserver.net/healthy'),
+            // ScheduleCheck::new(),
+            EnvironmentCheck::new()->expectEnvironment('prod'),
             CacheCheck::new(),
-           // DebugModeCheck::new()
+            DebugModeCheck::new()
         ]);
     }
 }

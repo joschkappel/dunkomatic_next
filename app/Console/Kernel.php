@@ -61,8 +61,8 @@ class Kernel extends ConsoleKernel
           }
         }
 
-        $schedule->command(RunHealthChecksCommand::class)->everyMinute();
-        $schedule->command(ScheduleCheckHeartbeatCommand::class)->everyMinute();
+        $schedule->command(RunHealthChecksCommand::class)->everyFifteenMinutes();
+        // $schedule->command(ScheduleCheckHeartbeatCommand::class)->everyFifteenMinutes();
     }
 
     /**
