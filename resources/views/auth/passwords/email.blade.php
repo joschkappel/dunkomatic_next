@@ -13,40 +13,36 @@
 @php( $dashboard_url = $dashboard_url ? route($dashboard_url, app()->getLocale() ) : '' )
 
 @section('body')
-    <div class="login-box">
-        <div class="login-logo">
-            <a href="{{ $dashboard_url }}">{!! config('menu.logo') !!}</a>
-        </div>
-        <div class="card">
-            <div class="card-body login-card-body">
-                <p class="login-box-msg">{{ __('auth.password_reset_message') }}</p>
-                @if (session('status'))
-                    <div class="alert alert-success">
-                        {{ session('status') }}
+<x-auth-card-form>
+    <div class="card-body login-card-body">
+        <p class="login-box-msg">{{ __('auth.password_reset_message') }}</p>
+        @if (session('status'))
+            <div class="alert alert-success">
+                {{ session('status') }}
+            </div>
+        @endif
+        <form action="{{ $password_email_url }}" method="post">
+            {{ csrf_field() }}
+            <div class="input-group mb-3">
+                <input type="email" name="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" value="{{ old('email') }}" placeholder="{{ __('auth.email') }}" autofocus>
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-envelope"></span>
+                    </div>
+                </div>
+                @if ($errors->has('email'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('email') }}
                     </div>
                 @endif
-                <form action="{{ $password_email_url }}" method="post">
-                    {{ csrf_field() }}
-                    <div class="input-group mb-3">
-                        <input type="email" name="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" value="{{ old('email') }}" placeholder="{{ __('auth.email') }}" autofocus>
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
-                            </div>
-                        </div>
-                        @if ($errors->has('email'))
-                            <div class="invalid-feedback">
-                                {{ $errors->first('email') }}
-                            </div>
-                        @endif
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block btn-flat">
-                        {{ __('auth.send_password_reset_link') }}
-                    </button>
-                </form>
             </div>
-        </div>
+            <button type="submit" class="btn btn-primary btn-block btn-flat">
+                {{ __('auth.send_password_reset_link') }}
+            </button>
+        </form>
+
     </div>
+</x-auth-card-form>
 @stop
 
 @section('app_js')

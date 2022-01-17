@@ -16,22 +16,7 @@
 @php( $dashboard_url = $dashboard_url ? route('start') : '' )
 
 @section('body')
-<div class="container-fluid">
-    <div class="row justify-content-between">
-        <div class="col-6 col-md-4 align-self-start">
-            <div class="card border-secondary bg-secondary text-white">
-                <img src="{{asset('img/'.config('dunkomatic.grafics.welcome', 'oops.jpg'))}}" class="card-img" alt="...">
-                <div class="card-img-overlay">
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 align-self-center">
-
-            <div class="register-box center">
-                <div class="register-logo">
-                    <a href="{{ $dashboard_url }}">{!! config('menu.logo') !!}</a>
-                </div>
-                <div class="card">
+<x-auth-card-form>
                     <div class="card-body register-card-body">
                         <p class="login-box-msg">{{ __('auth.register_message') }}</p>
                         <form action="{{ $register_url }}" method="post">
@@ -137,12 +122,7 @@
                             </a>
                         </p>
                     </div><!-- /.card-body -->
-                </div><!-- /.card -->
-            </div><!-- /.register-box -->
-        </div>
-    </div>
-</div>
-
+</x-auth-card-form>
 @stop
 
 @section('app_js')

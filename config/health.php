@@ -74,7 +74,7 @@ return [
 
             'username' => 'Laravel Health',
 
-            'icon' => ':boom:',
+            'icon' => ':tada:',
         ],
     ],
 

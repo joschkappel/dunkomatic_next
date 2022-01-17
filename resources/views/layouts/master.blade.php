@@ -20,6 +20,26 @@
     </title>
 
     {{-- Custom stylesheets  --}}
+    <style>
+        .welcomepage {
+            height: 100vh;
+            min-height: 500px;
+            background-image: url('{{asset('img/'.config('dunkomatic.grafics.welcome_l', 'oops.jpg'))}}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat
+        }
+        @media(min-width: 768px){
+            .welcomepage{
+                background-image:url('{{asset('img/'.config('dunkomatic.grafics.welcome_l', 'oops.jpg'))}}');
+            }
+        }
+        @media(max-width: 768px){
+            .welcomepage{
+                background-image:url('{{asset('img/'.config('dunkomatic.grafics.welcome_p', 'oops.jpg'))}}');
+            }
+        }
+        </style>
     @yield('app_css_pre')
 
     {{-- Base Stylesheets --}}

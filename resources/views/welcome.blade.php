@@ -102,7 +102,7 @@
                     <div class="row">
                         <div class="col-6 col-md-4 align-self-start">
                             <div class="card border-secondary bg-secondary text-white">
-                                <img src="{{asset('img/'.config('dunkomatic.grafics.welcome', 'oops.jpg'))}}" class="card-img" alt="...">
+                                <img src="{{asset('img/'.config('dunkomatic.grafics.welcome_p', 'oops.jpg'))}}" class="card-img" alt="...">
                                 <div class="card-img-overlay">
                                 </div>
                             </div>

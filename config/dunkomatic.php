@@ -2,11 +2,12 @@
 
 return [
     'use_real_email' => env('APP_USE_EMAIL', false),
-    'title' => 'DunkOmatic',
+    'title' => 'dunk🏀matic',
     'title_prefix' => '',
     'title_postfix' => 'Next',
+    'welcome' => 'A great starter for your new awesome project',
 
-    'use_ico_only' => false,
+    'use_ico_only' => true,
     'use_full_favicon' => true,
 
     'dashboard_url' => 'home',
@@ -22,7 +23,8 @@ return [
     'laravel_mix_js_path' => 'js/app.js',
 
     'grafics' => array(
-        'welcome' => 'welcome.jpg',
+        'welcome_l' => 'welcome_landscape.jpg',
+        'welcome_p' => 'welcome_portrait.jpg',
         'club'    => 'club.jpg',
         'league'    => 'league.jpg',
         'region'    => 'region.jpg',
