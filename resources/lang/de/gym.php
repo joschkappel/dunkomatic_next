@@ -13,5 +13,6 @@ return [
   'confirm.delete' => 'Wills Du diese Spielhalle wirklich löschen ?',
   'name' => 'Hallenname',
   'no' => 'Halle Nr.',
+  'tooltip.map' => 'Zeige die Hallenaddresse auf der Karte',
 
 ];

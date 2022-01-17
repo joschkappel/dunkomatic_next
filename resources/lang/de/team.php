@@ -48,5 +48,7 @@ return [
   'game.perday.num' => '# Spiele',
   'game.combination' => 'Kombination Nr.',
   'game.perday.games' => 'Heimspiele pro Tag',
+  'tooltip.assign' => 'Melde Mannschaft :Name für eine Spielrunde an',
+  'tooltip.deassign' => 'Melde Mannschaft :Name von einer Spielrunde ab',
 
 ];

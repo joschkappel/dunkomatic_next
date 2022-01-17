@@ -29,12 +29,12 @@
             background-position: center;
             background-repeat: no-repeat
         }
-        @media(min-width: 768px){
+        @media only screen and (orientation: landscape){
             .welcomepage{
                 background-image:url('{{asset('img/'.config('dunkomatic.grafics.welcome_l', 'oops.jpg'))}}');
             }
         }
-        @media(max-width: 768px){
+        @media only screen (orientation: portrait){
             .welcomepage{
                 background-image:url('{{asset('img/'.config('dunkomatic.grafics.welcome_p', 'oops.jpg'))}}');
             }
@@ -84,6 +84,11 @@
     <script src="{{ asset('js/vendor.js') }}"></script>
 
     {{-- Custom Scripts --}}
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip({delay: { show: 1200, hide: 100 }, placement: 'auto'});
+        })
+    </script>
     @yield('app_js')
 
 </body>

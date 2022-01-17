@@ -61,4 +61,7 @@ return [
     'user.role.leagueadmin'     => 'League Admin',
     'user.role.candidate'       => 'Candidate',
     'user.role.superadmin'     => 'Administrator',
+    'user.tooltip.block'        => 'Block user :name. Yuou will need to approve him again to allow access.',
+    'user.tooltip.delete'        => 'Delete user :name',
+
 ];

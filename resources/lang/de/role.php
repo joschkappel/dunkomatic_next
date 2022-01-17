@@ -38,5 +38,10 @@ return [
   '7.short' => 'Bezirk',
   'hasuser' => 'Dieses Mitglied hat ein Benutzerkonto',
   'address.download' => 'Download',
-  'address.title.list' => 'Kontaktdaten :role für :region'
+  'address.title.list' => 'Kontaktdaten :role für :region',
+  'tooltip.delete' => 'Du willst :Name löschen',
+  'tooltip.invite' => 'Du willst :Name eine Benutzer Einladung senden',
+  'tooltip.edit' => 'Du willst die Daten für :Name ändern',
+  'tooltip.newrole' => 'Du willst eine neue Rolle für :Name aufnehmen',
+  'tooltip.editrole' => 'Du willst die Rolle :role von :Name ändern oder löschen'
 ];

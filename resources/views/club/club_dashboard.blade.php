@@ -178,17 +178,21 @@
                                                 <tr>
                                                     <td>
                                                     @if ( ! ( ($registered_teams->contains($team->league_id)) and ($team->league->state->in([ App\Enums\LeagueState::Selection(), App\Enums\LeagueState::Scheduling(), App\Enums\LeagueState::Freeze(), App\Enums\LeagueState::Live() ])) ) )
-                                                        <button id="deleteTeam" data-team-id="{{ $team->id }}" data-league-sname="@if( isset($team->league->shortname) ){{ $team->league->shortname }}@else{{ __('team.unassigned')}} @endif"
-                                                            data-team-no="{{ $team->team_no }}" data-club-sname="{{ $club->shortname }}" type="button"
-                                                            class="btn btn-outline-danger btn-sm "  @cannot('create-teams') disabled @endcannot> <i class="fas fa-trash"></i>
-                                                        </button>
+                                                        <span data-toggle="tooltip" title="{{__('team.action.delete',['name'=> $team->name])}}">
+                                                            <button id="deleteTeam" data-team-id="{{ $team->id }}" data-league-sname="@if( isset($team->league->shortname) ){{ $team->league->shortname }}@else{{ __('team.unassigned')}} @endif"
+                                                                data-team-no="{{ $team->team_no }}" data-club-sname="{{ $club->shortname }}" type="button"
+                                                                class="btn btn-outline-danger btn-sm "  @cannot('create-teams') disabled @endcannot> <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </span>
                                                     @endif
                                                     </td>
                                                     <td>
                                                         @can('update-teams')
-                                                        <a href="{{ route('team.edit', ['language' => app()->getLocale(), 'team' => $team->id]) }}">{{ $club->shortname }}{{ $team->team_no }}
-                                                            <i class="fas fa-arrow-circle-right"></i>
-                                                        </a>
+                                                        <span data-toggle="tooltip" title="{{__('team.action.edit',['name'=> $team->name])}}">
+                                                            <a href="{{ route('team.edit', ['language' => app()->getLocale(), 'team' => $team->id]) }}">{{ $club->shortname }}{{ $team->team_no }}
+                                                                <i class="fas fa-arrow-circle-right"></i>
+                                                            </a>
+                                                        </span>
                                                         @else
                                                         {{ $club->shortname }}{{ $team->team_no }}
                                                         @endcannot
@@ -204,12 +208,14 @@
                                                     </td>
                                                     @if($registered_teams->contains($team->league_id))
                                                         @if ($team->league->state->in([App\Enums\LeagueState::Registration(),App\Enums\LeagueState::Selection(),App\Enums\LeagueState::Assignment()]) )
-                                                            <td><button id="deassignLeague" data-league-id="{{ $team->league['id'] }}"
+                                                            <td><span data-toggle="tooltip" title="{{__('team.tooltip.deassign',['name'=> $team->name])}}">
+                                                                <button id="deassignLeague" data-league-id="{{ $team->league['id'] }}"
                                                         data-team-id="{{ $team->id }}" data-club-id="{{ $club->id }}"
                                                         type="button" class="btn btn-outline-dark btn-sm "> <i
                                                             class="fas fa-unlink pr-2"></i> {{ $team->league['shortname'] }} <span
                                                                     class="badge badge-pill badge-dark pl-2">
                                                                     {{ $team->league_no  }}</span></button>
+                                                                </span>
                                                             </td>
                                                         @else
                                                           <td><button type="button" class="btn btn-outline-dark btn-sm"
@@ -221,10 +227,12 @@
                                                     @else
                                                         <td>
                                                         @can('update-teams')
-                                                        <button type="button" id="assignLeague" class="btn btn-outline-info btn-sm"
-                                                            data-team-id="{{ $team->id }}" data-club-id="{{ $club->id }}"
-                                                            data-toggle="modal" data-target="#modalAssignLeague"><i
-                                                        class="fas fa-link pr-2"></i>@lang('league.action.register')</button>
+                                                        <span data-toggle="tooltip" title="{{__('team.tooltip.assign',['name'=> $team->name])}}">
+                                                            <button type="button" id="assignLeague" class="btn btn-outline-info btn-sm"
+                                                                data-team-id="{{ $team->id }}" data-club-id="{{ $club->id }}"
+                                                                data-toggle="modal" data-target="#modalAssignLeague"><i
+                                                            class="fas fa-link pr-2"></i>@lang('league.action.register')</button>
+                                                        </span>
                                                         @endcan
                                                         </td>
                                                     @endif
@@ -272,24 +280,30 @@
                         <ul class="list-group list-group-flush">
                         @foreach ($gyms as $gym)
                            <li class="list-group-item ">
-                                <button type="button" id="deleteGym" class="btn btn-outline-danger btn-sm"
-                                    @cannot('create-gyms') disabled @else @if ($gym->games()->exists()) disabled @endif @endcannot
-                                    data-gym-id="{{ $gym->id }}"
-                                    data-gym-name="{{ $gym->gym_no }} - {{ $gym->name }}"
-                                    data-club-sname="{{ $club->shortname }}" data-toggle="modal"
-                                    data-target="#modalDeleteGym"><i class="fa fa-trash"></i></button>
+                                <span data-toggle="tooltip" title="{{__('gym.action.delete')}}">
+                                    <button type="button" id="deleteGym" class="btn btn-outline-danger btn-sm"
+                                        @cannot('create-gyms') disabled @else @if ($gym->games()->exists()) disabled @endif @endcannot
+                                        data-gym-id="{{ $gym->id }}"
+                                        data-gym-name="{{ $gym->gym_no }} - {{ $gym->name }}"
+                                        data-club-sname="{{ $club->shortname }}" data-toggle="modal"
+                                        data-target="#modalDeleteGym"><i class="fa fa-trash"></i></button>
+                                </span>
                                 @can('update-gyms')
-                                <a href="{{ route('gym.edit', ['language' => app()->getLocale(), 'gym' => $gym]) }}"
-                                    class=" px-2">
-                                    {{ $gym->gym_no }} - {{ $gym->name }} <i
-                                        class="fas fa-arrow-circle-right"></i></a>
+                                    <span data-toggle="tooltip" title="{{__('gym.action.edit')}}">
+                                        <a href="{{ route('gym.edit', ['language' => app()->getLocale(), 'gym' => $gym]) }}"
+                                            class=" px-2">
+                                            {{ $gym->gym_no }} - {{ $gym->name }} <i
+                                                class="fas fa-arrow-circle-right"></i></a>
+                                    </span>
                                 @else
                                     {{ $gym->gym_no }} - {{ $gym->name }}
                                 @endcan
-                                <a href="{{ config('dunkomatic.maps_uri') }}{{ urlencode($gym->address) }}"
-                                    class=" px-4" target="_blank">
-                                    <i class="fas fa-map-marked-alt"></i>
-                                </a>
+                                <span data-toggle="tooltip" title="{{__('gym.tooltip.map')}}">
+                                    <a href="{{ config('dunkomatic.maps_uri') }}{{ urlencode($gym->address) }}"
+                                        class=" px-4" target="_blank">
+                                        <i class="fas fa-map-marked-alt"></i>
+                                    </a>
+                                </span>
                             </li>
                         @endforeach
                         </ul>
