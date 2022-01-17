@@ -29,7 +29,7 @@ class RegisterTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/de')
-                    ->assertSee('DunkOmatic Next')
+                    ->assertSee('HBV')
                     ->screenshot('start');
 
             if ($browser->seeLink('Registrieren')) {
