@@ -38,5 +38,10 @@ return [
   '7.short' => 'Region',
   'hasuser' => 'THis member has got a user account',
   'address.download' => 'Download',
-  'address.title.list' => ':role contact details for :region'
+  'address.title.list' => ':role contact details for :region',
+  'tooltip.delete' => 'You want to delete member :Name',
+  'tooltip.invite' => 'You want to invite member :Name to become a user',
+  'tooltip.edit' => 'You want to edit member :Name',
+  'tooltip.newrole' => 'You want to add a new role for :Name',
+  'tooltip.editrole' => 'You want to modify or delete the role :role of :Name'
 ];

@@ -10,7 +10,6 @@
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
-        "@popperjs/core": "^2.10.2",
         "@sweetalert2/theme-bootstrap-4": "^5.0.8",
         "adjust-sourcemap-loader": "^3.0.0",
         "axios": ">=0.21.1",

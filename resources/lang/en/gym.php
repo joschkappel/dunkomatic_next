@@ -13,4 +13,5 @@ return [
   'confirm.delete' => 'Do you really want to delete this gym ?',
   'name' => 'Gym Name',
   'no' => 'Gym Number',
+  'tooltip.map' => 'Show gym location on maps',
 ];

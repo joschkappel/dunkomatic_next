@@ -48,4 +48,7 @@ return [
   'game.perday.num' => '# games',
   'game.combination' => 'Combination No.',
   'game.perday.games' => 'Home Games per Day',
+  'tooltip.assign' => 'Register team :Name for a league',
+  'tooltip.deassign' => 'De-register team :Name from a league',
+
 ];

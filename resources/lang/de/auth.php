@@ -61,4 +61,6 @@ return [
     'user.role.leagueadmin'     => 'Kann Runden verwalten',
     'user.role.superadmin'     => 'Kann Alles verwalten',
     'user.role.candidate'       => 'Kandidat',
+    'user.tooltip.block'        => 'Der Benutzer :name wird blockiert. Er muss erneut zugelassen werden',
+    'user.tooltip.delete'        => 'Der Benutzer :name wird gelöscht',
 ];

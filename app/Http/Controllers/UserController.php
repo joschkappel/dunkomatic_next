@@ -41,14 +41,14 @@ class UserController extends Controller
             ->addColumn('action', function ($data) {
                 $state = ($data->approved_at == null) ? 'disabled' : '';
                 if (Bouncer::can('update-users')) {
-                    $btn = '<button type="button" id="blockUser" name="blockUser" class="btn btn-outline-primary btn-sm" data-user-id="' . $data->id . '"
-                        data-user-name="' . $data->name . '" data-toggle="modal" data-target="#modalBlockUser" ' . $state . '><i class="fas fa-ban"></i></button>  ';
+                    $btn = '<span data-toggle="tooltip" title="'.__('auth.user.tooltip.block',['name'=> $data->name]).'"><button type="button" id="blockUser" name="blockUser" class="btn btn-outline-primary btn-sm" data-user-id="' . $data->id . '"
+                        data-user-name="' . $data->name . '" data-toggle="modal" data-target="#modalBlockUser" ' . $state . '><i class="fas fa-ban"></i></button></span>  ';
                 } else {
                     $btn = '';
                 }
                 if (Bouncer::can('create-users')) {
-                    $btn .= '<button type="button" id="deleteUser" name="deleteUser" class="btn btn-outline-danger btn-sm" data-user-id="' . $data->id . '"
-                       data-user-name="' . $data->name . '" data-toggle="modal" data-target="#modalDeleteUser" ><i class="fa fa-trash"></i></button>';
+                    $btn .= '<span data-toggle="tooltip" title="'.__('auth.user.tooltip.delete',['name'=> $data->name]).'"><button type="button" id="deleteUser" name="deleteUser" class="btn btn-outline-danger btn-sm" data-user-id="' . $data->id . '"
+                       data-user-name="' . $data->name . '" data-toggle="modal" data-target="#modalDeleteUser" ><i class="fa fa-trash"></i></button></span>';
                 };
                 return $btn;
             })
