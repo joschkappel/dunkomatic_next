@@ -413,7 +413,7 @@ class LeagueController extends Controller
             'league_size_id' => 'sometimes|required|exists:league_sizes,id',
             'name' => 'required|max:255',
             'age_type' => ['required', new EnumValue(LeagueAgeType::class, false)],
-            'gender_type' => ['required', new EnumValue(LeagueGenderType::class, false)],
+            'gender_type' => ['required', new EnumValue(LeagueGenderType::class, false)]
         ]);
         Log::info('league form data validated OK');
 

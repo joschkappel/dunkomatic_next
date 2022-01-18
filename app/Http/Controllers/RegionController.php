@@ -240,9 +240,14 @@ class RegionController extends Controller
             'close_registration_at' => 'sometimes|required|date|after:close_assignment_at',
             'close_selection_at' => 'sometimes|required|date|after:close_registration_at',
             'close_scheduling_at' => 'sometimes|required|date|after:close_selection_at',
-            'close_referees_at' => 'sometimes|required|date|after:close_scheduling_at',
-        ]);
+            'close_referees_at' => 'sometimes|required|date|after:close_scheduling_at'        ]);
         Log::info('region details form data validated OK.');
+        $auto_state_change = $request->input('auto_state_change');
+        if (isset($auto_state_change) and ($auto_state_change == 'on')) {
+            $data['auto_state_change'] = true;
+        } else {
+            $data['auto_state_change'] = false;
+        }
 
         $check = $region->update($data);
         $region->refresh();
