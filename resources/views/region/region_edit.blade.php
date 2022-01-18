@@ -165,8 +165,20 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade " id="leaguestates" role="tabpanel"
-            aria-labelledby="leaguestates-tab">
+        <div class="tab-pane fade " id="leaguestates" role="tabpanel" aria-labelledby="leaguestates-tab">
+
+            <div class="form-row m-2">
+                <div class="col-sm-6">
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group  clearfix">
+                        <div class="icheck-info d-inline">
+                            <input type="checkbox" id="auto_state_change" name="auto_state_change" @if ($region->auto_state_change) checked @endif>
+                            <label for="auto_state_change">@lang('league.auto_state_change') ?</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="form-row m-2">
                 <label for="closeassignment"
@@ -183,10 +195,8 @@
                         @error('close_assignment_at')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-
                     </div>
                 </div>
-
             </div>
             <div class="form-row m-2">
                 <label for="closeregistration"

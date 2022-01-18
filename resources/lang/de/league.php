@@ -29,6 +29,7 @@ return [
   'size'  => 'Anzahl Teams',
   'state' => 'Status',
   'above-region' => 'Überbezirklich',
+  'auto_state_change' => 'Automatische Phasenübergänge',
   'generated' => 'GESPERRT',
   'agetype' => 'Altersklasse',
   'gendertype' => 'Geschlect',

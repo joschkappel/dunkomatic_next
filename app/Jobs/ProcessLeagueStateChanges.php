@@ -40,42 +40,46 @@ class ProcessLeagueStateChanges implements ShouldQueue
      */
     public function handle()
     {
-        Log::info('[JOB][LEAGUE AUTO STATE CHANGE] started.', ['region-id' => $this->region->id]);
+        if ($this->region->auto_state_change){
+            Log::info('[JOB][LEAGUE AUTO STATE CHANGE] started.', ['region-id' => $this->region->id]);
 
-        // check for auto-close assignemnts
-        $leagues = $this->region->leagues;
+            // check for auto-close assignemnts
+            $leagues = $this->region->leagues;
 
-        // set close date defaults to future if empty
-        $close_assignment = $this->region->close_assignment_at ??  Carbon::now()->nextWeekday();
-        $close_registration = $this->region->close_registration_at ??  Carbon::now()->nextWeekday();
-        $close_selection = $this->region->close_selection_at ??  Carbon::now()->nextWeekday();
-        $close_scheduling = $this->region->close_scheduling_at ??  Carbon::now()->nextWeekday();
-        $close_referees = $this->region->close_referees_at ??  Carbon::now()->nextWeekday();
+            // set close date defaults to future if empty
+            $close_assignment = $this->region->close_assignment_at ??  Carbon::now()->nextWeekday();
+            $close_registration = $this->region->close_registration_at ??  Carbon::now()->nextWeekday();
+            $close_selection = $this->region->close_selection_at ??  Carbon::now()->nextWeekday();
+            $close_scheduling = $this->region->close_scheduling_at ??  Carbon::now()->nextWeekday();
+            $close_referees = $this->region->close_referees_at ??  Carbon::now()->nextWeekday();
 
 
-        foreach ($leagues as $l){
-            // check if all clubs are assigned
-            if ($l->state->is( LeagueState::Assignment())){
-                if ( ( $l->clubs->count() == $l->size ) or ( $close_assignment < now()) ){
-                    $this->close_assignment($l);
-                }
-            } elseif ($l->state->is( LeagueState::Registration())){
-                if (( $l->clubs->count() == $l->teams->count() ) or ( $close_registration < now()) ){
-                    $this->close_registration($l);
-                }
-            } elseif ($l->state->is( LeagueState::Selection())){
-                if ( ( $l->teams->count() == $l->teams->whereNotNull('league_no')->count() ) or ( $close_selection < now()) ){
-                    $this->close_selection($l);
-                }
-            } elseif ($l->state->is( LeagueState::Scheduling())){
-                if ( (( $l->games_notime->count() == 0 ) and ($l->games_noshow->count() == 0 )) or ( $close_scheduling < now()) ){
-                    $this->close_scheduling($l);
-                }
-            } elseif ($l->state->is( LeagueState::Referees())){
-                if ( ( $l->games_noreferee->count() == 0 )  or ( $close_referees < now()) ){
-                    $this->close_scheduling($l);
+            foreach ($leagues as $l){
+                // check if all clubs are assigned
+                if ($l->state->is( LeagueState::Assignment())){
+                    if ( ( $l->clubs->count() == $l->size ) or ( $close_assignment < now()) ){
+                        $this->close_assignment($l);
+                    }
+                } elseif ($l->state->is( LeagueState::Registration())){
+                    if (( $l->clubs->count() == $l->teams->count() ) or ( $close_registration < now()) ){
+                        $this->close_registration($l);
+                    }
+                } elseif ($l->state->is( LeagueState::Selection())){
+                    if ( ( $l->teams->count() == $l->teams->whereNotNull('league_no')->count() ) or ( $close_selection < now()) ){
+                        $this->close_selection($l);
+                    }
+                } elseif ($l->state->is( LeagueState::Scheduling())){
+                    if ( (( $l->games_notime->count() == 0 ) and ($l->games_noshow->count() == 0 )) or ( $close_scheduling < now()) ){
+                        $this->close_scheduling($l);
+                    }
+                } elseif ($l->state->is( LeagueState::Referees())){
+                    if ( ( $l->games_noreferee->count() == 0 )  or ( $close_referees < now()) ){
+                        $this->close_scheduling($l);
+                    }
                 }
             }
+        } else {
+            Log::info('[JOB][LEAGUE AUTO STATE CHANGE] not enabled.', ['region-id' => $this->region->id]);
         }
     }
 }
