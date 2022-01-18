@@ -9,12 +9,7 @@ use Datatables;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Carbon\Carbon;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Response;
-
 
 class GameController extends Controller
 {
@@ -31,7 +26,7 @@ class GameController extends Controller
         // $games = Game::whereIn('league_id', $leagues)->orderBy('game_date')->get();
         $clubs = $region->clubs()->pluck('id');
         //$games = Game::whereIn('club_id_home', $clubs)->orWhereIn('club_id_guest',$clubs)->orderBy('game_date')->get();
-        $games = Game::whereIn('club_id_home', $clubs)->orderBy('game_date')->get();
+        $games = Game::whereIn('club_id_home', $clubs)->with(['league','gym'])->orderBy('game_date')->get();
 
         Log::info('preparing game list');
         $glist = datatables()::of($games);
