@@ -10,10 +10,10 @@ use Datatables;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Arr;
 
 use Carbon\Carbon;
-use Carbon\CarbonImmutable;
+
 use Illuminate\Support\Collection;
 
 use App\Imports\HomeGamesImport;
@@ -140,8 +140,9 @@ class ClubGameController extends Controller
 
         $cardtitle =  __('club.title.gamehome.import', ['club' => $club->shortname]);
         $uploadroute = route('club.import.homegame', ['language' => app()->getLocale(), 'club' => $club]);
+        $context = 'club';
 
-        return view('game.game_file_upload', ['cardTitle' => $cardtitle, 'uploadRoute' => $uploadroute]);
+        return view('game.game_file_upload', ['cardTitle' => $cardtitle, 'uploadRoute' => $uploadroute, 'context'=>$context]);
     }
 
     /**
@@ -153,23 +154,32 @@ class ClubGameController extends Controller
      */
     public function import(Request $request, $language, Club $club)
     {
-        Log::info('processing file upload.', ['club-id'=> $club->id, 'file'=> $request->gfile->getClientOriginalName() ]);
+        $data = $request->validate([
+            'gfile' => 'required'
+        ]);
+        Log::info('upload form data validated OK.');
+        Log::info('processing file upload.', ['club-id'=> $club->id, 'file'=> $data['gfile']->getClientOriginalName() ]);
         // Log::debug(print_r($request->all(),true));
         //$fname = $request->gfile->getClientOriginalName();
         //$fname = $club->shortname.'_homegames.'.$request->gfile->extension();
         $errors = [];
 
-        $path = $request->gfile->store('homegames');
-        $hgImport = new HomeGamesImport($club->id);
+        $path = $data['gfile']->store('homegames');
+        $hgImport = new HomeGamesImport();
         try {
             // $hgImport->import($path, 'local', \Maatwebsite\Excel\Excel::XLSX);
             Log::info('validating import data.', ['club-id'=> $club->id]);
             $hgImport->import($path, 'local');
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-            $failures = $e->failures();
+            $failures = Arr::sortRecursive($e->failures());
             $ebag = array();
+            $frow = 0;
             foreach ($failures as $failure) {
-                $ebag[] = 'Zeile ' . $failure->row() . ', Spalte ' . $failure->attribute() . ', Wert  ": ' . $failure->errors()[0];
+                if ($frow != $failure->row()){
+                    $ebag[] = '---';
+                }
+                $ebag[] = __('import.row').' "' . $failure->row() . '", '.__('import.column').' "' . $failure->attribute() . '": ' . $failure->errors()[0];
+                $frow = $failure->row();
             }
             Log::warning('errors found in import data.', ['count'=> count($failures) ]);
             Storage::delete($path);

@@ -50,11 +50,16 @@ $(function() {
             title: '{{$club->shortname}}_{{ trans_choice('game.homegame',2)}}',
             sheetName: '{{ trans_choice('game.homegame',2)}}',
           },
+          { extend: 'spacer'
+          },
           { extend: 'print',
             exportOptions: { orthogonal: 'export', columns: ':visible' },
           }
           @if ( now()->isBefore( $club->region->close_scheduling_at ?? now()->addMinute(1) ) )
-            ,'import'
+            ,{ extend: 'spacer',
+                        style: 'bar'
+            },
+            'import'
           @endif
         ],
         order: [[ 2,'asc'],[ 3,'asc'], [ 4,'asc']],

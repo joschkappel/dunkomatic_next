@@ -23,7 +23,7 @@ class RegionGameController extends Controller
         Log::info('preparing file upload form for region.', ['region-id'=> $region->id ]);
         $cardtitle =  __('region.title.refgame.import', ['region'=>$region->code]);
         $uploadroute = route('region.import.refgame',['language'=> app()->getLocale(),'region' => $region]);
-        return view('game/game_file_upload', ['cardTitle' => $cardtitle, 'uploadRoute'=>$uploadroute]);
+        return view('game/game_file_upload', ['cardTitle' => $cardtitle, 'uploadRoute'=>$uploadroute, 'context'=>'referee']);
     }
 
     /**
@@ -51,7 +51,7 @@ class RegionGameController extends Controller
           $failures = $e->failures();
           $ebag = array();
           foreach ($failures as $failure) {
-              $ebag[] = 'Zeile '.$failure->row().', Spalte '.$failure->attribute().', Wert  ": '.$failure->errors()[0];
+              $ebag[] = __('import.row').' "'.$failure->row().'", '.__('import.column').' "'.$failure->attribute().': '.$failure->errors()[0];
           }
           Log::warning('errors found in import data.', ['count'=> count($failures) ]);
           Storage::delete($path);

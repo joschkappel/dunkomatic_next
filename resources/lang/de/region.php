@@ -47,5 +47,6 @@ return [
   'chart.title.clubmembers' => 'Funktionen per Verein',
   'chart.clubstats' => 'Vereinsanalysen',
   'chart.leaguestats' => 'Spielrundenanalysen',
+  'title.refgame.import' => 'Schiedsrichteransetzugen Hochladen',
 
 ];

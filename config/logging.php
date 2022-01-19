@@ -61,7 +61,7 @@ return [
             'username' => 'Laravel Log',
             'emoji' => ':tada:',
             'icon' => ':tada:',
-            'level' => 'error',
+            'level' => 'critical',
         ],
         'papertrail' => [
             'driver' => 'monolog',
