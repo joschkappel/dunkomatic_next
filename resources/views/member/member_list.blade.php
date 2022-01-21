@@ -29,7 +29,6 @@
                  order: [[1,'asc']],
                  ajax: "{{ route('member.datatable', ['region' => $region]) }}",
                  buttons: [
-
                      { extend: 'collection',
                        text: 'Export',
                        buttons: [

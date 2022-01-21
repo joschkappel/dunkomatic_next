@@ -38,17 +38,32 @@
                 @if ( now()->between( $region->close_scheduling_at ?? now()->subMinutes(1), $region->close_referees_at ?? now()->addMinutes(1) ) )
                 dom: 'Bflrtip',
                 buttons: [
-                    { extend: 'excelHtml5',
-                        exportOptions: { orthogonal: 'export' },
-                        title: '{{$region->code}}_{{ __('game.allregion') }}',
-                        sheetName: '{{ __('game.allregion')}}',
+                    { extend: 'collection',
+                       text: 'Export',
+                       buttons: [
+                        { extend: 'excelHtml5',
+                            exportOptions: { orthogonal: 'export' },
+                            title: '{{$region->code}}_{{ __('game.allregion') }}',
+                            sheetName: '{{ __('game.allregion')}}',
+                        },
+                        { extend: 'csv',
+                                exportOptions: { orthogonal: 'export', columns: ':visible' },
+                                name: 'csv',
+                            },
+                       ]
+                    },
+                    { extend: 'spacer',
+                        style: 'bar'
                     },
                     { extend: 'print',
                         exportOptions: { orthogonal: 'export', columns: ':visible' },
                     },
-                    'copy',
+                    'copy'
                     @can('update-games')
-                    'import',
+                    ,{ extend: 'spacer',
+                        style: 'bar'
+                    },
+                    'import'
                     @endcan
                 ],
                 @endif

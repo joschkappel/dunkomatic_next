@@ -44,13 +44,24 @@ $(function() {
         stateSave: true,
         dom: 'Bflrtip',
         buttons: [
-          { extend: 'excelHtml5',
-            text: '{{__('game.excel.export')}}',
-            exportOptions: { orthogonal: 'export', columns: ':visible' },
-            title: '{{$club->shortname}}_{{ trans_choice('game.homegame',2)}}',
-            sheetName: '{{ trans_choice('game.homegame',2)}}',
+          { extend: 'collection',
+                       text: 'Export',
+                       buttons: [
+                    { extend: 'excelHtml5',
+                        text: 'Excel',
+                        exportOptions: { orthogonal: 'export', columns: ':visible' },
+                        title: '{{$club->shortname}}_{{ trans_choice('game.homegame',2)}}',
+                        sheetName: '{{ trans_choice('game.homegame',2)}}',
+                    },
+                    { extend: 'csv',
+                            text: 'CSV',
+                            exportOptions: { orthogonal: 'export', columns: ':visible' },
+                            name: 'csv',
+                        },
+                    ]
           },
-          { extend: 'spacer'
+          { extend: 'spacer',
+                style: 'bar'
           },
           { extend: 'print',
             exportOptions: { orthogonal: 'export', columns: ':visible' },
