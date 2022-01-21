@@ -47,5 +47,5 @@ return [
   'chart.title.clubmembers' => 'Functions ny Club',
   'chart.clubstats' => 'Club Analysis',
   'chart.leaguestats' => 'Leagues Analysis',
-
+  'title.refgame.import' => 'Referee Assignment Upload',
 ];

@@ -35,19 +35,35 @@ class HealthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Health::checks([
-            UsedDiskSpaceCheck::new(),
-            CpuLoadCheck::new()
-            ->failWhenLoadIsHigherInTheLast5Minutes(2.0)
-            ->failWhenLoadIsHigherInTheLast15Minutes(1.5),
-            DbConnectionsCheck::new(),
-            DatabaseCheck::new(),
-            RedisCheck::new(),
-            PingCheck::new()->url('https://h2941512.stratoserver.net/healthy'),
-            // ScheduleCheck::new(),
-            EnvironmentCheck::new()->expectEnvironment('prod'),
-            CacheCheck::new(),
-            DebugModeCheck::new()
-        ]);
+        if (config('app.env') == 'prod'){
+            Health::checks([
+                UsedDiskSpaceCheck::new(),
+                CpuLoadCheck::new()
+                ->failWhenLoadIsHigherInTheLast5Minutes(2.0)
+                ->failWhenLoadIsHigherInTheLast15Minutes(1.5),
+                DbConnectionsCheck::new(),
+                DatabaseCheck::new(),
+                RedisCheck::new(),
+                PingCheck::new()->url('https://h2941512.stratoserver.net/healthy'),
+                // ScheduleCheck::new(),
+                EnvironmentCheck::new()->expectEnvironment('prod'),
+                CacheCheck::new(),
+                DebugModeCheck::new()
+            ]);
+        } elseif (config('app.env') == 'local'){
+            Health::checks([
+                UsedDiskSpaceCheck::new(),
+                CpuLoadCheck::new()
+                ->failWhenLoadIsHigherInTheLast5Minutes(2.0)
+                ->failWhenLoadIsHigherInTheLast15Minutes(1.5),
+                DbConnectionsCheck::new(),
+                DatabaseCheck::new(),
+                RedisCheck::new(),
+                EnvironmentCheck::new()->expectEnvironment('local'),
+                CacheCheck::new()
+            ]);
+        } else {
+            // do nothing;
+        }
     }
 }

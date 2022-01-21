@@ -55,7 +55,7 @@ class LeagueGameController extends Controller
     {
         Log::info('preparing game list', ['league-id'=>$league->id]);
 
-        $games = $league->games()->get();
+        $games = $league->games()->with('league')->get();
         $glist = datatables()::of($games);
 
         $glist =  $glist

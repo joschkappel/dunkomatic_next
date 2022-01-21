@@ -491,8 +491,8 @@ class RegionController extends Controller
         // initialize dataset 0
         foreach ($alldates as $gday) {
             $data['labels'][] = Carbon::parse($gday)->isoFormat('L');
-            $datasets[0]['data'][] = (isset($rsbydate[$gday->toDateTimeString()])) ? $rsbydate[$gday->toDateTimeString()]->gcnt : 0;
-            $datasets[1]['data'][] = (isset($rs1bydate[$gday->toDateTimeString()])) ? $rs1bydate[$gday->toDateTimeString()]->gcnt : 0;
+            $datasets[0]['data'][] = (isset($rs1bydate[$gday->toDateTimeString()])) ? $rs1bydate[$gday->toDateTimeString()]->gcnt : 0;
+            $datasets[1]['data'][] = (isset($rsbydate[$gday->toDateTimeString()])) ? $rsbydate[$gday->toDateTimeString()]->gcnt : 0;
         }
 
         $data['datasets'] = $datasets;

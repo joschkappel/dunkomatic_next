@@ -36,9 +36,9 @@ class RefereesImport implements ToCollection, WithStartRow, WithValidation
 
                 }
 
-
+                Log::debug('[IMPORT][REFEREES] importing row',['row'=>$row]);
             } else {
-                Log::error('Game import, game not found for ',['game id'=>$game_id]);
+                Log::error('[IMPORT][REFEREES] game not found for ',['game id'=>$game_id]);
             };
 
 

@@ -115,9 +115,7 @@
                               </div>
 
                               <div class="links">
-                                    <a href="https://www.hbv-basketball.de">HBV</a>
-                                    <a href="https://www.hbv-basketball.de">Bundeslige</a>
-                                    <a href="https://www.hbv-basketball.de">DBB</a>
+                                    <a href="https://www.hbv-basketball.de">Hessischer Basketball Verband</a>
                               </div>
                         </div>
                     </div>

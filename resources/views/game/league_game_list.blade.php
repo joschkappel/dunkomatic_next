@@ -38,7 +38,7 @@
                 dom: 'Bflrtip',
                 buttons: [{
                         extend: 'excelHtml5',
-                        text: '{{ __('game.excel.export') }}',
+                        text: 'Excel',
                         exportOptions: {
                             orthogonal: 'export',
                             columns: ':visible'
