@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Club;
 use App\Models\Region;
+use App\Models\League;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 
@@ -19,7 +20,7 @@ class ClubFactory extends Factory
     // generate full club
     // Club::factory()->hasAttached( Member::factory()->count(3),['role_id'=>2])->hasTeams(6)->hasGyms(2)->create()
     //
-    
+
     /**
      * Define the model's default state.
      *
@@ -34,5 +35,13 @@ class ClubFactory extends Factory
             'club_no' => $this->faker->randomNumber(7, true),
             'region_id' => Region::where('code','HBVDA')->first()->id,
         ];
+    }
+
+    public function assigned(League $league, $lchar, $lno)
+    {
+        return $this->afterCreating( function (Club $club) use ($league, $lchar, $lno) {
+            $league->clubs()->attach([ $club->id =>  ['league_no' => $lno, 'league_char' => $lchar]]);
+                    });
+
     }
 }

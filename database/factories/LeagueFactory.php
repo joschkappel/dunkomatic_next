@@ -51,8 +51,14 @@ class LeagueFactory extends Factory
             ];
         });
     }
-    public function hq()
+    public function assigned($club_cnt)
     {
-        return $this->state([ 'above_region' => True ] );
+        return $this->state( [ 'state' => LeagueState::Assignment() ])
+                    ->afterCreating( function (League $league) use($club_cnt){
+                        for ($i=1; $i <= $club_cnt; $i++) {
+                            ClubFactory::new()->assigned($league, range('A','Z')[$i-1], $i)->create();
+                        }
+                    });
+
     }
 }
