@@ -8,6 +8,7 @@ use App\Models\Gym;
 use App\Models\Team;
 use App\Traits\LeagueFSM;
 use App\Traits\GameManager;
+use App\Imports\LeagueGamesImport;
 
 
 use Datatables;
@@ -19,6 +20,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 
 
 class LeagueGameController extends Controller
@@ -33,7 +36,7 @@ class LeagueGameController extends Controller
      */
     public function index($language, League $league)
     {
-        Log::info('showing league game list.',['league-id'=>$league->id]);
+        Log::info('showing league game list.', ['league-id' => $league->id]);
         return view('game/league_game_list', ['league' => $league]);
     }
     /**
@@ -45,7 +48,7 @@ class LeagueGameController extends Controller
      */
     public function show_by_number(League $league, $game_no)
     {
-        Log::info('getting a game.',['league-id'=>$league->id, 'game-no'=>$game_no]);
+        Log::info('getting a game.', ['league-id' => $league->id, 'game-no' => $game_no]);
         $game = $league->games->where('game_no', $game_no)->first();
 
         return Response::json($game, 200);
@@ -53,7 +56,7 @@ class LeagueGameController extends Controller
 
     public function datatable($language, League $league)
     {
-        Log::info('preparing game list', ['league-id'=>$league->id]);
+        Log::info('preparing game list', ['league-id' => $league->id]);
 
         $games = $league->games()->with('league')->get();
         $glist = datatables()::of($games);
@@ -98,7 +101,7 @@ class LeagueGameController extends Controller
      */
     public function store(League $league)
     {
-        Log::info('creating games.', ['league-id'=>$league->id]);
+        Log::info('creating games.', ['league-id' => $league->id]);
         $this->create_games($league);
         $this->close_freeze($league);
 
@@ -116,7 +119,7 @@ class LeagueGameController extends Controller
     public function update(Request $request, Game $game)
     {
         if ($game->league->schedule->custom_events) {
-            Log::info('update game - custom schedule.', ['game-id'=>$game->id]);
+            Log::info('update game - custom schedule.', ['game-id' => $game->id]);
             $maxgames = $game->league->size * ($game->league->size - 1);
 
             $data = Validator::make($request->all(), [
@@ -130,7 +133,7 @@ class LeagueGameController extends Controller
                     return $query->where('league_id', $game->league->id)->where('game_no', '!=', $game->game_no);
                 }), 'integer', 'between:1,' . $maxgames]
             ])->validate();
-            Log::info('game form data validate OK.', ['game-id'=>$game->id]);
+            Log::info('game form data validate OK.', ['game-id' => $game->id]);
 
             // handle new home team
             if ($data['team_id_home'] != $game->team_id_home) {
@@ -155,7 +158,7 @@ class LeagueGameController extends Controller
                 'game_date' => 'required|date|after:today',
                 'game_time' => 'required|date_format:H:i'
             ])->validate();
-            Log::info('game form data validate OK.', ['game-id'=>$game->id]);
+            Log::info('game form data validate OK.', ['game-id' => $game->id]);
         }
 
         $data['game_time'] = Carbon::parse($data['game_time'])->format('H:i');
@@ -164,7 +167,7 @@ class LeagueGameController extends Controller
         $data['gym_no'] = Gym::findOrFail($data['gym_id'])->gym_no;
 
         $game->update($data);
-        Log::notice('game updated.', ['game-id'=>$game->id]);
+        Log::notice('game updated.', ['game-id' => $game->id]);
 
         return response()->json(['success' => 'Data is successfully added']);
     }
@@ -184,7 +187,7 @@ class LeagueGameController extends Controller
             'game_date' => 'required|date|after:today',
             'game_time' => 'required|date_format:H:i'
         ])->validate();
-        Log::info('home game form data validate OK.', ['game-id'=>$game->id]);
+        Log::info('home game form data validate OK.', ['game-id' => $game->id]);
 
         $data['game_time'] = Carbon::parse($data['game_time'])->format('H:i');
 
@@ -192,7 +195,7 @@ class LeagueGameController extends Controller
         $data['gym_no'] = Gym::find($data['gym_id'])->gym_no;
         //Log::debug(print_r($game,true));
         $game->update($data);
-        Log::notice('game updated.', ['game-id'=>$game->id]);
+        Log::notice('game updated.', ['game-id' => $game->id]);
 
         return response()->json(['success' => 'Data is successfully added']);
     }
@@ -207,7 +210,7 @@ class LeagueGameController extends Controller
     public function destroy_game(League $league)
     {
         $league->games()->delete();
-        Log::notice('games deleted.', ['league-id'=>$league->id]);
+        Log::notice('games deleted.', ['league-id' => $league->id]);
 
         $this->open_freeze($league);
         $league->refresh();
@@ -228,9 +231,68 @@ class LeagueGameController extends Controller
             return $query->whereNull('club_id_home')
                 ->orWhereNull('club_id_guest');
         })->delete();
-        Log::notice('no show games deleted.', ['league-id'=>$league->id]);
+        Log::notice('no show games deleted.', ['league-id' => $league->id]);
 
         //Log::debug($check);
         return Response::json(['success' => 'all good'], 200);
+    }
+
+    /**
+     * Show the form for uploading game files
+     *
+     * @param  \App\Models\League  $league
+     * @return \Illuminate\Http\Response
+     */
+    public function upload($language, League $league)
+    {
+        Log::info('preparing file upload form for league.', ['league-id' => $league->id]);
+
+        $cardtitle =  __('league.title.game.import', ['league' => $league->shortname]);
+        $uploadroute = route('league.import.game', ['language' => app()->getLocale(), 'league' => $league]);
+
+        return view('game.game_file_upload', ['cardTitle' => $cardtitle, 'uploadRoute' => $uploadroute, 'context' => 'league']);
+    }
+
+    /**
+     * update imported games with file contents
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\League  $league
+     * @return \Illuminate\Http\Response
+     */
+    public function import(Request $request, $language, League $league)
+    {
+        $data = $request->validate([
+            'gfile' => 'required'
+        ]);
+        Log::info('upload form data validated OK.');
+        Log::info('processing file upload.', ['league-id' => $league->id, 'file' => $data['gfile']->getClientOriginalName()]);
+        $errors = [];
+
+        $path = $data['gfile']->store('games');
+        $hgImport = new LeagueGamesImport($league);
+        try {
+            // $hgImport->import($path, 'local', \Maatwebsite\Excel\Excel::XLSX);
+            Log::info('validating import data.', ['league-id' => $league->id]);
+            $hgImport->import($path, 'local');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = Arr::sortRecursive($e->failures());
+            $ebag = array();
+            $frow = 0;
+            foreach ($failures as $failure) {
+                if ($frow != $failure->row()) {
+                    $ebag[] = '---';
+                };
+                $ebag[] = __('import.row') . ' "' . $failure->row() . '", ' . __('import.column') . ' "' . $failure->attribute() . '": ' . $hgImport->buildValidationMessage($failure->errors()[0], $failure->values(), $failure->attribute() );
+                $frow = $failure->row();
+            }
+            Log::warning('errors found in import data.', ['count' => count($failures)]);
+            Storage::delete($path);
+            return redirect()->back()->withErrors($ebag);
+        }
+        Storage::delete($path);
+
+        return redirect()->back()->with(['status' => 'All data imported']);
+        //return redirect()->route('club.list.homegame', ['language'=>$language, 'club' => $club]);
     }
 }

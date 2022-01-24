@@ -19,6 +19,7 @@ return [
   'title.game' => 'Spielplan für Runde :LEAGUE',
   'title.delete' => 'Runde Löschen',
   'title.management' => 'Verwalte Spielrunden',
+  'title.game.import' => 'Spiele Importieren',
   'menu.list' => 'Übersicht',
   'menu.manage' => 'Verwalten',
   'menu.stats' => 'Statistiken',

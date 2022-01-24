@@ -19,6 +19,7 @@ return [
   'title.game' => 'Game Schedule for League :LEAGUE',
   'title.delete' => 'Delete a League',
   'title.management' => 'Manage Leagues',
+  'title.game.import' => 'Import Games',
   'menu.list' => 'Overview',
   'menu.manage' => 'Manage',
   'menu.stats' => 'Statistics',

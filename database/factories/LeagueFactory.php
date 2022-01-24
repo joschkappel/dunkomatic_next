@@ -51,4 +51,8 @@ class LeagueFactory extends Factory
             ];
         });
     }
+    public function hq()
+    {
+        return $this->state([ 'above_region' => True ] );
+    }
 }

@@ -149,6 +149,10 @@ class League extends Model implements Auditable
     {
         return $this->loadMissing('league_size')->league_size->size ?? null;
     }
+    public function getIsCustomAttribute()
+    {
+        return $this->loadMissing('schedule')->schedule->league_size->size == 0;
+    }
     public function getStateCountAttribute()
     {
         return [ 'assigned' => $this->loadCount('clubs')->clubs_count,

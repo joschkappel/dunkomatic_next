@@ -53,7 +53,7 @@ class ClubGameController extends Controller
 
         $ogames = collect(DB::select($select))->pluck('id');
 
-        Log::info('got home games for club.', ['club-id'=> $club->id, 'count' => $ogames->count() ]);
+        Log::info('got home games for club.', ['club-id' => $club->id, 'count' => $ogames->count()]);
         $games = Game::query()->where('club_id_home', $club->id)->with('league', 'gym')->get();
         $glist = datatables()::of($games);
 
@@ -105,7 +105,7 @@ class ClubGameController extends Controller
 
         // Log::debug($select);
         $hgames = collect(DB::select($select));
-        Log::info('got home games for club.', ['club-id'=> $club->id, 'count' => $hgames->count() ]);
+        Log::info('got home games for club.', ['club-id' => $club->id, 'count' => $hgames->count()]);
 
         $hg_by_gym = array();
         $cgym = '';
@@ -124,7 +124,7 @@ class ClubGameController extends Controller
         }
 
         //Log::debug(print_r($hg_by_gym, true));
-        Log::info('preparing home games chart data for club.', ['club-id'=> $club->id ]);
+        Log::info('preparing home games chart data for club.', ['club-id' => $club->id]);
         return Response::json($hg_by_gym);
     }
 
@@ -136,13 +136,13 @@ class ClubGameController extends Controller
      */
     public function upload($language, Club $club)
     {
-        Log::info('preparing file upload form for club.', ['club-id'=> $club->id ]);
+        Log::info('preparing file upload form for club.', ['club-id' => $club->id]);
 
         $cardtitle =  __('club.title.gamehome.import', ['club' => $club->shortname]);
         $uploadroute = route('club.import.homegame', ['language' => app()->getLocale(), 'club' => $club]);
         $context = 'club';
 
-        return view('game.game_file_upload', ['cardTitle' => $cardtitle, 'uploadRoute' => $uploadroute, 'context'=>$context]);
+        return view('game.game_file_upload', ['cardTitle' => $cardtitle, 'uploadRoute' => $uploadroute, 'context' => $context]);
     }
 
     /**
@@ -158,7 +158,7 @@ class ClubGameController extends Controller
             'gfile' => 'required'
         ]);
         Log::info('upload form data validated OK.');
-        Log::info('processing file upload.', ['club-id'=> $club->id, 'file'=> $data['gfile']->getClientOriginalName() ]);
+        Log::info('processing file upload.', ['club-id' => $club->id, 'file' => $data['gfile']->getClientOriginalName()]);
         // Log::debug(print_r($request->all(),true));
         //$fname = $request->gfile->getClientOriginalName();
         //$fname = $club->shortname.'_homegames.'.$request->gfile->extension();
@@ -168,20 +168,20 @@ class ClubGameController extends Controller
         $hgImport = new HomeGamesImport();
         try {
             // $hgImport->import($path, 'local', \Maatwebsite\Excel\Excel::XLSX);
-            Log::info('validating import data.', ['club-id'=> $club->id]);
+            Log::info('validating import data.', ['club-id' => $club->id]);
             $hgImport->import($path, 'local');
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             $failures = Arr::sortRecursive($e->failures());
             $ebag = array();
             $frow = 0;
             foreach ($failures as $failure) {
-                if ($frow != $failure->row()){
+                if ($frow != $failure->row()) {
                     $ebag[] = '---';
-                }
-                $ebag[] = __('import.row').' "' . $failure->row() . '", '.__('import.column').' "' . $failure->attribute() . '": ' . $failure->errors()[0];
+                };
+                $ebag[] = __('import.row') . ' "' . $failure->row() . '", ' . __('import.column') . ' "' . $failure->attribute() . '": '. $hgImport->buildValidationMessage( $failure->errors()[0], $failure->values(), $failure->attribute() );
                 $frow = $failure->row();
             }
-            Log::warning('errors found in import data.', ['count'=> count($failures) ]);
+            Log::warning('errors found in import data.', ['count' => count($failures)]);
             Storage::delete($path);
             return redirect()->back()->withErrors($ebag);
         }

@@ -56,9 +56,10 @@ $(function() {
                     { extend: 'csv',
                             text: 'CSV',
                             exportOptions: { orthogonal: 'export', columns: ':visible' },
+                            title: '{{$club->shortname}}_{{ trans_choice('game.homegame',2)}}',
                             name: 'csv',
-                        },
-                    ]
+                    },
+                ]
           },
           { extend: 'spacer',
                 style: 'bar'

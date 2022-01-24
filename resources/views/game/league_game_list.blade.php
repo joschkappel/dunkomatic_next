@@ -27,6 +27,12 @@
             $('#goBack').click(function(e){
                 history.back();
             });
+            $.fn.dataTable.ext.buttons.import = {
+                text: '{{__('game.excel.import')}}',
+                action: function ( e, dt, node, config ) {
+                    window.open('{{ route('league.upload.game',['language'=>app()->getLocale(), 'league' => $league ])}}',"_self");
+                }
+            };
 
             $('#table').DataTable({
                 processing: true,
@@ -36,21 +42,38 @@
                 ordering: true,
                 stateSave: true,
                 dom: 'Bflrtip',
-                buttons: [{
-                        extend: 'excelHtml5',
-                        text: 'Excel',
-                        exportOptions: {
-                            orthogonal: 'export',
-                            columns: ':visible'
-                        },
-                        title: '{{ $league->shortname }}_{{ trans_choice('game.homegame', 2) }}',
-                        sheetName: '{{ trans_choice('game.homegame', 2) }}',
+                buttons: [
+                    { extend: 'collection',
+                       text: 'Export',
+                       buttons: [
+                            {
+                                extend: 'excelHtml5',
+                                text: 'Excel',
+                                exportOptions: { orthogonal: 'export', columns: ':visible' },
+                                title: '{{ $league->shortname }}_{{ trans_choice('game.homegame', 2) }}',
+                                sheetName: '{{ trans_choice('game.homegame', 2) }}',
+                            },
+                            { extend: 'csv',
+                                text: 'CSV',
+                                exportOptions: { orthogonal: 'export', columns: ':visible' },
+                                title: '{{ $league->shortname }}_{{ trans_choice('game.homegame', 2) }}',
+                                name: 'csv',
+                            },
+                        ]
+                    },
+                    { extend: 'spacer',
+                            style: 'bar'
                     },
                     { extend: 'print',
-                     exportOptions: {
-                            columns: ':visible'
-                        }
-                    }
+                        exportOptions: { orthogonal: 'export', columns: ':visible' },
+                    },
+                    @if ( ( now()->isBefore( $league->region->close_scheduling_at ?? now()->addMinute(1) )) and
+                          ( $league->isCustom  ) )
+                        ,{ extend: 'spacer',
+                                    style: 'bar'
+                        },
+                        'import'
+                    @endif
                 ],
                 order: [
                     [1, 'asc']
