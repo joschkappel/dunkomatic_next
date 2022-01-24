@@ -14,31 +14,35 @@
             </div>
         </div>
     </div>
-    @if ($errors->any())
-    <div class="alert alert-danger" role="alert">
-        @lang('game.import.failure')
-    </div>
 
-    <div class="form-group row">
-        <div class="col-sm-10">
-        @foreach ($errors->all() as $message)
-            <div class="text-danger">{!! $message !!}</div>
-        @endforeach
+    @if ($errors->any())
+        <div class="alert alert-danger" role="alert">
+            @lang('game.import.failure')
         </div>
-    </div>
+
+        <div class="form-group row">
+            <div class="col-sm-10">
+            @foreach ($errors->all() as $message)
+                <div class="text-danger">{!! $message !!}</div>
+            @endforeach
+            </div>
+        </div>
     @endif
 
     <x-slot name="addButtons">
         <button type="button" class="btn btn-secondary mr-2" id="frmReset">{{ __('Reset')}}</button>
     </x-slot>
-    <div class="alert alert-info" role="alert">
-        <h4 class="alert-heading">{{__('import.alert.header')}}</h4>
-        <p>{{ __('import.'.$context.'.uploadhint.1')}}</p>
-        <p>{{ __('import.'.$context.'.uploadhint.2')}}</p>
-        <p>{{ __('import.'.$context.'.uploadhint.3')}}</p>
-        <hr>
-        <p class="mb-0">{{ __('import.alert.footer')}}</p>
-      </div>
+
+    @unless ($errors->any())
+        <div class="alert alert-info" role="alert">
+            <h4 class="alert-heading">{{__('import.alert.header')}}</h4>
+            <p>{{ __('import.'.$context.'.uploadhint.1')}}</p>
+            <p>{{ __('import.'.$context.'.uploadhint.2')}}</p>
+            <p>{{ __('import.'.$context.'.uploadhint.3')}}</p>
+            <hr>
+            <p class="mb-0">{{ __('import.alert.footer')}}</p>
+        </div>
+    @endunless
 </x-card-form>
 @endsection
 

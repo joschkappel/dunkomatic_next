@@ -106,7 +106,8 @@ Route::group([
 
         Route::resource('club.gym', 'ClubGymController')->shallow()->except('store', 'update', 'destroy', 'show');
 
-
+        Route::get('league/{league}/game/upload', 'LeagueGameController@upload')->name('league.upload.game');
+        Route::post('league/{league}/game/import', 'LeagueGameController@import')->name('league.import.game');
         Route::get('league/{league}/dashboard', 'LeagueController@dashboard')->name('league.dashboard');
         Route::get('league/{league}/briefing', 'LeagueController@briefing')->name('league.briefing')->middleware('can:view-leagues');
         Route::get('league/{league}', 'LeagueController@show')->name('league.show')->middleware('can:view-leagues');
