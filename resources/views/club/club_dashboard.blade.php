@@ -46,12 +46,12 @@
             </div>
             <div class="col-sm ">
                 <div class="info-box">
-                    @if (count($leagues) == 0)
+                    @if ($leagues == 0)
                         <span class="info-box-icon bg-danger"><i class="fas fa-trophy"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text text-lg">@lang('club.entitled.no')</span>
                         </div>
-                    @elseif (count($leagues) == count($teams) )
+                    @elseif ($leagues == $teams )
                         <span class="info-box-icon bg-success"><i class="fas fa-trophy"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text text-lg">@lang('club.entitled.all')</span>
@@ -60,17 +60,17 @@
                         <span class="info-box-icon bg-warning"><i class="fas fa-trophy"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text text-lg">@lang('club.entitled.some', [ 'entitled' =>
-                                count($leagues), 'total' => count($teams)] )</span>
+                                $leagues, 'total' => $teams] )</span>
                         </div>
                     @endif
                 </div>
                 <div class="info-box">
-                    @if (count($registered_teams) == 0)
+                    @if ($registered_teams == 0)
                         <span class="info-box-icon bg-danger"><i class="fas fa-users"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text text-lg">@lang('team.registered.no')</span>
                         </div>
-                    @elseif (count($registered_teams) == count($teams) )
+                    @elseif ($registered_teams == $teams )
                         <span class="info-box-icon bg-success"><i class="fas fa-users"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text text-lg">@lang('team.registered.all')</span>
@@ -79,19 +79,19 @@
                         <span class="info-box-icon bg-warning"><i class="fas fa-users"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text text-lg">@lang('team.registered.some',
-                                ['registered'=>count($registered_teams), 'total'=>count($teams)])</span>
+                                ['registered'=>$registered_teams, 'total'=>$teams])</span>
                         </div>
                     @endif
                 </div>
             </div>
             <div class="col-sm ">
                 <div class="info-box">
-                    @if (count($selected_teams) == 0)
+                    @if ($selected_teams == 0)
                         <span class="info-box-icon bg-danger"><i class="fas fa-battery-empty"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text text-lg">@lang('team.selected.no')</span>
                         </div>
-                    @elseif (count($selected_teams) == count($teams) )
+                    @elseif ($selected_teams == $teams )
                         <span class="info-box-icon bg-success"><i class="fas fa-battery-full"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text text-lg">@lang('team.selected.all')</span>
@@ -100,8 +100,8 @@
                         <span class="info-box-icon bg-warning"><i class="fas fa-battery-half"></i></span>
                         <div class="info-box-content">
                             <span
-                                class="info-box-text text-lg">@lang('team.selected.some',['selected'=>count($selected_teams),
-                                'total'=>count($teams)])</span>
+                                class="info-box-text text-lg">@lang('team.selected.some',['selected'=>$selected_teams,
+                                'total'=>$teams])</span>
                         </div>
                     @endif
                 </div>
@@ -140,109 +140,25 @@
                 <!-- /.card -->
                 <!-- card CLUB TEAM ASSIGNMENT -->
                 <div class="card card-outline card-dark collapsed-card" id="teamsCard">
-                    <x-card-header title="{{trans_choice('team.team', 2)}}" icon="fas fa-basketball-ball"  :count="count($teams)">
+                    <x-card-header title="{{trans_choice('team.team', 2)}}" icon="fas fa-basketball-ball"  :count="$teams">
                             @can('create-teams')
                             <a href="{{ route('club.team.create', ['language' => app()->getLocale(), 'club' => $club]) }}"
                             class="btn btn-success">
                             <i class="fas fa-plus-circle"></i> @lang('team.action.create')</a>
                             @endcan
                     </x-card-header>
-                    <!-- /.card-header -->
-                    <div class="card-body ">
-                        <div class="row  justify-content-left">
-                            <div class="col-12 ">
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-sm " id="table2">
-                                        <thead class="thead-light">
-                                            <tr>
-                                                <th>@lang('Action')</th>
-                                                <th scope="col">{{ trans_choice('team.team', 1) }}</th>
-                                                <th scope="col">@lang('league.state.registered')</th>
-                                                <th scope="col">@lang('league.state.selected')</th>
-                                                <th scope="col">{{ trans_choice('league.league', 1) }}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($leagues as $l)
-                                                @if (! $registered_teams->contains($l->id))
-                                                <tr>
-                                                    <td> </td>
-                                                    <td> </td>
-                                                    <td> </td>
-                                                    <td> </td>
-                                                    <td class="text-danger">{{ $l->shortname }}</td>
-                                                </tr>
-                                                @endif
-                                            @endforeach
-                                            @foreach ($teams as $team)
-                                                <tr>
-                                                    <td>
-                                                    @if ( ! ( ($registered_teams->contains($team->league_id)) and ($team->league->state->in([ App\Enums\LeagueState::Selection(), App\Enums\LeagueState::Scheduling(), App\Enums\LeagueState::Freeze(), App\Enums\LeagueState::Live() ])) ) )
-                                                        <span data-toggle="tooltip" title="{{__('team.action.delete',['name'=> $team->name])}}">
-                                                            <button id="deleteTeam" data-team-id="{{ $team->id }}" data-league-sname="@if( isset($team->league->shortname) ){{ $team->league->shortname }}@else{{ __('team.unassigned')}} @endif"
-                                                                data-team-no="{{ $team->team_no }}" data-club-sname="{{ $club->shortname }}" type="button"
-                                                                class="btn btn-outline-danger btn-sm "  @cannot('create-teams') disabled @endcannot> <i class="fas fa-trash"></i>
-                                                            </button>
-                                                        </span>
-                                                    @endif
-                                                    </td>
-                                                    <td>
-                                                        @can('update-teams')
-                                                        <span data-toggle="tooltip" title="{{__('team.action.edit',['name'=> $team->name])}}">
-                                                            <a href="{{ route('team.edit', ['language' => app()->getLocale(), 'team' => $team->id]) }}">{{ $club->shortname }}{{ $team->team_no }}
-                                                                <i class="fas fa-arrow-circle-right"></i>
-                                                            </a>
-                                                        </span>
-                                                        @else
-                                                        {{ $club->shortname }}{{ $team->team_no }}
-                                                        @endcannot
-                                                    </td>
-                                                    <td class="text-center">
-                                                        @if ($registered_teams->contains($team->league_id))<i
-                                                                class="far fa-check-circle text-success"></i> @endif
-                                                    </td>
-                                                    <td class="text-center">
-                                                        @if ($selected_teams->contains($team->league_id))
-                                                            <i class="far fa-check-circle text-success"></i>
-                                                        @endif
-                                                    </td>
-                                                    @if($registered_teams->contains($team->league_id))
-                                                        @if ($team->league->state->in([App\Enums\LeagueState::Registration(),App\Enums\LeagueState::Selection(),App\Enums\LeagueState::Assignment()]) )
-                                                            <td><span data-toggle="tooltip" title="{{__('team.tooltip.deassign',['name'=> $team->name])}}">
-                                                                <button id="deassignLeague" data-league-id="{{ $team->league['id'] }}"
-                                                        data-team-id="{{ $team->id }}" data-club-id="{{ $club->id }}"
-                                                        type="button" class="btn btn-outline-dark btn-sm "> <i
-                                                            class="fas fa-unlink pr-2"></i> {{ $team->league['shortname'] }} <span
-                                                                    class="badge badge-pill badge-dark pl-2">
-                                                                    {{ $team->league_no  }}</span></button>
-                                                                </span>
-                                                            </td>
-                                                        @else
-                                                          <td><button type="button" class="btn btn-outline-dark btn-sm"
-                                                                disabled>{{ $team->league['shortname'] }}
-                                                                @isset( $team->league_no )<span class="badge badge-pill badge-dark pl-2">
-                                                                    {{ $team->league_no  }}</span>
-                                                                @endisset </button></td>
-                                                        @endif
-                                                    @else
-                                                        <td>
-                                                        @can('update-teams')
-                                                        <span data-toggle="tooltip" title="{{__('team.tooltip.assign',['name'=> $team->name])}}">
-                                                            <button type="button" id="assignLeague" class="btn btn-outline-info btn-sm"
-                                                                data-team-id="{{ $team->id }}" data-club-id="{{ $club->id }}"
-                                                                data-toggle="modal" data-target="#modalAssignLeague"><i
-                                                            class="fas fa-link pr-2"></i>@lang('league.action.register')</button>
-                                                        </span>
-                                                        @endcan
-                                                        </td>
-                                                    @endif
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="card-body">
+                        <table width="100%" class="table table-hover table-bordered table-sm" id="teamtable">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>@lang('Action')</th>
+                                    <th scope="col">{{ trans_choice('team.team', 1) }}</th>
+                                    <th scope="col">@lang('league.state.registered')</th>
+                                    <th scope="col">@lang('league.state.selected')</th>
+                                    <th scope="col">{{ trans_choice('league.league', 1) }}</th>                                    
+                                </tr>
+                            </thead>
+                        </table>
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer">
@@ -261,8 +177,7 @@
                         </div>
                     </div>
                     <!-- /.card-footer -->
-                </div>
-                <!-- /.card CLUB TEAM ASSIGNMENT -->
+                </div>                                    
             </div>
             <div class="col-sm-6">
                 <!-- card GYMS -->
@@ -367,7 +282,91 @@
 
 @section('js')
     <script>
+
+
+        $(document).on("click", 'button#unregisterTeam', function(e) {
+            var url = "{{ route('league.unregister.team', ['league' => ':league:', 'team' => ':team:']) }}"
+            url = url.replace(':team:', $(this).data("team-id") );
+            url = url.replace(':league:', $(this).data("league-id") );
+
+            $.ajax({
+                type: "DELETE",
+                dataType: 'json',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    _method: 'DELETE'
+                },
+                url: url,
+                success: function(data) {
+                    toastr.success('team unregistered', 'success');
+                },
+                error: function(data) {
+                    console.log('Error:', data);
+                    toastr.error('team not unregistered', 'ERROR');
+                }
+            });
+        });        
+        $(document).on("click", "button#deleteTeam", function(e) {
+                if ($(this).data('league-sname') == ""){
+                    $('#modalDeleteTeam_Info').html('{{ trans_choice('league.league',1) .'   '. __('team.unassigned')  }}');
+                } else {
+                    $('#modalDeleteTeam_Info').html( '{{ trans_choice('league.league',1) .' ' }}' + $(this).data('league-sname'));
+                }
+                $('#modalDeleteTeam_Instance').html( $(this).data('club-sname') + $(this).data('team-no') );
+                var url = "{{ route('team.destroy', ['team' => ':team:']) }}";
+                url = url.replace(':team:', $(this).data('team-id'))
+                $('#modalDeleteTeam_Form').attr('action', url);
+                $('#modalDeleteTeam').modal('show');
+        });
+
+        function registerTeam( league_id, team_id){
+            var url = "{{ route('league.register.team', ['league' => ':league:', 'team' => ':team:']) }}"
+            url = url.replace(':team:', team_id);
+            url = url.replace(':league:', league_id);
+
+            $.ajax({
+                type: "PUT",
+                dataType: 'json',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    _method: 'PUT'
+                },
+                url: url,
+                success: function(data) {
+                    toastr.success('team registered', 'success');
+                },
+                error: function(data) {
+                    console.log('Error:', data);
+                    toastr.error('team not registered', 'ERROR');
+                }
+            });
+        };
+
         $(function() {
+            var teamtable = $('#teamtable').DataTable({
+                    processing: true,
+                    serverSide: false,
+                    responsive: true,
+                    //scrollY: "200px",
+                    scrollCollapse: true,
+                    paging: false,
+                    autoWidth: false,
+                    language: { "url": "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}" },
+                    ajax: '{{ route('club.team.dt', ['language'=>app()->getLocale(),'club'=>$club]) }}',
+                    //order: [[ 2, 'asc' ],[ 0, 'asc' ]],
+                    dom: 'rti',
+                    columns: [
+                        { data: 'action', name: 'action'},
+                        { data: 'team', name: 'team'},
+                        { data: 'registered', name: 'registered'},
+                        { data: 'selected', name: 'selected', width: '20%'},
+                        { data: {
+                            _: 'league.sort',
+                            display: 'league.display',
+                            sort: 'league.sort'
+                         }, name: 'league'},
+                        ]
+            });
             $("button#addMembership").click(function() {
                 var url =
                     "{{ route('membership.club.add', ['club' => ':clubid:', 'member' => ':memberid:']) }}";
@@ -388,33 +387,6 @@
                 $('#modalMembershipMod_Form').attr('action', url);
                 $('#modalMembershipMod').modal('show');
             });
-            $("button#assignLeague").click(function() {
-                $('#team_id').val($(this).data('team-id'));
-                $('#club_id').val($(this).data('club-id'));
-                var url = "{{ route('team.assign-league') }}";
-                $('#modalAssignLeague_Form').attr('action', url);
-                $('#modalAssignLeague').modal('show');
-            });
-            $("button#deassignLeague").click(function() {
-                var team_id = $(this).data('team-id');
-                var club_id = $(this).data('club-id');
-                var league_id = $(this).data('league-id');
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ route('team.deassign-league') }}",
-                    dataType: 'json',
-                    data: {
-                        club_id: club_id,
-                        team_id: team_id,
-                        league_id: league_id,
-                        _token: "{{ csrf_token() }}",
-                        _method: 'DELETE'
-                    },
-                    success: function(response) {
-                        location.reload()
-                    },
-                });
-            });
             $("button#deleteMember").click(function() {
                 $('#modalDeleteMember_Instance').html($(this).data('member-name'));
                 var url =
@@ -422,18 +394,6 @@
                 url = url.replace(':member:', $(this).data('member-id'));
                 $('#modalDeleteMember_Form').attr('action', url);
                 $('#modalDeleteMember').modal('show');
-            });
-            $("button#deleteTeam").click(function() {
-                if ($(this).data('league-sname') == ""){
-                    $('#modalDeleteTeam_Info').html('{{ trans_choice('league.league',1) .' '. __('team.unassigned')  }}');
-                } else {
-                    $('#modalDeleteTeam_Info').html( '{{ trans_choice('league.league',1) .' ' }}' + $(this).data('league-sname'));
-                }
-                $('#modalDeleteTeam_Instance').html( $(this).data('club-sname') + $(this).data('team-no') );
-                var url = "{{ route('team.destroy', ['team' => ':team:']) }}";
-                url = url.replace(':team:', $(this).data('team-id'))
-                $('#modalDeleteTeam_Form').attr('action', url);
-                $('#modalDeleteTeam').modal('show');
             });
             $("button#deleteGym").click(function() {
                 $('#modalDeleteGym_Instance').html($(this).data('gym-name'));
@@ -444,11 +404,21 @@
             });
             $("#deleteClub").click(function() {
                 $('#modalDeleteClub_Instance').html('{{ $club->name }}');
-                $('#modalDeleteClub_Info').html('{{ __('club.info.delete',['club'=>$club->shortname,'noteam'=>count($teams),'nomember'=>count($members),'nogym'=>count($gyms)]) }}');
+                $('#modalDeleteClub_Info').html('{{ __('club.info.delete',['club'=>$club->shortname,'noteam'=>$teams,'nomember'=>count($members),'nogym'=>count($gyms)]) }}');
                 var url = "{{ route('club.destroy', ['club' => $club]) }}";
                 $('#modalDeleteClub_Form').attr('action', url);
                 $('#modalDeleteClub').modal('show');
             });
+            toastr.options.closeButton = true;
+                toastr.options.closeMethod = 'fadeOut';
+                //toastr.options.closeDuration = 30;
+                toastr.options.closeEasing = 'swing';
+                toastr.options.progressBar = true;
+                toastr.options.timeOut = 1000,
+                toastr.options.fadeOut = 1000,
+                toastr.options.onHidden = function () {
+                                window.location.reload();
+                            };
         });
     </script>
 @stop

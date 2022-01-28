@@ -1,5 +1,5 @@
 <x-modal modalId="modalAssignClub" modalTitle="{{ __('club.action.assign', ['league'=>$league->shortname]) }}">
-        <input type="hidden" name="item_id" id="itemid" value=""  />
+        <input type="hidden" name="modalAssignClub_region_id" id="modalAssignClub_region_id" value=""  />
         <div class="form-group row">
             <label for="selClub" class="col-sm-4 col-form-label">{{ trans_choice('club.club',1)}}</label>
             <div class="col-sm-6">
@@ -11,7 +11,9 @@
 @push('js')
 
 <script>
-    $(function() {
+    $(document).on("show.bs.modal", "#modalAssignClub", function (e) {
+        var url = "{{ route('club.sb.region', ['region'=>':region:'])}}";
+      url = url.replace(':region:', $('#modalAssignClub_region_id').val() )
 
       $(".js-club-single").select2({
           placeholder: "{{ __('club.action.select')}}...",
@@ -19,7 +21,7 @@
           allowClear: false,
           minimumResultsForSearch: 5,
           ajax: {
-                  url: "{{ route('club.sb.region', ['region'=>session('cur_region')->id])}}",
+                  url: url,
                   type: "get",
                   delay: 250,
                   processResults: function (response) {
@@ -30,7 +32,6 @@
                   cache: true
                 }
       });
-
 
 
     });

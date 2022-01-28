@@ -132,13 +132,13 @@ class ClubController extends Controller
         $data['club'] = $club;
 
         $data['gyms'] = $data['club']->gyms()->get();
-        $data['teams'] = $data['club']->teams()->with('league')->get()->sortBy('league.shortname');
-        $data['leagues'] = $data['club']->leagues()->get()->sortBy('shortname');
+        $data['teams'] = $data['club']->teams->count();
+        $data['leagues'] = $data['club']->leagues->count();
         //$data['members'] = $data['club']->members()->get();
         $data['members'] = Member::whereIn('id', Club::find($club->id)->members()->pluck('member_id'))->with('memberships')->get();
         $data['games_home'] = $data['club']->games_home()->get();
-        $data['registered_teams'] = $data['club']->registered_teams->pluck('league_id');
-        $data['selected_teams'] = $data['club']->selected_teams->pluck('league_id');
+        $data['registered_teams'] = $data['club']->registered_teams->pluck('league_id')->count();
+        $data['selected_teams'] = $data['club']->selected_teams->pluck('league_id')->count();
         $data['games_home_notime'] = $data['club']->games_home_notime()->count();
         $data['games_home_noshow'] = $data['club']->games_home_noshow()->count();
         //Log::debug(print_r($data['games_home'],true ));
@@ -153,6 +153,99 @@ class ClubController extends Controller
 
         Log::info('showing club dashboard',['club-id'=>$club->id]);
         return view('club/club_dashboard', $data);
+    }
+
+
+    /**
+     * club  teams datatable
+     *
+     */
+    public function team_dt(Request $request, $language, Club $club)
+    {
+        $clubteam = $club->teams;
+
+        // get leagues where club is assigned
+        $clubleagues = $club->leagues;
+        //  remove all leagues where a team is alread registered
+        foreach ($clubteam as $ct){
+            $k = $clubleagues->search(function ($l) use ($ct) {
+                return ($l['id'] == $ct['league_id']);
+            });
+            
+            if ($k !== false){
+                $clubleagues->pull($k);
+            }
+        }
+
+        $teamlist = datatables()::of($clubteam);
+        Log::info('preparing team list');
+        return $teamlist
+            ->addIndexColumn()
+            ->rawColumns([
+                'action','team','registered', 'selected','league.display'
+            ])
+            ->addColumn('action', function ($ct) use ($club) {
+                if ( ! ( ($ct->league_id != null ) and ($ct->league->state->in([ LeagueState::Selection, LeagueState::Scheduling, LeagueState::Freeze, LeagueState::Live, LeagueState::Referees ])) )) {
+                    $btn = '<span data-toggle="tooltip" title="'.__('team.action.delete',['name'=> $ct->name]).'">';
+                    $btn .= '<button id="deleteTeam" data-team-id="'.$ct->id.'" data-league-sname="';
+                    $btn .= isset($ct->league->shortname) ? $ct->league->shortname : __('team.unassigned');
+                    $btn .= ' data-team-no="'.$ct->team_no .'" data-club-sname="'. $club->shortname .'" type="button"';
+                    $btn .= ' class="btn btn-outline-danger btn-sm " ';
+                    $btn .= Auth::user()->cannot('create-teams') ? ' disabled ' : '';
+                    $btn .= '> <i class="fas fa-trash"></i></button></span>';
+                }
+                return $btn ?? '';
+            })
+            ->addColumn('registered', function ($ct) {
+                if ($ct->league_id != null ){
+                    return '<i class="far fa-check-circle text-success"></i>';
+                } else {
+                    return '';
+                }
+            })
+            ->addColumn('selected', function ($ct) {
+                if ($ct->league_no != null ){
+                    return '<i class="far fa-check-circle text-success"></i>';
+                } else {
+                    return '';
+                }
+            })
+            ->addColumn('team', function ($ct) {
+                if (Auth::user()->can('update-teams')){
+                    $item = '<span data-toggle="tooltip" title="'.__('team.action.edit',['name'=> $ct->name]).'">';
+                    $item .= '<a href="'.route('team.edit', ['language' => app()->getLocale(), 'team' => $ct->id]).'">'.$ct->name;
+                    $item .= '<i class="fas fa-arrow-circle-right"></i></a></span>';
+                } else {
+                    $item = $ct->name;
+                }
+                return $item;
+            })
+            ->addColumn('league', function ($ct) use($clubleagues) {
+                if ( $ct->league_id != null ){
+                    if ( $ct->league->state->in([LeagueState::Registration, LeagueState::Selection, LeagueState::Assignment ]) ){
+                        $btn = '<span data-toggle="tooltip" title="'.__('team.tooltip.deassign',['name'=> $ct->name]).'">';
+                        $btn .= '<button id="unregisterTeam" data-league-id="'.$ct->league->id.'" data-team-id="'.$ct->id.'" ';
+                        $btn .= 'type="button" class="btn btn-secondary btn-sm">'.$ct->league['shortname'].'</button>';
+                        $btn .= ( $ct->league_no != null) ? '<button type="button" class="btn btn-danger btn-sm pl-2">'.$ct->league_no.'</button>' : '';
+                        $btn .= '</span>';
+                    } else {
+                        $btn = '<span><button type="button" class="btn btn-secondary btn-sm" disabled> '.$ct->league->shortname.'</button>';
+                        $btn .= ( $ct->league_no != null ) ? ' <button type="button" class="btn btn-danger btn-sm pl-2" disabled >'.$ct->league_no .'</button>' : '';
+                        $btn .= '</span>';
+                    }
+                } else {
+                    if ( Auth::user()->can('update-teams')){
+                        $btn = '<div class="btn-group"><button type="button" class="btn btn-secondary dropdpwn-toggle" data-toggle="dropdown">'.__('league.action.select').'</button>';
+                        $btn .= '<div class="dropdown-menu">';
+                        foreach ($clubleagues as $cl){
+                            $btn .= '<a class="dropdown-item" href="javascript:registerTeam('.$cl->id.','.$ct->id.') ">'.$cl->shortname.'</a>';
+                        }
+                        $btn .='</div></div>';
+                    }
+                }
+                return array('display' => $btn ?? '', 'sort' => $ct->league->shortname ?? '');
+            })
+            ->make(true);
     }
 
     /**
@@ -171,6 +264,7 @@ class ClubController extends Controller
         Log::info('showing club briefing',['club-id'=>$club->id]);
         return view('club/club_briefing', $data);
     }
+
 
     /**
      * Display a listing of the resource for selectboxes.

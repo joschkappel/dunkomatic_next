@@ -62,6 +62,7 @@ Route::group([
         Route::get('club/{club}/game/home', 'ClubController@list_homegame')->name('club.list.homegame')->middleware('can:view-games');
         Route::get('club/{club}', 'ClubController@show')->name('club.show')->middleware('can:view-clubs');
         Route::get('club/{club}/edit', 'ClubController@edit')->name('club.edit')->middleware('can:update-clubs');
+        Route::get('club/{club}/team/dt', 'ClubController@team_dt')->name('club.team.dt');
 
         Route::get('club/{club}/game/upload', 'ClubGameController@upload')->name('club.upload.homegame');
         Route::post('club/{club}/game/import', 'ClubGameController@import')->name('club.import.homegame');
@@ -112,6 +113,7 @@ Route::group([
         Route::get('league/{league}/briefing', 'LeagueController@briefing')->name('league.briefing')->middleware('can:view-leagues');
         Route::get('league/{league}', 'LeagueController@show')->name('league.show')->middleware('can:view-leagues');
         Route::get('league/{league}/edit', 'LeagueController@edit')->name('league.edit')->middleware('can:update-leagues');
+        Route::get('league/{league}/team/dt', 'LeagueController@team_dt')->name('league.team.dt');
 
         Route::get('league/{league}/game/dt', 'LeagueGameController@datatable')->name('league.game.dt');
         Route::resource('league.game', 'LeagueGameController')->shallow()->only(['index', 'create', 'edit']);
@@ -213,10 +215,18 @@ Route::middleware(['auth',
 
     });
 
+    Route::post('league/{league}/club', 'LeagueTeamController@assign_clubs')->name('league.assign-clubs')->middleware('can:update-leagues');
+    Route::delete('league/{league}/club/{club}', 'LeagueTeamController@deassign_club')->name('league.deassign-club')->middleware('can:update-leagues');
+    Route::put('league/{league}/team/{team}', 'LeagueTeamController@league_register_team')->name('league.register.team')->middleware('can:update-teams');
+    Route::delete('league/{league}/team/{team}', 'LeagueTeamController@league_unregister_team')->name('league.unregister.team')->middleware('can:update-teams');
+    Route::put('team/{team}/league', 'LeagueTeamController@team_register_league')->name('team.register.league')->middleware('can:update-teams');
+    Route::post('league/{league}/team', 'LeagueTeamController@inject')->name('league.team.inject')->middleware('can:update-teams');
+    Route::delete('league/{league}/team', 'LeagueTeamController@withdraw')->name('league.team.withdraw')->middleware('can:update-teams');
+    Route::post('league/{league}/pickchar', 'LeagueTeamController@pick_char')->name('league.team.pickchar')->middleware('can:update-teams');
+    Route::post('league/{league}/unpickchar', 'LeagueTeamController@unpick_char')->name('league.team.unpickchar')->middleware('can:update-teams');
+
     Route::get('league/{league}/freechar/sb', 'LeagueController@sb_freechars')->name('league.sb_freechar');
     Route::get('league/{league}/club/sb', 'LeagueController@sb_club')->name('league.sb.club');
-    Route::delete('league/{league}/club/{club}', 'LeagueController@deassign_club')->name('league.deassign-club')->middleware('can:update-leagues');
-    Route::post('league/{league}/club', 'LeagueController@assign_clubs')->name('league.assign-clubs')->middleware('can:update-leagues');
     Route::post('league/{league}/state', 'LeagueStateController@change_state')->name('league.state.change')->middleware('can:update-leagues');
     Route::put('league/{league}', 'LeagueController@update')->name('league.update')->middleware('can:update-leagues');
     Route::delete('league/{league}', 'LeagueController@destroy')->name('league.destroy')->middleware('can:create-leagues');
@@ -237,12 +247,7 @@ Route::middleware(['auth',
     Route::put('game/{game}/home', 'LeagueGameController@update_home')->name('game.update_home');
     Route::resource('league.game', 'LeagueGameController')->shallow()->except(['index', 'create', 'edit']);;
 
-    Route::delete('league/{league}/team', 'TeamController@withdraw')->name('league.team.withdraw')->middleware('can:update-teams');
-    Route::post('league/{league}/team', 'TeamController@inject')->name('league.team.inject')->middleware('can:update-teams');
-    Route::post('league/{league}/char', 'TeamController@pick_char')->name('league.team.pickchar');
     Route::get('league/{league}/team/sb', 'TeamController@sb_league')->name('league.team.sb');
-    Route::put('team/league', 'TeamController@assign_league')->name('team.assign-league')->middleware('can:update-teams');
-    Route::delete('team/league', 'TeamController@deassign_league')->name('team.deassign-league')->middleware('can:update-teams');
     Route::get('team/league/{league}/free/sb', 'TeamController@sb_freeteam')->name('team.free.sb');
     Route::post('team/league/plan', 'TeamController@store_plan')->name('team.store-plan')->middleware('can:update-teams');
 

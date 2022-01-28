@@ -120,112 +120,17 @@
                     <x-card-header title="{{trans_choice('team.team', 2)}}" icon="fas fa-basketball-ball"  :count="$league->state_count['size']" />
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <div class="row d-flex flex-row justify-content-between">
-                            <div class="col-md-6 d-flex flex-column justify-content-center">
-                                <h5 class="sub-header">@lang('league.action.close.assignment')</h5>
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-sm w-auto" id="table1">
-                                        <thead class="thead-light">
-                                            <tr>
-                                                <th scope="col">@lang('team.entitled')</th>
-                                                <th scope="col">@lang('league.state.registered')</th>
-                                                <th scope="col">@lang('league.state.selected')</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @for ($i = 1; $i <= $league->state_count['size']; $i++)
-                                                <tr scope="row" dusk="rowClub{{ $i }}">
-                                                    @isset($assigned_clubs[$i])
-                                                        <td scope="row" class="text-center"><button id="deassignClub"
-                                                                data-id="{{ $assigned_clubs[$i]['club_id'] }}" type="button"
-                                                                class="btn btn-success btn-sm" @if ( (Auth::user()->cannot('update-leagues')) or ($league->state->in([ App\Enums\LeagueState::Live(), App\Enums\LeagueState::Setup()])) )  disabled @endif>
-                                                                {{ $assigned_clubs[$i]['shortname'] }} </button>
-                                                        </td>
-                                                        <td class="text-center">
-                                                            @if ($assigned_clubs[$i]['team_registered'])<i
-                                                                    class="far fa-check-circle text-success"></i> @endif
-                                                        </td>
-                                                        <td class="text-center">
-                                                            @if ($assigned_clubs[$i]['team_selected'])
-                                                                <i class="far fa-check-circle text-success"></i>
-                                                            @endif
-                                                        </td>
-                                                    @endisset
-                                                    @empty($assigned_clubs[$i])
-                                                            <td><button type="button" id="assignClub"
-                                                                    class="btn btn-outline-info btn-sm"
-                                                                    data-itemid="{{ $i }}" data-toggle="modal"
-                                                                    data-target="#modalAssignClub" @if ( (Auth::user()->cannot('update-leagues')) or ( $league->state->in([ App\Enums\LeagueState::Live(), App\Enums\LeagueState::Setup() ])) ) disabled @endif ><i class="fas fa-link"></i>
-                                                                    @lang('league.action.assign')</button></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                    @endempty
-                                                </tr>
-                                            @endfor
-                                            {{-- @endfor --}}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="col-xs-1 border rounded border-secondary bg-secondary d-flex flex-row justify-content-center">
-                              <span><i class="px-1"></i></span>
-                            </div>
-                            <div class="col-md-3 d-flex flex-column justify-content-center">
-                                <h5 class="sub-header">@lang('league.action.close.registration')</h5>
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-sm w-auto" id="table2">
-                                        <thead class="thead-light">
-                                            <tr>
-                                                <th></th>
-                                                <th scope="col">{{ trans_choice('team.team', 1) }}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @for ($i = 1; $i <= $league->state_count['size']; $i++)
-                                                <tr scope="row" dusk="rowTeam{{ $i }}">
-                                                    @isset($selected_teams[$i])
-                                                        <td class="text-center"><span class="badge badge-pill badge-dark">{{ $i }}</span></td>
-                                                    @endisset
-                                                    @empty($selected_teams[$i])
-                                                        <td class="text-center"><span class="badge badge-pill badge-info">{{ $i }}</span></td>
-                                                    @endempty
-                                                    @isset($selected_teams[$i])
-                                                        <td class="text-center">
-                                                        <button type="button" class="btn btn-outline-dark btn-sm" id="withdrawTeam" @if ( Auth::user()->cannot('update-teams') or  ($league->state_count['registered'] == 0)) disabled @endif>
-                                                        {{ $selected_teams[$i]['shortname'] }} {{ $selected_teams[$i]['team_no'] }}</button>
-                                                        </td>
-                                                    @endisset
-                                                    @empty($selected_teams[$i])
-                                                        <td class="text-center">
-                                                        <button  type="button" class="btn btn-outline-info btn-sm" id="injectTeam" @if ( Auth::user()->cannot('update-teams') or ($league->state_count['registered'] == $league->size)) disabled @endif>
-                                                        ______</button>
-                                                        </td>
-                                                    @endempty
-                                                </tr>
-                                            @endfor
-                                            {{-- @endfor --}}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-
-                        </div>
+                        <table width="100%" class="table table-hover table-bordered table-sm" id="table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">@lang('league.state.assigned')</th>
+                                    <th scope="col">@lang('league.state.registered')</th>
+                                    <th scope="col">@lang('league.state.selected')</th>
+                                </tr>
+                            </thead>
+                        </table>
                     </div>
-                    <!-- /.card-body -->
-                    <div class="card-footer" id="clubsCardFooter">
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-primary float-right" dusk="injectTeam" id="injectTeam" @if( (Auth::user()->cannot('update-teams')) or ($league->state_count['registered'] == $league->size)) disabled @endif><i class="fas fa-plus"></i> @lang('game.action.team.add')
-                            </button>
-                            <button type="button" class="btn btn-outline-primary float-right mr-2" dusk="withdrawTeam" id="withdrawTeam"
-                            @if( (Auth::user()->cannot('update-teams')) or ($league->state_count['registered'] == 0) )  disabled @endif
-                            ><i class="fa fa-trash"></i> @lang('game.action.team.withdraw')
-                            </button>
-                        </div>
-                    </div>
-                    <!-- /.card-footer -->
                 </div>
-                <!-- /.card CLUB TEAM ASSIGNMENT -->
             </div>
             <div class="col-sm-6">
                 <!-- card MEMBERS -->
@@ -274,7 +179,6 @@
                 @include('league/includes/assign_club')
                 <x-confirm-deletion modalId="modalDeleteLeague" modalTitle="{{ __('league.title.delete') }}" modalConfirm="{{ __('league.confirm.delete') }}" deleteType="{{ trans_choice('league.league',1) }}" />
                 <x-confirm-deletion modalId="modalDeleteMember" modalTitle="{{ __('role.title.delete') }}" modalConfirm="{{ __('role.confirm.delete') }}" deleteType="{{ __('role.member') }}" />
-                @include('league/includes/withdraw_team')
                 @include('league/includes/inject_team')
                 @include('member/includes/membership_add')
                 @include('member/includes/membership_modify')
@@ -283,157 +187,280 @@
 
         </div>
     </div>
-    @stop
+@stop
 
-    @section('js')
-        <script>
-            $(function() {
+@section('js')
+    <script>
+        function registerTeam( team_id){
+            console.log('team is:'+team_id);
+            var url = "{{ route('league.register.team', ['league' => $league, 'team' => ':team:']) }}"
+            url = url.replace(':team:', team_id);
 
-                toastr.options.closeButton = true;
-                toastr.options.closeMethod = 'fadeOut';
-                toastr.options.closeDuration = 300;
-                toastr.options.closeEasing = 'swing';
-                toastr.options.progressBar = true;
+            $.ajax({
+                type: "PUT",
+                dataType: 'json',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    _method: 'PUT'
+                },
+                url: url,
+                success: function(data) {
+                    toastr.success('team registered', 'success');
+                },
+                error: function(data) {
+                    console.log('Error:', data);
+                    toastr.error('team not registered', 'ERROR');
+                }
+            });
+        };
 
-                $("button#deassignClub").click(function() {
-                    var club_id = $(this).data("id");
-                    var url =
-                        "{{ route('league.deassign-club', ['league' => $league, 'club' => ':club:']) }}"
-                    url = url.replace(':club:', club_id);
+        $(document).on("click", 'button#unregisterTeam', function(e) {
+            var team_id = $(this).data("team-id");
+            var url = "{{ route('league.unregister.team', ['league' => $league, 'team' => ':team:']) }}"
+            url = url.replace(':team:', team_id);
 
-                    $.ajax({
-                        type: "POST",
-                        dataType: 'json',
-                        data: {
-                            id: club_id,
-                            _token: "{{ csrf_token() }}",
-                            _method: 'DELETE'
-                        },
-                        url: url,
-                        success: function(data) {
+            $.ajax({
+                type: "DELETE",
+                dataType: 'json',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    _method: 'DELETE'
+                },
+                url: url,
+                success: function(data) {
+                    toastr.success('team unregistered', 'success');
+                },
+                error: function(data) {
+                    console.log('Error:', data);
+                    toastr.error('team not unregistered', 'ERROR');
+                }
+            });
+        });
 
-                            toastr.options.onHidden = function() {
-                                location.reload();
-                                console.log('reload');
-                            }
+        $(document).on("click", 'button#assignClub', function(e) {
+            $('#modalAssignClub_region_id').val($(this).data('region-id'));
+            //$('#modalAssignClub_region').html($(this).data('region-code'));
+            var url = "{{ route('league.assign-clubs', ['league'=>$league->id]) }}";
+            $('#modalAssignClub_Form').attr('action', url);
+            $('#modalAssignClub').modal('show');
+        });
 
-                            toastr.info('club deassigned', 'success');
+        $(document).on("click", 'button#deassignClub', function(e) {
+            var club_id = $(this).data("id");
+            var url = "{{ route('league.deassign-club', ['league' => $league, 'club' => ':club:']) }}"
+            url = url.replace(':club:', club_id);
 
-                        },
-                        error: function(data) {
-                            console.log('Error:', data);
-                        }
-                    });
-                });
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    id: club_id,
+                    _token: "{{ csrf_token() }}",
+                    _method: 'DELETE'
+                },
+                url: url,
+                success: function(data) {
+                    toastr.options.onHidden = function() {
+                        location.reload();
+                        console.log('reload');
+                    }
+                    toastr.success('club deassigned', 'success');
+                },
+                error: function(data) {
+                    console.log('Error:', data);
+                }
+            });
+        });
 
-                $("button#assignClub").click(function() {
-                    $('#itemid').val($(this).data('itemid'));
-                    var url = "{{ route('league.assign-clubs', ['league'=>$league->id]) }}";
-                    $('#modalAssignClub_Form').attr('action', url);
-                    $('#modalAssignClub').modal('show');
-                });
-                $("button#withdrawTeam").click(function() {
-                    var url = "{{ route('league.team.withdraw', ['league'=>$league->id]) }}";
-                    $('#modalWithdrawTeam_Form').attr('action', url);
-                    $('#modalWithdrawTeam').modal('show');
-                });
+        $(document).on("click", "button#injectTeam", function(e) {
+            var url = "{{ route('league.team.inject', ['league'=>$league->id]) }}";
+            $('#modalInjectTeam_Form').attr('action', url);
+            $('#modalInjectTeam').modal('show');
+        });
+        $(document).on("click", "button#unpickChar", function(e) {
+            var team_id = $(this).data("team-id");
+            var league_no = $(this).data("league-no");
+            var url = "{{ route('league.team.unpickchar', ['league' => $league]) }}"
 
-                $("button#injectTeam").click(function() {
-                    var url = "{{ route('league.team.inject', ['league'=>$league->id]) }}";
-                    $('#modalInjectTeam_Form').attr('action', url);
-                    $('#modalInjectTeam').modal('show');
-                });
-                $("button#addMembership").click(function() {
-                    var url =
-                        "{{ route('membership.league.add', ['league' => ':leagueid:', 'member' => ':memberid:']) }}";
-                    url = url.replace(':memberid:', $(this).data('member-id'));
-                    url = url.replace(':leagueid:', $(this).data('league-id'));
-                    $('#modalAddMembership_Form').attr('action', url);
-                    $('#modalAddMembership').modal('show');
-                });
-                $("button#modMembership").click(function() {
-                    var url = "{{ route('membership.update', ['membership' => ':membershipid:']) }}";
-                    url = url.replace(':membershipid:', $(this).data('membership-id'));
-                    var url2 = "{{ route('membership.destroy', ['membership' => ':membershipid:']) }}";
-                    url2 = url2.replace(':membershipid:', $(this).data('membership-id'));
-                    $('#hidDelUrl').val(url2);
-                    $('#modmemfunction').val($(this).data('function'));
-                    $('#modmememail').val($(this).data('email'));
-                    $('#modmemrole').val($(this).data('role'));
-                    $('#modalMembershipMod_Form').attr('action', url);
-                    $('#modalMembershipMod').modal('show');
-                });
+            $.ajax( {
+                url: url,
+                dataType: "json",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    league_no: league_no,
+                    team_id: team_id,
+                },
+                type: "post",
+                delay: 250,
+                success: function (response) {
+                    toastr.options.onHidden = function() {
+                            location.reload();
+                            console.log('reload');
+                    };
+                    toastr.success('char  unpicked', 'success');
+                    console.log('reloading ...');
+                },
+                error: function (xhr){
+                    toastr.error(xhr.responseText, 'ERROR');
+                },
+                cache: false
+            });
+        })
+        $(document).on("click", "button#pickChar", function(e) {
+            var team_id = $(this).data("team-id");
+            var league_no = $(this).data("league-no");
+            var url = "{{ route('league.team.pickchar', ['league' => $league]) }}"
 
-                $("button#deleteMember").click(function() {
-                    $('#modalDeleteMember_Instance').html($(this).data('member-name'));
-                    var url =
-                        "{{ route('membership.league.destroy', ['league' => $league, 'member' => ':member:']) }}";
-                    url = url.replace(':member:', $(this).data('member-id'));
-                    $('#modalDeleteMember_Form').attr('action', url);
-                    $('#modalDeleteMember').modal('show');
-                });
+            $.ajax( {
+                url: url,
+                dataType: "json",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    league_no: league_no,
+                    team_id: team_id,
+                },
+                type: "post",
+                delay: 250,
+                success: function (response) {
+                    toastr.options.onHidden = function() {
+                            location.reload();
+                            console.log('reload');
+                    };
+                    toastr.success('char '+league_no+' picked', 'success');
+                    console.log('reloading ...');
+                },
+                error: function (xhr){
+                    toastr.error(xhr.responseText, 'ERROR');
+                },
+                cache: false
+            });
+        })
 
-                $("button#changeState").click(function() {
-                    $.ajax({
-                        type: "POST",
-                        dataType: "json",
-                        data: {
-                            _token: "{{ csrf_token() }}",
-                            action: $(this).data('action')
-                        },
-                        url: "{{ route('league.state.change', ['league' => $league]) }}",
-                        success: function(data) {
-                            location.reload()
-                        },
-                        error: function(data) {
-                            console.log('Error:', data);
-                        }
-                    });
-                });
+        $(function() {
 
-
-                $("button#deleteGames").click(function() {
-                    $.ajax({
-                        type: "POST",
-                        dataType: "json",
-                        data: {
-                            _method: "DELETE",
-                            _token: "{{ csrf_token() }}"
-                        },
-                        url: "{{ route('league.game.destroy', ['league' => $league]) }}",
-                        success: function(data) {
-                            location.reload()
-                        },
-                        error: function(data) {
-                            console.log('Error:', data);
-                        }
-                    });
-                });
-                $("button#deleteNoshowGames").click(function() {
-                    $.ajax({
-                        type: "POST",
-                        dataType: "json",
-                        data: {
-                            _method: "DELETE",
-                            _token: "{{ csrf_token() }}"
-                        },
-                        url: "{{ route('league.game.destroy_noshow', ['league' => $league]) }}",
-                        success: function(data) {
-                            location.reload()
-                        },
-                        error: function(data) {
-                            console.log('Error:', data);
-                        }
-                    });
-                });
-                $("#deleteLeague").click(function() {
-                    $('#modalDeleteLeague_Info').html('{{ __('league.info.delete',['league'=>$league->shortname,'noteam'=>$league->state_count['registered'],'nomember'=>count($members)])  }}');
-                    $('#modalDeleteLeague_Instance').html( '{{ $league->name }}' );
-
-                    var url = "{{ route('league.destroy', ['league' => $league]) }}";
-                    $('#modalDeleteLeague_Form').attr('action', url);
-                    $('#modalDeleteLeague').modal('show');
+            var teamtable = $('#table').DataTable({
+                processing: true,
+                serverSide: false,
+                responsive: true,
+                //scrollY: "200px",
+                scrollCollapse: true,
+                paging: false,
+                language: { "url": "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}" },
+                ajax: '{{ route('league.team.dt', ['language'=>app()->getLocale(),'league'=>$league]) }}',
+                order: [[ 2, 'asc' ],[ 0, 'asc' ]],
+                dom: 'rti',
+                columns: [
+                    { data: {
+                        _: 'club_shortname.sort',
+                        display: 'club_shortname.display',
+                        sort: 'club_shortname.sort'
+                        }, name: 'shortname'},
+                    { data: 'team_name', name: 'team_name'},
+                    { data: {
+                        _: 'team_league_no.sort',
+                        display: 'team_league_no.display',
+                        sort: 'team_league_no.sort'
+                        }, name: 'team_league_no'}
+                    ]
+            });
+            $("button#addMembership").click(function() {
+                var url =
+                    "{{ route('membership.league.add', ['league' => ':leagueid:', 'member' => ':memberid:']) }}";
+                url = url.replace(':memberid:', $(this).data('member-id'));
+                url = url.replace(':leagueid:', $(this).data('league-id'));
+                $('#modalAddMembership_Form').attr('action', url);
+                $('#modalAddMembership').modal('show');
+            });
+            $("button#modMembership").click(function() {
+                var url = "{{ route('membership.update', ['membership' => ':membershipid:']) }}";
+                url = url.replace(':membershipid:', $(this).data('membership-id'));
+                var url2 = "{{ route('membership.destroy', ['membership' => ':membershipid:']) }}";
+                url2 = url2.replace(':membershipid:', $(this).data('membership-id'));
+                $('#hidDelUrl').val(url2);
+                $('#modmemfunction').val($(this).data('function'));
+                $('#modmememail').val($(this).data('email'));
+                $('#modmemrole').val($(this).data('role'));
+                $('#modalMembershipMod_Form').attr('action', url);
+                $('#modalMembershipMod').modal('show');
+            });
+            $("button#deleteMember").click(function() {
+                $('#modalDeleteMember_Instance').html($(this).data('member-name'));
+                var url =
+                    "{{ route('membership.league.destroy', ['league' => $league, 'member' => ':member:']) }}";
+                url = url.replace(':member:', $(this).data('member-id'));
+                $('#modalDeleteMember_Form').attr('action', url);
+                $('#modalDeleteMember').modal('show');
+            });
+            $("button#changeState").click(function() {
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        action: $(this).data('action')
+                    },
+                    url: "{{ route('league.state.change', ['league' => $league]) }}",
+                    success: function(data) {
+                        location.reload()
+                    },
+                    error: function(data) {
+                        console.log('Error:', data);
+                    }
                 });
             });
-        </script>
-    @stop
+            $("button#deleteGames").click(function() {
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        _method: "DELETE",
+                        _token: "{{ csrf_token() }}"
+                    },
+                    url: "{{ route('league.game.destroy', ['league' => $league]) }}",
+                    success: function(data) {
+                        location.reload()
+                    },
+                    error: function(data) {
+                        console.log('Error:', data);
+                    }
+                });
+            });
+            $("button#deleteNoshowGames").click(function() {
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        _method: "DELETE",
+                        _token: "{{ csrf_token() }}"
+                    },
+                    url: "{{ route('league.game.destroy_noshow', ['league' => $league]) }}",
+                    success: function(data) {
+                        location.reload()
+                    },
+                    error: function(data) {
+                        console.log('Error:', data);
+                    }
+                });
+            });
+            $("#deleteLeague").click(function() {
+                $('#modalDeleteLeague_Info').html('{{ __('league.info.delete',['league'=>$league->shortname,'noteam'=>$league->state_count['registered'],'nomember'=>count($members)])  }}');
+                $('#modalDeleteLeague_Instance').html( '{{ $league->name }}' );
+
+                var url = "{{ route('league.destroy', ['league' => $league]) }}";
+                $('#modalDeleteLeague_Form').attr('action', url);
+                $('#modalDeleteLeague').modal('show');
+            });
+
+            toastr.options.closeButton = true;
+            toastr.options.closeMethod = 'fadeOut';
+            //toastr.options.closeDuration = 30;
+            toastr.options.closeEasing = 'swing';
+            toastr.options.progressBar = true;
+            toastr.options.timeOut = 1000,
+            toastr.options.fadeOut = 1000,
+            toastr.options.onHidden = function () {
+                            window.location.reload();
+                        };
+        });
+    </script>
+@stop

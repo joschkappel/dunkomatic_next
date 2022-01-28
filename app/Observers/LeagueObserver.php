@@ -19,13 +19,14 @@ class LeagueObserver
      */
     public function created(League $league)
     {
-
-        if ($league->schedule()->exists()  and  $league->league_size()->exists()) {
-            Log::info('[OBSERVER] league created - set status ASSIGNMENT',['league-id'=>$league->id]);
-            $this->open_assignment($league);
-        } else {
-            Log::info('[OBSERVER] league created - set status SETUP',['league-id'=>$league->id]);
-            $this->open_setup($league);
+        if ($league->state == null){
+            if ($league->schedule()->exists()  and  $league->league_size()->exists()) {
+                Log::info('[OBSERVER] league created - set status ASSIGNMENT',['league-id'=>$league->id]);
+                $this->open_assignment($league);
+            } else {
+                Log::info('[OBSERVER] league created - set status SETUP',['league-id'=>$league->id]);
+                $this->open_setup($league);
+            }
         }
     }
 

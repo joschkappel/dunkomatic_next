@@ -132,8 +132,7 @@ class LeagueRegistrationInjectTeamTest extends TestCase
         $response = $this->authenticated()
             ->followingRedirects()
             ->put(
-                route('team.assign-league'), ['league_id' => static::$league->id,
-                'club_id' => static::$c_toadd[0]->id, 'team_id' =>  static::$c_toadd[0]->teams->first()->id ]
+                route('league.register.team', ['league'=>static::$league->id , 'team'=> static::$c_toadd[0]->teams->first()->id ])
             );
 
         $response->assertStatus(200);

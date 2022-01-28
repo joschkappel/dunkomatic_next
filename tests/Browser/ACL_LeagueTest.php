@@ -245,18 +245,17 @@ class ACL_LeagueTest extends DuskTestCase
                 ($user->can('create-members')) ? $browser->assertSee(__('league.member.action.create',$locale=['de'])) : $browser->assertDontSee(__('league.member.action.create',$locale=['de']));
 
                 $browser->with('#clubsCard', function ($clubsCard) use ($user, $league) {
-                    $clubsCard->with('#clubsCardFooter', function ($clubFooter) use ($user, $league) {
-                        ( ($user->cannot('update-teams'))  or ($league->state_count['registered'] == 0) ) ? $clubFooter->assertButtonDisabled('@withdrawTeam') : $clubFooter->assertButtonEnabled('@withdrawTeam');
+/*                     $clubsCard->with('#clubsCardFooter', function ($clubFooter) use ($user, $league) {
                         ( ($user->cannot('update-teams'))  or ($league->state_count['registered'] == $league->size) ) ? $clubFooter->assertButtonDisabled('@injectTeam') : $clubFooter->assertButtonEnabled('@injectTeam');
-                    });
+                    }); */
 
-                    $clubsCard->waitFor('@rowClub1');
+/*                     $clubsCard->waitFor('@rowClub1');
                     $clubsCard->with('@rowClub1', function ($clubRow) use ($user, $league) {
                         ( ($user->cannot('update-leagues')) or ($league->state->in([ LeagueState::Live(), LeagueState::Setup()])) ) ? $clubRow->assertButtonDisabled('#deassignClub') : $clubRow->assertButtonEnabled('#deassignClub');
                     });
                     $clubsCard->with('@rowClub4', function ($clubRow) use ($user, $league) {
                         ( ($user->cannot('update-leagues'))  or ( $league->state->in([ LeagueState::Live(), LeagueState::Setup()])) ) ? $clubRow->assertButtonDisabled('#assignClub') : $clubRow->assertButtonEnabled('#assignClub');
-                    });
+                    }); */
 
                 });
                 $browser->with('#membersCard', function ($memberCard) use ($user, $member) {

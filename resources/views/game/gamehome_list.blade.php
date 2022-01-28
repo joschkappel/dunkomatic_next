@@ -104,7 +104,7 @@ $(function() {
               ]
     });
 
-  $('body').on('click', '#gameEditLink', function() {
+    $('body').on('click', '#gameEditLink', function() {
         moment.locale('{{app()->getLocale()}}');
         var gdate = moment($(this).data('game-date')).format('L');
         var gtime = moment($(this).data('game-time'),'HH:mm:ss').format('LT');
