@@ -202,7 +202,6 @@ class ACL_ClubTest extends DuskTestCase
                     $teamCard->click('.btn-tool')->waitFor('.btn-tool');
                     ($user->can('create-teams')) ? $teamCard->assertButtonEnabled('#deleteTeam') :  $teamCard->assertButtonDisabled('#deleteTeam');
                     ($user->can('update-teams')) ? $teamCard->assertSeeLink($club->shortname.$team->team_no) : $teamCard->assertDontSeeLink($club->shortname.$team->team_no);
-                    ($user->can('update-teams')) ? $teamCard->assertPresent('#assignLeague') : $teamCard->assertNotPresent('#assignLeague');
                     ( ($user->can('update-teams')) and ($club->leagues->where('state', LeagueState::Selection())->count() > 0)) ? $teamCard->assertSeeLink(__('team.action.plan.season'))  : $teamCard->assertDontSeeLink(__('team.action.plan.season'));
                     ( ($user->can('update-teams')) and ($club->leagues->where('state', LeagueState::Selection())->count() > 0)) ? $teamCard->assertSeeLink(__('team.action.pickchars'))  : $teamCard->assertDontSeeLink(__('team.action.pickchars'));
                 });

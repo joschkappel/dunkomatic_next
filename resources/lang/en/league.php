@@ -53,12 +53,12 @@ return [
   'state.registered' => 'registered',
   'state.selected' => 'assigned',
 
-  'action.assign' => 'Assign',
-  'action.register' => 'Register',
+  'action.assign' => 'Assign Club',
+  'action.register' => 'Register Team',
   'league_no' => 'Number',
   'next.state' => 'start next phase',
   'prev.state' => 'back to previous',
   'member.action.create' => 'New Member',
   'preferred' => 'Preferred Leagues',
-
+  'pickchar.closed' => 'League closed for char selection',
 ];

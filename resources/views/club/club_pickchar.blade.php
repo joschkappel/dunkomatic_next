@@ -90,7 +90,7 @@
                    <td></td>
                    <td></td>
                    <td></td>
-                   <td>League not open for selection</td>
+                   <td>{{ __('league.pickchar.closed')}}</td>
                    </tr>
                 @endif
                 @endisset
@@ -163,13 +163,13 @@
       var val = $(this).html();
       var league = $(this).parent().find("td:eq(0)").text();
       var team = $(this).parent().find("td:eq(1)").text();
-      console.log('Row: ' + row + ', Column: ' + col + ',L:'+league+',T:'+team);
+      // console.log('Row: ' + row + ', Column: ' + col + ',L:'+league+',T:'+team);
       if (val.includes('fa-frown')){
-        alert('This Char is already taken !!!!!');
+        alert('{{ __('club.pickchar.taken.other') }}');
       } else if (val.includes('fa-dot-circle')){
-        alert('This Char is already YOURS !!!!!');
+        alert('{{ __('club.pickchar.taken.own') }}');
       } else if (val.includes('fa-times-circle')){
-        alert('This is not part of this League  !!!!!');
+        alert('{{ __('club.pickchar.not.avail') }}');
       } else {
         var url = "{{ route('league.team.pickchar', ['league'=>':league:'])}}";
         url = url.replace(':league:', league);
@@ -187,7 +187,7 @@
                 delay: 250,
                 success: function (response) {
                   location.reload();
-                  console.log('reload');
+                  // console.log('reloading...');
                 },
                 cache: false
               });

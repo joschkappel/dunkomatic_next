@@ -46,4 +46,8 @@ return [
   'game_noshow.all' => 'All games without guest',
   'member.action.create' => 'New Member',
   'preferred' => 'Preferred Clubs',
+  'pickchar.taken.other' => 'This number is already taken !',
+  'pickchar.taken.own' => 'This number is already YOURs !',
+  'pickchar.not.avail' => 'This number is not available for this league !',
+  'select.byregion' => 'Choose a club from region: ',
 ];

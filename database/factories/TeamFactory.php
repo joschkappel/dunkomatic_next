@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Team;
+use App\Models\League;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -34,5 +35,15 @@ class TeamFactory extends Factory
             'coach_phone1' => $this->faker->phoneNumber(),
             'shirt_color' => $this->faker->colorName(),
         ];
+    }
+
+    public function registered(League $league)
+    {
+        return $this->state(function () use ($league) {
+            return [
+                'league_id' => $league->id
+            ];
+        });
+
     }
 }

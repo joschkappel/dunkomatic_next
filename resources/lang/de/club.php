@@ -46,4 +46,8 @@ return [
   'game_noshow.all' => 'Alle Heimspiele ohne Gegner',
   'member.action.create' => 'Neuer Vereinsmitarbeiter',
   'preferred' => 'Bevorzugte Vereine',
+  'pickchar.taken.other' => 'Diese Ziffer ist schon vergeben !',
+  'pickchar.taken.own' => 'Diese Ziffer ist schon für Dein Team eingetragen !',
+  'pickchar.not.avail' => 'Diese Ziffer kann für diese Spielrunde nicht gewählt werden !',
+  'select.byregion' => 'Wähle einen Verein aus Bezirk: ',
 ];

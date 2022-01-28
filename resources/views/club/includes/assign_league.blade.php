@@ -1,6 +1,4 @@
 <x-modal modalId="modalAssignLeague" modalTitle="{{ __('team.title.assign.league') }}" modalMethod="PUT" >
-    <input type="hidden" name="team_id" id="team_id" value=""  />
-    <input type="hidden" name="club_id" id="club_id" value=""  />
     <div class="form-group row">
         <label for="selLeague" class="col-sm-4 col-form-label">{{ trans_choice('league.league',1)}}</label>
         <div class="col-sm-6">
