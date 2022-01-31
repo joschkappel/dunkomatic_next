@@ -114,6 +114,7 @@ class TeamController extends Controller
         $data['club'] =  $club;
         $teams = $data['club']->teams()->whereNotNull('league_id')->with('league')->get();
         $data['teams'] = $teams->where('league.size', '>', 0)->sortBy('league.schedule_id');
+        $data['team_total_cnt'] = $teams->count();
 
         return view('team/teamleague_dashboard', $data);
     }
@@ -157,7 +158,6 @@ class TeamController extends Controller
 
         $select = "select date_format(se.game_date, '%b-%d-%Y') AS 'gamedate', count(*) as 'homegames' ";
         $where =  array();
-        $cols = array();
 
         if ($data['club_id']) {
             $teams = Club::find($data['club_id'])->teams->whereNotNull('league_id');
