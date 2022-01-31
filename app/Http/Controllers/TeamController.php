@@ -150,17 +150,27 @@ class TeamController extends Controller
 
     public function list_chart(Request $request)
     {
+        $data = $request->validate([
+            'club_id' => 'sometimes|required|exists:clubs,id'
+        ]);
         Log::info('preparing team league chart.');
 
         $select = "select date_format(se.game_date, '%b-%d-%Y') AS 'gamedate', count(*) as 'homegames' ";
         $where =  array();
         $cols = array();
 
-        foreach ($request->all() as $key => $league_no) {
-            if (strpos($key, 'sel') !== false) {
-                $league = explode(':', $key)[1];
+        if ($data['club_id']) {
+            $teams = Club::find($data['club_id'])->teams->whereNotNull('league_id');
+            foreach ($teams as $t){
+                $where[] = '(l.id = ' . $t->league->id . ' AND lts.team_home = ' . $t->league_no . ')';
+            }
+        } else {
+            foreach ($request->all() as $key => $league_no) {
+                if (strpos($key, 'sel') !== false) {
+                    $league = explode(':', $key)[1];
 
-                $where[] = '(l.id = ' . $league . ' AND lts.team_home = ' . $league_no . ')';
+                    $where[] = '(l.id = ' . $league . ' AND lts.team_home = ' . $league_no . ')';
+                }
             }
         }
 
@@ -170,7 +180,11 @@ class TeamController extends Controller
         $select .= " GROUP BY date_format(se.game_date, '%b-%d-%Y')";
 
         // Log::debug($select);
-        $plan = collect(DB::select($select));
+        if (count($where) > 0){
+            $plan = collect(DB::select($select));
+        } else {
+            $plan = collect();
+        }
         // Log::debug(print_r($plan, true));
 
         return Response::json($plan);

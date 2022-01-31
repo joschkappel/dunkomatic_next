@@ -66,9 +66,10 @@ Route::group([
 
         Route::get('club/{club}/game/upload', 'ClubGameController@upload')->name('club.upload.homegame');
         Route::post('club/{club}/game/import', 'ClubGameController@import')->name('club.import.homegame');
-        Route::get('club/{club}/game/list_home', 'ClubGameController@list_home')->name('club.game.list_home')->middleware('can:view-games');;
-        Route::get('club/{club}/game/chart', 'ClubGameController@chart')->name('club.game.chart')->middleware('can:view-games');;
-        Route::get('club/{club}/team/pickchar', 'ClubTeamController@pickchar')->name('club.team.pickchar')->middleware('can:update-teams');;
+        Route::get('club/{club}/game/list_home', 'ClubGameController@list_home')->name('club.game.list_home')->middleware('can:view-games');
+        Route::get('club/{club}/game/chart', 'ClubGameController@chart')->name('club.game.chart')->middleware('can:view-games');
+        Route::get('club/{club}/team/pickchar', 'ClubTeamController@pickchar')->name('club.team.pickchar')->middleware('can:update-teams');
+        Route::get('club/{club}/league_char_dt', 'ClubTeamController@league_char_dt')->name('club.league_char.dt')->middleware('can:view-teams');
 
         Route::get('audit/{audit}', 'AuditController@show')->name('audit.show');
 
@@ -133,7 +134,7 @@ Route::group([
         Route::post('team/league/plan/chart', 'TeamController@list_chart')->name('team.list-chart');
         Route::post('team/league/plan/propose', 'TeamController@propose_combination')->name('team.propose');
 
-        Route::resource('club.team', 'ClubTeamController')->shallow()->only('index', 'create', 'edit');;
+        Route::resource('club.team', 'ClubTeamController')->shallow()->only('index', 'create', 'edit');
 
         Route::get('schedule_event/calendar', function () {
             return view('schedule/scheduleevent_cal');
@@ -245,13 +246,13 @@ Route::middleware(['auth',
     Route::get('league/{league}/game/{game_no}', 'LeagueGameController@show_by_number')->name('league.game.show_bynumber');
     Route::delete('league/{league}/game/noshow', 'LeagueGameController@destroy_noshow_game')->name('league.game.destroy_noshow');
     Route::put('game/{game}/home', 'LeagueGameController@update_home')->name('game.update_home');
-    Route::resource('league.game', 'LeagueGameController')->shallow()->except(['index', 'create', 'edit']);;
+    Route::resource('league.game', 'LeagueGameController')->shallow()->except(['index', 'create', 'edit']);
 
     Route::get('league/{league}/team/sb', 'TeamController@sb_league')->name('league.team.sb');
     Route::get('team/league/{league}/free/sb', 'TeamController@sb_freeteam')->name('team.free.sb');
     Route::post('team/league/plan', 'TeamController@store_plan')->name('team.store-plan')->middleware('can:update-teams');
 
-    Route::resource('club.team', 'ClubTeamController')->shallow()->except('index', 'create', 'edit');;
+    Route::resource('club.team', 'ClubTeamController')->shallow()->except('index', 'create', 'edit');
 
     Route::post('role/index', 'RoleController@index')->name('role.index');
 
