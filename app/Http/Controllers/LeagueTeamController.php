@@ -10,6 +10,8 @@ use App\Enums\LeagueState;
 use App\Models\Game;
 
 use App\Notifications\ClubDeAssigned;
+use App\Events\LeagueTeamCharUpdated;
+
 use App\Traits\GameManager;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -293,6 +295,8 @@ class LeagueTeamController extends Controller
         $team->update($udata);
         Log::notice('team league no set.', ['team-id' => $team->id, 'league-id' => $league->id, 'league-team-no' => $data['league_no']]);
 
+        broadcast(new LeagueTeamCharUpdated($league))->toOthers();
+
         return Response::json(['success' => 'all good'], 200);
     }
 
@@ -319,6 +323,9 @@ class LeagueTeamController extends Controller
         if ($team != null) {
             $team->update($udata);
             Log::notice('team league no set.', ['team-id' => $team->id, 'league-id' => $league->id, 'league-team-no' => $data['league_no']]);
+
+            broadcast(new LeagueTeamCharUpdated($league))->toOthers();
+
             return Response::json(['success' => 'all good'], 200);
         } else {
             Log::error('unpick league char: team not found.', ['team-id' => $team->id, 'league-id' => $league->id, 'league-team-no' => $data['league_no']]);

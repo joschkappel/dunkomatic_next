@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
+use App\Events\TestEvent;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,6 +22,10 @@ Route::get('/', function () {
 Route::get('healthy', function () {
     return 'OK';
 });
+Route::get('/fire', function () {
+    event(new App\Events\TestEvent());
+    return 'ok';
+});
 
 Route::get('health', HealthCheckResultsController::class);
 
@@ -33,6 +39,9 @@ Route::group([
 
     Route::get('/', function () {
         return view('welcome');
+    })->name('welcome');
+    Route::get('/checkfire', function () {
+        return view('broadcast.test');
     })->name('welcome');
 
     Auth::routes(['verify' => true, 'middleware' => 'can:register']);

@@ -10,7 +10,7 @@
                 <div class="card-body">
                     <table width="100%" class="table table-hover table-bordered table-sm" id="teamtable">
                         <thead class="thead-light">
-                            <tr>        
+                            <tr>
                                 <th hidden>league_id</th>
                                 <th hidden>team_id</th>
                                 <th>{{trans_choice('league.league',1 )}}</th>
@@ -31,7 +31,7 @@
                                 <th>14-O</th>
                                 <th>15-P</th>
                                 <th>16-Q</th>
-                            </tr>                            
+                            </tr>
                         </thead>
                     </table>
                 </div>
@@ -53,6 +53,7 @@
 @section('js')
 
 <script>
+
   $(function() {
     var teamtable = $('#teamtable').DataTable({
                     processing: true,
@@ -88,6 +89,16 @@
                         { data: 'char_P', name: 'char_P'},
                         { data: 'char_Q', name: 'char_Q'},
                         ]
+    });
+
+    window.Echo.channel('user-leagues')
+            .listen('.LeagueCharPickEvent', (data) => {
+                teamtable.data().each( function (d) {
+                    if (d.league.id == data.league.id){
+                        console.log('yes i got this league '+d.league.shortname+', refreshing...');
+                        teamtable.ajax.reload();
+                    }
+                });
     });
 
     var ctx = document.getElementById('myChart').getContext('2d');
@@ -200,7 +211,7 @@
         } else if (val.includes('fa-times-circle')){
             var msg =  "{{ __('club.pickchar.not.avail') }}";
             msg = msg.replace('xleague_nox', league_no);
-            alert(msg);      
+            alert(msg);
         } else if ((league_no > 0) && (league_no < 17)) {
             var msg = "{{__('club.pickchar.book')}}";
             msg = msg.replace('xleague_nox', league_no);
@@ -230,6 +241,7 @@
         refreshChart();
     });
   });
+
 
 </script>
 @stop

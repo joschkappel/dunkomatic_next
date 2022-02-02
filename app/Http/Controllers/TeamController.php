@@ -159,7 +159,7 @@ class TeamController extends Controller
         $select = "select date_format(se.game_date, '%b-%d-%Y') AS 'gamedate', count(*) as 'homegames' ";
         $where =  array();
 
-        if ($data['club_id']) {
+        if (isset($data['club_id'])) {
             $teams = Club::find($data['club_id'])->teams->whereNotNull('league_id');
             foreach ($teams as $t){
                 $where[] = '(l.id = ' . $t->league->id . ' AND lts.team_home = ' . $t->league_no . ')';
