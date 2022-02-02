@@ -105,4 +105,7 @@ return [
     'unscheduledgames.line1'  => 'We found :games_count unscheduled home games for your club :CLUB.',
     'unscheduledgames.line2'  => 'When you click on column ":gaemtimecolumn", you can see the games with no start time and may now modify those.',
     'unscheduledgames.action'  => 'Enter Game Start Time',
+
+    'event.char.picked' => ':LEAGUE: :CLUB has picked Number :LEAGUE_NO',
+    'event.char.released' => ':LEAGUE: :CLUB has released Number :LEAGUE_NO',
 ];

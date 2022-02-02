@@ -37,10 +37,14 @@
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
+                    <div class="container">
+                        <div class="text-sm" id="notification"></div>
+                    </div>
                 </div>
                 <!-- /.card-footer -->
             </div>
         </div>
+
         <!-- /.card -->
     </div>
     <div class="row">
@@ -90,13 +94,15 @@
                         { data: 'char_Q', name: 'char_Q'},
                         ]
     });
-
+    moment.locale('{{ app()->getLocale() }}');
     window.Echo.channel('user-leagues')
             .listen('.LeagueCharPickEvent', (data) => {
                 teamtable.data().each( function (d) {
                     if (d.league.id == data.league.id){
                         console.log('yes i got this league '+d.league.shortname+', refreshing...');
                         teamtable.ajax.reload();
+                        var utime = moment(data.updated_at).format('LTS');
+                        $("#notification").append('<div class="alert alert-'+data.ccode+'">'+utime+'   '+data.action+'</div>');
                     }
                 });
     });

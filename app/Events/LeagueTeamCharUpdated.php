@@ -17,15 +17,19 @@ class LeagueTeamCharUpdated implements ShouldBroadcastNow
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $league;
+    public $action;
+    public $ccode;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(League $league)
+    public function __construct(League $league, $action='', $ccode='success')
     {
         $this->league = $league;
+        $this->action = $action;
+        $this->ccode = $ccode;
     }
 
     /**

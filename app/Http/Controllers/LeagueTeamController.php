@@ -295,7 +295,10 @@ class LeagueTeamController extends Controller
         $team->update($udata);
         Log::notice('team league no set.', ['team-id' => $team->id, 'league-id' => $league->id, 'league-team-no' => $data['league_no']]);
 
-        broadcast(new LeagueTeamCharUpdated($league))->toOthers();
+        $action = __('notifications.event.char.picked', ['league' => $league->shortname,
+                                                          'club' => $team->club->shortname,
+                                                          'league_no' => $udata['league_no'].'/'.$udata['league_char'] ]);
+        broadcast(new LeagueTeamCharUpdated($league, $action, 'danger'))->toOthers();
 
         return Response::json(['success' => 'all good'], 200);
     }
@@ -321,10 +324,14 @@ class LeagueTeamController extends Controller
 
         $team = Team::where('id', $data['team_id'])->where('league_id', $league->id)->where('league_no', $data['league_no'])->first();
         if ($team != null) {
+            $action = __('notifications.event.char.released', ['league' => $league->shortname,
+            'club' => $team->club->shortname,
+            'league_no' => $team->league_no.'/'.$team->league_char ]);
+
             $team->update($udata);
             Log::notice('team league no set.', ['team-id' => $team->id, 'league-id' => $league->id, 'league-team-no' => $data['league_no']]);
 
-            broadcast(new LeagueTeamCharUpdated($league))->toOthers();
+            broadcast(new LeagueTeamCharUpdated($league, $action, 'success'))->toOthers();
 
             return Response::json(['success' => 'all good'], 200);
         } else {
