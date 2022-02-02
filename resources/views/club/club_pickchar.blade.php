@@ -1,117 +1,51 @@
 @extends('layouts.page')
 
 @section('content')
-<meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-md-8">
-
-        <!-- card TEAMS -->
-        <div class="card card-info">
-          <div class="card-header">
-            <h4 class="card-title"><i class="fas fa-users fa-lg"></i> {{trans_choice('team.team',2 )}}  <span class="badge badge-pill badge-dark">{{ count($club['teams']) }}</span></h4>
-            <div class="card-tools">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card card-outline card-dark" id="teamsCard">
+                <x-card-header title="{{__('club.title.pickchars')}}" icon="fas fa-vote-yea fa-lg"  count="{{$team_open_cnt.' / '.$team_total_cnt}}">
+                </x-card-header>
+                <div class="card-body">
+                    <table width="100%" class="table table-hover table-bordered table-sm" id="teamtable">
+                        <thead class="thead-light">
+                            <tr>
+                                <th hidden>league_id</th>
+                                <th hidden>team_id</th>
+                                <th>{{trans_choice('league.league',1 )}}</th>
+                                <th>{{trans_choice('team.team',1 )}}</th>
+                                <th>1-A</th>
+                                <th>2-B</th>
+                                <th>3-C</th>
+                                <th>4-D</th>
+                                <th>5-E</th>
+                                <th>6-F</th>
+                                <th>7-G</th>
+                                <th>8-H</th>
+                                <th>9-I</th>
+                                <th>10-K</th>
+                                <th>11-L</th>
+                                <th>12-M</th>
+                                <th>13-N</th>
+                                <th>14-O</th>
+                                <th>15-P</th>
+                                <th>16-Q</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                </div>
+                <!-- /.card-footer -->
             </div>
-            <!-- /.card-tools -->
-          </div>
-          <!-- /.card-header -->
-          <div class="card-body">
-            <table width="100%" class="table table-striped table-bordered table-sm" id="table">
-               <thead class="thead-light">
-                  <tr>
-                     <th hidden>league_id</th>
-                     <th hidden>team_id</th>
-                     <th>{{trans_choice('league.league',1 )}}</th>
-                     <th>{{trans_choice('team.team',1 )}}</th>
-                     <th>A</th>
-                     <th>B</th>
-                     <th>C</th>
-                     <th>D</th>
-                     <th>E</th>
-                     <th>F</th>
-                     <th>G</th>
-                     <th>H</th>
-                     <th>I</th>
-                     <th>K</th>
-                     <th>L</th>
-                     <th>M</th>
-                     <th>N</th>
-                     <th>O</th>
-                     <th>P</th>
-                     <th>Q</th>
-                  </tr>
-               </thead>
-               <tbody>
-               @foreach ($club['teams'] as $t )
-                @isset($t['league'])
-                @if ($t->league->state == App\Enums\LeagueState::Selection())
-                 <tr>
-                   <td hidden>{{ $t->league['id'] }}</td>
-                   <td hidden>{{ $t->id }}</td>
-                   <td>{{ $t->league['shortname'] }}</td>
-                   <td>{{$t->team_no}}</td>
-                   <td> @if ($t->preferred_league_no == 1)<i class="fas fa-asterisk text-warning"></i>@endif @if ($t->league_no == 1) <i class="far fa-dot-circle fa-lg text-success"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('A')) <i class="far fa-frown text-danger"</i> @endif</td>
-                   <td> @if ($t->preferred_league_no == 2)<i class="fas fa-asterisk text-warning"></i>@endif @if ($t->league_no == 2) <i class="far fa-dot-circle fa-lg text-success"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('B')) <i class="far fa-frown text-danger"</i> @endif</td>
-                   <td> @if ($t->preferred_league_no == 3)<i class="fas fa-asterisk text-warning"></i>@endif @if ($t->league_no == 3) <i class="far fa-dot-circle fa-lg text-success"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('C')) <i class="far fa-frown text-danger"</i> @endif</td>
-                   <td> @if ($t->preferred_league_no == 4)<i class="fas fa-asterisk text-warning"></i>@endif @if ($t->league_no == 4) <i class="far fa-dot-circle fa-lg text-success"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('D')) <i class="far fa-frown text-danger"</i> @endif</td>
-                   <td> @if ($t->preferred_league_no == 5)<i class="fas fa-asterisk text-warning"></i>@endif @if ($t->league->size < 5) <i class="far fa-times-circle text-secondary"></i> @else @if ($t->league_no == 5) <i class="far fa-dot-circle fa-lg text-success"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('E')) <i class="far fa-frown text-danger"</i> @endif @endif</td>
-                   <td> @if ($t->preferred_league_no == 6)<i class="fas fa-asterisk text-warning"></i>@endif @if ($t->league->size < 6) <i class="far fa-times-circle text-secondary"></i> @else @if ($t->league_no == 6) <i class="far fa-dot-circle fa-lg text-success"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('F')) <i class="far fa-frown text-danger"</i> @endif @endif</td>
-                   <td> @if ($t->preferred_league_no == 7)<i class="fas fa-asterisk text-warning"></i>@endif @if ($t->league->size < 7) <i class="far fa-times-circle text-secondary"></i> @else @if ($t->league_no == 7) <i class="far fa-dot-circle fa-lg text-success"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('G')) <i class="far fa-frown text-danger"</i> @endif @endif</td>
-                   <td> @if ($t->preferred_league_no == 8)<i class="fas fa-asterisk text-warning"></i>@endif @if ($t->league->size < 8) <i class="far fa-times-circle text-secondary"></i> @else @if ($t->league_no == 8) <i class="far fa-dot-circle fa-lg text-success"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('H')) <i class="far fa-frown text-danger"</i> @endif @endif</td>
-                   <td> @if ($t->preferred_league_no == 9)<i class="fas fa-asterisk text-warning"></i>@endif @if ($t->league->size < 9) <i class="far fa-times-circle text-secondary"></i> @else @if ($t->league_no == 9) <i class="far fa-dot-circle fa-lg text-success"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('I')) <i class="far fa-frown text-danger"</i> @endif @endif</td>
-                   <td> @if ($t->preferred_league_no == 10)<i class="fas fa-asterisk text-warning"></i>@endif @if ($t->league->size < 10) <i class="far fa-times-circle text-secondary"></i> @else @if ($t->league_no == 10) <i class="far fa-dot-circle fa-lg text-success"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('K')) <i class="far fa-frown text-danger"</i> @endif @endif</td>
-                   <td> @if ($t->preferred_league_no == 11)<i class="fas fa-asterisk text-warning"></i>@endif @if ($t->league->size < 11) <i class="far fa-times-circle text-secondary"></i> @else @if ($t->league_no == 11) <i class="far fa-dot-circle fa-lg text-success"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('L')) <i class="far fa-frown text-danger"</i> @endif @endif</td>
-                   <td> @if ($t->preferred_league_no == 12)<i class="fas fa-asterisk text-warning"></i>@endif @if ($t->league->size < 12) <i class="far fa-times-circle text-secondary"></i> @else @if ($t->league_no == 12) <i class="far fa-dot-circle fa-lg text-success"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('M')) <i class="far fa-frown text-danger"</i> @endif @endif</td>
-                   <td> @if ($t->preferred_league_no == 13)<i class="fas fa-asterisk text-warning"></i>@endif @if ($t->league->size < 13) <i class="far fa-times-circle text-secondary"></i> @else @if ($t->league_no == 13) <i class="far fa-dot-circle fa-lg text-success"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('N')) <i class="far fa-frown text-danger"</i> @endif @endif</td>
-                   <td> @if ($t->preferred_league_no == 14)<i class="fas fa-asterisk text-warning"></i>@endif @if ($t->league->size < 14) <i class="far fa-times-circle text-secondary"></i> @else @if ($t->league_no == 14) <i class="far fa-dot-circle fa-lg text-success"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('O')) <i class="far fa-frown text-danger"</i> @endif @endif</td>
-                   <td> @if ($t->preferred_league_no == 15)<i class="fas fa-asterisk text-warning"></i>@endif @if ($t->league->size < 15) <i class="far fa-times-circle text-secondary"></i> @else @if ($t->league_no == 15) <i class="far fa-dot-circle fa-lg text-success"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('P')) <i class="far fa-frown text-danger"</i> @endif @endif</td>
-                   <td> @if ($t->preferred_league_no == 16)<i class="fas fa-asterisk text-warning"></i>@endif @if ($t->league->size < 16) <i class="far fa-times-circle text-secondary"></i> @else @if ($t->league_no == 16) <i class="far fa-dot-circle fa-lg text-success"></i> @elseif ($t['league']['teams']->pluck('league_char')->contains('Q')) <i class="far fa-frown text-danger"</i> @endif @endif</td>
-                   <td></td>
-                 </tr>
-                @else
-                 <tr>
-                   <td hidden>{{ $t->league['id'] }}</td>
-                   <td hidden>{{ $t->id }}</td>
-                   <td>{{ $t->league['shortname'] }}</td>
-                   <td>{{$t->team_no}}</td>
-                   <td></td>
-                   <td></td>
-                   <td></td>
-                   <td></td>
-                   <td></td>
-                   <td></td>
-                   <td></td>
-                   <td></td>
-                   <td></td>
-                   <td></td>
-                   <td></td>
-                   <td></td>
-                   <td></td>
-                   <td></td>
-                   <td></td>
-                   <td></td>
-                   <td>{{ __('league.pickchar.closed')}}</td>
-                   </tr>
-                @endif
-                @endisset
-              @endforeach
-            </tbody>
-         </table>
-          </div>
-          <!-- /.card-body -->
-          <div class="card-footer">
-          </div>
-          <!-- /.card-footer -->
         </div>
         <!-- /.card -->
-
     </div>
-    @include('team/includes/teamleague_chart')
-
-    <!-- ./deck -->
-    <!-- all modals here -->
-    <!-- all modals above -->
-</div>
+    <div class="row">
+        @include('team/includes/teamleague_chart')
+    </div>
 </div>
 @stop
 
@@ -119,7 +53,54 @@
 @section('js')
 
 <script>
+
   $(function() {
+    var teamtable = $('#teamtable').DataTable({
+                    processing: true,
+                    serverSide: false,
+                    responsive: true,
+                    //scrollY: "200px",
+                    scrollCollapse: true,
+                    paging: false,
+                    autoWidth: false,
+                    language: { "url": "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}" },
+                    ajax: '{{ route('club.league_char.dt', ['language'=>app()->getLocale(),'club'=>$club]) }}',
+                    //order: [[ 2, 'asc' ],[ 0, 'asc' ]],
+                    dom: 'rti',
+                    columns: [
+                        { data: 'league.id', name: 'league_id', visible: false},
+                        { data: 'id', name: 'team_id', visible: false},
+                        { data: 'league.shortname', name: 'league_shortname'},
+                        { data: 'team_no', name: 'team_no'},
+                        { data: 'char_A', name: 'char_A'},
+                        { data: 'char_B', name: 'char_B'},
+                        { data: 'char_C', name: 'char_C'},
+                        { data: 'char_D', name: 'char_D'},
+                        { data: 'char_E', name: 'char_E'},
+                        { data: 'char_F', name: 'char_F'},
+                        { data: 'char_G', name: 'char_G'},
+                        { data: 'char_H', name: 'char_H'},
+                        { data: 'char_I', name: 'char_I'},
+                        { data: 'char_K', name: 'char_K'},
+                        { data: 'char_L', name: 'char_L'},
+                        { data: 'char_M', name: 'char_M'},
+                        { data: 'char_N', name: 'char_N'},
+                        { data: 'char_O', name: 'char_O'},
+                        { data: 'char_P', name: 'char_P'},
+                        { data: 'char_Q', name: 'char_Q'},
+                        ]
+    });
+
+    window.Echo.channel('user-leagues')
+            .listen('.LeagueCharPickEvent', (data) => {
+                teamtable.data().each( function (d) {
+                    if (d.league.id == data.league.id){
+                        console.log('yes i got this league '+d.league.shortname+', refreshing...');
+                        teamtable.ajax.reload();
+                    }
+                });
+    });
+
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'bar',
@@ -157,46 +138,6 @@
         }
     });
 
-    $('td').click(function(){
-      var col = $(this).index();
-      var row = $(this).parent().index();
-      var val = $(this).html();
-      var league = $(this).parent().find("td:eq(0)").text();
-      var team = $(this).parent().find("td:eq(1)").text();
-      // console.log('Row: ' + row + ', Column: ' + col + ',L:'+league+',T:'+team);
-      if (val.includes('fa-frown')){
-        alert('{{ __('club.pickchar.taken.other') }}');
-      } else if (val.includes('fa-dot-circle')){
-        alert('{{ __('club.pickchar.taken.own') }}');
-      } else if (val.includes('fa-times-circle')){
-        alert('{{ __('club.pickchar.not.avail') }}');
-      } else {
-        var url = "{{ route('league.team.pickchar', ['league'=>':league:'])}}";
-        url = url.replace(':league:', league);
-        var league_no = col - 3;
-        $.ajax( {
-                url: url,
-                dataType: "json",
-                data: {
-                  _token: "{{ csrf_token() }}",
-                  league_no: league_no,
-                  team_id: team,
-                  league_id: league
-                },
-                type: "post",
-                delay: 250,
-                success: function (response) {
-                  location.reload();
-                  // console.log('reloading...');
-                },
-                cache: false
-              });
-      }
-
-    });
-
-    refreshChart();
-
     function refreshChart(){
       $.ajaxSetup({
         headers: {
@@ -206,14 +147,11 @@
       var selData = {};
       selData['club_id'] = {!! json_encode($club->id) !!};
       selData['_token'] = "{{ csrf_token() }}";
-      @foreach ($club['teams'] as $t )
-        @isset($t['league'])
-        @isset($t['league_no'])
-        selData['selSize:'+ {!!$t['league']['id']!!}+':'+{!!$t['id']!!}] = {!!$t['league_no']!!};
-        @endisset
-        @endisset
-      @endforeach
-      console.log(selData);
+/*       teamtable.rows().every( function (  rowIdx, tableLoop, rowLoop ) {
+            var d = this.data();
+            selData['selSize:'+ d.league.id  +':'+ d.id ] = d.league_no;
+      });
+      console.log(selData); */
       var data = JSON.stringify(selData);
       $.ajax({
           type: 'POST',
@@ -228,7 +166,6 @@
                 y: elem.homegames
               };
             });
-
             myChart.data.datasets.forEach((dataset) => {
               dataset.data = chartdata;
             });
@@ -236,7 +173,75 @@
           },
       });
     }
+
+    $('#teamtable tbody').on( 'click', 'td', function () {
+        var val = teamtable.cell( this ).data();
+        var row = teamtable.cell( this ).index().row;
+        var league_no = teamtable.cell( this ).index().columnVisible - 1;
+        var team_id = teamtable.row( this ).data().id;
+        var league_id = teamtable.row( this ).data().league.id;
+        // alert( teamtable.cell( this ).data() );
+        if (val.includes('fa-frown')){
+            var msg =  "{{  __('club.pickchar.taken.other') }}";
+            msg = msg.replace('xleague_nox', league_no);
+            alert(msg);
+        } else if (val.includes('fa-dot-circle')){
+            var msg =  "{{ __('club.pickchar.taken.own') }}";
+            msg = msg.replace('xleague_nox', league_no);
+            alert(msg);
+            var url = "{{ route('league.team.unpickchar', ['league'=>':league:'])}}";
+            url = url.replace(':league:', league_id);
+            $.ajax( {
+                url: url,
+                dataType: "json",
+                data: {
+                _token: "{{ csrf_token() }}",
+                league_no: league_no,
+                team_id: team_id,
+                },
+                type: "post",
+                delay: 250,
+                success: function (response) {
+                    refreshChart();
+                    teamtable.ajax.reload();
+                    // console.log('reloading...');
+                },
+                cache: false
+            });
+        } else if (val.includes('fa-times-circle')){
+            var msg =  "{{ __('club.pickchar.not.avail') }}";
+            msg = msg.replace('xleague_nox', league_no);
+            alert(msg);
+        } else if ((league_no > 0) && (league_no < 17)) {
+            var msg = "{{__('club.pickchar.book')}}";
+            msg = msg.replace('xleague_nox', league_no);
+            alert( msg );
+            var url = "{{ route('league.team.pickchar', ['league'=>':league:'])}}";
+            url = url.replace(':league:', league_id);
+            $.ajax( {
+                url: url,
+                dataType: "json",
+                data: {
+                _token: "{{ csrf_token() }}",
+                league_no: league_no,
+                team_id: team_id,
+                },
+                type: "post",
+                delay: 250,
+                success: function (response) {
+                    refreshChart();
+                    teamtable.ajax.reload();
+                    // console.log('reloading...');
+                },
+                cache: false
+            });
+        }
+    } );
+    $('#teamtable').on('xhr.dt', function ( e, settings, json, xhr ) {
+        refreshChart();
+    });
   });
+
 
 </script>
 @stop

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Checks\BroadcastingCheck;
 use App\Checks\DbConnectionsCheck;
 use Illuminate\Support\ServiceProvider;
 use Spatie\Health\Facades\Health;
@@ -48,7 +49,8 @@ class HealthServiceProvider extends ServiceProvider
                 // ScheduleCheck::new(),
                 EnvironmentCheck::new()->expectEnvironment('prod'),
                 CacheCheck::new(),
-                DebugModeCheck::new()
+                DebugModeCheck::new(),
+                BroadcastingCheck::new()
             ]);
         } elseif (config('app.env') == 'local'){
             Health::checks([
@@ -60,7 +62,8 @@ class HealthServiceProvider extends ServiceProvider
                 DatabaseCheck::new(),
                 RedisCheck::new(),
                 EnvironmentCheck::new()->expectEnvironment('local'),
-                CacheCheck::new()
+                CacheCheck::new(),
+                BroadcastingCheck::new()
             ]);
         } else {
             // do nothing;

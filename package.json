@@ -77,5 +77,10 @@
         "vue": "^2.5.17",
         "vue-template-compiler": "^2.6.12",
         "websocket-extensions": ">=0.1.4"
+    },
+    "dependencies": {
+        "laravel-echo": "^1.11.3",
+        "laravel-echo-server": "^1.6.3",
+        "socket.io-client": "^2.4.0"
     }
 }

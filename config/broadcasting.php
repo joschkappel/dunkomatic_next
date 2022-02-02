@@ -37,13 +37,15 @@ return [
             'app_id' => env('PUSHER_APP_ID'),
             'options' => [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
-                'useTLS' => true,
-            ],
+                'useTLS' => false,
+                'encrypted' => false,
+                'host' => 'laravel-echo-server',
+                'port' => 6001            ],
         ],
 
         'redis' => [
             'driver' => 'redis',
-            'connection' => 'default',
+            'connection' => 'broadcasting',
         ],
 
         'log' => [

@@ -198,10 +198,7 @@ class TeamControllerTest extends TestCase
 
         $response = $this->authenticated()
             ->post(route('team.list-chart', ['language' => 'de']), [
-                'selSize:' . $league->id . ':' . $team->id => 1,
-                'club_id' => $club->id,
-                'gperday' => 1,
-                'optmode' => 'min'
+                'selSize:' . $league->id . ':' . $team->id => 1
             ]);
 
         $response->assertStatus(200)
