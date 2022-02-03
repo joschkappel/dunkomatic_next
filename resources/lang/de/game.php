@@ -37,4 +37,5 @@ return [
   'menu.referees' => 'Schiedsrichter Ansetzungen',
   'title.list' => 'Gesamtspielplan für :REGION',
   'starts_in' => 'beginn in :hours Studen',
+  'deleted' => 'Die Spiele wurden gelöscht',
 ];

@@ -229,9 +229,14 @@
             data: { datasets: [{ data: [], }] },
             options: {
               plugins: { colorschemes: { scheme: 'brewer.SetOne4' }, },
+              responsive: true,
               title: {
                 display: true,
                 text: '{{ __('region.chart.title.leaguestate') }}'
+              },
+              scales: {
+                y: { beginAtZero: true, stacked: true },
+                x: { stacked: true }
               },
             }
         });

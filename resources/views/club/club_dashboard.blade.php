@@ -155,7 +155,7 @@
                                     <th scope="col">{{ trans_choice('team.team', 1) }}</th>
                                     <th scope="col">@lang('league.state.registered')</th>
                                     <th scope="col">@lang('league.state.selected')</th>
-                                    <th scope="col">{{ trans_choice('league.league', 1) }}</th>                                    
+                                    <th scope="col">{{ trans_choice('league.league', 1) }}</th>
                                 </tr>
                             </thead>
                         </table>
@@ -177,7 +177,7 @@
                         </div>
                     </div>
                     <!-- /.card-footer -->
-                </div>                                    
+                </div>
             </div>
             <div class="col-sm-6">
                 <!-- card GYMS -->
@@ -298,14 +298,14 @@
                 },
                 url: url,
                 success: function(data) {
-                    toastr.success('team unregistered', 'success');
+                    toastr.success('{{__('team.unregister.ok')}}', '{{__('team.action.register')}}');
                 },
                 error: function(data) {
                     console.log('Error:', data);
-                    toastr.error('team not unregistered', 'ERROR');
+                    toastr.error('{{__('team.unregister.nook')}}', '{{__('team.action.register')}}');
                 }
             });
-        });        
+        });
         $(document).on("click", "button#deleteTeam", function(e) {
                 if ($(this).data('league-sname') == ""){
                     $('#modalDeleteTeam_Info').html('{{ trans_choice('league.league',1) .'   '. __('team.unassigned')  }}');
@@ -333,11 +333,11 @@
                 },
                 url: url,
                 success: function(data) {
-                    toastr.success('team registered', 'success');
+                    toastr.success('{{__('team.register.ok')}}', '{{__('team.action.register')}}');
                 },
                 error: function(data) {
                     console.log('Error:', data);
-                    toastr.error('team not registered', 'ERROR');
+                    toastr.error('{{__('team.register.notok')}}', '{{__('team.action.register')}}');
                 }
             });
         };
@@ -409,13 +409,6 @@
                 $('#modalDeleteClub_Form').attr('action', url);
                 $('#modalDeleteClub').modal('show');
             });
-            toastr.options.closeButton = true;
-                toastr.options.closeMethod = 'fadeOut';
-                //toastr.options.closeDuration = 30;
-                toastr.options.closeEasing = 'swing';
-                toastr.options.progressBar = true;
-                toastr.options.timeOut = 1000,
-                toastr.options.fadeOut = 1000,
                 toastr.options.onHidden = function () {
                                 window.location.reload();
                             };

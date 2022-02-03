@@ -298,14 +298,27 @@ class RegionController extends Controller
         $data = array();
         $data['labels'] = [];
         $datasets = array();
+        // initialize datasets
+        foreach (LeagueAgeType::getValues() as $at) {
+            $datasets[$at]['stack'] = 'Stack 1';
+            $datasets[$at]['label'] = LeagueAgeType::getDescription(LeagueAgeType::coerce($at));
+            $datasets[$at]['data'] = [];
+        }
 
-        $rs = DB::table('leagues')->where('region_id', $region->id)->select('state', DB::raw('count(*) as total'))->groupBy('state')->get();
+        $rs = DB::table('leagues')
+                ->where('region_id', $region->id)
+                ->select('state', 'age_type', DB::raw('count(*) as total'))
+                ->groupBy('state','age_type')
+                ->orderBy('state')
+                ->orderBy('age_type')->get();
+
+        $data['labels'] = collect(LeagueState::getInstances())->pluck('description')->toArray();
 
         // initialize datasets
         foreach (LeagueState::getValues() as $ls) {
-            $datasets[0]['stack'] = 'Stack 1';
-            $data['labels'][] = LeagueState::getDescription(LeagueState::coerce($ls));
-            $datasets[0]['data'][] = $rs->firstWhere('state', $ls)->total ?? 0;
+            foreach ( LeagueAgeType::getValues() as $at){
+                $datasets[$at]['data'][] = $rs->where('state', $ls)->where('age_type', $at)->first()->total ?? 0;
+            }
         }
 
         $data['datasets'] = $datasets;
