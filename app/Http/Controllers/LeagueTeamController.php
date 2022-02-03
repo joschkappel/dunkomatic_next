@@ -295,7 +295,12 @@ class LeagueTeamController extends Controller
         $team->update($udata);
         Log::notice('team league no set.', ['team-id' => $team->id, 'league-id' => $league->id, 'league-team-no' => $data['league_no']]);
 
-        broadcast(new LeagueTeamCharUpdated($league))->toOthers();
+        $action = __('notifications.event.char.picked', ['league' => $league->shortname,
+                                                          'club' => $team->club->shortname,
+                                                          'league_no' => $udata['league_no'].'/'.$udata['league_char'] ]);
+
+        // broadcast event to all other users on this view
+        broadcast(new LeagueTeamCharUpdated($league, $action, 'danger'))->toOthers();
 
         return Response::json(['success' => 'all good'], 200);
     }
@@ -306,7 +311,7 @@ class LeagueTeamController extends Controller
      * @param  \App\Models\League  $league
      * @return \Illuminate\Http\Response
      */
-    public function unpick_char(Request $request, League $league)
+    public function release_char(Request $request, League $league)
     {
         // get data
         $data = $request->validate([
@@ -321,14 +326,18 @@ class LeagueTeamController extends Controller
 
         $team = Team::where('id', $data['team_id'])->where('league_id', $league->id)->where('league_no', $data['league_no'])->first();
         if ($team != null) {
-            $team->update($udata);
-            Log::notice('team league no set.', ['team-id' => $team->id, 'league-id' => $league->id, 'league-team-no' => $data['league_no']]);
+            $action = __('notifications.event.char.released', ['league' => $league->shortname,
+            'club' => $team->club->shortname,
+            'league_no' => $team->league_no.'/'.$team->league_char ]);
 
-            broadcast(new LeagueTeamCharUpdated($league))->toOthers();
+            $team->update($udata);
+            Log::notice('team league no released.', ['team-id' => $team->id, 'league-id' => $league->id, 'league-team-no' => $data['league_no']]);
+
+            broadcast(new LeagueTeamCharUpdated($league, $action, 'success'))->toOthers();
 
             return Response::json(['success' => 'all good'], 200);
         } else {
-            Log::error('unpick league char: team not found.', ['team-id' => $team->id, 'league-id' => $league->id, 'league-team-no' => $data['league_no']]);
+            Log::error('release league char: team not found.', ['team-id' => $team->id, 'league-id' => $league->id, 'league-team-no' => $data['league_no']]);
             return Response::json(['error' => 'team not found'], 404);
         }
     }

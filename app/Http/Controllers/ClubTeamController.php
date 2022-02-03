@@ -35,7 +35,7 @@ class ClubTeamController extends Controller
      *
      * @param  \App\Models\Club  $club
      * @return Databtable json
-     */    
+     */
     public function league_char_dt($language,  Club $club )
     {
         $clubs = $club->teams->whereNotNull('league_id')->where('league.state', LeagueState::Selection());
@@ -239,7 +239,7 @@ class ClubTeamController extends Controller
                     }
                 }
                 return $col;
-            })            
+            })
             ->make(true);
 
     }

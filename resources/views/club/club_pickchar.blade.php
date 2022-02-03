@@ -37,10 +37,14 @@
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
+                    <div class="container">
+                        <div class="text-sm" id="notification"></div>
+                    </div>
                 </div>
                 <!-- /.card-footer -->
             </div>
         </div>
+
         <!-- /.card -->
     </div>
     <div class="row">
@@ -90,13 +94,15 @@
                         { data: 'char_Q', name: 'char_Q'},
                         ]
     });
-
+    moment.locale('{{ app()->getLocale() }}');
     window.Echo.channel('user-leagues')
             .listen('.LeagueCharPickEvent', (data) => {
                 teamtable.data().each( function (d) {
                     if (d.league.id == data.league.id){
                         console.log('yes i got this league '+d.league.shortname+', refreshing...');
                         teamtable.ajax.reload();
+                        var utime = moment(data.updated_at).format('LTS');
+                        $("#notification").append('<div class="alert alert-'+data.ccode+'">'+utime+'   '+data.action+'</div>');
                     }
                 });
     });
@@ -189,7 +195,7 @@
             var msg =  "{{ __('club.pickchar.taken.own') }}";
             msg = msg.replace('xleague_nox', league_no);
             alert(msg);
-            var url = "{{ route('league.team.unpickchar', ['league'=>':league:'])}}";
+            var url = "{{ route('league.team.releasechar', ['league'=>':league:'])}}";
             url = url.replace(':league:', league_id);
             $.ajax( {
                 url: url,
@@ -202,9 +208,7 @@
                 type: "post",
                 delay: 250,
                 success: function (response) {
-                    refreshChart();
                     teamtable.ajax.reload();
-                    // console.log('reloading...');
                 },
                 cache: false
             });
@@ -229,9 +233,7 @@
                 type: "post",
                 delay: 250,
                 success: function (response) {
-                    refreshChart();
                     teamtable.ajax.reload();
-                    // console.log('reloading...');
                 },
                 cache: false
             });

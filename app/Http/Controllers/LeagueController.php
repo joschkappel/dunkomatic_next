@@ -674,7 +674,7 @@ class LeagueController extends Controller
                             $btn = __('club.select.byregion');
                             foreach ($regions as $ri => $rc){
                                 $btn .= '<button id="assignClub" data-region-id="'.$ri.'" data-region-code="'.$rc.'" type="button" class="btn btn-outline-info btn-sm">';
-                                $btn .= $rc.'</button>';    
+                                $btn .= $rc.'</button>';
                             }
 
                         } else {
@@ -726,7 +726,7 @@ class LeagueController extends Controller
                 if ( (Auth::user()->can('update-leagues')) and
                      ($league->state->in([ LeagueState::Selection, LeagueState::Scheduling, LeagueState::Freeze ]))){
                     if ($ct['team_league_no'] != null){
-                        $btn = '<button type="button" class="btn btn-danger btn-sm" id="unpickChar"';
+                        $btn = '<button type="button" class="btn btn-danger btn-sm" id="releaseChar"';
                         $btn .= 'data-team-id="'.$ct['team_id'].'" data-league-no="'.$ct['team_league_no'].'" ';
                         $btn .= '>'.$ct['team_league_no'].'</button>';
                     } else {

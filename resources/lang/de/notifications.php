@@ -105,4 +105,7 @@ return [
     'unscheduledgames.line1'  => 'Wir haben :games_count fehlende Heimspielansetzungen für deinen Verein :CLUB gefunden.',
     'unscheduledgames.line2'  => 'Wenn Du auf die Spalte ":gametimecolumn" klickst, kannst Du die Spiele mit fehlender Uhrzeit sehen und ändern.',
     'unscheduledgames.action'  => 'Spielbeginn Festlegen',
+
+    'event.char.picked' => ':LEAGUE: :CLUB hat Ziffer :LEAGUE_NO gewählt',
+    'event.char.released' => ':LEAGUE: :CLUB hat Ziffer :LEAGUE_NO freigegeben',
 ];

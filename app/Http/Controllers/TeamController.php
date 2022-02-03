@@ -160,7 +160,7 @@ class TeamController extends Controller
         $where =  array();
 
         if (isset($data['club_id'])) {
-            $teams = Club::find($data['club_id'])->teams->whereNotNull('league_id');
+            $teams = Club::find($data['club_id'])->teams->whereNotNull('league_id')->whereNotNull('league_no');
             foreach ($teams as $t){
                 $where[] = '(l.id = ' . $t->league->id . ' AND lts.team_home = ' . $t->league_no . ')';
             }
