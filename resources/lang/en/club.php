@@ -53,4 +53,9 @@ return [
   'pickchar.book' => 'Number xleague_nox is now booked for your teamt!',
   'select.byregion' => 'Choose a club from region: ',
   'homegames.bydate' => 'Number of home games by date',
+  'deassign.ok' => 'Club de-assigned',
+  'deassign.notok' => 'Assigment failed, the cub is NOT de-assigned',
+  'assign.ok' => 'Club assigned',
+  'assign.notok' => 'Assignment failed, the club is NOT assigned',
+  'action.register' => 'Club Assignment'
 ];

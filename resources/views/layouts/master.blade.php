@@ -87,6 +87,20 @@
     <script>
         $(function () {
             $('[data-toggle="tooltip"]').tooltip({delay: { show: 1200, hide: 100 }, placement: 'auto'});
+
+            toastr.options.closeButton = true;
+            toastr.options.newestOnTop = true;
+            toastr.options.progressBar = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.preventDuplicates = false;
+            toastr.options.showDuration = 300;
+            toastr.options.hideDuration = 1000;
+            toastr.options.timeOut = 5000;
+            toastr.options.extendedTimeOut = 1000;
+            toastr.options.showEasing = "swing";
+            toastr.options.hideEasing = "linear";
+            toastr.options.showMethod = "fadeIn";
+            toastr.options.hideMethod = "fadeOut";
         })
     </script>
     @yield('app_js')

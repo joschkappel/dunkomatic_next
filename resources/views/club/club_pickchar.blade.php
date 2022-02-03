@@ -37,9 +37,6 @@
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
-                    <div class="container">
-                        <div class="text-sm" id="notification"></div>
-                    </div>
                 </div>
                 <!-- /.card-footer -->
             </div>
@@ -102,7 +99,11 @@
                         console.log('yes i got this league '+d.league.shortname+', refreshing...');
                         teamtable.ajax.reload();
                         var utime = moment(data.updated_at).format('LTS');
-                        $("#notification").append('<div class="alert alert-'+data.ccode+'">'+utime+'   '+data.action+'</div>');
+                        if (data.ccode == 'success'){
+                            toastr.success(data.action, utime);
+                        } else {
+                            toastr.error(data.action, utime);
+                        }
                     }
                 });
     });
@@ -208,7 +209,12 @@
                 type: "post",
                 delay: 250,
                 success: function (response) {
+                    toastr.success(msg, '{{__('team.action.pickchars')}}');
                     teamtable.ajax.reload();
+                },
+                error: function(data) {
+                    console.log('Error:', data);
+                    toastr.error(data.responseText, '{{__('team.action.pickchars')}}');
                 },
                 cache: false
             });
@@ -233,7 +239,12 @@
                 type: "post",
                 delay: 250,
                 success: function (response) {
+                    toastr.success(msg, '{{__('team.action.pickchars')}}');
                     teamtable.ajax.reload();
+                },
+                error: function(data) {
+                    console.log('Error:', data);
+                    toastr.error(data.responseText, '{{__('team.action.pickchars')}}');
                 },
                 cache: false
             });

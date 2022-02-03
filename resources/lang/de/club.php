@@ -53,4 +53,9 @@ return [
   'pickchar.book' => 'Ziffer xleague_nox wird jetzt für Dich gebucht!',
   'select.byregion' => 'Wähle einen Verein aus Bezirk: ',
   'homegames.bydate' => 'Anzahl Heimspiele pro Spieltag',
+  'deassign.ok' => 'Verein abgemeldet',
+  'deassign.notok' => 'Abmeldung ist fehlgeschlagen. Der Verein ist NICHT abgemeldet',
+  'assign.ok' => 'Verein gemeldet',
+  'assign.notok' => 'Meldung ist fehlgeschlagen. Der Verein ist NICHT gemeldet',
+  'action.register' => 'Vereinsmeldung'
 ];

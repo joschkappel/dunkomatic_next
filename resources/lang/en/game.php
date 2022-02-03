@@ -38,4 +38,5 @@ return [
   'title.list' => 'All Games for :REGION',
   'menu.referees' => 'Referee Assignment',
   'starts_in' => 'start in :hours hours',
+  'deleted' => 'Games have been deleted',
 ];

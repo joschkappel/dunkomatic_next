@@ -205,11 +205,11 @@
                 },
                 url: url,
                 success: function(data) {
-                    toastr.success('team registered', 'success');
+                    toastr.success('{{__('team.register.ok')}}', '{{__('team.action.register')}}');
                 },
                 error: function(data) {
                     console.log('Error:', data);
-                    toastr.error('team not registered', 'ERROR');
+                    toastr.error('{{__('team.register.notok')}}', '{{__('team.action.register')}}');
                 }
             });
         };
@@ -228,11 +228,11 @@
                 },
                 url: url,
                 success: function(data) {
-                    toastr.success('team unregistered', 'success');
+                    toastr.success('{{__('team.unregister.ok')}}', '{{__('team.action.register')}}');
                 },
                 error: function(data) {
                     console.log('Error:', data);
-                    toastr.error('team not unregistered', 'ERROR');
+                    toastr.error('{{__('team.unregister.notok')}}', '{{__('team.action.register')}}');
                 }
             });
         });
@@ -260,13 +260,10 @@
                 },
                 url: url,
                 success: function(data) {
-                    toastr.options.onHidden = function() {
-                        location.reload();
-                        console.log('reload');
-                    }
-                    toastr.success('club deassigned', 'success');
+                    toastr.success('{{__('club.deassign.ok')}}', '{{__('club.action.register')}}');
                 },
                 error: function(data) {
+                    toastr.error('{{__('club.deassign.notok')}}', '{{__('club.action.register')}}');
                     console.log('Error:', data);
                 }
             });
@@ -293,15 +290,13 @@
                 type: "post",
                 delay: 250,
                 success: function (response) {
-                    toastr.options.onHidden = function() {
-                            location.reload();
-                            console.log('reload');
-                    };
-                    toastr.success('char  releaseed', 'success');
+                    var msg = '{{__('club.pickchar.taken.own')}}';
+                    msg = msg.replace('xleague_nox', league_no);
+                    toastr.success(msg, '{{__('team.action.pickchars')}}');
                     console.log('reloading ...');
                 },
                 error: function (xhr){
-                    toastr.error(xhr.responseText, 'ERROR');
+                    toastr.error(xhr.responseText, '{{__('team.action.pickchars')}}');
                 },
                 cache: false
             });
@@ -322,15 +317,13 @@
                 type: "post",
                 delay: 250,
                 success: function (response) {
-                    toastr.options.onHidden = function() {
-                            location.reload();
-                            console.log('reload');
-                    };
-                    toastr.success('char '+league_no+' picked', 'success');
+                    var msg = '{{__('club.pickchar.book')}}';
+                    msg = msg.replace('xleague_nox', league_no);
+                    toastr.success(msg, '{{__('team.action.pickchars')}}');
                     console.log('reloading ...');
                 },
                 error: function (xhr){
-                    toastr.error(xhr.responseText, 'ERROR');
+                    toastr.error(xhr.responseText, '{{__('team.action.pickchars')}}');
                 },
                 cache: false
             });
@@ -391,23 +384,6 @@
                 $('#modalDeleteMember_Form').attr('action', url);
                 $('#modalDeleteMember').modal('show');
             });
-            $("button#changeState").click(function() {
-                $.ajax({
-                    type: "POST",
-                    dataType: "json",
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        action: $(this).data('action')
-                    },
-                    url: "{{ route('league.state.change', ['league' => $league]) }}",
-                    success: function(data) {
-                        location.reload()
-                    },
-                    error: function(data) {
-                        console.log('Error:', data);
-                    }
-                });
-            });
             $("button#deleteGames").click(function() {
                 $.ajax({
                     type: "POST",
@@ -418,9 +394,10 @@
                     },
                     url: "{{ route('league.game.destroy', ['league' => $league]) }}",
                     success: function(data) {
-                        location.reload()
+                        toastr.success('{{__('games.deleted')}}', '{{__('game.action.delete')}}');
                     },
                     error: function(data) {
+                        toastr.error(data.responseText, '{{__('game.action.delete')}}');
                         console.log('Error:', data);
                     }
                 });
@@ -435,9 +412,10 @@
                     },
                     url: "{{ route('league.game.destroy_noshow', ['league' => $league]) }}",
                     success: function(data) {
-                        location.reload()
+                        toastr.success('{{__('games.deleted')}}', '{{__('game.action.delete.noshow')}}');
                     },
                     error: function(data) {
+                        toastr.error(data.responseText, '{{__('game.action.delete.noshow')}}');
                         console.log('Error:', data);
                     }
                 });
@@ -451,16 +429,9 @@
                 $('#modalDeleteLeague').modal('show');
             });
 
-            toastr.options.closeButton = true;
-            toastr.options.closeMethod = 'fadeOut';
-            //toastr.options.closeDuration = 30;
-            toastr.options.closeEasing = 'swing';
-            toastr.options.progressBar = true;
-            toastr.options.timeOut = 1000,
-            toastr.options.fadeOut = 1000,
             toastr.options.onHidden = function () {
                             window.location.reload();
-                        };
+            };
         });
     </script>
 @stop
