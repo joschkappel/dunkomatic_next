@@ -24,7 +24,7 @@ class LeagueTeamControllerTest extends TestCase
     public function assign_club()
     {
 
-        // create data:  1 club with 4 teams 
+        // create data:  1 club with 4 teams
         // 1 league (size 4)
         $club = Club::factory()->hasTeams(4)->create(['name' => 'testteamclub']);
         $league = League::factory()->create(['name' => 'testleague']);
@@ -39,7 +39,7 @@ class LeagueTeamControllerTest extends TestCase
 
         $this->assertDatabaseHas('club_league', ['club_id' => $club->id, 'league_id' => $league->id, 'league_no' => 1]);
 
-        // assign same club again 
+        // assign same club again
         $response = $this->authenticated()
             ->post(route('league.assign-clubs', ['league' => $league]), [
                 'club_id' => $club->id
@@ -154,7 +154,7 @@ class LeagueTeamControllerTest extends TestCase
             ->assertSessionHasNoErrors();
         //$response->dump();
         $this->assertDatabaseHas('teams', ['id' => $team->id, 'league_id' => $league->id]);
-    }  
+    }
 
     /**
      * pick a league character for a team
@@ -172,7 +172,7 @@ class LeagueTeamControllerTest extends TestCase
 
         $response = $this->authenticated()
             ->post(route('league.team.pickchar', [ 'league' => $league ]),
-                ['team_id' => $team->id, 
+                ['team_id' => $team->id,
                  'league_no' => 2]
             );
 
@@ -181,9 +181,9 @@ class LeagueTeamControllerTest extends TestCase
             ->assertSessionHasNoErrors();
         //$response->dump();
         $this->assertDatabaseHas('teams', ['id' => $team->id, 'league_no' => 2]);
-    }    
+    }
     /**
-     * unpick a league character for a team
+     * release a league character for a team
      *
      * @test
      * @group team
@@ -191,14 +191,14 @@ class LeagueTeamControllerTest extends TestCase
      *
      * @return void
      */
-    public function league_team_unpickchar()
+    public function league_team_releasechar()
     {
         $league = League::where('name', 'testleague')->first();
         $team = $league->teams->first();
 
         $response = $this->authenticated()
-            ->post(route('league.team.unpickchar', [ 'league' => $league ]),
-                ['team_id' => $team->id, 
+            ->post(route('league.team.releasechar', [ 'league' => $league ]),
+                ['team_id' => $team->id,
                  'league_no' => 2]
             );
 
@@ -207,7 +207,7 @@ class LeagueTeamControllerTest extends TestCase
             ->assertSessionHasNoErrors();
         //$response->dump();
         $this->assertDatabaseMissing('teams', ['id' => $team->id, 'league_no' => 2]);
-    }      
+    }
     /**
      * inject
      *

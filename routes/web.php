@@ -233,7 +233,7 @@ Route::middleware(['auth',
     Route::post('league/{league}/team', 'LeagueTeamController@inject')->name('league.team.inject')->middleware('can:update-teams');
     Route::delete('league/{league}/team', 'LeagueTeamController@withdraw')->name('league.team.withdraw')->middleware('can:update-teams');
     Route::post('league/{league}/pickchar', 'LeagueTeamController@pick_char')->name('league.team.pickchar')->middleware('can:update-teams');
-    Route::post('league/{league}/unpickchar', 'LeagueTeamController@unpick_char')->name('league.team.unpickchar')->middleware('can:update-teams');
+    Route::post('league/{league}/releasechar', 'LeagueTeamController@release_char')->name('league.team.releasechar')->middleware('can:update-teams');
 
     Route::get('league/{league}/freechar/sb', 'LeagueController@sb_freechars')->name('league.sb_freechar');
     Route::get('league/{league}/club/sb', 'LeagueController@sb_club')->name('league.sb.club');

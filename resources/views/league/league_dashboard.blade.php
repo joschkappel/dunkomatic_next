@@ -277,10 +277,10 @@
             $('#modalInjectTeam_Form').attr('action', url);
             $('#modalInjectTeam').modal('show');
         });
-        $(document).on("click", "button#unpickChar", function(e) {
+        $(document).on("click", "button#releaseChar", function(e) {
             var team_id = $(this).data("team-id");
             var league_no = $(this).data("league-no");
-            var url = "{{ route('league.team.unpickchar', ['league' => $league]) }}"
+            var url = "{{ route('league.team.releasechar', ['league' => $league]) }}"
 
             $.ajax( {
                 url: url,
@@ -297,7 +297,7 @@
                             location.reload();
                             console.log('reload');
                     };
-                    toastr.success('char  unpicked', 'success');
+                    toastr.success('char  releaseed', 'success');
                     console.log('reloading ...');
                 },
                 error: function (xhr){

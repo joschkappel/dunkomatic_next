@@ -195,7 +195,7 @@
             var msg =  "{{ __('club.pickchar.taken.own') }}";
             msg = msg.replace('xleague_nox', league_no);
             alert(msg);
-            var url = "{{ route('league.team.unpickchar', ['league'=>':league:'])}}";
+            var url = "{{ route('league.team.releasechar', ['league'=>':league:'])}}";
             url = url.replace(':league:', league_id);
             $.ajax( {
                 url: url,
@@ -208,9 +208,7 @@
                 type: "post",
                 delay: 250,
                 success: function (response) {
-                    refreshChart();
                     teamtable.ajax.reload();
-                    // console.log('reloading...');
                 },
                 cache: false
             });
@@ -235,9 +233,7 @@
                 type: "post",
                 delay: 250,
                 success: function (response) {
-                    refreshChart();
                     teamtable.ajax.reload();
-                    // console.log('reloading...');
                 },
                 cache: false
             });
