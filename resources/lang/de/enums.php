@@ -46,7 +46,7 @@ return [
       LeagueState::Scheduling => 'Verein legt Heimspieltermine fest',
       LeagueState::Live => 'Live',
       LeagueState::Freeze => 'Wartet auf Freigabe',
-      LeagueState::Freeze => 'Bezirk legt Schiedsrichter fest',
+      LeagueState::Referees => 'Bezirk legt Schiedsrichter fest',
     ]
 
 ];
