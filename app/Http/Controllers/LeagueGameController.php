@@ -12,21 +12,21 @@ use App\Imports\LeagueGamesImport;
 
 
 use Datatables;
+use Carbon\Carbon;
+use Spatie\TemporaryDirectory\TemporaryDirectory;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Database\Eloquent\Builder;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Storage;
 
 
 class LeagueGameController extends Controller
 {
-    use LeagueFSM, GameManager;
+    use LeagueFSM;
 
     /**
      * Display a listing of the resource.
@@ -102,7 +102,7 @@ class LeagueGameController extends Controller
     public function store(League $league)
     {
         Log::info('creating games.', ['league-id' => $league->id]);
-        $this->create_games($league);
+        //$this->create_games($league);
         $this->close_freeze($league);
 
         return Response::json(['success' => 'all good'], 200);
@@ -267,9 +267,9 @@ class LeagueGameController extends Controller
         ]);
         Log::info('upload form data validated OK.');
         Log::info('processing file upload.', ['league-id' => $league->id, 'file' => $data['gfile']->getClientOriginalName()]);
-        $errors = [];
 
-        $path = $data['gfile']->store('games');
+        $tmpDir = (new TemporaryDirectory())->create();
+        $path = $data['gfile']->store($tmpDir->path());
         $hgImport = new LeagueGamesImport($league);
         try {
             // $hgImport->import($path, 'local', \Maatwebsite\Excel\Excel::XLSX);
@@ -287,10 +287,10 @@ class LeagueGameController extends Controller
                 $frow = $failure->row();
             }
             Log::warning('errors found in import data.', ['count' => count($failures)]);
-            Storage::delete($path);
+            $tmpDir->delete();
             return redirect()->back()->withErrors($ebag);
         }
-        Storage::delete($path);
+        $tmpDir->delete();
 
         return redirect()->back()->with(['status' => 'All data imported']);
         //return redirect()->route('club.list.homegame', ['language'=>$language, 'club' => $club]);

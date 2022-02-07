@@ -33,6 +33,7 @@
         "spatie/cpu-load-health-check": "^1.0",
         "spatie/icalendar-generator": "2.3.0",
         "spatie/laravel-health": "^1.7",
+        "spatie/temporary-directory": "^2.0",
         "stuk/jszip": "^3.0",
         "symfony/http-kernel": "^5.1.5",
         "torann/geoip": "^3.0",

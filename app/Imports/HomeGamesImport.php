@@ -46,7 +46,7 @@ class HomeGamesImport implements ToCollection, WithStartRow, WithValidation, Wit
 
     public function startRow(): int
     {
-        return 3;
+        return 2;
     }
 
     public function rules(): array
@@ -136,7 +136,7 @@ class HomeGamesImport implements ToCollection, WithStartRow, WithValidation, Wit
                 break;
 
             case 'GAME.R01':
-                return __('import.game_id.required',['game'=>$value, 'league'=>$this->league->shortname, 'home'=>Str::substr($values['4'],0,4)]);
+                return __('import.game_id.required',['game'=>$value, 'league'=>'', 'home'=>Str::substr($values['4'],0,4)]);
                 break;
 
             case 'LEAGUE.R01':
@@ -144,7 +144,7 @@ class HomeGamesImport implements ToCollection, WithStartRow, WithValidation, Wit
                 break;
 
             case 'CLUB.R01':
-                return __('import.club_id.required',['home'=>Str::substr($values['4'],0,4)]);
+                return __('import.club_id.required',['who'=> __('game.team_home'), 'club'=>Str::substr($values['4'],0,4)]);
                 break;
 
             case 'GYM.R01':

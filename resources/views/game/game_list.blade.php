@@ -42,12 +42,17 @@
                        text: 'Export',
                        buttons: [
                         { extend: 'excelHtml5',
+                            text: 'Excel',
                             exportOptions: { orthogonal: 'export' },
-                            title: '{{$region->code}}_{{ __('game.allregion') }}',
+                            filename: '{{$region->code}}_{{ __('game.allregion') }}',
+                            title: null,
                             sheetName: '{{ __('game.allregion')}}',
                         },
                         { extend: 'csv',
-                                exportOptions: { orthogonal: 'export', columns: ':visible' },
+                                text: 'CSV',
+                                exportOptions: { orthogonal: 'export' },
+                                filename: '{{$region->code}}_{{ __('game.allregion') }}',
+                                title: null,
                                 name: 'csv',
                             },
                        ]
@@ -70,7 +75,7 @@
                  ajax: '{{ route('game.datatable', ['region' => $region, 'language'=> app()->getLocale()]) }}',
                  order: [[ 1, 'asc' ], [ 3, 'asc' ],[ 4, 'asc' ]],
                  columns:  [
-                    { data: 'id', name: 'id',visible: false },
+                    { data: 'id', name: 'id', visible: false },
                     { data: {
                             _: 'game_date.filter',
                             export: 'game_date.filter',

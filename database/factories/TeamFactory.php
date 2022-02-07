@@ -46,4 +46,17 @@ class TeamFactory extends Factory
         });
 
     }
+    public function selected(League $league, $league_no)
+    {
+        return $this->state(function () use ($league, $league_no) {
+            $upperArr = config('dunkomatic.league_team_chars');
+            $league_char = $upperArr[$league_no];
+            return [
+                'league_id' => $league->id,
+                'league_no' => $league_no,
+                'league_char' => $league_char
+            ];
+        });
+
+    }
 }

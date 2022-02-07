@@ -4,20 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Club;
 use App\Models\Game;
-use Illuminate\Http\Request;
+use App\Imports\HomeGamesImport;
 
-use Datatables;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
-
-use Carbon\Carbon;
-
 use Illuminate\Support\Collection;
 
-use App\Imports\HomeGamesImport;
-use Illuminate\Support\Facades\Storage;
+use Datatables;
+use Carbon\Carbon;
+use Spatie\TemporaryDirectory\TemporaryDirectory;
 
 
 class ClubGameController extends Controller
@@ -162,9 +160,9 @@ class ClubGameController extends Controller
         // Log::debug(print_r($request->all(),true));
         //$fname = $request->gfile->getClientOriginalName();
         //$fname = $club->shortname.'_homegames.'.$request->gfile->extension();
-        $errors = [];
 
-        $path = $data['gfile']->store('homegames');
+        $tmpDir = (new TemporaryDirectory())->create();
+        $path = $data['gfile']->store($tmpDir->path());
         $hgImport = new HomeGamesImport();
         try {
             // $hgImport->import($path, 'local', \Maatwebsite\Excel\Excel::XLSX);
@@ -182,10 +180,10 @@ class ClubGameController extends Controller
                 $frow = $failure->row();
             }
             Log::warning('errors found in import data.', ['count' => count($failures)]);
-            Storage::delete($path);
+            $tmpDir->delete();
             return redirect()->back()->withErrors($ebag);
         }
-        Storage::delete($path);
+        $tmpDir->delete();
 
         return redirect()->back()->with(['status' => 'All data imported']);
         //return redirect()->route('club.list.homegame', ['language'=>$language, 'club' => $club]);
