@@ -3,6 +3,11 @@
 namespace Tests\Unit;
 
 use App\Models\League;
+use App\Models\Game;
+use App\Models\Gym;
+use App\Models\Team;
+use App\Models\Club;
+use App\Models\Schedule;
 use App\Traits\LeagueFSM;
 
 use Tests\TestCase;
