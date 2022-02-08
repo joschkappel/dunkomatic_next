@@ -52,7 +52,7 @@ abstract class DuskTestCase extends BaseTestCase
         } else {
             $options->setExperimentalOption('prefs', array(
                 "download.prompt_for_download" => false,
-                "download.default_directory" => "/opt/dunkonxt/tests/Browser/Exportfiles",
+                "download.default_directory" => "/var/www/dunkonxt/tests/Browser/Exportfiles",
             ));
             return RemoteWebDriver::create(
                 'http://localhost:9515', DesiredCapabilities::chrome()->setCapability(
