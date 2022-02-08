@@ -75,3 +75,9 @@ jobs:
       with:
         name: dusk_console
         path: tests/Browser/console/
+    - name: Archive laravel logs
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: laravel_logs
+        path: storage/logs/

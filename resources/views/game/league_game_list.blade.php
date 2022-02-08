@@ -20,8 +20,6 @@
 
 @section('js')
 
-    <script src="{{ URL::asset('vendor/moment/moment-with-locales.min.js') }}"></script>
-
     <script>
         $(function() {
             $('#goBack').click(function(e){
