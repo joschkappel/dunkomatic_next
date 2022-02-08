@@ -85,8 +85,8 @@ class GameExportTest extends DuskTestCase
         $this->assertFileExists(__DIR__.'/Exportfiles/'.$league->shortname.'_Heimspiele.xlsx');
 
         // remove downloaded files
-        //unlink( __DIR__.'/Exportfiles/'.$league->shortname.'_Heimspiele.csv');
-        //unlink( __DIR__.'/Exportfiles/'.$league->shortname.'_Heimspiele.xlsx');
+        unlink( __DIR__.'/Exportfiles/'.$league->shortname.'_Heimspiele.csv');
+        unlink( __DIR__.'/Exportfiles/'.$league->shortname.'_Heimspiele.xlsx');
 
     }
 
@@ -166,8 +166,8 @@ class GameExportTest extends DuskTestCase
         });
 
         // remove downloaded files
-        //unlink( __DIR__.'/Exportfiles/'.$club->shortname.'_Heimspiele.csv');
-        //unlink( __DIR__.'/Exportfiles/'.$club->shortname.'_Heimspiele.xlsx');
+        unlink( __DIR__.'/Exportfiles/'.$club->shortname.'_Heimspiele.csv');
+        unlink( __DIR__.'/Exportfiles/'.$club->shortname.'_Heimspiele.xlsx');
     }
 
     /**
@@ -246,7 +246,7 @@ class GameExportTest extends DuskTestCase
 
 
         // remove downloaded files
-        //unlink( __DIR__.'/Exportfiles/'.$region->code.'_Bezirksspielplan.csv');
-        //unlink( __DIR__.'/Exportfiles/'.$region->code.'_Bezirksspielplan.xlsx');
+        unlink( __DIR__.'/Exportfiles/'.$region->code.'_Bezirksspielplan.csv');
+        unlink( __DIR__.'/Exportfiles/'.$region->code.'_Bezirksspielplan.xlsx');
     }
 }
