@@ -110,4 +110,37 @@ class LeagueFactory extends Factory
                     });
 
     }
+    /**
+     *  set league to frozen state and add clubs and teams
+     *
+     * @param int $club_cnt  // number of clubs to create and assign (should be <= size, wil have 1 team)
+     * @param int $team_cnt  // number of teams to create and register (should be <= club_cnt)
+     */
+    public function selected(int $club_cnt=0, int $team_cnt=0)
+    {
+        if ($club_cnt > 4 ){ $club_cnt = 4;};
+        if ($team_cnt > $club_cnt){ $team_cnt = $club_cnt;};
+
+        return $this->state( [ 'state' => LeagueState::Selection(), 'selection_closed_at' => now() ])
+                    ->afterCreating( function (League $league) use($club_cnt, $team_cnt){
+                        for ($i=1; $i <= $club_cnt; $i++) {
+                            if ($i <= $team_cnt){
+                                ClubFactory::new()
+                                    ->has(Team::factory()->selected($league, $i)->count(1))
+                                    ->hasGyms(1)
+                                    ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
+                                    ->assigned($league, range('A','Z')[$i-1], $i)
+                                    ->create();
+                            } else {
+                                ClubFactory::new()
+                                    ->has(Team::factory()->count(1))
+                                    ->hasGyms(1)
+                                    ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
+                                    ->assigned($league, range('A','Z')[$i-1], $i)
+                                    ->create();
+                            }
+                        }
+                    });
+
+    }
 }

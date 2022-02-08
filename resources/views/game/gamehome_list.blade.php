@@ -22,8 +22,6 @@
 
 @section('js')
 
-<script src="{{ URL::asset('vendor/moment/moment-with-locales.min.js') }}"></script>
-
 <script>
 $(function() {
     $('#goBack').click(function(e){
@@ -50,14 +48,16 @@ $(function() {
                     { extend: 'excelHtml5',
                         text: 'Excel',
                         exportOptions: { orthogonal: 'export', columns: ':visible' },
-                        title: '{{$club->shortname}}_{{ trans_choice('game.homegame',2)}}',
+                        filename: '{{$club->shortname}}_{{ trans_choice('game.homegame',2)}}',
                         sheetName: '{{ trans_choice('game.homegame',2)}}',
+                        title: null,
                     },
                     { extend: 'csv',
                             text: 'CSV',
                             exportOptions: { orthogonal: 'export', columns: ':visible' },
-                            title: '{{$club->shortname}}_{{ trans_choice('game.homegame',2)}}',
+                            filename: '{{$club->shortname}}_{{ trans_choice('game.homegame',2)}}',
                             name: 'csv',
+                            title: null,
                     },
                 ]
           },

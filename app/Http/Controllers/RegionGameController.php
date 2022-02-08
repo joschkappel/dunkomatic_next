@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 use App\Models\Region;
 use App\Imports\RefereesImport;
 
-use Illuminate\Support\Facades\Storage;
+use Spatie\TemporaryDirectory\TemporaryDirectory;
+
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class RegionGameController extends Controller
@@ -38,10 +38,10 @@ class RegionGameController extends Controller
         // Log::debug(print_r($request->all(),true));
         //$fname = $request->gfile->getClientOriginalName();
         //$fname = $club->shortname.'_homegames.'.$request->gfile->extension();
-        $errors = [];
         Log::info('processing file upload.', ['region-id'=> $region->id, 'file'=> $request->gfile->getClientOriginalName() ]);
 
-        $path = $request->gfile->store($region->code.'referees');
+        $tmpDir = (new TemporaryDirectory())->create();
+        $path = $request->gfile->store($tmpDir->path());
         $refImport = new RefereesImport($region);
         try {
           // $hgImport->import($path, 'local', \Maatwebsite\Excel\Excel::XLSX);
@@ -54,10 +54,10 @@ class RegionGameController extends Controller
               $ebag[] = __('import.row').' "'.$failure->row().'", '.__('import.column').' "'.$failure->attribute().': '.$failure->errors()[0];
           }
           Log::warning('errors found in import data.', ['count'=> count($failures) ]);
-          Storage::delete($path);
+          $tmpDir->delete();
           return redirect()->back()->withErrors($ebag);
         }
-        Storage::delete($path);
+        $tmpDir->delete();
 
         return redirect()->back()->with(['status'=>'All data imported']);
     }

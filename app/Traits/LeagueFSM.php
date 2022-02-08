@@ -7,6 +7,8 @@ use App\Models\League;
 use App\Models\Club;
 use App\Enums\Role;
 
+use App\Traits\GameManager;
+
 use App\Notifications\RegisterTeams;
 use App\Notifications\SelectTeamLeagueNo;
 use App\Notifications\LeagueGamesGenerated;
@@ -16,6 +18,8 @@ use Illuminate\Support\Facades\Log;
 
 trait LeagueFSM
 {
+    use GameManager;
+
     public function close_assignment(League $league)
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Registration()->key]);
@@ -86,6 +90,7 @@ trait LeagueFSM
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Scheduling()->key]);
 
         $league->state = LeagueState::Scheduling();
+        $this->create_games($league);
         $league->generated_at = now();
         $league->save();
 

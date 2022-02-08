@@ -47,7 +47,7 @@ class RefereesImport implements ToCollection, WithStartRow, WithValidation
 
     public function startRow(): int
     {
-        return 3;
+        return 2;
     }
     public function rules(): array
     {
