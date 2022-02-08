@@ -86,4 +86,43 @@ class LeagueGameImportTest extends TestCase
         $this->assertCount(84, $errs);
 
     }
+    /**
+     * db_cleanup
+     *
+     * @test
+     * @group leaguemgmt_X
+     *
+     * @return void
+     */
+    public function db_cleanup()
+    {
+        /// clean up DB
+        Game::whereNotNull('id')->delete();
+        Gym::whereNotNull('id')->delete();
+        Team::whereNotNull('id')->delete();
+        foreach (Club::all() as $c) {
+            $c->leagues()->detach();
+            $c->members()->detach();
+            $c->delete();
+        }
+        $league = League::first();
+        if (isset($league)) {
+            $league->schedule->events()->delete();
+            $league->delete();
+        }
+
+        $schedule = Schedule::first();
+        if (isset($schedule)){
+            if ($schedule->events()->exists()){
+                $schedule->events()->delete();
+            }
+            $schedule->delete();
+        }
+
+        //League::whereNotNull('id')->delete();
+        $this->assertDatabaseCount('leagues', 0)
+            ->assertDatabaseCount('clubs', 0)
+            ->assertDatabaseCount('teams', 0)
+            ->assertDatabaseCount('games', 0);
+    }
 }
