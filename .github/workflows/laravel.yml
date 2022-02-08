@@ -41,7 +41,7 @@ jobs:
     - name: Seed static tables
       run: php artisan db:seed --class=TestDatabaseSeeder
     - name: Run phpunit tests
-      run: php artisan test
+      run: php artisan test --stop-on-defect --stop-on-error
     - name: Prepare Chrome
       run: |
        cd ~
@@ -62,7 +62,7 @@ jobs:
       run: |
         curl http://127.0.0.1:8000/healthy
     - name: Run Dusk Tests
-      run: php artisan dusk --env=dusk.git
+      run: php artisan dusk --env=dusk.git --stop-on-defect --stop-on-error
     - name: Archive dusk screenshots
       if: ${{ failure() }}
       uses: actions/upload-artifact@v2
