@@ -29,7 +29,7 @@ class ClubGameImportTest extends TestCase
      * @test
      * @group club
      * @group game
-     * @group importx
+     * @group import
      *
      * @return void
      */
@@ -66,7 +66,7 @@ class ClubGameImportTest extends TestCase
      * @test
      * @group club
      * @group game
-     * @group importx
+     * @group import
      *
      * @return void
      */

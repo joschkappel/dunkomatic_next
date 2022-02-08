@@ -56,7 +56,7 @@ class RegionGameImportTest extends TestCase
             ->assertSessionHasErrorsIn('ebag');
 
         $errs = $response->getSession()->get('errors')->getBag('default');
-        $this->assertCount(4, $errs);
+        $this->assertCount(14, $errs);
 
     }
 
@@ -89,7 +89,7 @@ class RegionGameImportTest extends TestCase
             ->assertSessionHasErrorsIn('ebag');
 
         $errs = $response->getSession()->get('errors')->getBag('default');
-        $this->assertCount(4, $errs);
+        $this->assertCount(14, $errs);
 
     }
 

@@ -29,7 +29,7 @@ class LeagueGameImportTest extends TestCase
      * @test
      * @group league
      * @group game
-     * @group importx
+     * @group import
      *
      * @return void
      */
@@ -66,7 +66,7 @@ class LeagueGameImportTest extends TestCase
      * @test
      * @group league
      * @group game
-     * @group importx
+     * @group import
      *
      * @return void
      */
