@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Checks\BroadcastingCheck;
+use App\Checks\ConcurrentUsersCheck;
 use App\Checks\DbConnectionsCheck;
 use Illuminate\Support\ServiceProvider;
 use Spatie\Health\Facades\Health;
@@ -40,8 +41,8 @@ class HealthServiceProvider extends ServiceProvider
             Health::checks([
                 UsedDiskSpaceCheck::new(),
                 CpuLoadCheck::new()
-                ->failWhenLoadIsHigherInTheLast5Minutes(2.0)
-                ->failWhenLoadIsHigherInTheLast15Minutes(1.5),
+                ->failWhenLoadIsHigherInTheLast5Minutes(10.0)
+                ->failWhenLoadIsHigherInTheLast15Minutes(5.5),
                 DbConnectionsCheck::new(),
                 DatabaseCheck::new(),
                 RedisCheck::new(),
@@ -50,20 +51,29 @@ class HealthServiceProvider extends ServiceProvider
                 EnvironmentCheck::new()->expectEnvironment('prod'),
                 CacheCheck::new(),
                 DebugModeCheck::new(),
-                BroadcastingCheck::new()
+                BroadcastingCheck::new(),
+                ConcurrentUsersCheck::new()
+                ->failWhenFailedLoginsIsHigherInTheLastMinute(80)
+                ->failWhenFailedLoginsIsHigherInTheLast5Minutes(50)
+                ->failWhenFailedLoginsIsHigherInTheLast15Minutes(30)
+
             ]);
         } elseif (config('app.env') == 'local'){
             Health::checks([
                 UsedDiskSpaceCheck::new(),
                 CpuLoadCheck::new()
-                ->failWhenLoadIsHigherInTheLast5Minutes(2.0)
-                ->failWhenLoadIsHigherInTheLast15Minutes(1.5),
+                ->failWhenLoadIsHigherInTheLast5Minutes(10.0)
+                ->failWhenLoadIsHigherInTheLast15Minutes(5.0),
                 DbConnectionsCheck::new(),
                 DatabaseCheck::new(),
                 RedisCheck::new(),
                 EnvironmentCheck::new()->expectEnvironment('local'),
                 CacheCheck::new(),
-                BroadcastingCheck::new()
+                BroadcastingCheck::new(),
+                ConcurrentUsersCheck::new()
+                ->failWhenFailedLoginsIsHigherInTheLastMinute(80)
+                ->failWhenFailedLoginsIsHigherInTheLast5Minutes(50)
+                ->failWhenFailedLoginsIsHigherInTheLast15Minutes(30)
             ]);
         } else {
             // do nothing;
