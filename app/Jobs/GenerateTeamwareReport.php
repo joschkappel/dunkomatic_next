@@ -5,8 +5,6 @@ namespace App\Jobs;
 use App\Models\League;
 
 use Maatwebsite\Excel\Facades\Excel;
-use App\Helpers\CalendarComposer;
-use Illuminate\Support\Facades\Storage;
 
 use App\Exports\TeamwareTeamsExport;
 use App\Exports\TeamwareGamesExport;
@@ -64,8 +62,8 @@ class GenerateTeamwareReport implements ShouldQueue
         Log::info('[JOB][TEAMWARE REPORTS] started.', [
             'league-id' => $this->league->id]);
 
-        Excel::store(new TeamwareTeamsExport($this->league ), $this->tw_teams, NULL, \Maatwebsite\Excel\Excel::CSV);
-        Excel::store(new TeamwareGamesExport($this->league ), $this->tw_games, NULL, \Maatwebsite\Excel\Excel::CSV);
+        Excel::store(new TeamwareTeamsExport($this->league ), $this->tw_teams, 'exports', \Maatwebsite\Excel\Excel::CSV);
+        Excel::store(new TeamwareGamesExport($this->league ), $this->tw_games, 'exports', \Maatwebsite\Excel\Excel::CSV);
 
     }
 }

@@ -235,7 +235,7 @@
                         <div class="list-group overflow-auto">
                             @foreach ($files as $f)
                                 @php $fname=explode('/',$f); @endphp
-                                <a href="{{ route('file.get', ['season' => $fname[1], 'region' => $fname[2], 'type' => $fname[3], 'file' => $fname[4]]) }}"
+                                <a href="{{ route('file.get', [ 'type' => 'App\Models\Club', 'club' => $club, 'file' => $fname[3]]) }}"
                                     class="list-group-item list-group-item-action list-group-item-info">
                                     {{ basename($f) }}</a>
                             @endforeach

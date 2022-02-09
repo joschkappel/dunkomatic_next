@@ -13,8 +13,6 @@ use App\Helpers\CalendarComposer;
 use Illuminate\Support\Facades\Storage;
 
 use App\Exports\ClubGamesExport;
-use App\Exports\ClubHomeGamesExport;
-use App\Exports\ClubRefereeGamesExport;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Bus\Batchable;
@@ -97,7 +95,10 @@ class GenerateClubGamesReport implements ShouldQueue
             'scope' => ReportScope::coerce($this->scope)->key]);
 
         if ($this->rtype->hasFlag(ReportFileType::PDF)) {
-            Excel::store(new ClubGamesExport($this->club->id, new ReportScope($this->scope), (isset($this->league->id)) ? $this->league->id : NULL), $this->rpt_name, NULL, \Maatwebsite\Excel\Excel::MPDF);
+            Excel::store( new ClubGamesExport($this->club->id, new ReportScope($this->scope), (isset($this->league->id)) ? $this->league->id : NULL),
+                          $this->rpt_name,
+                          'exports',
+                          \Maatwebsite\Excel\Excel::MPDF);
         } elseif ($this->rtype->hasFlag(ReportFileType::ICS)) {
             // do calendar files
             $calendar = null;
@@ -116,10 +117,10 @@ class GenerateClubGamesReport implements ShouldQueue
                     break;
             }
             if ($calendar != null) {
-                Storage::put($this->rpt_name, $calendar->get());
+                Storage::disk('exports')->put($this->rpt_name, $calendar->get());
             }
         } else {
-            Excel::store(new ClubGamesExport($this->club->id, new ReportScope($this->scope), (isset($this->league->id)) ? $this->league->id : NULL), $this->rpt_name);
+            Excel::store(new ClubGamesExport($this->club->id, new ReportScope($this->scope), (isset($this->league->id)) ? $this->league->id : NULL), $this->rpt_name, 'exports');
         }
     }
 }

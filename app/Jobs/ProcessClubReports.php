@@ -27,7 +27,7 @@ class ProcessClubReports implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $region;
+    protected Region $region;
 
     /**
      * Create a new job instance.
@@ -40,12 +40,12 @@ class ProcessClubReports implements ShouldQueue
         // set report scope
         $this->region = $region;
 
-        if (Storage::exists($region->club_folder)) {
+        if (Storage::disk('exports')->exists($region->club_folder)) {
             // remove old reports
             //Storage::deleteDirectory($region->club_folder, false);
         } else {
             // make sure folders are there
-            Storage::makeDirectory($region->club_folder);
+            Storage::disk('exports')->makeDirectory($region->club_folder);
         };
     }
 

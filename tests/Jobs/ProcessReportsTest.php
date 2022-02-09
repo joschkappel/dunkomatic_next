@@ -41,7 +41,7 @@ class ProcessReportsTest extends SysTestCase
         $job_instance = resolve(ProcessClubReports::class, ['region' => $region]);
         app()->call([$job_instance, 'handle']);
 
-        Storage::assertExists($region->club_folder);
+        Storage::disk('exports')->assertExists($region->club_folder);
 
         foreach ($clubs as $c) {
             $leagues = Game::where('club_id_home', $c->id)->with('league')->get()->pluck('league.id')->unique()->count() + 4;
@@ -75,7 +75,7 @@ class ProcessReportsTest extends SysTestCase
         $job_instance = resolve(ProcessClubReports::class, ['region' => $region]);
         app()->call([$job_instance, 'handle']);
 
-        Storage::assertExists($region->club_folder);
+        Storage::disk('exports')->assertExists($region->club_folder);
 
         foreach ($clubs as $c) {
             $leagues = Game::where('club_id_home', $c->id)->with('league')->get()->pluck('league.id')->unique()->count() + 5;
@@ -109,7 +109,7 @@ class ProcessReportsTest extends SysTestCase
         $job_instance = resolve(ProcessClubReports::class, ['region' => $region]);
         app()->call([$job_instance, 'handle']);
 
-        Storage::assertExists($region->club_folder);
+        Storage::disk('exports')->assertExists($region->club_folder);
 
         foreach ($clubs as $c) {
             $leagues = Game::where('club_id_home', $c->id)->with('league')->get()->pluck('league.id')->unique()->count() * 2 + 6;
@@ -141,8 +141,8 @@ class ProcessReportsTest extends SysTestCase
         $job_instance = resolve(ProcessLeagueReports::class, ['region' => $region]);
         app()->call([$job_instance, 'handle']);
 
-        Storage::assertExists($region->league_folder);
-        Storage::assertExists($region->teamware_folder);
+        Storage::disk('exports')->assertExists($region->league_folder);
+        Storage::disk('exports')->assertExists($region->teamware_folder);
 
         foreach ($leagues as $l) {
             Bus::assertBatched(function (PendingBatch $batch) use ($l) {
@@ -173,8 +173,8 @@ class ProcessReportsTest extends SysTestCase
         $job_instance = resolve(ProcessLeagueReports::class, ['region' => $region]);
         app()->call([$job_instance, 'handle']);
 
-        Storage::assertExists($region->league_folder);
-        Storage::assertExists($region->teamware_folder);
+        Storage::disk('exports')->assertExists($region->league_folder);
+        Storage::disk('exports')->assertExists($region->teamware_folder);
 
         foreach ($leagues as $l) {
             Bus::assertBatched(function (PendingBatch $batch) use ($l) {
