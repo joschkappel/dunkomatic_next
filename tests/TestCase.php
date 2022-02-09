@@ -24,6 +24,7 @@ abstract class TestCase extends BaseTestCase
         };
 
         info( '[TEST STARTING] ['.implode(' - ', $this->getGroups()).'] '.$this->getName() );
+        return [];
     }
     public function tearDown(): void
     {

@@ -214,7 +214,7 @@ class UserController extends Controller
 
         $user->update($data);
         Log::notice('user updated.', ['user-id' => $user->id]);
-        \App::setLocale($data['locale']);
+        app()->setLocale($data['locale']);
 
         if ($data['email'] != $old_email) {
             $user->sendEmailVerificationNotification();

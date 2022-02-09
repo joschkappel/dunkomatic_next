@@ -137,7 +137,6 @@ class LeagueControllerTest extends TestCase
                           'shortname' => $league->shortname,
                           'region_id' => $league->region_id,
                           'schedule_id' => 100,
-                          'region_id' => $this->region->id,
                           'age_type' => $league->age_type,
                           'gender_type' => 200,
                           'above_region' => False
@@ -168,7 +167,6 @@ class LeagueControllerTest extends TestCase
                           'region_id' => $league->region_id,
                           'schedule_id' => $league->schedule_id,
                           'league_size_id' => $league->league_size_id,
-                          'region_id' => $this->region->id,
                           'age_type' => $league->age_type,
                           'gender_type' => $league->gender_type,
                           'above_region' => False

@@ -48,12 +48,13 @@ class ClubGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
     public function title(): string
     {
       if ( $this->scope == ReportScope::ss_club_home()) {
-        return __('reports.games.home').' ' . $this->club->shortname;
+        $title =  __('reports.games.home').' ' . $this->club->shortname;
       } elseif ( $this->scope == ReportScope::ss_club_all()) {
-        return __('reports.games.all').' ' . $this->club->shortname;
+        $title =  __('reports.games.all').' ' . $this->club->shortname;
       } elseif ( $this->scope == ReportScope::ss_club_referee()) {
-        return __('reports.games.referee').' ' . $this->club->shortname;
+        $title =  __('reports.games.referee').' ' . $this->club->shortname;
       }
+      return $title;
     }
 
     public function view(): View
