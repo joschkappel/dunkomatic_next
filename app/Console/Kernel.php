@@ -18,7 +18,7 @@ use App\Jobs\GameNotScheduled;
 
 use App\Models\Region;
 use App\Enums\JobFrequencyType;
-
+use App\Jobs\ProcessFilesCleanup;
 use Spatie\Health\Commands\RunHealthChecksCommand;
 use Spatie\Health\Commands\ScheduleCheckHeartbeatCommand;
 
@@ -41,8 +41,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->job(new ProcessDbCleanup(), 'janitor')->weekly();//everyFiveMinutes()
+        $schedule->job(new ProcessDbCleanup(), 'janitor')->weekly();
+        $schedule->job(new ProcessFilesCleanup(), 'janitor')->weekly();
         $schedule->job(new ProcessNewSeason(),'janitor')->yearly();
+        $schedule->command('db:backup')->daily();
         $schedule->command('telescope:prune')->daily();
         $schedule->command('authentication-log:purge')->monthly();
 
