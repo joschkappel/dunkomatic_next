@@ -85,4 +85,6 @@ return [
     'report_folder_clubs' => 'vereine',
     'report_folder_teamware' => 'teamware',
 
+    'db_backup_age' => 30, # keep db backups for 30 days
+
 ];

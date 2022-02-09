@@ -6,8 +6,6 @@ use Rappasoft\LaravelAuthenticationLog\Models\AuthenticationLog;
 use Spatie\Health\Checks\Check;
 use Spatie\Health\Checks\Result;
 
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Carbon;
 
@@ -45,9 +43,6 @@ class ConcurrentUsersCheck extends Check
         $last5min = Carbon::now()->subMinutes(5);
         $last15min =  Carbon::now()->subMinutes(15);
 
-        // total current users
-        $current_user_cnt = AuthenticationLog::where('login_successful',1)->whereNull('logout_at')->count();
-
         // total logged in users last 1min
         $last1min_tot_cnt = AuthenticationLog::where('login_at','>=', $last1min)->count();
         // total logged in users last 5mins
@@ -69,10 +64,9 @@ class ConcurrentUsersCheck extends Check
         $result = Result::make()
             ->ok()
             ->shortSummary(
-                "{$current_user_cnt} - {$last1min_tot_cnt} {$last1min_fail_pct}% - {$last5min_tot_cnt} {$last5min_fail_pct}% - {$last15min_tot_cnt} {$last15min_fail_pct}%"
+                "{$last1min_tot_cnt} {$last1min_fail_pct}% - {$last5min_tot_cnt} {$last5min_fail_pct}% - {$last15min_tot_cnt} {$last15min_fail_pct}%"
             )
             ->meta([
-                'current_users' => $current_user_cnt,
                 'last_minute' => $last1min_tot_cnt,
                 'last_5_minutes' => $last5min_tot_cnt,
                 'last_15_minutes' => $last15min_tot_cnt,
