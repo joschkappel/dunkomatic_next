@@ -30,6 +30,8 @@ class BroadcastingCheck extends Check
         if ($response->successful()){
             if ((($response->object()->memory_usage->heapUsed * 100 ) / $response->object()->memory_usage->rss  ) > 70 ){
                 return $result->warning("Memory usage is greater than 70% !");
+            } elseif ((($response->object()->memory_usage->heapUsed * 100 ) / $response->object()->memory_usage->rss  ) > 90 ){
+                return $result->failed("Memory usage is greater than 90% !");
             } else {
                 return $result->ok();
             }

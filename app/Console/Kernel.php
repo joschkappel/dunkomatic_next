@@ -61,7 +61,19 @@ class Kernel extends ConsoleKernel
           }
         }
 
-        $schedule->command(RunHealthChecksCommand::class)->everyFifteenMinutes();
+        if ( env('HEALTH_FREQUENCY',15) == 1){
+            $schedule->command(RunHealthChecksCommand::class)->everyMinute();
+        } elseif ( env('HEALTH_FREQUENCY',15) == 2){
+            $schedule->command(RunHealthChecksCommand::class)->everyTwoMinutes();
+        } elseif ( env('HEALTH_FREQUENCY',15) == 5){
+            $schedule->command(RunHealthChecksCommand::class)->everyFiveMinutes();
+        } elseif ( env('HEALTH_FREQUENCY',15) == 10){
+            $schedule->command(RunHealthChecksCommand::class)->everyTenMinutes();
+        } else {
+            $schedule->command(RunHealthChecksCommand::class)->everyFifteenMinutes();
+        }
+
+
         // $schedule->command(ScheduleCheckHeartbeatCommand::class)->everyFifteenMinutes();
     }
 
