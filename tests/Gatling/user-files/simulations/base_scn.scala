@@ -87,7 +87,7 @@ class BaseScn extends Simulation {
             .post("/de/logout")
             .headers(header_authorized)
             .formParam("_token", "${csrf_token}")
-            .check(status.is(200))
+            .check(status.is(302))
             )
     }
 
@@ -138,7 +138,7 @@ class BaseScn extends Simulation {
             .put(s"/member/$rMember")
             .formParam("_token", "${csrf_token}")
             .formParam("firstname", "${firstname}")
-            .formParam("lastname", "lastname")
+            // .formParam("lastname", "lastname")
             .formParam("street", "street")
             .formParam("zipcode", "zipcode")
             .formParam("city", "city")
