@@ -144,8 +144,8 @@ class ClubController extends Controller
         //Log::debug(print_r($data['games_home'],true ));
 
         $directory = $club->region->club_folder;
-        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($club) {
-            return (strpos($value, $club->shortname) !== false);
+        $reports = collect(Storage::disk('exports')->files($directory))->filter(function ($value) use ($club) {
+            return Str::contains($value, $club->shortname);
         });
 
         //Log::debug(print_r($reports,true));
@@ -171,7 +171,7 @@ class ClubController extends Controller
             $k = $clubleagues->search(function ($l) use ($ct) {
                 return ($l['id'] == $ct['league_id']);
             });
-            
+
             if ($k !== false){
                 $clubleagues->pull($k);
             }

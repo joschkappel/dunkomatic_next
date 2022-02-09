@@ -83,16 +83,16 @@ class ProcessNewSeason implements ShouldQueue
         }
 
         // clean up report folders
-        $path = 'exports/' . Str::of($current_season)->replace('/', '_');
-        $directories = Storage::allDirectories($path);
+        $path = Str::of($current_season)->replace('/', '_');
+        $directories = Storage::disk('exports')->allDirectories($path);
         foreach ($directories as $d){
-            Storage::deleteDirectory($d);
+            Storage::disk('exports')->deleteDirectory($d);
         }
-        Storage::deleteDirectory($path);
+        Storage::disk('exports')->deleteDirectory($path);
         Log::notice('[JOB][NEW SEASON] report folders cleaned.', ['folder' => $path]);
         // create new report folders
-        $path = 'exports/' . Str::of($next_season)->replace('/', '_');
-        Storage::makeDirectory($path);
+        $path = Str::of($next_season)->replace('/', '_');
+        Storage::disk('exports')->makeDirectory($path);
         Log::notice('[JOB][NEW SEASON] report folders created.', ['folder' => $path]);
 
         // move schedules 1 year forward

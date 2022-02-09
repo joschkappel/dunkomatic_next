@@ -287,7 +287,7 @@ Route::middleware(['auth',
     Route::delete('message/{message}', 'MessageController@destroy')->name('message.destroy');
 
 
-    Route::get('file/exports/{season}/{region}/{type}/{file}', 'FileDownloadController@get_file')->name('file.get');
+    Route::get('file/exports', 'FileDownloadController@get_file')->name('file.get');
     Route::get('archive/region/{region}/league', 'FileDownloadController@get_region_league_archive')->name('region_league_archive.get');
     Route::get('archive/region/{region}/teamware', 'FileDownloadController@get_region_teamware_archive')->name('region_teamware_archive.get');
     Route::get('archive/region/{region}/user/{user}', 'FileDownloadController@get_user_archive')->name('user_archive.get');

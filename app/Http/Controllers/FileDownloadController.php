@@ -15,10 +15,33 @@ use App\Models\Region;
 
 class FileDownloadController extends Controller
 {
-    public function get_file($season, $region, $type, $file)
+    public function get_file(Request $request)
     {
-        Log::info('downloading files.',['path'=> 'exports/' . $season . '/' . $region . '/' . $type . '/' . $file]);
-        return Storage::download('exports/' . $season . '/' . $region . '/' . $type . '/' . $file, $file);
+        $data = $request->validate([
+            'type' => 'required|in:App\Models\Club,App\Models\League',
+            'club' => 'sometimes|required_if:league,null|exists:App\Models\Club,id',
+            'league' => 'sometimes|required_if:club,null|exists:App\Models\League,id',
+            'file' => 'required|string',
+        ]);
+        Log::info('get file data validated OK.');
+
+        if ( $data['type'] == Club::class){
+            $filepath = Club::findOrFail($data['club'])->region->club_folder;
+        } elseif ( $data['type'] == League::class){
+            $filepath = League::findOrFail($data['league'])->region->league_folder;
+        } else {
+            return back();
+        }
+        $filepath .= '/'.$data['file'];
+        Log::info('downloading files.',['path'=> $filepath]);
+        if ( Storage::disk('public')->exists($data['file'])){
+            Storage::disk('public')->delete($data['file']);
+        }
+        Storage::disk('public')->writeStream(
+            $data['file'],
+            Storage::disk('exports')->readStream($filepath)
+        );
+        return Storage::disk('public')->download($data['file'], $data['file']);
     }
 
     public function get_user_archive(Region $region, User $user)
@@ -28,9 +51,9 @@ class FileDownloadController extends Controller
         if ($user->LeagueFilecount($region) + $user->ClubFilecount($region) + $user->TeamwareFilecount($region) > 0) {
             $zip = new ZipArchive;
             $fileName = $region->code . '-reports-' . Str::slug($user->name, '-') . '.zip';
-            Storage::delete('public/' . $fileName);
+            Storage::disk('public')->delete( $fileName);
 
-            $pf = storage_path('app/public/' . $fileName);
+            $pf = Storage::disk('public')->getAdapter()->applyPathPrefix($fileName);
             Log::info('archive location.',['path'=>$pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
@@ -39,7 +62,7 @@ class FileDownloadController extends Controller
                 $files = $files->concat($user->TeamwareFilenames($region));
 
                 foreach ($files as $f) {
-                    $f =  storage_path('app/' . $f);
+                    $f =  Storage::disk('exports')->getAdapter()->applyPathPrefix($f);
                     $check = $zip->addFile($f, basename($f));
                 }
 
@@ -47,7 +70,7 @@ class FileDownloadController extends Controller
                 //  Storage::move(public_path($fileName), 'public/'.$fileName);
                 Log::notice('downloading ZIP archive for user', ['user-id'=>$user->id, 'filecount'=>count($files)]);
 
-                return Storage::download('public/' . $fileName);
+                return Storage::download($fileName);
             }
         } else {
             Log::error('no files found for user.', ['user-id' => $user->id]);
@@ -62,14 +85,14 @@ class FileDownloadController extends Controller
         if ($club->filecount > 0) {
             $zip = new ZipArchive;
             $filename = $club->region->code . '-reports-' . Str::slug($club->shortname, '-') . '.zip';
-            $pf = storage_path('app/public/' . $filename);
+            $pf = Storage::disk('public')->getAdapter()->applyPathPrefix($filename);
             Log::info('archive location.',['path'=>$pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
                 $files = $club->filenames;
 
                 foreach ($files as $f) {
-                    $f =  storage_path('app/' . $f);
+                    $f = Storage::disk('exports')->getAdapter()->applyPathPrefix($f);
                     $check = $zip->addFile($f, basename($f));
                 }
 
@@ -92,7 +115,7 @@ class FileDownloadController extends Controller
         if ($league->filecount > 0) {
             $zip = new ZipArchive;
             $filename = $league->region->code . '-reports-' . Str::slug($league->shortname, '-') . '.zip';
-            $pf = storage_path('app/public/' . $filename);
+            $pf = Storage::disk('public')->getAdapter()->applyPathPrefix($filename);
             Log::info('archive location.',['path'=>$pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
@@ -100,7 +123,7 @@ class FileDownloadController extends Controller
                 Log::debug(print_r($files, true));
 
                 foreach ($files as $f) {
-                    $f =  storage_path('app/' . $f);
+                    $f =  Storage::disk('exports')->getAdapter()->applyPathPrefix($f);
                     $check = $zip->addFile($f, basename($f));
                 }
 
@@ -123,7 +146,7 @@ class FileDownloadController extends Controller
         if ($region->league_filecount > 0) {
             $zip = new ZipArchive;
             $filename = $region->code . '-runden-reports.zip';
-            $pf = storage_path('app/public/' . $filename);
+            $pf = Storage::disk('public')->getAdapter()->applyPathPrefix($filename);
             Log::info('archive location.',['path'=>$pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
@@ -131,7 +154,7 @@ class FileDownloadController extends Controller
                 Log::debug(print_r($files, true));
 
                 foreach ($files as $f) {
-                    $f =  storage_path('app/' . $f);
+                    $f =  Storage::disk('exports')->getAdapter()->applyPathPrefix($f);
                     $check = $zip->addFile($f, basename($f));
                 }
 
@@ -154,7 +177,7 @@ class FileDownloadController extends Controller
         if ($region->teamware_filecount > 0) {
             $zip = new ZipArchive;
             $filename = $region->code . '-teamware-reports.zip';
-            $pf = storage_path('app/public/' . $filename);
+            $pf = Storage::disk('public')->getAdapter()->applyPathPrefix($filename);
             Log::info('archive location.',['path'=>$pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
@@ -162,7 +185,7 @@ class FileDownloadController extends Controller
                 Log::debug(print_r($files, true));
 
                 foreach ($files as $f) {
-                    $f =  storage_path('app/' . $f);
+                    $f = Storage::disk('exports')->getAdapter()->applyPathPrefix($f);
                     $check = $zip->addFile($f, basename($f));
                 }
 

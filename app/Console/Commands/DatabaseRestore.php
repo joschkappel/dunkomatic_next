@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Storage;
 
 class DatabaseRestore extends Command
 {
@@ -39,15 +40,22 @@ class DatabaseRestore extends Command
     {
         $filename = $this->argument('backupfile');
 
-        $command = 'zcat '. storage_path() . '/app/backup/'.$filename.' | mysql --user='.env('DB_USERNAME').' --password='.env('DB_PASSWORD').' --host='.env('DB_HOST').' '.env('DB_DATABASE');
-        $returnVar = NULL;
-        $output = NULL;
+        if ( Storage::disk('backup')->exists($filename)){
+            $filepath = Storage::disk('backup')->getAdapter()->applyPathPrefix($filename);
 
-        exec($command, $output, $returnVar);
-        if ($returnVar == COMMAND::SUCCESS){
-            $this->info('DB restore was successful!');
+            $command = 'zcat '. $filepath.' | mysql --user='.env('DB_USERNAME').' --password='.env('DB_PASSWORD').' --host='.env('DB_HOST').' '.env('DB_DATABASE');
+            $returnVar = NULL;
+            $output = NULL;
+
+            exec($command, $output, $returnVar);
+            if ($returnVar == COMMAND::SUCCESS){
+                $this->info('DB restore was successful!');
+            } else {
+                $this->error('Oops someting went wrong, DB not restored from file '.$filepath);
+            }
         } else {
-            $this->error('Oops someting went wrong, DB not restored from file '.$filename);
+            $returnVar = COMMAND::FAILURE;
+            $this->error('The backup file '.$filename.' does NOT exist in folder '.Storage::disk('backup')->getAdapter()->getPathPrefix());
         }
 
         return $returnVar;

@@ -17,6 +17,7 @@ use Silber\Bouncer\BouncerFacade as Bouncer;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 use Datatables;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -217,8 +218,8 @@ class LeagueController extends Controller
         $data['games'] = $data['league']->games()->get();
         //Log::debug(print_r($assigned_team,true));
         $directory =  $league->region->league_folder;
-        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($league) {
-            return (strpos($value, $league->shortname) !== false);
+        $reports = collect(Storage::disk('exports')->files($directory))->filter(function ($value) use ($league) {
+            return Str::contains($value, $league->shortname);
         });
 
         //Log::debug(print_r($reports,true));

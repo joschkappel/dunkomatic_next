@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
+use Illuminate\Support\Str;
 
 use App\Models\Member;
 use App\Models\Region;
@@ -162,9 +163,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
         }
 
         if ($llist !=  "") {
-            $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
-                return (preg_match('(' . $llist . ')', $value) === 1);
-                //return (strpos($value,$llist[0]) !== false);
+            $reports = collect(Storage::disk('exports')->files($directory))->filter(function ($value, $key) use ($llist) {
+                return Str::contains($llist, $value);
             });
             return count($reports);
         } else {
@@ -178,9 +178,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
             $llist = $this->leagues()->pluck('shortname')->implode('|');
         }
         if ($llist != "") {
-            $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
-                return (preg_match('(' . $llist . ')', $value) === 1);
-                //return (strpos($value,$llist[0]) !== false);
+            $reports = collect(Storage::disk('exports')->files($directory))->filter(function ($value, $key) use ($llist) {
+                return Str::contains($llist, $value);
             });
             return $reports;
         } else {
@@ -195,9 +194,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
         }
 
         if ($llist !=  "") {
-            $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
-                return (preg_match('(' . $llist . ')', $value) === 1);
-                //return (strpos($value,$llist[0]) !== false);
+            $reports = collect(Storage::disk('exports')->files($directory))->filter(function ($value, $key) use ($llist) {
+                return Str::contains($llist, $value);
             });
             return count($reports);
         } else {
@@ -212,9 +210,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
         }
 
         if ($llist != "") {
-            $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
-                return (preg_match('(' . $llist . ')', $value) === 1);
-                //return (strpos($value,$llist[0]) !== false);
+            $reports = collect(Storage::disk('exports')->files($directory))->filter(function ($value, $key) use ($llist) {
+                return Str::contains($llist, $value);
             });
             return $reports;
         } else {
@@ -229,9 +226,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
         }
 
         if ($llist != "") {
-            $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
-                return (preg_match('(' . $llist . ')', $value) === 1);
-                //return (strpos($value,$llist[0]) !== false);
+            $reports = collect(Storage::disk('exports')->files($directory))->filter(function ($value, $key) use ($llist) {
+                return Str::contains($llist, $value);
             });
             return count($reports);
         } else {
@@ -246,9 +242,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
         }
 
         if ($llist != "") {
-            $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($llist) {
-                return (preg_match('(' . $llist . ')', $value) === 1);
-                //return (strpos($value,$llist[0]) !== false);
+            $reports = collect(Storage::disk('exports')->files($directory))->filter(function ($value, $key) use ($llist) {
+                return Str::contains($llist, $value);
             });
             return $reports;
         } else {
