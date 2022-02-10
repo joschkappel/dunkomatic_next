@@ -12,7 +12,7 @@ use BenSampo\Enum\Contracts\LocalizedEnum;
  * @method static static Selection()
  * @method static static Scheduling()
  * @method static static Freeze()
- * @method static static Referees)
+ * @method static static Referees()
  * @method static static Live()
  */
 final class LeagueState extends Enum implements LocalizedEnum

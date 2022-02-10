@@ -146,14 +146,18 @@ class ProcessNewSeason implements ShouldQueue
 
         // notify region admin on these changes and ask to check/correct
 
-
         // send notification
-        $users = User::whereNotNull('approved_at')->whereNotNull('email_verified_at')->get();
-        Notification::send($users, new NewSeason($next_season));
-        Log::info('[NOTIFICATION] new season started.', ['users' => $users->pluck('id')]);
+        $users = User::whereNotNull('approved_at')->whereNotNull('email_verified_at')->get()->chunk(100);
+        foreach ($users as $chunk) {
+            Notification::send($chunk, new NewSeason($next_season));
+            Log::info('[NOTIFICATION] new season started.', ['users' => $chunk->pluck('id')]);
+        }
 
-        $members = Member::all();
-        Notification::send($members, new NewSeason($next_season));
-        Log::info('[NOTIFICATION] new season started.', ['members' => $members->pluck('id')]);
+        $members = Member::all()->chunk(100);
+        foreach ($members as $chunk){
+            Notification::send($chunk, new NewSeason($next_season));
+            Log::info('[NOTIFICATION] new season started.', ['members' => $chunk->pluck('id')]);
+        }
+
     }
 }

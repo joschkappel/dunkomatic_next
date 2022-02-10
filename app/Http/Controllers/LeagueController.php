@@ -528,22 +528,13 @@ class LeagueController extends Controller
                 $btnlist = '';
 
                 $ccnt = 1;
-                $t = $data->loadMissing('teams')->teams->pluck('club.shortname')->countBy();
-                Log::debug('dump',['data'=>$t]);
                 foreach ($data->loadMissing('clubs')->clubs->pluck('shortname') as $k => $c) {
-                    Log::debug('dump2',['k'=>$k, 'c'=>$c]);
-                    $diff = $t->get($c) ?? 0;
-                    if ($diff > 0) {
-                        for ($i = 0; $i < $diff; $i++) {
-                            $btnlist .= '<button type="button" class="btn btn-info btn-sm">' . $c . '</button> ';
-                        }
-                        $ccnt += $t->get($c);
-                    };
-
-                }
+                    $btnlist .= '<button type="button" class="btn btn-info btn-sm">' . $c . '</button> ';
+                    $ccnt += 1;
+                };
                 if ($data->state->is(LeagueState::Assignment())) {
                     for ($i = $ccnt; $i <= $data->size ?? 0; $i++) {
-                        $btnlist .= '<button type="button" class="btn btn-danger btn-sm" >?</button> ';
+                        $btnlist .= '<button type="button" class="btn btn-danger btn-sm" ><i class="fas fa-question"></i></button> ';
                     }
                 }
 

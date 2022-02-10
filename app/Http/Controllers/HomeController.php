@@ -77,7 +77,7 @@ class HomeController extends Controller
                         $msg['action_color'] = 'danger';
                         $reminders[] = $msg;
                     } else {
-                        $msg['msg'] =  __('message.reminder.deadline.assignment', ['deadline' => $region->close_assignment_at->diffForHumans(['parts' => 1])]);
+                        $msg['msg'] =  __('message.reminder.deadline.assignment', ['deadline' => $region->close_assignment_at->diffForHumans(['parts' => 1]), 'region'=>$region->code]);
                         $msg['msg_color'] = 'warning';
                         $infos[] = $msg;
                     }

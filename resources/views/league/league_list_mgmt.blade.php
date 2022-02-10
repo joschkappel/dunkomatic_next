@@ -4,13 +4,10 @@
     <div class="row">
         <div class="col-6">
             <div class="collapse" id="collapseAssignment">
-
                 <div class="card card-outline card-primary">
                     <h5 class="card-header">{{ __('league.action.open.assignment')}}</h5>
                     <form id="frmAssignClubs" action="#" method="post">
-
                         <div class="card-body">
-
                             @csrf
                             @method('POST')
                             <div class="input-group mb-3">
