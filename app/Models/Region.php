@@ -20,6 +20,87 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use Illuminate\Support\Str;
 
+/**
+ * App\Models\Region
+ *
+ * @property int $id
+ * @property string $code
+ * @property string $name
+ * @property string|null $hq
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int $job_game_overlaps
+ * @property int $game_slot
+ * @property int $job_game_notime
+ * @property int $job_noleads
+ * @property int $job_email_valid
+ * @property int $job_league_reports
+ * @property mixed $fmt_league_reports
+ * @property int $job_club_reports
+ * @property mixed $fmt_club_reports
+ * @property int $job_exports
+ * @property \Illuminate\Support\Carbon|null $close_assignment_at
+ * @property \Illuminate\Support\Carbon|null $close_registration_at
+ * @property \Illuminate\Support\Carbon|null $close_selection_at
+ * @property \Illuminate\Support\Carbon|null $close_scheduling_at
+ * @property \Illuminate\Support\Carbon|null $close_referees_at
+ * @property bool $auto_state_change
+ * @property-read \Illuminate\Database\Eloquent\Collection|Region[] $childRegions
+ * @property-read int|null $child_regions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Club[] $clubs
+ * @property-read int|null $clubs_count
+ * @property-read mixed $club_folder
+ * @property-read mixed $is_base_level
+ * @property-read mixed $is_top_level
+ * @property-read mixed $league_filecount
+ * @property-read mixed $league_filenames
+ * @property-read mixed $league_folder
+ * @property-read mixed $teamware_filecount
+ * @property-read mixed $teamware_filenames
+ * @property-read mixed $teamware_folder
+ * @property-read \Illuminate\Database\Eloquent\Collection|Gym[] $gyms
+ * @property-read int|null $gyms_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|League[] $leagues
+ * @property-read int|null $leagues_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Member[] $members
+ * @property-read int|null $members_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Membership[] $memberships
+ * @property-read int|null $memberships_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Message[] $messages
+ * @property-read int|null $messages_count
+ * @property-read Region|null $parentRegion
+ * @property-read \Illuminate\Database\Eloquent\Collection|Schedule[] $schedules
+ * @property-read int|null $schedules_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Team[] $teams
+ * @property-read int|null $teams_count
+ * @method static \Database\Factories\RegionFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Region newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Region newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Region query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Region whereAutoStateChange($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Region whereCloseAssignmentAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Region whereCloseRefereesAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Region whereCloseRegistrationAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Region whereCloseSchedulingAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Region whereCloseSelectionAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Region whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Region whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Region whereFmtClubReports($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Region whereFmtLeagueReports($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Region whereGameSlot($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Region whereHq($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Region whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Region whereJobClubReports($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Region whereJobEmailValid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Region whereJobExports($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Region whereJobGameNotime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Region whereJobGameOverlaps($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Region whereJobLeagueReports($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Region whereJobNoleads($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Region whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Region whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Region extends Model
 {
     use HasFactory, CastsEnums;
@@ -151,7 +232,7 @@ class Region extends Model
         $reports = collect();
 
         foreach ($this->loadMissing('leagues')->leagues as $league) {
-            $shortname = $this->shortname;
+            $shortname = $league->shortname;
             $reports = $reports->concat(collect(Storage::disk('exports')->files($directory))->filter(function ($value, $key) use ($shortname) {
                 return Str::contains($shortname, $value);
             }));
@@ -177,7 +258,7 @@ class Region extends Model
 
         $reports = collect();
         foreach ($this->leagues as $league) {
-            $shortname = $this->shortname;
+            $shortname = $league->shortname;
             $reports = $reports->concat(collect(Storage::disk('exports')->files($directory))->filter(function ($value, $key) use ($shortname) {
                 return Str::contains($shortname, $value);
             }));

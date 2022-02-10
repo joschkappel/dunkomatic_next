@@ -186,6 +186,7 @@ class LeagueController extends Controller
 
         $freechars = array_diff($all_chars, $team_chars);
         // Log::debug(print_r($freechars,true));
+        $response = array();
 
         Log::info('preparing select2 free league places list', ['count' => count($freechars)] );
         foreach ($freechars as $key => $value) {
@@ -316,7 +317,7 @@ class LeagueController extends Controller
      */
     public function show(League $league)
     {
-        //
+        return back();
     }
 
     /**

@@ -112,11 +112,11 @@ class RegisterController extends Controller
             Log::notice('user approved.', ['user-id' => $user->id]);
             $user->retract('candidate');
             $user->assign('guest');
-            $user->notify(new ApproveUser(Region::find($data['region_id'])->regionadmin->first()->user, Region::find($data['region_id'])));
+            $user->notify(new ApproveUser(Region::find($data['region_id'])->regionadmin()->first()->user, Region::find($data['region_id'])));
         } else {
 
-            if (Region::find($data['region_id'])->regionadmin->first()->user->exists()) {
-                $radmin = Region::find($data['region_id'])->regionadmin->first()->user()->first();
+            if (Region::find($data['region_id'])->regionadmin()->first()->user->exists()) {
+                $radmin = Region::find($data['region_id'])->regionadmin()->first()->user()->first();
                 $radmin->notify(new NewUser($user));
             } else {
                 Log::error('regionadmin is null');

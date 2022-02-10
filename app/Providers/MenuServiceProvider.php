@@ -68,8 +68,8 @@ class MenuServiceProvider extends BaseServiceProvider
      */
     private function loadTranslations()
     {
-        $translationsPath = $this->packagePath('resources/lang');
-        $this->loadTranslationsFrom($translationsPath, 'adminlte');
+        // $translationsPath = $this->packagePath('resources/lang');
+        // $this->loadTranslationsFrom($translationsPath, 'adminlte');
     }
 
     /**
@@ -90,12 +90,7 @@ class MenuServiceProvider extends BaseServiceProvider
      */
     private function registerCommands()
     {
-        $this->commands([
-            AdminLteInstallCommand::class,
-            AdminLteStatusCommand::class,
-            AdminLteUpdateCommand::class,
-            AdminLtePluginCommand::class,
-        ]);
+       //
     }
 
     /**

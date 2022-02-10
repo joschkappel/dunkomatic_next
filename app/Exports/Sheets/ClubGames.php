@@ -54,7 +54,7 @@ class ClubGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
       } elseif ( $this->scope == ReportScope::ss_club_referee()) {
         $title =  __('reports.games.referee').' ' . $this->club->shortname;
       }
-      return $title;
+      return $title ?? '';
     }
 
     public function view(): View
@@ -90,6 +90,8 @@ class ClubGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
                      ->orderBy('game_no','asc')
                      ->get();
 
+      } else {
+          $games = collect();
       }
 
       $extra_date_rows = $games->pluck('game_date')->unique()->count();

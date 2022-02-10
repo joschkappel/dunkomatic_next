@@ -20,9 +20,7 @@ class HomeGamesImport implements ToCollection, WithStartRow, WithValidation, Wit
     use Importable;
 
     /**
-     * @param array $rows
-     *
-     * @return \Illuminate\Database\Eloquent\Model|null
+     * @param Collection $rows
      */
     public function collection(Collection $rows)
     {
@@ -120,45 +118,46 @@ class HomeGamesImport implements ToCollection, WithStartRow, WithValidation, Wit
 
         switch ($ec) {
             case 'V.R':
-                return __('validation.required',['attribute'=> $attribute]);
+                $err_txt = __('validation.required',['attribute'=> $attribute]);
                 break;
             case 'V.I':
-                return __('validation.integer',['attribute'=> $value]);
+                $err_txt = __('validation.integer',['attribute'=> $value]);
                 break;
             case 'V.S':
-                return __('validation.string',['attribute'=> $value]);
+                $err_txt = __('validation.string',['attribute'=> $value]);
                 break;
             case 'V.D':
-                return  __('validation.date',['attribute'=> $value ]);
+                $err_txt =  __('validation.date',['attribute'=> $value ]);
                 break;
             case 'V.DF':
-                return  __('validation.date_format',['attribute'=> $value, 'format'=> __('game.gametime_format')]);
+                $err_txt =  __('validation.date_format',['attribute'=> $value, 'format'=> __('game.gametime_format')]);
                 break;
 
             case 'GAME.R01':
-                return __('import.game_id.required',['game'=>$value, 'league'=>'', 'home'=>Str::substr($values['4'],0,4)]);
+                $err_txt = __('import.game_id.required',['game'=>$value, 'league'=>'', 'home'=>Str::substr($values['4'],0,4)]);
                 break;
 
             case 'LEAGUE.R01':
-                return __('import.league_id.required',['league'=>$value]);
+                $err_txt = __('import.league_id.required',['league'=>$value]);
                 break;
 
             case 'CLUB.R01':
-                return __('import.club_id.required',['who'=> __('game.team_home'), 'club'=>Str::substr($values['4'],0,4)]);
+                $err_txt = __('import.club_id.required',['who'=> __('game.team_home'), 'club'=>Str::substr($values['4'],0,4)]);
                 break;
 
             case 'GYM.R01':
-                return __('import.gym_id.required',['gym'=>$value, 'home'=>Str::substr($values['4'],0,4)]);
+                $err_txt = __('import.gym_id.required',['gym'=>$value, 'home'=>Str::substr($values['4'],0,4)]);
                 break;
             case 'GYM.B01':
-                return __('validation.between.numeric',['attribute'=>$value, 'min'=>'1', 'max'=>'10']);
+                $err_txt = __('validation.between.numeric',['attribute'=>$value, 'min'=>'1', 'max'=>'10']);
                 break;
 
             default:
-                return 'unknown error: ('.$error_code.')';
+                $err_txt = 'unknown error: ('.$error_code.')';
                 break;
         }
 
+        return $err_txt;
     }
 
 

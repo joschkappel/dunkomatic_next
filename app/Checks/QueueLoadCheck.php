@@ -31,7 +31,8 @@ class QueueLoadCheck extends Check
     public function run(): Result
     {
         Artisan::call('queue:failed');
-        $failed_jobs = Str::of(Artisan::output())->explode(PHP_EOL)->count() - 5;   // 5 lines go to header/separator/etc
+        $failed_jobs = Str::of(Artisan::output())->explode(PHP_EOL)->count();
+        $failed_jobs = ($failed_jobs > 5) ? $failed_jobs - 5 : 0;  // 5 lines go to header/separator/etc
         Artisan::call('queue:monitor default,janitor,exports');
         $output = Str::of(Artisan::output())->explode(PHP_EOL);
         $q_default = Str::of($output[3])->explode('|');

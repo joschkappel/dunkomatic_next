@@ -205,12 +205,12 @@ class ACL_ClubTest extends DuskTestCase
                     ( ($user->can('update-teams')) and ($club->leagues->where('state', LeagueState::Selection())->count() > 0)) ? $teamCard->assertSeeLink(__('team.action.plan.season'))  : $teamCard->assertDontSeeLink(__('team.action.plan.season'));
                     ( ($user->can('update-teams')) and ($club->leagues->where('state', LeagueState::Selection())->count() > 0)) ? $teamCard->assertSeeLink(__('team.action.pickchars'))  : $teamCard->assertDontSeeLink(__('team.action.pickchars'));
                 });
-                $browser->with('#gymsCard', function ($gymCard) use ($user, $club, $gym) {
+                $browser->with('#gymsCard', function ($gymCard) use ($user, $gym) {
                     $gymCard->click('.btn-tool')->waitFor('.btn-tool');
                     ($user->can('create-gyms')) ? $gymCard->assertButtonEnabled('#deleteGym') :  $gymCard->assertButtonDisabled('#deleteGym');
                     ($user->can('update-gyms')) ? $gymCard->assertSeeLink($gym->gym_no.' - '.$gym->name) : $gymCard->assertDontSeeLink($gym->gym_no.' - '.$gym->name);
                 });
-                $browser->with('#membersCard', function ($memberCard) use ($user, $club, $member) {
+                $browser->with('#membersCard', function ($memberCard) use ($user, $member) {
                     $memberCard->click('.btn-tool')->waitFor('.btn-tool');
                     ($user->can('create-members')) ? $memberCard->assertButtonEnabled('#deleteMember') :  $memberCard->assertButtonDisabled('#deleteMember');
                     ($user->can('update-members')) ? $memberCard->assertSeeLink($member->name) : $memberCard->assertDontSeeLink($member->name);

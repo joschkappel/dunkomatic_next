@@ -9,6 +9,28 @@ use App\Models\League;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\LeagueSize
+ *
+ * @property int $id
+ * @property int $size
+ * @property string $description
+ * @property-read \Illuminate\Database\Eloquent\Collection|LeagueSizeChar[] $chars
+ * @property-read int|null $chars_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|League[] $leagues
+ * @property-read int|null $leagues_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Schedule[] $schedules
+ * @property-read int|null $schedules_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|LeagueSizeScheme[] $schemes
+ * @property-read int|null $schemes_count
+ * @method static \Illuminate\Database\Eloquent\Builder|LeagueSize newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|LeagueSize newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|LeagueSize query()
+ * @method static \Illuminate\Database\Eloquent\Builder|LeagueSize whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LeagueSize whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LeagueSize whereSize($value)
+ * @mixin \Eloquent
+ */
 class LeagueSize extends Model
 {
 

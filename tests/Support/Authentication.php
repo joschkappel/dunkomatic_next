@@ -25,7 +25,7 @@ trait Authentication
         $this->afterApplicationCreated(function () {
             $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
             $this->region = Region::where('code','HBVDA')->first();
-            $this->region_user = $this->region->regionadmin->first()->user()->first();
+            $this->region_user = $this->region->regionadmin()->first()->user()->first();
 
             Bouncer::sync($this->region_user)->roles([]);
             Bouncer::assign( 'superadmin')->to($this->region_user);

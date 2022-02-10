@@ -19,6 +19,63 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * App\Models\Club
+ *
+ * @property int $id
+ * @property int $region_id
+ * @property string $shortname
+ * @property string $name
+ * @property string $club_no
+ * @property string|null $url
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read int|null $audits_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Game[] $games_guest
+ * @property-read int|null $games_guest_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Game[] $games_home
+ * @property-read int|null $games_home_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Game[] $games_home_noshow
+ * @property-read int|null $games_home_noshow_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Game[] $games_home_notime
+ * @property-read int|null $games_home_notime_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Game[] $games_noreferee
+ * @property-read int|null $games_noreferee_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Game[] $games_withreferee
+ * @property-read int|null $games_withreferee_count
+ * @property-read mixed $filecount
+ * @property-read mixed $filenames
+ * @property-read \Illuminate\Database\Eloquent\Collection|Gym[] $gyms
+ * @property-read int|null $gyms_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|League[] $leagues
+ * @property-read int|null $leagues_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Member[] $members
+ * @property-read int|null $members_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Membership[] $memberships
+ * @property-read int|null $memberships_count
+ * @property-read Region $region
+ * @property-read \Illuminate\Database\Eloquent\Collection|Team[] $registered_teams
+ * @property-read int|null $registered_teams_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Team[] $selected_teams
+ * @property-read int|null $selected_teams_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Team[] $teams
+ * @property-read int|null $teams_count
+ * @method static \Database\Factories\ClubFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Club forRegion($region)
+ * @method static \Illuminate\Database\Eloquent\Builder|Club newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Club newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Club query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Club whereClubNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Club whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Club whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Club whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Club whereRegionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Club whereShortname($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Club whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Club whereUrl($value)
+ * @mixin \Eloquent
+ */
 class Club extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable, HasFactory;

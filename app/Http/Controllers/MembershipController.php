@@ -11,6 +11,7 @@ use App\Models\League;
 use App\Models\Region;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 
@@ -55,6 +56,7 @@ class MembershipController extends Controller
             $ms = $region->memberships()->create($data);
             Log::notice('region membership created.', ['region-id'=> $region->id, 'member-id'=>$member->id, 'membership-id'=>$ms->id]);
         }
+        return Response::HTTP_OK;
     }
 
     /**

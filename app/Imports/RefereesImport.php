@@ -16,7 +16,7 @@ class RefereesImport implements ToCollection, WithStartRow, WithValidation
     use Importable;
 
     /**
-    * @param array $rows
+    * @param Collection $rows
     */
     public function collection(Collection $rows)
     {

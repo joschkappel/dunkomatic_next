@@ -14,6 +14,58 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * App\Models\Member
+ *
+ * @property int $id
+ * @property string|null $firstname
+ * @property string $lastname
+ * @property string|null $city
+ * @property string|null $zipcode
+ * @property string|null $street
+ * @property string|null $phone
+ * @property string|null $mobile
+ * @property string $email1
+ * @property string|null $email2
+ * @property string|null $fax
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|Club[] $clubs
+ * @property-read int|null $clubs_count
+ * @property-read mixed $is_region_admin
+ * @property-read mixed $is_user
+ * @property-read mixed $member_of_clubs
+ * @property-read mixed $member_of_leagues
+ * @property-read mixed $member_of_region
+ * @property-read mixed $name
+ * @property-read \Illuminate\Database\Eloquent\Collection|League[] $leagues
+ * @property-read int|null $leagues_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Membership[] $memberships
+ * @property-read int|null $memberships_count
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Region[] $region
+ * @property-read int|null $region_count
+ * @property-read User|null $user
+ * @method static \Database\Factories\MemberFactory factory(...$parameters)
+ * @method static Builder|Member newModelQuery()
+ * @method static Builder|Member newQuery()
+ * @method static Builder|Member query()
+ * @method static Builder|Member whereCity($value)
+ * @method static Builder|Member whereCreatedAt($value)
+ * @method static Builder|Member whereEmail1($value)
+ * @method static Builder|Member whereEmail2($value)
+ * @method static Builder|Member whereFax($value)
+ * @method static Builder|Member whereFirstname($value)
+ * @method static Builder|Member whereId($value)
+ * @method static Builder|Member whereLastname($value)
+ * @method static Builder|Member whereMobile($value)
+ * @method static Builder|Member wherePhone($value)
+ * @method static Builder|Member whereStreet($value)
+ * @method static Builder|Member whereUpdatedAt($value)
+ * @method static Builder|Member whereZipcode($value)
+ * @mixin \Eloquent
+ */
 class Member extends Model
 {
 

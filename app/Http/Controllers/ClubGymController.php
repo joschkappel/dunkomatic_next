@@ -13,16 +13,6 @@ use Illuminate\Validation\Rule;
 
 class ClubGymController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @param  \App\Models\Club  $club
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Club $club)
-    {
-        //
-    }
 
     public function sb_club(Club $club)
     {
@@ -126,7 +116,6 @@ class ClubGymController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Club  $club
      * @param  \App\Models\Gym  $gym
      * @return \Illuminate\Http\Response
      */

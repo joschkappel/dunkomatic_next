@@ -29,11 +29,11 @@ class ConfirmDeletion extends Component
     public $modalTitle;
 
     /**
-     * The modal HTTP method to use 
+     * The modal HTTP method to use
      *
      * @var string
      */
-    public $modalMethod;    
+    public $modalMethod;
 
     /**
      * The type of the entity to be deleted
@@ -48,7 +48,7 @@ class ConfirmDeletion extends Component
      *
      * @return void
      */
-    public function __construct($modalId, $modalTitle, $modalConfirm, $modalMethod='DELETE', $deleteType)
+    public function __construct($modalId, $modalTitle, $modalConfirm, $deleteType, $modalMethod='DELETE')
     {
         $this->modalId = $modalId;
         $this->modalTitle = $modalTitle;

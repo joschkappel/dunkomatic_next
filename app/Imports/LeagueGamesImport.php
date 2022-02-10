@@ -28,13 +28,13 @@ class LeagueGamesImport implements ToCollection, WithStartRow, WithValidation, W
     public function __construct(League $league)
     {
         $this->league = $league;
-        $this->game_cnt = strval($this->league->size * ($this->league->size -1 )) ?? "0";
+        $this->game_cnt = "0";
+        $this->game_cnt = strval($this->league->size * ($this->league->size -1 ));
     }
 
     /**
-     * @param array $rows
+     * @param Collection $rows
      *
-     * @return \Illuminate\Database\Eloquent\Model|null
      */
     public function collection(Collection $rows)
     {
@@ -105,53 +105,55 @@ class LeagueGamesImport implements ToCollection, WithStartRow, WithValidation, W
 
         switch ($ec) {
             case 'V.R':
-                return __('validation.required',['attribute'=> $attribute]);
+                $err_txt = __('validation.required',['attribute'=> $attribute]);
                 break;
             case 'V.I':
-                return __('validation.integer',['attribute'=> $value]);
+                $err_txt = __('validation.integer',['attribute'=> $value]);
                 break;
             case 'V.S':
-                return __('validation.string',['attribute'=> $value]);
+                $err_txt = __('validation.string',['attribute'=> $value]);
                 break;
             case 'V.D':
-                return  __('validation.date',['attribute'=> $value ]);
+                $err_txt =  __('validation.date',['attribute'=> $value ]);
                 break;
             case 'V.DF':
-                return  __('validation.date_format',['attribute'=> $value, 'format'=> __('game.gametime_format')]);
+                $err_txt =  __('validation.date_format',['attribute'=> $value, 'format'=> __('game.gametime_format')]);
                 break;
 
             case 'GAME.B01':
-                return __('validation.between.numeric',['attribute'=> $value, 'min'=>'1', 'max'=>$this->game_cnt]);
+                $err_txt = __('validation.between.numeric',['attribute'=> $value, 'min'=>'1', 'max'=>$this->game_cnt]);
                 break;
             case 'GAME.R01':
-                return __('import.game_id.required',['game'=>$value, 'league'=>$this->league->shortname, 'home'=>Str::substr($values['3'],0,4)]);
+                $err_txt = __('import.game_id.required',['game'=>$value, 'league'=>$this->league->shortname, 'home'=>Str::substr($values['3'],0,4)]);
                 break;
 
             case 'CLUBH.R01':
-                return __('import.club_id.required',['who'=> __('game.team_home') , 'club'=>Str::substr($value,0,4)]);
+                $err_txt = __('import.club_id.required',['who'=> __('game.team_home') , 'club'=>Str::substr($value,0,4)]);
                 break;
             case 'CLUBG.R01':
-                return __('import.club_id.required',['who'=> __('game.team_guest') , 'club'=>Str::substr($value,0,4)]);
+                $err_txt = __('import.club_id.required',['who'=> __('game.team_guest') , 'club'=>Str::substr($value,0,4)]);
                 break;
             case 'TEAMH.R01':
-                return __('import.team_id.required',['who'=> __('game.team_home') , 'team'=>$value]);
+                $err_txt = __('import.team_id.required',['who'=> __('game.team_home') , 'team'=>$value]);
                 break;
             case 'TEAMG.R01':
-                return __('import.team_id.required',['who'=> __('game.team_guest') , 'team'=>$value]);
+                $err_txt = __('import.team_id.required',['who'=> __('game.team_guest') , 'team'=>$value]);
                 break;
 
 
             case 'GYM.R01':
-                return __('import.gym_id.required',['gym'=>$value, 'home'=>Str::substr($values['4'],0,4)]);
+                $err_txt = __('import.gym_id.required',['gym'=>$value, 'home'=>Str::substr($values['4'],0,4)]);
                 break;
             case 'GYM.B01':
-                return __('validation.between.numeric',['attribute'=>$value, 'min'=>'1', 'max'=>'10']);
+                $err_txt = __('validation.between.numeric',['attribute'=>$value, 'min'=>'1', 'max'=>'10']);
                 break;
 
             default:
-                return 'unknown error: ('.$error_code.')';
+                $err_txt = 'unknown error: ('.$error_code.')';
                 break;
         }
+
+        return $err_txt;
 
     }
 

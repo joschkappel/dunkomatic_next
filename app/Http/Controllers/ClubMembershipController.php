@@ -118,8 +118,8 @@ class ClubMembershipController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Club $club
-     * @param  \App\Member  $member
+     * @param  \App\Models\Club $club
+     * @param  \App\Models\Member  $member
      * @return \Illuminate\Http\Response
      */
     public function destroy(Club $club, Member $member)

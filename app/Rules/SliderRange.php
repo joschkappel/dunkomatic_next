@@ -6,6 +6,9 @@ use Illuminate\Contracts\Validation\Rule;
 
 class SliderRange implements Rule
 {
+    public $min;
+    public $max;
+
     /**
      * Create a new rule instance.
      *

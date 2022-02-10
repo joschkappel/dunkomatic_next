@@ -94,12 +94,12 @@ class TeamController extends Controller
                 $team->preferred_league_no = $league_no;
                 $team->preferred_league_char = $upperArr[$league_no];
 
-                $check = $team->save();
+                $team->save();
                 Log::notice('team league char set', ['team-id' => $team->id, 'league-team-no' => $league_no]);
             }
         }
 
-        return Response::json($check);
+        return Response::json([]);
     }
 
 
@@ -365,7 +365,7 @@ class TeamController extends Controller
         foreach ($combinations as $i => $c) {
             $homies = $filtercomb;
             for ($j = 0; $j < count($leagues['id']); $j++) {
-                $homies = array_filter($homies, function ($v) use ($leagues, $c, $i, $j) {
+                $homies = array_filter($homies, function ($v) use ($leagues, $c, $j) {
                     if ($v->glid == $leagues['id'][$j]) {
                         if ($v->ghome == $c[0][$j]) {
                             return true;

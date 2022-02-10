@@ -25,6 +25,62 @@ use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Prunable;
 
 
+/**
+ * App\Models\User
+ *
+ * @property int $id
+ * @property string $name
+ * @property string|null $user_old
+ * @property string $email
+ * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property \Illuminate\Support\Carbon|null $approved_at
+ * @property \Illuminate\Support\Carbon|null $rejected_at
+ * @property string|null $reason_join
+ * @property string|null $reason_reject
+ * @property string $locale
+ * @property string $password
+ * @property string|null $remember_token
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int|null $member_id
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Silber\Bouncer\Database\Ability[] $abilities
+ * @property-read int|null $abilities_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Rappasoft\LaravelAuthenticationLog\Models\AuthenticationLog[] $authentications
+ * @property-read int|null $authentications_count
+ * @property-read mixed $is_regionadmin
+ * @property-read \Rappasoft\LaravelAuthenticationLog\Models\AuthenticationLog|null $latestAuthentication
+ * @property-read Member|null $member
+ * @property-read \Illuminate\Database\Eloquent\Collection|Message[] $messages
+ * @property-read int|null $messages_count
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Silber\Bouncer\Database\Role[] $roles
+ * @property-read int|null $roles_count
+ * @method static \Database\Factories\UserFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|User isRole($role)
+ * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|User query()
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereApprovedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereEmailVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereIs($role)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereIsAll($role)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereIsNot($role)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereLocale($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereMemberId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereReasonJoin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereReasonReject($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereRejectedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereUserOld($value)
+ * @mixin \Eloquent
+ */
 class User extends Authenticatable implements MustVerifyEmail, CanResetPassword, HasLocalePreference
 {
     use Notifiable, HasFactory, HasRolesAndAbilities, AuthenticationLoggable, Prunable;
@@ -158,6 +214,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
     public function LeagueFilecount(Region $region)
     {
         $directory = $region->league_folder;
+        $llist = "";
+
         if ($this->can('access', $region)) {
             $llist = $this->leagues()->pluck('shortname')->implode('|');
         }
@@ -174,6 +232,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
     public function LeagueFilenames(Region $region)
     {
         $directory = $region->league_folder;
+        $llist = "";
+
         if ($this->can('access', $region)) {
             $llist = $this->leagues()->pluck('shortname')->implode('|');
         }
@@ -189,6 +249,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
     public function TeamwareFilecount(Region $region)
     {
         $directory = $region->teamware_folder;
+        $llist= "";
+
         if ($this->can('access', $region)) {
             $llist = $this->leagues()->pluck('shortname')->implode('|');
         }
@@ -205,6 +267,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
     public function TeamwareFilenames(Region $region)
     {
         $directory = $region->teamware_folder;
+        $llist = "";
+
         if ($this->can('access', $region)) {
             $llist = $this->leagues()->pluck('shortname')->implode('|');
         }
@@ -221,6 +285,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
     public function ClubFilecount(Region $region)
     {
         $directory = $region->club_folder;
+        $llist = "";
+
         if ($this->can('access', $region)) {
             $llist = $this->clubs()->pluck('shortname')->implode('|');
         }
@@ -237,6 +303,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
     public function ClubFilenames(Region $region)
     {
         $directory = $region->club_folder;
+        $llist = "";
+
         if ($this->can('access', $region)) {
             $llist = $this->clubs()->pluck('shortname')->implode('|');
         }

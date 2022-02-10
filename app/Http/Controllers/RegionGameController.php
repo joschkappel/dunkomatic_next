@@ -42,7 +42,7 @@ class RegionGameController extends Controller
 
         $tmpDir = (new TemporaryDirectory())->create();
         $path = $request->gfile->store($tmpDir->path());
-        $refImport = new RefereesImport($region);
+        $refImport = new RefereesImport();
         try {
           // $hgImport->import($path, 'local', \Maatwebsite\Excel\Excel::XLSX);
           Log::info('validating import data.', ['region-id'=> $region->id]);

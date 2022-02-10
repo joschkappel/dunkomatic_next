@@ -14,6 +14,42 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * App\Models\Schedule
+ *
+ * @property int $id
+ * @property string $name
+ * @property int $region_id
+ * @property int|null $league_size_id
+ * @property int $iterations
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int $custom_events
+ * @property-read \Illuminate\Database\Eloquent\Collection|LeagueSizeChar[] $chars
+ * @property-read int|null $chars_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|ScheduleEvent[] $events
+ * @property-read int|null $events_count
+ * @property-read mixed $color
+ * @property-read LeagueSize|null $league_size
+ * @property-read \Illuminate\Database\Eloquent\Collection|League[] $leagues
+ * @property-read int|null $leagues_count
+ * @property-read Region $region
+ * @property-read \Illuminate\Database\Eloquent\Collection|LeagueSizeScheme[] $schemes
+ * @property-read int|null $schemes_count
+ * @method static \Database\Factories\ScheduleFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Schedule newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Schedule newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Schedule query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Schedule whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Schedule whereCustomEvents($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Schedule whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Schedule whereIterations($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Schedule whereLeagueSizeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Schedule whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Schedule whereRegionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Schedule whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Schedule extends Model
 {
   use HasFactory;

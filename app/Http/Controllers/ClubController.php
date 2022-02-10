@@ -367,7 +367,7 @@ class ClubController extends Controller
      */
     public function show(Club $club)
     {
-        //
+        return back();
     }
 
     /**

@@ -66,7 +66,7 @@ class CardForm extends Component
      * @return void
      */
     public function __construct($cardChangeNote='',
-                                $cardTitle,
+                                $cardTitle='no title',
                                 $formAction='',
                                 $formMethod='POST',
                                 $omitCancel=False,

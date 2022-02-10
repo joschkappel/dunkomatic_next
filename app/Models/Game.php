@@ -9,6 +9,60 @@ use App\Models\Team;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Game
+ *
+ * @property int $id
+ * @property int $league_id
+ * @property \App\Models\Region $region
+ * @property int $game_no
+ * @property \Illuminate\Support\Carbon $game_plandate
+ * @property \Illuminate\Support\Carbon $game_date
+ * @property string|null $game_time
+ * @property int|null $club_id_home
+ * @property int|null $team_id_home
+ * @property Team|null $team_home
+ * @property string $team_char_home
+ * @property int|null $club_id_guest
+ * @property int|null $team_id_guest
+ * @property Team|null $team_guest
+ * @property string $team_char_guest
+ * @property string|null $gym_no
+ * @property int|null $gym_id
+ * @property string|null $referee_1
+ * @property string|null $referee_2
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read Club|null $club_guest
+ * @property-read Club|null $club_home
+ * @property-read Gym|null $gym
+ * @property-read League $league
+ * @method static \Illuminate\Database\Eloquent\Builder|Game newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Game newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Game query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereClubIdGuest($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereClubIdHome($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereGameDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereGameNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereGamePlandate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereGameTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereGymId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereGymNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereLeagueId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereReferee1($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereReferee2($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereRegion($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereTeamCharGuest($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereTeamCharHome($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereTeamGuest($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereTeamHome($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereTeamIdGuest($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereTeamIdHome($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Game extends Model
 {
     protected $fillable = [

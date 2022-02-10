@@ -25,6 +25,9 @@ class AddressController extends Controller
     {
         $role = Role::coerce(intval($role));
         Log::debug('role',['role'=>$role]);
+        $all = collect();
+        $filtered = collect();
+
         if ($role->in([Role::ClubLead, Role::GirlsLead, Role::JuniorsLead, Role::RefereeLead])){
             $all = Member::with('clubs')
                         ->whereHas('clubs', function( Builder $q) use ($region) {

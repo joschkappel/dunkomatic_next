@@ -13,6 +13,66 @@ use App\Rules\GameMinute;
 use App\Rules\GameHour;
 use OwenIt\Auditing\Contracts\Auditable;
 
+/**
+ * App\Models\Team
+ *
+ * @property int $id
+ * @property int $team_no
+ * @property int|null $league_id
+ * @property int $club_id
+ * @property string|null $league_char
+ * @property int|null $league_no
+ * @property string|null $preferred_league_char
+ * @property int|null $preferred_league_no
+ * @property string|null $league_prev
+ * @property int|null $training_day
+ * @property string|null $training_time
+ * @property int|null $preferred_game_day
+ * @property string|null $preferred_game_time
+ * @property string|null $shirt_color
+ * @property string|null $coach_name
+ * @property string|null $coach_phone1
+ * @property string|null $coach_phone2
+ * @property string|null $coach_email
+ * @property int $changeable
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read int|null $audits_count
+ * @property-read Club $club
+ * @property-read \Illuminate\Database\Eloquent\Collection|Game[] $games_guest
+ * @property-read int|null $games_guest_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Game[] $games_home
+ * @property-read int|null $games_home_count
+ * @property-read mixed $name
+ * @property-read League|null $league
+ * @method static \Database\Factories\TeamFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Team newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Team query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereChangeable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereClubId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereCoachEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereCoachName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereCoachPhone1($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereCoachPhone2($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereLeagueChar($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereLeagueId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereLeagueNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereLeaguePrev($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team wherePreferredGameDay($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team wherePreferredGameTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team wherePreferredLeagueChar($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team wherePreferredLeagueNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereShirtColor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereTeamNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereTrainingDay($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereTrainingTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Team extends Model implements Auditable
 {
   use \OwenIt\Auditing\Auditable, hasFactory;

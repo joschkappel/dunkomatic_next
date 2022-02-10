@@ -215,7 +215,7 @@ class MessageControllerTest extends TestCase
     {
         $this->assertDatabaseHas('messages', ['title' => 'testmessage2']);
         $message = Message::where('title', 'testmessage2')->first();
-        $m_count = Message::all()->count();
+        $m_count = Message::count();
 
         $response = $this->authenticated()
             ->post(route('message.copy', ['message' => $message, 'language' => 'de']));

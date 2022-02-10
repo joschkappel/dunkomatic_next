@@ -142,7 +142,7 @@ class RegionController extends Controller
                     return $data->code;
                 }
             })
-            ->editColumn('regionadmin', function ($r) use ($language) {
+            ->editColumn('regionadmin', function ($r)  {
                 if ($r->regionadmin()->exists()) {
                     $admin = $r->regionadmin()->first()->firstname . ' ' . $r->regionadmin()->first()->lastname;
                 } else {
@@ -196,7 +196,7 @@ class RegionController extends Controller
      */
     public function show(Region $region)
     {
-        //
+        return back();
     }
 
     /**
@@ -234,7 +234,7 @@ class RegionController extends Controller
             'job_club_reports' => ['required', new EnumValue(JobFrequencyType::class, false)],
             'fmt_club_reports' => 'required|array|min:1',
             'fmt_club_reports.*' => ['required', new EnumValue(ReportFileType::class, false)],
-            'fmt_club_reports' => 'required|array|min:1',
+            'fmt_league_reports' => 'required|array|min:1',
             'fmt_league_reports.*' => ['required', new EnumValue(ReportFileType::class, false)],
             'close_assignment_at' => 'sometimes|required|date|after:today',
             'close_registration_at' => 'sometimes|required|date|after:close_assignment_at',

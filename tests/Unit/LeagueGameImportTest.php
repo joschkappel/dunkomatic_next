@@ -107,7 +107,7 @@ class LeagueGameImportTest extends TestCase
         Team::whereNotNull('id')->delete();
         foreach (Club::all() as $c) {
             $c->leagues()->detach();
-            $members = $c->members;
+            $members = $c->members()->get();
             $c->members()->detach();
             $c->delete();
             foreach ($members as $m){
@@ -116,7 +116,7 @@ class LeagueGameImportTest extends TestCase
         }
         $league = League::first();
         if (isset($league)) {
-            $league->schedule->events()->delete();
+            $league->schedule()->first()->events()->delete();
             $league->delete();
         }
 

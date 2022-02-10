@@ -43,6 +43,8 @@ class MembershipObserver
                 Bouncer::assign('clubadmin')->to($u);
             } elseif ($u->isrole(Role::LeagueLead())){
                 Bouncer::assign('leagueadmin')->to($u);
+            } else {
+                Bouncer::assign('guest')->to($u);
             }
         }
     }

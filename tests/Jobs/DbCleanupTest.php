@@ -30,10 +30,10 @@ class DbCleanupTest extends SysTestCase
         Notification::assertNothingSent();
 
         // mark all messages as sent
-        $cnt_msg_total = Message::all()->count();
+        $cnt_msg_total = Message::count();
         $cnt_msg = Message::whereNotNull('id')->update(['sent_at'=> now()]);
         // mark all users as rejected
-        $cnt_user_total = User::all()->count();
+        $cnt_user_total = User::count();
         $cnt_user = User::whereNotNull('id')->update(['rejected_at'=> now()]);
         // mark all notifications as read
         DatabaseNotification::whereNotNull('id')->update(['read_at'=>now()]);

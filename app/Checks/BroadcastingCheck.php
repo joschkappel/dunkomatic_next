@@ -6,7 +6,6 @@ use Spatie\Health\Checks\Check;
 use Spatie\Health\Checks\Result;
 
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 class BroadcastingCheck extends Check
 {
@@ -18,9 +17,9 @@ class BroadcastingCheck extends Check
 
         $url = 'http://laravel-echo-server:6001/apps/'.$echo_appid.'/status';
         $response = Http::get($url, [ 'auth_key' => $echo_appkey]);
-        $uptime = strval( round( $response->object()->uptime, 2)).'s' ?? 'unkown';
-        $subscription_count = strval( $response->object()->subscription_count ) ?? 'unkown';
-        $memory_usage =  strval( round(($response->object()->memory_usage->heapUsed * 100 ) / $response->object()->memory_usage->rss  )).'%'  ?? 'unknown';
+        $uptime = strval( round( $response->object()->uptime, 2)).'s';
+        $subscription_count = strval( $response->object()->subscription_count );
+        $memory_usage =  strval( round(($response->object()->memory_usage->heapUsed * 100 ) / $response->object()->memory_usage->rss  )).'%' ;
 
 
         $result = Result::make()

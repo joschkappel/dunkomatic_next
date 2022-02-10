@@ -6,21 +6,13 @@ use App\Models\Club;
 use App\Models\Team;
 use App\Enums\LeagueState;
 
+use Yajra\DataTables\DataTables;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class ClubTeamController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @param  \App\Models\Club  $club
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Club $club)
-    {
-        //
-    }
 
     public function pickchar($language, Club $club)
     {
@@ -34,7 +26,7 @@ class ClubTeamController extends Controller
      * Get datatable with club teams and selected league chars
      *
      * @param  \App\Models\Club  $club
-     * @return Databtable json
+     * @return \Illuminate\Http\Response
      */
     public function league_char_dt($language,  Club $club )
     {
@@ -276,18 +268,6 @@ class ClubTeamController extends Controller
             'ClubController@dashboard',
             ['language' => app()->getLocale(), 'club' => $club->id]
         );
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Club  $club
-     * @param  \App\Models\Team  $team
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Club $club, Team $team)
-    {
-        //
     }
 
     /**

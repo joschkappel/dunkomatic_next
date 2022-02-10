@@ -32,7 +32,7 @@ class ProcessClubReports implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param  App\Models\Region  $region
+     * @param  Region  $region
      * @return void
      */
     public function __construct(Region $region)

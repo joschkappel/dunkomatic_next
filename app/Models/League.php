@@ -20,6 +20,86 @@ use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * App\Models\League
+ *
+ * @property int $id
+ * @property int $region_id
+ * @property string $shortname
+ * @property string $name
+ * @property bool $above_region
+ * @property int|null $league_size_id
+ * @property int|null $schedule_id
+ * @property mixed|null $age_type
+ * @property mixed|null $gender_type
+ * @property mixed $state
+ * @property \Illuminate\Support\Carbon|null $assignment_closed_at
+ * @property \Illuminate\Support\Carbon|null $registration_closed_at
+ * @property \Illuminate\Support\Carbon|null $selection_opened_at
+ * @property \Illuminate\Support\Carbon|null $selection_closed_at
+ * @property \Illuminate\Support\Carbon|null $generated_at
+ * @property \Illuminate\Support\Carbon|null $scheduling_closed_at
+ * @property \Illuminate\Support\Carbon|null $referees_closed_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read int|null $audits_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Club[] $clubs
+ * @property-read int|null $clubs_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Game[] $games
+ * @property-read int|null $games_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Game[] $games_noreferee
+ * @property-read int|null $games_noreferee_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Game[] $games_noshow
+ * @property-read int|null $games_noshow_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Game[] $games_notime
+ * @property-read int|null $games_notime_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Game[] $games_overlap
+ * @property-read int|null $games_overlap_count
+ * @property-read mixed $color
+ * @property-read mixed $filecount
+ * @property-read mixed $filenames
+ * @property-read mixed $is_custom
+ * @property-read mixed $size
+ * @property-read mixed $state_count
+ * @property-read LeagueSize|null $league_size
+ * @property-read \Illuminate\Database\Eloquent\Collection|Member[] $members
+ * @property-read int|null $members_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Membership[] $memberships
+ * @property-read int|null $memberships_count
+ * @property-read Region $region
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Team[] $registered_teams
+ * @property-read int|null $registered_teams_count
+ * @property-read Schedule|null $schedule
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Team[] $selected_teams
+ * @property-read int|null $selected_teams_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Team[] $teams
+ * @property-read int|null $teams_count
+ * @method static \Database\Factories\LeagueFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|League newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|League newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|League query()
+ * @method static \Illuminate\Database\Eloquent\Builder|League whereAboveRegion($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|League whereAgeType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|League whereAssignmentClosedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|League whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|League whereGenderType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|League whereGeneratedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|League whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|League whereLeagueSizeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|League whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|League whereRefereesClosedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|League whereRegionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|League whereRegistrationClosedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|League whereScheduleId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|League whereSchedulingClosedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|League whereSelectionClosedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|League whereSelectionOpenedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|League whereShortname($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|League whereState($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|League whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class League extends Model implements Auditable
 {
 

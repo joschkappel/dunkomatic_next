@@ -118,7 +118,7 @@ class ProcessCustomMessages implements ShouldQueue
         $user_region = $this->message->region;
         $user_roles = UserRole::whereIn('id', $this->message->to_users)->pluck('name');
 
-        foreach ($user_roles ?? [] as $ur){
+        foreach ($user_roles as $ur){
             $to_users = $to_users->concat( User::whereIs($ur)->get()->filter(function ($value, $key) use ($user_region) { return $value->can('access',$user_region);}) );
         }
         if (count($to_users) > 0){

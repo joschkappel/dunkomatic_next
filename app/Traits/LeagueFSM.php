@@ -27,9 +27,9 @@ trait LeagueFSM
         $league->assignment_closed_at = now();
         $league->save();
 
-        $clubs = $league->clubs;
+        $clubs = $league->clubs()->get();
         if ($league->region->regionadmin()->exists()) {
-            $adminname = $league->region->regionadmin->first()->name;
+            $adminname = $league->region->regionadmin()->first()->name;
 
             foreach ($clubs as $c) {
                 $member = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
@@ -58,7 +58,7 @@ trait LeagueFSM
         $clubs = $league->clubs;
 
         if ($league->region->regionadmin()->exists()) {
-            $adminname = $league->region->regionadmin->first()->name;
+            $adminname = $league->region->regionadmin()->first()->name;
             foreach ($clubs as $c) {
                 $member = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
 
@@ -97,7 +97,7 @@ trait LeagueFSM
         $clubs = $league->teams()->pluck('club_id');
 
         if ($league->region->regionadmin()->exists()) {
-            $adminname = $league->region->regionadmin->first()->name;
+            $adminname = $league->region->regionadmin()->first()->name;
 
             foreach ($clubs as $c) {
                 $club = Club::find($c);

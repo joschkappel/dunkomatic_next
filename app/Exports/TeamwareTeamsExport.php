@@ -18,7 +18,7 @@ class TeamwareTeamsExport implements FromView, WithCustomCsvSettings
     }
 
     /**
-    * @return Illuminate\Contracts\View\View
+    * @return View
     */
     public function view(): View
     {
