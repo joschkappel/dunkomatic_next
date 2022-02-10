@@ -43,6 +43,7 @@
         "facade/ignition": "^2.3.6",
         "laravel/dusk": "^6.9",
         "nunomaduro/collision": "^5.0",
+        "nunomaduro/larastan": "^1.0",
         "roquie/laravel-dusk-select2": "^2.1"
     },
     "config": {
