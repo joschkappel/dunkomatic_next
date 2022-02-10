@@ -73,6 +73,12 @@ class LeagueTeamController extends Controller
             Log::notice('assign new club to league.', ['league-id' => $league->id, 'club-id' => $data['club_id']]);
         }
 
+        if ( count($data) == 0 ) { // remove all assigned clubs
+            Log::notice('de-assign ALL clubs.', ['league-id' => $league->id]);
+            // delete all assignments
+            $league->clubs()->detach();
+        }
+
         return redirect()->back();
         //route('league.dashboard', ['language' => app()->getLocale(), 'league' => $league]);
     }
