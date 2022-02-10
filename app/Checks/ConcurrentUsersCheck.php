@@ -64,7 +64,7 @@ class ConcurrentUsersCheck extends Check
         $result = Result::make()
             ->ok()
             ->shortSummary(
-                "{$last1min_tot_cnt} {$last1min_fail_pct}% - {$last5min_tot_cnt} {$last5min_fail_pct}% - {$last15min_tot_cnt} {$last15min_fail_pct}%"
+                "{$last1min_tot_cnt} {$last1min_fail_pct}% / {$last5min_tot_cnt} {$last5min_fail_pct}% / {$last15min_tot_cnt} {$last15min_fail_pct}%"
             )
             ->meta([
                 'last_minute' => $last1min_tot_cnt,

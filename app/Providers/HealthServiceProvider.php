@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Checks\BroadcastingCheck;
 use App\Checks\ConcurrentUsersCheck;
 use App\Checks\DbConnectionsCheck;
+use App\Checks\QueueLoadCheck;
 use Illuminate\Support\ServiceProvider;
 use Spatie\Health\Facades\Health;
 use Spatie\Health\Checks\Checks\UsedDiskSpaceCheck;
@@ -55,7 +56,10 @@ class HealthServiceProvider extends ServiceProvider
                 ConcurrentUsersCheck::new()
                 ->failWhenFailedLoginsIsHigherInTheLastMinute(80)
                 ->failWhenFailedLoginsIsHigherInTheLast5Minutes(50)
-                ->failWhenFailedLoginsIsHigherInTheLast15Minutes(30)
+                ->failWhenFailedLoginsIsHigherInTheLast15Minutes(30),
+                QueueLoadCheck::new()
+                ->failWhenFailedJobsIsHigher(5)
+                ->failWhenQueueLengthIsHigher(10),
 
             ]);
         } elseif (config('app.env') == 'local'){
@@ -73,7 +77,10 @@ class HealthServiceProvider extends ServiceProvider
                 ConcurrentUsersCheck::new()
                 ->failWhenFailedLoginsIsHigherInTheLastMinute(80)
                 ->failWhenFailedLoginsIsHigherInTheLast5Minutes(50)
-                ->failWhenFailedLoginsIsHigherInTheLast15Minutes(30)
+                ->failWhenFailedLoginsIsHigherInTheLast15Minutes(30),
+                QueueLoadCheck::new()
+                ->failWhenFailedJobsIsHigher(5)
+                ->failWhenQueueLengthIsHigher(10),
             ]);
         } else {
             // do nothing;
