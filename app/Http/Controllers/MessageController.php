@@ -186,7 +186,6 @@ class MessageController extends Controller
     /**
      * Mark a message as read
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param   DatabaseNotification $message
      * @return \Illuminate\Http\Response
      */
@@ -200,7 +199,7 @@ class MessageController extends Controller
     /**
      * sedn notification for this message
      *
-     * @param  $language
+     * @param  string $language
      * @param  \App\Models\Message  $message
      */
     public function send($language, Message $message)
@@ -216,7 +215,7 @@ class MessageController extends Controller
     /**
      * duplicate a message
      *
-     * @param  $language
+     * @param  string $language
      * @param  \App\Models\Message  $message
      */
     public function copy($language, Message $message)

@@ -20,8 +20,10 @@ class LeagueStateController extends Controller
   /**
    * change state by seeting state dates
    *
+   * @param Request $request
    * @param  \App\Models\League  $league
-   * @return \Illuminate\Http\Response
+   * @return boolean
+   *
    */
     public function change_state(Request $request, League $league)
     {

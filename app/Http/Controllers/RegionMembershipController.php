@@ -17,8 +17,10 @@ class RegionMembershipController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param string $language
      * @param  \App\Models\Region  $region
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
+     *
      */
     public function create($language, Region $region)
     {
@@ -32,7 +34,8 @@ class RegionMembershipController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Region  $region
      * @param  \App\Models\Member  $member
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function add(Request $request, Region $region, Member $member)
     {
@@ -62,7 +65,8 @@ class RegionMembershipController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Region  $region
      * @param  \App\Models\Member  $member
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function update(Request $request, Region $region, Member $member)
     {
@@ -95,9 +99,10 @@ class RegionMembershipController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Region $region
-     * @param  \App\Member  $member
-     * @return \Illuminate\Http\Response
+     * @param  \App\Models\Region $region
+     * @param  \App\Models\Member  $member
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function destroy(Region $region, Member $member)
     {

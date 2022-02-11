@@ -129,8 +129,10 @@ class ClubGameController extends Controller
     /**
      * Show the form for uploading game files
      *
+     * @param string $language
      * @param  \App\Models\Club  $club
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
+     *
      */
     public function upload($language, Club $club)
     {
@@ -147,8 +149,10 @@ class ClubGameController extends Controller
      * update games with file contents
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param string $language
      * @param  \App\Models\Club  $club
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function import(Request $request, $language, Club $club)
     {

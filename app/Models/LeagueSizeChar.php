@@ -30,7 +30,6 @@ class LeagueSizeChar extends Model
   /**
   * The table associated with the model.
   *
-  * @var string
   */
 
   public function league_size()

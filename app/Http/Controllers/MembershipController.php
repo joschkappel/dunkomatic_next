@@ -11,7 +11,7 @@ use App\Models\League;
 use App\Models\Region;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Log;
 
 
@@ -22,7 +22,8 @@ class MembershipController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function store(Request $request)
     {
@@ -45,25 +46,25 @@ class MembershipController extends Controller
             $club = Club::findOrFail($entity_id);
             $ms = $club->memberships()->create($data);
             Log::notice('club membership created.', ['club-id'=> $club->id, 'member-id'=>$member->id, 'membership-id'=>$ms->id]);
-            return redirect()->action('ClubController@dashboard', ['language' => app()->getLocale(), 'club' => $club]);
+            // return redirect()->action('ClubController@dashboard', ['language' => app()->getLocale(), 'club' => $club]);
         } elseif ($entity_type == League::class) {
             $league = League::findOrFail($entity_id);
             $ms = $league->memberships()->create($data);
             Log::notice('league membership created.', ['league-id'=> $league->id, 'member-id'=>$member->id, 'membership-id'=>$ms->id]);
-            return redirect()->action('LeagueController@dashboard', ['language' => app()->getLocale(), 'league' => $league]);
+            //  return redirect()->action('LeagueController@dashboard', ['language' => app()->getLocale(), 'league' => $league]);
         } elseif ($entity_type == Region::class) {
             $region = Region::findOrFail($entity_id);
             $ms = $region->memberships()->create($data);
             Log::notice('region membership created.', ['region-id'=> $region->id, 'member-id'=>$member->id, 'membership-id'=>$ms->id]);
         }
-        return Response::HTTP_OK;
+        return Response::json(['success' => 'all good'], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Membership  $membership
-     * @return \Illuminate\Http\Response
+     * @param  \App\Models\Membership  $membership
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(Membership $membership)
     {
@@ -71,7 +72,7 @@ class MembershipController extends Controller
         $membership->delete();
         Log::notice('membership deleted.',['membership-id'=>$membership->id]);
 
-        return true;
+        return Response::json(['success'=>'all good'], 200);
     }
 
     /*

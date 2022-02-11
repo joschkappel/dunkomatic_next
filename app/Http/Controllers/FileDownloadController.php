@@ -53,7 +53,7 @@ class FileDownloadController extends Controller
             $fileName = $region->code . '-reports-' . Str::slug($user->name, '-') . '.zip';
             Storage::disk('public')->delete( $fileName);
 
-            $pf = Storage::disk('public')->getAdapter()->applyPathPrefix($fileName);
+            $pf = Storage::disk('public')->path($fileName);
             Log::info('archive location.',['path'=>$pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
@@ -62,7 +62,7 @@ class FileDownloadController extends Controller
                 $files = $files->concat($user->TeamwareFilenames($region));
 
                 foreach ($files as $f) {
-                    $f =  Storage::disk('exports')->getAdapter()->applyPathPrefix($f);
+                    $f =  Storage::disk('exports')->path($f);
                     $check = $zip->addFile($f, basename($f));
                 }
 
@@ -85,14 +85,14 @@ class FileDownloadController extends Controller
         if ($club->filecount > 0) {
             $zip = new ZipArchive;
             $filename = $club->region->code . '-reports-' . Str::slug($club->shortname, '-') . '.zip';
-            $pf = Storage::disk('public')->getAdapter()->applyPathPrefix($filename);
+            $pf = Storage::disk('public')->path($filename);
             Log::info('archive location.',['path'=>$pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
                 $files = $club->filenames;
 
                 foreach ($files as $f) {
-                    $f = Storage::disk('exports')->getAdapter()->applyPathPrefix($f);
+                    $f = Storage::disk('exports')->path($f);
                     $check = $zip->addFile($f, basename($f));
                 }
 
@@ -115,7 +115,7 @@ class FileDownloadController extends Controller
         if ($league->filecount > 0) {
             $zip = new ZipArchive;
             $filename = $league->region->code . '-reports-' . Str::slug($league->shortname, '-') . '.zip';
-            $pf = Storage::disk('public')->getAdapter()->applyPathPrefix($filename);
+            $pf = Storage::disk('public')->path($filename);
             Log::info('archive location.',['path'=>$pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
@@ -123,7 +123,7 @@ class FileDownloadController extends Controller
                 Log::debug(print_r($files, true));
 
                 foreach ($files as $f) {
-                    $f =  Storage::disk('exports')->getAdapter()->applyPathPrefix($f);
+                    $f =  Storage::disk('exports')->path($f);
                     $check = $zip->addFile($f, basename($f));
                 }
 
@@ -146,7 +146,7 @@ class FileDownloadController extends Controller
         if ($region->league_filecount > 0) {
             $zip = new ZipArchive;
             $filename = $region->code . '-runden-reports.zip';
-            $pf = Storage::disk('public')->getAdapter()->applyPathPrefix($filename);
+            $pf = Storage::disk('public')->path($filename);
             Log::info('archive location.',['path'=>$pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
@@ -154,7 +154,7 @@ class FileDownloadController extends Controller
                 Log::debug(print_r($files, true));
 
                 foreach ($files as $f) {
-                    $f =  Storage::disk('exports')->getAdapter()->applyPathPrefix($f);
+                    $f =  Storage::disk('exports')->path($f);
                     $check = $zip->addFile($f, basename($f));
                 }
 
@@ -177,7 +177,7 @@ class FileDownloadController extends Controller
         if ($region->teamware_filecount > 0) {
             $zip = new ZipArchive;
             $filename = $region->code . '-teamware-reports.zip';
-            $pf = Storage::disk('public')->getAdapter()->applyPathPrefix($filename);
+            $pf = Storage::disk('public')->path($filename);
             Log::info('archive location.',['path'=>$pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
@@ -185,7 +185,7 @@ class FileDownloadController extends Controller
                 Log::debug(print_r($files, true));
 
                 foreach ($files as $f) {
-                    $f = Storage::disk('exports')->getAdapter()->applyPathPrefix($f);
+                    $f = Storage::disk('exports')->path($f);
                     $check = $zip->addFile($f, basename($f));
                 }
 

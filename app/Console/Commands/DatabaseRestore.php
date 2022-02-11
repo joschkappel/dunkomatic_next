@@ -41,7 +41,7 @@ class DatabaseRestore extends Command
         $filename = $this->argument('backupfile');
 
         if ( Storage::disk('backup')->exists($filename)){
-            $filepath = Storage::disk('backup')->getAdapter()->applyPathPrefix($filename);
+            $filepath = Storage::disk('backup')->path($filename);
 
             $command = 'zcat '. $filepath.' | mysql --user='.env('DB_USERNAME').' --password='.env('DB_PASSWORD').' --host='.env('DB_HOST').' '.env('DB_DATABASE');
             $returnVar = NULL;
@@ -55,7 +55,7 @@ class DatabaseRestore extends Command
             }
         } else {
             $returnVar = COMMAND::FAILURE;
-            $this->error('The backup file '.$filename.' does NOT exist in folder '.Storage::disk('backup')->getAdapter()->getPathPrefix());
+            $this->error('The backup file '.$filename.' does NOT exist in folder '.Storage::disk('backup')->path(''));
         }
 
         return $returnVar;

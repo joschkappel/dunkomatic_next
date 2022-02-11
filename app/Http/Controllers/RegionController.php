@@ -191,7 +191,7 @@ class RegionController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Region  $region
+     * @param  \App\Models\Region  $region
      * @return \Illuminate\Http\Response
      */
     public function show(Region $region)
@@ -202,7 +202,7 @@ class RegionController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Region  $region
+     * @param  \App\Models\Region  $region
      * @return \Illuminate\Http\Response
      */
     public function edit($language, Region $region)
@@ -218,7 +218,7 @@ class RegionController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Region  $region
+     * @param  \App\Models\Region  $region
      * @return \Illuminate\Http\Response
      */
     public function update_details(Request $request, Region $region)

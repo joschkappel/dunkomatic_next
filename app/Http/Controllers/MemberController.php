@@ -129,7 +129,7 @@ class MemberController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Member  $member
+     * @param  \App\Models\Member  $member
      * @return \Illuminate\Http\Response
      */
     public function show($language, Member $member)

@@ -239,8 +239,10 @@ class ClubTeamController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param string $language
      * @param  \App\Models\Club  $club
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
+     *
      */
     public function create($language, Club $club)
     {
@@ -253,7 +255,8 @@ class ClubTeamController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Club  $club
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function store(Request $request, Club $club)
     {
@@ -273,8 +276,10 @@ class ClubTeamController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
+     * @param string $language
      * @param  \App\Models\Team  $team
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
+     *
      */
     public function edit($language, Team $team)
     {
@@ -289,7 +294,8 @@ class ClubTeamController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Team  $team
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function update(Request $request, Team $team)
     {
@@ -316,7 +322,8 @@ class ClubTeamController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Team  $team
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function destroy(Team $team)
     {

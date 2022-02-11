@@ -30,7 +30,6 @@ class ScheduleEventController extends Controller
                group by game_date
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Schedule  $schedule
      * @return \Illuminate\Http\Response
      */
     public function list_piv(Request $request)
@@ -269,7 +268,7 @@ class ScheduleEventController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Schedule  $schedule
+     * @param  \App\Models\ScheduleEvent  $schedule_event
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, ScheduleEvent $schedule_event)

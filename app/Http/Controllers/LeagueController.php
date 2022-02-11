@@ -34,7 +34,10 @@ class LeagueController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param string $language
+     * @param \App\Models\Region $region
+     * @return \Illuminate\View\View
+     *
      */
     public function index($language, Region $region)
     {
@@ -124,7 +127,9 @@ class LeagueController extends Controller
     /**
      * Display a listing of the resource for selectboxes. clubs for league
      *
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\League $league
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function sb_club(League $league)
     {
@@ -155,7 +160,9 @@ class LeagueController extends Controller
     /**
      * Display a listing of the resource for selectboxes.
      *
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Region $region
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function sb_region(Region $region)
     {
@@ -203,7 +210,11 @@ class LeagueController extends Controller
     /**
      * Display a dashboard
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param string $language
+     * @param \App\Models\League $league
+     * @return \Illuminate\View\View
+     *
      */
     public function dashboard(Request $request, $language, League $league)
     {
@@ -233,7 +244,10 @@ class LeagueController extends Controller
     /**
      * Display a brief overview
      *
-     * @return \Illuminate\Http\Response
+     * @param string $language
+     * @param \App\Models\League $league
+     * @return \Illuminate\View\View
+     *
      */
     public function briefing($language, League $league)
     {
@@ -255,7 +269,10 @@ class LeagueController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param string $language
+     * @param \App\Models\Region $region
+     * @return \Illuminate\View\View
+     *
      */
     public function create($language, Region $region)
     {
@@ -274,7 +291,9 @@ class LeagueController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Region $region
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function store(Request $request, Region $region)
     {
@@ -310,21 +329,12 @@ class LeagueController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\Response
-     */
-    public function show(League $league)
-    {
-        return back();
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
+     * @param string $language
      * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
+     *
      */
     public function edit($language, League $league)
     {
@@ -348,7 +358,8 @@ class LeagueController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function update(Request $request, League $league)
     {
@@ -391,7 +402,8 @@ class LeagueController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function destroy(League $league)
     {

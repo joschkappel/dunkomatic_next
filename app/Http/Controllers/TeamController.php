@@ -79,7 +79,8 @@ class TeamController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function store_plan(Request $request)
     {
@@ -106,7 +107,10 @@ class TeamController extends Controller
     /**
      * Display a dashboard
      *
-     * @return \Illuminate\Http\Response
+     * @param string $language
+     * @param \App\Models\Club $club
+     * @return \Illuminate\View\View
+     *
      */
     public function plan_leagues($language, Club $club)
     {
@@ -304,7 +308,9 @@ class TeamController extends Controller
     /**
      * optimization for home games
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function propose_combination(Request $request)
     {

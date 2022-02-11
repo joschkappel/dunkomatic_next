@@ -26,8 +26,10 @@ class LeagueTeamController extends Controller
     /**
      * Attach club to league
      *
+     * @param Request $request
      * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function assign_clubs(Request $request, League $league)
     {
@@ -86,8 +88,11 @@ class LeagueTeamController extends Controller
     /**
      * Detach club from league
      *
+     * @param Request $request
      * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Club $club
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function deassign_club(Request $request, League $league, Club $club)
     {
@@ -134,14 +139,16 @@ class LeagueTeamController extends Controller
             }
         }
 
-        return Response::json('OK');
+        return Response::json(['success' => 'all good'], 200);
     }
 
     /**
      * register team fora league
      *
      * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Team $team
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function league_register_team(League $league, Team $team)
     {
@@ -156,7 +163,9 @@ class LeagueTeamController extends Controller
      * remove team registration  from league
      *
      * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\Response
+     * @param  \App\Models\Team  $team
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function league_unregister_team(League $league, Team $team )
     {
@@ -178,8 +187,10 @@ class LeagueTeamController extends Controller
     /**
      * Attach team to league
      *
-     * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param  \App\Models\Team  $team
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function team_register_league(Request $request, Team $team)
     {
@@ -279,8 +290,9 @@ class LeagueTeamController extends Controller
     /**
      * Pick a league number for a team
      *
+     * @param Request $request
      * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function pick_char(Request $request, League $league)
     {
@@ -314,8 +326,10 @@ class LeagueTeamController extends Controller
     /**
      * un-Pick a league number for a team
      *
+     * @param Request $request
      * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function release_char(Request $request, League $league)
     {
@@ -343,7 +357,7 @@ class LeagueTeamController extends Controller
 
             return Response::json(['success' => 'all good'], 200);
         } else {
-            Log::error('release league char: team not found.', ['team-id' => $team->id, 'league-id' => $league->id, 'league-team-no' => $data['league_no']]);
+            Log::error('release league char: team not found.', ['team-id' =>  $data['team_id'], 'league-id' => $league->id, 'league-team-no' => $data['league_no']]);
             return Response::json(['error' => 'team not found'], 404);
         }
     }

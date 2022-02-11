@@ -18,7 +18,10 @@ class ClubMembershipController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param string $language
+     * @param \App\Models\Club $club
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function index($language, Club $club)
     {
@@ -40,8 +43,10 @@ class ClubMembershipController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param string $language
      * @param  \App\Models\Club  $club
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
+     *
      */
     public function create($language, Club $club)
     {
@@ -55,7 +60,8 @@ class ClubMembershipController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Club  $club
      * @param  \App\Models\Member  $member
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function add(Request $request, Club $club, Member $member)
     {
@@ -85,7 +91,8 @@ class ClubMembershipController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Club  $club
      * @param  \App\Models\Member  $member
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function update(Request $request, Club $club, Member $member)
     {
@@ -120,7 +127,8 @@ class ClubMembershipController extends Controller
      *
      * @param  \App\Models\Club $club
      * @param  \App\Models\Member  $member
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function destroy(Club $club, Member $member)
     {

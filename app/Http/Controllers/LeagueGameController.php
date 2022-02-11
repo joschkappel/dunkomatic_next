@@ -31,8 +31,10 @@ class LeagueGameController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param string $language
      * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
+     *
      */
     public function index($language, League $league)
     {
@@ -43,8 +45,9 @@ class LeagueGameController extends Controller
      * Get a game by game number
      *
      * @param  \App\Models\League  $league
-     * @param  $game_no
-     * @return \Illuminate\Http\Response
+     * @param  int $game_no
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function show_by_number(League $league, $game_no)
     {
@@ -97,7 +100,8 @@ class LeagueGameController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function store(League $league)
     {
@@ -112,9 +116,9 @@ class LeagueGameController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\League  $league
      * @param  \App\Models\Game  $game
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function update(Request $request, Game $game)
     {
@@ -176,9 +180,9 @@ class LeagueGameController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\League  $league
      * @param  \App\Models\Game  $game
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function update_home(Request $request, Game $game)
     {
@@ -204,8 +208,8 @@ class LeagueGameController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\League  $league
-     * @param  \App\Models\Game  $game
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function destroy_game(League $league)
     {
@@ -222,8 +226,8 @@ class LeagueGameController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\League  $league
-     * @param  \App\Models\Game  $game
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function destroy_noshow_game(League $league)
     {
@@ -240,8 +244,10 @@ class LeagueGameController extends Controller
     /**
      * Show the form for uploading game files
      *
+     * @param string $language
      * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
+     *
      */
     public function upload($language, League $league)
     {
@@ -257,8 +263,10 @@ class LeagueGameController extends Controller
      * update imported games with file contents
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param string $language
      * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function import(Request $request, $language, League $league)
     {
