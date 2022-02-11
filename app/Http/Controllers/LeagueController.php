@@ -541,12 +541,14 @@ class LeagueController extends Controller
                 $btnlist = '';
 
                 $ccnt = 1;
+                $data->size = $data->size == null ? 0 : $data->size;
+
                 foreach ($data->loadMissing('clubs')->clubs->pluck('shortname') as $k => $c) {
                     $btnlist .= '<button type="button" class="btn btn-info btn-sm">' . $c . '</button> ';
                     $ccnt += 1;
                 };
                 if ($data->state->is(LeagueState::Assignment())) {
-                    for ($i = $ccnt; $i <= $data->size ?? 0; $i++) {
+                    for ($i = $ccnt; $i <= $data->size; $i++) {
                         $btnlist .= '<button type="button" class="btn btn-danger btn-sm" ><i class="fas fa-question"></i></button> ';
                     }
                 }
@@ -589,7 +591,7 @@ class LeagueController extends Controller
         $c_keys = collect( range(1, $league->size));
         $t_keys = collect( range(1, $league->size));
 
-        $clubs = $league->clubs->sortBy('pivot.league_no');
+        $clubs = $league->clubs()->get()->sortBy('pivot.league_no');
         foreach ($clubs as $c){
             $clubteam[ ] = array(
                 'club_shortname' => $c->shortname,

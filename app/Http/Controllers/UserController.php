@@ -219,9 +219,10 @@ class UserController extends Controller
         if ($data['email'] != $old_email) {
             $user->sendEmailVerificationNotification();
             //Auth::logout();
-            $request->session()->invalidate();
+            $request->session()->flush();
+            Auth::logout();
             Log::notice('user has modifed his email.', ['user-id' => $user->id, 'old-email' => $old_email, 'new-email' => $data['email']]);
-            return redirect()->route('login', app()->getLocale())->with(Auth::logout());
+            return redirect()->route('login', app()->getLocale());
         }
 
         return redirect()->route('home', app()->getLocale());
@@ -293,7 +294,7 @@ class UserController extends Controller
             // RBAC - enable club access
             if (isset($data['club_ids'])) {
                 foreach ($data['club_ids'] as $c) {
-                    Bouncer::allow($user)->to('access', Club::find($c));
+                    Bouncer::allow($user)->to(['access'], Club::find($c));
                 }
                 unset($data['club_ids']);
             };
@@ -302,13 +303,13 @@ class UserController extends Controller
             // RBAC - enable league access
             if (isset($data['league_ids'])) {
                 foreach ($data['league_ids'] as $l) {
-                    Bouncer::allow($user)->to('access', League::find($l));
+                    Bouncer::allow($user)->to(['access'], League::find($l));
                 }
                 unset($data['league_ids']);
             };
 
 
-            $user->notify(new ApproveUser(Auth::user(), session('cur_region')));
+            $user->notify(new ApproveUser(session('cur_region')));
         } else {
             $user->update(['rejected_at' => now(), 'approved_at' => null, 'reason_reject' => $data['reason_reject']]);
             Log::notice('user rejected.', ['user-id' => $user->id]);
@@ -368,7 +369,7 @@ class UserController extends Controller
         // RBAC - enable club access
         if (isset($data['club_ids'])) {
             foreach ($data['club_ids'] as $c) {
-                Bouncer::allow($user)->to('access', Club::find($c));
+                Bouncer::allow($user)->to(['access'], Club::find($c));
             }
             unset($data['club_ids']);
         };
@@ -377,7 +378,7 @@ class UserController extends Controller
         // RBAC - enable league access
         if (isset($data['league_ids'])) {
             foreach ($data['league_ids'] as $l) {
-                Bouncer::allow($user)->to('access', League::find($l));
+                Bouncer::allow($user)->to(['access'], League::find($l));
             }
             unset($data['league_ids']);
         };

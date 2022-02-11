@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $schedule_id
  * @property int $game_day
  * @property \Illuminate\Support\Carbon $game_date
- * @property int $full_weekend
+ * @property bool $full_weekend
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Schedule $schedule
@@ -36,6 +36,10 @@ class ScheduleEvent extends Model
     ];
 
   protected $dates = ['game_date'];
+
+  protected $casts = [
+        'full_weekend' => 'boolean',
+  ];
 
   public function schedule()
   {

@@ -90,7 +90,9 @@ class MemberController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Region $region
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function sb_region(Region $region)
     {
@@ -129,8 +131,10 @@ class MemberController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param string $language
      * @param  \App\Models\Member  $member
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function show($language, Member $member)
     {
@@ -191,7 +195,7 @@ class MemberController extends Controller
             $region = Region::findOrFail($entity_id);
             $region->memberships()->create($mship);
             // auto-invite rgeion admin
-            if ($mship['role_id'] = Role::RegionLead()) {
+            if ($mship['role_id'] == Role::RegionLead()) {
                 $member->notify(new InviteUser(Auth::user(), session('cur_region')));
                 Log::info('[NOTIFICATION] invite user.',['member-id'=>$member->id]);
             }
@@ -204,8 +208,10 @@ class MemberController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
+     * @param string $language
      * @param  \App\Models\Member  $member
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
+     *
      */
     public function edit($language, Member $member)
     {
@@ -242,7 +248,8 @@ class MemberController extends Controller
      * send a user registration invite to this member
      *
      * @param  \App\Models\Member  $member
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function invite(Member $member)
     {
@@ -255,7 +262,8 @@ class MemberController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Member  $member
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function destroy(Member $member)
     {

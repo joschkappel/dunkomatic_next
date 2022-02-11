@@ -32,7 +32,8 @@ class RegionController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
+     *
      */
     public function index()
     {
@@ -43,7 +44,11 @@ class RegionController extends Controller
     /**
      * Display a dashboard
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param string $language
+     * @param \App\Models\Region $region
+     * @return \Illuminate\View\View
+     *
      */
     public function dashboard(Request $request, $language, Region $region)
     {
@@ -70,7 +75,9 @@ class RegionController extends Controller
     /**
      * Display a brief overview
      *
-     * @return \Illuminate\Http\Response
+     * @param string $language
+     * @param \App\Models\Region $region
+     * @return \Illuminate\View\View
      */
     public function briefing($language, Region $region)
     {
@@ -103,7 +110,8 @@ class RegionController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function store(Request $request)
     {
@@ -188,22 +196,14 @@ class RegionController extends Controller
 
         return Response::json($response);
     }
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Region  $region
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Region $region)
-    {
-        return back();
-    }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Region  $region
-     * @return \Illuminate\Http\Response
+     * @param string $language
+     * @param \App\Models\Region $region
+     * @return \Illuminate\View\View
+     *
      */
     public function edit($language, Region $region)
     {
@@ -219,7 +219,8 @@ class RegionController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Region  $region
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function update_details(Request $request, Region $region)
     {
@@ -260,7 +261,8 @@ class RegionController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  Region $region
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function destroy(Region $region)
     {
@@ -286,8 +288,8 @@ class RegionController extends Controller
     /**
      * leagues by status for a region
      *
-     * @param Region $region
-     * @return Response
+     * @param \App\Models\Region $region
+     * @return \Illuminate\Http\JsonResponse
      *
      */
     public function league_state_chart(Region $region)
@@ -331,8 +333,8 @@ class RegionController extends Controller
     /**
      * leagues by age and gender for a region
      *
-     * @param Region $region
-     * @return Response
+     * @param \App\Models\Region $region
+     * @return \Illuminate\Http\JsonResponse
      *
      */
     public function league_socio_chart(Region $region)
@@ -368,8 +370,8 @@ class RegionController extends Controller
     /**
      * teams by club for a region
      *
-     * @param Region $region
-     * @return Response
+     * @param \App\Models\Region $region
+     * @return \Illuminate\Http\JsonResponse
      *
      */
     public function club_team_chart(Region $region)
@@ -429,8 +431,8 @@ class RegionController extends Controller
     /**
      * members and roles by club for a region
      *
-     * @param Region $region
-     * @return Response
+     * @param \App\Models\Region $region
+     * @return \Illuminate\Http\JsonResponse
      *
      */
     public function club_member_chart(Region $region)
@@ -474,8 +476,8 @@ class RegionController extends Controller
     /**
      * members and roles by club for a region
      *
-     * @param Region $region
-     * @return Response
+     * @param \App\Models\Region $region
+     * @return \Illuminate\Http\JsonResponse
      *
      */
     public function game_noreferee_chart(Region $region)

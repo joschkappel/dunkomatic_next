@@ -24,7 +24,11 @@ class MessageController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param string $language
+     * @param \App\Models\Region $region
+     * @param \App\Models\User $user
+     * @return \Illuminate\View\View
+     *
      */
     public function index($language, Region $region, User $user)
     {
@@ -64,7 +68,7 @@ class MessageController extends Controller
             })
             ->editColumn('title', function ($msg) use ($language) {
                 if ((isset($msg->sent_at) and ($msg->sent_at) < now())) {
-                    return $msg->title;
+                    return $msg['title'];
                 } else {
                     return '<a href="' . route('message.edit', ['language' => $language, 'message' => $msg->id]) . '">' . $msg->title . ' <i class="fas fa-arrow-circle-right"></i></a>';
                 }
@@ -87,7 +91,11 @@ class MessageController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param string $language
+     * @param \App\Models\Region $region
+     * @param \App\Models\User $user
+     * @return \Illuminate\View\View
+     *
      */
     public function create($language, Region $region, User $user)
     {
@@ -100,7 +108,10 @@ class MessageController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Region $region
+     * @param \App\Models\User $user
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function store(Request $request, Region $region, User $user)
     {
@@ -132,8 +143,10 @@ class MessageController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
+     * @param string $language
      * @param  \App\Models\Message  $message
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
+     *
      */
     public function edit($language, Message $message)
     {
@@ -148,7 +161,8 @@ class MessageController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Message  $message
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function update(Request $request, Message $message)
     {
@@ -187,7 +201,8 @@ class MessageController extends Controller
      * Mark a message as read
      *
      * @param   DatabaseNotification $message
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function mark_as_read(DatabaseNotification $message)
     {
@@ -234,7 +249,8 @@ class MessageController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Message  $message
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function destroy(Message $message)
     {

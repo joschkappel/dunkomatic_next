@@ -17,7 +17,6 @@ class ApproveUser extends Notification
 {
     use Queueable;
 
-    private $radmin_user;
     private $region;
 
     /**
@@ -25,9 +24,8 @@ class ApproveUser extends Notification
      *
      * @return void
      */
-    public function __construct(User $radmin_user, Region $region)
+    public function __construct(Region $region)
     {
-      $this->radmin_user = $radmin_user;
       $this->region = $region;
     }
 
@@ -64,8 +62,8 @@ class ApproveUser extends Notification
      */
     public function toArray($notifiable)
     {
-        $ca = Str::replaceLast(',', ' '.__('and'), $notifiable->clubs()->pluck('shortname')->implode(', ')) ?? '--';
-        $la = Str::replaceLast(',', ' '.__('and'), $notifiable->leagues()->pluck('shortname')->implode(', ')) ?? '--';
+        $ca = Str::replaceLast(',', ' '.__('and'), $notifiable->clubs()->pluck('shortname')->implode(', '));
+        $la = Str::replaceLast(',', ' '.__('and'), $notifiable->leagues()->pluck('shortname')->implode(', '));
 
         $lines = __('notifications.welcome.line1', ['userroles'=>Str::replaceLast(',', ' '.__('and'), $notifiable->getRoles()->implode(', ')), 'region'=>$this->region->name]);
         $lines .= __('notifications.welcome.line2');
