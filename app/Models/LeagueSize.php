@@ -8,6 +8,7 @@ use App\Models\Schedule;
 use App\Models\League;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\LeagueSize
@@ -49,19 +50,19 @@ class LeagueSize extends Model
       'size', 'iteration','description'
   ];
 
-  public function chars()
+  public function chars(): HasMany
   {
       return $this->hasMany(LeagueSizeChar::class);
   }
-  public function schemes()
+  public function schemes(): HasMany
   {
       return $this->hasMany(LeagueSizeScheme::class);
   }
-  public function schedules()
+  public function schedules(): HasMany
   {
       return $this->hasMany(Schedule::class);
   }
-  public function leagues()
+  public function leagues(): HasMany
   {
       return $this->hasMany(League::class);
   }

@@ -8,7 +8,7 @@ use App\Models\Region;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Prunable;
-
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -66,11 +66,11 @@ class Message extends Model
         'to_users' => 'array',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
-    public function region()
+    public function region(): BelongsTo
     {
         return $this->belongsTo(Region::class);
     }

@@ -13,9 +13,9 @@ class RejectUser extends Notification
 {
     use Queueable;
 
-    private $radmin_user;
-    private $new_user;
-    private $region;
+    private User $radmin_user;
+    private User $new_user;
+    private Region $region;
 
     /**
      * Create a new notification instance.

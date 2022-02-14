@@ -17,12 +17,14 @@ class ApproveUser extends Notification
 {
     use Queueable;
 
-    private $region;
+    private Region $region;
 
     /**
      * Create a new notification instance.
      *
+     * @param Region $region
      * @return void
+     *
      */
     public function __construct(Region $region)
     {

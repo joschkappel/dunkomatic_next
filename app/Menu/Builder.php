@@ -40,7 +40,7 @@ class Builder
      *
      * @param mixed $newItems Items to be added
      */
-    public function add(...$newItems)
+    public function add(...$newItems): void
     {
         $items = $this->transformItems($newItems);
 
@@ -55,7 +55,7 @@ class Builder
      * @param mixed $itemKey The key that represents the specific menu item
      * @param mixed $newItems Items to be added
      */
-    public function addAfter($itemKey, ...$newItems)
+    public function addAfter($itemKey, ...$newItems): void
     {
         $this->addItem($itemKey, self::ADD_AFTER, ...$newItems);
     }
@@ -66,7 +66,7 @@ class Builder
      * @param mixed $itemKey The key that represents the specific menu item
      * @param mixed $newItems Items to be added
      */
-    public function addBefore($itemKey, ...$newItems)
+    public function addBefore($itemKey, ...$newItems): void
     {
         $this->addItem($itemKey, self::ADD_BEFORE, ...$newItems);
     }
@@ -77,7 +77,7 @@ class Builder
      * @param mixed $itemKey The key that represents the specific menu item
      * @param mixed $newItems Items to be added
      */
-    public function addIn($itemKey, ...$newItems)
+    public function addIn($itemKey, ...$newItems): void
     {
         $this->addItem($itemKey, self::ADD_INSIDE, ...$newItems);
     }
@@ -87,7 +87,7 @@ class Builder
      *
      * @param mixed $itemKey The key of the menu item to remove
      */
-    public function remove($itemKey)
+    public function remove($itemKey): void
     {
         // Find the specific menu item. Return if not found.
 
@@ -112,7 +112,7 @@ class Builder
      * @param mixed $itemKey The key of the menu item to check for
      * @return bool
      */
-    public function itemKeyExists($itemKey)
+    public function itemKeyExists($itemKey): bool
     {
         return (bool) $this->findItem($itemKey, $this->menu);
     }
@@ -198,7 +198,7 @@ class Builder
      * @param int $where Where to add the new items
      * @param mixed $items Items to be added
      */
-    protected function addItem($itemKey, $where, ...$items)
+    protected function addItem($itemKey, $where, ...$items): void
     {
         // Find the specific menu item. Return if not found.
 

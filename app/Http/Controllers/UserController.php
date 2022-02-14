@@ -9,7 +9,6 @@ use App\Models\Region;
 use OwenIt\Auditing\Models\Audit;
 
 use Silber\Bouncer\BouncerFacade as Bouncer;
-use Silber\Bouncer\Database\Role;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,13 +21,27 @@ use Carbon\Carbon;
 
 class UserController extends Controller
 {
-    public function index($language, Region $region)
+    /**
+     * display view with all users of a region
+     *
+     * @param string $language
+     * @param Region $region
+     * @return \Illuminate\View\View
+     */
+    public function index(string $language, Region $region)
     {
         Log::info('showing user list.');
         return view('auth/user_list', ['region' => $region]);
     }
 
-    public function datatable($language, Region $region)
+    /**
+     * datatables.net listing all users of a region
+     *
+     * @param string $language
+     * @param Region $region
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function datatable(string $language, Region $region)
     {
         $users = $region->users();
 
@@ -41,13 +54,13 @@ class UserController extends Controller
             ->addColumn('action', function ($data) {
                 $state = ($data->approved_at == null) ? 'disabled' : '';
                 if (Bouncer::can('update-users')) {
-                    $btn = '<span data-toggle="tooltip" title="'.__('auth.user.tooltip.block',['name'=> $data->name]).'"><button type="button" id="blockUser" name="blockUser" class="btn btn-outline-primary btn-sm" data-user-id="' . $data->id . '"
+                    $btn = '<span data-toggle="tooltip" title="' . __('auth.user.tooltip.block', ['name' => $data->name]) . '"><button type="button" id="blockUser" name="blockUser" class="btn btn-outline-primary btn-sm" data-user-id="' . $data->id . '"
                         data-user-name="' . $data->name . '" data-toggle="modal" data-target="#modalBlockUser" ' . $state . '><i class="fas fa-ban"></i></button></span>  ';
                 } else {
                     $btn = '';
                 }
                 if (Bouncer::can('create-users')) {
-                    $btn .= '<span data-toggle="tooltip" title="'.__('auth.user.tooltip.delete',['name'=> $data->name]).'"><button type="button" id="deleteUser" name="deleteUser" class="btn btn-outline-danger btn-sm" data-user-id="' . $data->id . '"
+                    $btn .= '<span data-toggle="tooltip" title="' . __('auth.user.tooltip.delete', ['name' => $data->name]) . '"><button type="button" id="deleteUser" name="deleteUser" class="btn btn-outline-danger btn-sm" data-user-id="' . $data->id . '"
                        data-user-name="' . $data->name . '" data-toggle="modal" data-target="#modalDeleteUser" ><i class="fa fa-trash"></i></button></span>';
                 };
                 return $btn;
@@ -158,7 +171,14 @@ class UserController extends Controller
             ->make(true);
     }
 
-    public function index_new($language, Region $region)
+    /**
+     * dispplay view with users waiting for approval for a region
+     *
+     * @param string $language
+     * @param Region $region
+     * @return \Illuminate\View\View
+     */
+    public function index_new(string $language, Region $region)
     {
         //  DB::enableQueryLog(); // Enable query log
 
@@ -171,7 +191,14 @@ class UserController extends Controller
         return view('auth/users', ['users' => $users, 'region' => $region]);
     }
 
-    public function show($language, User $user)
+    /**
+     * dispplay view with details of a user
+     *
+     * @param string $language
+     * @param User $user
+     * @return \Illuminate\View\View
+     */
+    public function show(string $language, User $user)
     {
         $member = $user->member;
         $audits = Audit::where('user_id', $user->id)->orderBy('created_at')->get();
@@ -179,7 +206,14 @@ class UserController extends Controller
         return view('auth/user_profile', ['user' => $user, 'member' => $member, 'audits' => $audits]);
     }
 
-    public function edit($language, User $user)
+    /**
+     * dispplay view with details of a user for modification
+     *
+     * @param string $language
+     * @param User $user
+     * @return \Illuminate\View\View
+     */
+    public function edit(string $language, User $user)
     {
 
         if ($user->approved_at == null) {
@@ -197,6 +231,13 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * update user in DB
+     *
+     * @param Request $request
+     * @param User $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, User $user)
     {
 
@@ -228,6 +269,12 @@ class UserController extends Controller
         return redirect()->route('home', app()->getLocale());
     }
 
+    /**
+     * approve user for a region
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function approve(Request $request)
     {
 
@@ -284,7 +331,7 @@ class UserController extends Controller
             }
 
             // RBAC - enable region access
-/*             if (isset($data['region_ids'])) {
+            /*             if (isset($data['region_ids'])) {
                 foreach ($data['region_ids'] as $r) {
                     Bouncer::allow($user)->to('access', Region::find($r));
                 }
@@ -321,6 +368,13 @@ class UserController extends Controller
         return redirect()->route('admin.user.index.new', ['language' => app()->getLocale(), 'region' => session('cur_region')])->withMessage('User approved successfully');
     }
 
+    /**
+     * modify user access rights
+     *
+     * @param Request $request
+     * @param User $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function allowance(Request $request, User $user)
     {
         $data = $request->validate([
@@ -351,7 +405,7 @@ class UserController extends Controller
             unset($data['leagueadmin']);
         }
 
-        if ( count($new_roles) == 0){
+        if (count($new_roles) == 0) {
             $new_roles[] = 'guest';
         }
 
@@ -359,7 +413,7 @@ class UserController extends Controller
 
         //Bouncer::sync($user)->abilities([]);
         // RBAC - enable region access
-/*         if (isset($data['region_ids'])) {
+        /*         if (isset($data['region_ids'])) {
             foreach ($data['region_ids'] as $r) {
                 Bouncer::allow($user)->to('access', Region::find($r));
             }
@@ -387,6 +441,13 @@ class UserController extends Controller
         return redirect()->route('admin.user.index', ['language' => app()->getLocale(), 'region' => session('cur_region')]);
     }
 
+    /**
+     * delete a user from the DB
+     *
+     * @param Request $request
+     * @param User $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(Request $request, User $user)
     {
 
@@ -398,6 +459,13 @@ class UserController extends Controller
         return redirect()->route('admin.user.index', ['language' => app()->getLocale(), 'region' => session('cur_region')]);
     }
 
+    /**
+     * block user access
+     *
+     * @param Request $request
+     * @param User $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function block(Request $request, User $user)
     {
         $user->update(['approved_at' => null]);

@@ -22,15 +22,17 @@ class GenerateTeamwareReport implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $export_folder;
-    protected $league;
-    protected $tw_teams;
-    protected $tw_games;
+    protected string $export_folder;
+    protected League $league;
+    protected string $tw_teams;
+    protected string $tw_games;
 
     /**
      * Create a new job instance.
      *
+     * @param League $league
      * @return void
+     *
      */
     public function __construct(League $league)
     {

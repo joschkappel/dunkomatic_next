@@ -21,11 +21,11 @@ class Modal extends Component
     public $modalTitle;
 
     /**
-     * The modal HTTP method to use 
+     * The modal HTTP method to use
      *
      * @var string
      */
-    public $modalMethod;    
+    public $modalMethod;
 
 
     /**
@@ -33,7 +33,7 @@ class Modal extends Component
      *
      * @return void
      */
-    public function __construct($modalId, $modalTitle, $modalMethod='POST')
+    public function __construct(string $modalId, string $modalTitle, string $modalMethod='POST')
     {
         $this->modalId = $modalId;
         $this->modalTitle = $modalTitle;

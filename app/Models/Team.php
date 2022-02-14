@@ -9,8 +9,8 @@ use App\Models\Club;
 use App\Models\League;
 use App\Models\Game;
 
-use App\Rules\GameMinute;
-use App\Rules\GameHour;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use OwenIt\Auditing\Contracts\Auditable;
 
 /**
@@ -96,60 +96,27 @@ class Team extends Model implements Auditable
         'preferred_league_char','preferred_league_no',
     ];
 
-  public static function getCreateRules()
-  {
-    return [
-    'team_no' => 'required|integer|min:1|max:9',
-    'training_day'   => 'required|integer|min:1|max:5',
-    'training_time'  => array( 'required','date_format:H:i', new GameMinute, new GameHour),
-    'preferred_game_day' => 'present|integer|min:1|max:7',
-    'preferred_game_time' => array('required','date_format:H:i', new GameMinute, new GameHour),
-    'coach_name'  => 'required|string|max:40',
-    'coach_email' => 'present|email:rfc,dns',
-    'coach_phone1' => 'present|string|max:20',
-    'coach_phone2' => 'nullable|string|max:20',
-    'league_prev' => 'nullable|string|max:20',
-    'shirt_color' => 'required|string|max:20'
-    ];
-  }
-
-  public static function getUpdateRules()
-  { return [
-    'team_no' => 'required|integer|min:1|max:9',
-    'training_day'   => 'required|integer|min:1|max:5',
-    'training_time'  => array('required','date_format:H:i', new GameMinute, new GameHour),
-    'preferred_game_day' => 'present|integer|min:1|max:7',
-    'preferred_game_time' => array('required','date_format:H:i', new GameMinute, new GameHour),
-    'coach_name'  => 'required|string|max:40',
-    'coach_email' => 'present|email:rfc,dns',
-    'coach_phone1' => 'present|string|max:20',
-    'coach_phone2' => 'nullable|string|max:20',
-    'league_prev' => 'nullable|string|max:20',
-    'shirt_color' => 'required|string|max:20'
-    ];
-  }
-
-  public function club()
+  public function club(): BelongsTo
   {
       return $this->belongsTo(Club::class);
   }
 
-  public function league()
+  public function league(): BelongsTo
   {
       return $this->belongsTo(League::class);
   }
 
-  public function games_home()
+  public function games_home(): HasMany
   {
       return $this->hasMany(Game::class, 'team_id_home');
   }
 
-  public function games_guest()
+  public function games_guest(): HasMany
   {
       return $this->hasMany(Game::class,'team_id_guest');
   }
 
-  public function getNameAttribute()
+  public function getNameAttribute(): string
   {
     return $this->club->shortname.$this->team_no;
   }

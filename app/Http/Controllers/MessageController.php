@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Enums\Role as EnumRole;
 use Silber\Bouncer\Database\Role as UserRole;
-use App\Enums\MessageType;
 use BenSampo\Enum\Rules\EnumValue;
 use Datatables;
 use Carbon\Carbon;
@@ -38,11 +37,15 @@ class MessageController extends Controller
 
 
     /**
-     * Display a listing of message for the auth user
+     * databales.net listing of messages for the auth user
      *
-     * @return \Illuminate\Http\Response
+     * @param string $language
+     * @param Region $region
+     * @param User $user
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
-    public function datatable_user($language, Region $region, User $user)
+    public function datatable_user(string $language, Region $region, User $user)
     {
         $msgs = $user->region_messages($region->id)->orderBy('updated_at', 'ASC')->get();
 
@@ -215,7 +218,9 @@ class MessageController extends Controller
      * sedn notification for this message
      *
      * @param  string $language
-     * @param  \App\Models\Message  $message
+     * @param  Message  $message
+     * @return bool
+     *
      */
     public function send($language, Message $message)
     {
@@ -231,7 +236,8 @@ class MessageController extends Controller
      * duplicate a message
      *
      * @param  string $language
-     * @param  \App\Models\Message  $message
+     * @param  Message  $message
+     * @return bool
      */
     public function copy($language, Message $message)
     {
@@ -248,7 +254,7 @@ class MessageController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Message  $message
+     * @param  Message  $message
      * @return \Illuminate\Http\RedirectResponse
      *
      */

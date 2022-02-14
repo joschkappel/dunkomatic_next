@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Schedule;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\ScheduleEvent
@@ -41,7 +42,7 @@ class ScheduleEvent extends Model
         'full_weekend' => 'boolean',
   ];
 
-  public function schedule()
+  public function schedule(): BelongsTo
   {
       return $this->belongsTo(Schedule::class);
   }

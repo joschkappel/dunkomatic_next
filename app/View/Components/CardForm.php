@@ -65,14 +65,14 @@ class CardForm extends Component
      *
      * @return void
      */
-    public function __construct($cardChangeNote='',
-                                $cardTitle='no title',
-                                $formAction='',
-                                $formMethod='POST',
-                                $omitCancel=False,
-                                $omitSubmit=False,
-                                $colWidth='6',
-                                $isMultipart=False)
+    public function __construct(string $cardChangeNote='',
+                                string $cardTitle='no title',
+                                string $formAction='',
+                                string $formMethod='POST',
+                                bool $omitCancel=False,
+                                bool $omitSubmit=False,
+                                string $colWidth='6',
+                                bool $isMultipart=False)
     {
         $this->cardTitle = $cardTitle;
         $this->formAction = $formAction;

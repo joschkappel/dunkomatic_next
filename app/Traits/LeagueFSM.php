@@ -20,7 +20,7 @@ trait LeagueFSM
 {
     use GameManager;
 
-    public function close_assignment(League $league)
+    public function close_assignment(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Registration()->key]);
         $league->state = LeagueState::Registration();
@@ -28,8 +28,8 @@ trait LeagueFSM
         $league->save();
 
         $clubs = $league->clubs()->get();
-        if ($league->region->regionadmin()->exists()) {
-            $adminname = $league->region->regionadmin()->first()->name;
+        if ($league->region->regionadmins()->exists()) {
+            $adminname = $league->region->regionadmins()->first()->name;
 
             foreach ($clubs as $c) {
                 $member = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
@@ -47,7 +47,7 @@ trait LeagueFSM
         }
     }
 
-    public function close_registration(League $league)
+    public function close_registration(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Selection()->key]);
 
@@ -57,8 +57,8 @@ trait LeagueFSM
 
         $clubs = $league->clubs;
 
-        if ($league->region->regionadmin()->exists()) {
-            $adminname = $league->region->regionadmin()->first()->name;
+        if ($league->region->regionadmins()->exists()) {
+            $adminname = $league->region()->first()->regionadmin()->first()->name;
             foreach ($clubs as $c) {
                 $member = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
 
@@ -76,7 +76,7 @@ trait LeagueFSM
         }
     }
 
-    public function close_selection(League $league)
+    public function close_selection(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Freeze()->key]);
 
@@ -85,7 +85,7 @@ trait LeagueFSM
         $league->save();
     }
 
-    public function close_freeze(League $league)
+    public function close_freeze(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Scheduling()->key]);
 
@@ -96,8 +96,8 @@ trait LeagueFSM
 
         $clubs = $league->teams()->pluck('club_id');
 
-        if ($league->region->regionadmin()->exists()) {
-            $adminname = $league->region->regionadmin()->first()->name;
+        if ($league->region->regionadmins()->exists()) {
+            $adminname = $league->region()->first()->regionadmin()->first()->name;
 
             foreach ($clubs as $c) {
                 $club = Club::find($c);
@@ -117,7 +117,7 @@ trait LeagueFSM
         }
     }
 
-    public function close_scheduling(League $league)
+    public function close_scheduling(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Referees()->key]);
 
@@ -126,7 +126,7 @@ trait LeagueFSM
         $league->save();
     }
 
-    public function close_referees(League $league)
+    public function close_referees(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Live()->key]);
 
@@ -135,7 +135,7 @@ trait LeagueFSM
         $league->save();
     }
 
-    public function open_assignment(League $league)
+    public function open_assignment(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key ?? '', 'new-state' => LeagueState::Assignment()->key]);
 
@@ -148,7 +148,7 @@ trait LeagueFSM
         $league->save();
     }
 
-    public function open_registration(League $league)
+    public function open_registration(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Registration()->key]);
 
@@ -157,7 +157,7 @@ trait LeagueFSM
         $league->save();
     }
 
-    public function open_selection(League $league)
+    public function open_selection(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Selection()->key]);
 
@@ -166,7 +166,7 @@ trait LeagueFSM
         $league->save();
     }
 
-    public function open_freeze(League $league)
+    public function open_freeze(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Freeze()->key]);
 
@@ -174,7 +174,7 @@ trait LeagueFSM
         $league->save();
     }
 
-    public function open_scheduling(League $league)
+    public function open_scheduling(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Scheduling()->key]);
 
@@ -183,7 +183,7 @@ trait LeagueFSM
         $league->save();
     }
 
-    public function open_referees(League $league)
+    public function open_referees(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Referees()->key]);
 
@@ -192,7 +192,7 @@ trait LeagueFSM
         $league->save();
     }
 
-    public function open_setup(League $league)
+    public function open_setup(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Setup()->key]);
 

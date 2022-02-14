@@ -13,7 +13,14 @@ use Illuminate\Support\Facades\Log;
 
 trait GameManager
 {
-    public function create_games(League $league)
+    /**
+     * creates games for a league in the DB
+     *
+     * @param League $league
+     * @return void
+     *
+     */
+    public function create_games(League $league): void
     {
         Log::info('creating games for league.', ['league-id' => $league->id]);
         // get size
@@ -76,7 +83,15 @@ trait GameManager
         Log::notice('games created.', ['league-id'=>$league->id, 'games-count'=> count($scheme)]);
     }
 
-    public function inject_team_games(League $league, Team $team, $league_no)
+    /**
+     * inject games for a new team into a leagues iwth eixsting games
+     *
+     * @param League $league
+     * @param Team $team
+     * @param int $league_no
+     * @return void
+     */
+    public function inject_team_games(League $league, Team $team, int $league_no): void
     {
         if (! $league->is_custom){
             Log::info('injecting games for a single team.', ['league-id' => $league->id, 'team-id'=>$team->id]);
@@ -142,7 +157,7 @@ trait GameManager
                             if (isset($game)) {
                                 $game->club_id_home = $team->club->id;
                                 $game->team_id_home = $team->id;
-                                $game->team_home = $team->club->shortname . $team->team_no;
+                                $game->team_home = $team->name;
                                 $game->game_time = $team->preferred_game_time;
                                 if (isset($team['preferred_game_day'])) {
                                     $pref_gday = $team['preferred_game_day'] % 7;
@@ -166,7 +181,14 @@ trait GameManager
         }
     }
 
-    public function blank_team_games(League $league, Team $team)
+    /**
+     * reset games for a league if a team is withdrawn
+     *
+     * @param League $league
+     * @param Team $team
+     * @return void
+     */
+    public function blank_team_games(League $league, Team $team): void
     {
         Log::info('removing team from games.', ['league-id'=>$league->id, 'team-id'=>$team->id]);
         // blank out home games

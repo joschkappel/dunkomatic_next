@@ -8,12 +8,11 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-use App\Models\Club;
-use App\Models\Member;
 use App\Models\Region;
 
 use App\Notifications\InvalidEmail;
 use App\Enums\Role;
+use App\Models\Member;
 
 use Validator;
 use Illuminate\Support\Facades\Log;
@@ -22,19 +21,21 @@ class EmailValidation implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $region;
-    protected $region_admin;
+    protected Region $region;
+    protected ?Member $region_admin;
 
     /**
      * Create a new job instance.
      *
+     * @param Region $region
      * @return void
+     *
      */
     public function __construct(Region $region)
     {
         $this->region = $region;
         //        $region_user = User::regionAdmin($this->region->code)->with('member')->first();
-        $this->region_admin = $region->regionadmin()->first();
+        $this->region_admin = $region->regionadmins()->first();
     }
 
     /**

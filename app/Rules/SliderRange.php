@@ -6,15 +6,18 @@ use Illuminate\Contracts\Validation\Rule;
 
 class SliderRange implements Rule
 {
-    public $min;
-    public $max;
+    public int $min;
+    public int $max;
 
     /**
      * Create a new rule instance.
      *
+     * @param int $min
+     * @param int $max
      * @return void
+     *
      */
-    public function __construct($min, $max)
+    public function __construct(int $min, int $max)
     {
         $this->min = $min;
         $this->max = $max;

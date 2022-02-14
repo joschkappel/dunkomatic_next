@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Club;
 use App\Models\Team;
 use App\Enums\LeagueState;
+use App\Rules\GameMinute;
+use App\Rules\GameHour;
 
 use Yajra\DataTables\DataTables;
 
@@ -268,7 +270,19 @@ class ClubTeamController extends Controller
      */
     public function store(Request $request, Club $club)
     {
-        $data = $request->validate(Team::getCreateRules());
+        $data = $request->validate([
+            'team_no' => 'required|integer|min:1|max:9',
+            'training_day'   => 'required|integer|min:1|max:5',
+            'training_time'  => array( 'required','date_format:H:i', new GameMinute, new GameHour),
+            'preferred_game_day' => 'present|integer|min:1|max:7',
+            'preferred_game_time' => array('required','date_format:H:i', new GameMinute, new GameHour),
+            'coach_name'  => 'required|string|max:40',
+            'coach_email' => 'present|email:rfc,dns',
+            'coach_phone1' => 'present|string|max:20',
+            'coach_phone2' => 'nullable|string|max:20',
+            'league_prev' => 'nullable|string|max:20',
+            'shirt_color' => 'required|string|max:20'
+            ]);
         Log::info('team form data validated OK.');
 
         $team = new Team($data);
@@ -313,7 +327,19 @@ class ClubTeamController extends Controller
         if ($request['preferred_game_time'] == 'Invalid date') {
             $request['preferred_game_time'] = null;
         }
-        $data = $request->validate(Team::getUpdateRules());
+        $data = $request->validate([
+            'team_no' => 'required|integer|min:1|max:9',
+            'training_day'   => 'required|integer|min:1|max:5',
+            'training_time'  => array('required','date_format:H:i', new GameMinute, new GameHour),
+            'preferred_game_day' => 'present|integer|min:1|max:7',
+            'preferred_game_time' => array('required','date_format:H:i', new GameMinute, new GameHour),
+            'coach_name'  => 'required|string|max:40',
+            'coach_email' => 'present|email:rfc,dns',
+            'coach_phone1' => 'present|string|max:20',
+            'coach_phone2' => 'nullable|string|max:20',
+            'league_prev' => 'nullable|string|max:20',
+            'shirt_color' => 'required|string|max:20'
+            ]);
         Log::info('team form data validated OK.');
 
         $check = $team->update($data);

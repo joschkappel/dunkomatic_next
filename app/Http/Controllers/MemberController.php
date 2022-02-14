@@ -17,7 +17,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Response;
 
 use App\Notifications\InviteUser;
@@ -25,12 +24,27 @@ use App\Notifications\InviteUser;
 class MemberController extends Controller
 {
 
-    public function index($language, Region $region)
+    /**
+     * display member list
+     *
+     * @param string $language
+     * @param Region $region
+     * @return \Illuminate\View\View
+     *
+     */
+    public function index(string $language, Region $region)
     {
         Log::info('showing member list.');
         return view('member/member_list', ['region' => $region]);
     }
 
+    /**
+     * datatables.net listing all members of a region
+     *
+     * @param Region $region
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
     public function datatable(Region $region)
     {
         $members = $region->clubs()->with('members')->get()->pluck('members.*.id')->flatten()->concat(
@@ -40,7 +54,7 @@ class MemberController extends Controller
         )->unique();
 
         Log::info('preparing member list');
-        $mlist = datatables()::of(Member::whereIn('id', $members)->with('user','memberships')->get());
+        $mlist = datatables()::of(Member::whereIn('id', $members)->with('user', 'memberships')->get());
 
         return $mlist
             ->rawColumns(['user_account', 'email1', 'phone'])
@@ -55,8 +69,8 @@ class MemberController extends Controller
             })
             ->addColumn('roles', function ($data) {
                 $role_ids = $data->memberships->pluck('role_id');
-                foreach ($role_ids as $k => $r){
-                    $role_ids[$k] = Role::coerce( intval($r) )->description;
+                foreach ($role_ids as $k => $r) {
+                    $role_ids[$k] = Role::coerce(intval($r))->description;
                 }
                 return $role_ids->implode(', ');
             })
@@ -115,7 +129,7 @@ class MemberController extends Controller
             ->pluck('member.name', 'member.id');
         //Log::debug('got members '.count($members));
 
-        Log::info('preparing select2 member list.', ['count' => count($members)] );
+        Log::info('preparing select2 member list.', ['count' => count($members)]);
         $response = array();
 
         foreach ($members as $k => $v) {
@@ -138,10 +152,17 @@ class MemberController extends Controller
      */
     public function show($language, Member $member)
     {
-        Log::info('get details of member', ['member-id'=>$member->id]);
+        Log::info('get details of member', ['member-id' => $member->id]);
         return Response::json($member);
     }
 
+    /**
+     * store a new member in the DB
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -172,9 +193,9 @@ class MemberController extends Controller
         $mship['email'] = $data['email'];
         unset($data['email']);
 
-        if (($member_id == null) or (! Member::find($member_id)->exists())) {
+        if (($member_id == null) or (!Member::find($member_id)->exists())) {
             $member = Member::create($data);
-            Log::notice('new member created.', ['member-id'=>$member->id]);
+            Log::notice('new member created.', ['member-id' => $member->id]);
         } else {
             $member = Member::findOrFail($member_id);
         }
@@ -197,7 +218,7 @@ class MemberController extends Controller
             // auto-invite rgeion admin
             if ($mship['role_id'] == Role::RegionLead()) {
                 $member->notify(new InviteUser(Auth::user(), session('cur_region')));
-                Log::info('[NOTIFICATION] invite user.',['member-id'=>$member->id]);
+                Log::info('[NOTIFICATION] invite user.', ['member-id' => $member->id]);
             }
             return redirect()->route('region.index', ['language' => app()->getLocale()]);
         } else {
@@ -219,11 +240,18 @@ class MemberController extends Controller
         return view('member/member_edit', ['member' => $member, 'backto' => URL::previous()]);
     }
 
+    /**
+     * update a member in the DB
+     *
+     * @param Request $request
+     * @param  \App\Models\Member  $member
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     */
     public function update(Request $request, Member $member)
     {
         $backto = $request['backto'];
         unset($request['backto']);
-        // $data = Validator::make($request->all(), Member::$createRules);
         $data = $request->validate([
             'firstname' => 'required|max:20',
             'lastname' => 'required|max:60',
@@ -240,7 +268,7 @@ class MemberController extends Controller
 
         $check = $member->update($data);
         $member->refresh();
-        Log::notice('member updated.', ['member-id'=> $member->id]);
+        Log::notice('member updated.', ['member-id' => $member->id]);
 
         return redirect($backto);
     }
@@ -254,7 +282,7 @@ class MemberController extends Controller
     public function invite(Member $member)
     {
         $member->notify(new InviteUser(Auth::user(), session('cur_region')));
-        Log::info('[NOTIFICATION] invite user.',['member-id'=>$member->id]);
+        Log::info('[NOTIFICATION] invite user.', ['member-id' => $member->id]);
 
         return redirect()->back();
     }
@@ -268,7 +296,7 @@ class MemberController extends Controller
     public function destroy(Member $member)
     {
         $check = $member->delete();
-        Log::notice('member deleted',['member-id'=>$member->id]);
+        Log::notice('member deleted', ['member-id' => $member->id]);
 
         return Response::json($check);
     }

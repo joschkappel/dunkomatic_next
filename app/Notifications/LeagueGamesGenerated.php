@@ -15,17 +15,17 @@ class LeagueGamesGenerated extends Notification
 {
     use Queueable;
 
-    protected $league;
-    protected $club;
-    protected $sender_name;
-    protected $receiver_name;
+    protected League $league;
+    protected Club $club;
+    protected string $sender_name;
+    protected string $receiver_name;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(League $league, Club $club, $sender_name, $receive_name)
+    public function __construct(League $league, Club $club, string $sender_name, string $receive_name)
     {
       $this->league = $league;
       $this->club = $club;

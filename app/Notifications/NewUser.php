@@ -12,7 +12,7 @@ class NewUser extends Notification
 {
     use Queueable;
 
-    private $new_user;
+    private User $new_user;
 
     /**
      * Create a new notification instance.

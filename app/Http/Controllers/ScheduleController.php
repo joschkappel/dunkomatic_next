@@ -304,7 +304,12 @@ class ScheduleController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validate(Schedule::$createRules);
+        $data = $request->validate([
+            'name' => 'required',
+            'region_id' => 'required|exists:regions,id',
+            'league_size_id' => 'required_without:custom_events|exists:league_sizes,id',
+            'iterations' => 'required|integer|min:1|max:3'
+        ]);
         Log::info('schedule form data validated OK.');
 
         if ($request['custom_events'] == 'on') {
@@ -344,7 +349,11 @@ class ScheduleController extends Controller
      */
     public function update(Request $request, Schedule $schedule)
     {
-        $data = $request->validate(Schedule::$updateRules);
+        $data = $request->validate([
+            'name' => 'required',
+            'league_size_id' => 'required_without:custom_events|exists:league_sizes,id',
+            'iterations' => 'required_without:custom_events|integer|min:1|max:3',
+        ]);
         Log::info('schedule form data validated OK.');
 
         if ($request['custom_events'] == 'on') {

@@ -75,11 +75,13 @@ class MembershipController extends Controller
         return Response::json(['success'=>'all good'], 200);
     }
 
-    /*
+    /**
      * Add  the specified resource to storage.
      *
-     * @param  \App\Membership  $member
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param  \App\Models\Membership  $membership
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function update(Request $request, Membership $membership)
     {

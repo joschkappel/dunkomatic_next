@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\LeagueSize;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\LeagueSizeChar
@@ -32,7 +33,7 @@ class LeagueSizeChar extends Model
   *
   */
 
-  public function league_size()
+  public function league_size(): BelongsTo
   {
       return $this->belongsTo(LeagueSize::class);
   }

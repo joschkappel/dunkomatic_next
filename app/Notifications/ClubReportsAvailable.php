@@ -14,7 +14,7 @@ class ClubReportsAvailable extends Notification
 {
     use Queueable;
 
-    protected $club;
+    protected Club $club;
 
     /**
      * Create a new notification instance.

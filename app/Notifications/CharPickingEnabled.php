@@ -12,16 +12,16 @@ class CharPickingEnabled extends Notification
 {
     use Queueable;
 
-    protected $club;
-    protected $mode;
-    protected $season;
+    protected Club $club;
+    protected string $mode;
+    protected string $season;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Club $club, $mode, $season)
+    public function __construct(Club $club, string $mode, string $season)
     {
         $this->club = $club;
         $this->season = $season;

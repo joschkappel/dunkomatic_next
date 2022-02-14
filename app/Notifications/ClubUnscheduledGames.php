@@ -14,15 +14,15 @@ class ClubUnscheduledGames extends Notification
 {
     use Queueable;
 
-    protected $club;
-    protected $games_count;
+    protected Club $club;
+    protected int $games_count;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Club $club, $games_count)
+    public function __construct(Club $club, int $games_count)
     {
         $this->club = $club;
         $this->games_count = $games_count;

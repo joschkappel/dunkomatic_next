@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Builder;
 
 use App\Models\Member;
 use App\Models\Region;
@@ -20,10 +21,14 @@ use App\Models\Message;
 use App\Models\Club;
 use App\Models\League;
 use App\Notifications\VerifyEmail;
+use App\Enums\Role;
+
 use App\Notifications\ResetPassword as ResetPasswordNotification;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Prunable;
-
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 /**
  * App\Models\User
@@ -47,7 +52,6 @@ use Illuminate\Database\Eloquent\Prunable;
  * @property-read int|null $abilities_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\Rappasoft\LaravelAuthenticationLog\Models\AuthenticationLog[] $authentications
  * @property-read int|null $authentications_count
- * @property-read mixed $is_regionadmin
  * @property-read \Rappasoft\LaravelAuthenticationLog\Models\AuthenticationLog|null $latestAuthentication
  * @property-read Member|null $member
  * @property-read \Illuminate\Database\Eloquent\Collection|Message[] $messages
@@ -57,7 +61,7 @@ use Illuminate\Database\Eloquent\Prunable;
  * @property-read \Illuminate\Database\Eloquent\Collection|\Silber\Bouncer\Database\Role[] $roles
  * @property-read int|null $roles_count
  * @method static \Database\Factories\UserFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|User isRole($role)
+ * @method static bool isRole($role)
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User query()
@@ -118,38 +122,24 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
         $this->notify(new ResetPasswordNotification($token));
     }
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'id', 'name', 'email', 'password', 'approved_at', 'rejected_at', 'reason_join', 'reason_reject',
         'email_verified_at', 'locale'
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password', 'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'approved_at' => 'datetime',
         'created_at' => 'datetime',
         'rejected_at' => 'datetime',
     ];
+
     // this is a recommended way to declare event handlers
-    public static function boot()
+    public static function boot(): void
     {
         parent::boot();
 
@@ -161,26 +151,26 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
     /**
      * Get the related member
      */
-    public function member()
+    public function member(): BelongsTo
     {
         return $this->belongsTo(Member::class);
     }
 
-    public function regions()
+    public function regions(): Collection
     {
         $user = $this;
         return Region::all()->filter(function ($region) use ($user) {
             return $user->can('access', $region);
         });
     }
-    public function clubs()
+    public function clubs(): Collection
     {
         $user = $this;
         return Club::all()->filter(function ($club) use ($user) {
             return $user->can('access', $club);
         });
     }
-    public function leagues()
+    public function leagues(): Collection
     {
         $user = $this;
         return League::all()->filter(function ($league) use ($user) {
@@ -188,30 +178,17 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
         });
     }
 
-    public function messages()
+    public function messages(): HasMany
     {
         return $this->hasMany(Message::class);
     }
-    public function region_messages($region_id)
+
+    public function region_messages(int $region_id): HasMany
     {
         return $this->messages()->where('region_id', $region_id);
     }
 
-
-    public function scopeIsRole($query, $role)
-    {
-        return $query->first()->member->memberships()->where('role_id', $role)->exists();
-    }
-
-    /*
-    * is this user admin of a region ( has regionlead membership ) ?
-    */
-    public function getIsRegionadminAttribute()
-    {
-        return $this->member->isRegionAdmin;
-    }
-
-    public function LeagueFilecount(Region $region)
+    public function LeagueFilecount(Region $region): int
     {
         $directory = $region->league_folder;
         $llist = "";
@@ -229,7 +206,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
             return 0;
         }
     }
-    public function LeagueFilenames(Region $region)
+    public function LeagueFilenames(Region $region): Collection 
     {
         $directory = $region->league_folder;
         $llist = "";
@@ -246,7 +223,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
             return collect();
         }
     }
-    public function TeamwareFilecount(Region $region)
+
+    public function TeamwareFilecount(Region $region): int
     {
         $directory = $region->teamware_folder;
         $llist= "";
@@ -264,7 +242,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
             return 0;
         }
     }
-    public function TeamwareFilenames(Region $region)
+
+    public function TeamwareFilenames(Region $region): Collection
     {
         $directory = $region->teamware_folder;
         $llist = "";
@@ -282,7 +261,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
             return collect();
         }
     }
-    public function ClubFilecount(Region $region)
+
+    public function ClubFilecount(Region $region): int
     {
         $directory = $region->club_folder;
         $llist = "";
@@ -300,7 +280,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
             return 0;
         }
     }
-    public function ClubFilenames(Region $region)
+
+    public function ClubFilenames(Region $region): Collection
     {
         $directory = $region->club_folder;
         $llist = "";
@@ -318,7 +299,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
             return collect();
         }
     }
-    public function notifyAuthenticationLogVia()
+
+    public function notifyAuthenticationLogVia(): array
     {
         return ['mail'];
     }

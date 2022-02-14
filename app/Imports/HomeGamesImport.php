@@ -21,6 +21,7 @@ class HomeGamesImport implements ToCollection, WithStartRow, WithValidation, Wit
 
     /**
      * @param Collection $rows
+     * @return void
      */
     public function collection(Collection $rows)
     {
@@ -65,7 +66,7 @@ class HomeGamesImport implements ToCollection, WithStartRow, WithValidation, Wit
         ];
     }
 
-    public function prepareForValidation($data, $index)
+    public function prepareForValidation(array $data): array
     {
         $data['league_id'] = League::where('shortname', $data[3])->first()->id ?? null;
         $data['club_id'] = Club::where('shortname', Str::substr($data[4],0,4) )->first()->id ?? null;
@@ -80,7 +81,7 @@ class HomeGamesImport implements ToCollection, WithStartRow, WithValidation, Wit
     /**
      * @return array
      */
-    public function customValidationMessages()
+    public function customValidationMessages(): array
     {
         return [
             '0.required' => 'V.R-0',
@@ -109,9 +110,13 @@ class HomeGamesImport implements ToCollection, WithStartRow, WithValidation, Wit
     }
 
     /**
+     * 
+     * @param string $error_code
+     * @param array $values
+     * @param string $attribute
      * @return string
      */
-    public function buildValidationMessage($error_code, $values, $attribute )
+    public function buildValidationMessage(string $error_code, array $values, string $attribute ): string
     {
         $ec = explode('-', $error_code)[0];
         $value = $values[ strval( explode('-', $error_code)[1]) ];

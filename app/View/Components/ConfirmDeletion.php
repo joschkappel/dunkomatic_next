@@ -48,7 +48,11 @@ class ConfirmDeletion extends Component
      *
      * @return void
      */
-    public function __construct($modalId, $modalTitle, $modalConfirm, $deleteType, $modalMethod='DELETE')
+    public function __construct( string $modalId,
+                                 string $modalTitle,
+                                 string $modalConfirm,
+                                 string $deleteType,
+                                 string $modalMethod='DELETE')
     {
         $this->modalId = $modalId;
         $this->modalTitle = $modalTitle;

@@ -27,13 +27,13 @@ class GenerateClubGamesReport implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $export_folder;
-    protected $rpt_name;
-    protected $club;
-    protected $region;
-    protected $scope;
-    protected $rtype;
-    protected $league;
+    protected string $export_folder;
+    protected string $rpt_name;
+    protected Club $club;
+    protected Region $region;
+    protected ReportScope $scope;
+    protected ReportFileType $rtype;
+    protected League $league;
 
 
     /**

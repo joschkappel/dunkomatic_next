@@ -134,8 +134,8 @@ class ProcessNewSeason implements ShouldQueue
                 'close_scheduling_at' => $close_scheduling_at,
                 'close_referees_at' => $close_referees_at]
             );
-            if ($r->regionadmin()->exists() ){
-                $radmins = $r->regionadmin()->get();
+            if ($r->regionadmins()->exists() ){
+                $radmins = $r->regionadmins()->get();
                 foreach ($radmins as $ra){
                     app()->setLocale($ra->user->locale);
                     Notification::send($ra, new  CheckRegionSettings($next_season, $r));

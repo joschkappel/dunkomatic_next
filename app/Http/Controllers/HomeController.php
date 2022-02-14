@@ -2,11 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Club;
-use App\Models\League;
-use App\Models\Region;
-use App\Models\User;
-
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,11 +11,23 @@ use Carbon\CarbonImmutable;
 
 class HomeController extends Controller
 {
+    /**
+     * display view with list of users to approve
+     *
+     * @return \Illuminate\View\View
+     *
+     */
     public function approval()
     {
         return view('auth/approval');
     }
 
+    /**
+     * diplay home pahe for all users
+     *
+     * @return \Illuminate\View\View
+     *
+     */
     public function home()
     {
         $today = Carbon::today()->toDateString();

@@ -37,7 +37,7 @@ class MembershipObserver
                 Log::error('unknown membership type',['membership-id'=>$membership->id, 'type'=>$membership->membership_type]);
             }
 
-            if ($u->isregionadmin){
+            if ($u->isRole(Role::RegionLead())){
                 Bouncer::assign('regionadmin')->to($u);
             } elseif ($u->isRole(Role::ClubLead())){
                 Bouncer::assign('clubadmin')->to($u);
@@ -85,7 +85,7 @@ class MembershipObserver
                     Log::error('unknown membership type',['membership-id'=>$membership->id, 'type'=>$membership->membership_type]);
                 }
 
-                if (! $u->isregionadmin){
+                if (! $u->isRole(Role::RegionLead())){
                     Bouncer::retract('regionadmin')->from($u);
                 } elseif (! $u->isRole(Role::ClubLead())){
                     Bouncer::retract('clubadmin')->from($u);

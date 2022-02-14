@@ -20,20 +20,20 @@ class LeagueGamesImport implements ToCollection, WithStartRow, WithValidation, W
 {
     use Importable;
 
-    public $league;
-    public $game_cnt;
+    public League $league;
+    public string $game_cnt = "0";
 
     // "Nr","Datum Spieltag","Beginn","Heim","Gast","Halle","Schiri 1","Schiri 2"
     // "1","19.09.2021","16:00","RIMB1","EBER2","1","null","null"
     public function __construct(League $league)
     {
         $this->league = $league;
-        $this->game_cnt = "0";
         $this->game_cnt = strval($this->league->size * ($this->league->size -1 ));
     }
 
     /**
      * @param Collection $rows
+     * @return void
      *
      */
     public function collection(Collection $rows)
@@ -80,7 +80,7 @@ class LeagueGamesImport implements ToCollection, WithStartRow, WithValidation, W
         ];
     }
 
-    public function prepareForValidation($data, $index)
+    public function prepareForValidation(array $data): array
     {
         $data['league_id'] = $this->league->id;
         $data['club_id_home'] = Club::where('shortname', Str::substr($data[3],0,4) )->first()->id ?? null;
@@ -96,9 +96,12 @@ class LeagueGamesImport implements ToCollection, WithStartRow, WithValidation, W
     }
 
     /**
+     * @param string $error_code
+     * @param array $values
+     * @param string $attribute
      * @return string
      */
-    public function buildValidationMessage($error_code, $values, $attribute )
+    public function buildValidationMessage(string $error_code, array $values, string $attribute ): string
     {
         $ec = explode('-', $error_code)[0];
         $value = $values[ strval( explode('-', $error_code)[1]) ];
@@ -157,7 +160,7 @@ class LeagueGamesImport implements ToCollection, WithStartRow, WithValidation, W
 
     }
 
-    public function customValidationMessages()
+    public function customValidationMessages(): array
     {
         return [
             '0.required' => 'V.R-0',
@@ -188,7 +191,7 @@ class LeagueGamesImport implements ToCollection, WithStartRow, WithValidation, W
         ];
     }
 
-    public function customValidationAttributes()
+    public function customValidationAttributes(): array
     {
         return [
             '0' => __('game.game_no'),

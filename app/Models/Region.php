@@ -17,7 +17,12 @@ use App\Models\Message;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 /**
@@ -52,12 +57,16 @@ use Illuminate\Support\Str;
  * @property-read mixed $club_folder
  * @property-read mixed $is_base_level
  * @property-read mixed $is_top_level
- * @property-read mixed $league_filecount
+ * @property-read int $league_filecount
  * @property-read mixed $league_filenames
  * @property-read mixed $league_folder
- * @property-read mixed $teamware_filecount
+ * @property-read int $teamware_filecount
  * @property-read mixed $teamware_filenames
  * @property-read mixed $teamware_folder
+ * @property-read \Illuminate\Database\Eloquent\Collection|User[] $users
+ * @property-read int|null $users_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Member[] $regionadmins
+ * @property-read int|null $regionadmins_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Gym[] $gyms
  * @property-read int|null $gyms_count
  * @property-read \Illuminate\Database\Eloquent\Collection|League[] $leagues
@@ -128,26 +137,26 @@ class Region extends Model
         'auto_state_change' => 'boolean'
     ];
 
-    public function clubs()
+    public function clubs(): HasMany
     {
         return $this->hasMany(Club::class);
     }
 
-    public function teams()
+    public function teams(): HasManyThrough
     {
         return $this->hasManyThrough(Team::class, Club::class);
     }
-    public function gyms()
+    public function gyms(): HasManyThrough
     {
         return $this->hasManyThrough(Gym::class, Club::class);
     }
 
-    public function leagues()
+    public function leagues(): HasMany
     {
         return $this->hasMany(League::class);
     }
 
-    public function users()
+    public function users(): Collection
     {
         // return $this->hasMany(User::class);
         $region = $this;
@@ -156,62 +165,62 @@ class Region extends Model
         });
     }
 
-    public function schedules()
+    public function schedules(): HasMany
     {
         return $this->hasMany(Schedule::class);
     }
 
-    public function childRegions()
+    public function childRegions(): HasMany
     {
         return $this->hasMany('App\Models\Region', 'hq', 'code');
     }
-    public function parentRegion()
+    public function parentRegion(): BelongsTo
     {
         return $this->belongsTo('App\Models\Region', 'hq', 'code');
     }
-    public function getIsTopLevelAttribute()
+    public function getIsTopLevelAttribute(): bool
     {
         return ($this->childRegions->count() > 0);
     }
-    public function getIsBaseLevelAttribute()
+    public function getIsBaseLevelAttribute(): bool
     {
         return ($this->childRegions->count() == 0);
     }
-    public function messages()
+    public function messages(): HasMany
     {
         return $this->hasMany(Message::class);
     }
 
-    public function members()
+    public function members(): MorphToMany
     {
         return $this->morphToMany(Member::class, 'membership')->withPivot('role_id', 'function', 'id');
         // test: Club::find(261)->members()->withPivot('role_id','function')->get();
     }
 
-    public function memberships()
+    public function memberships(): MorphMany
     {
         return $this->morphMany(Membership::class, 'membership');
     }
 
-    public function regionadmin()
+    public function regionadmins(): MorphToMany
     {
         return $this->members()->wherePivot('role_id', Role::RegionLead);
     }
 
-    public function getClubFolderAttribute()
+    public function getClubFolderAttribute(): string
     {
         return  Str::of(config('global.season'))->replace('/', '_') . '/' . $this->code . '/' . config('dunkomatic.report_folder_clubs');
     }
-    public function getLeagueFolderAttribute()
+    public function getLeagueFolderAttribute(): string
     {
         return  Str::of(config('global.season'))->replace('/', '_') . '/' . $this->code . '/' . config('dunkomatic.report_folder_leagues');
     }
-    public function getTeamwareFolderAttribute()
+    public function getTeamwareFolderAttribute(): string
     {
         return  Str::of(config('global.season'))->replace('/', '_') . '/' . $this->code . '/' . config('dunkomatic.report_folder_teamware');
     }
 
-    public function getLeagueFilecountAttribute()
+    public function getLeagueFilecountAttribute(): int
     {
         $directory = $this->league_folder;
 
@@ -225,7 +234,8 @@ class Region extends Model
         }
         return count($reports);
     }
-    public function getLeagueFilenamesAttribute()
+
+    public function getLeagueFilenamesAttribute(): Collection
     {
         $directory = $this->league_folder;
 
@@ -239,7 +249,8 @@ class Region extends Model
         }
         return $reports;
     }
-    public function getTeamwareFilecountAttribute()
+
+    public function getTeamwareFilecountAttribute(): int
     {
         $directory = $this->teamware_folder;
 
@@ -252,7 +263,8 @@ class Region extends Model
         }
         return count($reports);
     }
-    public function getTeamwareFilenamesAttribute()
+
+    public function getTeamwareFilenamesAttribute(): Collection
     {
         $directory = $this->teamware_folder;
 

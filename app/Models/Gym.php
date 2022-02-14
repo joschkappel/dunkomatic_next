@@ -7,7 +7,8 @@ use App\Models\Game;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\Gym
@@ -50,16 +51,16 @@ class Gym extends Model
         'id','name','gym_no','club_id','zip','street','city','directions'
     ];
 
-  public function club()
+  public function club(): BelongsTo
   {
       return $this->belongsTo(Club::class);
   }
 
-  public function games()
+  public function games(): HasMany
   {
       return $this->hasMany(Game::class);
   }
-  public function getAddressAttribute()
+  public function getAddressAttribute(): string
   {
      return "{$this->street}, {$this->zip} {$this->city}";
   }

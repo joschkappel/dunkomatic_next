@@ -4,6 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Member;
+use App\Enums\Role;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\Membership
@@ -40,19 +44,19 @@ class Membership extends Model
         'id','member_id','role_id','function','email', 'membership_id','membership_type'
     ];
 
-  public function member()
+  public function member(): BelongsTo
   {
       return $this->belongsTo(Member::class);
   }
 
-  public function scopeIsRole($query, $role_id)
+  public function scopeIsRole(Builder $query, Role $role_id): Builder
   {
-    $query->where('role_id', $role_id);
+    return $query->where('role_id', $role_id);
   }
 
-  public function scopeIsNotRole($query, $role_id)
+  public function scopeIsNotRole(Builder $query, Role $role_id): Builder
   {
-    $query->where('role_id', '!=', $role_id);
+    return $query->where('role_id', '!=', $role_id);
   }
 
 

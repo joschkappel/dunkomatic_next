@@ -10,8 +10,6 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
 use App\Models\Region;
-use App\Models\Club;
-use App\Models\League;
 use App\Models\Member;
 use App\Enums\Role;
 
@@ -21,18 +19,20 @@ class MissingLeadCheck implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $region;
-    protected $region_admin;
+    protected Region $region;
+    protected ?Member $region_admin;
 
     /**
      * Create a new job instance.
      *
+     * @param Region $region
      * @return void
+     *
      */
     public function __construct(Region $region)
     {
       $this->region = $region;
-      $this->region_admin = $region->regionadmin()->first();
+      $this->region_admin = $region->regionadmins()->first();
     }
 
     /**
@@ -49,7 +49,7 @@ class MissingLeadCheck implements ShouldQueue
 
       $clubs = $this->region->clubs()->get();
       foreach ($clubs as $c){
-        if (!$c->memberIsA(Role::ClubLead)){
+        if (!$c->memberIsA(Role::ClubLead())){
           $clubs_nolead[] = $c->shortname;
           // Log::debug('lead missing for '.$c->shortname);
         }
@@ -57,7 +57,7 @@ class MissingLeadCheck implements ShouldQueue
 
       $leagues = $this->region->leagues()->get();
       foreach ($leagues as $l){
-        if (!$l->memberIsA(Role::LeagueLead)){
+        if (!$l->memberIsA(Role::LeagueLead())){
           $leagues_nolead[] = $l->shortname;
           // Log::debug('lead missing for '.$l->shortname);
         }

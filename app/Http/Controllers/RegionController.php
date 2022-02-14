@@ -87,19 +87,24 @@ class RegionController extends Controller
         $data['memberships'] = $region->memberships()->with('member')->get();
         $c_members = collect();
         foreach ($region->clubs->sortBy('shortname') as $c) {
-            $c_members = $c_members->concat( $c->members()->wherePivot('role_id', Role::ClubLead())->get() );
+            $c_members = $c_members->concat($c->members()->wherePivot('role_id', Role::ClubLead())->get());
         }
         $data['clubs'] = $c_members;
         $l_members = collect();
         foreach ($region->leagues->sortBy('shortname') as $l) {
-            $l_members = $l_members->concat( $l->members()->wherePivot('role_id', Role::LeagueLead())->get() );
+            $l_members = $l_members->concat($l->members()->wherePivot('role_id', Role::LeagueLead())->get());
         }
         $data['leagues'] = $l_members;
 
-        Log::info('showing region briefing',['region-id'=>$region->id]);
+        Log::info('showing region briefing', ['region-id' => $region->id]);
         return view('region/region_briefing', $data);
     }
 
+    /**
+     * Display view to create a new  region
+     *
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         Log::info('create new region');
@@ -133,6 +138,13 @@ class RegionController extends Controller
         return redirect()->route('region.index', ['language' => app()->getLocale()]);
     }
 
+    /**
+     * datatables.net listing all regions
+     *
+     * @param  string $language
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
     public function datatable($language)
     {
         $regions = Region::with('regionadmin')->withCount('clubs', 'leagues', 'teams', 'gyms')->get();
@@ -150,7 +162,7 @@ class RegionController extends Controller
                     return $data->code;
                 }
             })
-            ->editColumn('regionadmin', function ($r)  {
+            ->editColumn('regionadmin', function ($r) {
                 if ($r->regionadmin()->exists()) {
                     $admin = $r->regionadmin()->first()->firstname . ' ' . $r->regionadmin()->first()->lastname;
                 } else {
@@ -161,9 +173,15 @@ class RegionController extends Controller
             ->make(true);
     }
 
+    /**
+     * select2 list with all regions
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
     public function admin_sb()
     {
-        $regions = Region::query()->get();
+        $regions = Region::all();
 
         Log::info('preparing select2 region (with admins) list', ['count' => count($regions)]);
         $response = array();
@@ -180,6 +198,12 @@ class RegionController extends Controller
         return Response::json($response);
     }
 
+    /**
+     * select2 list with all top level regions
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
     public function hq_sb()
     {
         $regions = Region::whereNull('hq')->get();
@@ -211,7 +235,7 @@ class RegionController extends Controller
         $filetypes = ReportFileType::getInstances();
         unset($filetypes[ReportFileType::ICS()->key]);
 
-        return view('region/region_edit', ['region' => $region, 'frequencytype' => JobFrequencyType::getInstances(), 'filetype' => $filetypes ]);
+        return view('region/region_edit', ['region' => $region, 'frequencytype' => JobFrequencyType::getInstances(), 'filetype' => $filetypes]);
     }
 
     /**
@@ -241,7 +265,8 @@ class RegionController extends Controller
             'close_registration_at' => 'sometimes|required|date|after:close_assignment_at',
             'close_selection_at' => 'sometimes|required|date|after:close_registration_at',
             'close_scheduling_at' => 'sometimes|required|date|after:close_selection_at',
-            'close_referees_at' => 'sometimes|required|date|after:close_scheduling_at'        ]);
+            'close_referees_at' => 'sometimes|required|date|after:close_scheduling_at'
+        ]);
         Log::info('region details form data validated OK.');
         $auto_state_change = $request->input('auto_state_change');
         if (isset($auto_state_change) and ($auto_state_change == 'on')) {
@@ -254,7 +279,7 @@ class RegionController extends Controller
         $region->refresh();
         Log::notice('region updated.', ['region-id' => $region->id]);
 
-        return redirect()->route('region.dashboard', ['language' => app()->getLocale(), 'region'=>$region]);
+        return redirect()->route('region.dashboard', ['language' => app()->getLocale(), 'region' => $region]);
     }
 
     /**
@@ -308,17 +333,17 @@ class RegionController extends Controller
         }
 
         $rs = DB::table('leagues')
-                ->where('region_id', $region->id)
-                ->select('state', 'age_type', DB::raw('count(*) as total'))
-                ->groupBy('state','age_type')
-                ->orderBy('state')
-                ->orderBy('age_type')->get();
+            ->where('region_id', $region->id)
+            ->select('state', 'age_type', DB::raw('count(*) as total'))
+            ->groupBy('state', 'age_type')
+            ->orderBy('state')
+            ->orderBy('age_type')->get();
 
         $data['labels'] = collect(LeagueState::getInstances())->pluck('description')->toArray();
 
         // initialize datasets
         foreach (LeagueState::getValues() as $ls) {
-            foreach ( LeagueAgeType::getValues() as $at){
+            foreach (LeagueAgeType::getValues() as $at) {
                 $datasets[$at]['data'][] = $rs->where('state', $ls)->where('age_type', $at)->first()->total ?? 0;
             }
         }
@@ -409,13 +434,13 @@ class RegionController extends Controller
         $rs = collect(DB::select($select));
 
         // get lcubs sorted by team count
-        $clubs = $region->clubs()->withCount('teams')->orderByDesc('teams_count')->orderBy('shortname')->pluck('teams_count','shortname');
+        $clubs = $region->clubs()->withCount('teams')->orderByDesc('teams_count')->orderBy('shortname')->pluck('teams_count', 'shortname');
         $data['labels'] = $clubs->keys()->toArray();
 
         foreach ($clubs as $c => $n) {
             $tot = $n;
-            foreach ( LeagueAgeType::getInstances() as $a ){
-                $teams = $rs->where('shortname', $c)->where('age_type',$a->value)->first()->total ?? 0;
+            foreach (LeagueAgeType::getInstances() as $a) {
+                $teams = $rs->where('shortname', $c)->where('age_type', $a->value)->first()->total ?? 0;
                 $datasets[$a->value]['data'][] = $teams;
                 $tot -= $teams;
             }
@@ -437,7 +462,7 @@ class RegionController extends Controller
      */
     public function club_member_chart(Region $region)
     {
-        Log::info('collecting club member chart data.',['region-id'=>$region->id]);
+        Log::info('collecting club member chart data.', ['region-id' => $region->id]);
         $data = array();
         $data['labels'] = [];
         $datasets = array();
@@ -457,12 +482,12 @@ class RegionController extends Controller
           }); */
         $rs = $region->clubs()->with('memberships')->orderBy('shortname')->get();
 
-        $clubs = $region->clubs()->withCount('memberships')->orderByDesc('memberships_count')->orderBy('shortname')->pluck('memberships_count','shortname');
+        $clubs = $region->clubs()->withCount('memberships')->orderByDesc('memberships_count')->orderBy('shortname')->pluck('memberships_count', 'shortname');
         $data['labels'] = $clubs->keys()->toArray();
 
         foreach ($clubs as $c => $n) {
             foreach ($roleList as $r) {
-                $mships = $rs->where('shortname',$c)->first()->memberships->countBy('role_id');
+                $mships = $rs->where('shortname', $c)->first()->memberships->countBy('role_id');
                 $datasets[$r]['data'][] = $mships[$r] ?? 0;
             }
         }
@@ -482,7 +507,7 @@ class RegionController extends Controller
      */
     public function game_noreferee_chart(Region $region)
     {
-        Log::info('collecting game without referee chart data.',['region-id'=>$region->id]);
+        Log::info('collecting game without referee chart data.', ['region-id' => $region->id]);
 
         $data = array();
         $data['labels'] = [];

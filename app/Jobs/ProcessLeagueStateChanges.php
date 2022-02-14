@@ -20,12 +20,14 @@ class ProcessLeagueStateChanges implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, LeagueFSM;
 
-    private $region;
+    private Region $region;
 
     /**
      * Create a new job instance.
      *
+     * @param Region $region
      * @return void
+     *
      */
     public function __construct(Region $region)
     {

@@ -18,6 +18,13 @@ class TeamController extends Controller
 {
     use GameManager;
 
+    /**
+     * select2 list with all teams of a league
+     *
+     * @param League $league
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
     public function sb_league(League $league)
     {
         $teams =  $league->teams()->with('club')->get();
@@ -28,12 +35,19 @@ class TeamController extends Controller
         foreach ($teams as $t) {
             $response[] = array(
                 "id" => $t->id,
-                "text" => $t['club']->shortname . $t->team_no
+                "text" => $t->name
             );
         }
         return Response::json($response);
     }
 
+    /**
+     * select2 list with all unregistered teams of a region
+     *
+     * @param League $league
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
     public function sb_freeteam(League $league)
     {
         $region = $league->region;
@@ -63,12 +77,12 @@ class TeamController extends Controller
             if ($region->is_top_level) {
                 $response[] = array(
                     "id" => $t->id,
-                    "text" => $t->club->region->code . ' : ' . $t['club']->shortname . $t->team_no . ' (' . $t->league_prev . ')'
+                    "text" => $t->club->region->code . ' : ' . $t->name . ' (' . $t->league_prev . ')'
                 );
             } else {
                 $response[] = array(
                     "id" => $t->id,
-                    "text" => $t['club']->shortname . $t->team_no . ' (' . $t->league_prev . ')'
+                    "text" => $t->name . ' (' . $t->league_prev . ')'
                 );
             }
         }
@@ -123,6 +137,13 @@ class TeamController extends Controller
         return view('team/teamleague_dashboard', $data);
     }
 
+    /**
+     * pivot list teams by leagues
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
     public function list_pivot(Request $request)
     {
 
@@ -153,6 +174,13 @@ class TeamController extends Controller
         return Response::json($returnhtml);
     }
 
+    /**
+     * display chart
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
     public function list_chart(Request $request)
     {
         $data = $request->validate([
@@ -165,7 +193,7 @@ class TeamController extends Controller
 
         if (isset($data['club_id'])) {
             $teams = Club::find($data['club_id'])->teams->whereNotNull('league_id')->whereNotNull('league_no');
-            foreach ($teams as $t){
+            foreach ($teams as $t) {
                 $where[] = '(l.id = ' . $t->league->id . ' AND lts.team_home = ' . $t->league_no . ')';
             }
         } else {
@@ -184,7 +212,7 @@ class TeamController extends Controller
         $select .= " GROUP BY date_format(se.game_date, '%b-%d-%Y')";
 
         // Log::debug($select);
-        if (count($where) > 0){
+        if (count($where) > 0) {
             $plan = collect(DB::select($select));
         } else {
             $plan = collect();
@@ -194,7 +222,13 @@ class TeamController extends Controller
         return Response::json($plan);
     }
 
-    public function Cartesian_Product_old($data)
+    /**
+     * create cartesian product of the input array
+     *
+     * @param array $data
+     * @return array
+     */
+    public function Cartesian_Product_old(array $data)
     {
         ini_set('memory_limit', '2G');
 
@@ -233,6 +267,13 @@ class TeamController extends Controller
         return $result;
     }
 
+    /**
+     * build k combinations of an array
+     *
+     * @param array $arr
+     * @param int $k
+     * @return array
+     */
     public function build_comb($arr, $k)
     {
         if ($k == 0) {
@@ -255,6 +296,12 @@ class TeamController extends Controller
         return $combos;
     }
 
+    /**
+     * buid a caretesina prodcut of an array
+     *
+     * @param array $data
+     * @return array
+     */
     public function Cartesian_Product($data)
     {
         ini_set('memory_limit', '2G');
