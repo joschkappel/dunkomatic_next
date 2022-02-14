@@ -180,7 +180,7 @@ class MemberControllerTest extends TestCase
                            ->where('membership_type',Club::class)
                            ->with('member')
                            ->first();
-      $member = $mship->member;
+      $member = $mship->member ?? null;
       $response = $this->authenticated()
                         ->get(route('member.sb.region',['region'=>$this->region]));
 

@@ -4,11 +4,11 @@ includes:
 parameters:
 
     paths:
-        # - tests
-        - app
+        - tests
+        # - app
 
     # The level 9 is the highest level
-    level: 6
+    level: 4
 
     ignoreErrors:
     #    - '#Unsafe usage of new static#'
