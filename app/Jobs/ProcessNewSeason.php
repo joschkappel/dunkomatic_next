@@ -110,7 +110,7 @@ class ProcessNewSeason implements ShouldQueue
         Log::notice('[JOB][NEW SEASON] All schedule events fwdd by 1 year.');
 
         // move region league state end date 1 year fowrward
-        $regions = Region::with('regionadmin')->get();
+        $regions = Region::all();
         foreach ($regions as $r){
             $close_assignment_at = $r->close_assignment_at ?? now();
             $close_assignment_at = $close_assignment_at->addYear()->addDays( $close_assignment_at->weekday() - $close_assignment_at->addYear()->weekday() );
@@ -137,7 +137,6 @@ class ProcessNewSeason implements ShouldQueue
             if ($r->regionadmins()->exists() ){
                 $radmins = $r->regionadmins()->get();
                 foreach ($radmins as $ra){
-                    app()->setLocale($ra->user->locale);
                     Notification::send($ra, new  CheckRegionSettings($next_season, $r));
                     Notification::send($ra->user, new  CheckRegionSettings($next_season, $r));
                 }

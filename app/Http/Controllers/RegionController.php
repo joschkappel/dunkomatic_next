@@ -187,7 +187,7 @@ class RegionController extends Controller
         $response = array();
 
         foreach ($regions as $region) {
-            if ($region->regionadmin()->exists()) {
+            if ($region->regionadmins()->exists()) {
                 $response[] = array(
                     "id" => $region->id,
                     "text" => $region->name
@@ -291,7 +291,9 @@ class RegionController extends Controller
      */
     public function destroy(Region $region)
     {
-        $region->users()->delete();
+        foreach ($region->users() as $u){
+            $u->delete();
+        }
         Log::info('region users deleted', ['region-id' => $region->id]);
 
         $region->schedules()->delete();

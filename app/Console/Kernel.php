@@ -52,7 +52,7 @@ class Kernel extends ConsoleKernel
         $regions = Region::all();
 
         foreach ($regions as $r) {
-            if ($r->regionadmin()->exists()) {
+            if ($r->regionadmins()->exists()) {
                 $this->scheduleRegionTask($schedule, new GameOverlaps($r), $r->job_game_overlaps);
                 $this->scheduleRegionTask($schedule, new GameNotScheduled($r), $r->job_game_notime);
                 $this->scheduleRegionTask($schedule, new MissingLeadCheck($r), $r->job_noleads);

@@ -115,11 +115,12 @@ class RegisterController extends Controller
             $user->notify(new ApproveUser(Region::find($data['region_id'])));
         } else {
 
-            if (Region::find($data['region_id'])->regionadmins()->first()->user->exists()) {
-                $radmin = Region::find($data['region_id'])->regionadmins()->first()->user()->first();
-                $radmin->notify(new NewUser($user));
-            } else {
-                Log::error('regionadmin is null');
+            $region = Region::findOrFail($data['region_id']);
+            $radmins = User::whereIs('regionadmin')->get();
+            foreach ($radmins as $radmin){
+                if ($radmin->can('access', $region)){
+                    $radmin->notify(new NewUser($user));    
+                }
             }
         }
 

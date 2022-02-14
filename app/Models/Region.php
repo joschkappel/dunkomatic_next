@@ -204,7 +204,7 @@ class Region extends Model
 
     public function regionadmins(): MorphToMany
     {
-        return $this->members()->wherePivot('role_id', Role::RegionLead);
+        return $this->morphToMany(Member::class, 'membership')->withPivot('role_id', 'function', 'id')->wherePivot('role_id', Role::RegionLead);
     }
 
     public function getClubFolderAttribute(): string

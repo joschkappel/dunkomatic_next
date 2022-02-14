@@ -35,12 +35,12 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|Club[] $clubs
  * @property-read int|null $clubs_count
- * @property-read mixed $is_region_admin
+ * @property-read bool $is_region_admin
  * @property-read mixed $is_user
  * @property-read mixed $member_of_clubs
  * @property-read mixed $member_of_leagues
  * @property-read mixed $member_of_region
- * @property-read mixed $name
+ * @property-read string $name
  * @property-read \Illuminate\Database\Eloquent\Collection|League[] $leagues
  * @property-read int|null $leagues_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Membership[] $memberships

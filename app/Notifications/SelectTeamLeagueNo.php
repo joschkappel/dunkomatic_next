@@ -24,11 +24,11 @@ class SelectTeamLeagueNo extends Notification
      *
      * @return void
      */
-    public function __construct(League $league, Club $club, string $sender_name, string $receive_name)
+    public function __construct(League $league, Club $club, string $receive_name)
     {
       $this->league = $league;
       $this->club = $club;
-      $this->sender_name = $sender_name;
+      $this->sender_name = $league->region()->first()->regionadmins()->get(['lastname','firstname'])->pluck('name')->implode(',');
       $this->receiver_name = $receive_name;
     }
 
