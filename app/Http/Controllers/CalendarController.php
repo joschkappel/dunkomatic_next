@@ -13,9 +13,12 @@ class CalendarController extends Controller
     /**
      * Donload league games iCal
      *
+     * @param string $language
+     * @param \App\Models\League $league
      * @return \Illuminate\Http\Response
+     *
      */
-    public function cal_league($language, League $league)
+    public function cal_league(string $language, League $league)
     {
         $calendar = CalendarComposer::createLeagueCalendar($league);
         Log::info('preparing iCAL data for league games', ['league-id' => $league->id]);
@@ -35,9 +38,11 @@ class CalendarController extends Controller
     /**
      * Donload club games iCal
      *
+     * @param string $language
+     * @param \App\Models\Club $club
      * @return \Illuminate\Http\Response
      */
-    public function cal_club($language, Club $club)
+    public function cal_club(string $language, Club $club)
     {
         $calendar = CalendarComposer::createClubCalendar($club);
         Log::info('preparing iCAL data for club games', ['club-id' => $club->id]);
@@ -56,9 +61,11 @@ class CalendarController extends Controller
     /**
      * Donload club home games iCal
      *
+     * @param string $language
+     * @param \App\Models\Club $club
      * @return \Illuminate\Http\Response
      */
-    public function cal_club_home($language, Club $club)
+    public function cal_club_home(string $language, Club $club)
     {
         $calendar = CalendarComposer::createClubHomeCalendar($club);
         Log::info('preparing iCAL data for club home games', ['club-id' => $club->id]);
@@ -77,9 +84,11 @@ class CalendarController extends Controller
     /**
      * Donload club referee games iCal
      *
+     * @param string $language
+     * @param \App\Models\Club $club
      * @return \Illuminate\Http\Response
      */
-    public function cal_club_referee($language, Club $club)
+    public function cal_club_referee(string $language, Club $club)
     {
         $calendar = CalendarComposer::createClubRefereeCalendar($club);
         Log::info('preparing iCAL data for club referee games', ['club-id' => $club->id]);

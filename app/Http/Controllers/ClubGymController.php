@@ -14,29 +14,19 @@ use Illuminate\Validation\Rule;
 class ClubGymController extends Controller
 {
 
+    /**
+     * select2 content gyms fo a club
+     *
+     * @param \App\Models\Club $club
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
     public function sb_club(Club $club)
     {
         //Log::debug(print_r($club,true));
         $gyms = $club->gyms()->get();
-        Log::info('preparing select2 gyms list for club.', ['club-id'=>$club->id, 'count'=>count($gyms)]);
+        Log::info('preparing select2 gyms list for club.', ['club-id' => $club->id, 'count' => count($gyms)]);
 
-        $response = array();
-
-        foreach ($gyms as $lgym) {
-            $response[] = array(
-                "id" => $lgym->id,
-                "text" => $lgym->gym_no . ' - ' . $lgym->name
-            );
-        }
-        return Response::json($response);
-    }
-
-    public function sb_team(Team $team)
-    {
-        //Log::debug(print_r($club,true));
-        $gyms = $team->club->gyms()->get();
-
-        Log::info('preparing select2 gyms list for team.', ['team-id'=>$team->id, 'count'=>count($gyms)]);
         $response = array();
 
         foreach ($gyms as $lgym) {
@@ -49,6 +39,23 @@ class ClubGymController extends Controller
     }
 
     /**
+     * select2 items for gyms of a team of a club
+     *
+     * @param \App\Models\Team $team
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
+    public function sb_team(Team $team)
+    {
+        //Log::debug(print_r($club,true));
+        $club = $team->club->first();
+
+        Log::info('preparing select2 gyms list for team.', ['team-id' => $team->id]);
+
+        return $this->sb_club($club);
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @param string $language
@@ -56,10 +63,10 @@ class ClubGymController extends Controller
      * @return \Illuminate\View\View
      *
      */
-    public function create($language, Club $club)
+    public function create(string $language, Club $club)
     {
         $allowed_gymno = config('dunkomatic.allowed_gym_nos');
-        Log::info('create new gym for club', ['club-id'=>$club->id]);
+        Log::info('create new gym for club', ['club-id' => $club->id]);
         return view('club/gym/gym_new', ['club' => $club, 'allowed_gymno' => $allowed_gymno]);
     }
 
@@ -92,7 +99,7 @@ class ClubGymController extends Controller
 
         $gym = new Gym($data);
         $club->gyms()->save($gym);
-        Log::notice('new gym created for club', ['club-id'=>$club->id, 'gym-id'=>$gym->id]);
+        Log::notice('new gym created for club', ['club-id' => $club->id, 'gym-id' => $gym->id]);
 
         return redirect()->route('club.dashboard', ['language' => app()->getLocale(), 'club' => $club->id]);
     }
@@ -107,7 +114,7 @@ class ClubGymController extends Controller
     public function sb_gym(Gym $gym)
     {
         $gyms = array();
-        Log::info('preparing select2 gym ', ['gym-id'=> $gym->id] );
+        Log::info('preparing select2 gym ', ['gym-id' => $gym->id]);
 
         $gyms[] = array(
             "id" => $gym->id,
@@ -127,7 +134,7 @@ class ClubGymController extends Controller
      */
     public function edit($language, Gym $gym)
     {
-        Log::info('editing gym.', ['gym-id'=>$gym->id]);
+        Log::info('editing gym.', ['gym-id' => $gym->id]);
         $gym->load('club');
         $allowed_gymno = config('dunkomatic.allowed_gym_nos');
 
@@ -164,7 +171,7 @@ class ClubGymController extends Controller
 
         $check = $gym->update($data);
         $gym->refresh();
-        Log::notice('gym updated', ['gym-id'=> $gym->id]);
+        Log::notice('gym updated', ['gym-id' => $gym->id]);
 
         return redirect()->route('club.dashboard', ['language' => app()->getLocale(), 'club' => $gym->club_id]);
     }
@@ -179,7 +186,7 @@ class ClubGymController extends Controller
     public function destroy(Gym $gym)
     {
         $check = $gym->delete();
-        Log::notice('gym deleted.', ['gym-id'=>$gym->id]);
+        Log::notice('gym deleted.', ['gym-id' => $gym->id]);
 
         return redirect()->route('club.dashboard', ['language' => app()->getLocale(), 'club' => $gym->club_id]);
     }

@@ -16,16 +16,20 @@ class LeagueTeamCharUpdated implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $league;
-    public $action;
-    public $ccode;
+    public League $league;
+    public string $action;
+    public string $ccode;
 
     /**
      * Create a new event instance.
      *
+     * @param \App\Models\League $league
+     * @param string $action
+     * @param string $ccode
      * @return void
+     *
      */
-    public function __construct(League $league, $action='', $ccode='success')
+    public function __construct(League $league, string $action='', string $ccode='success')
     {
         $this->league = $league;
         $this->action = $action;
@@ -36,6 +40,7 @@ class LeagueTeamCharUpdated implements ShouldBroadcastNow
      * Get the channels the event should broadcast on.
      *
      * @return \Illuminate\Broadcasting\Channel|array
+     *
      */
     public function broadcastOn()
     {
@@ -45,6 +50,7 @@ class LeagueTeamCharUpdated implements ShouldBroadcastNow
      * The event's broadcast name.
      *
      * @return string
+     *
      */
     public function broadcastAs()
     {

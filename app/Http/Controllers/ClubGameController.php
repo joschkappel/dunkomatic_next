@@ -21,12 +21,29 @@ use Spatie\TemporaryDirectory\TemporaryDirectory;
 class ClubGameController extends Controller
 {
 
-    public function chart($language, Club $club)
+    /**
+     * view with chart of home games per day and gym
+     *
+     * @param string $language
+     * @param \App\Models\Club $club
+     * @return \Illuminate\View\View
+     *
+     */
+    public function chart(string $language, Club $club)
     {
         Log::info('showing club home game chart');
         return view('club/club_hgame_chart', ['club' => $club]);
     }
-    public function list_home($language, Club $club)
+
+    /**
+     * datatables.net with home games
+     *
+     * @param string $language
+     * @param \App\Models\Club $club
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
+    public function list_home(string $language, Club $club)
     {
 
         // get games that overlapp (within 90 minutes)
@@ -93,6 +110,13 @@ class ClubGameController extends Controller
         return $glist;
     }
 
+    /**
+     * chart.js with home games
+     *
+     * @param \App\Models\Club $club
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
     public function chart_home(Club $club)
     {
         $select = "select date_format(g.game_date, '%b-%d-%Y') AS 't', ";
@@ -134,7 +158,7 @@ class ClubGameController extends Controller
      * @return \Illuminate\View\View
      *
      */
-    public function upload($language, Club $club)
+    public function upload(string $language, Club $club)
     {
         Log::info('preparing file upload form for club.', ['club-id' => $club->id]);
 
@@ -180,7 +204,7 @@ class ClubGameController extends Controller
                 if ($frow != $failure->row()) {
                     $ebag[] = '---';
                 };
-                $ebag[] = __('import.row') . ' "' . $failure->row() . '", ' . __('import.column') . ' "' . $failure->attribute() . '": '. $hgImport->buildValidationMessage( $failure->errors()[0], $failure->values(), $failure->attribute() );
+                $ebag[] = __('import.row') . ' "' . $failure->row() . '", ' . __('import.column') . ' "' . $failure->attribute() . '": ' . $hgImport->buildValidationMessage($failure->errors()[0], $failure->values(), $failure->attribute());
                 $frow = $failure->row();
             }
             Log::warning('errors found in import data.', ['count' => count($failures)]);

@@ -41,6 +41,7 @@ class LeagueGameController extends Controller
         Log::info('showing league game list.', ['league-id' => $league->id]);
         return view('game/league_game_list', ['league' => $league]);
     }
+
     /**
      * Get a game by game number
      *
@@ -57,7 +58,15 @@ class LeagueGameController extends Controller
         return Response::json($game, 200);
     }
 
-    public function datatable($language, League $league)
+    /**
+     * datatables.net list with a ll games for a league
+     *
+     * @param string $language
+     * @param  \App\Models\League  $league
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
+    public function datatable(string $language, League $league)
     {
         Log::info('preparing game list', ['league-id' => $league->id]);
 
@@ -291,7 +300,7 @@ class LeagueGameController extends Controller
                 if ($frow != $failure->row()) {
                     $ebag[] = '---';
                 };
-                $ebag[] = __('import.row') . ' "' . $failure->row() . '", ' . __('import.column') . ' "' . $failure->attribute() . '": ' . $hgImport->buildValidationMessage($failure->errors()[0], $failure->values(), $failure->attribute() );
+                $ebag[] = __('import.row') . ' "' . $failure->row() . '", ' . __('import.column') . ' "' . $failure->attribute() . '": ' . $hgImport->buildValidationMessage($failure->errors()[0], $failure->values(), $failure->attribute());
                 $frow = $failure->row();
             }
             Log::warning('errors found in import data.', ['count' => count($failures)]);

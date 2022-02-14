@@ -15,6 +15,13 @@ use App\Models\Region;
 
 class FileDownloadController extends Controller
 {
+    /**
+     * download a single file
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\RedirectResponse
+     *
+     */
     public function get_file(Request $request)
     {
         $data = $request->validate([
@@ -25,16 +32,16 @@ class FileDownloadController extends Controller
         ]);
         Log::info('get file data validated OK.');
 
-        if ( $data['type'] == Club::class){
+        if ($data['type'] == Club::class) {
             $filepath = Club::findOrFail($data['club'])->region->club_folder;
-        } elseif ( $data['type'] == League::class){
+        } elseif ($data['type'] == League::class) {
             $filepath = League::findOrFail($data['league'])->region->league_folder;
         } else {
             return back();
         }
-        $filepath .= '/'.$data['file'];
-        Log::info('downloading files.',['path'=> $filepath]);
-        if ( Storage::disk('public')->exists($data['file'])){
+        $filepath .= '/' . $data['file'];
+        Log::info('downloading files.', ['path' => $filepath]);
+        if (Storage::disk('public')->exists($data['file'])) {
             Storage::disk('public')->delete($data['file']);
         }
         Storage::disk('public')->writeStream(
@@ -44,6 +51,14 @@ class FileDownloadController extends Controller
         return Storage::disk('public')->download($data['file'], $data['file']);
     }
 
+    /**
+     * download archive with a users reports
+     *
+     * @param \App\Models\Region $region
+     * @param \App\Models\User $user
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\RedirectResponse
+     *
+     */
     public function get_user_archive(Region $region, User $user)
     {
         Log::info('user file archive download.', ['user-id' => $user->id, 'region-id' => $region->id]);
@@ -51,10 +66,10 @@ class FileDownloadController extends Controller
         if ($user->LeagueFilecount($region) + $user->ClubFilecount($region) + $user->TeamwareFilecount($region) > 0) {
             $zip = new ZipArchive;
             $fileName = $region->code . '-reports-' . Str::slug($user->name, '-') . '.zip';
-            Storage::disk('public')->delete( $fileName);
+            Storage::disk('public')->delete($fileName);
 
             $pf = Storage::disk('public')->path($fileName);
-            Log::info('archive location.',['path'=>$pf]);
+            Log::info('archive location.', ['path' => $pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
                 $files = $user->LeagueFilenames($region);
@@ -68,9 +83,12 @@ class FileDownloadController extends Controller
 
                 $zip->close();
                 //  Storage::move(public_path($fileName), 'public/'.$fileName);
-                Log::notice('downloading ZIP archive for user', ['user-id'=>$user->id, 'filecount'=>count($files)]);
+                Log::notice('downloading ZIP archive for user', ['user-id' => $user->id, 'filecount' => count($files)]);
 
-                return Storage::download($fileName);
+                return Storage::disk('public')->download($fileName);
+            } else {
+                Log::error('archive corrupt.', ['user-id' => $user->id]);
+                return abort(500);
             }
         } else {
             Log::error('no files found for user.', ['user-id' => $user->id]);
@@ -78,6 +96,13 @@ class FileDownloadController extends Controller
         }
     }
 
+    /**
+     * download archive with a users reports
+     *
+     * @param \App\Models\Club $club
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\RedirectResponse
+     *
+     */
     public function get_club_archive(Club $club)
     {
         Log::info('club file archive download.', ['club-id' => $club->id]);
@@ -86,7 +111,7 @@ class FileDownloadController extends Controller
             $zip = new ZipArchive;
             $filename = $club->region->code . '-reports-' . Str::slug($club->shortname, '-') . '.zip';
             $pf = Storage::disk('public')->path($filename);
-            Log::info('archive location.',['path'=>$pf]);
+            Log::info('archive location.', ['path' => $pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
                 $files = $club->filenames;
@@ -98,15 +123,26 @@ class FileDownloadController extends Controller
 
                 $zip->close();
                 //  Storage::move(public_path($fileName), 'public/'.$fileName);
-                Log::notice('downloading ZIP archive for club', ['club-id'=>$club->id, 'filecount'=>count($files)]);
+                Log::notice('downloading ZIP archive for club', ['club-id' => $club->id, 'filecount' => count($files)]);
 
-                return Storage::download('public/' . $filename);
+                return Storage::disk('public')->download('public/' . $filename);
+            } else {
+                Log::error('archive corrupt.', ['club-id' => $club->id]);
+                return abort(500);
             }
         } else {
             Log::error('no files found for club.', ['club-id' => $club->id]);
             return abort(404);
         }
     }
+
+    /**
+     * download archive with leagues reports
+     *
+     * @param \App\Models\League $league
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\RedirectResponse
+     *
+     */
 
     public function get_league_archive(League $league)
     {
@@ -116,7 +152,7 @@ class FileDownloadController extends Controller
             $zip = new ZipArchive;
             $filename = $league->region->code . '-reports-' . Str::slug($league->shortname, '-') . '.zip';
             $pf = Storage::disk('public')->path($filename);
-            Log::info('archive location.',['path'=>$pf]);
+            Log::info('archive location.', ['path' => $pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
                 $files = $league->filenames;
@@ -129,9 +165,12 @@ class FileDownloadController extends Controller
 
                 $zip->close();
                 //  Storage::move(public_path($fileName), 'public/'.$fileName);
-                Log::notice('downloading ZIP archive for league', ['league-id'=>$league->id, 'filecount'=>count($files)]);
+                Log::notice('downloading ZIP archive for league', ['league-id' => $league->id, 'filecount' => count($files)]);
 
                 return Storage::download('public/' . $filename);
+            } else {
+                Log::error('archive corrupt.', ['league-id' => $league->id]);
+                return abort(500);
             }
         } else {
             Log::error('no files found for league.', ['league-id' => $league->id]);
@@ -139,6 +178,13 @@ class FileDownloadController extends Controller
         }
     }
 
+    /**
+     * download archive with regino reports
+     *
+     * @param \App\Models\Region $region
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\RedirectResponse
+     *
+     */
     public function get_region_league_archive(Region $region)
     {
         Log::info('region league file archive download.', ['region-id' => $region->id]);
@@ -147,7 +193,7 @@ class FileDownloadController extends Controller
             $zip = new ZipArchive;
             $filename = $region->code . '-runden-reports.zip';
             $pf = Storage::disk('public')->path($filename);
-            Log::info('archive location.',['path'=>$pf]);
+            Log::info('archive location.', ['path' => $pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
                 $files = $region->teamware_filenames;
@@ -160,9 +206,12 @@ class FileDownloadController extends Controller
 
                 $zip->close();
                 //  Storage::move(public_path($fileName), 'public/'.$fileName);
-                Log::notice('downloading ZIP archive for region teamware', ['region-id'=>$region->id, 'filecount'=>count($files)]);
+                Log::notice('downloading ZIP archive for region teamware', ['region-id' => $region->id, 'filecount' => count($files)]);
 
                 return Storage::download('public/' . $filename);
+            } else {
+                Log::error('archive corrupt.', ['region-id' => $region->id]);
+                return abort(500);
             }
         } else {
             Log::error('no files found for region.', ['region-id' => $region->id]);
@@ -170,6 +219,13 @@ class FileDownloadController extends Controller
         }
     }
 
+    /**
+     * download archive with region teamware reports
+     *
+     * @param \App\Models\Region $region
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\RedirectResponse
+     *
+     */
     public function get_region_teamware_archive(Region $region)
     {
         Log::info('region teamware file archive download.', ['region-id' => $region->id]);
@@ -178,7 +234,7 @@ class FileDownloadController extends Controller
             $zip = new ZipArchive;
             $filename = $region->code . '-teamware-reports.zip';
             $pf = Storage::disk('public')->path($filename);
-            Log::info('archive location.',['path'=>$pf]);
+            Log::info('archive location.', ['path' => $pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
                 $files = $region->league_filenames;
@@ -191,9 +247,12 @@ class FileDownloadController extends Controller
 
                 $zip->close();
                 //  Storage::move(public_path($fileName), 'public/'.$fileName);
-                Log::notice('downloading ZIP archive for region leagues', ['region-id'=>$region->id, 'filecount'=>count($files)]);
+                Log::notice('downloading ZIP archive for region leagues', ['region-id' => $region->id, 'filecount' => count($files)]);
 
                 return Storage::download('public/' . $filename);
+            } else {
+                Log::error('archive corrupt.', ['region-id' => $region->id]);
+                return abort(500);
             }
         } else {
             Log::error('no files found for region.', ['region-id' => $region->id]);

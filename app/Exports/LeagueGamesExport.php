@@ -14,10 +14,9 @@ class LeagueGamesExport implements WithMultipleSheets
 
     use Exportable;
 
-    protected $scope;
-    protected $league;
+    protected League $league;
 
-    public function __construct($league_id)
+    public function __construct(int $league_id)
     {
         $this->league = League::find($league_id);
     }

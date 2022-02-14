@@ -12,6 +12,7 @@ use Illuminate\Validation\Rule;
 use App\Rules\Uppercase;
 
 use Datatables;
+use Illuminate\Http\JsonResponse;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -166,8 +167,13 @@ class ClubController extends Controller
     /**
      * club  teams datatable
      *
+     * @param Request $request
+     * @param string $language
+     * @param \App\Models\Club $club
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
-    public function team_dt(Request $request, $language, Club $club)
+    public function team_dt(Request $request, string $language, Club $club): JsonResponse
     {
         $clubteam = $club->teams;
 

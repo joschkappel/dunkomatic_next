@@ -19,11 +19,11 @@ class ClubGamesExport implements WithMultipleSheets
 {
     use Exportable;
 
-    protected $club;
-    protected $scope;
-    protected $league;
+    protected Club $club;
+    protected ReportScope $scope;
+    protected League $league;
 
-    public function __construct($club_id, ReportScope $scope,  $league_id = NULL)
+    public function __construct(int $club_id, ReportScope $scope,  int $league_id = NULL)
     {
         $this->club = Club::find($club_id);
         if ($league_id == NULL) {

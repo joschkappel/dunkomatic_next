@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use App\Notifications\NewUser;
 use Illuminate\Support\Facades\Crypt;
-
+use Illuminate\View\View;
 class RegisterController extends Controller
 {
     /*
@@ -129,9 +129,14 @@ class RegisterController extends Controller
     /**
      * Show the application registration form for invited users.
      *
+     * @param string $language
+     * @param \App\Models\Member $member
+     * @param \App\Models\Region $region
+     * @param \App\Models\User $inviting_user
+     * @param string $invited_by
      * @return \Illuminate\View\View
      */
-    public function showRegistrationFormInvited($language, Member $member, Region $region, User $inviting_user, $invited_by)
+    public function showRegistrationFormInvited(string $language, Member $member, Region $region, User $inviting_user, string $invited_by): View
     {
         return view('auth.register_invited', ['language' => $language, 'member' => $member, 'user' => $inviting_user, 'invited_by' => $invited_by, 'region' => $region]);
     }

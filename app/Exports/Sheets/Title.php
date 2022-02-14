@@ -11,11 +11,11 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
 class Title implements FromView, WithTitle, ShouldAutoSize
 {
-    protected $club;
-    protected $hq;
-    protected $rptname;
+    protected Club $club;
+    protected Region $hq;
+    protected string $rptname;
 
-    public function __construct(Club $club, $rptname)
+    public function __construct(Club $club, string $rptname)
     {
         $this->club = $club;
         $this->rptname = $rptname;
