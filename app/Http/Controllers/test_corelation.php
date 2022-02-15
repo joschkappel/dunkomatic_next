@@ -1,6 +1,7 @@
 <?php
 
-function pearson_correlation($x,$y){
+function pearson_correlation(array $x, array $y): float
+{
     if(count($x)!==count($y)){return -1;}
     $x=array_values($x);
     $y=array_values($y);

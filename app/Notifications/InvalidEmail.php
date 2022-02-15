@@ -15,7 +15,7 @@ class InvalidEmail extends Notification
 {
     use Queueable;
 
-    protected Member $cc;
+    protected ?Member $cc;
     protected array $emaillist;
     protected Club $club;
 

@@ -30,8 +30,12 @@ class GenerateClubReportsTest extends SysTestCase
         $league = Game::where('club_id_home',$club->id)->first()->league;
 
         $folder = $region->club_folder;
-        Storage::disk('exports')->assertExists($folder);
-        // Excel::fake();
+        if (Storage::disk('exports')->exists($folder)){
+            Storage::disk('exports')->assertExists($folder);
+            $files = Storage::disk('exports')->allFiles($folder);
+            Storage::disk('exports')->delete($files);
+        }
+
 
         foreach (ReportScope::getInstances() as $rscope) {
             $report = $folder . '/' . $club->shortname;
