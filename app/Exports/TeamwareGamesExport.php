@@ -23,7 +23,7 @@ class TeamwareGamesExport implements FromView, WithCustomCsvSettings
     public function view(): View
     {
 
-        $games = $this->league->games->with('club_home')->sortBy('game_no');
+        $games = $this->league->games()->with('club_home')->get()->sortBy('game_no');
         $scheme = $this->league->league_size->schemes->pluck('game_day','game_no');
 
         return view('reports.teamware_game', ['games'=>$games, 'schemes'=>$scheme] );
