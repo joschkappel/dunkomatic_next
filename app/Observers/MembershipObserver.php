@@ -25,24 +25,26 @@ class MembershipObserver
             Log::info('[OBSERVER] membership created - user exists',['membership-id'=>$membership->id]);
             $u =  $membership->member->user;
             if ($membership->membership_type == Club::class ){
-                Bouncer::allow($u)->to('access', Club::find($membership->membership_id));
+                Bouncer::allow($u)->to(['access'], Club::find($membership->membership_id));
                 Log::info('[OBSERVER] membership created - allow club access',['membership-id'=>$membership->id, 'club-id'=>$membership->membership_id ]);
             } elseif ($membership->membership_type == League::class ){
-                Bouncer::allow($u)->to('access', League::find($membership->membership_id));
+                Bouncer::allow($u)->to(['access'], League::find($membership->membership_id));
                 Log::info('[OBSERVER] membership created - allow league access',['membership-id'=>$membership->id, 'league-id'=>$membership->membership_id ]);
             } elseif ($membership->membership_type == Region::class ){
-                Bouncer::allow($u)->to('access', Region::find($membership->membership_id));
+                Bouncer::allow($u)->to(['access'], Region::find($membership->membership_id));
                 Log::info('[OBSERVER] membership created - allow region access',['membership-id'=>$membership->id, 'region-id'=>$membership->membership_id ]);
             } else {
                 Log::error('unknown membership type',['membership-id'=>$membership->id, 'type'=>$membership->membership_type]);
             }
 
-            if ($u->isregionadmin){
+            if ($u->isRole(Role::RegionLead())){
                 Bouncer::assign('regionadmin')->to($u);
-            } elseif ($u->isrole(Role::ClubLead())){
+            } elseif ($u->isRole(Role::ClubLead())){
                 Bouncer::assign('clubadmin')->to($u);
-            } elseif ($u->isrole(Role::LeagueLead())){
+            } elseif ($u->isRole(Role::LeagueLead())){
                 Bouncer::assign('leagueadmin')->to($u);
+            } else {
+                Bouncer::assign('guest')->to($u);
             }
         }
     }
@@ -66,7 +68,7 @@ class MembershipObserver
      */
     public function deleted(Membership $membership)
     {
-        if ( $membership->load('member')->isuser ){
+        if ( $membership->load('member')->member()->first()->isuser ){
             Log::info('[OBSERVER] membership deleted - user exists',['membership-id'=>$membership->id]);
             if ($membership->member->memberships->where('membership_id',$membership->membership_id)->count() == 0){
                 $u =  $membership->member->user;
@@ -83,11 +85,11 @@ class MembershipObserver
                     Log::error('unknown membership type',['membership-id'=>$membership->id, 'type'=>$membership->membership_type]);
                 }
 
-                if (! $u->isregionadmin){
+                if (! $u->isRole(Role::RegionLead())){
                     Bouncer::retract('regionadmin')->from($u);
-                } elseif (! $u->isrole(Role::ClubLead())){
+                } elseif (! $u->isRole(Role::ClubLead())){
                     Bouncer::retract('clubadmin')->from($u);
-                } elseif (! $u->isrole(Role::LeagueLead())){
+                } elseif (! $u->isRole(Role::LeagueLead())){
                     Bouncer::retract('leagueadmin')->from($u);
                 }
             }

@@ -8,21 +8,22 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
 use Illuminate\Support\Facades\Log;
-use App\Models\User;
 use App\Models\Message;
 
 class CustomMailMessage extends Mailable
 {
     use Queueable, SerializesModels;
 
-    protected $message = array();
-    protected $sender_name;
-    protected $sender_email;
+    protected Message $message;
+    protected string $sender_name;
+    protected string $sender_email;
 
     /**
      * Create a new message instance.
      *
+     * @param Message $message
      * @return void
+     *
      */
     public function __construct(Message $message)
     {

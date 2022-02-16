@@ -16,11 +16,15 @@ class RefereesImport implements ToCollection, WithStartRow, WithValidation
     use Importable;
 
     /**
-    * @param array $rows
-    */
+     * Import data from a collection
+     *
+     * @param Collection $rows
+     * @return void
+     *
+     */
     public function collection(Collection $rows)
     {
-        foreach ($rows as $row){
+        foreach ($rows as $row) {
 
             $ref1 = $row[8];
             $ref2 = $row[9];
@@ -28,20 +32,17 @@ class RefereesImport implements ToCollection, WithStartRow, WithValidation
             $game_no = $row[5];
 
             $t = Game::find($game_id);
-            if (isset($t) ){
-                if (isset($ref1)){
+            if (isset($t)) {
+                if (isset($ref1)) {
                     $t->referee_1 = $ref1;
                     $t->referee_2 = $ref2;
                     $t->save();
-
                 }
 
-                Log::debug('[IMPORT][REFEREES] importing row',['row'=>$row]);
+                Log::debug('[IMPORT][REFEREES] importing row', ['row' => $row]);
             } else {
-                Log::error('[IMPORT][REFEREES] game not found for ',['game id'=>$game_id]);
+                Log::error('[IMPORT][REFEREES] game not found for ', ['game id' => $game_id]);
             };
-
-
         }
     }
 
@@ -49,20 +50,23 @@ class RefereesImport implements ToCollection, WithStartRow, WithValidation
     {
         return 2;
     }
+
     public function rules(): array
     {
         return [
-            '0' => ['integer','exists:games,id'],
-            '5' => ['integer','between:1,240'],  // support 16-team leagues
+            '0' => ['integer', 'exists:games,id'],
+            '5' => ['integer', 'between:1,240'],  // support 16-team leagues
         ];
     }
+
     /**
      * @return array
      */
-    public function customValidationAttributes()
+    public function customValidationAttributes(): array
     {
-        return [ '0' => 'ID',
-                 '5' => __('game.game_no')
-                ];
+        return [
+            '0' => 'ID',
+            '5' => __('game.game_no')
+        ];
     }
 }

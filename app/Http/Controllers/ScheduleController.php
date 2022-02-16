@@ -24,7 +24,10 @@ class ScheduleController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param string $language
+     * @param \App\Models\Region $region
+     * @return \Illuminate\View\View
+     *
      */
     public function index($language, Region $region)
     {
@@ -34,7 +37,10 @@ class ScheduleController extends Controller
     /**
      * Display a listing to compare multiple resources
      *
-     * @return \Illuminate\Http\Response
+     * @param string $language
+     * @param \App\Models\Region $region
+     * @return \Illuminate\View\View
+     *
      */
     public function compare($language, Region $region)
     {
@@ -55,7 +61,10 @@ class ScheduleController extends Controller
     /**
      * Display a listing to compare multiple resources
      *
-     * @return \Illuminate\Http\Response
+     * @param string $language
+     * @param \App\Models\Region $region
+     * @return Datatables
+     *
      */
     public function compare_datatable($language, Region $region)
     {
@@ -113,7 +122,9 @@ class ScheduleController extends Controller
     /**
      * Display a listing of the resource for selecbboxes
      *
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Region $region
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function sb_region(Region $region)
     {
@@ -147,7 +158,10 @@ class ScheduleController extends Controller
     /**
      * Display a listing of the resource for selecbboxes
      *
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Region $region
+     * @param \App\Models\LeagueSize $size
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function sb_region_size(Region $region, LeagueSize $size)
     {
@@ -175,7 +189,9 @@ class ScheduleController extends Controller
     /**
      * Display a listing of the resource for selecbboxes
      *
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Schedule $schedule
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function sb_size(Schedule $schedule)
     {
@@ -201,7 +217,9 @@ class ScheduleController extends Controller
     /**
      * Display a listing of the resource .
      *
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Region $region
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function list(Region $region)
     {
@@ -231,7 +249,7 @@ class ScheduleController extends Controller
                 if ($data->custom_events) {
                     return __('Custom');
                 } else {
-                    if ((League::where('schedule_id', $data->id)->has('games')->count() == 0) and (Bouncer::can(['update-schedules']))) {
+                    if ((League::where('schedule_id', $data->id)->has('games')->count() == 0) and (Bouncer::can('update-schedules'))) {
                         return '<a href="' . route('schedule_event.list', $data) . '">' . $data->events_count . ' <i class="fas fa-arrow-circle-right"></i></a>';
                     } else {
                         return $data->events_count;
@@ -266,7 +284,10 @@ class ScheduleController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param string $language
+     * @param \App\Models\Region $region
+     * @return \Illuminate\View\View
+     *
      */
     public function create($language, Region $region)
     {
@@ -278,11 +299,17 @@ class ScheduleController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function store(Request $request)
     {
-        $data = $request->validate(Schedule::$createRules);
+        $data = $request->validate([
+            'name' => 'required',
+            'region_id' => 'required|exists:regions,id',
+            'league_size_id' => 'required_without:custom_events|exists:league_sizes,id',
+            'iterations' => 'required|integer|min:1|max:3'
+        ]);
         Log::info('schedule form data validated OK.');
 
         if ($request['custom_events'] == 'on') {
@@ -299,21 +326,12 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Schedule  $schedule
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Schedule $schedule)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
+     * @param string $language
      * @param  \App\Models\Schedule  $schedule
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
+     *
      */
     public function edit($language, Schedule $schedule)
     {
@@ -326,11 +344,16 @@ class ScheduleController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Schedule  $schedule
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function update(Request $request, Schedule $schedule)
     {
-        $data = $request->validate(Schedule::$updateRules);
+        $data = $request->validate([
+            'name' => 'required',
+            'league_size_id' => 'required_without:custom_events|exists:league_sizes,id',
+            'iterations' => 'required_without:custom_events|integer|min:1|max:3',
+        ]);
         Log::info('schedule form data validated OK.');
 
         if ($request['custom_events'] == 'on') {
@@ -351,7 +374,8 @@ class ScheduleController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  Schedule $schedule
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function destroy(Schedule $schedule)
     {

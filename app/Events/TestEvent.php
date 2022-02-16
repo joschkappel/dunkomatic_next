@@ -15,7 +15,7 @@ class TestEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $data = ['jochens testing'];
+    public array $data = ['jochens testing'];
 
     /**
      * Create a new event instance.
@@ -30,19 +30,20 @@ class TestEvent implements ShouldBroadcastNow
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return \Illuminate\Broadcasting\Channel|array
+     * @return \Illuminate\Broadcasting\Channel
+     *
      */
-    public function broadcastOn()
+    public function broadcastOn(): Channel
     {
         return new Channel('user-channel');
     }
 
-    public function broadcastAs()
+    public function broadcastAs(): string
     {
         return 'UserEvent';
     }
 
-    public function broadcastWith()
+    public function broadcastWith(): array
     {
         return ['title'=>'this notification from jochen '];
     }

@@ -8,7 +8,7 @@ class SetInitialRegion
   /**
    * Handle the event.
    *
-   * @param  \Illuminate\Auth\Events\Registered  $event
+   * @param  Authenticated  $event
    * @return void
    */
   public function handle(Authenticated $event)

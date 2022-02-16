@@ -35,7 +35,7 @@ class CardList extends Component
     public $cardNewAbility;
 
 
-    public function __construct($cardTitle, $cardNewAction=null, $cardNewTitle='', $cardNewAbility='' )
+    public function __construct(string $cardTitle, string $cardNewAction=null, string $cardNewTitle='', string $cardNewAbility='' )
     {
         $this->cardTitle = $cardTitle;
         if ($cardNewAction){

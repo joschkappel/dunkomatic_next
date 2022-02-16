@@ -31,9 +31,11 @@ class GenerateLeagueReportsTest extends SysTestCase
         $league = Game::first()->league;
 
         $folder = $region->league_folder;
-        Storage::disk('exports')->assertExists($folder);
-        $files = Storage::disk('exports')->allFiles($folder);
-        Storage::disk('exports')->delete($files);
+        if (Storage::disk('exports')->exists($folder)){
+            Storage::disk('exports')->assertExists($folder);
+            $files = Storage::disk('exports')->allFiles($folder);
+            Storage::disk('exports')->delete($files);
+        }
 
         $report = $folder . '/' . $league->shortname;
         $report .= '_games.pdf';

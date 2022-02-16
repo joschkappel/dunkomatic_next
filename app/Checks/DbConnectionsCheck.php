@@ -31,7 +31,8 @@ class DbConnectionsCheck extends Check
 
     }
 
-    protected function getAvailableConnectionsPercentage(){
+    protected function getAvailableConnectionsPercentage(): float
+    {
         $gVariables = DB::select('show global variables');
         $gStatus = DB::select('show global status');
 

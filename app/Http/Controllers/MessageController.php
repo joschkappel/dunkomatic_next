@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Enums\Role as EnumRole;
 use Silber\Bouncer\Database\Role as UserRole;
-use App\Enums\MessageType;
 use BenSampo\Enum\Rules\EnumValue;
 use Datatables;
 use Carbon\Carbon;
@@ -24,7 +23,11 @@ class MessageController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param string $language
+     * @param \App\Models\Region $region
+     * @param \App\Models\User $user
+     * @return \Illuminate\View\View
+     *
      */
     public function index($language, Region $region, User $user)
     {
@@ -34,11 +37,15 @@ class MessageController extends Controller
 
 
     /**
-     * Display a listing of message for the auth user
+     * databales.net listing of messages for the auth user
      *
-     * @return \Illuminate\Http\Response
+     * @param string $language
+     * @param Region $region
+     * @param User $user
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
-    public function datatable_user($language, Region $region, User $user)
+    public function datatable_user(string $language, Region $region, User $user)
     {
         $msgs = $user->region_messages($region->id)->orderBy('updated_at', 'ASC')->get();
 
@@ -64,7 +71,7 @@ class MessageController extends Controller
             })
             ->editColumn('title', function ($msg) use ($language) {
                 if ((isset($msg->sent_at) and ($msg->sent_at) < now())) {
-                    return $msg->title;
+                    return $msg['title'];
                 } else {
                     return '<a href="' . route('message.edit', ['language' => $language, 'message' => $msg->id]) . '">' . $msg->title . ' <i class="fas fa-arrow-circle-right"></i></a>';
                 }
@@ -87,7 +94,11 @@ class MessageController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param string $language
+     * @param \App\Models\Region $region
+     * @param \App\Models\User $user
+     * @return \Illuminate\View\View
+     *
      */
     public function create($language, Region $region, User $user)
     {
@@ -100,7 +111,10 @@ class MessageController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Region $region
+     * @param \App\Models\User $user
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function store(Request $request, Region $region, User $user)
     {
@@ -132,8 +146,10 @@ class MessageController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
+     * @param string $language
      * @param  \App\Models\Message  $message
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
+     *
      */
     public function edit($language, Message $message)
     {
@@ -148,7 +164,8 @@ class MessageController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Message  $message
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function update(Request $request, Message $message)
     {
@@ -186,9 +203,9 @@ class MessageController extends Controller
     /**
      * Mark a message as read
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param   DatabaseNotification $message
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function mark_as_read(DatabaseNotification $message)
     {
@@ -200,8 +217,10 @@ class MessageController extends Controller
     /**
      * sedn notification for this message
      *
-     * @param  $language
-     * @param  \App\Models\Message  $message
+     * @param  string $language
+     * @param  Message  $message
+     * @return bool
+     *
      */
     public function send($language, Message $message)
     {
@@ -216,8 +235,9 @@ class MessageController extends Controller
     /**
      * duplicate a message
      *
-     * @param  $language
-     * @param  \App\Models\Message  $message
+     * @param  string $language
+     * @param  Message  $message
+     * @return bool
      */
     public function copy($language, Message $message)
     {
@@ -234,8 +254,9 @@ class MessageController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Message  $message
-     * @return \Illuminate\Http\Response
+     * @param  Message  $message
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function destroy(Message $message)
     {

@@ -15,7 +15,8 @@ class InviteUser extends Notification
 {
     use Queueable;
 
-    private $sender;
+    private User $sender;
+    private Region $invite_to_region;
 
     /**
      * Create a new notification instance.

@@ -78,8 +78,12 @@ class AppServiceProvider extends ServiceProvider
             if ( ( Str::contains( $exception->getTraceAsString(), 'app/Http/Controllers' ) ) or
                  ( Str::contains( $exception->getTraceAsString(), 'app/Jobs' ) ) or
                  ( Str::contains( $exception->getTraceAsString(), 'app/Observers' ) )  ){
-                info("[LAZY LOADING] [IN CONTROLLER or JOB or OBSERVER]");
-                ( config('app.env') === 'local' ) ? throw $exception : report($exception);
+                    info("[LAZY LOADING] [IN CONTROLLER or JOB or OBSERVER]");
+                    if (config('app.env') === 'local'){
+                        throw $exception;
+                     } else {
+                         report($exception);
+                     }
             }
 
         });

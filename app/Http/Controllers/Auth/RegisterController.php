@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use App\Notifications\NewUser;
 use Illuminate\Support\Facades\Crypt;
-
+use Illuminate\View\View;
 class RegisterController extends Controller
 {
     /*
@@ -93,18 +93,18 @@ class RegisterController extends Controller
             // RBAC - set access to clubs
             $clubs = $member->clubs->unique();
             foreach ($clubs as $c) {
-                Bouncer::allow($user)->to('access', $c);
+                Bouncer::allow($user)->to(['access'], $c);
             }
             // RBAC - set access to league
             $leagues = $member->leagues->unique();
             foreach ($leagues as $l) {
-                Bouncer::allow($user)->to('access', $l);
+                Bouncer::allow($user)->to(['access'], $l);
             }
         }
 
         //RBAC - set user role and region
         Bouncer::assign('candidate')->to($user);
-        Bouncer::allow($user)->to('access', Region::find($data['region_id']));
+        Bouncer::allow($user)->to(['access'], Region::find($data['region_id']));
 
         if (isset($data['invited_by']) and (Crypt::decryptString($data['invited_by']) == $data['email'])) {
             // invited users are auto-approved
@@ -112,14 +112,15 @@ class RegisterController extends Controller
             Log::notice('user approved.', ['user-id' => $user->id]);
             $user->retract('candidate');
             $user->assign('guest');
-            $user->notify(new ApproveUser(Region::find($data['region_id'])->regionadmin->first()->user, Region::find($data['region_id'])));
+            $user->notify(new ApproveUser(Region::find($data['region_id'])));
         } else {
 
-            if (Region::find($data['region_id'])->regionadmin->first()->user->exists()) {
-                $radmin = Region::find($data['region_id'])->regionadmin->first()->user()->first();
-                $radmin->notify(new NewUser($user));
-            } else {
-                Log::error('regionadmin is null');
+            $region = Region::findOrFail($data['region_id']);
+            $radmins = User::whereIs('regionadmin')->get();
+            foreach ($radmins as $radmin){
+                if ($radmin->can('access', $region)){
+                    $radmin->notify(new NewUser($user));    
+                }
             }
         }
 
@@ -129,9 +130,14 @@ class RegisterController extends Controller
     /**
      * Show the application registration form for invited users.
      *
+     * @param string $language
+     * @param \App\Models\Member $member
+     * @param \App\Models\Region $region
+     * @param \App\Models\User $inviting_user
+     * @param string $invited_by
      * @return \Illuminate\View\View
      */
-    public function showRegistrationFormInvited($language, Member $member, Region $region, User $inviting_user, $invited_by)
+    public function showRegistrationFormInvited(string $language, Member $member, Region $region, User $inviting_user, string $invited_by): View
     {
         return view('auth.register_invited', ['language' => $language, 'member' => $member, 'user' => $inviting_user, 'invited_by' => $invited_by, 'region' => $region]);
     }

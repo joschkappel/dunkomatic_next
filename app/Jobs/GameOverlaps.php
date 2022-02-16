@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 
 use App\Models\Region;
 use App\Enums\Role;
@@ -19,18 +20,18 @@ class GameOverlaps implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $region;
-    protected $region_admin;
+    protected Region $region;
 
     /**
      * Create a new job instance.
      *
+     * @param Region $region
      * @return void
+     *
      */
     public function __construct(Region $region)
     {
         $this->region = $region;
-        $this->region_admin = $region->regionadmin()->first();
     }
 
     /**

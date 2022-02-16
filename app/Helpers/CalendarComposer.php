@@ -42,7 +42,7 @@ class CalendarComposer
             foreach ($games as $g) {
                 $eventlist[] = Event::create()
                     ->name($g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest)
-                    ->description( $g->league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 ?? '')
+                    ->description( $g->league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 )
                     ->uniqueIdentifier($g->league->shortname . $g->game_no)
                     ->createdAt(Carbon::now())
                     ->startsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT')))
@@ -93,7 +93,7 @@ class CalendarComposer
             foreach ($games as $g) {
                 $eventlist[] = Event::create()
                     ->name($g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest)
-                    ->description($g->league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 ?? '')
+                    ->description($g->league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 )
                     ->uniqueIdentifier($g->league->shortname . $g->game_no)
                     ->createdAt(Carbon::now())
                     ->startsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT')))
@@ -140,7 +140,7 @@ class CalendarComposer
             foreach ($games as $g) {
                 $eventlist[] = Event::create()
                     ->name($g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest)
-                    ->description($g->league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 ?? '')
+                    ->description($g->league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 )
                     ->uniqueIdentifier($g->league->shortname . $g->game_no)
                     ->createdAt(Carbon::now())
                     ->startsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT')))
@@ -193,7 +193,7 @@ class CalendarComposer
             foreach ($games as $g) {
                 $eventlist[] = Event::create()
                     ->name($g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest)
-                    ->description($g->league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 ?? '')
+                    ->description($g->league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 )
                     ->uniqueIdentifier($g->league->shortname . $g->game_no)
                     ->createdAt(Carbon::now())
                     ->startsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT')))
@@ -249,7 +249,7 @@ class CalendarComposer
             foreach ($games as $g) {
                 $eventlist[] = Event::create()
                     ->name($g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest)
-                    ->description($g->league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 ?? '')
+                    ->description($g->league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 )
                     ->uniqueIdentifier($g->league->shortname . $g->game_no)
                     ->createdAt(Carbon::now())
                     ->startsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT')))

@@ -100,9 +100,9 @@ class ProcessNewSeason implements ShouldQueue
         $schedule_events = ScheduleEvent::all();
         foreach ($schedule_events as $se){
             $weekday = $se->game_date->weekday(); // get weekday of game_date
-            $next_weekday = $se->game_date->addYear(1)->weekday(); // get weekday of game_date + 1 year
+            $next_weekday = $se->game_date->addYear()->weekday(); // get weekday of game_date + 1 year
             // move game_date 1 year ahead but keep weekdays (saturday stays on saturday)
-            $year_game_date = $se->game_date->addYear(1)->addDays($weekday - $next_weekday); // add 1 year and difference of weekdays
+            $year_game_date = $se->game_date->addYear()->addDays($weekday - $next_weekday); // add 1 year and difference of weekdays
             $se->update(['game_date'=>$year_game_date]);
         }
 
@@ -110,22 +110,22 @@ class ProcessNewSeason implements ShouldQueue
         Log::notice('[JOB][NEW SEASON] All schedule events fwdd by 1 year.');
 
         // move region league state end date 1 year fowrward
-        $regions = Region::with('regionadmin')->get();
+        $regions = Region::with('regionadmins')->get();
         foreach ($regions as $r){
             $close_assignment_at = $r->close_assignment_at ?? now();
-            $close_assignment_at = $close_assignment_at->addYear(1)->addDays( $close_assignment_at->weekday() - $close_assignment_at->addYear(1)->weekday() );
+            $close_assignment_at = $close_assignment_at->addYear()->addDays( $close_assignment_at->weekday() - $close_assignment_at->addYear()->weekday() );
 
             $close_registration_at = $r->close_registration_at ?? now();
-            $close_registration_at = $close_registration_at->addYear(1)->addDays( $close_registration_at->weekday() - $close_registration_at->addYear(1)->weekday() );
+            $close_registration_at = $close_registration_at->addYear()->addDays( $close_registration_at->weekday() - $close_registration_at->addYear()->weekday() );
 
             $close_selection_at = $r->close_selection_at ?? now();
-            $close_selection_at = $close_selection_at->addYear(1)->addDays( $close_selection_at->weekday() - $close_selection_at->addYear(1)->weekday() );
+            $close_selection_at = $close_selection_at->addYear()->addDays( $close_selection_at->weekday() - $close_selection_at->addYear()->weekday() );
 
             $close_scheduling_at = $r->close_scheduling_at ?? now();
-            $close_scheduling_at = $close_scheduling_at->addYear(1)->addDays( $close_scheduling_at->weekday() - $close_scheduling_at->addYear(1)->weekday() );
+            $close_scheduling_at = $close_scheduling_at->addYear()->addDays( $close_scheduling_at->weekday() - $close_scheduling_at->addYear()->weekday() );
 
             $close_referees_at = $r->close_referees_at ?? now();
-            $close_referees_at = $close_referees_at->addYear(1)->addDays( $close_referees_at->weekday() - $close_referees_at->addYear(1)->weekday() );
+            $close_referees_at = $close_referees_at->addYear()->addDays( $close_referees_at->weekday() - $close_referees_at->addYear()->weekday() );
 
             $r->update(
                 ['close_assignment_at' => $close_assignment_at,
@@ -134,13 +134,14 @@ class ProcessNewSeason implements ShouldQueue
                 'close_scheduling_at' => $close_scheduling_at,
                 'close_referees_at' => $close_referees_at]
             );
-            $radmins = $r->regionadmin;
-            foreach ($radmins as $ra){
-                app()->setLocale($ra->user->locale);
-                Notification::send($ra, new  CheckRegionSettings($next_season, $r));
-                Notification::send($ra->user, new  CheckRegionSettings($next_season, $r));
+            if ($r->regionadmins()->exists() ){
+                $radmins = $r->regionadmins()->get();
+                foreach ($radmins as $ra){
+                    Notification::send($ra, new  CheckRegionSettings($next_season, $r));
+                    Notification::send($ra->user, new  CheckRegionSettings($next_season, $r));
+                }
+                Log::info('[NOTIFICATION] check region settings.', ['members' => $radmins->pluck('id')]);
             }
-            Log::info('[NOTIFICATION] check region settings.', ['members' => $radmins->pluck('id')]);
         }
         Log::notice('[JOB][NEW SEASON] region league state dates fwdd by 1 year.');
 

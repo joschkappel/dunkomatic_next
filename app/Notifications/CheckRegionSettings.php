@@ -13,15 +13,17 @@ class CheckRegionSettings extends Notification
 {
     use Queueable;
 
-    protected $season;
-    protected $region;
+    protected string $season;
+    protected Region $region;
 
     /**
      * Create a new notification instance.
      *
+     * @param string $season
+     * @param Region $region
      * @return void
      */
-    public function __construct($season, Region $region)
+    public function __construct(string $season, Region $region)
     {
         $this->season = $season;
         $this->region = $region;

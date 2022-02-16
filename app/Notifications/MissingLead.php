@@ -6,21 +6,21 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Collection;
 
 class MissingLead extends Notification
 {
     use Queueable;
 
-    protected $clubs;
-    protected $leagues;
+    protected array $clubs;
+    protected array $leagues;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($clubs, $leagues)
+    public function __construct(array $clubs, array $leagues)
     {
         $this->clubs = $clubs;
         $this->leagues = $leagues;

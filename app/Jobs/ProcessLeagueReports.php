@@ -25,12 +25,14 @@ class ProcessLeagueReports implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private $region;
+    private Region $region;
 
     /**
      * Create a new job instance.
      *
+     * @param Region $region
      * @return void
+     *
      */
     public function __construct(Region $region)
     {
@@ -71,7 +73,7 @@ class ProcessLeagueReports implements ShouldQueue
 
             $rpt_jobs = array();
             foreach ($rtypes as $rtype) {
-                $rpt_jobs[] = new GenerateLeagueGamesReport($region, $l, $rtype, ReportScope::ms_all());
+                $rpt_jobs[] = new GenerateLeagueGamesReport($region, $l, $rtype);
             };
             // add teamware
             $rpt_jobs[] = new GenerateTeamwareReport($l);
@@ -81,7 +83,7 @@ class ProcessLeagueReports implements ShouldQueue
             $batch = Bus::batch($rpt_jobs)
                 ->then(function (Batch $batch) use ($l, $note) {
                     // All jobs completed successfully...
-                    if ($l->memberIsA(Role::LeagueLead)) {
+                    if ($l->memberIsA(Role::LeagueLead())) {
                         $llead = $l->members()->wherePivot('role_id', Role::LeagueLead)->first();
                         $llead->notify($note);
                         Log::info('[NOTIFICATION] league reports available.', ['member-id' => $llead->id]);

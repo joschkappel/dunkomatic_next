@@ -15,16 +15,16 @@ class InvalidEmail extends Notification
 {
     use Queueable;
 
-    protected $cc;
-    protected $emaillist;
-    protected $club;
+    protected ?Member $cc;
+    protected array $emaillist;
+    protected Club $club;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Club $club, ?Member $cc, $emaillist)
+    public function __construct(Club $club, ?Member $cc, array $emaillist)
     {
         $this->cc = $cc;
         $this->emaillist = $emaillist;

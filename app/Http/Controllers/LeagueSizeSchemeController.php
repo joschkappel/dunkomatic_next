@@ -15,7 +15,8 @@ class LeagueSizeSchemeController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
+     *
      */
     public function index()
     {
@@ -23,6 +24,13 @@ class LeagueSizeSchemeController extends Controller
         return view('league/league_scheme_list');
     }
 
+    /**
+     * Display a pivot list (leagues as columns)
+     *
+     * @param \App\Models\LeagueSize $size
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
     public function list_piv(LeagueSize $size)
     {
         Log::info('preparing laegue scheme pivot table.', ['league-size-id'=>$size->id]);

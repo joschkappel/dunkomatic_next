@@ -27,13 +27,13 @@ class GenerateClubGamesReport implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $export_folder;
-    protected $rpt_name;
-    protected $club;
-    protected $region;
-    protected $scope;
-    protected $rtype;
-    protected $league;
+    protected string $export_folder;
+    protected string $rpt_name;
+    protected Club $club;
+    protected Region $region;
+    protected ReportScope $scope;
+    protected ReportFileType $rtype;
+    protected ?League $league;
 
 
     /**
@@ -41,20 +41,20 @@ class GenerateClubGamesReport implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Region $region, Club $club, ReportFileType $rtype, ReportScope $scope, League $league = NULL)
+    public function __construct(Region $region, Club $club, ReportFileType $rtype, ReportScope $scope, League $league = null)
     {
         // set report scope
         $this->region = $region;
         $this->club = $club;
         $this->league = $league;
-        $this->scope = $scope->value;
+        $this->scope = $scope;
         $this->rtype = $rtype;
 
         // make sure folders are there
         $this->export_folder = $region->club_folder;
         $this->rpt_name = $this->export_folder . '/' . $this->club->shortname;
 
-        switch ($this->scope) {
+        switch ($this->scope->value) {
             case ReportScope::ms_all:
                 $this->rpt_name .= '_games.';
                 break;
@@ -95,14 +95,14 @@ class GenerateClubGamesReport implements ShouldQueue
             'scope' => ReportScope::coerce($this->scope)->key]);
 
         if ($this->rtype->hasFlag(ReportFileType::PDF)) {
-            Excel::store( new ClubGamesExport($this->club->id, new ReportScope($this->scope), (isset($this->league->id)) ? $this->league->id : NULL),
+            Excel::store( new ClubGamesExport($this->club->id, $this->scope, (isset($this->league->id)) ? $this->league->id : NULL),
                           $this->rpt_name,
                           'exports',
                           \Maatwebsite\Excel\Excel::MPDF);
         } elseif ($this->rtype->hasFlag(ReportFileType::ICS)) {
             // do calendar files
             $calendar = null;
-            switch ($this->scope) {
+            switch ($this->scope->value) {
                 case ReportScope::ss_club_all:
                     $calendar = CalendarComposer::createClubCalendar($this->club);
                     break;
@@ -120,7 +120,7 @@ class GenerateClubGamesReport implements ShouldQueue
                 Storage::disk('exports')->put($this->rpt_name, $calendar->get());
             }
         } else {
-            Excel::store(new ClubGamesExport($this->club->id, new ReportScope($this->scope), (isset($this->league->id)) ? $this->league->id : NULL), $this->rpt_name, 'exports');
+            Excel::store(new ClubGamesExport($this->club->id, $this->scope, (isset($this->league->id)) ? $this->league->id : NULL), $this->rpt_name, 'exports');
         }
     }
 }

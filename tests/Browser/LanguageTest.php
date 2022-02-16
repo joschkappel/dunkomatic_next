@@ -12,8 +12,6 @@ use Tests\DuskTestCase;
 class LanguageTest extends DuskTestCase
 {
   use DatabaseMigrations;
-    private $user;
-    private $member;
 
     public function setUp(): void
     {
@@ -31,7 +29,7 @@ class LanguageTest extends DuskTestCase
     public function testLanguageSwitch()
     {
         $r = Region::where('code','HBVDA')->first();
-        $u = $r->regionadmin->first()->user()->first();
+        $u = $r->regionadmins->first()->user()->first();
 
         $this->browse(function ($browser) use ($u) {
 

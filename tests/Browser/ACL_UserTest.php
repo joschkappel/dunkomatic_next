@@ -147,13 +147,13 @@ class ACL_UserTest extends DuskTestCase
         $u2a = static::$user_approved;
         $u2na = static::$user_notapproved;
 
-        $this->browse(function ($browser) use ($user, $u2a, $u2na) {
+        $this->browse(function ($browser) use ($user, $u2na) {
             $browser->loginAs($user)->visitRoute('admin.user.index.new',['language'=>'de','region'=>static::$region]);
 
             if ( $user->can('update-users') ) {
                 $browser->assertRouteIs('admin.user.index.new',['language'=>'de','region'=>static::$region])->waitFor('.table');
 
-                $browser->with('.table', function ($sRow) use ($user, $u2a, $u2na) {
+                $browser->with('.table', function ($sRow) use ($u2na) {
                     $sRow->waitForText($u2na->name);
                     $sRow->assertPresent('#btnApprove')->assertSee($u2na->name)->assertButtonEnabled('#btnApprove');
 
@@ -180,7 +180,7 @@ class ACL_UserTest extends DuskTestCase
                 $browser->assertRouteIs('admin.user.index',['language'=>'de','region'=>static::$region])->waitFor('.table');
 
                 if ($user->canAny('update-users')) {
-                    $browser->with('.table', function ($sRow) use ($user, $u2a, $u2na) {
+                    $browser->with('.table', function ($sRow) use ($u2a, $u2na) {
                         $sRow->waitForLink($u2a->name);
                         $sRow->waitForText($u2na->name);
 
@@ -198,7 +198,7 @@ class ACL_UserTest extends DuskTestCase
                         ($user->can('create-users')) ? $sRow->assertPresent('#deleteUser') : $sRow->assertNotPressent('#deleteUser');
                     });
                 } else {
-                    $browser->with('.table', function ($sRow) use ($user, $u2a, $u2na) {
+                    $browser->with('.table', function ($sRow) use ($u2a, $u2na) {
                         $sRow->assertDontSeeLink($u2a->name)
                                 ->assertSee($u2a->name)
                                 ->assertSeeDontSeeLink($u2na->name)

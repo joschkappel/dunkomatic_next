@@ -20,21 +20,21 @@ class LeagueGamesImport implements ToCollection, WithStartRow, WithValidation, W
 {
     use Importable;
 
-    public $league;
-    public $game_cnt;
+    public League $league;
+    public string $game_cnt = "0";
 
     // "Nr","Datum Spieltag","Beginn","Heim","Gast","Halle","Schiri 1","Schiri 2"
     // "1","19.09.2021","16:00","RIMB1","EBER2","1","null","null"
     public function __construct(League $league)
     {
         $this->league = $league;
-        $this->game_cnt = strval($this->league->size * ($this->league->size -1 )) ?? "0";
+        $this->game_cnt = strval($this->league->size * ($this->league->size -1 ));
     }
 
     /**
-     * @param array $rows
+     * @param Collection $rows
+     * @return void
      *
-     * @return \Illuminate\Database\Eloquent\Model|null
      */
     public function collection(Collection $rows)
     {
@@ -80,7 +80,7 @@ class LeagueGamesImport implements ToCollection, WithStartRow, WithValidation, W
         ];
     }
 
-    public function prepareForValidation($data, $index)
+    public function prepareForValidation(array $data): array
     {
         $data['league_id'] = $this->league->id;
         $data['club_id_home'] = Club::where('shortname', Str::substr($data[3],0,4) )->first()->id ?? null;
@@ -96,66 +96,71 @@ class LeagueGamesImport implements ToCollection, WithStartRow, WithValidation, W
     }
 
     /**
+     * @param string $error_code
+     * @param array $values
+     * @param string $attribute
      * @return string
      */
-    public function buildValidationMessage($error_code, $values, $attribute )
+    public function buildValidationMessage(string $error_code, array $values, string $attribute ): string
     {
         $ec = explode('-', $error_code)[0];
         $value = $values[ strval( explode('-', $error_code)[1]) ];
 
         switch ($ec) {
             case 'V.R':
-                return __('validation.required',['attribute'=> $attribute]);
+                $err_txt = __('validation.required',['attribute'=> $attribute]);
                 break;
             case 'V.I':
-                return __('validation.integer',['attribute'=> $value]);
+                $err_txt = __('validation.integer',['attribute'=> $value]);
                 break;
             case 'V.S':
-                return __('validation.string',['attribute'=> $value]);
+                $err_txt = __('validation.string',['attribute'=> $value]);
                 break;
             case 'V.D':
-                return  __('validation.date',['attribute'=> $value ]);
+                $err_txt =  __('validation.date',['attribute'=> $value ]);
                 break;
             case 'V.DF':
-                return  __('validation.date_format',['attribute'=> $value, 'format'=> __('game.gametime_format')]);
+                $err_txt =  __('validation.date_format',['attribute'=> $value, 'format'=> __('game.gametime_format')]);
                 break;
 
             case 'GAME.B01':
-                return __('validation.between.numeric',['attribute'=> $value, 'min'=>'1', 'max'=>$this->game_cnt]);
+                $err_txt = __('validation.between.numeric',['attribute'=> $value, 'min'=>'1', 'max'=>$this->game_cnt]);
                 break;
             case 'GAME.R01':
-                return __('import.game_id.required',['game'=>$value, 'league'=>$this->league->shortname, 'home'=>Str::substr($values['3'],0,4)]);
+                $err_txt = __('import.game_id.required',['game'=>$value, 'league'=>$this->league->shortname, 'home'=>Str::substr($values['3'],0,4)]);
                 break;
 
             case 'CLUBH.R01':
-                return __('import.club_id.required',['who'=> __('game.team_home') , 'club'=>Str::substr($value,0,4)]);
+                $err_txt = __('import.club_id.required',['who'=> __('game.team_home') , 'club'=>Str::substr($value,0,4)]);
                 break;
             case 'CLUBG.R01':
-                return __('import.club_id.required',['who'=> __('game.team_guest') , 'club'=>Str::substr($value,0,4)]);
+                $err_txt = __('import.club_id.required',['who'=> __('game.team_guest') , 'club'=>Str::substr($value,0,4)]);
                 break;
             case 'TEAMH.R01':
-                return __('import.team_id.required',['who'=> __('game.team_home') , 'team'=>$value]);
+                $err_txt = __('import.team_id.required',['who'=> __('game.team_home') , 'team'=>$value]);
                 break;
             case 'TEAMG.R01':
-                return __('import.team_id.required',['who'=> __('game.team_guest') , 'team'=>$value]);
+                $err_txt = __('import.team_id.required',['who'=> __('game.team_guest') , 'team'=>$value]);
                 break;
 
 
             case 'GYM.R01':
-                return __('import.gym_id.required',['gym'=>$value, 'home'=>Str::substr($values['4'],0,4)]);
+                $err_txt = __('import.gym_id.required',['gym'=>$value, 'home'=>Str::substr($values['4'],0,4)]);
                 break;
             case 'GYM.B01':
-                return __('validation.between.numeric',['attribute'=>$value, 'min'=>'1', 'max'=>'10']);
+                $err_txt = __('validation.between.numeric',['attribute'=>$value, 'min'=>'1', 'max'=>'10']);
                 break;
 
             default:
-                return 'unknown error: ('.$error_code.')';
+                $err_txt = 'unknown error: ('.$error_code.')';
                 break;
         }
 
+        return $err_txt;
+
     }
 
-    public function customValidationMessages()
+    public function customValidationMessages(): array
     {
         return [
             '0.required' => 'V.R-0',
@@ -186,7 +191,7 @@ class LeagueGamesImport implements ToCollection, WithStartRow, WithValidation, W
         ];
     }
 
-    public function customValidationAttributes()
+    public function customValidationAttributes(): array
     {
         return [
             '0' => __('game.game_no'),

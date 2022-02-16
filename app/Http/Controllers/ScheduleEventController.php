@@ -30,8 +30,7 @@ class ScheduleEventController extends Controller
                group by game_date
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Schedule  $schedule
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function list_piv(Request $request)
     {
@@ -61,7 +60,9 @@ class ScheduleEventController extends Controller
     /**
      * Display a ‚listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Schedule $schedule
+     * @return \Illuminate\View\View
+     *
      */
     public function list(Schedule $schedule)
     {
@@ -133,7 +134,9 @@ class ScheduleEventController extends Controller
     /**
      * Display a calendar listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Region $region
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function list_cal(Region $region)
     {
@@ -174,7 +177,9 @@ class ScheduleEventController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Schedule $schedule
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function store(Request $request, Schedule $schedule)
     {
@@ -212,7 +217,9 @@ class ScheduleEventController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Schedule $schedule
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function clone(Request $request, Schedule $schedule)
     {
@@ -238,7 +245,9 @@ class ScheduleEventController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Schedule $schedule
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function shift(Request $request, Schedule $schedule)
     {
@@ -269,8 +278,9 @@ class ScheduleEventController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Schedule  $schedule
-     * @return \Illuminate\Http\Response
+     * @param  \App\Models\ScheduleEvent  $schedule_event
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function update(Request $request, ScheduleEvent $schedule_event)
     {
@@ -291,7 +301,8 @@ class ScheduleEventController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Schedule  $schedule
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function list_destroy(Schedule $schedule)
     {

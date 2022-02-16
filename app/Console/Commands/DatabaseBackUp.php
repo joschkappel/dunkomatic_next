@@ -41,7 +41,7 @@ class DatabaseBackUp extends Command
     public function handle()
     {
         $filename = 'backup-' . env('DB_DATABASE').'-'.Carbon::now()->format('Y-m-d-His') . '.gz';
-        $filepath = Storage::disk('backup')->getAdapter()->applyPathPrefix($filename);
+        $filepath = Storage::disk('backup')->path($filename);
 
         $command = 'mysqldump --column-statistics=0 --user='.env('DB_USERNAME').' --password='.env('DB_PASSWORD').' --host='.env('DB_HOST').' '.env('DB_DATABASE').' | gzip > '. $filepath;
         $returnVar = NULL;

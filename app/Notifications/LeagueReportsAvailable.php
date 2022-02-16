@@ -14,7 +14,7 @@ class LeagueReportsAvailable extends Notification
 {
     use Queueable;
 
-    protected $league;
+    protected League $league;
 
     /**
      * Create a new notification instance.

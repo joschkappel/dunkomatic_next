@@ -62,8 +62,6 @@ class LangFilter implements FilterInterface
 
         if ($this->translator->has($key)) {
             return $this->translator->get($key);
-        } elseif ($this->translator->has($key)) {
-            return $this->translator->get($key);
         }
 
         // When no translation available, return the original key.

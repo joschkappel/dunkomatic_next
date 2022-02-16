@@ -17,8 +17,10 @@ class LeagueMembershipController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param string $language
      * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function index($language, League $league)
     {
@@ -40,8 +42,9 @@ class LeagueMembershipController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param string $language
      * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function create($language, League $league)
     {
@@ -55,7 +58,8 @@ class LeagueMembershipController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\League  $league
      * @param  \App\Models\Member  $member
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function add(Request $request, League $league, Member $member)
     {
@@ -84,7 +88,8 @@ class LeagueMembershipController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\League  $league
      * @param  \App\Models\Member  $member
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function update(Request $request, League $league, Member $member)
     {
@@ -117,9 +122,10 @@ class LeagueMembershipController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\League $league
-     * @param  \App\Member  $member
-     * @return \Illuminate\Http\Response
+     * @param  \App\Models\League $league
+     * @param  \App\Models\Member  $member
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function destroy(League $league, Member $member)
     {

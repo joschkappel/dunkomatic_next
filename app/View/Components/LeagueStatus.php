@@ -37,7 +37,7 @@ class LeagueStatus extends Component
      *
      * @return void
      */
-    public function __construct( League $league, $mode='progressbar')
+    public function __construct( League $league, string $mode='progressbar')
     {
         $this->currentState = $league->state;
         $this->league_kpis = $league->state_count;

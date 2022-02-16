@@ -12,14 +12,14 @@ class NewSeason extends Notification
 {
     use Queueable;
 
-    protected $season;
+    protected string $season;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($season)
+    public function __construct(string $season)
     {
         $this->season = $season;
     }

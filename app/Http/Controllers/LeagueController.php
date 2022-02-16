@@ -34,7 +34,10 @@ class LeagueController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param string $language
+     * @param \App\Models\Region $region
+     * @return \Illuminate\View\View
+     *
      */
     public function index($language, Region $region)
     {
@@ -45,7 +48,9 @@ class LeagueController extends Controller
     /**
      * Display a listing of the resource .
      *
-     * @return \Illuminate\Http\Response
+     * @param string $language
+     * @param \App\Models\Region $region
+     * @return \Illuminate\Http\JsonResponse
      */
     public function list($language, Region $region)
     {
@@ -124,7 +129,9 @@ class LeagueController extends Controller
     /**
      * Display a listing of the resource for selectboxes. clubs for league
      *
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\League $league
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function sb_club(League $league)
     {
@@ -133,7 +140,7 @@ class LeagueController extends Controller
         $clubs = League::find($league->id)->region->clubs()->orderBy('shortname', 'ASC')->get();
         $leagueclubs = $league->clubs()->pluck('id');
 
-        Log::info('preparing select2 club list for a league', ['league'=>$league->id, 'count' => count($clubs)] );
+        Log::info('preparing select2 club list for a league', ['league' => $league->id, 'count' => count($clubs)]);
         $response = array();
 
         foreach ($clubs as $c) {
@@ -155,14 +162,16 @@ class LeagueController extends Controller
     /**
      * Display a listing of the resource for selectboxes.
      *
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Region $region
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function sb_region(Region $region)
     {
 
         $leagues = $region->leagues()->orderBy('shortname', 'ASC')->get();
 
-        Log::info('preparing select2 league list', ['count' => count($leagues)] );
+        Log::info('preparing select2 league list', ['count' => count($leagues)]);
         $response = array();
 
         foreach ($leagues as $league) {
@@ -174,6 +183,13 @@ class LeagueController extends Controller
         return Response::json($response);
     }
 
+    /**
+     * select2 list for all free cahractersd of a league
+     *
+     * @param \App\Models\League $league
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
     public function sb_freechars(League $league)
     {
         $size = $league->size;
@@ -186,8 +202,9 @@ class LeagueController extends Controller
 
         $freechars = array_diff($all_chars, $team_chars);
         // Log::debug(print_r($freechars,true));
+        $response = array();
 
-        Log::info('preparing select2 free league places list', ['count' => count($freechars)] );
+        Log::info('preparing select2 free league places list', ['count' => count($freechars)]);
         foreach ($freechars as $key => $value) {
             $response[] = array(
                 "id" => $key + 1,
@@ -202,13 +219,17 @@ class LeagueController extends Controller
     /**
      * Display a dashboard
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param string $language
+     * @param \App\Models\League $league
+     * @return \Illuminate\View\View
+     *
      */
     public function dashboard(Request $request, $language, League $league)
     {
 
-        if ( !Bouncer::canAny(['create-leagues', 'update-leagues'])) {
-            Log::warning('[ACCESS DENIED]',['url'=> $request->path(), 'ip'=> $request->ip() ]);
+        if (!Bouncer::canAny(['create-leagues', 'update-leagues'])) {
+            Log::warning('[ACCESS DENIED]', ['url' => $request->path(), 'ip' => $request->ip()]);
             abort(403);
         }
         $data['league'] = $league;
@@ -225,14 +246,17 @@ class LeagueController extends Controller
         //Log::debug(print_r($reports,true));
         $data['files'] = $reports;
 
-        Log::info('showing league dashboard',['league-id'=>$league->id]);
+        Log::info('showing league dashboard', ['league-id' => $league->id]);
         return view('league/league_dashboard', $data);
     }
 
     /**
      * Display a brief overview
      *
-     * @return \Illuminate\Http\Response
+     * @param string $language
+     * @param \App\Models\League $league
+     * @return \Illuminate\View\View
+     *
      */
     public function briefing($language, League $league)
     {
@@ -247,14 +271,17 @@ class LeagueController extends Controller
         $data['memberships'] = $league->memberships()->with('member')->get();
         $data['teams'] = $teams;
 
-        Log::info('showing league briefing',['league-id'=>$league->id]);
+        Log::info('showing league briefing', ['league-id' => $league->id]);
         return view('league/league_briefing', $data);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param string $language
+     * @param \App\Models\Region $region
+     * @return \Illuminate\View\View
+     *
      */
     public function create($language, Region $region)
     {
@@ -273,7 +300,9 @@ class LeagueController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Region $region
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function store(Request $request, Region $region)
     {
@@ -303,27 +332,18 @@ class LeagueController extends Controller
 
         $league = new League($data);
         $region->leagues()->save($league);
-        Log::notice('new league created.', ['league-id'=>$league->id]);
+        Log::notice('new league created.', ['league-id' => $league->id]);
 
         return redirect()->route('league.index', ['language' => app()->getLocale(), 'region' => $region]);
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\Response
-     */
-    public function show(League $league)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
+     * @param string $language
      * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
+     *
      */
     public function edit($language, League $league)
     {
@@ -347,7 +367,8 @@ class LeagueController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function update(Request $request, League $league)
     {
@@ -382,7 +403,7 @@ class LeagueController extends Controller
 
         $result = $league->update($data);
         $league->refresh();
-        Log::notice('league updated', ['league-id'=> $league->id]);
+        Log::notice('league updated', ['league-id' => $league->id]);
         return redirect()->route('league.dashboard', ['language' => app()->getLocale(), 'league' => $league]);
     }
 
@@ -390,7 +411,8 @@ class LeagueController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function destroy(League $league)
     {
@@ -401,42 +423,53 @@ class LeagueController extends Controller
             $t->league_no = null;
             $t->save();
         }
-        Log::info('league teams reset',['league-id'=>$league->id]);
+        Log::info('league teams reset', ['league-id' => $league->id]);
 
         $mships = $league->memberships()->get();
         foreach ($mships as $ms) {
             $ms->delete();
         }
-        Log::info('league memberships deleted',['league-id'=>$league->id]);
+        Log::info('league memberships deleted', ['league-id' => $league->id]);
 
         $region = $league->region;
         $league->delete();
-        Log::notice('league deleted',['league-id'=>$league->id]);
+        Log::notice('league deleted', ['league-id' => $league->id]);
 
         return redirect()->route('league.index', ['language' => app()->getLocale(), 'region' => $region]);
     }
 
     /**
-     * display management dashboard
+     * Display a view to manage all leagues of a region
+     *
+     * @param Request $request
+     * @param string $language
+     * @param \App\Models\Region $region
+     * @return \Illuminate\View\View
      *
      */
     public function index_mgmt(Request $request, $language, Region $region)
     {
         if (!Bouncer::canAny(['create-leagues', 'update-leagues'])) {
-            Log::warning('[ACCESS DENIED]',['url'=> $request->path(), 'ip'=> $request->ip() ]);
+            Log::warning('[ACCESS DENIED]', ['url' => $request->path(), 'ip' => $request->ip()]);
             abort(403);
         }
         Log::info('showing league management list');
         return view('league.league_list_mgmt', ['language' => $language, 'region' => $region]);
     }
+
     /**
-     * league datatables club assignments
+     * datatables.net with a league of a region (for maagement)
+     *
+     * @param Request $request
+     * @param string $language
+     * @param \App\Models\Region $region
+     * @return \Illuminate\Http\JsonResponse
      *
      */
     public function list_mgmt(Request $request, $language, Region $region)
     {
         if (!Bouncer::canAny(['create-leagues', 'update-leagues'])) {
-            Log::warning('[ACCESS DENIED]',['url'=> $request->path(), 'ip'=> $request->ip() ]);
+            Log::warning('[ACCESS DENIED]', ['url' => $request->path(), 'ip' => $request->ip()]);
             abort(403);
         }
 
@@ -528,12 +561,14 @@ class LeagueController extends Controller
                 $btnlist = '';
 
                 $ccnt = 1;
+                $data->size = $data->size == null ? 0 : $data->size;
+
                 foreach ($data->loadMissing('clubs')->clubs->pluck('shortname') as $k => $c) {
                     $btnlist .= '<button type="button" class="btn btn-info btn-sm">' . $c . '</button> ';
                     $ccnt += 1;
                 };
                 if ($data->state->is(LeagueState::Assignment())) {
-                    for ($i = $ccnt; $i <= $data->size ?? 0; $i++) {
+                    for ($i = $ccnt; $i <= $data->size; $i++) {
                         $btnlist .= '<button type="button" class="btn btn-danger btn-sm" ><i class="fas fa-question"></i></button> ';
                     }
                 }
@@ -567,18 +602,23 @@ class LeagueController extends Controller
     }
 
     /**
-     * league teams datatable
+     * databtales.net list with all teamsa fo a league
+     *
+     * @param Request $request
+     * @param string $language
+     * @param \App\Models\League $league
+     * @return \Illuminate\Http\JsonResponse
      *
      */
     public function team_dt(Request $request, $language, League $league)
     {
         $clubteam = collect();
-        $c_keys = collect( range(1, $league->size));
-        $t_keys = collect( range(1, $league->size));
+        $c_keys = collect(range(1, $league->size));
+        $t_keys = collect(range(1, $league->size));
 
-        $clubs = $league->clubs->sortBy('pivot.league_no');
-        foreach ($clubs as $c){
-            $clubteam[ ] = array(
+        $clubs = $league->clubs()->get()->sortBy('pivot.league_no');
+        foreach ($clubs as $c) {
+            $clubteam[] = array(
                 'club_shortname' => $c->shortname,
                 'club_league_no' => $c->pivot->league_no ?? null,
                 'club_id' => $c->id,
@@ -587,30 +627,35 @@ class LeagueController extends Controller
                 'team_league_no' => null,
                 'team_league_char' => null,
                 'team_no' => null,
-                'region_code' => $c->region->code );
-            if ($c->pivot->league_no != null ) { $c_keys->pull($c->pivot->league_no-1); };
+                'region_code' => $c->region->code
+            );
+            if ($c->pivot->league_no != null) {
+                $c_keys->pull($c->pivot->league_no - 1);
+            };
         }
         $teams = $league->teams;
 
-        $clubteam->transform( function ($item) use (&$teams, &$t_keys) {
+        $clubteam->transform(function ($item) use (&$teams, &$t_keys) {
             $k = $teams->search(function ($t) use ($item) {
                 return (($t['club_id'] == $item['club_id']) and ($item['team_id'] == null));
             });
-            if ($k !== false ){
+            if ($k !== false) {
                 $item['team_id'] = $teams[$k]->id;
                 $item['team_name'] = $teams[$k]->name;
                 $item['team_league_no'] = $teams[$k]->league_no;
                 $item['team_league_char'] = $teams[$k]->league_char;
                 $item['team_no'] = $teams[$k]->team_no;
 
-                if ($teams[$k]->league_no != null ) { $t_keys->pull($teams[$k]->league_no-1); };
+                if ($teams[$k]->league_no != null) {
+                    $t_keys->pull($teams[$k]->league_no - 1);
+                };
 
                 $teams->pull($k);
             }
             return $item;
         });
 
-        foreach ($teams as $t){
+        foreach ($teams as $t) {
             $clubteam[] = array(
                 'club_shortname' => null,
                 'club_league_no' => null,
@@ -619,13 +664,16 @@ class LeagueController extends Controller
                 'team_name' => $t->name,
                 'team_league_no' => $t->league_no,
                 'team_league_char' => $t->league_char,
-                'team_no' => $t->team_no ,
-                'region_code' => null );
-            if ($t->league_no != null ) { $t_keys->pull($t->league_no-1); };
+                'team_no' => $t->team_no,
+                'region_code' => null
+            );
+            if ($t->league_no != null) {
+                $t_keys->pull($t->league_no - 1);
+            };
         }
 
 
-        for ($i=count($clubteam); $i < ($league->size); $i++){
+        for ($i = count($clubteam); $i < ($league->size); $i++) {
             $clubteam[] = array(
                 'club_shortname' => null,
                 'club_league_no' => null,
@@ -634,17 +682,18 @@ class LeagueController extends Controller
                 'team_name' => null,
                 'team_league_no' => null,
                 'team_league_char' => null,
-                'team_no' => null ,
-                'region_code' => null );
+                'team_no' => null,
+                'region_code' => null
+            );
         }
 
         $available_no = $t_keys->collect();
 
         $regions = collect();
-        if ($league->region->is_top_level){
-            $regions = $league->region->childRegions->pluck('code','id');
+        if ($league->region->is_top_level) {
+            $regions = $league->region->childRegions->pluck('code', 'id');
         } else {
-            $regions = $league->region()->pluck('code','id');
+            $regions = $league->region()->pluck('code', 'id');
         }
 
 
@@ -653,31 +702,30 @@ class LeagueController extends Controller
         return $teamlist
             ->addIndexColumn()
             ->rawColumns([
-                'club_shortname.display','team_name', 'team_league_no.display'
+                'club_shortname.display', 'team_name', 'team_league_no.display'
             ])
-            ->editColumn('club_shortname', function ($ct) use($league, &$c_keys, $regions) {
-                if ( (Auth::user()->can('update-leagues')) and ($league->state->in([ LeagueState::Assignment, LeagueState::Selection, LeagueState::Registration  ])) ){
-                    if ($ct['club_shortname'] != null){
-                        $btn = '<button id="deassignClub" data-id="'.$ct['club_id'].'" type="button" class="btn btn-success btn-sm">';
+            ->editColumn('club_shortname', function ($ct) use ($league, &$c_keys, $regions) {
+                if ((Auth::user()->can('update-leagues')) and ($league->state->in([LeagueState::Assignment, LeagueState::Selection, LeagueState::Registration]))) {
+                    if ($ct['club_shortname'] != null) {
+                        $btn = '<button id="deassignClub" data-id="' . $ct['club_id'] . '" type="button" class="btn btn-success btn-sm">';
                         $btn .= $ct['club_shortname'];
-                        $btn .= ( $league->region->is_top_level) ? ' ('.$ct['region_code'].')' : '';
+                        $btn .= ($league->region->is_top_level) ? ' (' . $ct['region_code'] . ')' : '';
                     } else {
-                        if ($regions->count() > 1 ){
+                        if ($regions->count() > 1) {
                             $btn = __('club.select.byregion');
-                            foreach ($regions as $ri => $rc){
-                                $btn .= '<button id="assignClub" data-region-id="'.$ri.'" data-region-code="'.$rc.'" type="button" class="btn btn-outline-info btn-sm">';
-                                $btn .= $rc.'</button>';
+                            foreach ($regions as $ri => $rc) {
+                                $btn .= '<button id="assignClub" data-region-id="' . $ri . '" data-region-code="' . $rc . '" type="button" class="btn btn-outline-info btn-sm">';
+                                $btn .= $rc . '</button>';
                             }
-
                         } else {
-                            $btn = '<button id="assignClub" data-region-id="'.$regions->keys()->first().'" data-region-code="'.$regions->first().'" type="button" class="btn btn-outline-info btn-sm">';
-                            $btn .= __('club.action.select').'</button>';
+                            $btn = '<button id="assignClub" data-region-id="' . $regions->keys()->first() . '" data-region-code="' . $regions->first() . '" type="button" class="btn btn-outline-info btn-sm">';
+                            $btn .= __('club.action.select') . '</button>';
                         }
                     }
                 } else {
                     $btn = $ct['club_shortname'] ?? '';
                 }
-                if ($ct['club_league_no'] != null){
+                if ($ct['club_league_no'] != null) {
                     $sortkey = $ct['club_league_no'];
                 } else {
                     $sortkey = $c_keys->shift();
@@ -685,28 +733,29 @@ class LeagueController extends Controller
 
                 return array('display' => $btn, 'sort' => $sortkey);
             })
-            ->editColumn('team_name', function ($ct) use($league) {
-                if ( (Auth::user()->can('update-leagues')) and
-                     ($league->state->in([ LeagueState::Selection, LeagueState::Registration, LeagueState::Scheduling, LeagueState::Freeze  ]))){
-                    if ($ct['team_name'] != null){
+            ->editColumn('team_name', function ($ct) use ($league) {
+                if ((Auth::user()->can('update-leagues')) and
+                    ($league->state->in([LeagueState::Selection, LeagueState::Registration, LeagueState::Scheduling, LeagueState::Freeze]))
+                ) {
+                    if ($ct['team_name'] != null) {
                         $btn = '<button type="button" class="btn btn-secondary btn-sm" id="unregisterTeam"';
-                        $btn .= 'data-team-id="'.$ct['team_id'].'">'.$ct['team_name'].'</button>';
+                        $btn .= 'data-team-id="' . $ct['team_id'] . '">' . $ct['team_name'] . '</button>';
                     } else {
-                        if ($ct['club_id'] != null ){
+                        if ($ct['club_id'] != null) {
                             $unregistered_teams = Club::find($ct['club_id'])->teams->whereNull('league_id');
-                            if ( $unregistered_teams->count() > 0){
-                                $btn = '<div class="btn-group btn-group-sm"><button type="button" class="btn btn-sm btn-secondary dropdpwn-toggle" data-toggle="dropdown">'.__('team.action.select').'</button>';
+                            if ($unregistered_teams->count() > 0) {
+                                $btn = '<div class="btn-group btn-group-sm"><button type="button" class="btn btn-sm btn-secondary dropdpwn-toggle" data-toggle="dropdown">' . __('team.action.select') . '</button>';
                                 $btn .= '<div class="dropdown-menu">';
-                                foreach ($unregistered_teams as $urt){
-                                    $btn .= '<a class="dropdown-item" href="javascript:registerTeam('.$urt->id.') ">'.$urt->name.'</a>';
+                                foreach ($unregistered_teams as $urt) {
+                                    $btn .= '<a class="dropdown-item" href="javascript:registerTeam(' . $urt->id . ') ">' . $urt->name . '</a>';
                                 }
-                                $btn .='</div></div>';
+                                $btn .= '</div></div>';
                             } else {
-                                $btn = __('team.noteam.avail', ['club'=>$ct['club_shortname']]);
+                                $btn = __('team.noteam.avail', ['club' => $ct['club_shortname']]);
                             }
                         } else {
                             $btn = '<button  type="button" class="btn btn-outline-info btn-sm" id="injectTeam"';
-                            $btn .= '>'.__('league.action.register').'</button>';
+                            $btn .= '>' . __('league.action.register') . '</button>';
                         };
                     };
                 } else {
@@ -714,21 +763,22 @@ class LeagueController extends Controller
                 }
                 return $btn;
             })
-            ->editColumn('team_league_no', function ($ct) use($league, &$t_keys, $available_no) {
-                if ( (Auth::user()->can('update-leagues')) and
-                     ($league->state->in([ LeagueState::Selection, LeagueState::Scheduling, LeagueState::Freeze ]))){
-                    if ($ct['team_league_no'] != null){
+            ->editColumn('team_league_no', function ($ct) use ($league, &$t_keys, $available_no) {
+                if ((Auth::user()->can('update-leagues')) and
+                    ($league->state->in([LeagueState::Selection, LeagueState::Scheduling, LeagueState::Freeze]))
+                ) {
+                    if ($ct['team_league_no'] != null) {
                         $btn = '<button type="button" class="btn btn-danger btn-sm" id="releaseChar"';
-                        $btn .= 'data-team-id="'.$ct['team_id'].'" data-league-no="'.$ct['team_league_no'].'" ';
-                        $btn .= '>'.$ct['team_league_no'].'</button>';
+                        $btn .= 'data-team-id="' . $ct['team_id'] . '" data-league-no="' . $ct['team_league_no'] . '" ';
+                        $btn .= '>' . $ct['team_league_no'] . '</button>';
                     } else {
                         $btn = '';
-                        if ($ct['team_id']!= null){
-                            $btn = __('league.sb_freechar').' ';
-                            foreach ($available_no as $an){
+                        if ($ct['team_id'] != null) {
+                            $btn = __('league.sb_freechar') . ' ';
+                            foreach ($available_no as $an) {
                                 $btn .= '<button  type="button" class="btn btn-outline-info btn-sm" id="pickChar"';
-                                $btn .= 'data-team-id="'.$ct['team_id'].'" data-league-no="'.$an.'" ';
-                                $btn .= '>'.$an.'</button>';
+                                $btn .= 'data-team-id="' . $ct['team_id'] . '" data-league-no="' . $an . '" ';
+                                $btn .= '>' . $an . '</button>';
                             }
                         }
                     }
@@ -736,7 +786,7 @@ class LeagueController extends Controller
                     $btn = $ct['team_league_no'] ?? '';
                 }
 
-                if ($ct['team_league_no'] != null){
+                if ($ct['team_league_no'] != null) {
                     $sortkey = $ct['team_league_no'];
                 } else {
                     $sortkey = $t_keys->shift();
@@ -745,7 +795,5 @@ class LeagueController extends Controller
                 return array('display' => $btn, 'sort' => $sortkey);
             })
             ->make(true);
-
-
     }
 }

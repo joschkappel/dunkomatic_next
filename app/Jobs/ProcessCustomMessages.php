@@ -10,16 +10,12 @@ use Illuminate\Queue\SerializesModels;
 
 use App\Models\Message;
 use App\Models\User;
-use App\Models\Region;
-use App\Models\Club;
-use App\Models\League;
 use App\Notifications\CustomDbMessage;
 use App\Notifications\AppActionMessage;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CustomMailMessage;
 use App\Enums\Role as EnumRole;
 use Silber\Bouncer\Database\Role as UserRole;
-use App\Enums\MessageType;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
@@ -28,12 +24,14 @@ class ProcessCustomMessages implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $message;
+    protected Message $message;
 
     /**
      * Create a new job instance.
      *
+     * @param Message $message
      * @return void
+     *
      */
     public function __construct(Message $message)
     {
@@ -118,7 +116,7 @@ class ProcessCustomMessages implements ShouldQueue
         $user_region = $this->message->region;
         $user_roles = UserRole::whereIn('id', $this->message->to_users)->pluck('name');
 
-        foreach ($user_roles ?? [] as $ur){
+        foreach ($user_roles as $ur){
             $to_users = $to_users->concat( User::whereIs($ur)->get()->filter(function ($value, $key) use ($user_region) { return $value->can('access',$user_region);}) );
         }
         if (count($to_users) > 0){

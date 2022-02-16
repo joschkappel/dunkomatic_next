@@ -5,7 +5,7 @@ namespace App\Jobs;
 use App\Models\League;
 use App\Models\Region;
 use App\Enums\ReportFileType;
-
+use App\Enums\ReportScope;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Helpers\CalendarComposer;
 use Illuminate\Support\Facades\Storage;
@@ -27,12 +27,12 @@ class GenerateLeagueGamesReport implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $export_folder;
-    protected $rpt_name;
-    protected $region;
-    protected $scope;
-    protected $league;
-    protected $rtype;
+    protected string $export_folder;
+    protected string $rpt_name;
+    protected Region $region;
+    protected ReportScope $scope;
+    protected League $league;
+    protected ReportFileType $rtype;
 
     /**
      * Create a new job instance.

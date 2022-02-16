@@ -13,22 +13,19 @@ use Illuminate\Validation\Rule;
 
 class ClubGymController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @param  \App\Models\Club  $club
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Club $club)
-    {
-        //
-    }
 
+    /**
+     * select2 content gyms fo a club
+     *
+     * @param \App\Models\Club $club
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
     public function sb_club(Club $club)
     {
         //Log::debug(print_r($club,true));
         $gyms = $club->gyms()->get();
-        Log::info('preparing select2 gyms list for club.', ['club-id'=>$club->id, 'count'=>count($gyms)]);
+        Log::info('preparing select2 gyms list for club.', ['club-id' => $club->id, 'count' => count($gyms)]);
 
         $response = array();
 
@@ -41,33 +38,35 @@ class ClubGymController extends Controller
         return Response::json($response);
     }
 
+    /**
+     * select2 items for gyms of a team of a club
+     *
+     * @param \App\Models\Team $team
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
     public function sb_team(Team $team)
     {
         //Log::debug(print_r($club,true));
-        $gyms = $team->club->gyms()->get();
+        $club = $team->club->first();
 
-        Log::info('preparing select2 gyms list for team.', ['team-id'=>$team->id, 'count'=>count($gyms)]);
-        $response = array();
+        Log::info('preparing select2 gyms list for team.', ['team-id' => $team->id]);
 
-        foreach ($gyms as $lgym) {
-            $response[] = array(
-                "id" => $lgym->id,
-                "text" => $lgym->gym_no . ' - ' . $lgym->name
-            );
-        }
-        return Response::json($response);
+        return $this->sb_club($club);
     }
 
     /**
      * Show the form for creating a new resource.
      *
+     * @param string $language
      * @param  \App\Models\Club  $club
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
+     *
      */
-    public function create($language, Club $club)
+    public function create(string $language, Club $club)
     {
         $allowed_gymno = config('dunkomatic.allowed_gym_nos');
-        Log::info('create new gym for club', ['club-id'=>$club->id]);
+        Log::info('create new gym for club', ['club-id' => $club->id]);
         return view('club/gym/gym_new', ['club' => $club, 'allowed_gymno' => $allowed_gymno]);
     }
 
@@ -76,7 +75,8 @@ class ClubGymController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Club  $club
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function store(Request $request, Club $club)
     {
@@ -99,7 +99,7 @@ class ClubGymController extends Controller
 
         $gym = new Gym($data);
         $club->gyms()->save($gym);
-        Log::notice('new gym created for club', ['club-id'=>$club->id, 'gym-id'=>$gym->id]);
+        Log::notice('new gym created for club', ['club-id' => $club->id, 'gym-id' => $gym->id]);
 
         return redirect()->route('club.dashboard', ['language' => app()->getLocale(), 'club' => $club->id]);
     }
@@ -108,12 +108,13 @@ class ClubGymController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Gym  $gym
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function sb_gym(Gym $gym)
     {
         $gyms = array();
-        Log::info('preparing select2 gym ', ['gym-id'=> $gym->id] );
+        Log::info('preparing select2 gym ', ['gym-id' => $gym->id]);
 
         $gyms[] = array(
             "id" => $gym->id,
@@ -126,13 +127,14 @@ class ClubGymController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Club  $club
+     * @param string $language
      * @param  \App\Models\Gym  $gym
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
+     *
      */
     public function edit($language, Gym $gym)
     {
-        Log::info('editing gym.', ['gym-id'=>$gym->id]);
+        Log::info('editing gym.', ['gym-id' => $gym->id]);
         $gym->load('club');
         $allowed_gymno = config('dunkomatic.allowed_gym_nos');
 
@@ -144,7 +146,8 @@ class ClubGymController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Gym  $gym
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function update(Request $request, Gym $gym)
     {
@@ -168,7 +171,7 @@ class ClubGymController extends Controller
 
         $check = $gym->update($data);
         $gym->refresh();
-        Log::notice('gym updated', ['gym-id'=> $gym->id]);
+        Log::notice('gym updated', ['gym-id' => $gym->id]);
 
         return redirect()->route('club.dashboard', ['language' => app()->getLocale(), 'club' => $gym->club_id]);
     }
@@ -177,12 +180,13 @@ class ClubGymController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Gym  $gym
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function destroy(Gym $gym)
     {
         $check = $gym->delete();
-        Log::notice('gym deleted.', ['gym-id'=>$gym->id]);
+        Log::notice('gym deleted.', ['gym-id' => $gym->id]);
 
         return redirect()->route('club.dashboard', ['language' => app()->getLocale(), 'club' => $gym->club_id]);
     }

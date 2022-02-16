@@ -5,38 +5,41 @@ namespace App\Http\Controllers;
 use App\Models\Club;
 use App\Models\Team;
 use App\Enums\LeagueState;
+use App\Rules\GameMinute;
+use App\Rules\GameHour;
+
+use Yajra\DataTables\DataTables;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class ClubTeamController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @param  \App\Models\Club  $club
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Club $club)
-    {
-        //
-    }
 
-    public function pickchar($language, Club $club)
+    /**
+     * view to chose league characters for teams
+     *
+     * @param string $language
+     * @param  \App\Models\Club  $club
+     * @return \Illuminate\View\View
+     */
+    public function pickchar(string $language, Club $club)
     {
         $team_total_cnt = $club->teams->whereNotNull('league_id')->count();
         $team_open_cnt = $club->teams->whereNotNull('league_id')->where('league.state', LeagueState::Selection())->count();
         Log::info('showing club team league char chart.', ['club-id' => $club->id]);
-        return view('club.club_pickchar', ['club' => $club, 'team_total_cnt'=> $team_total_cnt, 'team_open_cnt'=>$team_open_cnt]);
+        return view('club.club_pickchar', ['club' => $club, 'team_total_cnt' => $team_total_cnt, 'team_open_cnt' => $team_open_cnt]);
     }
 
     /**
-     * Get datatable with club teams and selected league chars
+     * Get datatables.net with club teams and selected league chars
      *
+     * @param string $language
      * @param  \App\Models\Club  $club
-     * @return Databtable json
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
-    public function league_char_dt($language,  Club $club )
+    public function league_char_dt(string $language,  Club $club)
     {
         $clubs = $club->teams->whereNotNull('league_id')->where('league.state', LeagueState::Selection());
 
@@ -52,7 +55,7 @@ class ClubTeamController extends Controller
                 $col = ($t->preferred_league_no == 1) ? '<i class="fas fa-asterisk text-warning"></i>' : '';
                 if ($t->league_no == 1) {
                     $col .= '<i class="far fa-dot-circle fa-lg text-success"></i>';
-                } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('A')){
+                } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('A')) {
                     $col .= '<i class="far fa-frown text-danger"</i>';
                 }
                 return $col;
@@ -61,7 +64,7 @@ class ClubTeamController extends Controller
                 $col = ($t->preferred_league_no == 2) ? '<i class="fas fa-asterisk text-warning"></i>' : '';
                 if ($t->league_no == 2) {
                     $col .= '<i class="far fa-dot-circle fa-lg text-success"></i>';
-                } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('B')){
+                } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('B')) {
                     $col .= '<i class="far fa-frown text-danger"</i>';
                 }
                 return $col;
@@ -70,7 +73,7 @@ class ClubTeamController extends Controller
                 $col = ($t->preferred_league_no == 3) ? '<i class="fas fa-asterisk text-warning"></i>' : '';
                 if ($t->league_no == 3) {
                     $col .= '<i class="far fa-dot-circle fa-lg text-success"></i>';
-                } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('C')){
+                } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('C')) {
                     $col .= '<i class="far fa-frown text-danger"</i>';
                 }
                 return $col;
@@ -79,7 +82,7 @@ class ClubTeamController extends Controller
                 $col = ($t->preferred_league_no == 4) ? '<i class="fas fa-asterisk text-warning"></i>' : '';
                 if ($t->league_no == 4) {
                     $col .= '<i class="far fa-dot-circle fa-lg text-success"></i>';
-                } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('D')){
+                } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('D')) {
                     $col .= '<i class="far fa-frown text-danger"</i>';
                 }
                 return $col;
@@ -91,7 +94,7 @@ class ClubTeamController extends Controller
                     $col = ($t->preferred_league_no == 5) ? '<i class="fas fa-asterisk text-warning"></i>' : '';
                     if ($t->league_no == 5) {
                         $col .= '<i class="far fa-dot-circle fa-lg text-success"></i>';
-                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('E')){
+                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('E')) {
                         $col .= '<i class="far fa-frown text-danger"</i>';
                     }
                 }
@@ -104,7 +107,7 @@ class ClubTeamController extends Controller
                     $col = ($t->preferred_league_no == 6) ? '<i class="fas fa-asterisk text-warning"></i>' : '';
                     if ($t->league_no == 6) {
                         $col .= '<i class="far fa-dot-circle fa-lg text-success"></i>';
-                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('F')){
+                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('F')) {
                         $col .= '<i class="far fa-frown text-danger"</i>';
                     }
                 }
@@ -117,7 +120,7 @@ class ClubTeamController extends Controller
                     $col = ($t->preferred_league_no == 7) ? '<i class="fas fa-asterisk text-warning"></i>' : '';
                     if ($t->league_no == 7) {
                         $col .= '<i class="far fa-dot-circle fa-lg text-success"></i>';
-                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('G')){
+                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('G')) {
                         $col .= '<i class="far fa-frown text-danger"</i>';
                     }
                 }
@@ -130,7 +133,7 @@ class ClubTeamController extends Controller
                     $col = ($t->preferred_league_no == 8) ? '<i class="fas fa-asterisk text-warning"></i>' : '';
                     if ($t->league_no == 8) {
                         $col .= '<i class="far fa-dot-circle fa-lg text-success"></i>';
-                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('H')){
+                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('H')) {
                         $col .= '<i class="far fa-frown text-danger"</i>';
                     }
                 }
@@ -143,7 +146,7 @@ class ClubTeamController extends Controller
                     $col = ($t->preferred_league_no == 9) ? '<i class="fas fa-asterisk text-warning"></i>' : '';
                     if ($t->league_no == 9) {
                         $col .= '<i class="far fa-dot-circle fa-lg text-success"></i>';
-                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('I')){
+                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('I')) {
                         $col .= '<i class="far fa-frown text-danger"</i>';
                     }
                 }
@@ -156,7 +159,7 @@ class ClubTeamController extends Controller
                     $col = ($t->preferred_league_no == 10) ? '<i class="fas fa-asterisk text-warning"></i>' : '';
                     if ($t->league_no == 10) {
                         $col .= '<i class="far fa-dot-circle fa-lg text-success"></i>';
-                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('K')){
+                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('K')) {
                         $col .= '<i class="far fa-frown text-danger"</i>';
                     }
                 }
@@ -169,7 +172,7 @@ class ClubTeamController extends Controller
                     $col = ($t->preferred_league_no == 11) ? '<i class="fas fa-asterisk text-warning"></i>' : '';
                     if ($t->league_no == 11) {
                         $col .= '<i class="far fa-dot-circle fa-lg text-success"></i>';
-                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('L')){
+                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('L')) {
                         $col .= '<i class="far fa-frown text-danger"</i>';
                     }
                 }
@@ -182,7 +185,7 @@ class ClubTeamController extends Controller
                     $col = ($t->preferred_league_no == 12) ? '<i class="fas fa-asterisk text-warning"></i>' : '';
                     if ($t->league_no == 12) {
                         $col .= '<i class="far fa-dot-circle fa-lg text-success"></i>';
-                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('M')){
+                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('M')) {
                         $col .= '<i class="far fa-frown text-danger"</i>';
                     }
                 }
@@ -195,7 +198,7 @@ class ClubTeamController extends Controller
                     $col = ($t->preferred_league_no == 13) ? '<i class="fas fa-asterisk text-warning"></i>' : '';
                     if ($t->league_no == 13) {
                         $col .= '<i class="far fa-dot-circle fa-lg text-success"></i>';
-                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('N')){
+                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('N')) {
                         $col .= '<i class="far fa-frown text-danger"</i>';
                     }
                 }
@@ -208,7 +211,7 @@ class ClubTeamController extends Controller
                     $col = ($t->preferred_league_no == 14) ? '<i class="fas fa-asterisk text-warning"></i>' : '';
                     if ($t->league_no == 14) {
                         $col .= '<i class="far fa-dot-circle fa-lg text-success"></i>';
-                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('O')){
+                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('O')) {
                         $col .= '<i class="far fa-frown text-danger"</i>';
                     }
                 }
@@ -221,7 +224,7 @@ class ClubTeamController extends Controller
                     $col = ($t->preferred_league_no == 15) ? '<i class="fas fa-asterisk text-warning"></i>' : '';
                     if ($t->league_no == 15) {
                         $col .= '<i class="far fa-dot-circle fa-lg text-success"></i>';
-                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('P')){
+                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('P')) {
                         $col .= '<i class="far fa-frown text-danger"</i>';
                     }
                 }
@@ -234,21 +237,22 @@ class ClubTeamController extends Controller
                     $col = ($t->preferred_league_no == 16) ? '<i class="fas fa-asterisk text-warning"></i>' : '';
                     if ($t->league_no == 16) {
                         $col .= '<i class="far fa-dot-circle fa-lg text-success"></i>';
-                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('Q')){
+                    } elseif ($t->league->load('teams')->teams->pluck('league_char')->contains('Q')) {
                         $col .= '<i class="far fa-frown text-danger"</i>';
                     }
                 }
                 return $col;
             })
             ->make(true);
-
     }
 
     /**
      * Show the form for creating a new resource.
      *
+     * @param string $language
      * @param  \App\Models\Club  $club
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
+     *
      */
     public function create($language, Club $club)
     {
@@ -261,16 +265,29 @@ class ClubTeamController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Club  $club
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function store(Request $request, Club $club)
     {
-        $data = $request->validate(Team::getCreateRules());
+        $data = $request->validate([
+            'team_no' => 'required|integer|min:1|max:9',
+            'training_day'   => 'required|integer|min:1|max:5',
+            'training_time'  => array( 'required','date_format:H:i', new GameMinute, new GameHour),
+            'preferred_game_day' => 'present|integer|min:1|max:7',
+            'preferred_game_time' => array('required','date_format:H:i', new GameMinute, new GameHour),
+            'coach_name'  => 'required|string|max:40',
+            'coach_email' => 'present|email:rfc,dns',
+            'coach_phone1' => 'present|string|max:20',
+            'coach_phone2' => 'nullable|string|max:20',
+            'league_prev' => 'nullable|string|max:20',
+            'shirt_color' => 'required|string|max:20'
+            ]);
         Log::info('team form data validated OK.');
 
         $team = new Team($data);
         $club->teams()->save($team);
-        Log::notice('new team created for club', ['club-id'=>$club->id, 'team-id'=>$team->id]);
+        Log::notice('new team created for club', ['club-id' => $club->id, 'team-id' => $team->id]);
 
         return redirect()->action(
             'ClubController@dashboard',
@@ -279,26 +296,16 @@ class ClubTeamController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Club  $club
-     * @param  \App\Models\Team  $team
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Club $club, Team $team)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
+     * @param string $language
      * @param  \App\Models\Team  $team
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
+     *
      */
     public function edit($language, Team $team)
     {
-        Log::info('editing team.', ['team-id'=>$team->id]);
+        Log::info('editing team.', ['team-id' => $team->id]);
         $team->load('club', 'league');
 
         return view('team/team_edit', ['team' => $team]);
@@ -309,7 +316,8 @@ class ClubTeamController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Team  $team
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function update(Request $request, Team $team)
     {
@@ -319,12 +327,24 @@ class ClubTeamController extends Controller
         if ($request['preferred_game_time'] == 'Invalid date') {
             $request['preferred_game_time'] = null;
         }
-        $data = $request->validate(Team::getUpdateRules());
+        $data = $request->validate([
+            'team_no' => 'required|integer|min:1|max:9',
+            'training_day'   => 'required|integer|min:1|max:5',
+            'training_time'  => array('required','date_format:H:i', new GameMinute, new GameHour),
+            'preferred_game_day' => 'present|integer|min:1|max:7',
+            'preferred_game_time' => array('required','date_format:H:i', new GameMinute, new GameHour),
+            'coach_name'  => 'required|string|max:40',
+            'coach_email' => 'present|email:rfc,dns',
+            'coach_phone1' => 'present|string|max:20',
+            'coach_phone2' => 'nullable|string|max:20',
+            'league_prev' => 'nullable|string|max:20',
+            'shirt_color' => 'required|string|max:20'
+            ]);
         Log::info('team form data validated OK.');
 
         $check = $team->update($data);
         $team->refresh();
-        Log::notice('team updated', ['team-id'=> $team->id]);
+        Log::notice('team updated', ['team-id' => $team->id]);
 
         return redirect()->action(
             'ClubController@dashboard',
@@ -336,14 +356,15 @@ class ClubTeamController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Team  $team
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function destroy(Team $team)
     {
         // TBD remove from league ?? or remove games ?
 
         $check = $team->delete();
-        Log::notice('team deleted.', ['team-id'=>$team->id]);
+        Log::notice('team deleted.', ['team-id' => $team->id]);
 
         return redirect()->back();
     }

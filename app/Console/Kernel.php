@@ -19,6 +19,7 @@ use App\Jobs\GameNotScheduled;
 use App\Models\Region;
 use App\Enums\JobFrequencyType;
 use App\Jobs\ProcessFilesCleanup;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Spatie\Health\Commands\RunHealthChecksCommand;
 use Spatie\Health\Commands\ScheduleCheckHeartbeatCommand;
 
@@ -29,47 +30,46 @@ class Kernel extends ConsoleKernel
      *
      * @var array
      */
-    protected $commands = [
-
-    ];
+    protected $commands = [];
 
     /**
      * Define the application's command schedule.
      *
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
+     *
      */
     protected function schedule(Schedule $schedule)
     {
         $schedule->job(new ProcessDbCleanup(), 'janitor')->weekly();
         $schedule->job(new ProcessFilesCleanup(), 'janitor')->weekly();
-        $schedule->job(new ProcessNewSeason(),'janitor')->yearly();
+        $schedule->job(new ProcessNewSeason(), 'janitor')->yearly();
         $schedule->command('db:backup')->daily();
         $schedule->command('telescope:prune')->daily();
         $schedule->command('authentication-log:purge')->monthly();
 
         // schedule region specific jobs
-        $regions = Region::all();
+        $regions = Region::with('regionadmins')->get();
 
-        foreach ($regions as $r){
-          if ( $r->regionadmin()->exists()){
-              $this->scheduleRegionTask($schedule, new GameOverlaps($r), $r->job_game_overlaps);
-              $this->scheduleRegionTask($schedule, new GameNotScheduled($r), $r->job_game_notime);
-              $this->scheduleRegionTask($schedule, new MissingLeadCheck($r), $r->job_noleads);
-              $this->scheduleRegionTask($schedule, new EmailValidation($r), $r->job_email_valid);
-              $this->scheduleRegionTask($schedule, new ProcessLeagueReports($r), $r->job_league_reports);
-              $this->scheduleRegionTask($schedule, new ProcessClubReports($r), $r->job_club_reports);
-              $this->scheduleRegionTask($schedule, new ProcessLeagueStateChanges($r), JobFrequencyType::daily);
-          }
+        foreach ($regions as $r) {
+            if ($r->regionadmins()->exists()) {
+                $this->scheduleRegionTask($schedule, new GameOverlaps($r), $r->job_game_overlaps);
+                $this->scheduleRegionTask($schedule, new GameNotScheduled($r), $r->job_game_notime);
+                $this->scheduleRegionTask($schedule, new MissingLeadCheck($r), $r->job_noleads);
+                $this->scheduleRegionTask($schedule, new EmailValidation($r), $r->job_email_valid);
+                $this->scheduleRegionTask($schedule, new ProcessLeagueReports($r), $r->job_league_reports);
+                $this->scheduleRegionTask($schedule, new ProcessClubReports($r), $r->job_club_reports);
+                $this->scheduleRegionTask($schedule, new ProcessLeagueStateChanges($r), JobFrequencyType::daily);
+            }
         }
 
-        if ( env('HEALTH_FREQUENCY',15) == 1){
+        if (env('HEALTH_FREQUENCY', 15) == 1) {
             $schedule->command(RunHealthChecksCommand::class)->everyMinute();
-        } elseif ( env('HEALTH_FREQUENCY',15) == 2){
+        } elseif (env('HEALTH_FREQUENCY', 15) == 2) {
             $schedule->command(RunHealthChecksCommand::class)->everyTwoMinutes();
-        } elseif ( env('HEALTH_FREQUENCY',15) == 5){
+        } elseif (env('HEALTH_FREQUENCY', 15) == 5) {
             $schedule->command(RunHealthChecksCommand::class)->everyFiveMinutes();
-        } elseif ( env('HEALTH_FREQUENCY',15) == 10){
+        } elseif (env('HEALTH_FREQUENCY', 15) == 10) {
             $schedule->command(RunHealthChecksCommand::class)->everyTenMinutes();
         } else {
             $schedule->command(RunHealthChecksCommand::class)->everyFifteenMinutes();
@@ -83,40 +83,44 @@ class Kernel extends ConsoleKernel
      * Register the commands for the application.
      *
      * @return void
+     *
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }
 
     /** schedule tasks
-    *
-    *
-    */
-    protected function scheduleRegionTask(Schedule $schedule, $job, $frequency)
+     *
+     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param \Illuminate\Contracts\Queue\ShouldQueue $job
+     * @param  int $frequency
+     * @return bool
+     *
+     */
+    protected function scheduleRegionTask(Schedule $schedule, ShouldQueue $job, int $frequency)
     {
-      // uncomment for easy testing of jobs
-      // $schedule->job($job,'janitor')->everyFiveMinutes();
-      // return true;
+        // uncomment for easy testing of jobs
+        // $schedule->job($job,'janitor')->everyFiveMinutes();
+        // return true;
         switch ($frequency) {
-          case JobFrequencyType::daily :
-            $schedule->job($job,'janitor')->daily();
-            //$schedule->job($job,'janitor')->hourly();
-            //$schedule->job($job,'janitor')->everyFiveMinutes();
-            break;
-          case JobFrequencyType::weekly :
-            $schedule->job($job,'janitor')->weekly();
-            break;
-          case JobFrequencyType::biweekly :
-            $schedule->job($job,'janitor')->twiceMonthly();
-            break;
-          case JobFrequencyType::monthly :
-            $schedule->job($job,'janitor')->monthly();
-            break;
-          }
-      return true;
+            case JobFrequencyType::daily:
+                $schedule->job($job, 'janitor')->daily();
+                //$schedule->job($job,'janitor')->hourly();
+                //$schedule->job($job,'janitor')->everyFiveMinutes();
+                break;
+            case JobFrequencyType::weekly:
+                $schedule->job($job, 'janitor')->weekly();
+                break;
+            case JobFrequencyType::biweekly:
+                $schedule->job($job, 'janitor')->twiceMonthly();
+                break;
+            case JobFrequencyType::monthly:
+                $schedule->job($job, 'janitor')->monthly();
+                break;
+        }
+        return true;
     }
-
 }

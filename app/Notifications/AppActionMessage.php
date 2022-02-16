@@ -11,15 +11,17 @@ class AppActionMessage extends Notification
 {
     use Queueable;
 
-    protected $msg;
-    protected $subject;
+    protected string $msg;
+    protected string $subject;
 
     /**
      * Create a new notification instance.
      *
+     * @param string $subject
+     * @param string $body
      * @return void
      */
-    public function __construct($subject, $body)
+    public function __construct(string $subject, string $body)
     {
         $this->msg = $body;
         $this->subject = $subject;

@@ -23,7 +23,7 @@ class CardHeader extends Component
     /**
      * number ot things for badge
      *
-     * @var string
+     * @var int
      */
     public $count;
     /**
@@ -34,11 +34,11 @@ class CardHeader extends Component
     public $showtools;
 
 
-    public function __construct($title, $count=0, $icon='', $showtools=true )
+    public function __construct(string $title, string $count="0", string $icon='', bool $showtools=true )
     {
         $this->title = $title;
         $this->icon = $icon;
-        $this->count = $count;
+        $this->count = intval($count);
         $this->showtools = $showtools;
 
     }

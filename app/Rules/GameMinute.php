@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Rule;
 
 class GameMinute implements Rule
 {
-    private $ok_minutes = array();
+    private array $ok_minutes = array();
 
     /**
      * Create a new rule instance.

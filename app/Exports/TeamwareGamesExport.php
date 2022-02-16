@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 
 class TeamwareGamesExport implements FromView, WithCustomCsvSettings
 {
-    protected $league;
+    protected League $league;
 
     public function __construct(League $league)
     {
@@ -18,7 +18,7 @@ class TeamwareGamesExport implements FromView, WithCustomCsvSettings
     }
 
     /**
-    * @return Illuminate\Contracts\View\View
+    * @return View
     */
     public function view(): View
     {
@@ -28,6 +28,7 @@ class TeamwareGamesExport implements FromView, WithCustomCsvSettings
 
         return view('reports.teamware_game', ['games'=>$games, 'schemes'=>$scheme] );
     }
+
     public function getCsvSettings(): array
     {
         return [

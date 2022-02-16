@@ -33,7 +33,7 @@ class LeagueTest extends DuskTestCase
     {
 
         $r = Region::where('code','HBVDA')->first();
-        $u = $r->regionadmin->first()->user()->first();
+        $u = $r->regionadmins->first()->user()->first();
         Bouncer::retract( $u->getRoles()  )->from($u);
         Bouncer::assign( 'superadmin')->to($u);
         Bouncer::refreshFor($u);

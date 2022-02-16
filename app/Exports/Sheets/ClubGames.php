@@ -4,7 +4,6 @@ namespace App\Exports\Sheets;
 
 use App\Models\Game;
 use App\Models\Club;
-use App\Models\League;
 use App\Enums\ReportScope;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
@@ -19,19 +18,20 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Maatwebsite\Excel\Events\AfterSheet;
 
 use Carbon\Carbon;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Illuminate\Support\Facades\Log;
 
 class ClubGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
 {
 
-    protected $gdate = null;
-    protected $club;
-    protected $scope;
+    protected ?Date $gdate = null;
+    protected Club $club;
+    protected ReportScope $scope;
 
-    protected $r_t_1 = 1;
-    protected $r_h_1;
-    protected $r_b_1_s;
-    protected $r_b_1_e;
+    protected int $r_t_1 = 1;
+    protected int $r_h_1;
+    protected int $r_b_1_s;
+    protected int $r_b_1_e;
 
     public function __construct(Club $club, ReportScope $scope)
     {
@@ -54,7 +54,7 @@ class ClubGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
       } elseif ( $this->scope == ReportScope::ss_club_referee()) {
         $title =  __('reports.games.referee').' ' . $this->club->shortname;
       }
-      return $title;
+      return $title ?? '';
     }
 
     public function view(): View
@@ -90,6 +90,8 @@ class ClubGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
                      ->orderBy('game_no','asc')
                      ->get();
 
+      } else {
+          $games = collect();
       }
 
       $extra_date_rows = $games->pluck('game_date')->unique()->count();

@@ -1,0 +1,4 @@
+{
+    "phpstan.noProgress": false,
+    "phpstan.level": "4"
+}

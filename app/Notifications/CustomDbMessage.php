@@ -7,15 +7,13 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-use Illuminate\Support\Facades\Log;
-use App\Models\User;
 use App\Models\Message;
 
 class CustomDbMessage extends Notification
 {
     use Queueable;
 
-    protected $message = array();
+    protected Message $message;
 
     /**
      * Create a new notification instance.

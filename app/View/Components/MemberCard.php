@@ -5,22 +5,29 @@ namespace App\View\Components;
 use App\Models\Club;
 use App\Models\League;
 use App\Models\Region;
+use App\Models\Member;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 use Illuminate\View\Component;
 
 class MemberCard extends Component
 {
 
-    public $members;
-    public $entityClass;
-    public $entityType;
-    public $entity;
+    public Collection $members;
+    public string $entityClass;
+    public string $entityType;
+    public Model $entity;
 
 
     /**
      * Create a new component instance.
      *
+     * @param \Illuminate\Support\Collection<Member> $members
+     * @param Club|League|Region $entity
+     * @param class-string $entityClass
      * @return void
+     *
      */
     public function __construct($members, $entity, $entityClass )
     {
@@ -45,6 +52,7 @@ class MemberCard extends Component
      * Get the view / contents that represent the component.
      *
      * @return \Illuminate\Contracts\View\View|\Closure|string
+     *
      */
     public function render()
     {

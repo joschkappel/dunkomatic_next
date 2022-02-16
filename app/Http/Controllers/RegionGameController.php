@@ -15,8 +15,10 @@ class RegionGameController extends Controller
     /**
      * Show the form for uploading game files
      *
-     * @param  \App\Models\Club  $club
-     * @return \Illuminate\Http\Response
+     * @param string $language
+     * @param  \App\Models\Region  $region
+     * @return \Illuminate\View\View
+     *
      */
     public function upload($language, Region $region)
     {
@@ -30,8 +32,10 @@ class RegionGameController extends Controller
      * update games with referees from file
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param string $language
      * @param  \App\Models\Region $region
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
      */
     public function import_referees(Request $request, $language, Region $region)
     {
@@ -42,7 +46,7 @@ class RegionGameController extends Controller
 
         $tmpDir = (new TemporaryDirectory())->create();
         $path = $request->gfile->store($tmpDir->path());
-        $refImport = new RefereesImport($region);
+        $refImport = new RefereesImport();
         try {
           // $hgImport->import($path, 'local', \Maatwebsite\Excel\Excel::XLSX);
           Log::info('validating import data.', ['region-id'=> $region->id]);

@@ -27,7 +27,7 @@ class MissingLeadsTest extends SysTestCase
         Notification::assertNothingSent();
 
         $region = Region::where('code','HBVDA')->first();
-        $region_admin = $region->regionadmin()->first();
+        $region_admin = $region->regionadmins()->first();
 
         $job_instance = resolve( MissingLeadCheck::class,['region'=>$region]);
         app()->call([$job_instance, 'handle']);

@@ -32,7 +32,7 @@ class ProcessClubReports implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param  App\Models\Region  $region
+     * @param  Region  $region
      * @return void
      */
     public function __construct(Region $region)
@@ -94,7 +94,7 @@ class ProcessClubReports implements ShouldQueue
             $batch = Bus::batch($rpt_jobs)
                 ->then(function (Batch $batch) use ($c, $note) {
                     // All jobs completed successfully...
-                    if ($c->memberIsA(Role::ClubLead)) {
+                    if ($c->memberIsA(Role::ClubLead())) {
                         $clead = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
                         $clead->notify( $note);
                         Log::info('[NOTIFICATION] club reports available.', ['member-id' => $clead->id]);

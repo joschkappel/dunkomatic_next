@@ -62,17 +62,6 @@ class MenuServiceProvider extends BaseServiceProvider
     }
 
     /**
-     * Load the package translations.
-     *
-     * @return void
-     */
-    private function loadTranslations()
-    {
-        $translationsPath = $this->packagePath('resources/lang');
-        $this->loadTranslationsFrom($translationsPath, 'adminlte');
-    }
-
-    /**
      * Load the package config.
      *
      * @return void
@@ -84,21 +73,6 @@ class MenuServiceProvider extends BaseServiceProvider
 
 
     /**
-     * Register the package's artisan commands.
-     *
-     * @return void
-     */
-    private function registerCommands()
-    {
-        $this->commands([
-            AdminLteInstallCommand::class,
-            AdminLteStatusCommand::class,
-            AdminLteUpdateCommand::class,
-            AdminLtePluginCommand::class,
-        ]);
-    }
-
-    /**
      * Register the package's view composers.
      *
      * @return void
@@ -108,24 +82,5 @@ class MenuServiceProvider extends BaseServiceProvider
         $view->composer('\App\Menu', ViewComposer::class);
     }
 
-    /**
-     * Register the menu events handlers.
-     *
-     * @return void
-     */
-    private static function registerMenu(Dispatcher $events, Repository $config)
-    {
-        // Register a handler for the BuildingMenu event, this handler will add
-        // the menu defined on the config file to the menu builder instance.
 
-        $events->listen(
-            BuildingMenu::class,
-            function (BuildingMenu $event) use ($config) {
-                $menu = $config->get('menu.menu', []);
-                $menu = is_array($menu) ? $menu : [];
-                $event->menu->add(...$menu);
-            }
-        );
-
-    }
 }

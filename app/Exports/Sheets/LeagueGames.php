@@ -18,6 +18,7 @@ use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -25,17 +26,17 @@ use Illuminate\Support\Facades\Log;
 class LeagueGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
 {
 
-    protected $gdate = null;
-    protected $league;
+    protected ?Date $gdate = null;
+    protected League $league;
 
-    protected $r_t_1 = 1;
-    protected $r_h_1;
-    protected $r_b_1_s;
-    protected $r_b_1_e;
-    protected $r_t_2;
-    protected $r_h_2;
-    protected $r_b_2_s;
-    protected $r_b_2_e;
+    protected int $r_t_1 = 1;
+    protected int $r_h_1;
+    protected int $r_b_1_s;
+    protected int $r_b_1_e;
+    protected int $r_t_2;
+    protected int $r_h_2;
+    protected int $r_b_2_s;
+    protected int $r_b_2_e;
 
     public function __construct(League $league)
     {
