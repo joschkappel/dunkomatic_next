@@ -81,9 +81,16 @@ return [
         '122' => 'gray',
     ),
 
-    'report_folder_leagues' => 'runden',
-    'report_folder_clubs' => 'vereine',
-    'report_folder_teamware' => 'teamware',
+    'folders' => [
+        'export' => 'exports',
+        'backup' => 'backups',
+        'report_leagues' => 'runden',
+        'report_clubs' => 'clubs',
+        'report_teamware' => 'teamware',
+    ],
+    'report_folder_leagues' => 'runden',    // deprecated
+    'report_folder_clubs' => 'vereine',     // deprecated
+    'report_folder_teamware' => 'teamware', // deprecated
 
     'db_backup_age' => 30, # keep db backups for 30 days
 
