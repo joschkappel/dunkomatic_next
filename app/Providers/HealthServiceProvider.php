@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
-use App\Checks\BroadcastingCheck;
+use App\Checks\LaravelEchoServerCheck;
 use App\Checks\ConcurrentUsersCheck;
 use App\Checks\DbConnectionsCheck;
+use App\Checks\MinioHealthCheck;
 use App\Checks\QueueLoadCheck;
 use Illuminate\Support\ServiceProvider;
 use Spatie\Health\Facades\Health;
@@ -52,7 +53,7 @@ class HealthServiceProvider extends ServiceProvider
                 EnvironmentCheck::new()->expectEnvironment('prod'),
                 CacheCheck::new(),
                 DebugModeCheck::new(),
-                BroadcastingCheck::new(),
+                LaravelEchoServerCheck::new(),
                 ConcurrentUsersCheck::new()
                 ->failWhenFailedLoginsIsHigherInTheLastMinute(80)
                 ->failWhenFailedLoginsIsHigherInTheLast5Minutes(50)
@@ -60,7 +61,7 @@ class HealthServiceProvider extends ServiceProvider
                 QueueLoadCheck::new()
                 ->failWhenFailedJobsIsHigher(5)
                 ->failWhenQueueLengthIsHigher(10),
-
+                MinioHealthCheck::new(),
             ]);
         } elseif (config('app.env') == 'local'){
             Health::checks([
@@ -73,7 +74,7 @@ class HealthServiceProvider extends ServiceProvider
                 RedisCheck::new(),
                 EnvironmentCheck::new()->expectEnvironment('local'),
                 CacheCheck::new(),
-                BroadcastingCheck::new(),
+                LaravelEchoServerCheck::new(),
                 ConcurrentUsersCheck::new()
                 ->failWhenFailedLoginsIsHigherInTheLastMinute(80)
                 ->failWhenFailedLoginsIsHigherInTheLast5Minutes(50)
@@ -81,6 +82,7 @@ class HealthServiceProvider extends ServiceProvider
                 QueueLoadCheck::new()
                 ->failWhenFailedJobsIsHigher(5)
                 ->failWhenQueueLengthIsHigher(10),
+                MinioHealthCheck::new(),
             ]);
         } else {
             // do nothing;

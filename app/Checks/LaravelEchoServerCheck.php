@@ -7,7 +7,7 @@ use Spatie\Health\Checks\Result;
 
 use Illuminate\Support\Facades\Http;
 
-class BroadcastingCheck extends Check
+class LaravelEchoServerCheck extends Check
 {
     public function run(): Result
     {
