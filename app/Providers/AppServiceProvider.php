@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
@@ -43,6 +44,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(Dispatcher $events)
     {
+        // ensure DB is up and accessible
         try {
             $pdo = DB::getPdo();
             if (DB::connection()->getDatabaseName()) {
@@ -66,7 +68,7 @@ class AppServiceProvider extends ServiceProvider
             Log::warning("Could not open connection to database server.  Please check your configuration.");
         }
 
-        // prepare to detect lazy laodings
+        // prepare to detect lazy loadings
         Model::preventLazyLoading( config('app.env') !== 'prod' );
         Model::handleLazyLoadingViolationUsing(function ($model, $relation) {
             $class = get_class($model);
@@ -88,6 +90,12 @@ class AppServiceProvider extends ServiceProvider
 
         });
 
+        // create MUST have folders
+        Storage::makeDirectory( config('dunkomatic.folders.backup')  );
+        $season = Str::of( Setting::where('name', 'season')->first()->value ?? '2021/22')->replace('/', '_') ;
+        Storage::makeDirectory( config('dunkomatic.folders.export').'/'. $season );
+
+        // build menu events
         $events->listen(BuildingMenu::class, function (BuildingMenu $event) {
             // MAIN MENU REGION
             $regionmenu = [

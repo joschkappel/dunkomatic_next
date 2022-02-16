@@ -17,7 +17,7 @@
             "runtimeExecutable": "/usr/bin/php"
         },
         {
-            "log": true,
+           // "log": true,
             "name": "XDebug listening to Laradock",
             "type": "php",
             "request": "launch",

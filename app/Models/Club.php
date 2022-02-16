@@ -180,7 +180,7 @@ class Club extends Model implements Auditable
     {
         $directory = $this->region->club_folder;
         $shortname = $this->shortname;
-        $reports = collect(Storage::disk('exports')->allFiles($directory))->filter(function ($value, $key) use ($shortname) {
+        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname) {
             return (preg_match('(' . $shortname . ')', $value) === 1);
             //return (strpos($value,$llist[0]) !== false);
         });
@@ -191,7 +191,7 @@ class Club extends Model implements Auditable
         $directory = $this->region->club_folder;
         $shortname = $this->shortname;
 
-        $reports = collect(Storage::disk('exports')->allFiles($directory))->filter(function ($value, $key) use ($shortname) {
+        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname) {
             return (preg_match('(' . $shortname . ')', $value) === 1);
             //return (strpos($value,$llist[0]) !== false);
         });

@@ -39,11 +39,13 @@ class DatabaseRestore extends Command
     public function handle()
     {
         $filename = $this->argument('backupfile');
+        $backup_folder = config('dunkomatic.folders.backup').'/';
 
-        if ( Storage::disk('backup')->exists($filename)){
-            $filepath = Storage::disk('backup')->path($filename);
+        if ( Storage::exists($backup_folder.$filename)){
+            Storage::disk('local')->writeStream( 'tmp/'.$filename, Storage::readStream( $backup_folder.$filename));
 
-            $command = 'zcat '. $filepath.' | mysql --user='.env('DB_USERNAME').' --password='.env('DB_PASSWORD').' --host='.env('DB_HOST').' '.env('DB_DATABASE');
+            $filepath = Storage::disk('local')->path('tmp/'.$filename);
+            $command = 'zcat '.$filepath.' | mysql --user='.env('DB_USERNAME').' --password='.env('DB_PASSWORD').' --host='.env('DB_HOST').' '.env('DB_DATABASE');
             $returnVar = NULL;
             $output = NULL;
 
@@ -53,9 +55,11 @@ class DatabaseRestore extends Command
             } else {
                 $this->error('Oops someting went wrong, DB not restored from file '.$filepath);
             }
+            Storage::disk('local')->delete( 'tmp/'.$filename);
+
         } else {
             $returnVar = COMMAND::FAILURE;
-            $this->error('The backup file '.$filename.' does NOT exist in folder '.Storage::disk('backup')->path(''));
+            $this->error('The backup file '.$filename.' does NOT exist in folder ');
         }
 
         return $returnVar;

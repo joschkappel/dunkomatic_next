@@ -21,7 +21,6 @@ use App\Models\Region;
 use App\Notifications\CheckRegionSettings;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\NewSeason;
 
@@ -83,16 +82,17 @@ class ProcessNewSeason implements ShouldQueue
         }
 
         // clean up report folders
-        $path = Str::of($current_season)->replace('/', '_');
-        $directories = Storage::disk('exports')->allDirectories($path);
+        $path = config('dunkomatic.folders.export').'/'.Str::of($current_season)->replace('/', '_');
+        $directories = Storage::allDirectories($path);
         foreach ($directories as $d){
-            Storage::disk('exports')->deleteDirectory($d);
+            Storage::deleteDirectory($d);
         }
-        Storage::disk('exports')->deleteDirectory($path);
+        Storage::deleteDirectory($path);
         Log::notice('[JOB][NEW SEASON] report folders cleaned.', ['folder' => $path]);
+
         // create new report folders
-        $path = Str::of($next_season)->replace('/', '_');
-        Storage::disk('exports')->makeDirectory($path);
+        $path = config('dunkomatic.folders.export').'/'.Str::of($next_season)->replace('/', '_');
+        Storage::makeDirectory($path);
         Log::notice('[JOB][NEW SEASON] report folders created.', ['folder' => $path]);
 
         // move schedules 1 year forward

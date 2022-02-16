@@ -152,7 +152,7 @@ class ClubController extends Controller
         //Log::debug(print_r($data['games_home'],true ));
 
         $directory = $club->region->club_folder;
-        $reports = collect(Storage::disk('exports')->files($directory))->filter(function ($value) use ($club) {
+        $reports = collect(Storage::files($directory))->filter(function ($value) use ($club) {
             return Str::contains($value, $club->shortname);
         });
 

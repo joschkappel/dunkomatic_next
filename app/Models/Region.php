@@ -209,26 +209,25 @@ class Region extends Model
 
     public function getClubFolderAttribute(): string
     {
-        return  Str::of(config('global.season'))->replace('/', '_') . '/' . $this->code . '/' . config('dunkomatic.report_folder_clubs');
+        return  config('dunkomatic.folders.export').'/'.Str::of(config('global.season'))->replace('/', '_') . '/' . $this->code . '/' . config('dunkomatic.export_folders.clubs');
     }
     public function getLeagueFolderAttribute(): string
     {
-        return  Str::of(config('global.season'))->replace('/', '_') . '/' . $this->code . '/' . config('dunkomatic.report_folder_leagues');
+        return   config('dunkomatic.folders.export').'/'.Str::of(config('global.season'))->replace('/', '_') . '/' . $this->code . '/' . config('dunkomatic.export_folders.leagues');
     }
     public function getTeamwareFolderAttribute(): string
     {
-        return  Str::of(config('global.season'))->replace('/', '_') . '/' . $this->code . '/' . config('dunkomatic.report_folder_teamware');
+        return   config('dunkomatic.folders.export').'/'.Str::of(config('global.season'))->replace('/', '_') . '/' . $this->code . '/' . config('dunkomatic.export_folders.teamware');
     }
 
     public function getLeagueFilecountAttribute(): int
     {
         $directory = $this->league_folder;
-
         $reports = collect();
 
         foreach ($this->loadMissing('leagues')->leagues as $league) {
             $shortname = $league->shortname;
-            $reports = $reports->concat(collect(Storage::disk('exports')->files($directory))->filter(function ($value, $key) use ($shortname) {
+            $reports = $reports->concat(collect(Storage::files($directory))->filter(function ($value, $key) use ($shortname) {
                 return Str::contains($shortname, $value);
             }));
         }
@@ -238,12 +237,11 @@ class Region extends Model
     public function getLeagueFilenamesAttribute(): Collection
     {
         $directory = $this->league_folder;
-
         $reports = collect();
 
         foreach ($this->loadMissing('leagues')->leagues as $league) {
             $shortname = $league->shortname;
-            $reports = $reports->concat(collect(Storage::disk('exports')->files($directory))->filter(function ($value, $key) use ($shortname) {
+            $reports = $reports->concat(collect(Storage::files($directory))->filter(function ($value, $key) use ($shortname) {
                 return Str::contains($shortname, $value);
             }));
         }
@@ -257,7 +255,7 @@ class Region extends Model
         $reports = collect();
         foreach ($this->leagues as $league) {
             $shortname = $league->shortname;
-            $reports = $reports->concat(collect(Storage::disk('exports')->files($directory))->filter(function ($value, $key) use ($shortname) {
+            $reports = $reports->concat(collect(Storage::files($directory))->filter(function ($value, $key) use ($shortname) {
                 return Str::contains($shortname, $value);
             }));
         }
@@ -271,7 +269,7 @@ class Region extends Model
         $reports = collect();
         foreach ($this->leagues as $league) {
             $shortname = $league->shortname;
-            $reports = $reports->concat(collect(Storage::disk('exports')->files($directory))->filter(function ($value, $key) use ($shortname) {
+            $reports = $reports->concat(collect(Storage::files($directory))->filter(function ($value, $key) use ($shortname) {
                 return Str::contains($shortname, $value);
             }));
         }

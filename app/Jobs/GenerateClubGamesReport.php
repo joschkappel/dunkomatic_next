@@ -97,7 +97,7 @@ class GenerateClubGamesReport implements ShouldQueue
         if ($this->rtype->hasFlag(ReportFileType::PDF)) {
             Excel::store( new ClubGamesExport($this->club->id, $this->scope, (isset($this->league->id)) ? $this->league->id : NULL),
                           $this->rpt_name,
-                          'exports',
+                          null,
                           \Maatwebsite\Excel\Excel::MPDF);
         } elseif ($this->rtype->hasFlag(ReportFileType::ICS)) {
             // do calendar files
@@ -117,10 +117,10 @@ class GenerateClubGamesReport implements ShouldQueue
                     break;
             }
             if ($calendar != null) {
-                Storage::disk('exports')->put($this->rpt_name, $calendar->get());
+                Storage::put($this->rpt_name, $calendar->get());
             }
         } else {
-            Excel::store(new ClubGamesExport($this->club->id, $this->scope, (isset($this->league->id)) ? $this->league->id : NULL), $this->rpt_name, 'exports');
+            Excel::store(new ClubGamesExport($this->club->id, $this->scope, (isset($this->league->id)) ? $this->league->id : NULL), $this->rpt_name);
         }
     }
 }

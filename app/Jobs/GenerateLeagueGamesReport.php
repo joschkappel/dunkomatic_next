@@ -74,15 +74,15 @@ class GenerateLeagueGamesReport implements ShouldQueue
             'format' => $this->rtype->key]);
 
         if ($this->rtype->hasFlag(ReportFileType::PDF)) {
-            Excel::store(new LeagueGamesExport($this->league->id ), $this->rpt_name, 'exports', \Maatwebsite\Excel\Excel::MPDF);
+            Excel::store(new LeagueGamesExport($this->league->id ), $this->rpt_name, null, \Maatwebsite\Excel\Excel::MPDF);
         } elseif ($this->rtype->hasFlag(ReportFileType::ICS)) {
             // do calendar files
             $calendar = CalendarComposer::createLeagueCalendar($this->league);
             if ($calendar != null) {
-                Storage::disk('exports')->put($this->rpt_name, $calendar->get());
+                Storage::put($this->rpt_name, $calendar->get());
             }
         } else {
-            Excel::store(new LeagueGamesExport($this->league->id), $this->rpt_name, 'exports');
+            Excel::store(new LeagueGamesExport($this->league->id), $this->rpt_name);
         }
 
     }
