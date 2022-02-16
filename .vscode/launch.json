@@ -6,23 +6,28 @@
     "configurations": [
 
 
-    {
-        "name": "Launch currently open script",
-        "type": "php",
-        "request": "launch",
-        "program": "${file}",
-        "cwd": "${fileDirname}",
-        "port": 9003,
-        "hostname": "localhost",
-        "runtimeExecutable": "/usr/bin/php"
-    },
-    {
-        "log": true,
-        "name": "XDebug listening to Laradock",
-        "type": "php",
-        "request": "launch",
-        "port": 9003,
-        "hostname": "host.docker.internal"
+        {
+            "name": "Launch currently open script",
+            "type": "php",
+            "request": "launch",
+            "program": "${file}",
+            "cwd": "${fileDirname}",
+            "port": 9003,
+            "hostname": "localhost",
+            "runtimeExecutable": "/usr/bin/php"
+        },
+        {
+            "log": true,
+            "name": "XDebug listening to Laradock",
+            "type": "php",
+            "request": "launch",
+            "port": 9003,
+            "pathMappings": {
+                "/var/www": "${workspaceRoot}",
+            },
+            "ignore": [
+                "**/vendor/**/*.php"
+            ]
         }
     ]
 }

@@ -147,7 +147,7 @@ class RegionController extends Controller
      */
     public function datatable($language)
     {
-        $regions = Region::with('regionadmin')->withCount('clubs', 'leagues', 'teams', 'gyms')->get();
+        $regions = Region::with('regionadmins')->withCount('clubs', 'leagues', 'teams', 'gyms')->get();
 
         Log::info('preparing region list');
         $regionlist = datatables()::of($regions);
@@ -163,8 +163,8 @@ class RegionController extends Controller
                 }
             })
             ->editColumn('regionadmin', function ($r) {
-                if ($r->regionadmin()->exists()) {
-                    $admin = $r->regionadmin()->first()->firstname . ' ' . $r->regionadmin()->first()->lastname;
+                if ($r->regionadmins()->exists()) {
+                    $admin = $r->regionadmins()->first()->firstname . ' ' . $r->regionadmins()->first()->lastname;
                 } else {
                     $admin = '<a href="' . route('membership.region.create', ['language' => Auth::user()->locale, 'region' => $r->id]) . '"><i class="fas fa-plus-circle"></i></a>';
                 }

@@ -33,9 +33,9 @@ class EmailValidation implements ShouldQueue
      */
     public function __construct(Region $region)
     {
-        $this->region = $region;
+        $this->region = $region->load('regionadmins');
         //        $region_user = User::regionAdmin($this->region->code)->with('member')->first();
-        $this->region_admin = $region->regionadmins->first();
+        $this->region_admin = $region->regionadmins()->first();
     }
 
     /**

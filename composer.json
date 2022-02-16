@@ -16,7 +16,7 @@
         "fruitcake/laravel-cors": "v2.0.4",
         "graylog2/gelf-php": "^1.5",
         "guzzlehttp/guzzle": "^7.0.1",
-        "laravel/framework": "^v8.78",
+        "laravel/framework": "^v8.83",
         "laravel/slack-notification-channel": "^2.3",
         "laravel/telescope": "^4.3",
         "laravel/tinker": "^2.0",

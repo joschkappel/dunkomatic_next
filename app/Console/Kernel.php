@@ -49,7 +49,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('authentication-log:purge')->monthly();
 
         // schedule region specific jobs
-        $regions = Region::all();
+        $regions = Region::with('regionadmins')->get();
 
         foreach ($regions as $r) {
             if ($r->regionadmins()->exists()) {
