@@ -31,10 +31,10 @@ class GenerateLeagueReportsTest extends SysTestCase
         $league = Game::first()->league;
 
         $folder = $region->league_folder;
-        if (Storage::disk('exports')->exists($folder)){
-            Storage::disk('exports')->assertExists($folder);
-            $files = Storage::disk('exports')->allFiles($folder);
-            Storage::disk('exports')->delete($files);
+        if (Storage::exists($folder)){
+            Storage::assertExists($folder);
+            $files = Storage::allFiles($folder);
+            Storage::delete($files);
         }
 
         $report = $folder . '/' . $league->shortname;
@@ -43,7 +43,7 @@ class GenerateLeagueReportsTest extends SysTestCase
         $job_instance = resolve(GenerateLeagueGamesReport::class, ['region' => $region, 'league' => $league, 'rtype' => ReportFileType::PDF()]);
         app()->call([$job_instance, 'handle']);
 
-        Storage::disk('exports')->assertExists($report);
+        Storage::assertExists($report);
         // Excel::assertStored($report);
     }
 
@@ -62,9 +62,9 @@ class GenerateLeagueReportsTest extends SysTestCase
 
         $folder = $region->league_folder;
 //        Excel::fake();
-        Storage::disk('exports')->assertExists($folder);
-        $files = Storage::disk('exports')->allFiles($folder);
-        Storage::disk('exports')->delete($files);
+        Storage::assertExists($folder);
+        $files = Storage::allFiles($folder);
+        Storage::delete($files);
 
 
         $report = $folder . '/' . $league->shortname;
@@ -73,7 +73,7 @@ class GenerateLeagueReportsTest extends SysTestCase
         $job_instance = resolve(GenerateLeagueGamesReport::class, ['region' => $region, 'league' => $league, 'rtype' => ReportFileType::XLSX()]);
         app()->call([$job_instance, 'handle']);
 
-        Storage::disk('exports')->assertExists($report);
+        Storage::assertExists($report);
 //        Excel::assertStored($report);
     }
 
@@ -92,9 +92,9 @@ class GenerateLeagueReportsTest extends SysTestCase
 
         $folder = $region->league_folder;
 
-        Storage::disk('exports')->assertExists($folder);
-        $files = Storage::disk('exports')->allFiles($folder);
-        Storage::disk('exports')->delete($files);
+        Storage::assertExists($folder);
+        $files = Storage::allFiles($folder);
+        Storage::delete($files);
 
         $report = $folder . '/' . $league->shortname;
         $report .= '_games.ics';
@@ -102,6 +102,6 @@ class GenerateLeagueReportsTest extends SysTestCase
         $job_instance = resolve(GenerateLeagueGamesReport::class, ['region' => $region, 'league' => $league, 'rtype' => ReportFileType::ICS()]);
         app()->call([$job_instance, 'handle']);
 
-        Storage::disk('exports')->assertExists($report);
+        Storage::assertExists($report);
     }
 }
