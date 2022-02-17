@@ -91,9 +91,8 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // create MUST have folders
-        Storage::makeDirectory( config('dunkomatic.folders.backup')  );
-        $season = Str::of( Setting::where('name', 'season')->first()->value ?? '2021/22')->replace('/', '_') ;
-        Storage::makeDirectory( config('dunkomatic.folders.export').'/'. $season );
+        Storage::makeDirectory( config('dunkomatic.folders.backup') );
+        Storage::makeDirectory( config('dunkomatic.folders.export') );
 
         // build menu events
         $events->listen(BuildingMenu::class, function (BuildingMenu $event) {
