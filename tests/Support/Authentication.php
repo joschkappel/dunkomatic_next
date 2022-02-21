@@ -31,6 +31,7 @@ trait Authentication
             Bouncer::assign( 'superadmin')->to($this->region_user);
             Bouncer::assign( 'regionadmin')->to($this->region_user);
             Bouncer::allow($this->region_user)->to('access',$this->region);
+            Bouncer::allow($this->region_user)->to('mamage',$this->region_user);
             Bouncer::refreshFor($this->region_user);
         });
     }

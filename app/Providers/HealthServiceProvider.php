@@ -39,7 +39,9 @@ class HealthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
         if (config('app.env') == 'prod'){
+            $checkurl = config('app.url');
             Health::checks([
                 UsedDiskSpaceCheck::new(),
                 CpuLoadCheck::new()
@@ -48,7 +50,7 @@ class HealthServiceProvider extends ServiceProvider
                 DbConnectionsCheck::new(),
                 DatabaseCheck::new(),
                 RedisCheck::new(),
-                PingCheck::new()->url( env('APP_URL') .'/healthy'),
+                PingCheck::new()->url( $checkurl .'/healthy'),
                 // ScheduleCheck::new(),
                 EnvironmentCheck::new()->expectEnvironment('prod'),
                 CacheCheck::new(),
