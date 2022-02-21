@@ -19,9 +19,11 @@ use App\Events\TestEvent;
 Route::get('/', function () {
     return redirect(app()->getLocale());
 })->name('start');
+
 Route::get('healthy', function () {
     return 'OK';
 });
+
 Route::get('/fire', function () {
     event(new App\Events\TestEvent());
     return 'ok';

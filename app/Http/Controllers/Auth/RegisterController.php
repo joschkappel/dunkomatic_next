@@ -82,12 +82,13 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'region_id' => $data['region_id'],
             'reason_join' => $data['reason_join'],
             'locale' => $data['locale']
         ]);
 
-        $member = Member::with('memberships')->where('email1', $user->email)->orWhere('email2', $user->email)->firstOrFail();
+        $region = Region::findOrFail($data['region_id']);
+
+        $member = Member::with('memberships')->where('email1', $user->email)->orWhere('email2', $user->email)->first();
         if (isset($member)) {
             // link user and member
             $member->user()->save($user);
@@ -101,7 +102,7 @@ class RegisterController extends Controller
             foreach ($leagues as $l) {
                 Bouncer::allow($user)->to(['access'], $l);
             }
-            Bouncer::allow($user)->to(['access'], Region::find($data['region_id']));
+            Bouncer::allow($user)->to(['access'], $region);
 
             Bouncer::assign('guest')->to($user);
             if ( $member->memberships->firstWhere('role_id', Role::ClubLead) != null ){
@@ -118,8 +119,9 @@ class RegisterController extends Controller
 
             //RBAC - set user role and region
             Bouncer::assign('candidate')->to($user);
-            Bouncer::allow($user)->to(['access'], Region::find($data['region_id']));
+            Bouncer::allow($user)->to(['access'], $region);
         }
+        Bouncer::refresh();
 
 
 
@@ -127,10 +129,9 @@ class RegisterController extends Controller
             // invited users are auto-approved
             $user->update(['approved_at' => now()]);
             Log::notice('user approved.', ['user-id' => $user->id]);
-            $user->notify(new ApproveUser(Region::find($data['region_id'])));
+            $user->notify(new ApproveUser($region));
         } else {
             // self-registrâtion ntoify region admin for approval
-            $region = Region::findOrFail($data['region_id']);
             $radmins = User::whereIs('regionadmin')->get();
             foreach ($radmins as $radmin){
                 if ($radmin->can('access', $region)){
