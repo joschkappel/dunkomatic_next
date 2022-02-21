@@ -413,19 +413,17 @@ class UserController extends Controller
 
         //Bouncer::sync($user)->abilities([]);
         // RBAC - enable region access
-        /*         if (isset($data['region_ids'])) {
+/*         if ( isset($data['region_ids']) and $user->isAn('regionadmin') ) {
             foreach ($data['region_ids'] as $r) {
                 Bouncer::allow($user)->to('access', Region::find($r));
             }
-            unset($data['region_ids']);
-        }; */
-
+        };
+ */
         // RBAC - enable club access
         if (isset($data['club_ids'])) {
             foreach ($data['club_ids'] as $c) {
                 Bouncer::allow($user)->to(['access'], Club::find($c));
             }
-            unset($data['club_ids']);
         };
 
 
@@ -434,7 +432,6 @@ class UserController extends Controller
             foreach ($data['league_ids'] as $l) {
                 Bouncer::allow($user)->to(['access'], League::find($l));
             }
-            unset($data['league_ids']);
         };
         Bouncer::refresh();
 

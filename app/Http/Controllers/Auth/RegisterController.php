@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\Role;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
@@ -81,12 +82,13 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'region_id' => $data['region_id'],
             'reason_join' => $data['reason_join'],
             'locale' => $data['locale']
         ]);
 
-        $member = Member::where('email1', $user->email)->orWhere('email2', $user->email)->first();
+        $region = Region::findOrFail($data['region_id']);
+
+        $member = Member::with('memberships')->where('email1', $user->email)->orWhere('email2', $user->email)->first();
         if (isset($member)) {
             // link user and member
             $member->user()->save($user);
@@ -100,26 +102,40 @@ class RegisterController extends Controller
             foreach ($leagues as $l) {
                 Bouncer::allow($user)->to(['access'], $l);
             }
-        }
+            Bouncer::allow($user)->to(['access'], $region);
 
-        //RBAC - set user role and region
-        Bouncer::assign('candidate')->to($user);
-        Bouncer::allow($user)->to(['access'], Region::find($data['region_id']));
+            Bouncer::assign('guest')->to($user);
+            if ( $member->memberships->firstWhere('role_id', Role::ClubLead) != null ){
+                Bouncer::assign('clubadmin')->to($user);
+            }
+            if ( $member->memberships->firstWhere('role_id', Role::LeagueLead) != null ){
+                Bouncer::assign('leagueadmin')->to($user);
+            }
+            if ( $member->memberships->firstWhere('role_id', Role::RegionLead) != null ){
+                Bouncer::assign('regionadmin')->to($user);
+            }
+
+        } else {
+
+            //RBAC - set user role and region
+            Bouncer::assign('candidate')->to($user);
+            Bouncer::allow($user)->to(['access'], $region);
+        }
+        Bouncer::refresh();
+
+
 
         if (isset($data['invited_by']) and (Crypt::decryptString($data['invited_by']) == $data['email'])) {
             // invited users are auto-approved
             $user->update(['approved_at' => now()]);
             Log::notice('user approved.', ['user-id' => $user->id]);
-            $user->retract('candidate');
-            $user->assign('guest');
-            $user->notify(new ApproveUser(Region::find($data['region_id'])));
+            $user->notify(new ApproveUser($region));
         } else {
-
-            $region = Region::findOrFail($data['region_id']);
+            // self-registrâtion ntoify region admin for approval
             $radmins = User::whereIs('regionadmin')->get();
             foreach ($radmins as $radmin){
                 if ($radmin->can('access', $region)){
-                    $radmin->notify(new NewUser($user));    
+                    $radmin->notify(new NewUser($user));
                 }
             }
         }
