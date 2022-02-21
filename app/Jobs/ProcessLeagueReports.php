@@ -6,9 +6,7 @@ use App\Enums\ReportFileType;
 use App\Models\Region;
 use App\Jobs\GenerateLeagueGamesReport;
 use App\Notifications\LeagueReportsAvailable;
-use App\Enums\ReportScope;
 use App\Enums\Role;
-use App\Models\League;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Bus\Batch;
@@ -39,13 +37,13 @@ class ProcessLeagueReports implements ShouldQueue
         // set report scope
         $this->region = $region;
 
-        if (! Storage::disk('exports')->exists($region->league_folder)) {
+        if (! Storage::exists($region->league_folder)) {
             // make sure folders are there
-            Storage::disk('exports')->makeDirectory($region->league_folder);
+            Storage::makeDirectory($region->league_folder);
         };
-        if (! Storage::disk('exports')->exists($region->teamware_folder)) {
+        if (! Storage::exists($region->teamware_folder)) {
             // make sure folders are there
-            Storage::disk('exports')->makeDirectory($region->teamware_folder);
+            Storage::makeDirectory($region->teamware_folder);
         };
     }
 

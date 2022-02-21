@@ -41,7 +41,7 @@ class DatabaseBackUp extends Command
     public function handle()
     {
         $filename = 'backup-' . env('DB_DATABASE').'-'.Carbon::now()->format('Y-m-d-His') . '.gz';
-        $filepath = Storage::disk('backup')->path($filename);
+        $filepath = Storage::disk('local')->path('tmp/'.$filename);
 
         $command = 'mysqldump --column-statistics=0 --user='.env('DB_USERNAME').' --password='.env('DB_PASSWORD').' --host='.env('DB_HOST').' '.env('DB_DATABASE').' | gzip > '. $filepath;
         $returnVar = NULL;
@@ -50,11 +50,18 @@ class DatabaseBackUp extends Command
         exec($command, $output, $returnVar);
 
         if ($returnVar == COMMAND::SUCCESS){
-            $this->info('DB backup was successful!');
-            $this->line('Backup file saved to '.$filepath);
+            if ( Storage::writeStream(config('dunkomatic.folders.backup').'/'.$filename,Storage::disk('local')->readStream('tmp/'.$filename)) ){
+                $this->info('DB backup was successful!');
+                $this->line('Backup file saved to '.$filename);
+            } else {
+                $this->error('Oops someting went wrong, could not move the file to storage disk!');
+            }
+
         } else {
             $this->error('Oops someting went wrong, DB not backed up!');
         }
+        // remove file
+        Storage::disk('local')->delete('tmp/'.$filename);
 
         return $returnVar;
     }

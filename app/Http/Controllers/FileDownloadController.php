@@ -39,14 +39,12 @@ class FileDownloadController extends Controller
         } else {
             return back();
         }
-        $filepath .= '/' . $data['file'];
+        $filepath .= '/'. $data['file'];
         Log::info('downloading files.', ['path' => $filepath]);
-        if (Storage::disk('public')->exists($data['file'])) {
-            Storage::disk('public')->delete($data['file']);
-        }
+        Storage::disk('public')->delete($data['file']);
         Storage::disk('public')->writeStream(
             $data['file'],
-            Storage::disk('exports')->readStream($filepath)
+            Storage::readStream($filepath)
         );
         return Storage::disk('public')->download($data['file'], $data['file']);
     }
@@ -67,7 +65,6 @@ class FileDownloadController extends Controller
             $zip = new ZipArchive;
             $fileName = $region->code . '-reports-' . Str::slug($user->name, '-') . '.zip';
             Storage::disk('public')->delete($fileName);
-
             $pf = Storage::disk('public')->path($fileName);
             Log::info('archive location.', ['path' => $pf]);
 
@@ -77,8 +74,7 @@ class FileDownloadController extends Controller
                 $files = $files->concat($user->TeamwareFilenames($region));
 
                 foreach ($files as $f) {
-                    $f =  Storage::disk('exports')->path($f);
-                    $check = $zip->addFile($f, basename($f));
+                    $check = $zip->addFromString(basename($f), Storage::get($f));
                 }
 
                 $zip->close();
@@ -110,6 +106,7 @@ class FileDownloadController extends Controller
         if ($club->filecount > 0) {
             $zip = new ZipArchive;
             $filename = $club->region->code . '-reports-' . Str::slug($club->shortname, '-') . '.zip';
+            Storage::disk('public')->delete($filename);
             $pf = Storage::disk('public')->path($filename);
             Log::info('archive location.', ['path' => $pf]);
 
@@ -117,15 +114,13 @@ class FileDownloadController extends Controller
                 $files = $club->filenames;
 
                 foreach ($files as $f) {
-                    $f = Storage::disk('exports')->path($f);
-                    $check = $zip->addFile($f, basename($f));
+                    $check = $zip->addFromString(basename($f), Storage::get($f));
                 }
 
                 $zip->close();
-                //  Storage::move(public_path($fileName), 'public/'.$fileName);
                 Log::notice('downloading ZIP archive for club', ['club-id' => $club->id, 'filecount' => count($files)]);
 
-                return Storage::disk('public')->download('public/' . $filename);
+                return Storage::disk('public')->download( $filename);
             } else {
                 Log::error('archive corrupt.', ['club-id' => $club->id]);
                 return abort(500);
@@ -151,23 +146,22 @@ class FileDownloadController extends Controller
         if ($league->filecount > 0) {
             $zip = new ZipArchive;
             $filename = $league->region->code . '-reports-' . Str::slug($league->shortname, '-') . '.zip';
+            Storage::disk('public')->delete($filename);
             $pf = Storage::disk('public')->path($filename);
             Log::info('archive location.', ['path' => $pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
                 $files = $league->filenames;
-                Log::debug(print_r($files, true));
 
                 foreach ($files as $f) {
-                    $f =  Storage::disk('exports')->path($f);
-                    $check = $zip->addFile($f, basename($f));
+                    $check = $zip->addFromString(basename($f), Storage::get($f));
                 }
 
                 $zip->close();
                 //  Storage::move(public_path($fileName), 'public/'.$fileName);
                 Log::notice('downloading ZIP archive for league', ['league-id' => $league->id, 'filecount' => count($files)]);
 
-                return Storage::download('public/' . $filename);
+                return Storage::disk('public')->download( $filename);
             } else {
                 Log::error('archive corrupt.', ['league-id' => $league->id]);
                 return abort(500);
@@ -192,23 +186,22 @@ class FileDownloadController extends Controller
         if ($region->league_filecount > 0) {
             $zip = new ZipArchive;
             $filename = $region->code . '-runden-reports.zip';
+            Storage::disk('public')->delete($filename);
             $pf = Storage::disk('public')->path($filename);
             Log::info('archive location.', ['path' => $pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
                 $files = $region->teamware_filenames;
-                Log::debug(print_r($files, true));
 
                 foreach ($files as $f) {
-                    $f =  Storage::disk('exports')->path($f);
-                    $check = $zip->addFile($f, basename($f));
+                    $check = $zip->addFromString(basename($f), Storage::get($f));
                 }
 
                 $zip->close();
                 //  Storage::move(public_path($fileName), 'public/'.$fileName);
                 Log::notice('downloading ZIP archive for region teamware', ['region-id' => $region->id, 'filecount' => count($files)]);
 
-                return Storage::download('public/' . $filename);
+                return Storage::disk('public')->download($filename);
             } else {
                 Log::error('archive corrupt.', ['region-id' => $region->id]);
                 return abort(500);
@@ -233,23 +226,22 @@ class FileDownloadController extends Controller
         if ($region->teamware_filecount > 0) {
             $zip = new ZipArchive;
             $filename = $region->code . '-teamware-reports.zip';
+            Storage::disk('public')->delete($filename);
             $pf = Storage::disk('public')->path($filename);
             Log::info('archive location.', ['path' => $pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
                 $files = $region->league_filenames;
-                Log::debug(print_r($files, true));
 
                 foreach ($files as $f) {
-                    $f = Storage::disk('exports')->path($f);
-                    $check = $zip->addFile($f, basename($f));
+                    $check = $zip->addFromString(basename($f), Storage::get($f));
                 }
 
                 $zip->close();
                 //  Storage::move(public_path($fileName), 'public/'.$fileName);
                 Log::notice('downloading ZIP archive for region leagues', ['region-id' => $region->id, 'filecount' => count($files)]);
 
-                return Storage::download('public/' . $filename);
+                return Storage::disk('public')->download($filename);
             } else {
                 Log::error('archive corrupt.', ['region-id' => $region->id]);
                 return abort(500);

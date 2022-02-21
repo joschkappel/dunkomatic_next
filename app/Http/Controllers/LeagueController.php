@@ -239,7 +239,7 @@ class LeagueController extends Controller
         $data['games'] = $data['league']->games()->get();
         //Log::debug(print_r($assigned_team,true));
         $directory =  $league->region->league_folder;
-        $reports = collect(Storage::disk('exports')->files($directory))->filter(function ($value) use ($league) {
+        $reports = collect(Storage::files($directory))->filter(function ($value) use ($league) {
             return Str::contains($value, $league->shortname);
         });
 

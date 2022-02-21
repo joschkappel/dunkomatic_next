@@ -40,12 +40,12 @@ class ProcessClubReports implements ShouldQueue
         // set report scope
         $this->region = $region;
 
-        if (Storage::disk('exports')->exists($region->club_folder)) {
+        if (Storage::exists($region->club_folder)) {
             // remove old reports
             //Storage::deleteDirectory($region->club_folder, false);
         } else {
             // make sure folders are there
-            Storage::disk('exports')->makeDirectory($region->club_folder);
+            Storage::makeDirectory($region->club_folder);
         };
     }
 
@@ -58,19 +58,17 @@ class ProcessClubReports implements ShouldQueue
     {
         // get all clubs with games
         $clubs = $this->region->clubs()->get();
+        $rtypes = $this->region->fmt_club_reports->getFlags();
+        // add calendar format as default.
+        $rtypes[] = ReportFileType::ICS();
         Log::info('[JOB] kicking off club report batches.', ['region-id' => $this->region->id]);
 
         foreach ($clubs as $c) {
-
             // delete old files
             //Storage::delete(File::glob(storage_path().'/app/'.$this->region->club_folder.'/'.$c->shortname.'*'));
 
             // build list of report jobs based on format
             $rpt_jobs = array();
-            $rtypes = $this->region->fmt_club_reports->getFlags();
-            // add calendar format as default.
-            $rtypes[] = ReportFileType::ICS();
-
             foreach ($rtypes as $rtype) {
                 if ($rtype->hasFlag(ReportFileType::XLSX) or $rtype->hasFlag(ReportFileType::ODS)) {
                     $rpt_jobs[] = new GenerateClubGamesReport($this->region, $c, $rtype, ReportScope::ms_all());

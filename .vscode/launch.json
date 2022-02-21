@@ -17,17 +17,11 @@
             "runtimeExecutable": "/usr/bin/php"
         },
         {
-            "log": true,
+           // "log": true,
             "name": "XDebug listening to Laradock",
             "type": "php",
             "request": "launch",
-            "port": 9003,
-            "pathMappings": {
-                "/var/www": "${workspaceRoot}",
-            },
-            "ignore": [
-                "**/vendor/**/*.php"
-            ]
+            "port": 9003
         }
     ]
 }

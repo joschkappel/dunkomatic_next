@@ -198,7 +198,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
         }
 
         if ($llist !=  "") {
-            $reports = collect(Storage::disk('exports')->files($directory))->filter(function ($value, $key) use ($llist) {
+            $reports = collect(Storage::files($directory))->filter(function ($value, $key) use ($llist) {
                 return Str::contains($llist, $value);
             });
             return count($reports);
@@ -206,7 +206,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
             return 0;
         }
     }
-    public function LeagueFilenames(Region $region): Collection 
+    public function LeagueFilenames(Region $region): Collection
     {
         $directory = $region->league_folder;
         $llist = "";
@@ -215,7 +215,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
             $llist = $this->leagues()->pluck('shortname')->implode('|');
         }
         if ($llist != "") {
-            $reports = collect(Storage::disk('exports')->files($directory))->filter(function ($value, $key) use ($llist) {
+            $reports = collect(Storage::files($directory))->filter(function ($value, $key) use ($llist) {
                 return Str::contains($llist, $value);
             });
             return $reports;
@@ -234,7 +234,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
         }
 
         if ($llist !=  "") {
-            $reports = collect(Storage::disk('exports')->files($directory))->filter(function ($value, $key) use ($llist) {
+            $reports = collect(Storage::files($directory))->filter(function ($value, $key) use ($llist) {
                 return Str::contains($llist, $value);
             });
             return count($reports);
@@ -253,7 +253,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
         }
 
         if ($llist != "") {
-            $reports = collect(Storage::disk('exports')->files($directory))->filter(function ($value, $key) use ($llist) {
+            $reports = collect(Storage::files($directory))->filter(function ($value, $key) use ($llist) {
                 return Str::contains($llist, $value);
             });
             return $reports;
@@ -272,7 +272,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
         }
 
         if ($llist != "") {
-            $reports = collect(Storage::disk('exports')->files($directory))->filter(function ($value, $key) use ($llist) {
+            $reports = collect(Storage::files($directory))->filter(function ($value, $key) use ($llist) {
                 return Str::contains($llist, $value);
             });
             return count($reports);
@@ -291,7 +291,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
         }
 
         if ($llist != "") {
-            $reports = collect(Storage::disk('exports')->files($directory))->filter(function ($value, $key) use ($llist) {
+            $reports = collect(Storage::files($directory))->filter(function ($value, $key) use ($llist) {
                 return Str::contains($llist, $value);
             });
             return $reports;

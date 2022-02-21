@@ -30,10 +30,10 @@ class GenerateClubReportsTest extends SysTestCase
         $league = Game::where('club_id_home',$club->id)->first()->league;
 
         $folder = $region->club_folder;
-        if (Storage::disk('exports')->exists($folder)){
-            Storage::disk('exports')->assertExists($folder);
-            $files = Storage::disk('exports')->allFiles($folder);
-            Storage::disk('exports')->delete($files);
+        if (Storage::exists($folder)){
+            Storage::assertExists($folder);
+            $files = Storage::allFiles($folder);
+            Storage::delete($files);
         }
 
 
@@ -57,14 +57,14 @@ class GenerateClubReportsTest extends SysTestCase
                     break;
             }
 
-            $files = Storage::disk('exports')->allFiles($folder);
-            Storage::disk('exports')->delete($files);
+            $files = Storage::allFiles($folder);
+            Storage::delete($files);
 
             $job_instance = resolve(GenerateClubGamesReport::class, ['region' => $region, 'club' => $club, 'rtype' => ReportFileType::PDF(), 'scope' => $rscope, 'league'=>$league]);
             app()->call([$job_instance, 'handle']);
 
             // Excel::assertStored($report);
-            Storage::disk('exports')->assertExists($report);
+            Storage::assertExists($report);
         }
     }
 
@@ -84,7 +84,7 @@ class GenerateClubReportsTest extends SysTestCase
 
         $folder = $region->club_folder;
         // Excel::fake();
-        Storage::disk('exports')->assertExists($folder);
+        Storage::assertExists($folder);
 
         foreach (ReportScope::getInstances() as $rscope) {
             $report = $folder . '/' . $club->shortname;
@@ -106,14 +106,14 @@ class GenerateClubReportsTest extends SysTestCase
                     break;
             }
 
-            $files = Storage::disk('exports')->allFiles($folder);
-            Storage::disk('exports')->delete($files);
+            $files = Storage::allFiles($folder);
+            Storage::delete($files);
 
             $job_instance = resolve(GenerateClubGamesReport::class, ['region' => $region, 'club' => $club, 'rtype' => ReportFileType::XLSX(), 'scope' => $rscope, 'league'=>$league]);
             app()->call([$job_instance, 'handle']);
 
             // Excel::assertStored($report);
-            Storage::disk('exports')->assertExists($report);
+            Storage::assertExists($report);
         }
     }
 
@@ -133,7 +133,7 @@ class GenerateClubReportsTest extends SysTestCase
         $league = Game::where('club_id_home',$club->id)->first()->league;
 
         $folder = $region->club_folder;
-        Storage::disk('exports')->assertExists($folder);
+        Storage::assertExists($folder);
 
         foreach (ReportScope::getInstances() as $rscope) {
             $report = $folder . '/' . $club->shortname;
@@ -156,13 +156,13 @@ class GenerateClubReportsTest extends SysTestCase
             }
 
             if ($rscope->value != ReportScope::ms_all ){
-                $files = Storage::disk('exports')->allFiles($folder);
-                Storage::disk('exports')->delete($files);
+                $files = Storage::allFiles($folder);
+                Storage::delete($files);
 
                 $job_instance = resolve(GenerateClubGamesReport::class, ['region' => $region, 'club' => $club, 'rtype' => ReportFileType::ICS(), 'scope' => $rscope, 'league'=>$league]);
                 app()->call([$job_instance, 'handle']);
 
-                Storage::disk('exports')->assertExists($report);
+                Storage::assertExists($report);
             }
         }
     }
