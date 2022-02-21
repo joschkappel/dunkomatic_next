@@ -56,7 +56,7 @@ Route::group([
 
         Route::post('user/{user_id}/approve', 'UserController@approve')->name('admin.user.approve')->middleware('can:update-users');
         Route::get('user/{user}/edit', 'UserController@edit')->name('admin.user.edit')->middleware('auth')->middleware('can:update-users');
-        Route::get('user/{user}/show', 'UserController@show')->name('admin.user.show')->middleware('can:update-profile');
+        Route::get('user/{user}/show', 'UserController@show')->name('admin.user.show');
 
         Route::get('region', 'RegionController@index')->name('region.index')->middleware('can:view-regions');
         Route::get('region/create', 'RegionController@create')->name('region.create')->middleware('can:create-regions');

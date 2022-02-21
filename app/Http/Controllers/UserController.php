@@ -200,10 +200,14 @@ class UserController extends Controller
      */
     public function show(string $language, User $user)
     {
-        $member = $user->member;
-        $audits = Audit::where('user_id', $user->id)->orderBy('created_at')->get();
-        Log::info('show user details', ['user-id' => $user->id]);
-        return view('auth/user_profile', ['user' => $user, 'member' => $member, 'audits' => $audits]);
+        if ($user->can('manage', $user)){
+            $member = $user->member;
+            $audits = Audit::where('user_id', $user->id)->orderBy('created_at')->get();
+            Log::info('show user details', ['user-id' => $user->id]);
+            return view('auth/user_profile', ['user' => $user, 'member' => $member, 'audits' => $audits]);
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
     }
 
     /**
@@ -302,6 +306,8 @@ class UserController extends Controller
             Log::notice('user approved.', ['user-id' => $user->id]);
 
             $user->retract('candidate');
+            $user->allow('manage', $user);
+
             if ((!isset($data['regionadmin'])) and
                 (!isset($data['clubadmin'])) and
                 (!isset($data['leagueadmin']))
