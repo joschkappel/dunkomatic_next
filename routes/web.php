@@ -16,20 +16,11 @@ use App\Events\TestEvent;
 |
 */
 
-Route::get('/', function () {
-    return redirect(app()->getLocale());
-})->name('start');
-
-Route::get('healthy', function () {
-    return 'OK';
-});
-
-Route::get('/fire', function () {
-    event(new App\Events\TestEvent());
-    return 'ok';
-});
-
+Route::get('/', function () { return redirect(app()->getLocale()); })->name('start');
+Route::get('healthy', function () { return 'OK'; });
 Route::get('health', HealthCheckResultsController::class);
+// Route::get('/fire', function () { event(new App\Events\TestEvent()); return 'ok'; });
+
 
 Route::group([
     'prefix' => '{language}',
@@ -39,15 +30,13 @@ Route::group([
                      'set.logcontext']
 ], function () {
 
-    Route::get('/', function () {
-        return view('welcome');
-    })->name('welcome');
-    Route::get('/checkfire', function () {
-        return view('broadcast.test');
-    })->name('welcome');
+    Route::get('/', function () { return view('welcome'); })->name('welcome');
+    // Route::get('/checkfire', function () { return view('broadcast.test'); });
+    Route::get('cookies', function () { return view('app.cookie_info'); })->name('cookies');
+    Route::get('impressum', function () { return view('app.imressum'); })->name('impressum');
+    Route::get('dsgvo', function () { return view('app.dsgvo'); })->name('dsgvo');
 
     Auth::routes(['verify' => true, 'middleware' => 'can:register']);
-
     Route::get('/register_invited/{member}/{region}/{inviting_user}/{invited_by}', 'Auth\RegisterController@showRegistrationFormInvited')->name('register.invited');
 
     Route::middleware(['auth'])->group(function () {
