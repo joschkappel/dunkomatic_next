@@ -28,8 +28,10 @@ class UserSeeder extends Seeder
           'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
           'member_id' => $mid
         ]);
-        Bouncer::assign('regionadmin')->to(User::find($uid));
-        Bouncer::allow(User::find($uid))->to('access', $region);
+        $u = User::find($uid);
+        Bouncer::assign('regionadmin')->to($u);
+        Bouncer::allow( $u )->to('access', $region);
+        Bouncer::allow( $u )->to('manage', $u);
 
 
         $mid = DB::table('members')->insertGetId(['lastname'=>'notapproved','email1'=>'notapproved@gmail.com']);

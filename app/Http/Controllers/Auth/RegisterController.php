@@ -121,13 +121,11 @@ class RegisterController extends Controller
             Bouncer::assign('candidate')->to($user);
             Bouncer::allow($user)->to(['access'], $region);
         }
-        Bouncer::refresh();
-
-
 
         if (isset($data['invited_by']) and (Crypt::decryptString($data['invited_by']) == $data['email'])) {
             // invited users are auto-approved
             $user->update(['approved_at' => now()]);
+            $user->allow('manage', $user);
             Log::notice('user approved.', ['user-id' => $user->id]);
             $user->notify(new ApproveUser($region));
         } else {
@@ -139,6 +137,8 @@ class RegisterController extends Controller
                 }
             }
         }
+
+        Bouncer::refresh();
 
         return $user;
     }

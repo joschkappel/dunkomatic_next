@@ -13,12 +13,7 @@
 
     {{-- User menu toggler --}}
     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-        @if(config('menu.usermenu_image'))
-            <img src="{{ Auth::user()->adminlte_image() }}"
-                 class="user-image img-circle elevation-2"
-                 alt="{{ Auth::user()->name }}">
-        @endif
-        <span @if(config('menu.usermenu_image')) class="d-none d-md-inline" @endif>
+        <span>
             {{ Auth::user()->name }}
         </span>
     </a>
@@ -30,23 +25,15 @@
         @if(!View::hasSection('usermenu_header') && config('menu.usermenu_header'))
             <li class="user-header {{ config('menu.usermenu_header_class', 'bg-primary') }}
                 @if(!config('menu.usermenu_image')) h-auto @endif">
-                @if(config('menu.usermenu_image'))
-                    <img src="{{ Auth::user()->adminlte_image() }}"
-                         class="img-circle elevation-2"
-                         alt="{{ Auth::user()->name }}">
-                @endif
                 <p class="@if(!config('menu.usermenu_image')) mt-0 @endif">
                     {{ Auth::user()->name }}
-                    @if(config('menu.usermenu_desc'))
-                        <small>{{ Auth::user()->adminlte_desc() }}</small>
-                    @endif
                 </p>
             </li>
         @else
             @yield('usermenu_header')
         @endif
 
-        
+
         {{-- Configured user menu links --}}
         @each('layouts.partials.menuitems.menu-item-top-nav-user', app(\App\Menu::class)->menu(), 'item')
 

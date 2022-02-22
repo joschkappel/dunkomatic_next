@@ -31,8 +31,10 @@ class UsersTableSeeder extends Seeder
           'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
           'member_id' => $mid
         ]);
-        Bouncer::assign('superadmin')->to(User::find($uid));
-        Bouncer::allow(User::find($uid))->to('access', $region);
+        $u = User::find($uid);
+        Bouncer::assign('superadmin')->to($u);
+        Bouncer::allow( $u )->to('access', $region);
+        Bouncer::allow( $u )->to('manage', $u);
 
         $mid = DB::table('members')->insertGetId(['lastname'=>'regionadmin','email1'=>'regionadmin@gmail.com']);
         $uid = DB::table('users')->insertGetId([
@@ -45,8 +47,10 @@ class UsersTableSeeder extends Seeder
           'member_id' => $mid
         ]);
         DB::table('memberships')->insert(['member_id'=>$mid,'role_id'=>Role::RegionLead,'membership_id'=>$region->id,'membership_type'=> Region::class ]);
-        Bouncer::assign('regionadmin')->to(User::find($uid));
-        Bouncer::allow(User::find($uid))->to('access', $region);
+        $u = User::find($uid);
+        Bouncer::assign('regionadmin')->to($u);
+        Bouncer::allow( $u )->to('access', $region);
+        Bouncer::allow( $u )->to('manage', $u);
 
         $uid = DB::table('users')->insertGetId([
             'name' => 'clubadmin',
@@ -57,8 +61,10 @@ class UsersTableSeeder extends Seeder
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'member_id' => $mid
           ]);
-          Bouncer::assign('clubadmin')->to(User::find($uid));
-          Bouncer::allow(User::find($uid))->to('access', $region);
+          $u = User::find($uid);
+          Bouncer::assign('clubadmin')->to($u);
+          Bouncer::allow( $u )->to('access', $region);
+          Bouncer::allow( $u )->to('manage', $u);
 
           $uid = DB::table('users')->insertGetId([
             'name' => 'leagueadmin',
@@ -69,8 +75,10 @@ class UsersTableSeeder extends Seeder
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'member_id' => $mid
           ]);
-          Bouncer::assign('leagueadmin')->to(User::find($uid));
-          Bouncer::allow(User::find($uid))->to('access', $region);
+          $u = User::find($uid);
+          Bouncer::assign('leagueadmin')->to($u);
+          Bouncer::allow( $u )->to('access', $region);
+          Bouncer::allow( $u )->to('manage', $u);
 
 
         $uid = DB::table('users')->insertGetId([
@@ -82,8 +90,10 @@ class UsersTableSeeder extends Seeder
           'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
         ]);
 
-        Bouncer::assign('guest')->to(User::find($uid));
-        Bouncer::allow(User::find($uid))->to('access', $region);
+        $u = User::find($uid);
+        Bouncer::assign('guest')->to($u);
+        Bouncer::allow( $u )->to('access', $region);
+        Bouncer::allow( $u )->to('manage', $u);
 
         // NO OLD USER MIGRATION !!
     }
