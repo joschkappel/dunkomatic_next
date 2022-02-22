@@ -15,6 +15,7 @@
             @include('message.includes.message_show')
         </div>
     </div>
+    @include('app.cookie_consent')
 @stop
 
 @section('css')

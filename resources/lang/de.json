@@ -42,5 +42,22 @@
   "created": "neu angelegt",
   "updated": "geändert",
   "deleted": "gelöscht",
-  "no entries found": "keine Einträge gefunden"
+  "no entries found": "keine Einträge gefunden",
+  "Do you like cookies": "Magst Du Cokies",
+  "Learn more": "Erfahre Mehr Dazu",
+  "I agree": "Ich stimme zu",
+  "We use cookies to ensure you get the best experience on our website.": "Wir benutzen Cookies um Dir eine bestmögliche Erfahrunbg mit der Anwendung zu geben.",
+  "We store these 4 cookies": "Folgende 4 Cookies werden gespeichert",
+  "about our Cookies": "mehr zu unseren Cookies",
+  "We dont use any cookies for user analytics": "Es werden KEINE Cookies für Analysezwecke eingesetzt",
+  "Usage": "Zweck",
+  "Expires": "Gültigkeit",
+  "2 hours after session start": "2 Stunden nach Session Start",
+  "1 year": "1 Jahr",
+  "for the duration of your session": "für die Dauer deiner Session",
+  "For server broadcasting": "Um Ereignisse vom Server empfangen zu können",
+  "Session data like selected region etc": "Sitzunbgsdaten wie z.B. der ausgewählte Bezirk",
+  "your cookie consent": "Dein Cookie Einverständniss",
+  "Prevent Cross-Site-Request-Forgery": "Um Cross-Site-Request-Forgery zu verhindern",
+  "We use cookies solely for technical reasons to provide you with best application features": "Wir benutzen Cookies ausschließlich zu technischen Zwecken um die Funktinalität der Anwednung zu ermöglichen"
 }
