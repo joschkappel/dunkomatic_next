@@ -5,10 +5,12 @@
     </div>
     <div class="float-left d-none d-sm-block">
         <div class="d-inline-flex ">
-        <strong>&copy; Copyright 2020 <a href="{{ config('app.creator_url')}}">w.p.o. projects</a>.</strong> All rights
-    reserved.
-        <div class="dot-bouncing"></div>
-    </div>
-
+            <div class="dot-bouncing mx-2"></div>
+            <div class="mx-2">&copy; Copyright 2021 by<a href="{{ config('app.creator_url')}}"> w.p.o. projects </a>. All rights reserved.</div>
+            <div class="dot-rolling mx-4"></div>
+            <div class="mx-2"><a href="{{ route('impressum', ['language'=>app()->getLocale()])}}" >Impressum</a></div>
+            <div class="dot-rolling mx-4"></div>
+            <div class="mx-2"><a href="{{ route('dsgvo', ['language'=>app()->getLocale()])}}" >Datenschutz</a></div>
+        </div>
     </div>
 </footer>

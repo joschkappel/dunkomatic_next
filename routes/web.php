@@ -33,7 +33,7 @@ Route::group([
     Route::get('/', function () { return view('welcome'); })->name('welcome');
     // Route::get('/checkfire', function () { return view('broadcast.test'); });
     Route::get('cookies', function () { return view('app.cookie_info'); })->name('cookies');
-    Route::get('impressum', function () { return view('app.imressum'); })->name('impressum');
+    Route::get('impressum', function () { return view('app.impressum'); })->name('impressum');
     Route::get('dsgvo', function () { return view('app.dsgvo'); })->name('dsgvo');
 
     Auth::routes(['verify' => true, 'middleware' => 'can:register']);
