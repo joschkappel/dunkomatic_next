@@ -32,6 +32,7 @@ use App\Http\Controllers\FileDownloadController;
 use App\Http\Controllers\LeagueGameController;
 use App\Http\Controllers\LeagueController;
 use App\Http\Controllers\LeagueStateController;
+use App\Http\Controllers\RoleController;
 
 /*
 |--------------------------------------------------------------------------
