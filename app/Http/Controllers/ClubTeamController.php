@@ -7,6 +7,7 @@ use App\Models\Team;
 use App\Enums\LeagueState;
 use App\Rules\GameMinute;
 use App\Rules\GameHour;
+use App\Http\Controllers\ClubController;
 
 use Yajra\DataTables\DataTables;
 
@@ -290,7 +291,7 @@ class ClubTeamController extends Controller
         Log::notice('new team created for club', ['club-id' => $club->id, 'team-id' => $team->id]);
 
         return redirect()->action(
-            'ClubController@dashboard',
+            [ClubController::class, 'dashboard'],
             ['language' => app()->getLocale(), 'club' => $club->id]
         );
     }
@@ -347,7 +348,7 @@ class ClubTeamController extends Controller
         Log::notice('team updated', ['team-id' => $team->id]);
 
         return redirect()->action(
-            'ClubController@dashboard',
+            [ClubController::class, 'dashboard'],
             ['language' => app()->getLocale(), 'club' => $team->club_id]
         );
     }

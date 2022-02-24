@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Club;
 use App\Models\Member;
+use App\Http\Controllers\ClubController;
+use App\Enums\Role;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 
 use BenSampo\Enum\Rules\EnumValue;
-use App\Enums\Role;
+
 
 class ClubMembershipController extends Controller
 {
@@ -117,7 +119,7 @@ class ClubMembershipController extends Controller
         }
 
         return redirect()->action(
-            'ClubController@dashboard',
+            [ClubController::class, 'dashboard'],
             ['language' => app()->getLocale(), 'club' => $club->id]
         );
     }
