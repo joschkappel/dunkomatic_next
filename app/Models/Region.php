@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use BenSampo\Enum\Traits\CastsEnums;
 use App\Enums\ReportFileType;
 use App\Enums\Role;
 use App\Models\Club;
@@ -112,7 +111,7 @@ use Illuminate\Support\Str;
  */
 class Region extends Model
 {
-    use HasFactory, CastsEnums;
+    use HasFactory;
 
     protected $with = ['childRegions'];
 

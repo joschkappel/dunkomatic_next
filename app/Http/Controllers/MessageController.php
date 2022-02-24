@@ -12,7 +12,7 @@ use App\Enums\Role as EnumRole;
 use Silber\Bouncer\Database\Role as UserRole;
 use BenSampo\Enum\Rules\EnumValue;
 use Datatables;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 use App\Jobs\ProcessCustomMessages;

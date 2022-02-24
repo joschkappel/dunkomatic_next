@@ -9,7 +9,7 @@ use App\Models\Game;
 use App\Models\Team;
 use App\Models\Gym;
 use App\Models\Schedule;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 use App\Enums\LeagueState;
 use App\Enums\LeagueStateChange;

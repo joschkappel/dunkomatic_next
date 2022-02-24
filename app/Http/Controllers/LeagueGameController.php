@@ -12,7 +12,7 @@ use App\Imports\LeagueGamesImport;
 
 
 use Datatables;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Spatie\TemporaryDirectory\TemporaryDirectory;
 
 use Illuminate\Http\Request;

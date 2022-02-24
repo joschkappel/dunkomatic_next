@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\DB;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Datatables;
 

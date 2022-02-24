@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Rules\SliderRange;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Carbon\CarbonImmutable;
 
 class ScheduleEventController extends Controller

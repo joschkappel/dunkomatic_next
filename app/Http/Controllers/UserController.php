@@ -17,7 +17,7 @@ use Illuminate\Validation\Rule;
 
 use App\Notifications\RejectUser;
 use App\Notifications\ApproveUser;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 class UserController extends Controller
 {

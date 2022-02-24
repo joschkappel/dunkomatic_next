@@ -7,7 +7,7 @@ use App\Models\Region;
 use App\Enums\Role;
 use App\Http\Controllers\MessageController;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 use Tests\Support\Authentication;
 use Illuminate\Support\Facades\Log;
