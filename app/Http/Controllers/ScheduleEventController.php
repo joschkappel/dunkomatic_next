@@ -209,7 +209,7 @@ class ScheduleEventController extends Controller
             $ev->full_weekend = true;
             $ev->save();
         }
-        return redirect()->action('ScheduleEventController@list', ['schedule' => $schedule]);
+        return redirect()->action([ScheduleEventController::class, 'list'], ['schedule' => $schedule]);
     }
 
 
@@ -238,7 +238,7 @@ class ScheduleEventController extends Controller
             $to_event->schedule_id = $schedule->id;
             $to_event->save();
         }
-        return redirect()->action('ScheduleEventController@list', ['schedule' => $schedule]);
+        return redirect()->action([ScheduleEventController::class, 'list'], ['schedule' => $schedule]);
     }
 
     /**
@@ -271,7 +271,7 @@ class ScheduleEventController extends Controller
         }
         $schedule->refresh();
 
-        return redirect()->action('ScheduleEventController@list', ['schedule' => $schedule]);
+        return redirect()->action( [ScheduleEventController::class, 'list'], ['schedule' => $schedule]);
     }
 
     /**
@@ -309,6 +309,6 @@ class ScheduleEventController extends Controller
         $schedule->events()->delete();
         Log::notice('schedule events deleted.', ['schedule-id'=> $schedule->id]);
 
-        return redirect()->action('ScheduleEventController@list', ['schedule' => $schedule]);
+        return redirect()->action([ScheduleEventController::class, 'list'], ['schedule' => $schedule]);
     }
 }
