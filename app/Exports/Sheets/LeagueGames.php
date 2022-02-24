@@ -20,7 +20,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class LeagueGames implements FromView, WithTitle, ShouldAutoSize, WithEvents

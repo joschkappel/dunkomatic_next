@@ -20,7 +20,7 @@ use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class ClubLeagueGames implements FromView, WithTitle, ShouldAutoSize, WithEvents

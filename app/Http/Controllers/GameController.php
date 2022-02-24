@@ -7,7 +7,7 @@ use App\Models\Region;
 
 use Datatables;
 use Silber\Bouncer\BouncerFacade as Bouncer;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 use Illuminate\Support\Facades\Log;
 

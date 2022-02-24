@@ -46,12 +46,10 @@ class MembershipController extends Controller
             $club = Club::findOrFail($entity_id);
             $ms = $club->memberships()->create($data);
             Log::notice('club membership created.', ['club-id'=> $club->id, 'member-id'=>$member->id, 'membership-id'=>$ms->id]);
-            // return redirect()->action('ClubController@dashboard', ['language' => app()->getLocale(), 'club' => $club]);
         } elseif ($entity_type == League::class) {
             $league = League::findOrFail($entity_id);
             $ms = $league->memberships()->create($data);
             Log::notice('league membership created.', ['league-id'=> $league->id, 'member-id'=>$member->id, 'membership-id'=>$ms->id]);
-            //  return redirect()->action('LeagueController@dashboard', ['language' => app()->getLocale(), 'league' => $league]);
         } elseif ($entity_type == Region::class) {
             $region = Region::findOrFail($entity_id);
             $ms = $region->memberships()->create($data);

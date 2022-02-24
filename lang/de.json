@@ -59,5 +59,10 @@
   "Session data like selected region etc": "Sitzunbgsdaten wie z.B. der ausgewählte Bezirk",
   "your cookie consent": "Dein Cookie Einverständniss",
   "Prevent Cross-Site-Request-Forgery": "Um Cross-Site-Request-Forgery zu verhindern",
-  "We use cookies solely for technical reasons to provide you with best application features": "Wir benutzen Cookies ausschließlich zu technischen Zwecken um die Funktinalität der Anwednung zu ermöglichen"
+  "We use cookies solely for technical reasons to provide you with best application features": "Wir benutzen Cookies ausschließlich zu technischen Zwecken um die Funktinalität der Anwednung zu ermöglichen",
+  "The :attribute must contain at least one letter.": "The :attribute must contain at least one letter.",
+  "The :attribute must contain at least one number.": "The :attribute must contain at least one number.",
+  "The :attribute must contain at least one symbol.": "The :attribute must contain at least one symbol.",
+  "The :attribute must contain at least one uppercase and one lowercase letter.": "The :attribute must contain at least one uppercase and one lowercase letter.",
+  "The given :attribute has appeared in a data leak. Please choose a different :attribute.": "The given :attribute has appeared in a data leak. Please choose a different :attribute."
 }

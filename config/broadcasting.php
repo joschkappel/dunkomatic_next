@@ -40,7 +40,11 @@ return [
                 'useTLS' => false,
                 'encrypted' => false,
                 'host' => 'laravel-echo-server',
-                'port' => 6001            ],
+                'port' => 6001
+            ],
+            'client_options' => [
+                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
+            ],
         ],
 
         'redis' => [

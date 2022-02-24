@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Region;
 use OwenIt\Auditing\Models\Audit;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;

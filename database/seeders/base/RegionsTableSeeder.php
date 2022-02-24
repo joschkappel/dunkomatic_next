@@ -3,7 +3,7 @@ namespace Database\Seeders\base;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 class RegionsTableSeeder extends Seeder
 {

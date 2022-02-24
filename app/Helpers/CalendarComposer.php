@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Spatie\IcalendarGenerator\Components\Calendar;
 use Spatie\IcalendarGenerator\Components\Event;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 class CalendarComposer
 {

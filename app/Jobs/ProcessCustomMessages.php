@@ -17,7 +17,7 @@ use App\Mail\CustomMailMessage;
 use App\Enums\Role as EnumRole;
 use Silber\Bouncer\Database\Role as UserRole;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Notification;
 
 class ProcessCustomMessages implements ShouldQueue

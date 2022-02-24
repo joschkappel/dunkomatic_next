@@ -12,6 +12,9 @@ parameters:
 
     ignoreErrors:
     #    - '#Unsafe usage of new static#'
+        - '#Return type of call to function collect contains unresolvable type.#'
+        - '#Unable to resolve the template type TKey in call to function [a-zA-Z0-9\\_]#'
+        - '#Unable to resolve the template type TValue in call to function [a-zA-Z0-9\\_]#'
         - '#Call to an undefined method Database\\Factories\\[a-zA-Z0-9\\_]#'
         - '#Call to an undefined method Maatwebsite\\Excel\\[a-zA-Z0-9\\_]#'
         - '#Access to an undefined property Illuminate\\Database\\Eloquent\\Collection<Illuminate\\Database\\Eloquent\\Model>|Illuminate\\Database\\Eloquent\\Model::[a-zA-Z0-9\\_]#'

@@ -5,9 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Carbon;
 
-use Carbon\Carbon;
-use Carbon\CarbonImmutable;
 
 class HomeController extends Controller
 {
@@ -38,7 +37,7 @@ class HomeController extends Controller
         $mi = array();
 
         foreach ($user->unreadNotifications as $m) {
-            $valid_from = CarbonImmutable::parse($m->created_at)->locale(app()->getLocale())->isoFormat('L');
+            $valid_from = Carbon::parse($m->created_at)->locale(app()->getLocale())->isoFormat('L');
             if ($vf != $valid_from) {
                 $msglist[] = $mi;
                 $mi = array();

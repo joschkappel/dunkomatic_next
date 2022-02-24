@@ -10,7 +10,7 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Support\Authentication;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 class ScheduleEventControllerTest extends TestCase
 {

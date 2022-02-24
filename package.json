@@ -12,7 +12,7 @@
     "devDependencies": {
         "@sweetalert2/theme-bootstrap-4": "^5.0.8",
         "adjust-sourcemap-loader": "^3.0.0",
-        "axios": ">=0.21.1",
+        "axios": "^0.25",
         "bootstrap": "^4.5.3",
         "bootstrap-colorpicker": "^3.4.0",
         "bootstrap-fileinput": "^5.2.6",
