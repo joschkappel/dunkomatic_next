@@ -29,6 +29,7 @@ use App\Http\Controllers\LeagueTeamController;
 use App\Http\Controllers\LeagueSizeController;
 use App\Http\Controllers\LeagueSizeSchemeController;
 use App\Http\Controllers\FileDownloadController;
+use App\Http\Controllers\LeagueGameController;
 
 /*
 |--------------------------------------------------------------------------
