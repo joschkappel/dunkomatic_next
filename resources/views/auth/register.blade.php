@@ -18,10 +18,15 @@
 @section('body')
 <x-auth-card-form>
                     <div class="card-body register-card-body">
-                        <p class="login-box-msg">{{ __('auth.register_message') }}</p>
                         <form action="{{ $register_url }}" method="post">
                             {{ csrf_field() }}
-
+                            <div class="form-group row ">
+                                <div class="col-sm">
+                                    <a class="btn btn-outline-dark" role="button" href="{{ route('oauth.redirect', ['provider'=>'google'])}}"><i class="fab fa-google px-2"></i>Sign in with Google</a>
+                                </div>
+                            </div>
+                            <hr>
+                            <p class="login-box-msg">{{ __('auth.register_message') }}</p>
                             <div class="form-group row ">
                                 <div class="col-sm">
                             <div class="input-group mb-3">

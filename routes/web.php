@@ -33,6 +33,7 @@ use App\Http\Controllers\LeagueGameController;
 use App\Http\Controllers\LeagueController;
 use App\Http\Controllers\LeagueStateController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SocialiteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +50,9 @@ Route::get('/', function () { return redirect(app()->getLocale()); })->name('sta
 Route::get('healthy', function () { return 'OK'; });
 Route::get('health', HealthCheckResultsController::class);
 // Route::get('/fire', function () { event(new App\Events\TestEvent()); return 'ok'; });
+
+Route::get('/auth/{provider}/redirect', [SocialiteController::class, 'redirect_to_oauth'])->name('oauth.redirect');
+Route::get('/auth/{provider}/callback', [SocialiteController::class, 'callback_from_oauth'])->name('oauth.callback');
 
 
 Route::group([
