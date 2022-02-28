@@ -11,10 +11,10 @@
 <x-auth-card-form>
     <div class="card-body register-card-body">
         <div class="col-sm">
-            <form action="{{ route('apply', ['language' => app()->getLocale(), 'user'=>$user]) }}">
+            <form action="{{ route('apply', ['language' => app()->getLocale(), 'user'=>$user]) }}" method="post">
                 @method('POST')
                 @csrf
-                <p class="login-box-msg">{{ __('auth.register_message') }}</p>
+                <p class="login-box-msg">{{ __('auth.apply_message') }}</p>
                 <div class="input-group mb-3">
                     <input type="text" name="name" class="form-control" readonly value="{{ $user->name }}">
                     <div class="input-group-append">

@@ -70,7 +70,7 @@ class SocialiteController extends Controller
             ]);
             $this->setInitialAccessRights($user);
             Log::notice('user created', ['provider' => $provider, 'user' => $user->id]);
-
+            Auth::login($user);
             return redirect()->route('show.apply', ['language' => $user->locale ?? 'de', 'user' => $user]);
         }
     }
@@ -122,7 +122,6 @@ class SocialiteController extends Controller
         }
         event(new Registered($user));
 
-        Auth::login($user);
         return redirect()->route('home', $user->locale ?? 'de');
     }
 }
