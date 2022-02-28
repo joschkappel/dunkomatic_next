@@ -21,10 +21,12 @@ trait UserAccessManager
      * @param \App\Models\Region $region
      * @return void
      */
-    public function setInitialAccessRights(User $user, Region $region): void
+    public function setInitialAccessRights(User $user, Region $region=null): void
     {
         Bouncer::assign('candidate')->to($user);
-        // Bouncer::allow($user)->to(['access'], $region);
+        if ( $region != null){
+            Bouncer::allow($user)->to(['access'], $region);
+        };
         Bouncer::refresh();
         Log::notice('user candidate role set', ['user'=>$user->id]);
     }

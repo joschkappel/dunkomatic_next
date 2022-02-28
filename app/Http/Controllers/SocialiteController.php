@@ -64,7 +64,7 @@ class SocialiteController extends Controller
         if ($user) {
             // user is already registered, this is a login
             Auth::login($user);
-            return redirect()->route('home');
+            return redirect()->route('home', app()->getLocale());
         } else {
             // this is a registration of a new acccount
             $user = User::create([
@@ -75,9 +75,10 @@ class SocialiteController extends Controller
                 'provider_id' => $oauth_user->getId(),
                 'locale'    => $oauth_user->user->locale ?? 'de',
             ]);
+            $this->setInitialAccessRights($user);
             Log::notice('user created', ['provider' => $provider, 'user' => $user->id]);
 
-            return redirect('show.apply', ['language' => $user->locale ?? 'de', 'user' => $user]);
+            return redirect()->route('show.apply', ['language' => $user->locale ?? 'de', 'user' => $user]);
         }
     }
 
