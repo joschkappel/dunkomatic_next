@@ -91,6 +91,7 @@ class SocialiteController extends Controller
      */
     public function showApply(string $language, User $user)
     {
+        Log::info('showing application form for user',['user'=>$user, 'abilities'=>$user->getAbilities()]);
         return view('auth.apply', ['user' => $user]);
     }
 

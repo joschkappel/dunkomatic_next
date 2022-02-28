@@ -27,8 +27,8 @@ trait UserAccessManager
         if ( $region != null){
             Bouncer::allow($user)->to(['access'], $region);
         };
-        Bouncer::refresh();
-        Log::notice('user candidate role set', ['user'=>$user->id]);
+        Bouncer::refreshFor($user)();
+        Log::notice('user candidate role set', ['user'=>$user->id,'roles'=>$user->getRoles()]);
     }
 
     /**
@@ -61,7 +61,7 @@ trait UserAccessManager
                 Bouncer::assign('regionadmin')->to($user);
             }
 
-            Bouncer::refresh();
+            Bouncer::refreshFor($user)();
         }
     }
 
@@ -122,7 +122,7 @@ trait UserAccessManager
             Log::notice('user allow access to leagues', ['user'=>$user->id, 'leagues'=>$leagues]);
         };
 
-        Bouncer::refresh();
+        Bouncer::refreshFor($user)();
     }
 
     /**
@@ -138,9 +138,9 @@ trait UserAccessManager
 
         // assign candidate role
         $user->assign('candidate');
-        Log::notice('user candidate role set', ['user'=>$user->id]);
+        Log::notice('user candidate role set', ['user'=>$user->id,'roles'=>$user->getRoles()]);
 
-        Bouncer::refresh();
+        Bouncer::refreshFor($user)();
     }
 
     /**
@@ -155,9 +155,9 @@ trait UserAccessManager
         $user->retract('candidate');
         $user->assign('guest');
         $user->allow('manage', $user);
-        Log::notice('user guest role set', ['user'=>$user->id]);
+        Log::notice('user guest role set', ['user'=>$user->id,'roles'=>$user->getRoles()]);
 
-        Bouncer::refresh();
+        Bouncer::refreshFor($user);
     }
 
     /**
@@ -172,7 +172,7 @@ trait UserAccessManager
         Bouncer::sync($user)->roles([]);
         Bouncer::sync($user)->abilities([]);
         Bouncer::refresh();
-        Log::notice('user all roles and capabilities removed', ['user'=>$user->id]);
+        Log::notice('user all roles and capabilities removed', ['user'=>$user->id,'roles'=>$user->getRoles()]);
     }
 
 }

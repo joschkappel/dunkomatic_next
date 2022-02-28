@@ -11,8 +11,9 @@
 <x-auth-card-form>
     <div class="card-body register-card-body">
         <div class="col-sm">
-            <form action="{{ route('apply', ['user'=>$user]) }}" method="post">
-                {{ csrf_field() }}
+            <form action="{{ route('apply', ['language' => app()->getLocale(), 'user'=>$user]) }}">
+                @method('POST')
+                @csrf
                 <p class="login-box-msg">{{ __('auth.register_message') }}</p>
                 <div class="input-group mb-3">
                     <input type="text" name="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" value="{{ old('name') }}"
