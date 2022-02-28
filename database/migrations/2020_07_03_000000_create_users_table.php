@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('provider')->nullable();
-            $table->unsignedBigInteger('provider_id')->nullable();
+            $table->string('provider_id')->nullable();
             $table->string('avatar')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('approved_at')->nullable();
@@ -28,7 +28,7 @@ class CreateUsersTable extends Migration
             $table->string('reason_join')->nullable();
             $table->string('reason_reject')->nullable();
             $table->string('locale')->default(app()->getLocale());
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->unsignedInteger('member_id')->nullable();

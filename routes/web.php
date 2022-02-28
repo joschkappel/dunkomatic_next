@@ -72,6 +72,7 @@ Route::group([
 
     Auth::routes(['verify' => true, 'middleware' => 'can:register']);
     Route::get('register_invited/{member}/{region}/{inviting_user}/{invited_by}', [RegisterController::class, 'showRegistrationFormInvited'])->name('register.invited');
+    Route::get('apply/{user}', [SocialiteController::class, 'showApply'])->middleware('can:register')->name('show.apply');
     Route::post('apply/{user}', [SocialiteController::class, 'apply'])->middleware('can:register')->name('apply');
 
     Route::middleware(['auth'])->group(function () {

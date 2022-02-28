@@ -38,7 +38,6 @@ class SocialiteController extends Controller
     {
         Log::info('redirecting oauth request to provider', ['provider' => $provider]);
         return Socialite::driver($provider)->redirect();
-
     }
 
     /**
@@ -74,11 +73,24 @@ class SocialiteController extends Controller
                 'avatar'    => $oauth_user->getAvatar(),
                 'provider'  => $provider,
                 'provider_id' => $oauth_user->getId(),
-                'locale'    => $oauth_user->getLocale(),
+                'locale'    => $oauth_user->user->locale ?? 'de',
             ]);
-            Log::notice('user created', ['provider' => $provider, 'user'=>$user->id]);
-            return view('auth.apply', ['user' => $user]);
+            Log::notice('user created', ['provider' => $provider, 'user' => $user->id]);
+
+            return redirect('show.apply', ['language' => $user->locale ?? 'de', 'user' => $user]);
         }
+    }
+
+    /**
+     * apply for access approval
+     *
+     * @param string $language
+     * @param \App\Models\User $user
+     * @return \Illuminate\View\View
+     */
+    public function showApply(string $language, User $user)
+    {
+        return view('auth.apply', ['user' => $user]);
     }
 
     /**
@@ -96,7 +108,7 @@ class SocialiteController extends Controller
         ]);
         Log::info('user application form data validated OK.');
 
-        $user->update(['reason_join'=>$data['reason_join']]);
+        $user->update(['reason_join' => $data['reason_join']]);
         $region = Region::find($data['region_id']);
         $this->setInitialAccessRights($user, $region);
 
@@ -108,8 +120,8 @@ class SocialiteController extends Controller
 
         // self-registration notify region admin for approval
         $radmins = User::whereIs('regionadmin')->get();
-        foreach ($radmins as $radmin){
-            if ($radmin->can('access', $region)){
+        foreach ($radmins as $radmin) {
+            if ($radmin->can('access', $region)) {
                 $radmin->notify(new NewUser($user));
             }
         }
