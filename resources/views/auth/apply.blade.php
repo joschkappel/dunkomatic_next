@@ -16,8 +16,7 @@
                 @csrf
                 <p class="login-box-msg">{{ __('auth.register_message') }}</p>
                 <div class="input-group mb-3">
-                    <input type="text" name="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" value="{{ old('name') }}"
-                            placeholder="{{ __('auth.full_name') }}" autofocus>
+                    <input type="text" name="name" class="form-control" readonly value="{{ $user->name }}">
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-user"></span>
@@ -25,8 +24,7 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input type="email" name="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" value="{{ old('email') }}"
-                            placeholder="{{ __('auth.email') }}">
+                    <input type="email" name="email" class="form-control" readonly value="{{ $user->email }}">
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-envelope"></span>

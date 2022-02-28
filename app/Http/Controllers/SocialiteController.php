@@ -18,14 +18,7 @@ use Illuminate\Foundation\Auth\RedirectsUsers;
 
 class SocialiteController extends Controller
 {
-    use RedirectsUsers, UserAccessManager;
-
-    /**
-     * Where to redirect users after registration.
-     *
-     * @var string
-     */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    use UserAccessManager;
 
     /**
      * redirect oauth request to the provider
@@ -130,6 +123,6 @@ class SocialiteController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
-        return redirect($this->redirectPath());
+        return redirect()->route('home', $user->locale ?? 'de');
     }
 }

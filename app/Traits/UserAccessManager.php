@@ -27,7 +27,7 @@ trait UserAccessManager
         if ( $region != null){
             Bouncer::allow($user)->to(['access'], $region);
         };
-        Bouncer::refreshFor($user)();
+        Bouncer::refreshFor($user);
         Log::notice('user candidate role set', ['user'=>$user->id,'roles'=>$user->getRoles()]);
     }
 
@@ -61,7 +61,7 @@ trait UserAccessManager
                 Bouncer::assign('regionadmin')->to($user);
             }
 
-            Bouncer::refreshFor($user)();
+            Bouncer::refreshFor($user);
         }
     }
 
@@ -122,7 +122,7 @@ trait UserAccessManager
             Log::notice('user allow access to leagues', ['user'=>$user->id, 'leagues'=>$leagues]);
         };
 
-        Bouncer::refreshFor($user)();
+        Bouncer::refreshFor($user);
     }
 
     /**
@@ -140,7 +140,7 @@ trait UserAccessManager
         $user->assign('candidate');
         Log::notice('user candidate role set', ['user'=>$user->id,'roles'=>$user->getRoles()]);
 
-        Bouncer::refreshFor($user)();
+        Bouncer::refreshFor($user);
     }
 
     /**
