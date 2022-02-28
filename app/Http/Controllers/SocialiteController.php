@@ -13,8 +13,6 @@ use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Foundation\Auth\RedirectsUsers;
 
 class SocialiteController extends Controller
 {
