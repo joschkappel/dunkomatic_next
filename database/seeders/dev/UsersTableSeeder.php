@@ -24,7 +24,6 @@ class UsersTableSeeder extends Seeder
         $mid = DB::table('members')->insertGetId(['lastname'=>'admin','email1'=>'admin@gmail.com']);
         $uid = DB::table('users')->insertGetId([
           'name' => 'admin',
-          'user_old' => 'admin',
           'email' => 'admin@gmail.com',
           'email_verified_at' => now(),
           'approved_at' => now(),
@@ -39,7 +38,6 @@ class UsersTableSeeder extends Seeder
         $mid = DB::table('members')->insertGetId(['lastname'=>'regionadmin','email1'=>'regionadmin@gmail.com']);
         $uid = DB::table('users')->insertGetId([
           'name' => 'regionadmin',
-          'user_old' => 'admin',
           'email' => 'regionadmin@gmail.com',
           'email_verified_at' => now(),
           'approved_at' => now(),
@@ -54,7 +52,6 @@ class UsersTableSeeder extends Seeder
 
         $uid = DB::table('users')->insertGetId([
             'name' => 'clubadmin',
-            'user_old' => 'assist',
             'email' => 'clubadmin@gmail.com',
             'email_verified_at' => now(),
             'approved_at' => now(),
@@ -68,7 +65,6 @@ class UsersTableSeeder extends Seeder
 
           $uid = DB::table('users')->insertGetId([
             'name' => 'leagueadmin',
-            'user_old' => 'assist',
             'email' => 'leagueadmin@gmail.com',
             'email_verified_at' => now(),
             'approved_at' => now(),
@@ -83,7 +79,6 @@ class UsersTableSeeder extends Seeder
 
         $uid = DB::table('users')->insertGetId([
           'name' => 'user',
-          'user_old' => 'admin',
           'email' => 'user@gmail.com',
           'email_verified_at' => now(),
           'approved_at' => now(),

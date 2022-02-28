@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Club;
-use App\Models\League;
 use App\Models\Region;
 use OwenIt\Auditing\Models\Audit;
 
@@ -17,10 +15,13 @@ use Illuminate\Validation\Rule;
 
 use App\Notifications\RejectUser;
 use App\Notifications\ApproveUser;
+use App\Traits\UserAccessManager;
 use Illuminate\Support\Carbon;
 
 class UserController extends Controller
 {
+    use UserAccessManager;
+
     /**
      * display view with all users of a region
      *
@@ -200,7 +201,7 @@ class UserController extends Controller
      */
     public function show(string $language, User $user)
     {
-        if ($user->can('manage', $user)){
+        if ($user->can('manage', $user)) {
             $member = $user->member;
             $audits = Audit::where('user_id', $user->id)->orderBy('created_at')->get();
             Log::info('show user details', ['user-id' => $user->id]);
@@ -222,6 +223,7 @@ class UserController extends Controller
 
         if ($user->approved_at == null) {
             $member = $user->member;
+            $this->cloneMemberAccessRights($user);
 
             $abilities['clubs'] = $user->clubs()->implode('shortname', ', ');
             $abilities['leagues'] = $user->leagues()->implode('shortname', ', ');
@@ -305,62 +307,15 @@ class UserController extends Controller
             $user->update(['approved_at' => now()]);
             Log::notice('user approved.', ['user-id' => $user->id]);
 
-            $user->retract('candidate');
-            $user->allow('manage', $user);
-
-            if ((!isset($data['regionadmin'])) and
-                (!isset($data['clubadmin'])) and
-                (!isset($data['leagueadmin']))
-            ) {
-                $user->assign('guest');
-            } else {
-                if (isset($data['regionadmin'])) {
-                    $user->assign('regionadmin');
-                    unset($data['regionadmin']);
-                } else {
-                    $user->retract('regionadmin');
-                }
-
-                if (isset($data['clubadmin'])) {
-                    $user->assign('clubadmin');
-                    unset($data['clubadmin']);
-                } else {
-                    $user->retract('clubadmin');
-                }
-
-                if (isset($data['leagueadmin'])) {
-                    $user->assign('leagueadmin');
-                    unset($data['leagueadmin']);
-                } else {
-                    $user->retract('leagueadmin');
-                }
-            }
-
-            // RBAC - enable region access
-            /*             if (isset($data['region_ids'])) {
-                foreach ($data['region_ids'] as $r) {
-                    Bouncer::allow($user)->to('access', Region::find($r));
-                }
-                unset($data['region_ids']);
-            }; */
-
-            // RBAC - enable club access
-            if (isset($data['club_ids'])) {
-                foreach ($data['club_ids'] as $c) {
-                    Bouncer::allow($user)->to(['access'], Club::find($c));
-                }
-                unset($data['club_ids']);
-            };
-
-
-            // RBAC - enable league access
-            if (isset($data['league_ids'])) {
-                foreach ($data['league_ids'] as $l) {
-                    Bouncer::allow($user)->to(['access'], League::find($l));
-                }
-                unset($data['league_ids']);
-            };
-
+            $this->setAccessRights(
+                $user,
+                $data['regionadmin'] ?? false,
+                session('cur_region'),
+                $data['clubadmin'] ?? false,
+                $data['club_ids'] ?? null,
+                $data['leagueadmin'] ?? false,
+                $data['league_ids'] ?? null
+            );
 
             $user->notify(new ApproveUser(session('cur_region')));
         } else {
@@ -396,50 +351,15 @@ class UserController extends Controller
         ]);
         Log::info('allowance form data validated OK.', ['user-id' => $user->id]);
 
-        // RBAC need to add remove abilities
-        $new_roles = [];
-        if (isset($data['regionadmin'])) {
-            $new_roles[] = 'regionadmin';
-            unset($data['regionadmin']);
-        }
-        if (isset($data['clubadmin'])) {
-            $new_roles[] = 'clubadmin';
-            unset($data['clubadmin']);
-        }
-        if (isset($data['leagueadmin'])) {
-            $new_roles[] = 'leagueadmin';
-            unset($data['leagueadmin']);
-        }
-
-        if (count($new_roles) == 0) {
-            $new_roles[] = 'guest';
-        }
-
-        Bouncer::sync($user)->roles($new_roles);
-
-        //Bouncer::sync($user)->abilities([]);
-        // RBAC - enable region access
-/*         if ( isset($data['region_ids']) and $user->isAn('regionadmin') ) {
-            foreach ($data['region_ids'] as $r) {
-                Bouncer::allow($user)->to('access', Region::find($r));
-            }
-        };
- */
-        // RBAC - enable club access
-        if (isset($data['club_ids'])) {
-            foreach ($data['club_ids'] as $c) {
-                Bouncer::allow($user)->to(['access'], Club::find($c));
-            }
-        };
-
-
-        // RBAC - enable league access
-        if (isset($data['league_ids'])) {
-            foreach ($data['league_ids'] as $l) {
-                Bouncer::allow($user)->to(['access'], League::find($l));
-            }
-        };
-        Bouncer::refresh();
+        $this->setAccessRights(
+            $user,
+            $data['regionadmin'] ?? false,
+            session('cur_region'),
+            $data['clubadmin'] ?? false,
+            $data['club_ids'] ?? null,
+            $data['leagueadmin'] ?? false,
+            $data['league_ids'] ?? null
+        );
 
         return redirect()->route('admin.user.index', ['language' => app()->getLocale(), 'region' => session('cur_region')]);
     }
@@ -454,10 +374,9 @@ class UserController extends Controller
     public function destroy(Request $request, User $user)
     {
 
+        $this->removeAllAccessRights($user);
         $user->delete();
-        Bouncer::sync($user)->roles([]);
-        Bouncer::sync($user)->abilities([]);
-        Bouncer::refresh();
+
         Log::notice('user deleted.', ['user-id' => $user->id]);
         return redirect()->route('admin.user.index', ['language' => app()->getLocale(), 'region' => session('cur_region')]);
     }
@@ -473,9 +392,7 @@ class UserController extends Controller
     {
         $user->update(['approved_at' => null]);
         // RBAC remove old roles and set guest
-        Bouncer::sync($user)->roles([]);
-        Bouncer::assign('candidate')->to($user);
-        Bouncer::refresh();
+        $this->blockUser($user);
         Log::notice('user blocked.', ['user-id' => $user->id]);
 
         return redirect()->route('admin.user.index', ['language' => app()->getLocale(), 'region' => session('cur_region')]);

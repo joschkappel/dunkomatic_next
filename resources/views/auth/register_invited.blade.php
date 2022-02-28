@@ -87,17 +87,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="input-group mb-3">
-                      <select class='sel-locale js-states form-control select2' id='selLocale' name='locale'>
-                        <option @if ( app()->getLocale() == 'en') selected @endif value="en">{{__('english')}}</option>
-                        <option @if ( app()->getLocale() == 'de') selected @endif value="de">{{__('deutsch')}}</option>
-                      </select>
-                      <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" data-select2-open="locale">
-                          <span class="fas fa-language"></span>
-                        </button>
-                      </span>
-                    </div>
                     <button type="submit" class="btn btn-primary btn-block btn-flat">
                         {{ __('auth.register') }}
                     </button>
@@ -131,23 +120,6 @@
                     }
             });
 
-            function formatLocale (locale) {
-                var country = locale.id;
-                if (country == "en"){
-                    country = 'gb';
-                }
-                var $locale = $(
-                    '<span class="flag-icon flag-icon-'+country+'"></span><span> '+locale.text+'</span></span>'
-                );
-                return $locale;
-            };
-
-            $("#selLocale").select2({
-                multiple: false,
-                width: '100%',
-                allowClear: false,
-                templateSelection: formatLocale
-            });
         });
     </script>
 @yield('js')

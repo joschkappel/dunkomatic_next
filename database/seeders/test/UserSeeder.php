@@ -21,7 +21,6 @@ class UserSeeder extends Seeder
         $mid = DB::table('members')->insertGetId(['lastname'=>'approved','email1'=>'approved@gmail.com']);
         $uid = DB::table('users')->insertGetId([
           'name' => 'approved',
-          'user_old' => 'approved',
           'email' => 'approved@gmail.com',
           'email_verified_at' => now(),
           'approved_at' => now(),
@@ -37,7 +36,6 @@ class UserSeeder extends Seeder
         $mid = DB::table('members')->insertGetId(['lastname'=>'notapproved','email1'=>'notapproved@gmail.com']);
         $uid = DB::table('users')->insertGetId([
           'name' => 'notapproved',
-          'user_old' => 'notapproved',
           'email' => 'notapproved@gmail.com',
           'email_verified_at' => now(),
           'approved_at' => null,

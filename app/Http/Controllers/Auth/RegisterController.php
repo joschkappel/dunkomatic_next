@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Enums\Role;
-use Silber\Bouncer\BouncerFacade as Bouncer;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 
@@ -17,6 +15,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use App\Notifications\NewUser;
+use App\Traits\UserAccessManager;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\View\View;
 class RegisterController extends Controller
@@ -32,7 +31,7 @@ class RegisterController extends Controller
     |
     */
 
-    use RegistersUsers;
+    use RegistersUsers, UserAccessManager;
 
     /**
      * Where to redirect users after registration.
@@ -65,7 +64,6 @@ class RegisterController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'region_id' => ['required', 'exists:regions,id'],
             'reason_join' => ['required', 'string'],
-            'locale' => ['required', 'string', 'max:2'],
             'invited_by' => ['sometimes']
         ]);
     }
@@ -83,49 +81,25 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'reason_join' => $data['reason_join'],
-            'locale' => $data['locale']
+            'locale' => 'de'
         ]);
 
-        $region = Region::findOrFail($data['region_id']);
+        $region = Region::find($data['region_id']);
+
+        $this->setInitialAccessRights($user, $region);
 
         $member = Member::with('memberships')->where('email1', $user->email)->orWhere('email2', $user->email)->first();
         if (isset($member)) {
             // link user and member
             $member->user()->save($user);
-            // RBAC - set access to clubs
-            $clubs = $member->clubs->unique();
-            foreach ($clubs as $c) {
-                Bouncer::allow($user)->to(['access'], $c);
-            }
-            // RBAC - set access to league
-            $leagues = $member->leagues->unique();
-            foreach ($leagues as $l) {
-                Bouncer::allow($user)->to(['access'], $l);
-            }
-            Bouncer::allow($user)->to(['access'], $region);
-
-            Bouncer::assign('guest')->to($user);
-            if ( $member->memberships->firstWhere('role_id', Role::ClubLead) != null ){
-                Bouncer::assign('clubadmin')->to($user);
-            }
-            if ( $member->memberships->firstWhere('role_id', Role::LeagueLead) != null ){
-                Bouncer::assign('leagueadmin')->to($user);
-            }
-            if ( $member->memberships->firstWhere('role_id', Role::RegionLead) != null ){
-                Bouncer::assign('regionadmin')->to($user);
-            }
-
-        } else {
-
-            //RBAC - set user role and region
-            Bouncer::assign('candidate')->to($user);
-            Bouncer::allow($user)->to(['access'], $region);
         }
 
         if (isset($data['invited_by']) and (Crypt::decryptString($data['invited_by']) == $data['email'])) {
             // invited users are auto-approved
             $user->update(['approved_at' => now()]);
-            $user->allow('manage', $user);
+
+            $this->approveUser($user);
+            $this->cloneMemberAccessRights($user);
             Log::notice('user approved.', ['user-id' => $user->id]);
             $user->notify(new ApproveUser($region));
         } else {
@@ -137,8 +111,6 @@ class RegisterController extends Controller
                 }
             }
         }
-
-        Bouncer::refresh();
 
         return $user;
     }

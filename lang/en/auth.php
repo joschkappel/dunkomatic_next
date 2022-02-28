@@ -18,6 +18,7 @@ return [
     'toggle_navigation'           => 'Toggle navigation',
     'login_message'               => 'Sign in to start your session',
     'register_message'            => 'Register a new membership',
+    'socialregister_message'      => 'You may use an existing account with these providers to register',
     'password_reset_message'      => 'Reset Password',
     'reset_password'              => 'Reset Password',
     'send_password_reset_link'    => 'Send Password Reset Link',

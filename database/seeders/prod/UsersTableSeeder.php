@@ -20,7 +20,6 @@ class UsersTableSeeder extends Seeder
 
         $uid = DB::table('users')->insertGetId([
           'name' => 'admin',
-          'user_old' => 'admin',
           'email' => 'joschkappel@gmail.com',
           'email_verified_at' => now(),
           'approved_at' => now(),

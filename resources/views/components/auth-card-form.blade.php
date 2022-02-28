@@ -13,7 +13,7 @@
             </div>
         </div>
         <div class="row justify-content-center">
-            <div class="col-xl-6">
+            <div class="col-md-{{ $colWidth }}">
                 <div class="card shadow-lg p-3 mb-5">
                     {{ $slot }}
                 </div>

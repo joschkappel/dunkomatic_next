@@ -18,6 +18,7 @@ return [
     'toggle_navigation'           => 'Navigation umschalten',
     'login_message'               => 'Bitte melde Dich an, um auf den geschützten Bereich zuzugreifen',
     'register_message'            => 'Bitte fülle das Formular aus, um ein neues Konto zu registrieren',
+    'socialregister_message'      => 'Du kannst Dich auch mit Deinem Konto dieser Anbieter registrieren',
     'password_reset_message'      => 'Bitte gib Deine E-Mail Adresse ein, um Dein Passwort zurückzusetzen',
     'reset_password'              => 'Passwort zurücksetzen',
     'send_password_reset_link'    => 'Link zur Passwortwiederherstellung senden',

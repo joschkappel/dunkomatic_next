@@ -7,13 +7,20 @@ use Illuminate\View\Component;
 class AuthCardForm extends Component
 {
     /**
+     * column / form width
+     *
+     * @var string
+     */
+    public $colWidth;
+
+    /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(string $colWidth='6')
     {
-        //
+        $this->colWidth = $colWidth;
     }
 
     /**

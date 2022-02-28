@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Builder;
 
 use App\Models\Member;
 use App\Models\Region;
@@ -21,7 +20,6 @@ use App\Models\Message;
 use App\Models\Club;
 use App\Models\League;
 use App\Notifications\VerifyEmail;
-use App\Enums\Role;
 
 use App\Notifications\ResetPassword as ResetPasswordNotification;
 use Illuminate\Contracts\Translation\HasLocalePreference;
@@ -35,8 +33,10 @@ use Illuminate\Support\Collection;
  *
  * @property int $id
  * @property string $name
- * @property string|null $user_old
  * @property string $email
+ * @property string|null $provider
+ * @property string|null $avatar
+ * @property int|null $provider_id
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property \Illuminate\Support\Carbon|null $approved_at
  * @property \Illuminate\Support\Carbon|null $rejected_at
@@ -124,7 +124,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
 
     protected $fillable = [
         'id', 'name', 'email', 'password', 'approved_at', 'rejected_at', 'reason_join', 'reason_reject',
-        'email_verified_at', 'locale'
+        'email_verified_at', 'locale', 'provider', 'provider_id', 'avatar'
     ];
 
     protected $hidden = [

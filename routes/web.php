@@ -33,6 +33,7 @@ use App\Http\Controllers\LeagueGameController;
 use App\Http\Controllers\LeagueController;
 use App\Http\Controllers\LeagueStateController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\SocialiteController;
 
 /*
@@ -51,8 +52,8 @@ Route::get('healthy', function () { return 'OK'; });
 Route::get('health', HealthCheckResultsController::class);
 // Route::get('/fire', function () { event(new App\Events\TestEvent()); return 'ok'; });
 
-Route::get('/auth/{provider}/redirect', [SocialiteController::class, 'redirect_to_oauth'])->name('oauth.redirect');
-Route::get('/auth/{provider}/callback', [SocialiteController::class, 'callback_from_oauth'])->name('oauth.callback');
+Route::get('/auth/{provider}/redirect', [SocialiteController::class, 'redirectToOauth'])->name('oauth.redirect');
+Route::get('/auth/{provider}/callback', [SocialiteController::class, 'registerFromOauth'])->name('oauth.callback');
 
 
 Route::group([
@@ -71,6 +72,7 @@ Route::group([
 
     Auth::routes(['verify' => true, 'middleware' => 'can:register']);
     Route::get('register_invited/{member}/{region}/{inviting_user}/{invited_by}', [RegisterController::class, 'showRegistrationFormInvited'])->name('register.invited');
+    Route::post('apply/{user}', [SocialiteController::class, 'apply'])->middleware('can:register')->name('apply');
 
     Route::middleware(['auth'])->group(function () {
         Route::get('home', [HomeController::class, 'home'])->name('home')->middleware('auth')->middleware('verified')->middleware('approved');
