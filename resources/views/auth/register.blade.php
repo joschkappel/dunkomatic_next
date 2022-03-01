@@ -5,6 +5,7 @@
     @yield('css')
 @stop
 
+@section('classes_body', 'register-page')
 
 @php( $login_url = View::getSection('login_url') ?? config('dunkomatic.login_url', 'login') )
 @php( $register_url = View::getSection('register_url') ?? config('dunkomatic.register_url', 'register') )
@@ -19,13 +20,13 @@
             <div class="col-sm border-right border-primary">
                 <p class="login-box-msg">{{ __('auth.socialregister_message') }}</p>
                 <div class="d-flex justify-content-center mb-3">
-                    <a class="btn btn-outline-dark" role="button" href="{{ route('oauth.redirect', ['provider'=>'google'])}}"><i class="fab fa-google"></i><span class="px-2">Sign in with Google</span></a>
+                    <a class="btn btn-outline-dark" role="button" href="{{ route('oauth.redirect', ['provider'=>'google'])}}"><i class="fab fa-google"></i><span class="px-2">@lang('auth.register_with', ['provider'=>'Google'])</span></a>
                 </div>
                 <div class="d-flex justify-content-center mb-3">
-                    <a class="btn btn-primary disabled" role="button" href="{{ route('oauth.redirect', ['provider'=>'facebook'])}}"><i class="fab fa-facebook-f"></i><span class="px-2">Sign in with facebook</span></a>
+                    <a class="btn btn-primary disabled" role="button" href="{{ route('oauth.redirect', ['provider'=>'facebook'])}}"><i class="fab fa-facebook-f"></i><span class="px-2">@lang('auth.register_with', ['provider'=>'Facebook'])</span></a>
                 </div>
                 <div class="d-flex justify-content-center mb-3">
-                    <a class="btn btn-dark disabled" role="button" href="{{ route('oauth.redirect', ['provider'=>'facebook'])}}"><i class="fab fa-apple"></i><span class="px-2">Sign in with Apple</span></a>
+                    <a class="btn btn-dark disabled" role="button" href="{{ route('oauth.redirect', ['provider'=>'facebook'])}}"><i class="fab fa-apple"></i><span class="px-2">@lang('auth.register_with', ['provider'=>'Apple'])</span></a>
                 </div>
             </div>
             <div class="col-sm">
