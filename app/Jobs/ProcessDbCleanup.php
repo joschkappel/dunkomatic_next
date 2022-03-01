@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Invitation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -45,5 +46,10 @@ class ProcessDbCleanup implements ShouldQueue
         // drop all read notifications
         $old_notifs = DatabaseNotification::whereDate('read_at', '<',now()->subWeek())->delete();
         Log::notice('[JOB][DB CLEANUP] deleting read notifications.', ['count' => $old_notifs]);
+        // drop old invitations
+        $old_invites = Invitation::whereDate('created_at', '<',now()->subWeek())->delete();
+        Log::notice('[JOB][DB CLEANUP] deleting old invitations.', ['count' => $old_invites]);
+
+
     }
 }

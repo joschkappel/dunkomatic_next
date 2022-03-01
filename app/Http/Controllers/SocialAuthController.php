@@ -7,14 +7,16 @@ use App\Models\Region;
 use App\Models\Member;
 use App\Notifications\NewUser;
 use Illuminate\Auth\Events\Registered;
+use App\Models\Invitation;
+use App\Notifications\ApproveUser;
 
 use App\Traits\UserAccessManager;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 
-class SocialiteController extends Controller
+class SocialAuthController extends Controller
 {
     use UserAccessManager;
 
@@ -22,11 +24,13 @@ class SocialiteController extends Controller
      * redirect oauth request to the provider
      *
      * @param string $provider
+     * @param \App\Models\Invitation|null $invitation
      * @return \Illuminate\Http\RedirectResponse
      *
      */
-    public function redirectToOauth(string $provider)
+    public function redirectToOauth(string $provider, Invitation $invitation)
     {
+        $invitation->update(['provider'=>$provider]);
         Log::info('redirecting oauth request to provider', ['provider' => $provider]);
         return Socialite::driver($provider)->redirect();
     }
@@ -66,10 +70,27 @@ class SocialiteController extends Controller
                 'provider_id' => $oauth_user->getId(),
                 'locale'    => $oauth_user->user->locale ?? 'de',
             ]);
-            $this->setInitialAccessRights($user);
-            Log::notice('user created', ['provider' => $provider, 'user' => $user->id]);
-            Auth::login($user);
-            return redirect()->route('show.apply', ['language' => $user->locale ?? 'de', 'user' => $user]);
+
+            if (Invitation::where('email',$user->email)->where('provider',$provider)->exists() ){
+                // this user must have been invited
+                $invitation = Invitation::where('email',$user->email)->first();
+                $user->update(['approved_at' => now()]);
+                $member = $invitation->member;
+                $member->user()->save($user);
+
+                // so auto-approve
+                $this->approveUser($user);
+                $this->cloneMemberAccessRights($user);
+                Log::notice('user approved.', ['user-id' => $user->id]);
+                $user->notify(new ApproveUser($invitation->region));
+
+                $invitation->delete();
+            } else {
+                $this->setInitialAccessRights($user);
+                Log::notice('user created', ['provider' => $provider, 'user' => $user->id]);
+                Auth::login($user);
+                return redirect()->route('show.apply', ['language' => $user->locale ?? 'de', 'user' => $user]);
+            }
         }
     }
 

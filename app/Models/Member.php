@@ -8,6 +8,7 @@ use App\Models\League;
 use App\Models\Region;
 use App\Enums\Role;
 use App\Models\Membership;
+use App\Models\Invitation;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -88,6 +89,10 @@ class Member extends Model
   public function memberships(): HasMany
   {
       return $this->hasMany(Membership::class);
+  }
+  public function invitations(): HasMany
+  {
+      return $this->hasMany(Invitation::class);
   }
 
   /**

@@ -12,6 +12,7 @@ use App\Models\Schedule;
 use App\Models\Team;
 use App\Models\Gym;
 use App\Models\Message;
+use App\Models\Invitation;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -154,6 +155,12 @@ class Region extends Model
     {
         return $this->hasMany(League::class);
     }
+
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(Invitation::class);
+    }
+
 
     public function users(): Collection
     {

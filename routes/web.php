@@ -34,7 +34,7 @@ use App\Http\Controllers\LeagueController;
 use App\Http\Controllers\LeagueStateController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\CalendarController;
-use App\Http\Controllers\SocialiteController;
+use App\Http\Controllers\SocialAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,8 +52,8 @@ Route::get('healthy', function () { return 'OK'; });
 Route::get('health', HealthCheckResultsController::class);
 // Route::get('/fire', function () { event(new App\Events\TestEvent()); return 'ok'; });
 
-Route::get('/auth/{provider}/redirect', [SocialiteController::class, 'redirectToOauth'])->name('oauth.redirect');
-Route::get('/auth/{provider}/callback', [SocialiteController::class, 'registerFromOauth'])->name('oauth.callback');
+Route::get('/auth/{provider}/redirect/{invitation?}', [SocialAuthController::class, 'redirectToOauth'])->name('oauth.redirect');
+Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'registerFromOauth'])->name('oauth.callback');
 
 
 Route::group([
@@ -71,8 +71,9 @@ Route::group([
     Route::get('dsgvo', function () { return view('app.dsgvo'); })->name('dsgvo');
 
     Auth::routes(['verify' => true, 'middleware' => 'can:register']);
-    Route::get('register_invited/{member}/{region}/{inviting_user}/{invited_by}', [RegisterController::class, 'showRegistrationFormInvited'])->name('register.invited');
-    Route::get('apply/{user}', [SocialiteController::class, 'showApply'])->name('show.apply');
+
+    Route::get('register_invited/{invitation}/{invited_by}', [RegisterController::class, 'showRegistrationFormInvited'])->name('register.invited');
+    Route::get('apply/{user}', [SocialAuthController::class, 'showApply'])->middleware('can:register')->name('show.apply');
 
     Route::middleware(['auth'])->group(function () {
         Route::get('home', [HomeController::class, 'home'])->name('home')->middleware('auth')->middleware('verified')->middleware('approved');
@@ -195,7 +196,7 @@ Route::middleware(['auth',
                    'set.logcontext'])->group(function () {
     // APIs , no locale or language required !
     Route::redirect('home', '/de/home');
-    Route::post('apply/{user}', [SocialiteController::class, 'apply'])->middleware('can:register')->name('apply');
+    Route::post('apply/{user}', [SocialAuthController::class, 'apply'])->middleware('can:register')->name('apply');
 
     Route::post('region', [RegionController::class, 'store'])->name('region.store')->middleware('can:create-regions');
     Route::put('region/{region}', [RegionController::class, 'update'])->name('region.update')->middleware('can:update-regions');

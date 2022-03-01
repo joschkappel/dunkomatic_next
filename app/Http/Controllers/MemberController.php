@@ -9,7 +9,7 @@ use App\Models\League;
 use App\Models\Club;
 use BenSampo\Enum\Rules\EnumValue;
 use App\Enums\Role;
-
+use App\Models\Invitation;
 use Datatables;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
@@ -215,11 +215,6 @@ class MemberController extends Controller
         } elseif ($entity_type == Region::class) {
             $region = Region::findOrFail($entity_id);
             $region->memberships()->create($mship);
-            // auto-invite rgeion admin
-            if ($mship['role_id'] == Role::RegionLead()) {
-                $member->notify(new InviteUser(Auth::user(), session('cur_region')));
-                Log::info('[NOTIFICATION] invite user.', ['member-id' => $member->id]);
-            }
             return redirect()->route('region.index', ['language' => app()->getLocale()]);
         } else {
             return redirect()->back();
@@ -281,8 +276,13 @@ class MemberController extends Controller
      */
     public function invite(Member $member)
     {
-        $member->notify(new InviteUser(Auth::user(), session('cur_region')));
-        Log::info('[NOTIFICATION] invite user.', ['member-id' => $member->id]);
+        $invite = Invitation::create(['email_invitee'=>$member->email1]);
+        Auth::user()->invitations()->save($invite);
+        $member->invitations()->save($invite);
+        session('cur_region')->invitations()->save($invite);
+
+        $member->notify(new InviteUser($invite));
+        Log::info('[NOTIFICATION] invite user.', ['invitation' => $invite]);
 
         return redirect()->back();
     }

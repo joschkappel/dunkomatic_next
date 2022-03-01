@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Models\User;
 use App\Enums\Role;
+use App\Models\Invitation;
 use App\Models\Region;
 
 use Illuminate\Bus\Queueable;
@@ -17,16 +18,18 @@ class InviteUser extends Notification
 
     private User $sender;
     private Region $invite_to_region;
+    private Invitation $invitation;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(User $sender, Region $region)
+    public function __construct(Invitation $invitation)
     {
-        $this->sender = $sender;
-        $this->invite_to_region = $region;
+        $this->sender = $invitation->user;
+        $this->invite_to_region = $invitation->region;
+        $this->invitation = $invitation;
     }
 
     /**
@@ -61,9 +64,7 @@ class InviteUser extends Notification
             ->line( __('notifications.inviteuser.line1', ['sendername'=>$sender]))
             ->line( __('notifications.inviteuser.line2'))
             ->action( __('notifications.inviteuser.action'), route('register.invited', ['language'=>app()->getLocale(),
-                                                                                         'member' => $notifiable,
-                                                                                         'inviting_user'=>$this->sender,
-                                                                                         'region'=> $this->invite_to_region,
+                                                                                         'invitation' => $this->invitation,
                                                                                          'invited_by'=>Crypt::encryptString($notifiable->email1)]));
     }
 

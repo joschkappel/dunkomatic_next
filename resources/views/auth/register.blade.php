@@ -5,15 +5,12 @@
     @yield('css')
 @stop
 
-@section('classes_body', 'register-page')
 
 @php( $login_url = View::getSection('login_url') ?? config('dunkomatic.login_url', 'login') )
 @php( $register_url = View::getSection('register_url') ?? config('dunkomatic.register_url', 'register') )
-@php( $dashboard_url = View::getSection('dashboard_url') ?? config('dunkomatic.dashboard_url', 'start') )
 
 @php( $login_url = $login_url ? route($login_url, app()->getLocale()) : '' )
 @php( $register_url = $register_url ? route($register_url, app()->getLocale()) : '' )
-@php( $dashboard_url = $dashboard_url ? route('start') : '' )
 
 @section('body')
 <x-auth-card-form colWidth="8">
@@ -33,7 +30,7 @@
             </div>
             <div class="col-sm">
                 <form action="{{ $register_url }}" method="post">
-                    {{ csrf_field() }}
+                    @csrf
                     <p class="login-box-msg">{{ __('auth.register_message') }}</p>
                     <div class="input-group mb-3">
                         <input type="text" name="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" value="{{ old('name') }}"

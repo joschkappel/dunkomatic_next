@@ -8,6 +8,7 @@ use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use App\Models\Region;
 use App\Models\Member;
+use App\Models\Invitation;
 use App\Notifications\ApproveUser;
 
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -18,6 +19,8 @@ use App\Notifications\NewUser;
 use App\Traits\UserAccessManager;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\View\View;
+
+
 class RegisterController extends Controller
 {
     /*
@@ -64,7 +67,8 @@ class RegisterController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'region_id' => ['required', 'exists:regions,id'],
             'reason_join' => ['required', 'string'],
-            'invited_by' => ['sometimes']
+            'invited_by' => ['sometimes'],
+            'invitation_id' => ['sometimes', 'exists:invitations,id']
         ]);
     }
 
@@ -88,21 +92,25 @@ class RegisterController extends Controller
 
         $this->setInitialAccessRights($user, $region);
 
-        $member = Member::with('memberships')->where('email1', $user->email)->orWhere('email2', $user->email)->first();
-        if (isset($member)) {
-            // link user and member
-            $member->user()->save($user);
-        }
-
-        if (isset($data['invited_by']) and (Crypt::decryptString($data['invited_by']) == $data['email'])) {
+        if ( ( isset($data['invited_by']) and (Crypt::decryptString($data['invited_by']) == $data['email']) ) and
+             ( isset($data['invitation_id']) and ( Invitation::where('id', $data['invitation_id'])->exists()) ) ){
             // invited users are auto-approved
             $user->update(['approved_at' => now()]);
+            $invitation = Invitation::find($data['invitation_id']);
+            $member = $invitation->member;
+            $member->user()->save($user);
+            $invitation->delete();
 
             $this->approveUser($user);
             $this->cloneMemberAccessRights($user);
             Log::notice('user approved.', ['user-id' => $user->id]);
             $user->notify(new ApproveUser($region));
         } else {
+            $member = Member::with('memberships')->where('email1', $user->email)->orWhere('email2', $user->email)->first();
+            if (isset($member)) {
+                // link user and member
+                $member->user()->save($user);
+            }
             // self-registrâtion ntoify region admin for approval
             $radmins = User::whereIs('regionadmin')->get();
             foreach ($radmins as $radmin){
@@ -119,14 +127,15 @@ class RegisterController extends Controller
      * Show the application registration form for invited users.
      *
      * @param string $language
-     * @param \App\Models\Member $member
-     * @param \App\Models\Region $region
-     * @param \App\Models\User $inviting_user
+     * @param \App\Models\Invitation $invitation
      * @param string $invited_by
      * @return \Illuminate\View\View
      */
-    public function showRegistrationFormInvited(string $language, Member $member, Region $region, User $inviting_user, string $invited_by): View
+    public function showRegistrationFormInvited(string $language, Invitation $invitation, string $invited_by): View
     {
-        return view('auth.register_invited', ['language' => $language, 'member' => $member, 'user' => $inviting_user, 'invited_by' => $invited_by, 'region' => $region]);
+        return view('auth.register_invited', [
+            'language' => $language,
+            'invited_by' => $invited_by,
+            'invitation' => $invitation]);
     }
 }

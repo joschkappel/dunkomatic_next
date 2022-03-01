@@ -20,6 +20,7 @@ use App\Models\Message;
 use App\Models\Club;
 use App\Models\League;
 use App\Notifications\VerifyEmail;
+use App\Models\Invitation;
 
 use App\Notifications\ResetPassword as ResetPasswordNotification;
 use Illuminate\Contracts\Translation\HasLocalePreference;
@@ -182,6 +183,12 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
     {
         return $this->hasMany(Message::class);
     }
+
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(Invitation::class);
+    }
+
 
     public function region_messages(int $region_id): HasMany
     {
