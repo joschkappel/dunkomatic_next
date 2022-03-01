@@ -34,7 +34,7 @@ use App\Http\Controllers\LeagueController;
 use App\Http\Controllers\LeagueStateController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\CalendarController;
-use App\Http\Controllers\SocialAuthController;
+use App\Http\Controllers\Auth\SocialAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,7 +73,7 @@ Route::group([
     Auth::routes(['verify' => true, 'middleware' => 'can:register']);
 
     Route::get('register_invited/{invitation}/{invited_by}', [RegisterController::class, 'showRegistrationFormInvited'])->name('register.invited');
-    Route::get('apply/{user}', [SocialAuthController::class, 'showApply'])->middleware('can:register')->name('show.apply');
+    Route::get('apply/{user}', [SocialAuthController::class, 'showApplyForm'])->middleware('can:register')->name('show.apply');
 
     Route::middleware(['auth'])->group(function () {
         Route::get('home', [HomeController::class, 'home'])->name('home')->middleware('auth')->middleware('verified')->middleware('approved');
