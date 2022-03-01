@@ -115,7 +115,7 @@ trait UserAccessManager
         };
 
         // RBAC - enable league access
-        if ( $leagues >= null ) {
+        if ( $leagues != null ) {
             foreach ($leagues as $l) {
                 Bouncer::allow($user)->to(['access'], League::find($l));
             }

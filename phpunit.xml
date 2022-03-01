@@ -27,5 +27,6 @@
     <env name="TELESCOPE_ENABLED" value="false"/>
     <env name="LOG_CHANNEL" value="single"/>
     <env name="HEALTH_CHANNEL" value=""/>
+    <env name="FILESYSTEM_DISK" value="local" />
   </php>
 </phpunit>
