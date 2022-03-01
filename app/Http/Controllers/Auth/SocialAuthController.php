@@ -75,17 +75,12 @@ class SocialAuthController extends Controller
          * approvedScopes
          * name, email, id, nickname, locale, avatar, email_Verified
          */
-        if ( $oauth_user->user->email_verified ){
-            $email_verified = now();
-        } else {
-            $email_verified =  null;
-        }
 
         $user = User::where(['email' => $oauth_user->getEmail()])->first();
+        Auth::login($user);
 
         if ($user) {
             // user is already registered, this is a login
-            Auth::login($user);
             App::setLocale($user->locale);
             return redirect()->intended($this->redirectPath());
 
@@ -97,13 +92,13 @@ class SocialAuthController extends Controller
                 'avatar'    => $oauth_user->getAvatar(),
                 'provider'  => $provider,
                 'provider_id' => $oauth_user->getId(),
-                'locale'    => $oauth_user->user->locale ?? 'de',
-                'email_verified_at' => $email_verified,
+                'locale'    => $oauth_user->user['locale'] ?? 'de',
+                'email_verified_at' => $oauth_user->user['email_verified'] ? now() : null,
             ]);
 
-            if (Invitation::where('email',$user->email)->where('provider',$provider)->exists() ){
+            if (Invitation::where('email_invitee',$user->email)->where('provider',$provider)->exists() ){
                 // this user must have been invited
-                $invitation = Invitation::where('email',$user->email)->first();
+                $invitation = Invitation::where('email_invitee',$user->email)->first();
                 $user->update(['approved_at' => now()]);
                 $member = $invitation->member;
                 $member->user()->save($user);
@@ -115,10 +110,10 @@ class SocialAuthController extends Controller
                 $user->notify(new ApproveUser($invitation->region));
 
                 $invitation->delete();
+                return redirect()->intended($this->redirectPath());
             } else {
-                // $this->setInitialAccessRights($user);
+                $this->setInitialAccessRights($user);
                 Log::notice('user created', ['provider' => $provider, 'user' => $user->id]);
-                // Auth::login($user);
                 return redirect()->route('show.apply', ['language' => $user->locale ?? 'de', 'user' => $user]);
             }
         }
