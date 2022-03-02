@@ -81,14 +81,20 @@ class SocialAuthController extends Controller
             return redirect()->intended($this->redirectPath());
         } else {
             // this is a registration of a new acccount
+            if ($provider == 'google'){
+                $locale = $oauth_user->user['locale'];
+            } else {
+                $locale = 'de';
+            }
+
             $user = User::create([
                 'name'      => $oauth_user->getName(),
                 'email'     => $oauth_user->getEmail(),
                 'avatar'    => $oauth_user->getAvatar(),
                 'provider'  => $provider,
                 'provider_id' => $oauth_user->getId(),
-                'locale'    => $oauth_user->user['locale'] ?? 'de',
-                'email_verified_at' => $oauth_user->user['email_verified'] ? now() : null,
+                'locale'    => $locale,
+                'email_verified_at' => now(),
             ]);
 
             if ( $request->cookie('_i') != null ) {
