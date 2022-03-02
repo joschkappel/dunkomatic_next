@@ -24,7 +24,7 @@
                     <a class="btn btn-outline-primary"  role="button" href="{{ route('oauth.redirect', ['provider'=>'twitter'])}}"><i class="fab fa-twitter"></i><span class="mx-2">@lang('auth.register_with', ['provider'=>'Twitter'])</span></a>
                 </div>
                 <div class="d-flex justify-content-center mb-3">
-                    <a class="btn btn-dark disabled" role="button" href="{{ route('oauth.redirect', ['provider'=>'apple', 'invitation'=>$invitation])}}"><i class="fab fa-apple"></i><span class="px-2">@lang('auth.register_with', ['provider'=>'Apple'])</span></a>
+                    <a class="btn btn-outline-success" role="button" href="{{ route('oauth.redirect', ['provider'=>'spotify'])}}"><i class="fab fa-spotify"></i><span class="px-2">@lang('auth.register_with', ['provider'=>'Spotify'])</span></a>
                 </div>
             </div>
             <div class="col-sm">
