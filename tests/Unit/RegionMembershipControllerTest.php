@@ -6,8 +6,6 @@ use App\Models\Region;
 use App\Models\Member;
 use App\Enums\Role;
 
-use App\Notifications\InviteUser;
-
 use Tests\TestCase;
 use Tests\Support\Authentication;
 use Illuminate\Support\Facades\Notification;
@@ -116,10 +114,6 @@ class RegionMembershipControllerTest extends TestCase
       $this->assertDatabaseHas('members', ['id' => $member->id])
            ->assertDatabaseHas('memberships', ['member_id' => $member->id])
            ->assertDatabaseCount('memberships', 2);
-
-    //   Notification::assertSentTo(
-    //     [$member], InviteUser::class
-    //   );
 
     }
 

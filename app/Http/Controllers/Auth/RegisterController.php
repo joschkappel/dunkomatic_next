@@ -17,8 +17,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use App\Notifications\NewUser;
 use App\Traits\UserAccessManager;
-use Illuminate\Support\Facades\Crypt;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Cookie;
 
 
 class RegisterController extends Controller
@@ -67,8 +68,6 @@ class RegisterController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'region_id' => ['required', 'exists:regions,id'],
             'reason_join' => ['required', 'string'],
-            'invited_by' => ['sometimes'],
-            'invitation_id' => ['sometimes', 'exists:invitations,id']
         ]);
     }
 
@@ -85,38 +84,23 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'reason_join' => $data['reason_join'],
-            'locale' => 'de'
+            'locale' => 'de',
         ]);
 
         $region = Region::find($data['region_id']);
 
         $this->setInitialAccessRights($user, $region);
 
-        if ( ( isset($data['invited_by']) and (Crypt::decryptString($data['invited_by']) == $data['email']) ) and
-             ( isset($data['invitation_id']) and ( Invitation::where('id', $data['invitation_id'])->exists()) ) ){
-            // invited users are auto-approved
-            $user->update(['approved_at' => now()]);
-            $invitation = Invitation::find($data['invitation_id']);
-            $member = $invitation->member;
+        $member = Member::with('memberships')->where('email1', $user->email)->orWhere('email2', $user->email)->first();
+        if (isset($member)) {
+            // link user and member
             $member->user()->save($user);
-            $invitation->delete();
-
-            $this->approveUser($user);
-            $this->cloneMemberAccessRights($user);
-            Log::notice('user approved.', ['user-id' => $user->id]);
-            $user->notify(new ApproveUser($region));
-        } else {
-            $member = Member::with('memberships')->where('email1', $user->email)->orWhere('email2', $user->email)->first();
-            if (isset($member)) {
-                // link user and member
-                $member->user()->save($user);
-            }
-            // self-registrâtion ntoify region admin for approval
-            $radmins = User::whereIs('regionadmin')->get();
-            foreach ($radmins as $radmin){
-                if ($radmin->can('access', $region)){
-                    $radmin->notify(new NewUser($user));
-                }
+        }
+        // self-registrâtion ntoify region admin for approval
+        $radmins = User::whereIs('regionadmin')->get();
+        foreach ($radmins as $radmin) {
+            if ($radmin->can('access', $region)) {
+                $radmin->notify(new NewUser($user));
             }
         }
 
@@ -124,18 +108,63 @@ class RegisterController extends Controller
     }
 
     /**
+     * Create a new user instance after a valid registration based on an invitation.
+     *
+     * @param  Request $request
+     * @return
+     */
+    protected function register_invitee(Request $request)
+    {
+        $data = $request->validate([
+
+        ]);
+
+        if ( $request->cookie('_i') == null){
+            abort(404);
+        } else {
+            $user = User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+                'reason_join' => $data['reason_join'],
+                'locale' => 'de',
+            ]);
+
+            $invitation = Invitation::find($request->cookie('_i'));
+
+            $this->setInitialAccessRights($user, $invitation->region);
+
+            // invited users are auto-approved
+            $user->update(['approved_at' => now()]);
+            $member = $invitation->member;
+            $member->user()->save($user);
+            $invitation->delete();
+            Cookie::queue( Cookie::forget('_i'));
+
+            $this->approveUser($user);
+            $this->cloneMemberAccessRights($user);
+
+            Log::notice('user approved.', ['user-id' => $user->id]);
+            $user->notify(new ApproveUser($invitation->region));
+        }
+
+        return redirect($this->redirectPath());
+    }
+
+
+    /**
      * Show the application registration form for invited users.
      *
      * @param string $language
      * @param \App\Models\Invitation $invitation
-     * @param string $invited_by
      * @return \Illuminate\View\View
      */
-    public function showRegistrationFormInvited(string $language, Invitation $invitation, string $invited_by): View
+    public function showRegistrationFormInvited(string $language, Invitation $invitation): View
     {
+        Cookie::queue('_i', $invitation->id ?? null, 60);
         return view('auth.register_invited', [
             'language' => $language,
-            'invited_by' => $invited_by,
-            'invitation' => $invitation]);
+            'invitation' => $invitation
+        ]);
     }
 }

@@ -71,9 +71,10 @@ Route::group([
     Route::get('dsgvo', function () { return view('app.dsgvo'); })->name('dsgvo');
 
     Auth::routes(['verify' => true, 'middleware' => 'can:register']);
-    Route::get('register_invited/{invitation}/{invited_by}', [RegisterController::class, 'showRegistrationFormInvited'])->name('register.invited');
-    Route::get('apply/{user}', [SocialAuthController::class, 'showApplyForm'])->middleware('can:register')->name('show.apply');
-    Route::post('apply/{user}', [SocialAuthController::class, 'apply'])->middleware('can:register')->name('apply');
+    Route::get('register_invited/{invitation}', [RegisterController::class, 'showRegistrationFormInvited'])->name('register.invited');
+    Route::post('register_invited/{invitation}', [RegisterController::class, 'register_invitee'])->name('register.invitee');
+    Route::get('apply/{user}', [SocialAuthController::class, 'showApplyForm'])->name('show.apply');
+    Route::post('apply/{user}', [SocialAuthController::class, 'apply'])->name('apply');
 
     Route::middleware(['auth'])->group(function () {
         Route::get('home', [HomeController::class, 'home'])->name('home')->middleware('auth')->middleware('verified')->middleware('approved');

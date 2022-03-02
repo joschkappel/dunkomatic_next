@@ -23,7 +23,7 @@
                     <a class="btn btn-outline-dark" role="button" href="{{ route('oauth.redirect', ['provider'=>'google'])}}"><i class="fab fa-google"></i><span class="px-2">@lang('auth.register_with', ['provider'=>'Google'])</span></a>
                 </div>
                 <div class="d-flex justify-content-center mb-3">
-                    <a class="btn btn-primary disabled" role="button" href="{{ route('oauth.redirect', ['provider'=>'facebook'])}}"><i class="fab fa-facebook-f"></i><span class="px-2">@lang('auth.register_with', ['provider'=>'Facebook'])</span></a>
+                    <a class="btn btn-outline-primary"  role="button" href="{{ route('oauth.redirect', ['provider'=>'twitter'])}}"><i class="fab fa-twitter"></i><span class="mx-2">@lang('auth.register_with', ['provider'=>'Twitter'])</span></a>
                 </div>
                 <div class="d-flex justify-content-center mb-3">
                     <a class="btn btn-dark disabled" role="button" href="{{ route('oauth.redirect', ['provider'=>'facebook'])}}"><i class="fab fa-apple"></i><span class="px-2">@lang('auth.register_with', ['provider'=>'Apple'])</span></a>

@@ -21,25 +21,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Support\Facades\Cookie;
+
 class SocialAuthController extends Controller
 {
     use UserAccessManager, RedirectsUsers;
 
-        /**
+    /**
      * Where to redirect users after login.
      *
      * @var string
      */
     protected $redirectTo = RouteServiceProvider::HOME;
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('guest');
-    }
 
     /**
      * redirect oauth request to the provider
@@ -51,9 +43,9 @@ class SocialAuthController extends Controller
      */
     public function redirectToOauth(string $provider, Invitation $invitation)
     {
-        $invitation->update(['provider'=>$provider]);
+        $invitation->update(['provider' => $provider]);
         Log::info('redirecting oauth request to provider', ['provider' => $provider]);
-        Cookie::queue('oauth_register', 'jochen', 60);
+        Cookie::queue('_i', $invitation->id ?? null, 60);
         return Socialite::driver($provider)->redirect();
     }
 
@@ -69,7 +61,7 @@ class SocialAuthController extends Controller
         $oauth_user = Socialite::driver($provider)->user();
         Log::info('user authenticagted by oauth provider', ['provider' => $provider]);
         Log::debug('user data received', ['oauth-user' => $oauth_user]);
-        Log::debug('cookie set?', ['cookie-value'=> $request->cookie('oauth_register')]);
+        Log::debug('cookie set?', ['cookie-value' => $request->cookie('oauth_register')]);
 
         /**
          * GOOGLE response contains
@@ -87,7 +79,6 @@ class SocialAuthController extends Controller
             Auth::login($user);
 
             return redirect()->intended($this->redirectPath());
-
         } else {
             // this is a registration of a new acccount
             $user = User::create([
@@ -100,9 +91,10 @@ class SocialAuthController extends Controller
                 'email_verified_at' => $oauth_user->user['email_verified'] ? now() : null,
             ]);
 
-            if (Invitation::where('email_invitee',$user->email)->where('provider',$provider)->exists() ){
+            if ( $request->cookie('_i') != null ) {
                 // this user must have been invited
-                $invitation = Invitation::where('email_invitee',$user->email)->first();
+                $invitation = Invitation::find($request->cookie('_i'));
+
                 $user->update(['approved_at' => now()]);
                 $member = $invitation->member;
                 $member->user()->save($user);
@@ -114,6 +106,8 @@ class SocialAuthController extends Controller
                 $user->notify(new ApproveUser($invitation->region));
 
                 $invitation->delete();
+                Cookie::queue(Cookie::forget('_i'));
+
                 Auth::login($user);
                 return redirect()->intended($this->redirectPath());
             } else {
@@ -133,7 +127,7 @@ class SocialAuthController extends Controller
      */
     public function showApplyForm(string $language, User $user)
     {
-        Log::info('showing application form for user',['user'=>$user, 'abilities'=>$user->getAbilities()]);
+        Log::info('showing application form for user', ['user' => $user, 'abilities' => $user->getAbilities()]);
         return view('auth.apply', ['user' => $user]);
     }
 
@@ -176,7 +170,7 @@ class SocialAuthController extends Controller
         return redirect($this->redirectPath());
     }
 
-        /**
+    /**
      * Get the post login redirect path.
      *
      * @return string
@@ -187,10 +181,10 @@ class SocialAuthController extends Controller
             return $this->redirectTo();
         }
 
-        if (Auth::check()){
-            $returnPath = '/'.Auth::user()->locale.'/'.$this->redirectTo;
+        if (Auth::check()) {
+            $returnPath = '/' . Auth::user()->locale . '/' . $this->redirectTo;
         } else {
-            $returnPath = '/'.app()->getLocale().'/'.$this->redirectTo;
+            $returnPath = '/' . app()->getLocale() . '/' . $this->redirectTo;
         }
         return $returnPath;
     }

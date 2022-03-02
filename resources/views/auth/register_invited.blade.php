@@ -8,10 +8,7 @@
 @section('classes_body', 'register-page')
 
 @php( $login_url = View::getSection('login_url') ?? config('dunkomatic.login_url', 'login') )
-@php( $register_url = View::getSection('register_url') ?? config('dunkomatic.register_url', 'register') )
-
 @php( $login_url = $login_url ? route($login_url, app()->getLocale()) : '' )
-@php( $register_url = $register_url ? route($register_url, app()->getLocale()) : '' )
 
 
 @section('body')
@@ -24,14 +21,14 @@
                     <a class="btn btn-outline-dark" role="button" href="{{ route('oauth.redirect', ['provider'=>'google', 'invitation'=>$invitation])}}"><i class="fab fa-google"></i><span class="px-2">@lang('auth.register_with', ['provider'=>'Google'])</span></a>
                 </div>
                 <div class="d-flex justify-content-center mb-3">
-                    <a class="btn btn-primary disabled" role="button" href="{{ route('oauth.redirect', ['provider'=>'facebook', 'invitation'=>$invitation])}}"><i class="fab fa-facebook-f"></i><span class="px-2">@lang('auth.register_with', ['provider'=>'Facebook'])</span></a>
+                    <a class="btn btn-outline-primary"  role="button" href="{{ route('oauth.redirect', ['provider'=>'twitter'])}}"><i class="fab fa-twitter"></i><span class="mx-2">@lang('auth.register_with', ['provider'=>'Twitter'])</span></a>
                 </div>
                 <div class="d-flex justify-content-center mb-3">
                     <a class="btn btn-dark disabled" role="button" href="{{ route('oauth.redirect', ['provider'=>'apple', 'invitation'=>$invitation])}}"><i class="fab fa-apple"></i><span class="px-2">@lang('auth.register_with', ['provider'=>'Apple'])</span></a>
                 </div>
             </div>
             <div class="col-sm">
-                <form action="{{ $register_url }}" method="post">
+                <form action="{{ route('register_invitee',['language'=>app()->getLocale(),'invitation'=>$invitation])}}" method="post">
                     @csrf
                     <p class="login-box-msg">{{ __('auth.register_message') }}</p>
                     <div class="input-group mb-3">
@@ -96,8 +93,6 @@
                     </div>
                     <div class="input-group mb-3">
                         <input type="input" name="reason_join" class="form-control" value="invited by {{$invitation->user->name}}" readonly>
-                        <input hidden name="invited_by" class="form-control" value="{{ $invited_by }}" >
-                        <input hidden name="invitation_id" class="form-control" value="{{ $invitation->id }}" >
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="far fa-question-circle"></span>

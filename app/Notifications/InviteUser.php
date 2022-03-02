@@ -17,7 +17,6 @@ class InviteUser extends Notification
     use Queueable;
 
     private User $sender;
-    private Region $invite_to_region;
     private Invitation $invitation;
 
     /**
@@ -28,7 +27,6 @@ class InviteUser extends Notification
     public function __construct(Invitation $invitation)
     {
         $this->sender = $invitation->user;
-        $this->invite_to_region = $invitation->region;
         $this->invitation = $invitation;
     }
 
@@ -63,9 +61,7 @@ class InviteUser extends Notification
             ->greeting( __('notifications.user.greeting', ['username'=>$notifiable->name]))
             ->line( __('notifications.inviteuser.line1', ['sendername'=>$sender]))
             ->line( __('notifications.inviteuser.line2'))
-            ->action( __('notifications.inviteuser.action'), route('register.invited', ['language'=>app()->getLocale(),
-                                                                                         'invitation' => $this->invitation,
-                                                                                         'invited_by'=>Crypt::encryptString($notifiable->email1)]));
+            ->action( __('notifications.inviteuser.action'), route('register.invited', ['language'=>app()->getLocale(), 'invitation' => $this->invitation]));
     }
 
     /**

@@ -30,6 +30,7 @@
         "rappasoft/laravel-authentication-log": "^2.0",
         "silber/bouncer": "^v1.0.0-rc.9",
         "socialiteproviders/google": "^4.1",
+        "socialiteproviders/twitter": "^4.1",
         "spatie/cpu-load-health-check": "^1.0",
         "spatie/icalendar-generator": "2.3.0",
         "spatie/laravel-health": "^1.7",
