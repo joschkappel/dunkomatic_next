@@ -20,7 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
 use Illuminate\Foundation\Auth\RedirectsUsers;
-
+use Illuminate\Support\Facades\Cookie;
 class SocialAuthController extends Controller
 {
     use UserAccessManager, RedirectsUsers;
@@ -31,7 +31,7 @@ class SocialAuthController extends Controller
      * @var string
      */
     protected $redirectTo = RouteServiceProvider::HOME;
-        /**
+    /**
      * Create a new controller instance.
      *
      * @return void
@@ -53,20 +53,23 @@ class SocialAuthController extends Controller
     {
         $invitation->update(['provider'=>$provider]);
         Log::info('redirecting oauth request to provider', ['provider' => $provider]);
+        Cookie::queue('oauth_register', 'jochen', 60);
         return Socialite::driver($provider)->redirect();
     }
 
     /**
      * callback from the oauth provider
      *
+     * @param Request $request
      * @param string $provider
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function registerFromOauth(string $provider)
+    public function registerFromOauth(Request $request, string $provider)
     {
         $oauth_user = Socialite::driver($provider)->user();
         Log::info('user authenticagted by oauth provider', ['provider' => $provider]);
         Log::debug('user data received', ['oauth-user' => $oauth_user]);
+        Log::debug('cookie set?', ['cookie-value'=> $request->cookie('oauth_register')]);
 
         /**
          * GOOGLE response contains
@@ -77,11 +80,12 @@ class SocialAuthController extends Controller
          */
 
         $user = User::where(['email' => $oauth_user->getEmail()])->first();
-        Auth::login($user);
 
         if ($user) {
             // user is already registered, this is a login
             App::setLocale($user->locale);
+            Auth::login($user);
+
             return redirect()->intended($this->redirectPath());
 
         } else {
@@ -110,6 +114,7 @@ class SocialAuthController extends Controller
                 $user->notify(new ApproveUser($invitation->region));
 
                 $invitation->delete();
+                Auth::login($user);
                 return redirect()->intended($this->redirectPath());
             } else {
                 $this->setInitialAccessRights($user);
@@ -136,10 +141,11 @@ class SocialAuthController extends Controller
      * apply for access approval
      *
      * @param Request $request
+     * @param string $language
      * @param \App\Models\User $user
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function apply(Request $request, User $user)
+    public function apply(Request $request, $language, User $user)
     {
         $data = $request->validate([
             'region_id' => ['required', 'exists:regions,id'],

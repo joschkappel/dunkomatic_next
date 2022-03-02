@@ -35,7 +35,8 @@ class RegisterTest extends DuskTestCase
             if ($browser->seeLink('Registrieren')) {
               $browser->clickLink('Registrieren')
                       ->assertPathIs('/de/register')
-                      ->assertSee('Konto zu registrieren')
+                      ->assertSee('Konto anzulegen')
+                      ->assertSee('Anbieter registrieren')
                       ->type('name','tester')
                       ->type('email','test@gmail.com')
                       ->type('password','password')
