@@ -64,11 +64,14 @@ Route::group([
                      'set.logcontext']
 ], function () {
 
-    Route::get('/', function () { return view('welcome'); })->name('welcome');
+    Route::redirect('/', 'de/signin');
+    Route::get('signup', function () { return view('welcome_signup'); })->name('welcome_signup');
+    Route::get('signin', function () { return view('welcome_signin'); })->name('welcome_signin');
     // Route::get('checkfire', function () { return view('broadcast.test'); });
     Route::get('cookies', function () { return view('app.cookie_info'); })->name('cookies');
     Route::get('impressum', function () { return view('app.impressum'); })->name('impressum');
     Route::get('dsgvo', function () { return view('app.dsgvo'); })->name('dsgvo');
+    Route::get('captcha', [RegisterController::class, 'reloadCaptcha'] )->name('reload_captcha');
 
     Auth::routes(['verify' => true, 'middleware' => 'can:register']);
     Route::get('register_invited/{invitation}', [RegisterController::class, 'showRegistrationFormInvited'])->name('register.invited');
@@ -196,6 +199,7 @@ Route::middleware(['auth',
                    'set.region',
                    'set.logcontext'])->group(function () {
     // APIs , no locale or language required !
+    Route::redirect('/', '/de/signin');
     Route::redirect('home', '/de/home');
 
     Route::post('region', [RegionController::class, 'store'])->name('region.store')->middleware('can:create-regions');

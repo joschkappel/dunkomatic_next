@@ -12,25 +12,13 @@
 
 
 @section('body')
-<x-auth-card-form colWidth="8">
-    <div class="card-body register-card-body">
-        <div class="row d-inline-flex">
-            <div class="col-sm border-right border-primary">
-                <p class="login-box-msg">{{ __('auth.socialregister_message') }}</p>
-                <div class="d-flex justify-content-center mb-3">
-                    <a class="btn btn-outline-dark" role="button" href="{{ route('oauth.redirect', ['provider'=>'google', 'invitation'=>$invitation])}}"><i class="fab fa-google"></i><span class="px-2">@lang('auth.register_with', ['provider'=>'Google'])</span></a>
-                </div>
-                <div class="d-flex justify-content-center mb-3">
-                    <a class="btn btn-outline-primary"  role="button" href="{{ route('oauth.redirect', ['provider'=>'twitter'])}}"><i class="fab fa-twitter"></i><span class="mx-2">@lang('auth.register_with', ['provider'=>'Twitter'])</span></a>
-                </div>
-                <div class="d-flex justify-content-center mb-3">
-                    <a class="btn btn-outline-success" role="button" href="{{ route('oauth.redirect', ['provider'=>'spotify'])}}"><i class="fab fa-spotify"></i><span class="px-2">@lang('auth.register_with', ['provider'=>'Spotify'])</span></a>
-                </div>
-            </div>
+<x-auth-card-form colWidth="6">
+    <div class="card-body ">
+        <div class="row justify-content-center">
             <div class="col-sm">
                 <form action="{{ route('register_invitee',['language'=>app()->getLocale(),'invitation'=>$invitation])}}" method="post">
                     @csrf
-                    <p class="login-box-msg">{{ __('auth.register_message') }}</p>
+                    <p class="login-box-msg">{{ __('auth.title.apply') }}</p>
                     <div class="input-group mb-3">
                         <input type="email" name="email" class="form-control" value="{{ $invitation->member->email1 }}" readonly>
                         <div class="input-group-append">
@@ -99,20 +87,26 @@
                             </div>
                         </div>
                     </div>
+                    <div class="form-group  mb-3">
+                        <div class="captcha">
+                            <span>{!! captcha_img('math') !!}</span>
+                            <button type="button" class="btn btn-danger" class="reload" id="reload">
+                                <i class="fas fa-redo"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input id="captcha" type="text" class="form-control {{ $errors->has('captcha') ? 'is-invalid' : '' }}" placeholder="Enter Captcha" name="captcha">
+                        @if ($errors->has('captcha'))
+                        <div class="invalid-feedback">
+                            <strong>{{ $errors->first('captcha') }}</strong>
+                        </div>
+                        @endif
+                    </div>
                     <button type="submit" class="btn btn-primary btn-block btn-flat">
                         {{ __('auth.register') }}
                     </button>
                 </form>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm">
-                <hr class="border-top border-primary">
-                <p class="mt-2 mb-1">
-                    <a href="{{ $login_url }}">
-                        {{ __('auth.i_already_have_a_membership') }}
-                    </a>
-                </p>
             </div>
         </div>
     </div><!-- /.card-body -->
@@ -140,6 +134,15 @@
                         },
                     cache: true
                     }
+            });
+            $('#reload').click(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: '{{ route('reload_captcha', ['language'=>app()->getLocale()])}}',
+                    success: function (data) {
+                        $(".captcha span").html(data.captcha);
+                    }
+                });
             });
 
         });

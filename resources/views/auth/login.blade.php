@@ -16,84 +16,66 @@
 @php( $password_reset_url = $password_reset_url ? route($password_reset_url, [app()->getLocale(),'']) : '' )
 
 @section('body')
-<x-auth-card-form colWidth="8">
-    <div class="card-body login-card-body">
-        <div class="row d-inline-flex">
-            <div class="col-sm border-right border-primary">
-                <p class="login-box-msg">{{ __('auth.sociallogin_message') }}</p>
-                <div class="d-flex justify-content-center mb-3">
-                    <a class="btn btn-outline-dark" role="button" href="{{ route('oauth.redirect', ['provider'=>'google'])}}"><i class="fab fa-google"></i><span class="px-2">@lang('auth.sign_in_with', ['provider'=>'Google'])</span></a>
-                </div>
-                <div class="d-flex justify-content-center mb-3">
-                    <a class="btn btn-outline-primary"  role="button" href="{{ route('oauth.redirect', ['provider'=>'twitter'])}}"><i class="fab fa-twitter"></i><span class="mx-2">@lang('auth.sign_in_with', ['provider'=>'Twitter'])</span></a>
-                </div>
-                <div class="d-flex justify-content-center mb-3">
-                    <a class="btn btn-outline-success" role="button" href="{{ route('oauth.redirect', ['provider'=>'spotify'])}}"><i class="fab fa-spotify"></i><span class="px-2">@lang('auth.sign_in_with', ['provider'=>'Spotify'])</span></a>
-                </div>
+<x-auth-card-form colWidth="6">
+    <div class="card-body">
+        <div class="row justify-content-center ">
+            <div class="col-sm">
+                <form action="{{  $login_url }}" method="post">
+                    @csrf
+                    <p class="card-text login-box-msg">{{ __('auth.title.login') }}</p>
+                    <div class="input-group mb-3">
+                        <input type="email" name="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" value="{{ old('email') }}" placeholder="{{ __('auth.email') }}" autofocus>
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-envelope"></span>
+                            </div>
+                        </div>
+                        @if ($errors->has('email'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('email') }}
+                        </div>
+                        @endif
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="password" name="password" class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}" placeholder="{{ __('auth.password') }}">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                        @if ($errors->has('password'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('password') }}
+                        </div>
+                        @endif
+                    </div>
+                    <div class="row justify-content-between mb-3">
+                        <div class="col-sm-6">
+                            <div class="icheck-primary">
+                                <input type="checkbox" name="remember" id="remember">
+                                <label for="remember">{{ __('auth.remember_me') }}</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div>
+                                <button dusk="login" type="submit" class="btn btn-primary">
+                                    {{ __('auth.sign_in') }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
-        <div class="col-sm">
-            <form action="{{  $login_url }}" method="post">
-                @csrf
-                <p class="card-text login-box-msg">{{ __('auth.login_message') }}</p>
-                <div class="input-group mb-3">
-                    <input type="email" name="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" value="{{ old('email') }}" placeholder="{{ __('auth.email') }}" autofocus>
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-envelope"></span>
-                        </div>
-                    </div>
-                    @if ($errors->has('email'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('email') }}
-                    </div>
-                    @endif
-                </div>
-                <div class="input-group mb-3">
-                    <input type="password" name="password" class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}" placeholder="{{ __('auth.password') }}">
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-lock"></span>
-                        </div>
-                    </div>
-                    @if ($errors->has('password'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('password') }}
-                    </div>
-                    @endif
-                </div>
-                <div class="row">
-                    <div class="col-8">
-                        <div class="icheck-primary">
-                            <input type="checkbox" name="remember" id="remember">
-                            <label for="remember">{{ __('auth.remember_me') }}</label>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <button dusk="login" type="submit" class="btn btn-primary">
-                            {{ __('auth.sign_in') }}
-                        </button>
-                    </div>
-                </div>
-            </form>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-sm">
-            <hr class="border-top border-primary">
-            @if ($password_reset_url)
-                <p class="mt-2 mb-1">
-                <a href="{{ $password_reset_url }}">
-                    {{ __('auth.i_forgot_my_password') }}
-                </a>
-                </p>
-            @endif
-            @if ($register_url)
-                <p class="mb-0">
-                    <a href="{{ $register_url }}">
-                        {{ __('auth.register_a_new_membership') }}
+        <div class="row">
+            <div class="col-sm">
+                <hr class="border-top border-secondary">
+                    <p class="mt-2 mb-1">
+                    <a href="{{ $password_reset_url }}">
+                        {{ __('auth.i_forgot_my_password') }}
                     </a>
-                </p>
-            @endif
+                    </p>
+                </div>
             </div>
         </div>
     </div><!-- /.card-body -->

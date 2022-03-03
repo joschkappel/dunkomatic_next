@@ -5,7 +5,7 @@ return [
     'title' => 'dunk🏀matic',
     'title_prefix' => '',
     'title_postfix' => 'Next',
-    'welcome' => 'Anything you need ot make you happy',
+    'welcome' => 'All you need to get the Ball rolling',
 
     'use_ico_only' => true,
     'use_full_favicon' => true,

@@ -17,10 +17,11 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use App\Notifications\NewUser;
 use App\Traits\UserAccessManager;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Cookie;
-
+use Captcha;
 
 class RegisterController extends Controller
 {
@@ -68,6 +69,7 @@ class RegisterController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'region_id' => ['required', 'exists:regions,id'],
             'reason_join' => ['required', 'string'],
+            'captcha' => ['required','captcha']
         ]);
     }
 
@@ -166,5 +168,15 @@ class RegisterController extends Controller
             'language' => $language,
             'invitation' => $invitation
         ]);
+    }
+
+        /**
+     * Show the application registration form for invited users.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function reloadCaptcha(): JsonResponse
+    {
+        return response()->json(['captcha'=> Captcha::img('math')]);
     }
 }
