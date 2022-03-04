@@ -37,7 +37,7 @@ class RegisterTest extends DuskTestCase
                       ->assertPathIs('/de/signup')
                       ->assertSee('oder benutze deine eMail')
                       ->assertSee('Anbieter registrieren')
-                      ->clickLink('Registrieren')
+                      ->click('a[href="http://dunkomatic_next.test/de/register"]')
                       ->assertPathIs('/de/register')
                       ->assertSee('lege dein Benutzerkonto an')
                       ->type('name','tester')
