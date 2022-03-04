@@ -148,7 +148,17 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
             $user->messages()->delete();
         });
     }
-
+    public function getInitialsAttribute(): string
+    {
+        $nameParts = explode(' ', trim($this->name));
+        $firstName = array_shift($nameParts);
+        $lastName = array_pop($nameParts);
+        $initials = (
+            mb_substr($firstName,0,1) .
+            mb_substr($lastName,0,1)
+        );
+      return strtoupper($initials);
+    }
     /**
      * Get the related member
      */

@@ -9,7 +9,12 @@
 
     {{-- User menu toggler --}}
     <a href="#" class="nav-link dropdown-toggle " data-toggle="dropdown">
-        <span @if(config('menu.usermenu_image')) class="d-none d-md-inline" @endif>
+        @if (Auth::user()->avatar != null )
+            <img src="{{ Auth::user()->avatar }}"
+            class="user-image img-circle elevation-2"
+            alt="{{ Auth::user()->name }}">
+        @endif
+        <span @if (Auth::user()->avatar != null ) class="d-none d-md-inline" @endif>
             {{ Auth::user()->name }}
         </span>
     </a>
@@ -19,8 +24,14 @@
 
         {{-- User menu header --}}
         @if(!View::hasSection('usermenu_header') && config('menu.usermenu_header'))
-            <li class="user-header {{ config('menu.usermenu_header_class', 'bg-primary') }} h-auto">
-                <p class="mt-0 ">
+            <li class="user-header {{ config('menu.usermenu_header_class', 'bg-primary') }}
+                @if( Auth::user()->avatar == null ) h-auto @endif">
+                @if(Auth::user()->avatar != null)
+                    <img src="{{ Auth::user()->avatar }}"
+                         class="img-circle elevation-2"
+                         alt="{{ Auth::user()->name }}">
+                @endif
+                <p class="@if(!Auth::user()->avatar == null) mt-0 @endif">
                       {{ Auth::user()->name }}
                 </p>
             </li>

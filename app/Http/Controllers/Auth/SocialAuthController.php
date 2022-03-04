@@ -74,11 +74,19 @@ class SocialAuthController extends Controller
         $user = User::where(['email' => $oauth_user->getEmail()])->first();
 
         if ($user) {
-            // user is already registered, this is a login
-            App::setLocale($user->locale);
-            Auth::login($user);
+            // user is already registered
 
-            return redirect()->intended($this->redirectPath());
+            //check if he is fully reigstered, if so, try to login
+            if ( count($user->getAbilities()->where('name','access')->where('entity_type', Region::class)) == 0 ){
+                // registration not complete
+                return redirect()->route('show.apply', ['language' => $user->locale, 'user' => $user]);
+            } else {
+                // seem to be registered, try login
+                App::setLocale($user->locale);
+                Auth::login($user);
+
+                return redirect()->intended($this->redirectPath());
+            }
         } else {
             // this is a registration of a new acccount
             if ($provider == 'google'){
