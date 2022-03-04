@@ -42,6 +42,7 @@ class RegisterTest extends DuskTestCase
                       ->type('password','password')
                       ->type('password_confirmation','password')
                       ->type('reason_join','am testing')
+                      ->type('captcha','12345')
                       ->select2('.sel-region')
                       ->screenshot('Registered_user')
                       ->press('Registrieren')
