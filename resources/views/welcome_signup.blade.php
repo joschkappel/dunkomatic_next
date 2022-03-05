@@ -26,7 +26,7 @@
                     </div>
                     <div class="row justify-content-center">
                         <div class="d-flex justify-content-center mb-3">
-                            <a class="btn btn-dark border-dark rounded-pill"  role="button" href="{{ route('register', ['language'=>app()->getLocale()])}}">@lang('auth.register')</span></a>
+                            <a class="btn btn-dark border-dark rounded-pill"  dusk="register-button" role="button" href="{{ route('register', ['language'=>app()->getLocale()])}}">@lang('auth.register')</span></a>
                         </div>
 
                     </div>
