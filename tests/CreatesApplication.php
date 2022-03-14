@@ -4,6 +4,7 @@ namespace Tests;
 
 use Illuminate\Contracts\Console\Kernel;
 use Mockery;
+use Mews\Captcha\Captcha;
 
 trait CreatesApplication
 {
@@ -22,7 +23,7 @@ trait CreatesApplication
          * Override captcha binding with a double that always passes.
          */
         $app->bind('captcha', function ($app) {
-            $mockCaptcha = Mockery::mock(Mews\Captcha\Captcha::class);
+            $mockCaptcha = Mockery::mock( Captcha::class);
 
             $mockCaptcha
                 ->allows()
@@ -31,7 +32,7 @@ trait CreatesApplication
 
             $mockCaptcha
                 ->allows()
-                ->check('12345')
+                ->check('mockcaptcha=12345')
                 ->andReturn(true);
 
             return $mockCaptcha;

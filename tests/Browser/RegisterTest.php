@@ -4,6 +4,7 @@ namespace Tests\Browser;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
+use Tests\CreatesApplication;
 use Tests\DuskTestCase;
 
 
@@ -45,7 +46,7 @@ class RegisterTest extends DuskTestCase
                       ->type('password','password')
                       ->type('password_confirmation','password')
                       ->type('reason_join','am testing')
-                      ->type('captcha','12345')
+                      ->type('captcha','mockcaptcha=12345')
                       ->select2('.sel-region')
                       ->screenshot('Registered_user')
                       ->press('Registrieren')
@@ -53,9 +54,6 @@ class RegisterTest extends DuskTestCase
                       ->assertSee('Dein Account muss noch bes');
             }
         });
-
-        $this->assertDatabaseHas('users', ['name' => 'tester']);
-
 
     }
 }

@@ -48,7 +48,7 @@ class RegistrationTest extends TestCase
             'reason_join'=> 'registration test 1',
             'region_id' => $region->id,
             'locale' => 'de',
-            'captcha' => '12345',
+            'captcha' => 'mockcaptcha=12345',
           ]));
 
         $response->assertStatus(302);

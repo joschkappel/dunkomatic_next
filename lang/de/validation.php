@@ -120,6 +120,7 @@ return [
     'gameminute'           => 'Spielbeginn nur zur vollen Viertelstunde (00, 15, 30 oder 45).',
     'gamehour'             => 'Spielbeginn muss zwischen 8:00 und 22:00 Uhr sein',
     'sliderrange'          => ':attribute muss zwischen :min und :max liegen',
+    'captcha'              => 'Das stimmt leider nicht.',
 
 
 
