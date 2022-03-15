@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Mail;
 
 use App\Models\Setting;
 use App\Models\Region;
@@ -92,6 +93,11 @@ class AppServiceProvider extends ServiceProvider
         // create MUST have folders
         Storage::makeDirectory( config('dunkomatic.folders.backup') );
         Storage::makeDirectory( config('dunkomatic.folders.export') );
+
+        // send ALL mails to same email account
+        if ( app()->environment('staging')) {
+            Mail::alwaysTo( env('MAIL_FROM_ADDRESS') );
+        }
 
         // build menu events
         $events->listen(BuildingMenu::class, function (BuildingMenu $event) {

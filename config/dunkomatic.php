@@ -1,7 +1,6 @@
 <?php
 
 return [
-    'use_real_email' => env('APP_USE_EMAIL', false),
     'title' => 'dunk🏀matic',
     'title_prefix' => '',
     'title_postfix' => 'Next',
