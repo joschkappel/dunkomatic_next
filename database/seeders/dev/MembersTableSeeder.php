@@ -51,13 +51,13 @@ class MembersTableSeeder extends Seeder
           if ( ! Membership::on('dunknxt')->where('membership_type', Club::class)
                                           ->where('membership_id', $row->club_id)
                                           ->where('member_id', $mem_id)
-                                          ->where('role_id', $row->member_role_id +1)
+                                          ->where('role_id', $row->member_role_id)
                                           ->exists()){
             DB::connection('dunknxt')->table('memberships')->insert([
               'membership_id'     => $row->club_id,
               'membership_type'   => Club::class,
               'member_id'     => $mem_id,
-              'role_id'       => $row->member_role_id +1,
+              'role_id'       => $row->member_role_id ,
               'email'         => $this->faker->unique()->safeEmail,
               'created_at'    => now()
             ]);
@@ -69,13 +69,13 @@ class MembersTableSeeder extends Seeder
           if ( ! Membership::on('dunknxt')->where('membership_type', League::class)
                                           ->where('membership_id', $row->league_id)
                                           ->where('member_id', $mem_id)
-                                          ->where('role_id', $row->member_role_id +1)
+                                          ->where('role_id', $row->member_role_id )
                                           ->exists()){
             DB::connection('dunknxt')->table('memberships')->insert([
               'membership_id'     => $row->league_id,
               'membership_type'   => League::class,
               'member_id'     => $mem_id,
-              'role_id'       => $row->member_role_id +1,
+              'role_id'       => $row->member_role_id,
               'function'      => $row->function,
               'email'         => $this->faker->unique()->safeEmail,
               'created_at'    => now()

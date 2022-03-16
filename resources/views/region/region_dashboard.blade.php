@@ -140,6 +140,7 @@
         </div>
     </div>
     @endif
+    @if ($region->clubs->count() > 0)
     <div class="row">
         <div class="col-sm-12 pd-2">
             <!-- card CLUB ANALYSIS -->
@@ -164,6 +165,7 @@
             <!-- /.card -->
         </div>
     </div>
+    @endif
     <div class="row">
         <div class="col-sm-12 pd-2">
             <!-- card LEAGUE ANALYSIS -->
@@ -322,7 +324,7 @@
           }
         });
 
-
+    @if ($region->clubs->count() > 0)
        var ctc = document.getElementById('clubteamchart').getContext('2d');
        var clubteamchart = new Chart(ctc, {
             type: 'bar',
@@ -361,7 +363,9 @@
               },
             }
         });
+    @endif
 
+    @if ($region->is_top_level)
        var rcc = document.getElementById('regionclubchart').getContext('2d');
        var regionclubchart = new Chart(rcc, {
           type: "bar",
@@ -405,6 +409,7 @@
               },
             }
         });
+    @endif
 
         function load_chart(chart, route) {
             $.ajax({
@@ -422,10 +427,14 @@
 
       load_chart( leaguestatechart, '{{ route('region.league.state.chart', ['region' => $region->id]) }}' );
       load_chart( leaguesociochart, '{{ route('region.league.socio.chart', ['region' => $region->id]) }}' );
+    @if ($region->clubs->count() > 0)
       load_chart( clubteamchart, '{{ route('region.club.team.chart', ['region' => $region->id]) }}' );
       load_chart( clubmemberchart, '{{ route('region.club.member.chart', ['region' => $region->id]) }}' );
+    @endif
+    @if ($region->is_top_level)
       load_chart( regionclubchart, '{{ route('region.region.club.chart', ['region' => $region->id]) }}' );
       load_chart( regionleaguechart, '{{ route('region.region.league.chart', ['region' => $region->id]) }}' );
+    @endif
 
       load_chart( missingrefereeschart, '{{ route('region.game.noreferee.chart', ['region' => $region->id]) }}' );
 

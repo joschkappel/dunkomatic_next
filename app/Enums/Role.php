@@ -34,5 +34,4 @@ define('GIRL',"Verantw. Mädchenbasket");
 define('YOUTH',"Jugendwart");
 $member_role_values_array=array(LEAD,REFLEAD,LEAGLEAD,CXX,GIRL,YOUTH);
 $member_role_ids_array=array("0","1","2","3","4","5");
-$member_role_values_club_array=array(LEAD,REFLEAD,CXX,GIRL,YOUTH);
-$member_role_ids_club_array=array("0","1","3","4","5"); */
+*/

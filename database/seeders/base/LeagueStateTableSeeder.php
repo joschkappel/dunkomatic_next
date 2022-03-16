@@ -2,7 +2,6 @@
 namespace Database\Seeders\base;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use App\Models\League;
 use App\Traits\LeagueFSM;
 
