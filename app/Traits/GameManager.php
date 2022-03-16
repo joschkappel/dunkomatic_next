@@ -64,8 +64,8 @@ trait GameManager
 
             if (isset($hteam)) {
                 $g['game_time'] = $hteam['preferred_game_time'];
-                $g['gym_no'] = Club::find($hteam['club']['id'])->gyms()->first()->gym_no;
-                $g['gym_id'] = Club::find($hteam['club']['id'])->gyms()->first()->id;
+                $g['gym_no'] = Club::find($hteam['club']['id'])->gyms()->first()->gym_no ?? null;
+                $g['gym_id'] = Club::find($hteam['club']['id'])->gyms()->first()->id ?? null;
                 $g['club_id_home'] = $hteam['club']['id'];
                 $g['team_id_home'] = $hteam['id'];
                 $g['team_home'] = $hteam['club']['shortname'] . $hteam['team_no'];
