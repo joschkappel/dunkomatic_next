@@ -19,8 +19,6 @@
         "bootstrap-slider": "^11.0.2",
         "bootstrap-switch": "^3.4.0",
         "bootstrap4-duallistbox": "^4.0.2",
-        "chart.js": "^2.9.4",
-        "chartjs-plugin-colorschemes": "^0.4.0",
         "cross-env": "^7.0",
         "datatables.net-bs4": "^1.11.0",
         "datatables.net-buttons-bs4": "^2.0",
@@ -79,6 +77,8 @@
         "websocket-extensions": ">=0.1.4"
     },
     "dependencies": {
+        "chartjs": "^0.3.24",
+        "chartjs-plugin-colorschemes": "^0.4.0",
         "laravel-echo": "^1.11.3",
         "laravel-echo-server": "^1.6.3",
         "socket.io-client": "^2.4.0"

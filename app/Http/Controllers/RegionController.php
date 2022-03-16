@@ -16,7 +16,7 @@ use App\Enums\ReportFileType;
 
 use App\Models\Region;
 use App\Models\Member;
-use App\Models\Membership;
+use App\Models\League;
 use App\Models\Game;
 
 use Illuminate\Support\Facades\Auth;
@@ -291,7 +291,7 @@ class RegionController extends Controller
      */
     public function destroy(Region $region)
     {
-        foreach ($region->users() as $u){
+        foreach ($region->users() as $u) {
             $u->delete();
         }
         Log::info('region users deleted', ['region-id' => $region->id]);
@@ -542,5 +542,80 @@ class RegionController extends Controller
         // Log::debug(print_r($data,true));
 
         return Response::json($data);
+    }
+
+    /**
+     * # club by region
+     *
+     * @param \App\Models\Region $region
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
+    public function region_club_chart(Region $region)
+    {
+        Log::info('collecting clubs by region data.', ['region-id' => $region->id]);
+        $data = array();
+        $data['labels'] = [];
+        $datasets = array();
+
+        $rs = $region->childRegions()->withCount('clubs','leagues','gyms','teams')->get();
+        // initialize datasets
+
+        foreach ($rs as $r) {
+            $data['labels'][] = $r->code;
+            $datasets[0]['data'][] = $r->clubs_count ?? 0;
+            $datasets[1]['data'][] = $r->leagues_count ?? 0;
+            $datasets[2]['data'][] = $r->gyms_count ?? 0;
+            $datasets[3]['data'][] = $r->teams_count ?? 0;
+        }
+        $datasets[0]['label'] = trans_choice('club.club', 2);
+        $datasets[1]['label'] = trans_choice('league.league',2);
+        $datasets[2]['label'] = trans_choice('gym.gym',2);
+        $datasets[3]['label'] = trans_choice('team.team',2);
+
+        $data['datasets'] = $datasets;
+
+        Log::debug(print_r($data,true));
+
+        return Response::json($data);
+
+    }
+
+    /**
+     * # leaguestates by region
+     *
+     * @param \App\Models\Region $region
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
+    public function region_league_chart(Region $region)
+    {
+        Log::info('collecting league state by region chart data.', ['region-id' => $region->id]);
+
+        $data = array();
+        $data['labels'] = [];
+        $datasets = array();
+
+       // get data for sets
+        $rs = $region->childRegions;
+        $leagues = League::whereIn('region_id', $rs->pluck('id'))->get();
+
+        // initialize datasets
+        foreach (LeagueState::getInstances() as $ls) {
+            $data['labels'][] = $ls->description;
+            $lsset = $leagues->where('state', $ls);
+            foreach ($rs as $k => $r) {
+                $datasets[$k]['data'][] = $lsset->where('region_id', $r->id)->count();
+            }
+        }
+        foreach ($rs as $k => $r){
+            $datasets[$k]['label'] = $r->code;
+        }
+        $data['datasets'] = $datasets;
+
+        Log::debug(print_r($data,true));
+
+        return Response::json($data);
+
     }
 }

@@ -74,7 +74,6 @@
                             <span class="info-box-text text-lg">{{ trans_choice('game.game', $games_count) }}</span>
                             <span class="info-box-number text-md"><a href="{{ route('game.index', ['language' => app()->getLocale(),'region'=>$region]) }}">{{ $games_count }}</a></span>
                         </div>
-
                     </div>
                 </div>
         </div>
@@ -115,6 +114,32 @@
                 <!-- /.card -->
         </div>
     </div>
+    @if ($region->is_top_level)
+    <div class="row">
+        <div class="col-sm-12 pd-2">
+            <!-- card CHILD REGION ANALYSIS -->
+            <div class="card card-outline card-info collapsed-card">
+                <x-card-header title="{{ __('region.chart.regionstats')}}" icon="fas fa-chart-line"  count="2" />
+                <!-- /.card-header -->
+                <div class="card-body">
+                <div class="row m-5">
+                    <div class="chart-wrapper">
+                    <canvas id="regionclubchart"></canvas>
+                    </div>
+                </div>
+                <div class="row m-5">
+                    <div class="chart-wrapper">
+                    <canvas id="regionleaguechart"></canvas>
+                </div>
+                </div>
+                </div>
+                <!-- /.card-body -->
+                <!-- /.card-footer -->
+            </div>
+            <!-- /.card -->
+        </div>
+    </div>
+    @endif
     <div class="row">
         <div class="col-sm-12 pd-2">
             <!-- card CLUB ANALYSIS -->
@@ -317,8 +342,9 @@
             }
         });
 
-       var cmc = document.getElementById('clubmemberchart').getContext('2d');
-       var clubmemberchart = new Chart(cmc, {
+
+      var cmc = document.getElementById('clubmemberchart').getContext('2d');
+      var clubmemberchart = new Chart(cmc, {
             type: 'bar',
             data: { datasets: [{ data: [], }] },
             options: {
@@ -336,7 +362,51 @@
             }
         });
 
-       function load_chart(chart, route) {
+       var rcc = document.getElementById('regionclubchart').getContext('2d');
+       var regionclubchart = new Chart(rcc, {
+          type: "bar",
+          data: { },
+          options: {
+            plugins: { colorschemes: { scheme: 'brewer.Spectral4' }, },
+            responsive: true,
+            interaction: {
+                intersect: false,
+                mode: 'dataset',
+            },
+            tooltips: {
+              callbacks: {
+                label: function(tooltipItem, data) {
+                  console.log(tooltipItem.datasetIndex+'-'+tooltipItem.index );
+                  return data.labels[tooltipItem.index] + ": "+ data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + "  "+ data.datasets[tooltipItem.datasetIndex].label;
+                }
+              }
+            },
+            title: {
+              display: true,
+              text: '{{ __('region.chart.title.regionclub') }}'
+            },
+          }
+        });
+
+       var rlc = document.getElementById('regionleaguechart').getContext('2d');
+       var regionleaguechart = new Chart(rlc, {
+            type: 'bar',
+            data: { },
+            options: {
+              plugins: { colorschemes: { scheme: 'brewer.SetOne4' }, },
+              responsive: true,
+              interaction: {
+                intersect: false,
+                mode: 'dataset',
+              },
+              title: {
+                display: true,
+                text: '{{ __('region.chart.title.regionleague') }}'
+              },
+            }
+        });
+
+        function load_chart(chart, route) {
             $.ajax({
                 type: 'GET',
                 url: route,
@@ -349,10 +419,13 @@
             });
         };
 
+
       load_chart( leaguestatechart, '{{ route('region.league.state.chart', ['region' => $region->id]) }}' );
       load_chart( leaguesociochart, '{{ route('region.league.socio.chart', ['region' => $region->id]) }}' );
       load_chart( clubteamchart, '{{ route('region.club.team.chart', ['region' => $region->id]) }}' );
       load_chart( clubmemberchart, '{{ route('region.club.member.chart', ['region' => $region->id]) }}' );
+      load_chart( regionclubchart, '{{ route('region.region.club.chart', ['region' => $region->id]) }}' );
+      load_chart( regionleaguechart, '{{ route('region.region.league.chart', ['region' => $region->id]) }}' );
 
       load_chart( missingrefereeschart, '{{ route('region.game.noreferee.chart', ['region' => $region->id]) }}' );
 
