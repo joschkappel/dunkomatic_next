@@ -44,9 +44,12 @@ return [
   'chart.title.leaguestate' => 'Status der Spielrunden',
   'chart.title.leaguesocio' => 'Altersklassen der Spielrunden',
   'chart.title.clubteams' => 'Vereinsmannschaften nach Altersklassen',
-  'chart.title.clubmembers' => 'Funktionen per Verein',
+  'chart.title.clubmembers' => 'Funktionen je Verein',
+  'chart.title.regionclub' => 'Vereine je Bezirk',
+  'chart.title.regionleague' => 'Spielrunden nach Status und Bezirk',
   'chart.clubstats' => 'Vereinsanalysen',
   'chart.leaguestats' => 'Spielrundenanalysen',
+  'chart.regionstats' => 'Bezirksanalysen',
   'title.refgame.import' => 'Schiedsrichteransetzugen Hochladen',
 
 ];

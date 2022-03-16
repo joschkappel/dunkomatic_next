@@ -38,7 +38,7 @@
     }
 
     .title {
-        font-size: 84px;
+        font-size: 64px;
     }
 
     .links > a {
@@ -67,26 +67,8 @@
 @stop
 
 
-@php( $login_url = View::getSection('login_url') ?? config('dunkomatic.login_url', 'login') )
-@php( $register_url = View::getSection('register_url') ?? config('dunkomatic.register_url', 'register') )
-@php( $password_reset_url = View::getSection('password_reset_url') ?? config('dunkomatic.password_reset_url', 'password/reset') )
-
-@php( $login_url = $login_url ? route($login_url, app()->getLocale() ) : '' )
-@php( $register_url = $register_url ? route($register_url, app()->getLocale()) : '' )
-@php( $password_reset_url = $password_reset_url ? route($password_reset_url, [app()->getLocale(),'']) : '' )
-
-
 @section('body')
-        <div class="flex-center position-ref full-height">
-            <div class="top-right toplinks">
-                <a href="{{ route('welcome_signin', 'en') }}" ><i class="flag-icon flag-icon-gb"></i></a>
-                <a href="{{ route('welcome_signin', 'de') }}" ><i class="flag-icon flag-icon-de"></i></a>
-            @auth
-                <a href="{{ route('home', ['language'=> app()->getLocale()]) }}">Home</a>
-            @endauth
-                <a href="https://www.hbv-basketball.de">Hessischer Basketball Verband</a>
-            </div>
-
+        <div class="flex-center position-ref ">
             <div class="content">
                 <div class="container-fluid">
                     <div class="row">
@@ -97,13 +79,27 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-8 align-self-center">
-                              <div class="title m-b-md">
+                        <div class="col-10 col-md-6 align-self-center">
+                              <div class="title m-b-sm">
                                 @yield('title_prefix', config('dunkomatic.title_prefix', ''))
                                 @yield('title', config('dunkomatic.title', 'dunkomatic'))
                                 @yield('title_postfix', config('dunkomatic.title_postfix', ''))
                               </div>
                               @yield('content')
+                              <div class="row justify-content-center">
+                                <div class="col-md-8">
+                                    <div class="card border-0 p-3 mb-5">
+                                        <div class="card-body">
+                                            <a href="{{ route('welcome_signin', 'en') }}" class="card-link"><i class="flag-icon flag-icon-gb"></i></a>
+                                            <a href="{{ route('welcome_signin', 'de') }}" class="card-link"><i class="flag-icon flag-icon-de"></i></a>
+                                            @auth
+                                            <a href="{{ route('home', ['language'=> app()->getLocale()]) }}" class="card-link">Home</a>
+                                            @endauth
+                                            <a href="https://www.hbv-basketball.de" class="card-link">Hessischer Basketball Verband</a>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
                         </div>
                     </div>
                 </div>

@@ -254,7 +254,8 @@ Route::middleware(['auth',
         Route::get('club/team', [RegionController::class, 'club_team_chart'])->name('region.club.team.chart')->middleware('can:view-clubs');
         Route::get('club/member', [RegionController::class, 'club_member_chart'])->name('region.club.member.chart')->middleware('can:view-clubs');
         Route::get('game/noreferee', [RegionController::class, 'game_noreferee_chart'])->name('region.game.noreferee.chart')->middleware('can:view-games');
-
+        Route::get('region/club', [RegionController::class, 'region_club_chart'])->name('region.region.club.chart')->middleware('can:view-regions');
+        Route::get('region/league', [RegionController::class, 'region_league_chart'])->name('region.region.league.chart')->middleware('can:view-regions');
     });
 
     Route::post('league/{league}/club', [LeagueTeamController::class, 'assign_clubs'])->name('league.assign-clubs')->middleware('can:update-leagues');

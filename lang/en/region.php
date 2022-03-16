@@ -44,8 +44,11 @@ return [
   'chart.title.leaguestate' => 'League States',
   'chart.title.leaguesocio' => 'Leagues Age Classes',
   'chart.title.clubteams' => 'Teams by Club and',
-  'chart.title.clubmembers' => 'Functions ny Club',
+  'chart.title.clubmembers' => 'Functions by Club',
+  'chart.title.regionclub' => 'Clubs by Region',
+  'chart.title.regionleague' => 'Leagues by State and Region',
   'chart.clubstats' => 'Club Analysis',
   'chart.leaguestats' => 'Leagues Analysis',
+  'chart.regionstats' => 'Child-Region Analysis',
   'title.refgame.import' => 'Referee Assignment Upload',
 ];
