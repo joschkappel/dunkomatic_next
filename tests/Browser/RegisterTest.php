@@ -30,7 +30,7 @@ class RegisterTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/de')
-                    ->assertSee('HESSISCHER BASKETBALL VERBAND')
+                    ->assertSee('Hessischer Basketball Verband')
                     ->screenshot('start');
 
             if ($browser->seeLink('Registrieren')) {
