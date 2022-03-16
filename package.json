@@ -77,7 +77,7 @@
         "websocket-extensions": ">=0.1.4"
     },
     "dependencies": {
-        "chartjs": "^3.0.0",
+        "chartjs": "^0.3.24",
         "chartjs-plugin-colorschemes": "^0.4.0",
         "laravel-echo": "^1.11.3",
         "laravel-echo-server": "^1.6.3",
