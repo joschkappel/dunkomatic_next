@@ -29,6 +29,7 @@ class ScheduleEventControllerTest extends TestCase
     {
       // create 1 schedule
       $schedule = Schedule::factory()->create(['name'=>'testschedule']);
+      ScheduleEvent::truncate();
 
       $response = $this->authenticated( )
                         ->post(route('schedule_event.store',['schedule'=>$schedule]), [

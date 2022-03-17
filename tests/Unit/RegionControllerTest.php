@@ -218,7 +218,7 @@ class RegionControllerTest extends TestCase
             ->get(route('region.list.dt', ['language' => 'de']));
 
         $response->assertStatus(200)
-            ->assertJsonFragment(['code' => '<a href="http://dunkomatic_next.test/de/region/'.$this->region->id.'/dashboard">'.$this->region->code.'</a>']);
+            ->assertJsonFragment(['code' => '<a href="'.config('app.url').'/de/region/'.$this->region->id.'/dashboard">'.$this->region->code.'</a>']);
     }
     /**
      * admin_sb.

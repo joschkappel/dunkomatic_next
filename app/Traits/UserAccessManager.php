@@ -79,8 +79,8 @@ trait UserAccessManager
      */
     public function setAccessRights(
         User $user,
-        bool $regionadmin=false,
         Region $region,
+        bool $regionadmin=false,
         bool $clubadmin=false,
         array $clubs=null,
         bool $leagueadmin=false,

@@ -165,7 +165,6 @@ Route::group([
         Route::get('membership/club/{club}/member', [ClubMembershipController::class, 'create'])->name('membership.club.create');
         Route::get('membership/league/{league}/member', [LeagueMembershipController::class, 'create'])->name('membership.league.create');
         Route::get('membership/region/{region}/member', [RegionMembershipController::class, 'create'])->name('membership.region.create');
-        Route::resource('membership', MembershipController::class)->only(['show']);
 
         Route::get('scheme/index', [LeagueSizeSchemeController::class, 'index'])->name('scheme.index');
 
@@ -282,7 +281,6 @@ Route::middleware(['auth',
     Route::delete('membership/region/{region}/member/{member}', [RegionMembershipController::class, 'destroy'])->name('membership.region.destroy');
     Route::put('membership/{membership}', [MembershipController::class, 'update'])->name('membership.update');
     Route::delete('membership/{membership}', [MembershipController::class, 'destroy'])->name('membership.destroy');
-    Route::post('membership', [MembershipController::class, 'store'])->name('membership.store');
 
     Route::delete('league/{league}/game', [LeagueGameController::class, 'destroy_game'])->name('league.game.destroy');
     Route::get('league/{league}/game/{game_no}', [LeagueGameController::class, 'show_by_number'])->name('league.game.show_bynumber');
