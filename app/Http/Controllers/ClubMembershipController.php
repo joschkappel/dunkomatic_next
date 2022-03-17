@@ -18,31 +18,6 @@ class ClubMembershipController extends Controller
 {
 
     /**
-     * Display a listing of the resource.
-     *
-     * @param string $language
-     * @param \App\Models\Club $club
-     * @return \Illuminate\Http\JsonResponse
-     *
-     */
-    public function index($language, Club $club)
-    {
-        $members = $club->members()->get();
-        Log::info('preparing select2 club membership list.', ['club-id'=>$club->id, 'count' => count($members)] );
-
-        $response = array();
-
-        foreach ($members as $member) {
-            $response[] = array(
-                "id" => $member->id,
-                "text" => $member->name
-            );
-        }
-
-        return Response::json($response);
-    }
-
-    /**
      * Show the form for creating a new resource.
      *
      * @param string $language
@@ -84,44 +59,6 @@ class ClubMembershipController extends Controller
         Log::notice('new club membership created.', ['club-id'=>$club->id, 'member-id'=>$member->id]);
 
         return redirect()->back();
-    }
-
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Club  $club
-     * @param  \App\Models\Member  $member
-     * @return \Illuminate\Http\RedirectResponse
-     *
-     */
-    public function update(Request $request, Club $club, Member $member)
-    {
-        $data = $request->validate([
-            'member_id' => 'required|exists:members,id'
-        ]);
-        Log::info('club membership form data validated OK.', ['club-id'=>$club->id, 'member-id'=>$member->id]);
-
-        // get all current memberships
-        $mships = $member->memberships->where('membership_type', Club::class)->where('membership_id', $club->id);
-        $member_new = Member::findOrFail($data['member_id']);
-
-        foreach ($mships as $ms) {
-            //Log::debug($role);
-            $ms->update(['member_id' => $member_new->id]);
-        }
-        Log::notice('club membership updated.', ['club-id'=>$club->id, 'member-id-old'=>$member->id, 'member-id-new'=>$member_new->id]);
-
-        // check if old member is w/out memberships, if so delete
-        if ($member_new->memberships->count() == 0) {
-            $member_new->delete();
-        }
-
-        return redirect()->action(
-            [ClubController::class, 'dashboard'],
-            ['language' => app()->getLocale(), 'club' => $club->id]
-        );
     }
 
     /**

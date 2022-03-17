@@ -14,6 +14,21 @@ use Illuminate\Support\Facades\Log;
 trait GameManager
 {
     /**
+     * deletes all games for a league in the DB
+     *
+     * @param League $league
+     * @return void
+     *
+     */
+    public function delete_games(League $league): void
+    {
+        $league->games()->delete();
+        $league->refresh();
+        Log::notice('games deleted.', ['league-id' => $league->id]);
+
+    }
+
+    /**
      * creates games for a league in the DB
      *
      * @param League $league

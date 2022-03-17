@@ -279,10 +279,10 @@ class LeagueTeamControllerTest extends TestCase
     public function db_cleanup()
     {
         /// clean up DB
-        League::whereNotNull('id')->delete();
         $club = Club::where('name', 'testteamclub')->first();
         $club->teams()->delete();
         Club::whereNotNull('id')->delete();
+        League::where('name','testleague')->delete();
         $this->assertDatabaseCount('leagues', 0)
             ->assertDatabaseCount('clubs', 0);
     }

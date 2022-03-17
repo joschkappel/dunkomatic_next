@@ -157,7 +157,7 @@ class LeagueStateControllerTest extends TestCase
     }
 
     /**
-     * generate games
+     * close freeze - generate games
      *
      * @test
      * @group league
@@ -166,7 +166,7 @@ class LeagueStateControllerTest extends TestCase
      *
      * @return void
      */
-    public function generate_games()
+    public function close_freeze()
     {
       $league = League::where('name','testleague')->first();
 
@@ -175,19 +175,15 @@ class LeagueStateControllerTest extends TestCase
       Notification::fake();
       Notification::assertNothingSent();
 
-      // change state to registration
+      // change state to scheduling
       $response = $this->authenticated( )
-                        ->post(route('league.game.store',['league'=>$league->id]) );
+                        ->post(route('league.state.change',['league'=>$league->id]), [
+                          'action' => LeagueStateChange::CloseFreeze()
+                      ]);
 
        $response->assertStatus(200);
        $this->assertDatabaseHas('leagues', ['id' => $league->id, 'state' => LeagueState::Scheduling()])
             ->assertDatabaseHas('games', ['league_id' => $league->id]);
-
-/*       $member = Club::first()->members()->wherePivot('role_id',Role::ClubLead)->first();
-        //  assert club members are notified
-      Notification::assertSentTo(
-         [$member], LeagueGamesGenerated::class
-      ); */
 
     }
 
@@ -321,9 +317,11 @@ class LeagueStateControllerTest extends TestCase
 
       $this->assertDatabaseHas('leagues', ['id' => $league->id, 'state' => LeagueState::Scheduling()]);
 
-      // change state to registration
+      // change state to freeze
       $response = $this->authenticated( )
-                        ->delete(route('league.game.destroy',['league'=>$league->id]));
+                        ->post(route('league.state.change',['league'=>$league->id]), [
+                          'action' => LeagueStateChange::OpenFreeze()
+                      ]);
 
        $response->assertStatus(200);
        $this->assertDatabaseHas('leagues', ['id' => $league->id, 'state' => LeagueState::Freeze()])
@@ -435,8 +433,7 @@ class LeagueStateControllerTest extends TestCase
         $league = League::where('name','testleague')->first();
         $league->schedule->events()->delete();
         $league->delete();
-        Schedule::whereNotNull('id')->delete();
-        //League::whereNotNull('id')->delete();
-        $this->assertDatabaseCount('leagues', 0);
+        Schedule::where('name','testschedule')->delete();
+
    }
 }

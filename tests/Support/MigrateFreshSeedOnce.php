@@ -21,7 +21,7 @@ trait MigrateFreshSeedOnce
         if (!static::$setUpHasRunOnce) {
             $this->artisan('migrate:fresh');
             $this->seed(TestDatabaseSeeder::class);
-            Log::info('TestDB reset');
+            Log::info('TestDB seeded');
             static::$setUpHasRunOnce = true;
          }
     }

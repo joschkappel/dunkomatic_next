@@ -156,6 +156,7 @@ trait LeagueFSM
     public function open_freeze(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Freeze()->key]);
+        $this->delete_games($league);
 
         $league->state = LeagueState::Freeze();
         $league->save();

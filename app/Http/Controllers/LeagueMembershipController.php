@@ -14,30 +14,6 @@ use App\Enums\Role;
 
 class LeagueMembershipController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @param string $language
-     * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\JsonResponse
-     *
-     */
-    public function index($language, League $league)
-    {
-        $members = $league->members()->get();
-        Log::info('preparing select2 league membership list.', ['league-id' => $league->id, 'count' => count($members)]);
-
-        $response = array();
-
-        foreach ($members as $member) {
-            $response[] = array(
-                "id" => $member->id,
-                "text" => $member->name
-            );
-        }
-
-        return Response::json($response);
-    }
 
     /**
      * Show the form for creating a new resource.
@@ -82,42 +58,6 @@ class LeagueMembershipController extends Controller
         return redirect()->back();
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\League  $league
-     * @param  \App\Models\Member  $member
-     * @return \Illuminate\Http\RedirectResponse
-     *
-     */
-    public function update(Request $request, League $league, Member $member)
-    {
-        $data = $request->validate([
-            'member_id' => 'required|exists:members,id',
-        ]);
-        Log::info('league membership form data validated OK.', ['league-id'=>$league->id, 'member-id'=>$member->id]);
-
-        // get all current memberships
-        $mships = $member->memberships->where('membership_type', League::class)->where('membership_id', $league->id);
-        $member_new = Member::find($data['member_id']);
-
-        foreach ($mships as $ms) {
-            //Log::debug($role);
-            $ms->update(['member_id' => $member_new->id]);
-        }
-        Log::notice('league membership updated.', ['league-id'=>$league->id, 'member-id-old'=>$member->id, 'member-id-new'=>$member_new->id]);
-
-        // check if old member is w/out memberships, if so delete
-        if ($member_new->memberships->count() == 0) {
-            $member_new->delete();
-        }
-
-        return redirect()->action(
-            'LeagueController@dashboard',
-            ['language' => app()->getLocale(), 'league' => $league->id]
-        );
-    }
 
     /**
      * Remove the specified resource from storage.
