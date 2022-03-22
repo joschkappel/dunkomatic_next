@@ -7,9 +7,6 @@ use App\Enums\ReportFileType;
 use Tests\TestCase;
 use Tests\Support\Authentication;
 use Illuminate\Support\Facades\Notification;
-use App\Enums\Role;
-use App\Models\Club;
-use App\Models\Member;
 use App\Models\User;
 use App\Models\Region;
 
@@ -362,10 +359,6 @@ class RegionControllerTest extends TestCase
      */
     public function charpick_enabling()
     {
-        // enable and check that notificatons are sent
-        Club::factory()->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])->create(['name' => 'testclub', 'region_id' => $this->region->id]);
-        $club = Club::where('name', 'testclub')->first();
-
         Notification::fake();
         Notification::assertNothingSent();
 
@@ -388,10 +381,6 @@ class RegionControllerTest extends TestCase
         $response->assertStatus(302)
             ->assertHeader('Location', route('region.dashboard', ['language' => 'de', 'region' => $this->region]));
 
-
-        $club = $this->region->clubs()->first();
-        $user = $club->members()->wherePivot('role_id', Role::ClubLead)->first();
-
         Notification::assertNothingSent();
 
         // disbale and check that notifications are sent
@@ -411,10 +400,6 @@ class RegionControllerTest extends TestCase
             ]);
         Notification::assertNothingSent();
 
-
-        // clean up club and member
-        $user->delete();
-        $club->delete();
     }
 
     /**

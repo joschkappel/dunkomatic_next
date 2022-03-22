@@ -37,11 +37,11 @@ class MembershipObserver
                 Log::error('unknown membership type',['membership-id'=>$membership->id, 'type'=>$membership->membership_type]);
             }
 
-            if ($u->isRole(Role::RegionLead())){
+            if ($membership->isRole(Role::RegionLead())){
                 Bouncer::assign('regionadmin')->to($u);
-            } elseif ($u->isRole(Role::ClubLead())){
+            } elseif ($membership->isRole(Role::ClubLead())){
                 Bouncer::assign('clubadmin')->to($u);
-            } elseif ($u->isRole(Role::LeagueLead())){
+            } elseif ($membership->isRole(Role::LeagueLead())){
                 Bouncer::assign('leagueadmin')->to($u);
             } else {
                 Bouncer::assign('guest')->to($u);
@@ -85,11 +85,11 @@ class MembershipObserver
                     Log::error('unknown membership type',['membership-id'=>$membership->id, 'type'=>$membership->membership_type]);
                 }
 
-                if (! $u->isRole(Role::RegionLead())){
+                if (! $membership->isRole(Role::RegionLead())){
                     Bouncer::retract('regionadmin')->from($u);
-                } elseif (! $u->isRole(Role::ClubLead())){
+                } elseif (! $membership->isRole(Role::ClubLead())){
                     Bouncer::retract('clubadmin')->from($u);
-                } elseif (! $u->isRole(Role::LeagueLead())){
+                } elseif (! $membership->isRole(Role::LeagueLead())){
                     Bouncer::retract('leagueadmin')->from($u);
                 }
             }

@@ -2,12 +2,8 @@
 
 namespace Tests\Unit;
 
-use App\Models\Club;
-use App\Models\Team;
-
 use Tests\TestCase;
 use Tests\Support\Authentication;
-use Illuminate\Support\Facades\Log;
 
 class ClubTeamControllerTest extends TestCase
 {
@@ -24,16 +20,12 @@ class ClubTeamControllerTest extends TestCase
      */
     public function create()
     {
-
-      Club::factory()->create(['name'=>'testclub']);
-      $club = Club::where('name','testclub')->first();
-
       $response = $this->authenticated()
-                        ->get(route('club.team.create',['language'=>'de', 'club'=>$club]));
+                        ->get(route('club.team.create',['language'=>'de', 'club'=>static::$testclub]));
 
       $response->assertStatus(200)
                ->assertViewIs('team.team_new')
-               ->assertViewHas('club',$club);
+               ->assertViewHas('club',static::$testclub);
 
     }
     /**
@@ -47,11 +39,10 @@ class ClubTeamControllerTest extends TestCase
      */
     public function store_notok()
     {
-      $club = Club::where('name','testclub')->first();
       $response = $this->authenticated()
-                        ->post(route('club.team.store',['club'=>$club]), [
-                          'club_id' => $club->id,
-                          'team_no' => 10,
+                        ->post(route('club.team.store',['club'=>static::$testclub]), [
+                          'club_id' => static::$testclub->id,
+                          'team_no' => 20,
                           'training_day'   => 1,
                           'training_time'  => '11:00',
                           'preferred_game_day' => 10,
@@ -80,11 +71,9 @@ class ClubTeamControllerTest extends TestCase
      */
     public function store_ok()
     {
-
-      $club = Club::where('name','testclub')->first();
       $response = $this->authenticated()
-                        ->post(route('club.team.store',['club'=>$club]), [
-                          'club_id' => $club->id,
+                        ->post(route('club.team.store',['club'=>static::$testclub]), [
+                          'club_id' => static::$testclub->id,
                           'team_no' => 1,
                           'training_day'   => 1,
                           'training_time'  => '11:00',
@@ -98,7 +87,7 @@ class ClubTeamControllerTest extends TestCase
       $response
           ->assertStatus(302)
           ->assertSessionHasNoErrors()
-          ->assertHeader('Location', route('club.dashboard', ['language'=>'de','club'=>$club]));
+          ->assertHeader('Location', route('club.dashboard', ['language'=>'de','club'=>static::$testclub]));
 
       $this->assertDatabaseHas('teams', ['coach_name' => 'testteam']);
 
@@ -114,9 +103,7 @@ class ClubTeamControllerTest extends TestCase
      */
     public function edit()
     {
-      //$this->withoutExceptionHandling();
-      $club = Club::where('name','testclub')->first();
-      $team = $club->teams->first();
+      $team = static::$testclub->teams->first();
 
       $response = $this->authenticated()
                         ->get(route('team.edit',['language'=>'de', 'team'=>$team]));
@@ -136,9 +123,7 @@ class ClubTeamControllerTest extends TestCase
      */
     public function update_notok()
     {
-      //$this->withoutExceptionHandling();
-      $club = Club::where('name','testclub')->first();
-      $team = $club->teams->first();
+      $team = static::$testclub->teams->first();
       $response = $this->authenticated()
                         ->put(route('team.update',['team'=>$team]),[
                           'team_no' => $team->team_no,
@@ -168,9 +153,7 @@ class ClubTeamControllerTest extends TestCase
      */
     public function update_ok()
     {
-      //$this->withoutExceptionHandling();
-      $club = Club::where('name','testclub')->first();
-      $team = $club->teams->first();
+      $team = static::$testclub->teams->first();
       $response = $this->authenticated()
                         ->put(route('team.update',['team'=>$team]),[
                           'team_no' => $team->team_no,
@@ -186,7 +169,7 @@ class ClubTeamControllerTest extends TestCase
       $team->refresh();
       $response->assertStatus(302)
                ->assertSessionHasNoErrors()
-               ->assertHeader('Location', route('club.dashboard',['language'=>'de', 'club'=>$club]));
+               ->assertHeader('Location', route('club.dashboard',['language'=>'de', 'club'=>static::$testclub]));
 
       $this->assertDatabaseHas('teams', ['coach_name'=>$team->coach_name]);
     }
@@ -201,15 +184,12 @@ class ClubTeamControllerTest extends TestCase
      */
     public function pickchar()
     {
-
-      $club = Club::where('name','testclub')->first();
-
       $response = $this->authenticated()
-                        ->get(route('club.team.pickchar',['language'=>'de', 'club'=>$club]));
+                        ->get(route('club.team.pickchar',['language'=>'de', 'club'=>static::$testclub]));
 
       $response->assertStatus(200)
                ->assertViewIs('club.club_pickchar')
-               ->assertViewHas('club',$club);
+               ->assertViewHas('club',static::$testclub);
 
     }
     /**
@@ -224,9 +204,7 @@ class ClubTeamControllerTest extends TestCase
      */
     public function destroy()
     {
-      //$this->withoutExceptionHandling();
-      $club = Club::where('name','testclub')->first();
-      $team = $club->teams->first();
+      $team = static::$testclub->teams->first();
       $response = $this->authenticated()
                         ->delete(route('team.destroy',['team'=>$team]));
 
@@ -235,23 +213,5 @@ class ClubTeamControllerTest extends TestCase
 
       $this->assertDatabaseMissing('teams', ['id'=>$team->id]);
     }
-    /**
-     * db_cleanup
-     *
-     * @test
-     * @group team
-     * @group controller
-     *
-     * @return void
-     */
-   public function db_cleanup()
-   {
-        /// clean up DB
-        $club = Club::where('name','testclub')->first();
-        $club->teams()->delete();
-        $club->delete();
-        $this->assertDatabaseCount('clubs', 0)
-             ->assertDatabaseCount('teams', 0);
-   }
 
 }

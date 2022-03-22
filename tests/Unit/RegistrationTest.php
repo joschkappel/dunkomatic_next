@@ -117,9 +117,7 @@ class RegistrationTest extends TestCase
      */
     public function approve()
     {
-        // create a fake club
-        Club::factory()->create(['name'=>'testclub']);
-        $club = Club::where('name','testclub')->pluck('id')->toarray();
+        $club = Club::all()->pluck('id')->toarray();
 
         $region = Region::where('code','HBVDA')->first();
         $region_admin = $region->regionadmins()->first()->user()->first();
@@ -192,18 +190,15 @@ class RegistrationTest extends TestCase
         $region = Region::where('code','HBVDA')->first();
         $region_admin = $region->regionadmins()->first()->user()->first();
 
-        $club1 = Club::where('name','testclub')->first();
-        Club::factory()->create(['name'=>'testclub2']);
-        $club2 = Club::where('name','testclub2')->first();
+        $clubs = static::$testleague->clubs->pluck('id')->toArray();
 
-        League::factory()->create((['name'=>'testleague']));
-        $league = League::where('name','testleague')->first();
+        $league = static::$testleague;
 
         $response = $this->authenticated($region_admin)
                          ->followingRedirects()
                          ->put(route('admin.user.allowance',[
                             'user' => $user,
-                            'club_ids' => [ $club1->id, $club2->id],
+                            'club_ids' => $clubs,
                             'league_ids' => [ $league->id ],
                             'role' => 3
         ]));
@@ -360,22 +355,6 @@ class RegistrationTest extends TestCase
 
         $this->assertDatabaseMissing('users', ['email'=>'test1@gmail.com']);
 
-    }
-
-    /**
-     * db clean up
-     *
-     * @test
-     * @group user
-     * @group controller
-     *
-     * @return void
-     */
-    public function db_cleanup()
-    {
-
-        DB::table('clubs')->delete();
-        DB::table('leagues')->delete();
     }
 
 

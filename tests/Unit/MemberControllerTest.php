@@ -54,8 +54,6 @@ class MemberControllerTest extends TestCase
      */
     public function store_ok()
     {
-      Club::factory()->create(['name'=>'testclub']);
-      $club = Club::where('name','testclub')->first();
 
       $response = $this->authenticated()
                         ->post(route('member.store'), [
@@ -68,7 +66,7 @@ class MemberControllerTest extends TestCase
                           'email1' => 'testmember@gmail.com',
                           'role_id' => Role::ClubLead(),
                           'entity_type' => Club::class,
-                          'entity_id' => $club->id,
+                          'entity_id' => static::$testclub->id,
                           'member_id' => null,
                           'function' => '',
                           'email' => '',
@@ -93,7 +91,7 @@ class MemberControllerTest extends TestCase
      */
     public function update_notok()
     {
-      $member = Member::where('lastname','testmember')->first();
+      $member = Member::first();
 
       $response = $this->authenticated()
                         ->put(route('member.update', ['member'=>$member]), [
@@ -110,7 +108,7 @@ class MemberControllerTest extends TestCase
                ->assertSessionHasErrors(['zipcode','email1']);
 
       $this->assertDatabaseMissing('members', ['lastname' => 'testmember2']);
-      $this->assertDatabaseHas('members', ['lastname' => 'testmember']);
+      $this->assertDatabaseHas('members', ['lastname' => $member->lastname]);
 
     }
     /**
@@ -124,7 +122,7 @@ class MemberControllerTest extends TestCase
      */
     public function update_ok()
     {
-      $member = Member::where('lastname','testmember')->first();
+      $member = Member::first();
 
       $response = $this->authenticated()
                         ->put(route('member.update', ['member'=>$member]), [
@@ -141,7 +139,7 @@ class MemberControllerTest extends TestCase
                ->assertSessionHasNoErrors();
 
       $this->assertDatabaseHas('members', ['lastname' => 'testmember2']);
-      $this->assertDatabaseMissing('members', ['lastname' => 'testmember']);
+      $this->assertDatabaseMissing('members', ['lastname' => $member->lastname]);
 
     }
     /**
@@ -155,7 +153,7 @@ class MemberControllerTest extends TestCase
      */
     public function show()
     {
-      $member = Member::where('lastname','testmember2')->first();
+      $member = Member::first();
 
       $response = $this->authenticated()
                         ->get(route('member.show',['language'=>'de','member'=>$member]));
@@ -207,7 +205,7 @@ class MemberControllerTest extends TestCase
      public function destroy()
      {
        //$this->withoutExceptionHandling();
-       $member = Member::where('lastname','testmember2')->first();
+       $member = Member::doesnthave('memberships')->first();
        $response = $this->authenticated( )
                          ->delete(route('member.destroy',['member'=>$member]));
 
@@ -215,19 +213,5 @@ class MemberControllerTest extends TestCase
                 ->assertSessionHasNoErrors();
        $this->assertDatabaseMissing('members', ['id'=>$member->id]);
      }
-     /**
-      * cleanup
-      *
-      * @test
-      * @group member
-      * @group db_cleanup
-      * @group controller
-      *
-      * @return void
-      */
-      public function db_cleanup()
-      {
-        Club::where('name','testclub')->delete();
 
-      }
 }

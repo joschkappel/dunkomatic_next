@@ -295,6 +295,7 @@ class MemberController extends Controller
      */
     public function destroy(Member $member)
     {
+        // delete all messages
         $check = $member->delete();
         Log::notice('member deleted', ['member-id' => $member->id]);
 

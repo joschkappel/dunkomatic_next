@@ -12,8 +12,6 @@ class TeamValidationTest extends TestCase
 {
     use Authentication;
 
-    private $club;
-
     /**
       * team validation
       *
@@ -26,14 +24,8 @@ class TeamValidationTest extends TestCase
       */
     public function team_form_validation($formInput, $formInputValue): void
     {
-      if  (Club::where('name','testclub')->exists()){
-        $this->club = Club::where('name','testclub')->first();
-      } else {
-        $this->club = Club::factory()->create(['name'=>'testclub']);
-      }
-
       $response = $this->authenticated()
-           ->post(route('club.team.store',['club'=>$this->club->id]), [$formInput => $formInputValue]);
+           ->post(route('club.team.store',['club'=>static::$testclub]), [$formInput => $formInputValue]);
 
       $response->assertSessionHasErrors($formInput);
     }
@@ -57,7 +49,7 @@ class TeamValidationTest extends TestCase
                 'preferred_game_time missing' => ['preferred_game_time',''],
                 'preferred_game_time no time' => ['preferred_game_time','day:test'],
                 'preferred_game_time wrong minutes' => ['preferred_game_time','07:22'],
-                'preferred_game_time wrong hours' => ['preferred_game_time','05:00'],                
+                'preferred_game_time wrong hours' => ['preferred_game_time','05:00'],
                 'coach_name missing' => ['coach_name',''],
                 'coach_email missing' => ['coach_email',''],
                 'coach_email no email' => ['coach_email','testemail'],

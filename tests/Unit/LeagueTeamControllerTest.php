@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Models\League;
+use App\Enums\LeagueState;
 use App\Models\Club;
 
 use Tests\TestCase;
@@ -12,6 +12,13 @@ class LeagueTeamControllerTest extends TestCase
 {
     use Authentication;
 
+    public function setUp(): void
+    {
+        static::$state = LeagueState::Selection;
+        static::$initial_clubs = 3;
+        static::$initial_teams = 3;
+        parent::setUp();
+    }
     /**
      * assign_club
      *
@@ -23,32 +30,18 @@ class LeagueTeamControllerTest extends TestCase
      */
     public function assign_club()
     {
-
-        // create data:  1 club with 4 teams
-        // 1 league (size 4)
-        $club = Club::factory()->hasTeams(4)->create(['name' => 'testteamclub']);
-        $league = League::factory()->create(['name' => 'testleague']);
+        $c_toadd = Club::whereNotIn('id', static::$testleague->clubs->pluck('id'))->first();
 
         $response = $this->authenticated()
-            ->post(route('league.assign-clubs', ['league' => $league]), [
-                'club_id' => $club->id
+            ->post(route('league.assign-clubs', ['league' => static::$testleague]), [
+                'club_id' => $c_toadd->id
             ]);
 
         $response->assertStatus(302)
             ->assertSessionHasNoErrors();
 
-        $this->assertDatabaseHas('club_league', ['club_id' => $club->id, 'league_id' => $league->id, 'league_no' => 1]);
+        $this->assertDatabaseHas('club_league', ['club_id' => $c_toadd->id, 'league_id' => static::$testleague->id]);
 
-        // assign same club again
-        $response = $this->authenticated()
-            ->post(route('league.assign-clubs', ['league' => $league]), [
-                'club_id' => $club->id
-            ]);
-
-        $response->assertStatus(302)
-            ->assertSessionHasNoErrors();
-
-        $this->assertDatabaseHas('club_league', ['club_id' => $club->id, 'league_id' => $league->id, 'league_no' => 2]);
     }
     /**
      * deassign_club
@@ -61,18 +54,14 @@ class LeagueTeamControllerTest extends TestCase
      */
     public function deassign_club()
     {
-        $league = League::where('name', 'testleague')->first();
-
-        $club = $league->clubs()->first();
 
         $response = $this->authenticated()
-            ->delete(route('league.deassign-club', ['league' => $league, 'club' => $club]));
+            ->delete(route('league.deassign-club', ['league' => static::$testleague, 'club' => static::$testclub]));
 
         $response->assertStatus(200)
             ->assertSessionHasNoErrors();
 
-        $this->assertDatabaseMissing('club_league', ['club_id' => $club->id, 'league_id' => $league->id, 'league_no' => 2]);
-        $this->assertDatabaseHas('club_league', ['club_id' => $club->id, 'league_id' => $league->id, 'league_no' => 1]);
+        $this->assertDatabaseMissing('club_league', ['club_id' => static::$testclub->id, 'league_id' => static::$testleague->id]);
     }
 
     /**
@@ -86,13 +75,11 @@ class LeagueTeamControllerTest extends TestCase
      */
     public function league_register_team()
     {
-        $league = League::where('name', 'testleague')->first();
-        $club = $league->clubs()->first();
-        $team = $club->teams->first();
+        $team = static::$testclub->teams->first();
 
         $response = $this->authenticated()
             ->put(route('league.register.team', [
-                'league' => $league,
+                'league' => static::$testleague,
                 'team' => $team
             ]));
 
@@ -100,7 +87,7 @@ class LeagueTeamControllerTest extends TestCase
             ->assertStatus(200)
             ->assertSessionHasNoErrors();
         //$response->dump();
-        $this->assertDatabaseHas('teams', ['id' => $team->id, 'league_id' => $league->id]);
+        $this->assertDatabaseHas('teams', ['id' => $team->id, 'league_id' => static::$testleague->id]);
     }
     /**
      * unregsiter team from leagu
@@ -113,12 +100,11 @@ class LeagueTeamControllerTest extends TestCase
      */
     public function league_unregister_team()
     {
-        $league = League::where('name', 'testleague')->first();
-        $team = $league->teams->first();
+        $team = static::$testleague->teams->first();
 
         $response = $this->authenticated()
             ->delete(route('league.unregister.team', [
-                'league' => $league,
+                'league' => static::$testleague,
                 'team' => $team ])
             );
 
@@ -126,7 +112,7 @@ class LeagueTeamControllerTest extends TestCase
             ->assertStatus(200)
             ->assertSessionHasNoErrors();
         //$response->dump();
-        $this->assertDatabaseMissing('teams', ['id' => $team->id, 'league_id' => $league->id]);
+        $this->assertDatabaseMissing('teams', ['id' => $team->id, 'league_id' => static::$testleague->id]);
     }
 
     /**
@@ -140,20 +126,18 @@ class LeagueTeamControllerTest extends TestCase
      */
     public function team_register_league()
     {
-        $league = League::where('name', 'testleague')->first();
-        $club = $league->clubs()->first();
-        $team = $club->teams->first();
+        $team = static::$testclub->teams->first();
 
         $response = $this->authenticated()
             ->put(route('team.register.league', ['team' => $team ]),
-            ['league_id' => $league->id]
+            ['league_id' => static::$testleague->id]
             );
 
         $response
             ->assertStatus(302)
             ->assertSessionHasNoErrors();
         //$response->dump();
-        $this->assertDatabaseHas('teams', ['id' => $team->id, 'league_id' => $league->id]);
+        $this->assertDatabaseHas('teams', ['id' => $team->id, 'league_id' => static::$testleague->id]);
     }
 
     /**
@@ -167,11 +151,10 @@ class LeagueTeamControllerTest extends TestCase
      */
     public function league_team_pickchar()
     {
-        $league = League::where('name', 'testleague')->first();
-        $team = $league->teams->first();
+        $team = static::$testleague->teams->first();
 
         $response = $this->authenticated()
-            ->post(route('league.team.pickchar', [ 'league' => $league ]),
+            ->post(route('league.team.pickchar', [ 'league' => static::$testleague ]),
                 ['team_id' => $team->id,
                  'league_no' => 2]
             );
@@ -193,20 +176,19 @@ class LeagueTeamControllerTest extends TestCase
      */
     public function league_team_releasechar()
     {
-        $league = League::where('name', 'testleague')->first();
-        $team = $league->teams->first();
+        $team = static::$testleague->teams->first();
 
         $response = $this->authenticated()
-            ->post(route('league.team.releasechar', [ 'league' => $league ]),
+            ->post(route('league.team.releasechar', [ 'league' => static::$testleague ]),
                 ['team_id' => $team->id,
-                 'league_no' => 2]
+                 'league_no' => $team->league_no]
             );
 
         $response
             ->assertStatus(200)
             ->assertSessionHasNoErrors();
         //$response->dump();
-        $this->assertDatabaseMissing('teams', ['id' => $team->id, 'league_no' => 2]);
+        $this->assertDatabaseMissing('teams', ['id' => $team->id, 'league_no' => $team->league_no]);
     }
     /**
      * inject
@@ -219,14 +201,10 @@ class LeagueTeamControllerTest extends TestCase
      */
     public function inject()
     {
-        //$this->withoutExceptionHandling();
-        // create data:  1 club with 5 teams assigned to 1 league each
-        $club = Club::where('name', 'testteamclub')->first();
-        $league = League::where('name', 'testleague')->first();
-        $team = $club->teams->first();
+        $team = static::$testclub->teams->first();
 
         $response = $this->authenticated()
-            ->post(route('league.team.inject', ['league' => $league]), [
+            ->post(route('league.team.inject', ['league' => static::$testleague]), [
                 'team_id' => $team->id,
                 'league_no' => 1,
             ]);
@@ -236,7 +214,7 @@ class LeagueTeamControllerTest extends TestCase
             ->assertStatus(302)
             ->assertSessionHasNoErrors();
 
-        $this->assertDatabaseHas('teams', ['league_no' => 1, 'league_id' => $league->id]);
+        $this->assertDatabaseHas('teams', ['league_no' => 1, 'league_id' => static::$testleague->id]);
     }
 
     /**
@@ -250,13 +228,10 @@ class LeagueTeamControllerTest extends TestCase
      */
     public function withdraw()
     {
-        //$this->withoutExceptionHandling();
-        $club = Club::where('name', 'testteamclub')->first();
-        $league = League::where('name', 'testleague')->first();
-        $team = $league->teams->first();
+        $team = static::$testleague->teams->first();
 
         $response = $this->authenticated()
-            ->delete(route('league.team.withdraw', ['league' => $league]), [
+            ->delete(route('league.team.withdraw', ['league' => static::$testleague]), [
                 'team_id' => $team->id,
             ]);
 
@@ -264,26 +239,7 @@ class LeagueTeamControllerTest extends TestCase
             ->assertStatus(302)
             ->assertSessionHasNoErrors();
         //$response->dump();
-        $this->assertDatabaseMissing('teams', ['league_no' => $team->league_no, 'league_id' => $league->id]);
+        $this->assertDatabaseMissing('teams', ['league_no' => $team->league_no, 'league_id' => static::$testleague->id]);
     }
 
-    /**
-     * db_cleanup
-     *
-     * @test
-     * @group league
-     * @group controller
-     *
-     * @return void
-     */
-    public function db_cleanup()
-    {
-        /// clean up DB
-        $club = Club::where('name', 'testteamclub')->first();
-        $club->teams()->delete();
-        Club::whereNotNull('id')->delete();
-        League::where('name','testleague')->delete();
-        $this->assertDatabaseCount('leagues', 0)
-            ->assertDatabaseCount('clubs', 0);
-    }
 }

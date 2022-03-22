@@ -38,8 +38,7 @@ class AuditControllerTest extends TestCase
      */
     public function show()
     {
-        $club = Club::factory()->create();
-        $audit = $club->audits()->first();
+        $audit = static::$testclub->audits()->first();
 
         $response = $this->authenticated()
             ->get(route('audit.show', ['language' => 'de', 'audit' => $audit]));
@@ -68,6 +67,5 @@ class AuditControllerTest extends TestCase
             'url' => 'console',
         ]);
 
-        Club::first()->delete();
     }
 }

@@ -74,7 +74,6 @@ class LeagueControllerTest extends TestCase
      */
     public function store_ok()
     {
-        Schedule::factory()->count(3)->create();
         $schedule = Schedule::where('region_id', $this->region->id)->first();
 
         $response = $this->authenticated()
@@ -91,6 +90,9 @@ class LeagueControllerTest extends TestCase
             ->assertSessionHasNoErrors();
 
         $this->assertDatabaseHas('leagues', ['name' => 'testleague']);
+
+        // rollback
+        League::where('name','testleague')->first()->delete();
     }
     /**
      * edit
@@ -103,15 +105,12 @@ class LeagueControllerTest extends TestCase
      */
     public function edit()
     {
-        //$this->withoutExceptionHandling();
-        $league = League::where('name', 'testleague')->first();
-
         $response = $this->authenticated()
-            ->get(route('league.edit', ['language' => 'de', 'league' => $league]));
+            ->get(route('league.edit', ['language' => 'de', 'league' => static::$testleague]));
 
         $response->assertStatus(200)
             ->assertViewIs('league.league_edit')
-            ->assertViewHas('league', $league)
+            ->assertViewHas('league', static::$testleague)
             ->assertViewHas('agetype', LeagueAgeType::getInstances())
             ->assertViewHas('gendertype', LeagueGenderType::getInstances());
     }
@@ -126,15 +125,13 @@ class LeagueControllerTest extends TestCase
      */
     public function update_notok()
     {
-        //$this->withoutExceptionHandling();
-        $league = League::where('name', 'testleague')->first();
         $response = $this->authenticated()
-            ->put(route('league.update', ['league' => $league]), [
+            ->put(route('league.update', ['league' => static::$testleague]), [
                 'name' => 'testleague2',
-                'shortname' => $league->shortname,
-                'region_id' => $league->region_id,
+                'shortname' => static::$testleague->shortname,
+                'region_id' => static::$testleague->region_id,
                 'schedule_id' => 100,
-                'age_type' => $league->age_type,
+                'age_type' => static::$testleague->age_type,
                 'gender_type' => 200,
                 'above_region' => False
             ]);
@@ -155,26 +152,23 @@ class LeagueControllerTest extends TestCase
      */
     public function update_ok()
     {
-        //$this->withoutExceptionHandling();
-        $league = League::where('name', 'testleague')->first();
         $response = $this->authenticated()
-            ->put(route('league.update', ['league' => $league]), [
+            ->put(route('league.update', ['league' => static::$testleague]), [
                 'name' => 'testleague2',
-                'shortname' => $league->shortname,
-                'region_id' => $league->region_id,
-                'schedule_id' => $league->schedule_id,
-                'league_size_id' => $league->league_size_id,
-                'age_type' => $league->age_type,
-                'gender_type' => $league->gender_type,
+                'shortname' => static::$testleague->shortname,
+                'region_id' => static::$testleague->region_id,
+                'schedule_id' => static::$testleague->schedule_id,
+                'league_size_id' => static::$testleague->league_size_id,
+                'age_type' => static::$testleague->age_type,
+                'gender_type' => static::$testleague->gender_type,
                 'above_region' => False
             ]);
 
-        $league->refresh();
         $response->assertStatus(302)
             ->assertSessionHasNoErrors()
-            ->assertHeader('Location', route('league.dashboard', ['language' => 'de', 'league' => $league]));
+            ->assertHeader('Location', route('league.dashboard', ['language' => 'de', 'league' => static::$testleague]));
 
-        $this->assertDatabaseHas('leagues', ['name' => $league->name]);
+        $this->assertDatabaseHas('leagues', ['name' => 'testleague2']);
     }
 
     /**
@@ -270,17 +264,16 @@ class LeagueControllerTest extends TestCase
      */
     public function dashboard()
     {
-        $league = $this->region->leagues()->first();
         $response = $this->authenticated()
             ->get(route(
                 'league.dashboard',
-                ['language' => 'de', 'league' => $league]
+                ['language' => 'de', 'league' => static::$testleague]
             ));
 
 
         $response->assertStatus(200);
         $response->assertViewIs('league.league_dashboard');
-        $response->assertViewHas('league', $league)
+        $response->assertViewHas('league', static::$testleague)
             ->assertViewHas('members')
             ->assertViewHas('games');
     }
@@ -295,16 +288,15 @@ class LeagueControllerTest extends TestCase
      */
     public function briefing()
     {
-        $league = $this->region->leagues()->first();
         $response = $this->authenticated()
-            ->get(route('league.briefing', ['language' => 'de', 'league' => $league]));
+            ->get(route('league.briefing', ['language' => 'de', 'league' => static::$testleague]));
 
-        //$response->dump();
+        static::$testleague->refresh();
         $response->assertStatus(200)
             ->assertViewIs('league.league_briefing')
-            ->assertViewHas('league', $league)
-            ->assertViewHas('clubs', $league->clubs()->get())
-            ->assertViewHas('teams', $league->teams()->get());
+            ->assertViewHas('league', static::$testleague)
+            ->assertViewHas('clubs')
+            ->assertViewHas('teams');
     }
         /**
      * team_dt
@@ -317,10 +309,9 @@ class LeagueControllerTest extends TestCase
     public function team_dt()
     {
 
-        $league = $this->region->leagues()->first();
         // base level region
         $response = $this->authenticated()
-            ->get(route('league.team.dt', ['language' => 'de', 'league' => $league]));
+            ->get(route('league.team.dt', ['language' => 'de', 'league' => static::$testleague]));
 
         $response->assertStatus(200);
 
@@ -336,13 +327,12 @@ class LeagueControllerTest extends TestCase
      */
     public function sb_region()
     {
-        $league = $this->region->leagues()->first();
         $response = $this->authenticated()
             ->get(route('league.sb.region', ['region' => $this->region]));
 
         //$response->dump();
         $response->assertStatus(200)
-            ->assertJson([['id' => $league->id, 'text' => $league->shortname]]);
+            ->assertJson([['id' => static::$testleague->id, 'text' => static::$testleague->shortname]]);
     }
     /**
      * sb_freechars
@@ -355,13 +345,12 @@ class LeagueControllerTest extends TestCase
      */
     public function sb_freechars()
     {
-        $league = $this->region->leagues()->first();
         $response = $this->authenticated()
-            ->get(route('league.sb_freechar', ['league' => $league]));
+            ->get(route('league.sb_freechar', ['league' => static::$testleague]));
 
         //$response->dump();
         $response->assertStatus(200)
-            ->assertJson([['id' => '1', 'text' => '1 - A'], ['id' => '2', 'text' => '2 - B']]);
+            ->assertJson([]);
     }
     /**
      * sb_club
@@ -374,10 +363,9 @@ class LeagueControllerTest extends TestCase
      */
     public function sb_club()
     {
-        Club::factory()->count(3)->create();
-        $league = $this->region->leagues()->first();
+        static::$testleague = $this->region->leagues()->first();
         $response = $this->authenticated()
-            ->get(route('league.sb.club', ['league' => $league]));
+            ->get(route('league.sb.club', ['league' => static::$testleague]));
 
         //$response->dump();
         $response->assertStatus(200)
@@ -395,29 +383,12 @@ class LeagueControllerTest extends TestCase
      */
     public function destroy()
     {
-        //$this->withoutExceptionHandling();
-        $league = League::where('name', 'testleague2')->first();
         $response = $this->authenticated()
-            ->delete(route('league.destroy', ['league' => $league]));
+            ->delete(route('league.destroy', ['league' => static::$testleague]));
 
         $response->assertStatus(302)
             ->assertSessionHasNoErrors();
-        $this->assertDatabaseMissing('leagues', ['id' => $league->id]);
+        $this->assertDatabaseMissing('leagues', ['id' => static::$testleague->id]);
     }
-    /**
-     * db_cleanup
-     *
-     * @test
-     * @group league
-     * @group controller
-     *
-     * @return void
-     */
-    public function db_cleanup()
-    {
-        /// clean up DB
-        Club::whereNotNull('id')->delete();
-        $this->assertDatabaseCount('leagues', 0)
-            ->assertDatabaseCount('clubs', 0);
-    }
+
 }

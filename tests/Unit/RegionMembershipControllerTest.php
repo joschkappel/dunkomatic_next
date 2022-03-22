@@ -109,7 +109,8 @@ class RegionMembershipControllerTest extends TestCase
         $member = Member::where('lastname', 'testmember')->first();
         $this->assertDatabaseHas('members', ['id' => $member->id])
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 2);
+            ->assertDatabaseCount('memberships', 6);
+
     }
 
     /**
@@ -143,8 +144,7 @@ class RegionMembershipControllerTest extends TestCase
             ->assertSessionHasErrors(['email1']);
 
         $this->assertDatabaseHas('members', ['id' => $member->id])
-            ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 2);
+            ->assertDatabaseCount('memberships', 6);
 
         Notification::assertNothingSent();
     }
@@ -164,24 +164,24 @@ class RegionMembershipControllerTest extends TestCase
 
         $response = $this->authenticated()
             ->put(route('member.update', ['member' => $member]), [
-                'firstname' => $member->firstname,
+                'firstname' => 'otto',
                 'lastname' => 'testmember2',
-                'zipcode' => $member->zipcode,
-                'city' => $member->city,
-                'street' => $member->street,
-                'mobile' => $member->mobile,
+                'zipcode' => '1111',
+                'city' => 'fra',
+                'street' => 'street',
+                'mobile' => '1234567',
                 'email1' => 'test2@gmail.com',
                 'backto' => url(route('region.dashboard', ['region' => $this->region, 'language' => 'de'])),
             ]);
 
-        $response->assertRedirect(route('region.dashboard', ['language' => 'de', 'region' => $this->region]))
-            ->assertSessionHasNoErrors();
+        $response->assertSessionHasNoErrors()
+                ->assertRedirect(route('region.dashboard', ['language' => 'de', 'region' => $this->region]));
 
         $this->assertDatabaseHas('members', ['lastname' => 'testmember2'])
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 2);
+            ->assertDatabaseCount('memberships', 6);
     }
-   /**
+    /**
      * add NOT OK
      *
      * @test
@@ -192,24 +192,23 @@ class RegionMembershipControllerTest extends TestCase
      */
     public function add_notok()
     {
-      $member = Member::where('lastname','testmember2')->first();
+        $member = Member::where('lastname', 'testmember2')->first();
 
-      $response = $this->authenticated( )
-                        ->post(route('membership.region.add', ['region'=>$this->region, 'member'=>$member]), [
-                          'function' => 'function',
-                          'email' => 'email'
-                      ]);
-      $response
-          ->assertStatus(302)
-          ->assertSessionHasErrors(['email', 'selRole']);
+        $response = $this->authenticated()
+            ->post(route('membership.region.add', ['region' => $this->region, 'member' => $member]), [
+                'function' => 'function',
+                'email' => 'email'
+            ]);
+        $response
+            ->assertStatus(302)
+            ->assertSessionHasErrors(['email', 'selRole']);
 
-      $this->assertDatabaseHas('members', ['id' => $member->id])
-        ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-        ->assertDatabaseCount('memberships', 2);
-
+        $this->assertDatabaseHas('members', ['id' => $member->id])
+            ->assertDatabaseHas('memberships', ['member_id' => $member->id])
+            ->assertDatabaseCount('memberships', 6);
     }
 
-   /**
+    /**
      * add  OK
      *
      * @test
@@ -220,21 +219,22 @@ class RegionMembershipControllerTest extends TestCase
      */
     public function add_ok()
     {
-      $member = Member::where('lastname','testmember2')->first();
+        $member = Member::where('lastname', 'testmember2')->first();
 
-      $response = $this->authenticated( )
-                        ->post(route('membership.region.add', ['region'=>$this->region, 'member'=>$member]), [
-                          'selRole' => Role::getRandomValue(),
-                          'function' => 'function',
-                          'email' => 'email@gmail.com'
-                      ]);
-      $response
-          ->assertStatus(302)
-          ->assertSessionHasNoErrors();
+        $response = $this->authenticated()
+            ->post(route('membership.region.add', ['region' => $this->region, 'member' => $member]), [
+                'selRole' => Role::getRandomValue(),
+                'function' => 'function',
+                'email' => 'email@gmail.com'
+            ]);
+        $response
+            ->assertStatus(302)
+            ->assertSessionHasNoErrors();
 
-      $this->assertDatabaseHas('members', ['id' => $member->id])
-        ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-        ->assertDatabaseCount('memberships', 3);
+        $this->assertDatabaseHas('members', ['id' => $member->id])
+            ->assertDatabaseHas('memberships', ['member_id' => $member->id])
+            ->assertDatabaseCount('memberships', 7);
+
     }
     /**
      * destroy
@@ -247,31 +247,15 @@ class RegionMembershipControllerTest extends TestCase
      */
     public function destroy()
     {
-        $member2 = Member::where('lastname', 'testmember2')->first();
-
+        $member = Member::where('lastname', 'testmember2')->first();
         $response = $this->authenticated()
-            ->delete(route('membership.region.destroy', ['region' => $this->region, 'member' => $member2]));
+            ->delete(route('membership.region.destroy', ['region' => $this->region, 'member' => $member]));
 
-        $response->assertStatus(302)
-            ->assertSessionHasNoErrors();
+        $response->assertSessionHasNoErrors()
+                ->assertStatus(302);
 
-        $this->assertDatabaseMissing('memberships', ['member_id' => $member2->id])
-            ->assertDatabaseCount('memberships', 1);
+                $this->assertDatabaseMissing('memberships', ['member_id' => $member->id])
+            ->assertDatabaseCount('memberships', 5);
     }
-    /**
-     * db_cleanup
-     *
-     * @test
-     * @group membership
-     * @group controller
-     *
-     * @return void
-     */
-    public function db_cleanup()
-    {
-        /// clean up DB
-        $member2 = Member::where('lastname', 'testmember2')->delete();
 
-        $this->assertDatabaseCount('regions', 5);
-    }
 }

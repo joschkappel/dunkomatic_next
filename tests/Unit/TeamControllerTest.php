@@ -26,20 +26,14 @@ class TeamControllerTest extends TestCase
     public function sb_league()
     {
 
-        // create data:  1 club with 5 teams assigned to 1 league each
-        $club = Club::factory()->hasTeams(2)->create(['name' => 'testteamclub']);
-        $league = League::factory()->create(['name' => 'testleague']);
-        foreach ($club->teams as $t) {
-            $t->league()->associate($league)->save();
-        }
-        $team = $club->teams->first();
+        $team = static::$testclub->teams->first();
 
         $response = $this->authenticated()
-            ->get(route('league.team.sb', ['league' => $league]));
+            ->get(route('league.team.sb', ['league' => static::$testleague]));
 
         //$response->dump();
         $response->assertStatus(200)
-            ->assertJsonFragment([['id' => $team->id, 'text' => $club->shortname . $team->team_no]]);
+            ->assertJsonFragment([['id' => $team->id, 'text' => static::$testclub->shortname . $team->team_no]]);
     }
     /**
      * sb_freeteam
@@ -52,14 +46,12 @@ class TeamControllerTest extends TestCase
      */
     public function sb_freeteam()
     {
-        $club = Club::where('name', 'testteamclub')->first();
         // add 3 more teams
-        Team::factory()->count(3)->create(['club_id' => $club->id]);
-        $league = League::where('name', 'testleague')->first();
+        Team::factory()->count(3)->create(['club_id' => static::$testclub->id]);
         $team = $this->region->teams()->whereNull('league_id')->with('club')->first();
 
         $response = $this->authenticated()
-            ->get(route('team.free.sb', ['league' => $league]));
+            ->get(route('team.free.sb', ['league' => static::$testleague]));
 
         //$response->dump();
         if ($team->count() > 0) {
@@ -82,24 +74,20 @@ class TeamControllerTest extends TestCase
      */
     public function inject()
     {
-      //$this->withoutExceptionHandling();
-      // create data:  1 club with 5 teams assigned to 1 league each
-      $club = Club::where('name','testteamclub')->first();
-      $league = League::where('name','testleague')->first();
-      $team = $club->teams->first();
+        $team = static::$testclub->teams->first();
 
-      $response = $this->authenticated()
-                        ->post(route('league.team.inject',['league'=>$league]),[
-                          'team_id' => $team->id,
-                          'league_no' => 1,
-                        ]);
+        $response = $this->authenticated()
+            ->post(route('league.team.inject', ['league' => static::$testleague]), [
+                'team_id' => $team->id,
+                'league_no' => 1,
+            ]);
 
-      // $response->dumpSession();
-      $response
-          ->assertStatus(302)
-          ->assertSessionHasNoErrors();
+        // $response->dumpSession();
+        $response
+            ->assertStatus(302)
+            ->assertSessionHasNoErrors();
 
-      $this->assertDatabaseHas('teams', ['league_no' => 1, 'league_id' => $league->id]);
+        $this->assertDatabaseHas('teams', ['league_no' => 1, 'league_id' => static::$testleague->id]);
     }
     /**
      * plan_leagues
@@ -112,17 +100,12 @@ class TeamControllerTest extends TestCase
      */
     public function plan_leagues()
     {
-        //$this->withoutExceptionHandling();
-        // create data:  1 club with 5 teams assigned to 1 league each
-        $club = Club::where('name', 'testteamclub')->first();
-        $league = League::where('name', 'testleague')->first();
-
         $response = $this->authenticated()
-            ->get(route('team.plan-leagues', ['language' => 'de', 'club' => $club]));
+            ->get(route('team.plan-leagues', ['language' => 'de', 'club' => static::$testclub]));
 
         $response->assertStatus(200)
             ->assertViewIs('team.teamleague_dashboard')
-            ->assertViewHas('club', $club);
+            ->assertViewHas('club', static::$testclub);
     }
     /**
      * store_plan
@@ -135,22 +118,18 @@ class TeamControllerTest extends TestCase
      */
     public function store_plan()
     {
-        //$this->withoutExceptionHandling();
-        // create data:  1 club with 5 teams assigned to 1 league each
-        $club = Club::where('name', 'testteamclub')->first();
-        $league = League::where('name', 'testleague')->first();
-        $team = $club->teams->first();
+        $team = static::$testclub->teams->first();
 
         $response = $this->authenticated()
             ->post(route('team.store-plan'), [
-                'selSize:' . $league->id . ':' . $team->id => 1,
+                'selSize:' . static::$testleague->id . ':' . $team->id => 1,
             ]);
 
         $response
             ->assertStatus(200)
             ->assertSessionHasNoErrors();
         //$response->dump();
-        $this->assertDatabaseHas('teams', ['league_no' => 1, 'league_id' => $league->id]);
+        $this->assertDatabaseHas('teams', ['league_no' => 1, 'league_id' => static::$testleague->id]);
     }
     /**
      * propose_combination
@@ -163,16 +142,12 @@ class TeamControllerTest extends TestCase
      */
     public function propose_combination()
     {
-        //$this->withoutExceptionHandling();
-        // create data:  1 club with 5 teams assigned to 1 league each
-        $club = Club::where('name', 'testteamclub')->first();
-        $league = League::where('name', 'testleague')->first();
-        $team = $club->teams->first();
+        $team = static::$testclub->teams->first();
 
         $response = $this->authenticated()
             ->post(route('team.propose', ['language' => 'de']), [
-                'selSize:' . $league->id . ':' . $team->id => 1,
-                'club_id' => $club->id,
+                'selSize:' . static::$testleague->id . ':' . $team->id => 1,
+                'club_id' => static::$testclub->id,
                 'gperday' => 1,
                 'optmode' => 'min'
             ]);
@@ -190,15 +165,11 @@ class TeamControllerTest extends TestCase
      */
     public function list_chart()
     {
-        //$this->withoutExceptionHandling();
-        // create data:  1 club with 5 teams assigned to 1 league each
-        $club = Club::where('name', 'testteamclub')->first();
-        $league = League::where('name', 'testleague')->first();
-        $team = $club->teams->first();
+        $team = static::$testclub->teams->first();
 
         $response = $this->authenticated()
             ->post(route('team.list-chart', ['language' => 'de']), [
-                'selSize:' . $league->id . ':' . $team->id => 1
+                'selSize:' . static::$testleague->id . ':' . $team->id => 1
             ]);
 
         $response->assertStatus(200)
@@ -215,16 +186,12 @@ class TeamControllerTest extends TestCase
      */
     public function list_pivot()
     {
-        //$this->withoutExceptionHandling();
-        // create data:  1 club with 5 teams assigned to 1 league each
-        $club = Club::where('name', 'testteamclub')->first();
-        $league = League::where('name', 'testleague')->first();
-        $team = $club->teams->first();
+        $team = static::$testclub->teams->first();
 
         $response = $this->authenticated()
             ->post(route('team.list-piv', ['language' => 'de']), [
-                'selSize:' . $league->id . ':' . $team->id => 1,
-                'club_id' => $club->id,
+                'selSize:' . static::$testleague->id . ':' . $team->id => 1,
+                'club_id' => static::$testclub->id,
                 'gperday' => 1,
                 'optmode' => 'min'
             ]);
@@ -243,14 +210,10 @@ class TeamControllerTest extends TestCase
      */
     public function pick_char()
     {
-        //$this->withoutExceptionHandling();
-        // create data:  1 club with 5 teams assigned to 1 league each
-        $club = Club::where('name', 'testteamclub')->first();
-        $league = League::where('name', 'testleague')->first();
-        $team = $club->teams->first();
+        $team = static::$testclub->teams->first();
 
         $response = $this->authenticated()
-            ->post(route('league.team.pickchar', ['league' => $league]), [
+            ->post(route('league.team.pickchar', ['league' => static::$testleague]), [
                 'team_id' => $team->id,
                 'league_no' => 2,
             ]);
@@ -258,27 +221,5 @@ class TeamControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertSessionHasNoErrors()
             ->assertJson(['success' => 'all good']);
-    }
-
-    /**
-     * db_cleanup
-     *
-     * @test
-     * @group team
-     * @group controller
-     *
-     * @return void
-     */
-    public function db_cleanup()
-    {
-        /// clean up DB
-        $club = Club::where('name', 'testteamclub')->first();
-        $club->teams()->delete();
-        $club->leagues()->detach();
-        $club->delete();
-        $league = League::where('name', 'testleague')->delete();
-        $this->assertDatabaseCount('clubs', 0)
-            ->assertDatabaseCount('teams', 0)
-            ->assertDatabaseCount('leagues', 0);
     }
 }

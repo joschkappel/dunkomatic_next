@@ -78,6 +78,13 @@ class LeagueFactory extends Factory
                                 ->assigned($league, range('A','Z')[$i-1], $i)
                                 ->create();
                         }
+                        for ($i=$club_cnt+1; $i <= 4; $i++){
+                            ClubFactory::new()
+                            ->hasTeams(1)
+                            ->hasGyms(1)
+                            ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
+                            ->create();
+                        }
                     });
 
     }
@@ -110,6 +117,13 @@ class LeagueFactory extends Factory
                                     ->assigned($league, range('A','Z')[$i-1], $i)
                                     ->create();
                             }
+                        }
+                        for ($i=$club_cnt+1; $i <= 4; $i++){
+                            ClubFactory::new()
+                            ->hasTeams(1)
+                            ->hasGyms(1)
+                            ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
+                            ->create();
                         }
                     });
 
@@ -144,6 +158,13 @@ class LeagueFactory extends Factory
                                     ->create();
                             }
                         }
+                        for ($i=$club_cnt+1; $i <= 4; $i++){
+                            ClubFactory::new()
+                            ->hasTeams(1)
+                            ->hasGyms(1)
+                            ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
+                            ->create();
+                        }
                     });
 
     }
@@ -176,6 +197,13 @@ class LeagueFactory extends Factory
                                     ->assigned($league, range('A','Z')[$i-1], $i)
                                     ->create();
                             }
+                        }
+                        for ($i=$club_cnt+1; $i <= 4; $i++){
+                            ClubFactory::new()
+                            ->hasTeams(1)
+                            ->hasGyms(1)
+                            ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
+                            ->create();
                         }
                         $this->create_games($league);
                     });
