@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Dashboard for /var/www/dunkonxt/app/Notifications</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../_css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <link href="../_css/nv.d3.min.css" rel="stylesheet" type="text/css">
+  <link href="../_css/style.css" rel="stylesheet" type="text/css">
+  <link href="../_css/custom.css" rel="stylesheet" type="text/css">
+ </head>
+ <body>
+  <header>
+   <div class="container-fluid">
+    <div class="row">
+     <div class="col-md-12">
+      <nav aria-label="breadcrumb">
+       <ol class="breadcrumb">
+         <li class="breadcrumb-item"><a href="../index.html">/var/www/dunkonxt/app</a></li>
+         <li class="breadcrumb-item"><a href="index.html">Notifications</a></li>
+         <li class="breadcrumb-item active">(Dashboard)</li>
+
+       </ol>
+      </nav>
+     </div>
+    </div>
+   </div>
+  </header>
+  <div class="container-fluid">
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Classes</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="classCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="classComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="AppActionMessage.php.html#10">App\Notifications\AppActionMessage</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ApproveUser.php.html#16">App\Notifications\ApproveUser</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="CharPickingEnabled.php.html#11">App\Notifications\CharPickingEnabled</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="CheckRegionSettings.php.html#12">App\Notifications\CheckRegionSettings</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ClubDeAssigned.php.html#16">App\Notifications\ClubDeAssigned</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ClubOverlappingGames.php.html#13">App\Notifications\ClubOverlappingGames</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ClubReportsAvailable.php.html#13">App\Notifications\ClubReportsAvailable</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ClubUnscheduledGames.php.html#13">App\Notifications\ClubUnscheduledGames</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="CustomDbMessage.php.html#12">App\Notifications\CustomDbMessage</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GameOverlap.php.html#10">App\Notifications\GameOverlap</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="InvalidEmail.php.html#14">App\Notifications\InvalidEmail</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="InviteUser.php.html#15">App\Notifications\InviteUser</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="LeagueGamesGenerated.php.html#15">App\Notifications\LeagueGamesGenerated</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="LeagueReportsAvailable.php.html#13">App\Notifications\LeagueReportsAvailable</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MissingLead.php.html#11">App\Notifications\MissingLead</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NewSeason.php.html#11">App\Notifications\NewSeason</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NewUser.php.html#11">App\Notifications\NewUser</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="RegisterTeams.php.html#13">App\Notifications\RegisterTeams</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="RejectUser.php.html#12">App\Notifications\RejectUser</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ResetPassword.php.html#9">App\Notifications\ResetPassword</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SelectTeamLeagueNo.php.html#13">App\Notifications\SelectTeamLeagueNo</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="VerifyEmail.php.html#11">App\Notifications\VerifyEmail</a></td><td class="text-right">0%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="MissingLead.php.html#11">App\Notifications\MissingLead</a></td><td class="text-right">56</td></tr>
+       <tr><td><a href="ResetPassword.php.html#9">App\Notifications\ResetPassword</a></td><td class="text-right">56</td></tr>
+       <tr><td><a href="VerifyEmail.php.html#11">App\Notifications\VerifyEmail</a></td><td class="text-right">56</td></tr>
+       <tr><td><a href="InvalidEmail.php.html#14">App\Notifications\InvalidEmail</a></td><td class="text-right">42</td></tr>
+       <tr><td><a href="CharPickingEnabled.php.html#11">App\Notifications\CharPickingEnabled</a></td><td class="text-right">30</td></tr>
+       <tr><td><a href="CheckRegionSettings.php.html#12">App\Notifications\CheckRegionSettings</a></td><td class="text-right">30</td></tr>
+       <tr><td><a href="ClubDeAssigned.php.html#16">App\Notifications\ClubDeAssigned</a></td><td class="text-right">30</td></tr>
+       <tr><td><a href="ClubOverlappingGames.php.html#13">App\Notifications\ClubOverlappingGames</a></td><td class="text-right">30</td></tr>
+       <tr><td><a href="ClubUnscheduledGames.php.html#13">App\Notifications\ClubUnscheduledGames</a></td><td class="text-right">30</td></tr>
+       <tr><td><a href="InviteUser.php.html#15">App\Notifications\InviteUser</a></td><td class="text-right">30</td></tr>
+       <tr><td><a href="LeagueGamesGenerated.php.html#15">App\Notifications\LeagueGamesGenerated</a></td><td class="text-right">30</td></tr>
+       <tr><td><a href="NewSeason.php.html#11">App\Notifications\NewSeason</a></td><td class="text-right">30</td></tr>
+       <tr><td><a href="RegisterTeams.php.html#13">App\Notifications\RegisterTeams</a></td><td class="text-right">30</td></tr>
+       <tr><td><a href="SelectTeamLeagueNo.php.html#13">App\Notifications\SelectTeamLeagueNo</a></td><td class="text-right">30</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Methods</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="methodCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="methodComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="AppActionMessage.php.html#24"><abbr title="App\Notifications\AppActionMessage::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AppActionMessage.php.html#36"><abbr title="App\Notifications\AppActionMessage::via">via</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AppActionMessage.php.html#47"><abbr title="App\Notifications\AppActionMessage::toArray">toArray</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ApproveUser.php.html#29"><abbr title="App\Notifications\ApproveUser::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ApproveUser.php.html#40"><abbr title="App\Notifications\ApproveUser::via">via</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ApproveUser.php.html#51"><abbr title="App\Notifications\ApproveUser::toMail">toMail</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ApproveUser.php.html#65"><abbr title="App\Notifications\ApproveUser::toArray">toArray</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="CharPickingEnabled.php.html#24"><abbr title="App\Notifications\CharPickingEnabled::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="CharPickingEnabled.php.html#37"><abbr title="App\Notifications\CharPickingEnabled::via">via</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="CharPickingEnabled.php.html#48"><abbr title="App\Notifications\CharPickingEnabled::toMail">toMail</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="CheckRegionSettings.php.html#26"><abbr title="App\Notifications\CheckRegionSettings::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="CheckRegionSettings.php.html#38"><abbr title="App\Notifications\CheckRegionSettings::via">via</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="CheckRegionSettings.php.html#53"><abbr title="App\Notifications\CheckRegionSettings::toMail">toMail</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="CheckRegionSettings.php.html#71"><abbr title="App\Notifications\CheckRegionSettings::toArray">toArray</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ClubDeAssigned.php.html#31"><abbr title="App\Notifications\ClubDeAssigned::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ClubDeAssigned.php.html#46"><abbr title="App\Notifications\ClubDeAssigned::via">via</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ClubDeAssigned.php.html#61"><abbr title="App\Notifications\ClubDeAssigned::toMail">toMail</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ClubDeAssigned.php.html#78"><abbr title="App\Notifications\ClubDeAssigned::toArray">toArray</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ClubOverlappingGames.php.html#25"><abbr title="App\Notifications\ClubOverlappingGames::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ClubOverlappingGames.php.html#37"><abbr title="App\Notifications\ClubOverlappingGames::via">via</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ClubOverlappingGames.php.html#52"><abbr title="App\Notifications\ClubOverlappingGames::toMail">toMail</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ClubOverlappingGames.php.html#70"><abbr title="App\Notifications\ClubOverlappingGames::toArray">toArray</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ClubReportsAvailable.php.html#24"><abbr title="App\Notifications\ClubReportsAvailable::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ClubReportsAvailable.php.html#35"><abbr title="App\Notifications\ClubReportsAvailable::via">via</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ClubReportsAvailable.php.html#46"><abbr title="App\Notifications\ClubReportsAvailable::toMail">toMail</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ClubUnscheduledGames.php.html#25"><abbr title="App\Notifications\ClubUnscheduledGames::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ClubUnscheduledGames.php.html#37"><abbr title="App\Notifications\ClubUnscheduledGames::via">via</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ClubUnscheduledGames.php.html#52"><abbr title="App\Notifications\ClubUnscheduledGames::toMail">toMail</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ClubUnscheduledGames.php.html#70"><abbr title="App\Notifications\ClubUnscheduledGames::toArray">toArray</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="CustomDbMessage.php.html#23"><abbr title="App\Notifications\CustomDbMessage::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="CustomDbMessage.php.html#35"><abbr title="App\Notifications\CustomDbMessage::via">via</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="CustomDbMessage.php.html#47"><abbr title="App\Notifications\CustomDbMessage::toArray">toArray</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GameOverlap.php.html#30"><abbr title="App\Notifications\GameOverlap::via">via</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GameOverlap.php.html#41"><abbr title="App\Notifications\GameOverlap::toMail">toMail</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="InvalidEmail.php.html#27"><abbr title="App\Notifications\InvalidEmail::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="InvalidEmail.php.html#40"><abbr title="App\Notifications\InvalidEmail::via">via</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="InvalidEmail.php.html#51"><abbr title="App\Notifications\InvalidEmail::toMail">toMail</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="InviteUser.php.html#27"><abbr title="App\Notifications\InviteUser::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="InviteUser.php.html#39"><abbr title="App\Notifications\InviteUser::via">via</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="InviteUser.php.html#50"><abbr title="App\Notifications\InviteUser::toMail">toMail</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="LeagueGamesGenerated.php.html#29"><abbr title="App\Notifications\LeagueGamesGenerated::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="LeagueGamesGenerated.php.html#43"><abbr title="App\Notifications\LeagueGamesGenerated::via">via</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="LeagueGamesGenerated.php.html#58"><abbr title="App\Notifications\LeagueGamesGenerated::toMail">toMail</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="LeagueGamesGenerated.php.html#77"><abbr title="App\Notifications\LeagueGamesGenerated::toArray">toArray</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="LeagueReportsAvailable.php.html#24"><abbr title="App\Notifications\LeagueReportsAvailable::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="LeagueReportsAvailable.php.html#35"><abbr title="App\Notifications\LeagueReportsAvailable::via">via</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="LeagueReportsAvailable.php.html#46"><abbr title="App\Notifications\LeagueReportsAvailable::toMail">toMail</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MissingLead.php.html#23"><abbr title="App\Notifications\MissingLead::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MissingLead.php.html#35"><abbr title="App\Notifications\MissingLead::via">via</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MissingLead.php.html#46"><abbr title="App\Notifications\MissingLead::toMail">toMail</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NewSeason.php.html#22"><abbr title="App\Notifications\NewSeason::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NewSeason.php.html#33"><abbr title="App\Notifications\NewSeason::via">via</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NewSeason.php.html#48"><abbr title="App\Notifications\NewSeason::toMail">toMail</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NewSeason.php.html#65"><abbr title="App\Notifications\NewSeason::toArray">toArray</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NewUser.php.html#22"><abbr title="App\Notifications\NewUser::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NewUser.php.html#33"><abbr title="App\Notifications\NewUser::via">via</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NewUser.php.html#44"><abbr title="App\Notifications\NewUser::toMail">toMail</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="RegisterTeams.php.html#27"><abbr title="App\Notifications\RegisterTeams::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="RegisterTeams.php.html#41"><abbr title="App\Notifications\RegisterTeams::via">via</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="RegisterTeams.php.html#56"><abbr title="App\Notifications\RegisterTeams::toMail">toMail</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="RegisterTeams.php.html#74"><abbr title="App\Notifications\RegisterTeams::toArray">toArray</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="RejectUser.php.html#25"><abbr title="App\Notifications\RejectUser::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="RejectUser.php.html#38"><abbr title="App\Notifications\RejectUser::via">via</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="RejectUser.php.html#49"><abbr title="App\Notifications\RejectUser::toMail">toMail</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ResetPassword.php.html#38"><abbr title="App\Notifications\ResetPassword::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ResetPassword.php.html#49"><abbr title="App\Notifications\ResetPassword::via">via</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ResetPassword.php.html#60"><abbr title="App\Notifications\ResetPassword::toMail">toMail</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ResetPassword.php.html#90"><abbr title="App\Notifications\ResetPassword::createUrlUsing">createUrlUsing</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ResetPassword.php.html#101"><abbr title="App\Notifications\ResetPassword::toMailUsing">toMailUsing</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SelectTeamLeagueNo.php.html#27"><abbr title="App\Notifications\SelectTeamLeagueNo::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SelectTeamLeagueNo.php.html#41"><abbr title="App\Notifications\SelectTeamLeagueNo::via">via</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SelectTeamLeagueNo.php.html#56"><abbr title="App\Notifications\SelectTeamLeagueNo::toMail">toMail</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SelectTeamLeagueNo.php.html#74"><abbr title="App\Notifications\SelectTeamLeagueNo::toArray">toArray</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="VerifyEmail.php.html#33"><abbr title="App\Notifications\VerifyEmail::via">via</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="VerifyEmail.php.html#44"><abbr title="App\Notifications\VerifyEmail::toMail">toMail</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="VerifyEmail.php.html#65"><abbr title="App\Notifications\VerifyEmail::verificationUrl">verificationUrl</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="VerifyEmail.php.html#88"><abbr title="App\Notifications\VerifyEmail::createUrlUsing">createUrlUsing</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="VerifyEmail.php.html#99"><abbr title="App\Notifications\VerifyEmail::toMailUsing">toMailUsing</abbr></a></td><td class="text-right">0%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="MissingLead.php.html#46"><abbr title="App\Notifications\MissingLead::toMail">toMail</abbr></a></td><td class="text-right">30</td></tr>
+       <tr><td><a href="InvalidEmail.php.html#51"><abbr title="App\Notifications\InvalidEmail::toMail">toMail</abbr></a></td><td class="text-right">20</td></tr>
+       <tr><td><a href="ResetPassword.php.html#60"><abbr title="App\Notifications\ResetPassword::toMail">toMail</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="CharPickingEnabled.php.html#48"><abbr title="App\Notifications\CharPickingEnabled::toMail">toMail</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="CheckRegionSettings.php.html#38"><abbr title="App\Notifications\CheckRegionSettings::via">via</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="ClubDeAssigned.php.html#46"><abbr title="App\Notifications\ClubDeAssigned::via">via</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="ClubOverlappingGames.php.html#37"><abbr title="App\Notifications\ClubOverlappingGames::via">via</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="ClubUnscheduledGames.php.html#37"><abbr title="App\Notifications\ClubUnscheduledGames::via">via</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="InviteUser.php.html#50"><abbr title="App\Notifications\InviteUser::toMail">toMail</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="LeagueGamesGenerated.php.html#43"><abbr title="App\Notifications\LeagueGamesGenerated::via">via</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="NewSeason.php.html#33"><abbr title="App\Notifications\NewSeason::via">via</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="RegisterTeams.php.html#41"><abbr title="App\Notifications\RegisterTeams::via">via</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="SelectTeamLeagueNo.php.html#41"><abbr title="App\Notifications\SelectTeamLeagueNo::via">via</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="VerifyEmail.php.html#44"><abbr title="App\Notifications\VerifyEmail::toMail">toMail</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="VerifyEmail.php.html#65"><abbr title="App\Notifications\VerifyEmail::verificationUrl">verificationUrl</abbr></a></td><td class="text-right">6</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <footer>
+    <hr/>
+    <p>
+     <small>Generated by <a href="https://github.com/sebastianbergmann/php-code-coverage" target="_top">php-code-coverage 9.2.14</a> using <a href="https://secure.php.net/" target="_top">PHP 8.0.15</a> and <a href="https://phpunit.de/">PHPUnit 9.5.16</a> at Tue Mar 22 11:33:40 CET 2022.</small>
+    </p>
+   </footer>
+  </div>
+  <script src="../_js/jquery.min.js" type="text/javascript"></script>
+  <script src="../_js/d3.min.js" type="text/javascript"></script>
+  <script src="../_js/nv.d3.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+$(document).ready(function() {
+  nv.addGraph(function() {
+    var chart = nv.models.multiBarChart();
+    chart.tooltips(false)
+      .showControls(false)
+      .showLegend(false)
+      .reduceXTicks(false)
+      .staggerLabels(true)
+      .yAxis.tickFormat(d3.format('d'));
+
+    d3.select('#classCoverageDistribution svg')
+      .datum(getCoverageDistributionData([22,0,0,0,0,0,0,0,0,0,0,0], "Class Coverage"))
+      .transition().duration(500).call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  nv.addGraph(function() {
+    var chart = nv.models.multiBarChart();
+    chart.tooltips(false)
+      .showControls(false)
+      .showLegend(false)
+      .reduceXTicks(false)
+      .staggerLabels(true)
+      .yAxis.tickFormat(d3.format('d'));
+
+    d3.select('#methodCoverageDistribution svg')
+      .datum(getCoverageDistributionData([78,0,0,0,0,0,0,0,0,0,0,6], "Method Coverage"))
+      .transition().duration(500).call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  function getCoverageDistributionData(data, label) {
+    var labels = [
+      '0%',
+      '0-10%',
+      '10-20%',
+      '20-30%',
+      '30-40%',
+      '40-50%',
+      '50-60%',
+      '60-70%',
+      '70-80%',
+      '80-90%',
+      '90-100%',
+      '100%'
+    ];
+    var values = [];
+    $.each(labels, function(key) {
+      values.push({x: labels[key], y: data[key]});
+    });
+
+    return [
+      {
+        key: label,
+        values: values,
+        color: "#4572A7"
+      }
+    ];
+  }
+  nv.addGraph(function() {
+    var chart = nv.models.scatterChart()
+      .showDistX(true)
+      .showDistY(true)
+      .showLegend(false)
+      .forceX([0, 100]);
+    chart.tooltipContent(function(graph) {
+      return '<p>' + graph.point.class + '</p>';
+    });
+
+    chart.xAxis.axisLabel('Code Coverage (in percent)');
+    chart.yAxis.axisLabel('Cyclomatic Complexity');
+
+    d3.select('#classComplexity svg')
+      .datum(getComplexityData([[0,3,"<a href=\"AppActionMessage.php.html#10\">App\\Notifications\\AppActionMessage<\/a>"],[0,4,"<a href=\"ApproveUser.php.html#16\">App\\Notifications\\ApproveUser<\/a>"],[0,5,"<a href=\"CharPickingEnabled.php.html#11\">App\\Notifications\\CharPickingEnabled<\/a>"],[0,5,"<a href=\"CheckRegionSettings.php.html#12\">App\\Notifications\\CheckRegionSettings<\/a>"],[0,5,"<a href=\"ClubDeAssigned.php.html#16\">App\\Notifications\\ClubDeAssigned<\/a>"],[0,5,"<a href=\"ClubOverlappingGames.php.html#13\">App\\Notifications\\ClubOverlappingGames<\/a>"],[0,3,"<a href=\"ClubReportsAvailable.php.html#13\">App\\Notifications\\ClubReportsAvailable<\/a>"],[0,5,"<a href=\"ClubUnscheduledGames.php.html#13\">App\\Notifications\\ClubUnscheduledGames<\/a>"],[0,3,"<a href=\"CustomDbMessage.php.html#12\">App\\Notifications\\CustomDbMessage<\/a>"],[0,4,"<a href=\"GameOverlap.php.html#10\">App\\Notifications\\GameOverlap<\/a>"],[0,6,"<a href=\"InvalidEmail.php.html#14\">App\\Notifications\\InvalidEmail<\/a>"],[0,5,"<a href=\"InviteUser.php.html#15\">App\\Notifications\\InviteUser<\/a>"],[0,5,"<a href=\"LeagueGamesGenerated.php.html#15\">App\\Notifications\\LeagueGamesGenerated<\/a>"],[0,3,"<a href=\"LeagueReportsAvailable.php.html#13\">App\\Notifications\\LeagueReportsAvailable<\/a>"],[0,7,"<a href=\"MissingLead.php.html#11\">App\\Notifications\\MissingLead<\/a>"],[0,5,"<a href=\"NewSeason.php.html#11\">App\\Notifications\\NewSeason<\/a>"],[0,4,"<a href=\"NewUser.php.html#11\">App\\Notifications\\NewUser<\/a>"],[0,5,"<a href=\"RegisterTeams.php.html#13\">App\\Notifications\\RegisterTeams<\/a>"],[0,4,"<a href=\"RejectUser.php.html#12\">App\\Notifications\\RejectUser<\/a>"],[0,7,"<a href=\"ResetPassword.php.html#9\">App\\Notifications\\ResetPassword<\/a>"],[0,5,"<a href=\"SelectTeamLeagueNo.php.html#13\">App\\Notifications\\SelectTeamLeagueNo<\/a>"],[0,7,"<a href=\"VerifyEmail.php.html#11\">App\\Notifications\\VerifyEmail<\/a>"]], 'Class Complexity'))
+      .transition()
+      .duration(500)
+      .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  nv.addGraph(function() {
+    var chart = nv.models.scatterChart()
+      .showDistX(true)
+      .showDistY(true)
+      .showLegend(false)
+      .forceX([0, 100]);
+    chart.tooltipContent(function(graph) {
+      return '<p>' + graph.point.class + '</p>';
+    });
+
+    chart.xAxis.axisLabel('Code Coverage (in percent)');
+    chart.yAxis.axisLabel('Method Complexity');
+
+    d3.select('#methodComplexity svg')
+      .datum(getComplexityData([[0,1,"<a href=\"AppActionMessage.php.html#24\">App\\Notifications\\AppActionMessage::__construct<\/a>"],[0,1,"<a href=\"AppActionMessage.php.html#36\">App\\Notifications\\AppActionMessage::via<\/a>"],[0,1,"<a href=\"AppActionMessage.php.html#47\">App\\Notifications\\AppActionMessage::toArray<\/a>"],[0,1,"<a href=\"ApproveUser.php.html#29\">App\\Notifications\\ApproveUser::__construct<\/a>"],[0,1,"<a href=\"ApproveUser.php.html#40\">App\\Notifications\\ApproveUser::via<\/a>"],[0,1,"<a href=\"ApproveUser.php.html#51\">App\\Notifications\\ApproveUser::toMail<\/a>"],[0,1,"<a href=\"ApproveUser.php.html#65\">App\\Notifications\\ApproveUser::toArray<\/a>"],[0,1,"<a href=\"CharPickingEnabled.php.html#24\">App\\Notifications\\CharPickingEnabled::__construct<\/a>"],[0,1,"<a href=\"CharPickingEnabled.php.html#37\">App\\Notifications\\CharPickingEnabled::via<\/a>"],[0,2,"<a href=\"CharPickingEnabled.php.html#48\">App\\Notifications\\CharPickingEnabled::toMail<\/a>"],[100,1,"<a href=\"CharPickingEnabled.php.html#75\">App\\Notifications\\CharPickingEnabled::toArray<\/a>"],[0,1,"<a href=\"CheckRegionSettings.php.html#26\">App\\Notifications\\CheckRegionSettings::__construct<\/a>"],[0,2,"<a href=\"CheckRegionSettings.php.html#38\">App\\Notifications\\CheckRegionSettings::via<\/a>"],[0,1,"<a href=\"CheckRegionSettings.php.html#53\">App\\Notifications\\CheckRegionSettings::toMail<\/a>"],[0,1,"<a href=\"CheckRegionSettings.php.html#71\">App\\Notifications\\CheckRegionSettings::toArray<\/a>"],[0,1,"<a href=\"ClubDeAssigned.php.html#31\">App\\Notifications\\ClubDeAssigned::__construct<\/a>"],[0,2,"<a href=\"ClubDeAssigned.php.html#46\">App\\Notifications\\ClubDeAssigned::via<\/a>"],[0,1,"<a href=\"ClubDeAssigned.php.html#61\">App\\Notifications\\ClubDeAssigned::toMail<\/a>"],[0,1,"<a href=\"ClubDeAssigned.php.html#78\">App\\Notifications\\ClubDeAssigned::toArray<\/a>"],[0,1,"<a href=\"ClubOverlappingGames.php.html#25\">App\\Notifications\\ClubOverlappingGames::__construct<\/a>"],[0,2,"<a href=\"ClubOverlappingGames.php.html#37\">App\\Notifications\\ClubOverlappingGames::via<\/a>"],[0,1,"<a href=\"ClubOverlappingGames.php.html#52\">App\\Notifications\\ClubOverlappingGames::toMail<\/a>"],[0,1,"<a href=\"ClubOverlappingGames.php.html#70\">App\\Notifications\\ClubOverlappingGames::toArray<\/a>"],[0,1,"<a href=\"ClubReportsAvailable.php.html#24\">App\\Notifications\\ClubReportsAvailable::__construct<\/a>"],[0,1,"<a href=\"ClubReportsAvailable.php.html#35\">App\\Notifications\\ClubReportsAvailable::via<\/a>"],[0,1,"<a href=\"ClubReportsAvailable.php.html#46\">App\\Notifications\\ClubReportsAvailable::toMail<\/a>"],[0,1,"<a href=\"ClubUnscheduledGames.php.html#25\">App\\Notifications\\ClubUnscheduledGames::__construct<\/a>"],[0,2,"<a href=\"ClubUnscheduledGames.php.html#37\">App\\Notifications\\ClubUnscheduledGames::via<\/a>"],[0,1,"<a href=\"ClubUnscheduledGames.php.html#52\">App\\Notifications\\ClubUnscheduledGames::toMail<\/a>"],[0,1,"<a href=\"ClubUnscheduledGames.php.html#70\">App\\Notifications\\ClubUnscheduledGames::toArray<\/a>"],[0,1,"<a href=\"CustomDbMessage.php.html#23\">App\\Notifications\\CustomDbMessage::__construct<\/a>"],[0,1,"<a href=\"CustomDbMessage.php.html#35\">App\\Notifications\\CustomDbMessage::via<\/a>"],[0,1,"<a href=\"CustomDbMessage.php.html#47\">App\\Notifications\\CustomDbMessage::toArray<\/a>"],[100,1,"<a href=\"GameOverlap.php.html#19\">App\\Notifications\\GameOverlap::__construct<\/a>"],[0,1,"<a href=\"GameOverlap.php.html#30\">App\\Notifications\\GameOverlap::via<\/a>"],[0,1,"<a href=\"GameOverlap.php.html#41\">App\\Notifications\\GameOverlap::toMail<\/a>"],[100,1,"<a href=\"GameOverlap.php.html#55\">App\\Notifications\\GameOverlap::toArray<\/a>"],[0,1,"<a href=\"InvalidEmail.php.html#27\">App\\Notifications\\InvalidEmail::__construct<\/a>"],[0,1,"<a href=\"InvalidEmail.php.html#40\">App\\Notifications\\InvalidEmail::via<\/a>"],[0,4,"<a href=\"InvalidEmail.php.html#51\">App\\Notifications\\InvalidEmail::toMail<\/a>"],[0,1,"<a href=\"InviteUser.php.html#27\">App\\Notifications\\InviteUser::__construct<\/a>"],[0,1,"<a href=\"InviteUser.php.html#39\">App\\Notifications\\InviteUser::via<\/a>"],[0,2,"<a href=\"InviteUser.php.html#50\">App\\Notifications\\InviteUser::toMail<\/a>"],[100,1,"<a href=\"InviteUser.php.html#73\">App\\Notifications\\InviteUser::toArray<\/a>"],[0,1,"<a href=\"LeagueGamesGenerated.php.html#29\">App\\Notifications\\LeagueGamesGenerated::__construct<\/a>"],[0,2,"<a href=\"LeagueGamesGenerated.php.html#43\">App\\Notifications\\LeagueGamesGenerated::via<\/a>"],[0,1,"<a href=\"LeagueGamesGenerated.php.html#58\">App\\Notifications\\LeagueGamesGenerated::toMail<\/a>"],[0,1,"<a href=\"LeagueGamesGenerated.php.html#77\">App\\Notifications\\LeagueGamesGenerated::toArray<\/a>"],[0,1,"<a href=\"LeagueReportsAvailable.php.html#24\">App\\Notifications\\LeagueReportsAvailable::__construct<\/a>"],[0,1,"<a href=\"LeagueReportsAvailable.php.html#35\">App\\Notifications\\LeagueReportsAvailable::via<\/a>"],[0,1,"<a href=\"LeagueReportsAvailable.php.html#46\">App\\Notifications\\LeagueReportsAvailable::toMail<\/a>"],[0,1,"<a href=\"MissingLead.php.html#23\">App\\Notifications\\MissingLead::__construct<\/a>"],[0,1,"<a href=\"MissingLead.php.html#35\">App\\Notifications\\MissingLead::via<\/a>"],[0,5,"<a href=\"MissingLead.php.html#46\">App\\Notifications\\MissingLead::toMail<\/a>"],[0,1,"<a href=\"NewSeason.php.html#22\">App\\Notifications\\NewSeason::__construct<\/a>"],[0,2,"<a href=\"NewSeason.php.html#33\">App\\Notifications\\NewSeason::via<\/a>"],[0,1,"<a href=\"NewSeason.php.html#48\">App\\Notifications\\NewSeason::toMail<\/a>"],[0,1,"<a href=\"NewSeason.php.html#65\">App\\Notifications\\NewSeason::toArray<\/a>"],[0,1,"<a href=\"NewUser.php.html#22\">App\\Notifications\\NewUser::__construct<\/a>"],[0,1,"<a href=\"NewUser.php.html#33\">App\\Notifications\\NewUser::via<\/a>"],[0,1,"<a href=\"NewUser.php.html#44\">App\\Notifications\\NewUser::toMail<\/a>"],[100,1,"<a href=\"NewUser.php.html#60\">App\\Notifications\\NewUser::toArray<\/a>"],[0,1,"<a href=\"RegisterTeams.php.html#27\">App\\Notifications\\RegisterTeams::__construct<\/a>"],[0,2,"<a href=\"RegisterTeams.php.html#41\">App\\Notifications\\RegisterTeams::via<\/a>"],[0,1,"<a href=\"RegisterTeams.php.html#56\">App\\Notifications\\RegisterTeams::toMail<\/a>"],[0,1,"<a href=\"RegisterTeams.php.html#74\">App\\Notifications\\RegisterTeams::toArray<\/a>"],[0,1,"<a href=\"RejectUser.php.html#25\">App\\Notifications\\RejectUser::__construct<\/a>"],[0,1,"<a href=\"RejectUser.php.html#38\">App\\Notifications\\RejectUser::via<\/a>"],[0,1,"<a href=\"RejectUser.php.html#49\">App\\Notifications\\RejectUser::toMail<\/a>"],[100,1,"<a href=\"RejectUser.php.html#66\">App\\Notifications\\RejectUser::toArray<\/a>"],[0,1,"<a href=\"ResetPassword.php.html#38\">App\\Notifications\\ResetPassword::__construct<\/a>"],[0,1,"<a href=\"ResetPassword.php.html#49\">App\\Notifications\\ResetPassword::via<\/a>"],[0,3,"<a href=\"ResetPassword.php.html#60\">App\\Notifications\\ResetPassword::toMail<\/a>"],[0,1,"<a href=\"ResetPassword.php.html#90\">App\\Notifications\\ResetPassword::createUrlUsing<\/a>"],[0,1,"<a href=\"ResetPassword.php.html#101\">App\\Notifications\\ResetPassword::toMailUsing<\/a>"],[0,1,"<a href=\"SelectTeamLeagueNo.php.html#27\">App\\Notifications\\SelectTeamLeagueNo::__construct<\/a>"],[0,2,"<a href=\"SelectTeamLeagueNo.php.html#41\">App\\Notifications\\SelectTeamLeagueNo::via<\/a>"],[0,1,"<a href=\"SelectTeamLeagueNo.php.html#56\">App\\Notifications\\SelectTeamLeagueNo::toMail<\/a>"],[0,1,"<a href=\"SelectTeamLeagueNo.php.html#74\">App\\Notifications\\SelectTeamLeagueNo::toArray<\/a>"],[0,1,"<a href=\"VerifyEmail.php.html#33\">App\\Notifications\\VerifyEmail::via<\/a>"],[0,2,"<a href=\"VerifyEmail.php.html#44\">App\\Notifications\\VerifyEmail::toMail<\/a>"],[0,2,"<a href=\"VerifyEmail.php.html#65\">App\\Notifications\\VerifyEmail::verificationUrl<\/a>"],[0,1,"<a href=\"VerifyEmail.php.html#88\">App\\Notifications\\VerifyEmail::createUrlUsing<\/a>"],[0,1,"<a href=\"VerifyEmail.php.html#99\">App\\Notifications\\VerifyEmail::toMailUsing<\/a>"]], 'Method Complexity'))
+      .transition()
+      .duration(500)
+      .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  function getComplexityData(data, label) {
+    var values = [];
+    $.each(data, function(key) {
+      var value = Math.round(data[key][0]*100) / 100;
+      values.push({
+        x: value,
+        y: data[key][1],
+        class: data[key][2],
+        size: 0.05,
+        shape: 'diamond'
+      });
+    });
+
+    return [
+      {
+        key: label,
+        values: values,
+        color: "#4572A7"
+      }
+    ];
+  }
+});
+  </script>
+ </body>
+</html>

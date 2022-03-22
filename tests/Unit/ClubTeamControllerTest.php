@@ -192,6 +192,23 @@ class ClubTeamControllerTest extends TestCase
                ->assertViewHas('club',static::$testclub);
 
     }
+        /**
+     * league_char_dt
+     *
+     * @test
+     * @group team
+     * @group controller
+     *
+     * @return void
+     */
+    public function league_char_dt()
+    {
+      $response = $this->authenticated()
+                        ->get(route('club.league_char.dt',['language'=>'de', 'club'=>static::$testclub]));
+
+      $response->assertStatus(200);
+
+    }
     /**
      * destroy
      *

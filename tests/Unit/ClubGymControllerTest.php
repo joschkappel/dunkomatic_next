@@ -123,8 +123,8 @@ class ClubGymControllerTest extends TestCase
                           'street' => $gym->street
                         ]);
 
-      $response->assertStatus(302)
-               ->assertSessionHasErrors(['gym_no']);;
+      $response->assertSessionHasErrors(['gym_no'])
+                ->assertStatus(302);
       $this->assertDatabaseMissing('gyms', ['name'=>'testgym2']);
     }
     /**

@@ -234,7 +234,8 @@ class Region extends Model
         foreach ($this->loadMissing('leagues')->leagues as $league) {
             $shortname = $league->shortname;
             $reports = $reports->concat(collect(Storage::files($directory))->filter(function ($value, $key) use ($shortname) {
-                return Str::contains($shortname, $value);
+                return (preg_match('(' . $shortname . ')', $value) === 1);
+                // return Str::contains($shortname, $value);
             }));
         }
         return count($reports);
@@ -248,7 +249,8 @@ class Region extends Model
         foreach ($this->loadMissing('leagues')->leagues as $league) {
             $shortname = $league->shortname;
             $reports = $reports->concat(collect(Storage::files($directory))->filter(function ($value, $key) use ($shortname) {
-                return Str::contains($shortname, $value);
+                return (preg_match('(' . $shortname . ')', $value) === 1);
+                // return Str::contains($shortname, $value);
             }));
         }
         return $reports;
@@ -262,7 +264,8 @@ class Region extends Model
         foreach ($this->leagues as $league) {
             $shortname = $league->shortname;
             $reports = $reports->concat(collect(Storage::files($directory))->filter(function ($value, $key) use ($shortname) {
-                return Str::contains($shortname, $value);
+                return (preg_match('(' . $shortname . ')', $value) === 1);
+                // return Str::contains($shortname, $value);
             }));
         }
         return count($reports);
@@ -276,7 +279,8 @@ class Region extends Model
         foreach ($this->leagues as $league) {
             $shortname = $league->shortname;
             $reports = $reports->concat(collect(Storage::files($directory))->filter(function ($value, $key) use ($shortname) {
-                return Str::contains($shortname, $value);
+                return (preg_match('(' . $shortname . ')', $value) === 1);
+                // return Str::contains($shortname, $value);
             }));
         }
         return $reports;

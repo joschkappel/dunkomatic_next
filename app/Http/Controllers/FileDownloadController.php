@@ -24,10 +24,11 @@ class FileDownloadController extends Controller
      */
     public function get_file(Request $request)
     {
+        Log::debug('input',['request'=>$request->input()]);
         $data = $request->validate([
             'type' => 'required|in:App\Models\Club,App\Models\League',
-            'club' => 'sometimes|required_if:league,null|exists:App\Models\Club,id',
-            'league' => 'sometimes|required_if:club,null|exists:App\Models\League,id',
+            'club' => 'required_without:league|exists:App\Models\Club,id',
+            'league' => 'required_without:club|exists:App\Models\League,id',
             'file' => 'required|string',
         ]);
         Log::info('get file data validated OK.');
@@ -191,7 +192,7 @@ class FileDownloadController extends Controller
             Log::info('archive location.', ['path' => $pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
-                $files = $region->teamware_filenames;
+                $files = $region->league_filenames;
 
                 foreach ($files as $f) {
                     $check = $zip->addFromString(basename($f), Storage::get($f));
@@ -199,7 +200,7 @@ class FileDownloadController extends Controller
 
                 $zip->close();
                 //  Storage::move(public_path($fileName), 'public/'.$fileName);
-                Log::notice('downloading ZIP archive for region teamware', ['region-id' => $region->id, 'filecount' => count($files)]);
+                Log::notice('downloading ZIP archive for region leagues', ['region-id' => $region->id, 'filecount' => count($files)]);
 
                 return Storage::disk('public')->download($filename);
             } else {
@@ -231,7 +232,7 @@ class FileDownloadController extends Controller
             Log::info('archive location.', ['path' => $pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
-                $files = $region->league_filenames;
+                $files = $region->teamware_filenames;
 
                 foreach ($files as $f) {
                     $check = $zip->addFromString(basename($f), Storage::get($f));
@@ -239,7 +240,7 @@ class FileDownloadController extends Controller
 
                 $zip->close();
                 //  Storage::move(public_path($fileName), 'public/'.$fileName);
-                Log::notice('downloading ZIP archive for region leagues', ['region-id' => $region->id, 'filecount' => count($files)]);
+                Log::notice('downloading ZIP archive for region teamware', ['region-id' => $region->id, 'filecount' => count($files)]);
 
                 return Storage::disk('public')->download($filename);
             } else {
