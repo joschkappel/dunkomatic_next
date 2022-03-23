@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Models\Member;
 use App\Models\League;
+use App\Models\Club;
 use App\Enums\Role;
 
 use Tests\TestCase;
@@ -12,6 +13,18 @@ use Tests\Support\Authentication;
 class LeagueMembershipControllerTest extends TestCase
 {
     use Authentication;
+
+    private $testleague;
+    private $testclub_assigned;
+    private $testclub_free;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->testleague = League::factory()->frozen(4, 4)->create();
+        $this->testclub_assigned = $this->testleague->clubs()->first();
+        $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
+    }
 
     /**
      * create
@@ -25,11 +38,11 @@ class LeagueMembershipControllerTest extends TestCase
     public function create()
     {
         $response = $this->authenticated()
-            ->get(route('membership.league.create', ['language' => 'de', 'league' => static::$testleague]));
+            ->get(route('membership.league.create', ['language' => 'de', 'league' => $this->testleague]));
 
         $response->assertStatus(200)
             ->assertViewIs('member.member_new')
-            ->assertViewHas('entity', static::$testleague)
+            ->assertViewHas('entity', $this->testleague)
             ->assertViewHas('entity_type', League::class);
     }
     /**
@@ -54,7 +67,7 @@ class LeagueMembershipControllerTest extends TestCase
                 'mobile' => '123456',
                 'phone' => '123456',
                 'email1' => '12345',
-                'entity_id' => static::$testleague->id,
+                'entity_id' => $this->testleague->id,
                 'entity_type' => League::class,
                 'function' => null,
                 'email' => null,
@@ -88,12 +101,12 @@ class LeagueMembershipControllerTest extends TestCase
                 'mobile' => '123456',
                 'phone' => '123456',
                 'email1' => 'testlastname@gmail.com',
-                'entity_id' => static::$testleague->id,
+                'entity_id' => $this->testleague->id,
                 'entity_type' => League::class,
                 'function' => null,
                 'email' => null,
             ]);
-        $response->assertRedirect(route('league.dashboard', ['language' => 'de', 'league' => static::$testleague]))
+        $response->assertRedirect(route('league.dashboard', ['language' => 'de', 'league' => $this->testleague]))
             ->assertSessionHasNoErrors();
 
         $member = Member::where('lastname', 'testmember')->first();
@@ -126,7 +139,7 @@ class LeagueMembershipControllerTest extends TestCase
                 'city' => $member->city,
                 'street' => $member->street,
                 'mobile' => $member->mobile,
-                'backto' => url(route('league.dashboard', ['league' => static::$testleague, 'language' => 'de'])),
+                'backto' => url(route('league.dashboard', ['league' => $this->testleague, 'language' => 'de'])),
             ]);
         $response
             ->assertStatus(302)
@@ -147,7 +160,7 @@ class LeagueMembershipControllerTest extends TestCase
      */
     public function udpate_ok()
     {
-        $member = static::$testclub->members()->first();
+        $member = $this->testclub_assigned->members()->first();
         $this->assertDatabaseHas('members', ['id' => $member->id]);
 
         $response = $this->authenticated()
@@ -159,10 +172,10 @@ class LeagueMembershipControllerTest extends TestCase
                 'street' => $member->street,
                 'mobile' => $member->mobile,
                 'email1' => 'test2@gmail.com',
-                'backto' => url(route('league.dashboard', ['league' => static::$testleague, 'language' => 'de'])),
+                'backto' => url(route('league.dashboard', ['league' => $this->testleague, 'language' => 'de'])),
             ]);
 
-        $response->assertRedirect(route('league.dashboard', ['language' => 'de', 'league' => static::$testleague]))
+        $response->assertRedirect(route('league.dashboard', ['language' => 'de', 'league' => $this->testleague]))
             ->assertSessionHasNoErrors();
 
         $this->assertDatabaseHas('members', ['lastname' => 'testmember2'])
@@ -184,7 +197,7 @@ class LeagueMembershipControllerTest extends TestCase
         $member = Member::doesnthave('memberships')->first();
 
         $response = $this->authenticated()
-            ->post(route('membership.league.add', ['league' => static::$testleague, 'member' => $member]), [
+            ->post(route('membership.league.add', ['league' => $this->testleague, 'member' => $member]), [
                 'function' => 'function',
                 'email' => 'email'
             ]);
@@ -211,7 +224,7 @@ class LeagueMembershipControllerTest extends TestCase
         $member = Member::doesnthave('memberships')->first();
 
         $response = $this->authenticated()
-            ->post(route('membership.league.add', ['league' => static::$testleague, 'member' => $member]), [
+            ->post(route('membership.league.add', ['league' => $this->testleague, 'member' => $member]), [
                 'selRole' => Role::LeagueLead,
                 'function' => 'function',
                 'email' => 'email@gmail.com'
@@ -290,11 +303,11 @@ class LeagueMembershipControllerTest extends TestCase
      */
     public function destroy()
     {
-        $member = static::$testclub->members()->first();
+        $member = $this->testclub_assigned->members()->first();
         $this->assertDatabaseHas('members', ['id' => $member->id]);
 
         $response = $this->authenticated()
-            ->delete(route('membership.club.destroy', ['club' => static::$testclub, 'member' => $member]));
+            ->delete(route('membership.club.destroy', ['club' => $this->testclub_assigned, 'member' => $member]));
 
         $response->assertStatus(302)
             ->assertSessionHasNoErrors();

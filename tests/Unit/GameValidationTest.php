@@ -3,6 +3,8 @@
 namespace Tests\Unit;
 
 use App\Models\Game;
+use App\Models\League;
+use App\Models\Club;
 use App\Traits\LeagueFSM;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Carbon;
@@ -18,6 +20,18 @@ class GameValidationTest extends TestCase
     protected static $guest;
     protected static $home;
 
+    private $testleague;
+    private $testclub_assigned;
+    private $testclub_free;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->testleague = League::factory()->frozen(4, 4)->create();
+        $this->testclub_assigned = $this->testleague->clubs()->first();
+        $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
+    }
+
 
     /**
       * game validation
@@ -32,10 +46,8 @@ class GameValidationTest extends TestCase
     public function game_form_validation($formInput, $formInputValue): void
     {
       Notification::fake();
-      $league = static::$testleague;
-      $this->close_selection($league);
-      $this->close_freeze($league);
-      $schedule = static::$testleague->schedule;
+      $league = $this->testleague;
+      $schedule = $this->testleague->schedule;
       $schedule->update(['custom_events' =>  true]);
 
       $game = Game::whereNotNull('team_id_guest')->whereNotNull('team_id_home')->first();

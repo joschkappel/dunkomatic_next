@@ -6,6 +6,7 @@ use App\Models\Member;
 use App\Models\Membership;
 use App\Enums\Role;
 use App\Models\Club;
+use App\Models\League;
 
 use Tests\TestCase;
 use Tests\Support\Authentication;
@@ -14,6 +15,18 @@ use Illuminate\Support\Facades\Log;
 class MemberControllerTest extends TestCase
 {
     use Authentication;
+
+    private $testleague;
+    private $testclub_assigned;
+    private $testclub_free;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->testleague = League::factory()->selected(3, 3)->create();
+        $this->testclub_assigned = $this->testleague->clubs()->first();
+        $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
+    }
 
     /**
      * store NOT OK
@@ -66,7 +79,7 @@ class MemberControllerTest extends TestCase
                           'email1' => 'testmember@gmail.com',
                           'role_id' => Role::ClubLead(),
                           'entity_type' => Club::class,
-                          'entity_id' => static::$testclub->id,
+                          'entity_id' => $this->testclub_assigned->id,
                           'member_id' => null,
                           'function' => '',
                           'email' => '',

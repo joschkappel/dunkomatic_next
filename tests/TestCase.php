@@ -4,7 +4,6 @@ namespace Tests;
 
 use App\Models\League;
 use App\Models\Club;
-use App\Enums\LeagueState;
 
 use Tests\Support\MigrateFreshSeedOnce;
 use Tests\Support\Authentication;
@@ -14,12 +13,6 @@ abstract class TestCase extends BaseTestCase
 {
 
     use CreatesApplication, Authentication, MigrateFreshSeedOnce;
-
-    protected static League $testleague;
-    protected static Club $testclub;
-    protected static int $state = LeagueState::Selection;
-    protected static int $initial_clubs = 4;
-    protected static int $initial_teams = 4;
 
     /**
      * Boot the testing helper traits.
@@ -36,11 +29,8 @@ abstract class TestCase extends BaseTestCase
         info( '[TEST STARTING] ['.implode(' - ', $this->getGroups()).'] '.$this->getName() );
         return [];
     }
-    public function setUp(): void
+/*     public function exmaple(): void
     {
-        parent::setUp();
-        // define a test league with clubs, teams, games
-
         switch (static::$state) {
             case LeagueState::Assignment:
                 static::$testleague = League::factory()->assigned(static::$initial_clubs)->create();
@@ -61,13 +51,18 @@ abstract class TestCase extends BaseTestCase
 
         static::$testclub = static::$testleague->clubs()->first();
 
+    } */
+    public function setUp(): void
+    {
+        parent::setUp();
     }
+
     public function tearDown(): void
     {
         $leagues = League::all();
 
         foreach ($leagues as $l){
-            $clubs = Club::all();
+            $clubs = $l->clubs;
 
             $l->clubs()->detach();
             $l->games()->delete();
@@ -81,9 +76,28 @@ abstract class TestCase extends BaseTestCase
                 }
                 $c->delete();
             };
+            foreach ($l->teams as $t){
+                $t->delete();
+            }
             $l->delete();
             $l->schedule()->delete();
         }
+        $clubs = Club::all();
+        foreach ($clubs as $c) {
+            $c->gyms()->delete();
+            $c->teams()->delete();
+            $members = $c->members;
+            $c->members()->detach();
+            foreach ($members as $m){
+                $m->delete();
+            }
+            $c->delete();
+        };
+
+        $this->assertDatabaseCount('clubs', 0)
+        ->assertDatabaseCount('teams', 0)
+        ->assertDatabaseCount('leagues', 0)
+        ->assertDatabaseCount('games', 0);
 
         info( '[TEST STOPPING] ['.implode(' - ', $this->getGroups()).'] '.$this->getName() );
         parent::tearDown();

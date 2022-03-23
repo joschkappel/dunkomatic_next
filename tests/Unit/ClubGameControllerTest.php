@@ -3,7 +3,8 @@
 namespace Tests\Unit;
 
 use App\Traits\LeagueFSM;
-use App\Enums\LeagueState;
+use App\Models\League;
+use App\Models\Club;
 
 use Tests\TestCase;
 use Tests\Support\Authentication;
@@ -15,13 +16,18 @@ class ClubGameControllerTest extends TestCase
 {
     use Authentication, LeagueFSM;
 
+    private $testleague;
+    private $testclub_assigned;
+    private $testclub_free;
+
     public function setUp(): void
     {
-        static::$state = LeagueState::Freeze;
-        static::$initial_clubs = 4;
-        static::$initial_teams = 4;
         parent::setUp();
+        $this->testleague = League::factory()->frozen(4, 4)->create();
+        $this->testclub_assigned = $this->testleague->clubs()->first();
+        $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
     }
+
     /**
      * chart
      *
@@ -35,11 +41,11 @@ class ClubGameControllerTest extends TestCase
     {
 
         $response = $this->authenticated()
-            ->get(route('club.game.chart', ['language'=>'de', 'club' => static::$testclub]));
+            ->get(route('club.game.chart', ['language'=>'de', 'club' => $this->testclub_assigned]));
 
         $response->assertStatus(200)
             ->assertViewIs('club.club_hgame_chart')
-            ->assertViewHas('club', static::$testclub);
+            ->assertViewHas('club', $this->testclub_assigned);
     }
 
         /**
@@ -55,7 +61,7 @@ class ClubGameControllerTest extends TestCase
     {
 
         $response = $this->authenticated()
-            ->get(route('club.game.list_home', ['language'=>'de', 'club' => static::$testclub]));
+            ->get(route('club.game.list_home', ['language'=>'de', 'club' => $this->testclub_assigned]));
 
         $response->assertStatus(200);
     }
@@ -73,7 +79,7 @@ class ClubGameControllerTest extends TestCase
     {
 
         $response = $this->authenticated()
-            ->get(route('club.game.chart_home', ['club' => static::$testclub]));
+            ->get(route('club.game.chart_home', ['club' => $this->testclub_assigned]));
 
         $response->assertStatus(200);
     }
@@ -91,7 +97,7 @@ class ClubGameControllerTest extends TestCase
     {
 
         $response = $this->authenticated()
-            ->get(route('club.upload.homegame', ['language'=>'de', 'club' => static::$testclub]));
+            ->get(route('club.upload.homegame', ['language'=>'de', 'club' => $this->testclub_assigned]));
 
         $response->assertStatus(200)
             ->assertViewIs('game.game_file_upload')
@@ -110,9 +116,9 @@ class ClubGameControllerTest extends TestCase
     public function import_csv_notok()
     {
 
-        $this->open_freeze( static::$testleague );
-        $this->close_freeze( static::$testleague );
-        $club = static::$testleague->clubs->first();
+        $this->open_freeze( $this->testleague );
+        $this->close_freeze( $this->testleague );
+        $club = $this->testleague->clubs->first();
 
         $name = 'CLUB_Heimspiele.csv';
         $stub = __DIR__.'/stubs/'.$name;
@@ -146,7 +152,7 @@ class ClubGameControllerTest extends TestCase
      */
     public function import_xlsx_notok()
     {
-        $club = static::$testleague->clubs->first();
+        $club = $this->testleague->clubs->first();
 
         $name = 'CLUB_Heimspiele.xlsx';
         $stub = __DIR__.'/stubs/'.$name;

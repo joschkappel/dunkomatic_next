@@ -4,7 +4,7 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\DB;
+
 
 use App\Models\User;
 use App\Models\Region;
@@ -18,6 +18,18 @@ use App\Notifications\RejectUser;
 
 class RegistrationTest extends TestCase
 {
+
+    private $testleague;
+    private $testclub_assigned;
+    private $testclub_free;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->testleague = League::factory()->selected(3, 3)->create();
+        $this->testclub_assigned = $this->testleague->clubs()->first();
+        $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
+    }
 
     /**
      * register
@@ -190,9 +202,9 @@ class RegistrationTest extends TestCase
         $region = Region::where('code','HBVDA')->first();
         $region_admin = $region->regionadmins()->first()->user()->first();
 
-        $clubs = static::$testleague->clubs->pluck('id')->toArray();
+        $clubs = $this->testleague->clubs->pluck('id')->toArray();
 
-        $league = static::$testleague;
+        $league = $this->testleague;
 
         $response = $this->authenticated($region_admin)
                          ->followingRedirects()

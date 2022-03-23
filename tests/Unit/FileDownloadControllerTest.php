@@ -14,6 +14,18 @@ class FileDownloadControllerTest extends TestCase
 {
     use Authentication;
 
+    private $testleague;
+    private $testclub_assigned;
+    private $testclub_free;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->testleague = League::factory()->registered(4, 4)->create();
+        $this->testclub_assigned = $this->testleague->clubs()->first();
+        $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
+    }
+
     /**
      * get_file_club
      *
@@ -25,13 +37,13 @@ class FileDownloadControllerTest extends TestCase
      */
     public function get_file_club()
     {
-        $path = static::$testclub->region->club_folder;
+        $path = $this->testclub_assigned->region->club_folder;
 
         $file = UploadedFile::fake()->create('test.csv')
             ->storeAs($path, 'test.csv');
 
         $response = $this->authenticated()
-            ->get(route('file.get', ['type' => Club::class, 'club' => static::$testclub, 'file' => 'test.csv']));
+            ->get(route('file.get', ['type' => Club::class, 'club' => $this->testclub_assigned, 'file' => 'test.csv']));
 
         $response->assertStatus(200)
             ->assertDownload('test.csv');
@@ -47,13 +59,13 @@ class FileDownloadControllerTest extends TestCase
      */
     public function get_file_league()
     {
-        $path = static::$testleague->region->league_folder;
+        $path = $this->testleague->region->league_folder;
 
         $file = UploadedFile::fake()->create('test.csv')
             ->storeAs($path, 'test.csv');
 
         $response = $this->authenticated()
-            ->get(route('file.get', ['type' => League::class, 'league' => static::$testleague, 'file' => 'test.csv']));
+            ->get(route('file.get', ['type' => League::class, 'league' => $this->testleague, 'file' => 'test.csv']));
 
         $response->assertStatus(200)
             ->assertDownload('test.csv');
@@ -89,15 +101,15 @@ class FileDownloadControllerTest extends TestCase
      */
     public function get_club_archive()
     {
-        $folder = static::$testclub->region->club_folder;
-        $filename = static::$testclub->shortname . '.test';
-        $archive = static::$testclub->region->code . '-reports-' . Str::slug(static::$testclub->shortname, '-') . '.zip';
+        $folder = $this->testclub_assigned->region->club_folder;
+        $filename = $this->testclub_assigned->shortname . '.test';
+        $archive = $this->testclub_assigned->region->code . '-reports-' . Str::slug($this->testclub_assigned->shortname, '-') . '.zip';
 
         UploadedFile::fake()->create($filename)
             ->storeAs($folder, $filename);
 
         $response = $this->authenticated()
-            ->get(route('club_archive.get', ['club' => static::$testclub]));
+            ->get(route('club_archive.get', ['club' => $this->testclub_assigned]));
 
         $response->assertStatus(200)
             ->assertDownload($archive);
@@ -113,15 +125,15 @@ class FileDownloadControllerTest extends TestCase
      */
     public function get_league_archive()
     {
-        $folder = static::$testleague->region->league_folder;
-        $filename = static::$testleague->shortname . '.test';
-        $archive = static::$testleague->region->code . '-reports-' . Str::slug(static::$testleague->shortname, '-') . '.zip';
+        $folder = $this->testleague->region->league_folder;
+        $filename = $this->testleague->shortname . '.test';
+        $archive = $this->testleague->region->code . '-reports-' . Str::slug($this->testleague->shortname, '-') . '.zip';
 
         UploadedFile::fake()->create($filename)
             ->storeAs($folder, $filename);
 
         $response = $this->authenticated()
-            ->get(route('league_archive.get', ['league' => static::$testleague]));
+            ->get(route('league_archive.get', ['league' => $this->testleague]));
 
         $response->assertStatus(200)
             ->assertDownload($archive);
@@ -137,15 +149,15 @@ class FileDownloadControllerTest extends TestCase
      */
     public function get_region_league_archive()
     {
-        $folder = static::$testleague->region->league_folder;
-        $filename = static::$testleague->shortname . '.test';
-        $archive = static::$testleague->region->code . '-runden-reports.zip';
+        $folder = $this->testleague->region->league_folder;
+        $filename = $this->testleague->shortname . '.test';
+        $archive = $this->testleague->region->code . '-runden-reports.zip';
 
         UploadedFile::fake()->create($filename)
             ->storeAs($folder, $filename);
 
         $response = $this->authenticated()
-            ->get(route('region_league_archive.get', ['region' => static::$testleague->region]));
+            ->get(route('region_league_archive.get', ['region' => $this->testleague->region]));
 
         $response->assertStatus(200)
             ->assertDownload($archive);
@@ -161,15 +173,15 @@ class FileDownloadControllerTest extends TestCase
      */
     public function get_region_teamware_archive()
     {
-        $folder = static::$testleague->region->teamware_folder;
-        $filename = static::$testleague->shortname . '.test';
-        $archive = static::$testleague->region->code . '-teamware-reports.zip';
+        $folder = $this->testleague->region->teamware_folder;
+        $filename = $this->testleague->shortname . '.test';
+        $archive = $this->testleague->region->code . '-teamware-reports.zip';
 
         UploadedFile::fake()->create($filename)
             ->storeAs($folder, $filename);
 
         $response = $this->authenticated()
-            ->get(route('region_teamware_archive.get', ['region' => static::$testleague->region]));
+            ->get(route('region_teamware_archive.get', ['region' => $this->testleague->region]));
 
         $response->assertStatus(200)
             ->assertDownload($archive);

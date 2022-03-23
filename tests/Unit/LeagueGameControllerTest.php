@@ -16,6 +16,18 @@ class LeagueGameControllerTest extends TestCase
 {
     use Authentication, LeagueFSM;
 
+    private $testleague;
+    private $testclub_assigned;
+    private $testclub_free;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->testleague = League::factory()->selected(4, 4)->create();
+        $this->testclub_assigned = $this->testleague->clubs()->first();
+        $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
+    }
+
     /**
      * store_ok
      *
@@ -28,7 +40,7 @@ class LeagueGameControllerTest extends TestCase
      */
     public function store_ok()
     {
-        $league = static::$testleague;
+        $league = $this->testleague;
         $this->close_selection($league);
         // generate the events
 
@@ -60,11 +72,11 @@ class LeagueGameControllerTest extends TestCase
     public function update_notok()
     {
         //$this->withoutExceptionHandling();
-        $league = static::$testleague;
+        $league = $this->testleague;
         $this->close_selection($league);
         $this->close_freeze($league);
-        $club = static::$testclub;
-        $gym = Gym::factory()->create(['club_id' => static::$testclub->id, 'gym_no' => 9]);
+        $club = $this->testclub_assigned;
+        $gym = Gym::factory()->create(['club_id' => $this->testclub_assigned->id, 'gym_no' => 9]);
 
         $game = Game::where('league_id', $league->id)
             ->where('club_id_home', $club->id)->first();
@@ -92,11 +104,11 @@ class LeagueGameControllerTest extends TestCase
     public function update_ok()
     {
         //$this->withoutExceptionHandling();
-        $league = static::$testleague;
+        $league = $this->testleague;
         $this->close_selection($league);
         $this->close_freeze($league);
-        $club = static::$testclub;
-        $gym = Gym::factory()->create(['club_id' => static::$testclub->id, 'gym_no' => 9]);
+        $club = $this->testclub_assigned;
+        $gym = Gym::factory()->create(['club_id' => $this->testclub_assigned->id, 'gym_no' => 9]);
 
         $game = Game::where('league_id', $league->id)
             ->where('club_id_home', $club->id)->first();

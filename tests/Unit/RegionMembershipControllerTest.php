@@ -109,7 +109,7 @@ class RegionMembershipControllerTest extends TestCase
         $member = Member::where('lastname', 'testmember')->first();
         $this->assertDatabaseHas('members', ['id' => $member->id])
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 6);
+            ->assertDatabaseCount('memberships', 2);
 
     }
 
@@ -144,7 +144,7 @@ class RegionMembershipControllerTest extends TestCase
             ->assertSessionHasErrors(['email1']);
 
         $this->assertDatabaseHas('members', ['id' => $member->id])
-            ->assertDatabaseCount('memberships', 6);
+            ->assertDatabaseCount('memberships', 2);
 
         Notification::assertNothingSent();
     }
@@ -179,7 +179,7 @@ class RegionMembershipControllerTest extends TestCase
 
         $this->assertDatabaseHas('members', ['lastname' => 'testmember2'])
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 6);
+            ->assertDatabaseCount('memberships', 2);
     }
     /**
      * add NOT OK
@@ -205,7 +205,7 @@ class RegionMembershipControllerTest extends TestCase
 
         $this->assertDatabaseHas('members', ['id' => $member->id])
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 6);
+            ->assertDatabaseCount('memberships', 2);
     }
 
     /**
@@ -233,7 +233,7 @@ class RegionMembershipControllerTest extends TestCase
 
         $this->assertDatabaseHas('members', ['id' => $member->id])
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 7);
+            ->assertDatabaseCount('memberships', 3);
 
     }
     /**
@@ -255,7 +255,7 @@ class RegionMembershipControllerTest extends TestCase
                 ->assertStatus(302);
 
                 $this->assertDatabaseMissing('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 5);
+            ->assertDatabaseCount('memberships', 1);
     }
 
 }

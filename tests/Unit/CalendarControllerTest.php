@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Models\League;
+use App\Models\Club;
 use App\Traits\LeagueFSM;
 use Tests\TestCase;
 use Tests\Support\Authentication;
@@ -10,6 +11,17 @@ use Tests\Support\Authentication;
 class CalendarControllerTest extends TestCase
 {
     use Authentication, LeagueFSM;
+    private $testleague;
+    private $testclub_assigned;
+    private $testclub_free;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->testleague = League::factory()->selected(4, 4)->create();
+        $this->testclub_assigned = $this->testleague->clubs()->first();
+        $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
+    }
 
     /**
      * cal_league
@@ -23,7 +35,7 @@ class CalendarControllerTest extends TestCase
     public function cal_league()
     {
 
-        $league = static::$testleague;
+        $league = $this->testleague;
         $response = $this->authenticated()
             ->get(route('cal.league', ['language' => 'de', 'league' => $league]));
 
@@ -51,7 +63,7 @@ class CalendarControllerTest extends TestCase
     public function cal_club()
     {
 
-        $league = static::$testleague;
+        $league = $this->testleague;
         $club = $league->clubs()->first();
 
         $response = $this->authenticated()
@@ -82,7 +94,7 @@ class CalendarControllerTest extends TestCase
     public function cal_club_home()
     {
 
-        $league  = static::$testleague;
+        $league  = $this->testleague;
         $club = $league->clubs()->first();
 
         $response = $this->authenticated()
@@ -112,7 +124,7 @@ class CalendarControllerTest extends TestCase
     public function cal_club_referee()
     {
 
-        $league = static::$testleague;
+        $league = $this->testleague;
         $club = $league->clubs()->first();
 
         $response = $this->authenticated()

@@ -3,14 +3,25 @@
 namespace Tests\Unit;
 
 use App\Models\Club;
+use App\Models\League;
 
 use Tests\TestCase;
 use Tests\Support\Authentication;
-use Illuminate\Support\Facades\Log;
 
 class TeamValidationTest extends TestCase
 {
     use Authentication;
+    private $testleague;
+    private $testclub_assigned;
+    private $testclub_free;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->testleague = League::factory()->selected(3, 3)->create();
+        $this->testclub_assigned = $this->testleague->clubs()->first();
+        $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
+    }
 
     /**
       * team validation
@@ -25,7 +36,7 @@ class TeamValidationTest extends TestCase
     public function team_form_validation($formInput, $formInputValue): void
     {
       $response = $this->authenticated()
-           ->post(route('club.team.store',['club'=>static::$testclub]), [$formInput => $formInputValue]);
+           ->post(route('club.team.store',['club'=>$this->testclub_assigned]), [$formInput => $formInputValue]);
 
       $response->assertSessionHasErrors($formInput);
     }

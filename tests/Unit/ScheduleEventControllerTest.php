@@ -65,7 +65,7 @@ class ScheduleEventControllerTest extends TestCase
 
 
       $this->assertDatabaseHas('schedule_events', ['schedule_id' => $schedule->id])
-           ->assertDatabaseCount('schedule_events', 30);
+           ->assertDatabaseCount('schedule_events', 6);
     }
     /**
      * clone
@@ -93,7 +93,7 @@ class ScheduleEventControllerTest extends TestCase
                ->assertRedirect(route('schedule_event.list', ['schedule'=>$schedule_to]));
 
       $this->assertDatabaseHas('schedule_events', ['schedule_id' => $schedule_to->id])
-           ->assertDatabaseCount('schedule_events', 36);
+           ->assertDatabaseCount('schedule_events', 12);
     }
     /**
      * shift NOT OK
@@ -121,7 +121,7 @@ class ScheduleEventControllerTest extends TestCase
 
 
       $this->assertDatabaseHas('schedule_events', ['schedule_id' => $schedule->id])
-           ->assertDatabaseCount('schedule_events', 36);
+           ->assertDatabaseCount('schedule_events', 12);
     }
     /**
      * shift OK
@@ -150,7 +150,7 @@ class ScheduleEventControllerTest extends TestCase
 
 
       $this->assertDatabaseHas('schedule_events', ['schedule_id' => $schedule->id])
-           ->assertDatabaseCount('schedule_events', 36);
+           ->assertDatabaseCount('schedule_events', 12);
     }
     /**
      * update NOT OK
@@ -176,7 +176,7 @@ class ScheduleEventControllerTest extends TestCase
       $response->assertSessionHasErrors(['full_weekend','game_date']);
 
       $this->assertDatabaseHas('schedule_events', ['schedule_id' => $schedule->id])
-           ->assertDatabaseCount('schedule_events', 36);
+           ->assertDatabaseCount('schedule_events', 12);
     }
     /**
      * update NOT OK
@@ -202,7 +202,7 @@ class ScheduleEventControllerTest extends TestCase
       $response->assertSessionHasNoErrors();
 
       $this->assertDatabaseHas('schedule_events', ['schedule_id' => $schedule->id])
-           ->assertDatabaseCount('schedule_events', 36);
+           ->assertDatabaseCount('schedule_events', 12);
     }
     /**
      * list_destroy
@@ -226,6 +226,6 @@ class ScheduleEventControllerTest extends TestCase
 
 
       $this->assertDatabaseMissing('schedule_events', ['schedule_id' => $schedule->id])
-           ->assertDatabaseCount('schedule_events', 30);
+           ->assertDatabaseCount('schedule_events', 6);
     }
 }

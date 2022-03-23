@@ -3,12 +3,25 @@
 namespace Tests\Unit;
 
 use App\Models\Club;
+use App\Models\League;
+
 use Tests\TestCase;
 use Tests\Support\Authentication;
 
 class AuditControllerTest extends TestCase
 {
     use Authentication;
+    private $testleague;
+    private $testclub_assigned;
+    private $testclub_free;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->testleague = League::factory()->selected(4, 4)->create();
+        $this->testclub_assigned = $this->testleague->clubs()->first();
+        $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
+    }
 
     /**
      * index
@@ -38,7 +51,7 @@ class AuditControllerTest extends TestCase
      */
     public function show()
     {
-        $audit = static::$testclub->audits()->first();
+        $audit = $this->testclub_assigned->audits()->first();
 
         $response = $this->authenticated()
             ->get(route('audit.show', ['language' => 'de', 'audit' => $audit]));

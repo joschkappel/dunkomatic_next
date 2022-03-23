@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Models\Member;
 use App\Models\Club;
+use App\Models\League;
 use App\Enums\Role;
 
 use Tests\TestCase;
@@ -12,6 +13,18 @@ use Tests\Support\Authentication;
 class ClubMembershipControllerTest extends TestCase
 {
     use Authentication;
+
+    private $testleague;
+    private $testclub_assigned;
+    private $testclub_free;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->testleague = League::factory()->registered(4, 4)->create();
+        $this->testclub_assigned = $this->testleague->clubs()->first();
+        $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
+    }
 
     /**
      * create
@@ -25,11 +38,11 @@ class ClubMembershipControllerTest extends TestCase
     public function create()
     {
         $response = $this->authenticated()
-            ->get(route('membership.club.create', ['language' => 'de', 'club' => static::$testclub]));
+            ->get(route('membership.club.create', ['language' => 'de', 'club' => $this->testclub_assigned]));
 
         $response->assertStatus(200)
             ->assertViewIs('member.member_new')
-            ->assertViewHas('entity', static::$testclub)
+            ->assertViewHas('entity', $this->testclub_assigned)
             ->assertViewHas('entity_type', Club::class);
     }
     /**
@@ -44,7 +57,7 @@ class ClubMembershipControllerTest extends TestCase
     public function store_notok()
     {
         $response = $this->authenticated()
-            ->post(route('member.store', ['club' => static::$testclub]), [
+            ->post(route('member.store', ['club' => $this->testclub_assigned]), [
                 'member_id' => null,
                 'firstname' => 'testfirstname',
                 'lastname' => 'testmember',
@@ -54,7 +67,7 @@ class ClubMembershipControllerTest extends TestCase
                 'mobile' => '123456',
                 'phone' => '123456',
                 'email1' => '12345',
-                'entity_id' => static::$testclub->id,
+                'entity_id' => $this->testclub_assigned->id,
                 'entity_type' => Club::class,
                 'function' => null,
                 'email' => null,
@@ -88,13 +101,13 @@ class ClubMembershipControllerTest extends TestCase
                 'mobile' => '123456',
                 'phone' => '123456',
                 'email1' => 'testlastname@gmail.com',
-                'entity_id' => static::$testclub->id,
+                'entity_id' => $this->testclub_assigned->id,
                 'entity_type' => Club::class,
                 'function' => null,
                 'email' => null,
             ]);
 
-        $response->assertRedirect(route('club.dashboard', ['language' => 'de', 'club' => static::$testclub]))
+        $response->assertRedirect(route('club.dashboard', ['language' => 'de', 'club' => $this->testclub_assigned]))
             ->assertSessionHasNoErrors();
 
         $member = Member::where('lastname', 'testmember')->first();
@@ -114,7 +127,7 @@ class ClubMembershipControllerTest extends TestCase
      */
     public function update_notok()
     {
-        $member = static::$testclub->members->first();
+        $member = $this->testclub_assigned->members->first();
 
         $response = $this->authenticated()
             ->put(route('member.update', ['member' => $member]), [
@@ -124,7 +137,7 @@ class ClubMembershipControllerTest extends TestCase
                 'city' => $member->city,
                 'street' => $member->street,
                 'mobile' => $member->mobile,
-                'backto' => url(route('club.dashboard', ['club' => static::$testclub, 'language' => 'de'])),
+                'backto' => url(route('club.dashboard', ['club' => $this->testclub_assigned, 'language' => 'de'])),
             ]);
         $response
             ->assertStatus(302)
@@ -145,7 +158,7 @@ class ClubMembershipControllerTest extends TestCase
      */
     public function udpate_ok()
     {
-        $member = static::$testclub->members->first();
+        $member = $this->testclub_assigned->members->first();
 
         $response = $this->authenticated()
             ->put(route('member.update', ['member' => $member]), [
@@ -156,10 +169,10 @@ class ClubMembershipControllerTest extends TestCase
                 'street' => $member->street,
                 'mobile' => $member->mobile,
                 'email1' => 'test2@gmail.com',
-                'backto' => url(route('club.dashboard', ['club' => static::$testclub, 'language' => 'de'])),
+                'backto' => url(route('club.dashboard', ['club' => $this->testclub_assigned, 'language' => 'de'])),
             ]);
 
-        $response->assertRedirect(route('club.dashboard', ['language' => 'de', 'club' => static::$testclub]))
+        $response->assertRedirect(route('club.dashboard', ['language' => 'de', 'club' => $this->testclub_assigned]))
             ->assertSessionHasNoErrors();
 
         $this->assertDatabaseHas('members', ['lastname' => 'testmember2'])
@@ -179,10 +192,10 @@ class ClubMembershipControllerTest extends TestCase
      */
     public function add_notok()
     {
-        $member = static::$testclub->members->first();
+        $member = $this->testclub_assigned->members->first();
 
         $response = $this->authenticated()
-            ->post(route('membership.club.add', ['club' => static::$testclub, 'member' => $member]), [
+            ->post(route('membership.club.add', ['club' => $this->testclub_assigned, 'member' => $member]), [
                 'function' => 'function',
                 'email' => 'email'
             ]);
@@ -206,10 +219,10 @@ class ClubMembershipControllerTest extends TestCase
      */
     public function add_ok()
     {
-        $member = static::$testclub->members->first();
+        $member = $this->testclub_assigned->members->first();
 
         $response = $this->authenticated()
-            ->post(route('membership.club.add', ['club' => static::$testclub, 'member' => $member]), [
+            ->post(route('membership.club.add', ['club' => $this->testclub_assigned, 'member' => $member]), [
                 'selRole' => Role::getRandomValue(),
                 'function' => 'function',
                 'email' => 'email@gmail.com'
@@ -233,7 +246,7 @@ class ClubMembershipControllerTest extends TestCase
      */
     public function update_mship_notok()
     {
-        $member = static::$testclub->members->first();
+        $member = $this->testclub_assigned->members->first();
         $membership = $member->memberships->first();
 
         $response = $this->authenticated()
@@ -259,7 +272,7 @@ class ClubMembershipControllerTest extends TestCase
      */
     public function update_mship_ok()
     {
-        $member = static::$testclub->members->first();
+        $member = $this->testclub_assigned->members->first();
         $membership = $member->memberships->first();
 
         $response = $this->authenticated()
@@ -285,9 +298,9 @@ class ClubMembershipControllerTest extends TestCase
      */
     public function destroy()
     {
-        $member2 = static::$testclub->members->first();
+        $member2 = $this->testclub_assigned->members->first();
         $response = $this->authenticated()
-            ->delete(route('membership.club.destroy', ['club' => static::$testclub, 'member' => $member2]));
+            ->delete(route('membership.club.destroy', ['club' => $this->testclub_assigned, 'member' => $member2]));
 
         $response->assertStatus(302)
             ->assertSessionHasNoErrors();

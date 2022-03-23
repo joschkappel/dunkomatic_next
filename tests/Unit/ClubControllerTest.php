@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Models\Club;
+use App\Models\League;
 
 use Tests\TestCase;
 use Tests\Support\Authentication;
@@ -10,6 +11,18 @@ use Tests\Support\Authentication;
 class ClubControllerTest extends TestCase
 {
     use Authentication;
+
+    private $testleague;
+    private $testclub_assigned;
+    private $testclub_free;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->testleague = League::factory()->selected(3, 3)->create();
+        $this->testclub_assigned = $this->testleague->clubs()->first();
+        $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
+    }
 
     /**
      * create
@@ -94,11 +107,11 @@ class ClubControllerTest extends TestCase
 
         $response = $this->authenticated()
             ->withSession(['cur_region' => $this->region])
-            ->get(route('club.edit', ['language' => 'de', 'club' => static::$testclub]));
+            ->get(route('club.edit', ['language' => 'de', 'club' => $this->testclub_assigned]));
 
         $response->assertStatus(200)
             ->assertViewIs('club.club_edit')
-            ->assertViewHas('club', static::$testclub);
+            ->assertViewHas('club', $this->testclub_assigned);
     }
     /**
      * update not OK
@@ -114,7 +127,7 @@ class ClubControllerTest extends TestCase
         //$this->withoutExceptionHandling();
         $response = $this->authenticated()
             ->withSession(['cur_region' => $this->region])
-            ->put(route('club.update', ['club' => static::$testclub]), [
+            ->put(route('club.update', ['club' => $this->testclub_assigned]), [
                 'name' => 'testclub2',
                 'shortname' => 'TEST',
                 'url' => 'anyurl',
@@ -138,16 +151,16 @@ class ClubControllerTest extends TestCase
     public function update_ok()
     {
         $response = $this->authenticated()
-            ->put(route('club.update', ['club' => static::$testclub]), [
+            ->put(route('club.update', ['club' => $this->testclub_assigned]), [
                 'name' => 'testclub2',
                 'shortname' => 'TEST',
-                'url' => static::$testclub->url,
-                'club_no' => static::$testclub->club_no
+                'url' => $this->testclub_assigned->url,
+                'club_no' => $this->testclub_assigned->club_no
             ]);
-        static::$testclub->refresh();
+        $this->testclub_assigned->refresh();
         $response->assertStatus(302)
             ->assertSessionHasNoErrors()
-            ->assertHeader('Location', route('club.dashboard', ['language' => 'de', 'club' => static::$testclub]));
+            ->assertHeader('Location', route('club.dashboard', ['language' => 'de', 'club' => $this->testclub_assigned]));
 
         $this->assertDatabaseHas('clubs', ['name' => 'testclub2']);
     }
@@ -227,7 +240,7 @@ class ClubControllerTest extends TestCase
      */
     public function dashboard()
     {
-        $club = static::$testclub;  // $this->region->clubs()->first();
+        $club = $this->testclub_assigned;  // $this->region->clubs()->first();
         $response = $this->authenticated()
             ->get(route('club.dashboard', ['language' => 'de', 'club' => $club]));
 
@@ -322,12 +335,12 @@ class ClubControllerTest extends TestCase
     public function destroy()
     {
         $response = $this->authenticated()
-            ->delete(route('club.destroy', ['club' => static::$testclub]));
+            ->delete(route('club.destroy', ['club' => $this->testclub_free]));
 
         $response->assertStatus(302)
             ->assertSessionHasNoErrors();
-        $this->assertDatabaseMissing('clubs', ['id' => static::$testclub->id]);
-        $this->assertDatabaseCount('clubs', static::$testleague->clubs->count());
+        $this->assertDatabaseMissing('clubs', ['id' => $this->testclub_free->id]);
+        $this->assertDatabaseCount('clubs', 3);
     }
 
 }

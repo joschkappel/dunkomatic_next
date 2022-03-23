@@ -2,13 +2,27 @@
 
 namespace Tests\Unit;
 
+use App\Models\League;
+use App\Models\Club;
 use App\Enums\Role;
+
 use Tests\TestCase;
 use Tests\Support\Authentication;
 
 class AddressControllerTest extends TestCase
 {
     use Authentication;
+    private $testleague;
+    private $testclub_assigned;
+    private $testclub_free;
+
+    public function setUp(): void
+    {
+        parent::setup();
+        $this->testleague = League::factory()->selected(4, 4)->create();
+        $this->testclub_assigned = $this->testleague->clubs()->first();
+        $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
+    }
 
     /**
      * index_byrole
