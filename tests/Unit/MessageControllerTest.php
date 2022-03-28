@@ -200,7 +200,7 @@ class MessageControllerTest extends TestCase
 
         //  $response->dump();
         $response->assertStatus(200)
-            ->assertJsonPath('data.*.salutation', [$msgs->salutation]);
+            ->assertJsonFragment(['salutation' => $msgs->salutation]);
     }
     /**
      * copy

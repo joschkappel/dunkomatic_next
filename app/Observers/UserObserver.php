@@ -9,17 +9,9 @@ use App\Enums\Role;
 use App\Models\Member;
 
 use Illuminate\Support\Facades\Log;
+
 class UserObserver
 {
-    /**
-     * Handle the User "created" event.
-     *
-     * @param  \App\Models\User  $user
-     * @return void
-     */
-    public function created(User $user)
-    {
-    }
 
     /**
      * Handle the User "updated" event.
@@ -37,10 +29,9 @@ class UserObserver
                 $member = new Member(['lastname' => $user->name, 'email1' => $user->email]);
                 $member->save();
                 $member->user()->save($user);
-                Log::notice('[OBSERVER] user updated - member with role user created', ['user-id' => $user->id, 'member-id'=>$member->id]);
+                Log::notice('[OBSERVER] user updated - member with role user created', ['user-id' => $user->id, 'member-id' => $member->id]);
             }
         }
-
     }
 
     /**
@@ -51,31 +42,9 @@ class UserObserver
      */
     public function deleting(User $user)
     {
-        if ( $user->member()->exists() ) {
+        if ($user->member()->exists()) {
             $user->member->delete();
-            Log::notice('[OBSERVER] user deleted - delete associated member', ['user-id' => $user->id, 'member-id'=>$user->member->id]);
+            Log::notice('[OBSERVER] user deleted - delete associated member', ['user-id' => $user->id, 'member-id' => $user->member->id]);
         }
-    }
-
-    /**
-     * Handle the User "restored" event.
-     *
-     * @param  \App\Models\User  $user
-     * @return void
-     */
-    public function restored(User $user)
-    {
-        //
-    }
-
-    /**
-     * Handle the User "force deleted" event.
-     *
-     * @param  \App\Models\User  $user
-     * @return void
-     */
-    public function forceDeleted(User $user)
-    {
-        //
     }
 }

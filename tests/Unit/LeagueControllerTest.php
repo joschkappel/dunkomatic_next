@@ -23,7 +23,10 @@ class LeagueControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->testleague = League::factory()->registered(4, 4)->create();
+        $this->testleague_1 = League::factory()->assigned(4)->create();
+        $this->testleague_2 = League::factory()->selected(3, 3)->create();
+        $this->testleague_3 = League::factory()->frozen(3, 3)->create();
+        $this->testleague = League::factory()->registered(4, 3)->create();
         $this->testclub_assigned = $this->testleague->clubs()->first();
         $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
     }
@@ -256,8 +259,8 @@ class LeagueControllerTest extends TestCase
         // base level region
         $response = $this->authenticated()
             ->get(route('league.list_mgmt', ['language' => 'de', 'region' => $this->region]));
-
         $response->assertStatus(200);
+
 
         // top level region
         $response = $this->authenticated()
@@ -344,7 +347,7 @@ class LeagueControllerTest extends TestCase
 
         //$response->dump();
         $response->assertStatus(200)
-            ->assertJson([['id' => $this->testleague->id, 'text' => $this->testleague->shortname]]);
+            ->assertJsonFragment(['id' => $this->testleague->id, 'text' => $this->testleague->shortname]);
     }
     /**
      * sb_freechars

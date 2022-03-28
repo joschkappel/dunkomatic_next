@@ -7,6 +7,8 @@ use App\Models\League;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 
+use Silber\Bouncer\BouncerFacade as Bouncer;
+
 use Tests\TestCase;
 use Tests\Support\Authentication;
 
@@ -38,8 +40,7 @@ class FileDownloadControllerTest extends TestCase
     public function get_file_club()
     {
         $path = $this->testclub_assigned->region->club_folder;
-
-        $file = UploadedFile::fake()->create('test.csv')
+        UploadedFile::fake()->create('test.csv')
             ->storeAs($path, 'test.csv');
 
         $response = $this->authenticated()
@@ -81,14 +82,33 @@ class FileDownloadControllerTest extends TestCase
      */
     public function get_user_archive()
     {
-        $filename = $this->region->code . '-reports-' . Str::slug($this->region_user->name, '-') . '.zip';
 
-        UploadedFile::fake()->create($filename);
+        $this->region_user->allow('access', $this->region);
+        Bouncer::refreshFor($this->region_user);
+
+        // check no file found
 
         $response = $this->authenticated()
-            ->get(route('user_archive.get', ['region' => $this->region, 'user' => $this->region_user]));
+            ->get(route('user_archive.get', ['region' => $this->testleague->region, 'user' => $this->region_user]));
 
         $response->assertStatus(404);
+
+        // no create files
+        $archive = $this->region->code . '-reports-' . Str::slug($this->region_user->name, '-') . '.zip';
+        $folder = $this->testclub_assigned->region->club_folder;
+        $filename = $this->testclub_assigned->shortname . '.test';
+        UploadedFile::fake()->create($filename)
+            ->storeAs($folder, $filename);
+        $folder = $this->testleague->region->league_folder;
+        $filename = $this->testleague->shortname . '.test';
+        UploadedFile::fake()->create($filename)
+            ->storeAs($folder, $filename);
+
+        $response = $this->authenticated()
+            ->get(route('user_archive.get', ['region' => $this->testleague->region, 'user' => $this->region_user]));
+
+        $response->assertStatus(200)
+            ->assertDownload($archive);
     }
     /**
      * get_club_archve
@@ -101,6 +121,13 @@ class FileDownloadControllerTest extends TestCase
      */
     public function get_club_archive()
     {
+        // check no file found
+        $response = $this->authenticated()
+            ->get(route('club_archive.get', ['club' => $this->testclub_assigned]));
+
+        $response->assertStatus(404);
+
+        // now create files
         $folder = $this->testclub_assigned->region->club_folder;
         $filename = $this->testclub_assigned->shortname . '.test';
         $archive = $this->testclub_assigned->region->code . '-reports-' . Str::slug($this->testclub_assigned->shortname, '-') . '.zip';
@@ -125,6 +152,13 @@ class FileDownloadControllerTest extends TestCase
      */
     public function get_league_archive()
     {
+        // check no file found
+        $response = $this->authenticated()
+            ->get(route('league_archive.get', ['league' => $this->testleague]));
+
+        $response->assertStatus(404);
+
+        // now create files
         $folder = $this->testleague->region->league_folder;
         $filename = $this->testleague->shortname . '.test';
         $archive = $this->testleague->region->code . '-reports-' . Str::slug($this->testleague->shortname, '-') . '.zip';
@@ -149,6 +183,13 @@ class FileDownloadControllerTest extends TestCase
      */
     public function get_region_league_archive()
     {
+        // check no files found
+        $response = $this->authenticated()
+            ->get(route('region_league_archive.get', ['region' => $this->testleague->region]));
+
+        $response->assertStatus(404);
+
+        // now create files
         $folder = $this->testleague->region->league_folder;
         $filename = $this->testleague->shortname . '.test';
         $archive = $this->testleague->region->code . '-runden-reports.zip';
@@ -173,6 +214,13 @@ class FileDownloadControllerTest extends TestCase
      */
     public function get_region_teamware_archive()
     {
+        // check no file found
+        $response = $this->authenticated()
+            ->get(route('region_teamware_archive.get', ['region' => $this->testleague->region]));
+
+        $response->assertStatus(404);
+
+        // now create a fil
         $folder = $this->testleague->region->teamware_folder;
         $filename = $this->testleague->shortname . '.test';
         $archive = $this->testleague->region->code . '-teamware-reports.zip';

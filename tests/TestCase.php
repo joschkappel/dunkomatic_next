@@ -4,6 +4,7 @@ namespace Tests;
 
 use App\Models\League;
 use App\Models\Club;
+use App\Models\Schedule;
 
 use Tests\Support\MigrateFreshSeedOnce;
 use Tests\Support\Authentication;
@@ -29,29 +30,7 @@ abstract class TestCase extends BaseTestCase
         info( '[TEST STARTING] ['.implode(' - ', $this->getGroups()).'] '.$this->getName() );
         return [];
     }
-/*     public function exmaple(): void
-    {
-        switch (static::$state) {
-            case LeagueState::Assignment:
-                static::$testleague = League::factory()->assigned(static::$initial_clubs)->create();
-                break;
-            case LeagueState::Registration:
-                static::$testleague = League::factory()->registered(static::$initial_clubs, static::$initial_teams)->create();
-                break;
-            case LeagueState::Selection:
-                static::$testleague = League::factory()->selected(static::$initial_clubs, static::$initial_teams)->create();
-                break;
-            case LeagueState::Freeze:
-                static::$testleague = League::factory()->frozen(static::$initial_clubs, static::$initial_teams)->create();
-                break;
-            default:
-                static::$testleague = League::factory()->selected(4, 4)->create();
-                break;
-        }
 
-        static::$testclub = static::$testleague->clubs()->first();
-
-    } */
     public function setUp(): void
     {
         parent::setUp();
@@ -93,6 +72,7 @@ abstract class TestCase extends BaseTestCase
             }
             $c->delete();
         };
+        Schedule::whereNotNull('id')->delete();
 
         $this->assertDatabaseCount('clubs', 0)
         ->assertDatabaseCount('teams', 0)

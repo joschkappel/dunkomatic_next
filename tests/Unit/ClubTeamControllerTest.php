@@ -19,7 +19,7 @@ class ClubTeamControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->testleague = League::factory()->registered(4, 4)->create();
+        $this->testleague = League::factory()->selected(4, 4)->create();
         $this->testclub_assigned = $this->testleague->clubs()->first();
         $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
     }

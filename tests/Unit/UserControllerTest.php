@@ -6,14 +6,53 @@ use Tests\TestCase;
 use Illuminate\Support\Facades\Notification;
 
 use App\Models\User;
-use App\Models\Region;
-use App\Models\Club;
-use App\Models\League;
 
 use App\Notifications\VerifyEmail;
 
 class UserControllerTest extends TestCase
 {
+
+    /**
+     * index
+     *
+     * @test
+     * @group user
+     * @group controller
+     *
+     * @return void
+     */
+    public function index()
+    {
+
+      $response = $this->authenticated()
+                       ->get(route('admin.user.index',['language'=>'de', 'region'=>$this->region]));
+
+      // $response->dump();
+      $response->assertStatus(200)
+               ->assertViewIs('auth.user_list')
+               ->assertViewHas('region', $this->region);
+    }
+    /**
+     * datatable
+     *
+     * @test
+     * @group user
+     * @group controller
+     *
+     * @return void
+     */
+    public function datatable()
+    {
+
+      $response = $this->authenticated()
+                       ->get(route('admin.user.dt',['language'=>'de', 'region'=>$this->region]));
+
+      // $response->dump();
+      $response->assertStatus(200)
+               ->assertSessionHasNoErrors()
+               ->assertJsonFragment(['id'=>$this->region_user->id]);
+    }
+
 
     /**
      * create
@@ -59,7 +98,42 @@ class UserControllerTest extends TestCase
                  ->assertViewIs('auth.user_profile');
 
     }
+    /**
+     * edit
+     *
+     * @test
+     * @group user
+     * @group controller
+     *
+     * @return void
+     */
+    public function edit()
+    {
 
+     // test non approved user
+      $user = User::where('name','notapproved')->first();
+
+      $response = $this->authenticated()
+                       ->get(route('admin.user.edit',['language'=>'de', 'user'=>$user]));
+
+      $response->assertStatus(200)
+               ->assertSessionHasNoErrors()
+               ->assertViewIs('auth.user_approve')
+               ->assertViewHas('user', $user)
+               ->assertViewHas('member', $user->member);
+
+      // test approved user
+      $user = User::where('name','approved')->first();
+
+      $response = $this->authenticated()
+                       ->get(route('admin.user.edit',['language'=>'de', 'user'=>$user]));
+
+      $response->assertStatus(200)
+               ->assertSessionHasNoErrors()
+               ->assertViewIs('auth.user_edit')
+               ->assertViewHas('user', $user);
+
+    }
     /**
      * update not ok
      *

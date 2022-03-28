@@ -50,7 +50,6 @@ use App\Http\Controllers\Auth\SocialAuthController;
 Route::get('/', function () { return redirect(app()->getLocale()); })->name('start');
 Route::get('healthy', function () { return 'OK'; });
 Route::get('health', HealthCheckResultsController::class);
-// Route::get('/fire', function () { event(new App\Events\TestEvent()); return 'ok'; });
 
 Route::get('/auth/{provider}/redirect/{invitation?}', [SocialAuthController::class, 'redirectToOauth'])->name('oauth.redirect');
 Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'registerFromOauth'])->name('oauth.callback');
@@ -299,7 +298,6 @@ Route::middleware(['auth',
     Route::get('scheme/{size}/list_piv', [LeagueSizeSchemeController::class, 'list_piv'])->name('scheme.list_piv');
     Route::get('size/index', [LeagueSizeController::class, 'index'])->name('size.index');
 
-    Route::post('schedule_event/list-piv', [ScheduleEventController::class, 'list_piv'])->name('schedule_event.list-piv');
     Route::get('schedule_event/{schedule}/list', [ScheduleEventController::class, 'list'])->name('schedule_event.list');
     Route::get('schedule_event/{schedule}/dt', [ScheduleEventController::class, 'datatable'])->name('schedule_event.dt');
     Route::post('schedule_event/{schedule}/shift', [ScheduleEventController::class, 'shift'])->name('schedule_event.shift');

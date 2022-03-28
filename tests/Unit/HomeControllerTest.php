@@ -1,6 +1,10 @@
 <?php
 
 namespace Tests\Unit;
+use App\Models\League;
+use App\Models\Club;
+use Illuminate\Http\UploadedFile;
+use App\Models\Message;
 
 use Tests\TestCase;
 use Tests\Support\Authentication;
@@ -10,6 +14,18 @@ use Silber\Bouncer\BouncerFacade as Bouncer;
 class HomeControllerTest extends TestCase
 {
     use Authentication;
+
+    private $testleague;
+    private $testclub_assigned;
+    private $testclub_free;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->testleague = League::factory()->selected(4, 4)->create();
+        $this->testclub_assigned = $this->testleague->clubs()->first();
+        $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
+    }
 
     /**
      * approval
@@ -37,6 +53,29 @@ class HomeControllerTest extends TestCase
      */
     public function home()
     {
+        // create some files
+        $folder = $this->testleague->region->league_folder;
+        $filename = $this->testleague->shortname . '.test';
+        UploadedFile::fake()->create($filename)->storeAs($folder, $filename);
+        $folder = $this->testleague->region->teamware_folder;
+        $filename = $this->testleague->shortname . '.test';
+        UploadedFile::fake()->create($filename)->storeAs($folder, $filename);
+        $folder = $this->testclub_assigned->region->club_folder;
+        $filename = $this->testclub_assigned->shortname . '.test';
+        UploadedFile::fake()->create($filename)->storeAs($folder, $filename);
+
+        // create a unread message
+        $msg = new Message();
+        $msg->title = 'TESTING';
+        $msg->greeting = 'Welcome';
+        $msg->salutation = 'Bye';
+        $msg->body = 'just testing here';
+        $msg->send_at = now();
+        $msg->to_users = [ $this->region_user->id ];
+        $msg->user()->associate($this->region_user);
+        $msg->region()->associate($this->region);
+        $msg->save();
+
 
         // set region dates next week
         $this->region->update([
@@ -57,6 +96,8 @@ class HomeControllerTest extends TestCase
 
         // now try with clubadmin
         Bouncer::assign( 'clubadmin')->to($this->region_user);
+        $this->region_user->allow('access', $this->testclub_assigned );
+        $this->region_user->allow('access', $this->testleague );
         Bouncer::refreshFor($this->region_user);
 
         $response = $this->authenticated()

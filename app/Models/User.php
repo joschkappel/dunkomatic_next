@@ -216,7 +216,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
 
         if ($llist !=  "") {
             $reports = collect(Storage::files($directory))->filter(function ($value, $key) use ($llist) {
-                return Str::contains($llist, $value);
+                return (preg_match('(' . $llist . ')', $value) === 1);
+                // return Str::contains($llist, $value);
             });
             return count($reports);
         } else {
@@ -233,7 +234,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
         }
         if ($llist != "") {
             $reports = collect(Storage::files($directory))->filter(function ($value, $key) use ($llist) {
-                return Str::contains($llist, $value);
+                return (preg_match('(' . $llist . ')', $value) === 1);
+                // return Str::contains($llist, $value);
             });
             return $reports;
         } else {
@@ -252,7 +254,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
 
         if ($llist !=  "") {
             $reports = collect(Storage::files($directory))->filter(function ($value, $key) use ($llist) {
-                return Str::contains($llist, $value);
+                return (preg_match('(' . $llist . ')', $value) === 1);
+                // return Str::contains($llist, $value);
             });
             return count($reports);
         } else {
@@ -271,7 +274,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
 
         if ($llist != "") {
             $reports = collect(Storage::files($directory))->filter(function ($value, $key) use ($llist) {
-                return Str::contains($llist, $value);
+                return (preg_match('(' . $llist . ')', $value) === 1);
+                // return Str::contains($llist, $value);
             });
             return $reports;
         } else {
@@ -290,7 +294,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
 
         if ($llist != "") {
             $reports = collect(Storage::files($directory))->filter(function ($value, $key) use ($llist) {
-                return Str::contains($llist, $value);
+                return (preg_match('(' . $llist . ')', $value) === 1);
+                // return Str::contains($llist, $value);
             });
             return count($reports);
         } else {
@@ -309,7 +314,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
 
         if ($llist != "") {
             $reports = collect(Storage::files($directory))->filter(function ($value, $key) use ($llist) {
-                return Str::contains($llist, $value);
+                return (preg_match('(' . $llist . ')', $value) === 1);
+                // return Str::contains($llist, $value);
             });
             return $reports;
         } else {
