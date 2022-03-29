@@ -17,7 +17,7 @@ class Invitation extends Model
     protected $with = ['region','user','member'];
 
     protected $fillable = [
-        'id', 'user_id', 'member_id', 'region_id', 'email_invitee'
+        'id', 'user_id', 'member_id', 'region_id', 'email_invitee','provider'
     ];
     protected $casts = [
         'created_at' => 'datetime'

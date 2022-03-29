@@ -197,8 +197,5 @@ class Club extends Model implements Auditable
         });
         return $reports;
     }
-    public function scopeForRegion(Builder $query, Region $region): Builder
-    {
-        return $query->where('region_id', $region->id);
-    }
+
 }

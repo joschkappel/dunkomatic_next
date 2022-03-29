@@ -75,8 +75,8 @@ class ProcessLeagueStateChanges implements ShouldQueue
                         $this->close_scheduling($l);
                     }
                 } elseif ($l->state->is( LeagueState::Referees())){
-                    if ( ( $l->state_count['referees'] == 0 )  or ( $close_referees < now()) ){
-                        $this->close_scheduling($l);
+                    if ( ( $l->state_count['referees'] == $l->games->count() )  or ( $close_referees < now()) ){
+                        $this->close_referees($l);
                     }
                 }
             }

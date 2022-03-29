@@ -5,6 +5,7 @@ namespace Tests;
 use App\Models\League;
 use App\Models\Club;
 use App\Models\Schedule;
+use App\Models\Member;
 
 use Tests\Support\MigrateFreshSeedOnce;
 use Tests\Support\Authentication;
@@ -73,6 +74,7 @@ abstract class TestCase extends BaseTestCase
             $c->delete();
         };
         Schedule::whereNotNull('id')->delete();
+        // Member::whereNotNull('id')->delete();
 
         $this->assertDatabaseCount('clubs', 0)
         ->assertDatabaseCount('teams', 0)

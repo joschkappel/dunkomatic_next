@@ -3,19 +3,25 @@
 namespace Tests\Jobs;
 
 use App\Jobs\GenerateLeagueGamesReport;
-use App\Models\Region;
-use App\Models\Game;
+use App\Models\League;
 
-use Tests\SysTestCase;
+use Tests\TestCase;
 use App\Enums\ReportFileType;
-use App\Enums\ReportScope;
 
-use Maatwebsite\Excel\Facades\Excel;
+
 use Illuminate\Support\Facades\Storage;
 
-class GenerateLeagueReportsTest extends SysTestCase
+class GenerateLeagueReportsTest extends TestCase
 {
+    private $testleague;
+    private $testclub_assigned;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->testleague = League::factory()->frozen(4, 4)->create();
+        $this->testclub_assigned = $this->testleague->clubs()->first();
+    }
 
     /**
      * run job generate pdf repoerst
@@ -27,8 +33,7 @@ class GenerateLeagueReportsTest extends SysTestCase
      */
     public function run_pdf_reports_job()
     {
-        $region = Region::where('code', 'HBVDA')->first();
-        $league = Game::first()->league;
+        $region = $this->testleague->region;
 
         $folder = $region->league_folder;
         if (Storage::exists($folder)){
@@ -37,14 +42,14 @@ class GenerateLeagueReportsTest extends SysTestCase
             Storage::delete($files);
         }
 
-        $report = $folder . '/' . $league->shortname;
+        $report = $folder . '/' . $this->testleague->shortname;
         $report .= '_games.pdf';
 
-        $job_instance = resolve(GenerateLeagueGamesReport::class, ['region' => $region, 'league' => $league, 'rtype' => ReportFileType::PDF()]);
+        $job_instance = resolve(GenerateLeagueGamesReport::class, ['region' => $region, 'league' => $this->testleague, 'rtype' => ReportFileType::PDF()]);
         app()->call([$job_instance, 'handle']);
 
         Storage::assertExists($report);
-        // Excel::assertStored($report);
+
     }
 
     /**
@@ -57,24 +62,22 @@ class GenerateLeagueReportsTest extends SysTestCase
      */
     public function run_xlsx_reports_job()
     {
-        $region = Region::where('code', 'HBVDA')->first();
-        $league = Game::first()->league;
-
+        $region = $this->testleague->region;
         $folder = $region->league_folder;
-//        Excel::fake();
+
         Storage::assertExists($folder);
         $files = Storage::allFiles($folder);
         Storage::delete($files);
 
 
-        $report = $folder . '/' . $league->shortname;
+        $report = $folder . '/' . $this->testleague->shortname;
         $report .= '_games.xlsx';
 
-        $job_instance = resolve(GenerateLeagueGamesReport::class, ['region' => $region, 'league' => $league, 'rtype' => ReportFileType::XLSX()]);
+        $job_instance = resolve(GenerateLeagueGamesReport::class, ['region' => $region, 'league' => $this->testleague, 'rtype' => ReportFileType::XLSX()]);
         app()->call([$job_instance, 'handle']);
 
         Storage::assertExists($report);
-//        Excel::assertStored($report);
+
     }
 
     /**
@@ -87,19 +90,17 @@ class GenerateLeagueReportsTest extends SysTestCase
      */
     public function run_ics_reports_job()
     {
-        $region = Region::where('code', 'HBVDA')->first();
-        $league = Game::first()->league;
-
+        $region = $this->testleague->region;
         $folder = $region->league_folder;
 
         Storage::assertExists($folder);
         $files = Storage::allFiles($folder);
         Storage::delete($files);
 
-        $report = $folder . '/' . $league->shortname;
+        $report = $folder . '/' . $this->testleague->shortname;
         $report .= '_games.ics';
 
-        $job_instance = resolve(GenerateLeagueGamesReport::class, ['region' => $region, 'league' => $league, 'rtype' => ReportFileType::ICS()]);
+        $job_instance = resolve(GenerateLeagueGamesReport::class, ['region' => $region, 'league' => $this->testleague, 'rtype' => ReportFileType::ICS()]);
         app()->call([$job_instance, 'handle']);
 
         Storage::assertExists($report);

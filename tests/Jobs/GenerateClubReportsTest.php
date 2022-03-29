@@ -3,17 +3,25 @@
 namespace Tests\Jobs;
 
 use App\Jobs\GenerateClubGamesReport;
-use App\Models\Region;
-use App\Models\Game;
-use Tests\SysTestCase;
+use App\Models\League;
+
+use Tests\TestCase;
 use App\Enums\ReportFileType;
 use App\Enums\ReportScope;
 
 use Illuminate\Support\Facades\Storage;
 
-class GenerateClubReportsTest extends SysTestCase
+class GenerateClubReportsTest extends TestCase
 {
+    private $testleague;
+    private $testclub_assigned;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->testleague = League::factory()->frozen(4, 4)->create();
+        $this->testclub_assigned = $this->testleague->clubs()->first();
+    }
 
     /**
      * run job generate pdf repoerst
@@ -25,9 +33,9 @@ class GenerateClubReportsTest extends SysTestCase
      */
     public function run_pdf_reports_job()
     {
-        $region = Region::where('code', 'HBVDA')->first();
-        $club = $region->clubs->first();
-        $league = Game::where('club_id_home',$club->id)->first()->league;
+        $region = $this->testleague->region;
+        $club = $this->testclub_assigned;
+        $league = $this->testleague;
 
         $folder = $region->club_folder;
         if (Storage::exists($folder)){
@@ -78,9 +86,10 @@ class GenerateClubReportsTest extends SysTestCase
      */
     public function run_xlsx_reports_job()
     {
-        $region = Region::where('code', 'HBVDA')->first();
-        $club = $region->clubs->first();
-        $league = Game::where('club_id_home',$club->id)->first()->league;
+        $region = $this->testleague->region;
+        $club = $this->testclub_assigned;
+        $league = $this->testleague;
+
 
         $folder = $region->club_folder;
         // Excel::fake();
@@ -127,10 +136,10 @@ class GenerateClubReportsTest extends SysTestCase
      */
     public function run_ics_reports_job()
     {
-        $region = Region::where('code', 'HBVDA')->first();
-        $club = $region->clubs->first();
-        Game::where('club_id_home',$club->id)->update(['referee_1'=>'****']);
-        $league = Game::where('club_id_home',$club->id)->first()->league;
+        $region = $this->testleague->region;
+        $club = $this->testclub_assigned;
+        $league = $this->testleague;
+
 
         $folder = $region->club_folder;
         Storage::assertExists($folder);
