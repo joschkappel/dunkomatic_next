@@ -60,43 +60,6 @@ class RegionMembershipController extends Controller
 
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Region  $region
-     * @param  \App\Models\Member  $member
-     * @return \Illuminate\Http\RedirectResponse
-     *
-     */
-    public function update(Request $request, Region $region, Member $member)
-    {
-        $data = $request->validate([
-            'member_id' => 'required|exists:members,id',
-        ]);
-        Log::info('region membership form data validated OK.', ['region-id'=>$region->id, 'member-id'=>$member->id]);
-
-        // get all current memberships
-        $mships = $member->memberships->where('membership_type', Region::class)->where('membership_id', $region->id);
-        $member_new = Member::find($data['member_id']);
-
-        foreach ($mships as $ms) {
-            //Log::debug($role);
-            $ms->update(['member_id' => $member_new->id]);
-        }
-        Log::notice('region membership updated.', ['region-id'=>$region->id, 'member-id-old'=>$member->id, 'member-id-new'=>$member_new->id]);
-
-        // check if old member is w/out memberships, if so delete
-        if ($member_new->memberships->count() == 0) {
-            $member_new->delete();
-        }
-
-        return redirect()->action(
-            'RegionController@index',
-            ['language' => app()->getLocale(), 'region' => $region->id]
-        );
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Region $region
@@ -106,8 +69,6 @@ class RegionMembershipController extends Controller
      */
     public function destroy(Region $region, Member $member)
     {
-        $region->memberships()->where('member_id', $member->id)->delete();
-
         $mships = $region->memberships()->where('member_id', $member->id)->get();
         foreach ($mships as $ms) {
             $ms->delete();

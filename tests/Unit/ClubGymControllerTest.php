@@ -2,17 +2,27 @@
 
 namespace Tests\Unit;
 
+use App\Models\League;
 use App\Models\Club;
-use App\Models\Gym;
 
 use Tests\TestCase;
 use Tests\Support\Authentication;
-use Illuminate\Support\Facades\Log;
 
 class ClubGymControllerTest extends TestCase
 {
     use Authentication;
 
+    private $testleague;
+    private $testclub_assigned;
+    private $testclub_free;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->testleague = League::factory()->registered(4, 4)->create();
+        $this->testclub_assigned = $this->testleague->clubs()->first();
+        $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
+    }
     /**
      * create
      *
@@ -25,15 +35,12 @@ class ClubGymControllerTest extends TestCase
     public function create()
     {
 
-      Club::factory()->create(['name'=>'testclub']);
-      $club = Club::where('name','testclub')->first();
-
       $response = $this->authenticated()
-                        ->get(route('club.gym.create',['language'=>'de', 'club'=>$club]));
+                        ->get(route('club.gym.create',['language'=>'de', 'club'=>$this->testclub_assigned]));
 
       $response->assertStatus(200)
                ->assertViewIs('club.gym.gym_new')
-               ->assertViewHas('club',$club);
+               ->assertViewHas('club',$this->testclub_assigned);
 
     }
     /**
@@ -47,10 +54,8 @@ class ClubGymControllerTest extends TestCase
      */
     public function store_notok()
     {
-      $club = Club::where('name','testclub')->first();
       $response = $this->authenticated()
-                        ->post(route('club.gym.store',['club'=>$club]), [
-                          'club_id' => $club->id,
+                        ->post(route('club.gym.store',['club'=>$this->testclub_assigned]), [
                           'gym_no' => '1',
                           'name' => 'testgym'
                       ]);
@@ -74,11 +79,9 @@ class ClubGymControllerTest extends TestCase
     public function store_ok()
     {
 
-      $club = Club::where('name','testclub')->first();
       $response = $this->authenticated()
-                        ->post(route('club.gym.store',['club'=>$club]), [
-                          'club_id' => $club->id,
-                          'gym_no' => '1',
+                        ->post(route('club.gym.store',['club'=>$this->testclub_assigned]), [
+                          'gym_no' => '5',
                           'name' => 'testgym',
                           'zip' => 'gymzip',
                           'city' => 'gymcity',
@@ -87,7 +90,7 @@ class ClubGymControllerTest extends TestCase
       $response
           ->assertStatus(302)
           ->assertSessionHasNoErrors()
-          ->assertHeader('Location', route('club.dashboard', ['language'=>'de','club'=>$club]));
+          ->assertHeader('Location', route('club.dashboard', ['language'=>'de','club'=>$this->testclub_assigned]));
 
       $this->assertDatabaseHas('gyms', ['name' => 'testgym']);
 
@@ -104,8 +107,7 @@ class ClubGymControllerTest extends TestCase
     public function edit()
     {
       //$this->withoutExceptionHandling();
-      $club = Club::where('name','testclub')->first();
-      $gym = $club->gyms->first();
+      $gym = $this->testclub_assigned->gyms->first();
 
       $response = $this->authenticated()
                         ->get(route('gym.edit',['language'=>'de', 'gym'=>$gym]));
@@ -125,9 +127,7 @@ class ClubGymControllerTest extends TestCase
      */
     public function update_notok()
     {
-      //$this->withoutExceptionHandling();
-      $club = Club::where('name','testclub')->first();
-      $gym = $club->gyms->first();
+      $gym = $this->testclub_assigned->gyms->first();
       $response = $this->authenticated()
                         ->put(route('gym.update',['gym'=>$gym]),[
                           'gym_no' => null,
@@ -137,9 +137,8 @@ class ClubGymControllerTest extends TestCase
                           'street' => $gym->street
                         ]);
 
-      $response->assertStatus(302)
-               ->assertSessionHasErrors(['gym_no']);;
-      //$response->dumpSession();
+      $response->assertSessionHasErrors(['gym_no'])
+                ->assertStatus(302);
       $this->assertDatabaseMissing('gyms', ['name'=>'testgym2']);
     }
     /**
@@ -153,9 +152,7 @@ class ClubGymControllerTest extends TestCase
      */
     public function update_ok()
     {
-      //$this->withoutExceptionHandling();
-      $club = Club::where('name','testclub')->first();
-      $gym = $club->gyms->first();
+      $gym = $this->testclub_assigned->gyms->first();
       $response = $this->authenticated()
                         ->put(route('gym.update',['gym'=>$gym]),[
                           'gym_no' => $gym->gym_no,
@@ -167,7 +164,7 @@ class ClubGymControllerTest extends TestCase
       $gym->refresh();
       $response->assertStatus(302)
                ->assertSessionHasNoErrors()
-               ->assertHeader('Location', route('club.dashboard',['language'=>'de', 'club'=>$club]));
+               ->assertHeader('Location', route('club.dashboard',['language'=>'de', 'club'=>$this->testclub_assigned]));
 
       $this->assertDatabaseHas('gyms', ['name'=>$gym->name]);
     }
@@ -182,10 +179,9 @@ class ClubGymControllerTest extends TestCase
      */
     public function show()
     {
-      $club = Club::where('name','testclub')->first();
-      $gym = $club->gyms->first();
+      $gym = $this->testclub_assigned->gyms->first();
       $response = $this->authenticated()
-                        ->get(route('gym.sb.gym',['club'=>$club, 'gym'=>$gym]));
+                        ->get(route('gym.sb.gym',['club'=>$this->testclub_assigned, 'gym'=>$gym]));
 
       //$response->dump();
       $response->assertStatus(200)
@@ -204,10 +200,9 @@ class ClubGymControllerTest extends TestCase
       */
      public function sb_club()
      {
-       $club = Club::where('name','testclub')->first();
-       $gym = $club->gyms->first();
+       $gym = $this->testclub_assigned->gyms->first();
        $response = $this->authenticated()
-                         ->get(route('gym.sb.club',['club'=>$club]));
+                         ->get(route('gym.sb.club',['club'=>$this->testclub_assigned]));
 
        //$response->dump();
        $response->assertStatus(200)
@@ -227,34 +222,15 @@ class ClubGymControllerTest extends TestCase
      */
     public function destroy()
     {
-      //$this->withoutExceptionHandling();
-      $club = Club::where('name','testclub')->first();
-      $gym = $club->gyms->first();
+      $gym = $this->testclub_assigned->gyms()->first();
       $response = $this->authenticated()
                         ->delete(route('gym.destroy',['gym'=>$gym]));
 
       $response->assertStatus(302)
                ->assertSessionHasNoErrors()
-               ->assertHeader('Location', route('club.dashboard',['language'=>'de', 'club'=>$club]));
+               ->assertHeader('Location', route('club.dashboard',['language'=>'de', 'club'=>$this->testclub_assigned]));
 
       $this->assertDatabaseMissing('gyms', ['id'=>$gym->id]);
     }
-    /**
-     * db_cleanup
-     *
-     * @test
-     * @group gym
-     * @group controller
-     *
-     * @return void
-     */
-   public function db_cleanup()
-   {
-        /// clean up DB
-        $club = Club::where('name','testclub')->first();
-        $club->gyms()->delete();
-        $club->delete();
-        $this->assertDatabaseCount('clubs', 0)
-             ->assertDatabaseCount('gyms', 0);
-   }
+
 }

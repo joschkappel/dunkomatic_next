@@ -16,7 +16,7 @@ class CreateScheduleEventsTable extends Migration
         Schema::create('schedule_events', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('schedule_id');
-            $table->foreign('schedule_id')->references('id')->on('schedules');
+            $table->foreign('schedule_id')->references('id')->on('schedules')->cascadeOnDelete();
             $table->smallInteger('game_day');
             $table->date('game_date');
             $table->boolean('full_weekend')->default(True);

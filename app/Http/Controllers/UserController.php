@@ -309,8 +309,8 @@ class UserController extends Controller
 
             $this->setAccessRights(
                 $user,
-                $data['regionadmin'] ?? false,
                 session('cur_region'),
+                $data['regionadmin'] ?? false,
                 $data['clubadmin'] ?? false,
                 $data['club_ids'] ?? null,
                 $data['leagueadmin'] ?? false,
@@ -353,8 +353,8 @@ class UserController extends Controller
 
         $this->setAccessRights(
             $user,
-            $data['regionadmin'] ?? false,
             session('cur_region'),
+            $data['regionadmin'] ?? false,
             $data['clubadmin'] ?? false,
             $data['club_ids'] ?? null,
             $data['leagueadmin'] ?? false,

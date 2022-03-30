@@ -3,80 +3,31 @@
 namespace Tests\Feature;
 
 use App\Models\Club;
-use App\Models\Member;
-use App\Models\Schedule;
 use App\Models\League;
-use App\Models\Game;
-use App\Models\Gym;
-use App\Models\Team;
 
-use App\Enums\Role;
 use App\Enums\LeagueState;
-
 use Tests\Support\Authentication;
-use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class LeagueAssignmentInjectTeamTest extends TestCase
 {
     use Authentication;
 
-    protected static $league;
-    protected static $c_toadd;
-    protected static $c_before;
+    private $testleague;
+    private $testclub_assigned;
+    private $testclub_free;
 
-    /**
-     * Create pre-requs
-     * 4 Clubs, 1 Team ech
-     * 1 Schedule for 4
-     * 1 League, State Scheduling, Games created
-     * 
-     * @test
-     * @group leaguemgmt
-     *
-     * @return void
-     */
-    public function create_prerequs()
+    public function setUp(): void
     {
-        $this->db_cleanup();
-        // create data:  4 clubs with 1 team each
-        static::$c_toadd = Club::factory()->hasTeams(1)->hasGyms(1)->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])->count(1)->create(['name' => 'CADD']);
-        static::$c_before = Club::factory()->hasTeams(1)->hasGyms(1)->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])->count(3)->create(['name' => 'CBEFORE']);
-        // create schedule (4 teams)
-        $schedule = Schedule::factory()->create(['name' => 'testschedule']);
-        $this->authenticated()
-            ->post(route('schedule_event.store', ['schedule' => $schedule]), [
-                'startdate' => Carbon::now()->addDays(32),
-            ]);
-        // create league
-        static::$league = League::factory()->create(['name' => 'testleague', 'state' => LeagueState::Assignment(), 'schedule_id' => $schedule->id]);
-
-        // assign clubs to league
-        static::$league->clubs()->attach([
-            static::$c_before[0]->id =>  ['league_no' => 1, 'league_char' => 'A'],
-            static::$c_before[1]->id =>  ['league_no' => 2, 'league_char' => 'B'],
-            static::$c_before[2]->id =>  ['league_no' => 3, 'league_char' => 'C'],
-        ]);
-
-        $this->assertDatabaseHas('leagues', ['id' => static::$league->id, 'state' => LeagueState::Assignment()])
-            ->assertDatabaseMissing('games', ['league_id' => static::$league->id])
-            ->assertDatabaseCount('clubs', 4)
-            ->assertDatabaseCount('teams', 4)
-            ->assertDatabaseCount('club_league', 3)
-            ->assertDatabaseCount('games', 0);
-
-        static::$league->refresh();
-        $this->assertEquals( 4 , static::$league->state_count['size']);
-        $this->assertEquals( 3 , static::$league->state_count['assigned']);
-        $this->assertEquals( 0 , static::$league->state_count['registered']);
-        $this->assertEquals( 0 , static::$league->state_count['charspicked']);
-        $this->assertEquals( 0 , static::$league->state_count['generated']);            
-
+        parent::setUp();
+        $this->testleague = League::factory()->assigned(3)->create();
+        $this->testclub_assigned = $this->testleague->clubs()->first();
+        $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
     }
 
     /**
-     * Inject new club 
-     * 
+     * Inject new club
+     *
      * @test
      * @group leaguemgmt
      *
@@ -84,215 +35,188 @@ class LeagueAssignmentInjectTeamTest extends TestCase
      */
     public function assign_club()
     {
-        $clubs[] = static::$c_before[0]->id;
-        $clubs[] = static::$c_before[1]->id;
-        $clubs[] = static::$c_before[2]->id;
-        $clubs[] = static::$c_toadd[0]->id;
+        $c_toadd = $this->testclub_free;
 
-        // now add the new club/team 
+        $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Assignment()])
+            ->assertDatabaseMissing('games', ['league_id' => $this->testleague->id])
+            ->assertDatabaseCount('clubs', 4)
+            ->assertDatabaseCount('teams', 4)
+            ->assertDatabaseCount('club_league', 3)
+            ->assertDatabaseCount('games', 0);
+
+        $this->testleague->refresh();
+        $this->assertEquals(4, $this->testleague->state_count['size']);
+        $this->assertEquals(3, $this->testleague->state_count['assigned']);
+        $this->assertEquals(0, $this->testleague->state_count['registered']);
+        $this->assertEquals(0, $this->testleague->state_count['charspicked']);
+        $this->assertEquals(0, $this->testleague->state_count['generated']);
+
+        $clubs = $this->testleague->clubs->pluck('id')->toArray();
+        $clubs[] = $c_toadd->id;
+
+        // now add the new club/team
         $response = $this->authenticated()
             ->followingRedirects()
             ->post(
-                route('league.assign-clubs', ['league' => static::$league->id]),
+                route('league.assign-clubs', ['league' => $this->testleague->id]),
                 ['assignedClubs' => $clubs]
             );
 
         $response->assertStatus(200);
-        $this->assertDatabaseHas('leagues', ['id' => static::$league->id, 'state' => LeagueState::Assignment()])
-            ->assertDatabaseMissing('games', ['league_id' => static::$league->id])
+        $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Assignment()])
+            ->assertDatabaseMissing('games', ['league_id' => $this->testleague->id])
             ->assertDatabaseCount('clubs', 4)
             ->assertDatabaseCount('teams', 4)
             ->assertDatabaseCount('club_league', 4)
-            ->assertDatabaseCount('games',0 );
+            ->assertDatabaseCount('games', 0);
 
-        static::$league->refresh();
-        $this->assertEquals( 4 , static::$league->state_count['size']);
-        $this->assertEquals( 4 , static::$league->state_count['assigned']);
-        $this->assertEquals( 0 , static::$league->state_count['registered']);
-        $this->assertEquals( 0 , static::$league->state_count['charspicked']);
-        $this->assertEquals( 0 , static::$league->state_count['generated']);            
-
+        $this->testleague->refresh();
+        $this->assertEquals(4, $this->testleague->state_count['size']);
+        $this->assertEquals(4, $this->testleague->state_count['assigned']);
+        $this->assertEquals(0, $this->testleague->state_count['registered']);
+        $this->assertEquals(0, $this->testleague->state_count['charspicked']);
+        $this->assertEquals(0, $this->testleague->state_count['generated']);
     }
 
     /**
      * deasasing 1 club
-     * 
+     *
      * @test
      * @group leaguemgmt
      *
      * @return void
      */
-    public function deassign_club()  
+    public function deassign_club()
     {
-        $clubs[] = static::$c_toadd[0]->id;
-
-        // now add the new club/team 
+        // now add the new club/team
         $response = $this->authenticated()
             ->followingRedirects()
             ->delete(
-                route('league.deassign-club', ['league' => static::$league->id, 'club' => static::$c_toadd[0]->id])
+                route('league.deassign-club', ['league' => $this->testleague, 'club' => $this->testclub_assigned])
             );
 
         $response->assertStatus(200);
-        $this->assertDatabaseHas('leagues', ['id' => static::$league->id, 'state' => LeagueState::Assignment()])
-            ->assertDatabaseMissing('games', ['league_id' => static::$league->id])
+        $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Assignment()])
+            ->assertDatabaseMissing('games', ['league_id' => $this->testleague->id])
             ->assertDatabaseCount('clubs', 4)
             ->assertDatabaseCount('teams', 4)
-            ->assertDatabaseCount('club_league', 3)
-            ->assertDatabaseCount('games',0 );
+            ->assertDatabaseCount('club_league', 2)
+            ->assertDatabaseCount('games', 0);
 
-        static::$league->refresh();
-        $this->assertEquals( 4 , static::$league->state_count['size']);
-        $this->assertEquals( 3 , static::$league->state_count['assigned']);
-        $this->assertEquals( 0 , static::$league->state_count['registered']);
-        $this->assertEquals( 0 , static::$league->state_count['charspicked']);
-        $this->assertEquals( 0 , static::$league->state_count['generated']);
-
+        $this->testleague->refresh();
+        $this->assertEquals(4, $this->testleague->state_count['size']);
+        $this->assertEquals(2, $this->testleague->state_count['assigned']);
+        $this->assertEquals(0, $this->testleague->state_count['registered']);
+        $this->assertEquals(0, $this->testleague->state_count['charspicked']);
+        $this->assertEquals(0, $this->testleague->state_count['generated']);
     }
 
     /**
      * modify assignment
-     * 
+     *
      * @test
      * @group leaguemgmt
      *
      * @return void
      */
-    public function modify_assignment()  
+    public function modify_assignment()
     {
-        $clubs[] = static::$c_before[0]->id;
-        $clubs[] = static::$c_toadd[0]->id;
+        $clubs[] = $this->testclub_assigned->id;
+        $clubs[] = $this->testclub_free->id;
 
-        // now add the new club/team 
+        // now add the new club/team
         $response = $this->authenticated()
             ->followingRedirects()
             ->post(
-                route('league.assign-clubs', ['league' => static::$league->id]),
+                route('league.assign-clubs', ['league' => $this->testleague]),
                 ['assignedClubs' => $clubs]
             );
 
         $response->assertStatus(200);
-        $this->assertDatabaseHas('leagues', ['id' => static::$league->id, 'state' => LeagueState::Assignment()])
-            ->assertDatabaseMissing('games', ['league_id' => static::$league->id])
+        $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Assignment()])
+            ->assertDatabaseMissing('games', ['league_id' => $this->testleague->id])
             ->assertDatabaseCount('clubs', 4)
             ->assertDatabaseCount('teams', 4)
             ->assertDatabaseCount('club_league', 2)
-            ->assertDatabaseCount('games',0 );
+            ->assertDatabaseCount('games', 0);
 
-        static::$league->refresh();
-        $this->assertEquals( 4 , static::$league->state_count['size']);
-        $this->assertEquals( 2 , static::$league->state_count['assigned']);
-        $this->assertEquals( 0 , static::$league->state_count['registered']);
-        $this->assertEquals( 0 , static::$league->state_count['charspicked']);
-        $this->assertEquals( 0 , static::$league->state_count['generated']);
-
+        $this->testleague->refresh();
+        $this->assertEquals(4, $this->testleague->state_count['size']);
+        $this->assertEquals(2, $this->testleague->state_count['assigned']);
+        $this->assertEquals(0, $this->testleague->state_count['registered']);
+        $this->assertEquals(0, $this->testleague->state_count['charspicked']);
+        $this->assertEquals(0, $this->testleague->state_count['generated']);
     }
     /**
      * assign duplicate club
-     * 
+     *
      * @test
      * @group leaguemgmt
      *
      * @return void
      */
-    public function assign_duplicate_club()  
-    {    
-
-        $response = $this->authenticated()
-        ->followingRedirects()
-        ->post(
-            route('league.assign-clubs', ['league' => static::$league->id]),
-            ['club_id' => static::$c_toadd[0]->id, 'item_id'=> static::$league->id]
-        );    
-        $response->assertStatus(200);
-        $this->assertDatabaseHas('leagues', ['id' => static::$league->id, 'state' => LeagueState::Assignment()])
-            ->assertDatabaseMissing('games', ['league_id' => static::$league->id])
-            ->assertDatabaseCount('clubs', 4)
-            ->assertDatabaseCount('teams', 4)
-            ->assertDatabaseCount('club_league', 3)
-            ->assertDatabaseCount('games',0 );
-
-        static::$league->refresh();
-        $this->assertEquals( 4 , static::$league->state_count['size']);
-        $this->assertEquals( 3 , static::$league->state_count['assigned']);
-        $this->assertEquals( 0 , static::$league->state_count['registered']);
-        $this->assertEquals( 0 , static::$league->state_count['charspicked']);
-        $this->assertEquals( 0 , static::$league->state_count['generated']);
-    }
-
-        /**
-     * deasasing duplicate club
-     * 
-     * @test
-     * @group leaguemgmt
-     *
-     * @return void
-     */
-    public function deassign_duplicate_club()  
+    public function assign_duplicate_club()
     {
-        $clubs[] = static::$c_toadd[0]->id;
-
-        // now add the new club/team 
         $response = $this->authenticated()
             ->followingRedirects()
-            ->delete(
-                route('league.deassign-club', ['league' => static::$league->id, 'club' => static::$c_toadd[0]->id])
+            ->post(
+                route('league.assign-clubs', ['league' => $this->testleague->id]),
+                ['club_id' => $this->testclub_assigned->id, 'item_id' => $this->testleague->id]
             );
-
         $response->assertStatus(200);
-        $this->assertDatabaseHas('leagues', ['id' => static::$league->id, 'state' => LeagueState::Assignment()])
-            ->assertDatabaseMissing('games', ['league_id' => static::$league->id])
+        $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Assignment()])
+            ->assertDatabaseMissing('games', ['league_id' => $this->testleague->id])
             ->assertDatabaseCount('clubs', 4)
             ->assertDatabaseCount('teams', 4)
-            ->assertDatabaseCount('club_league', 2)
-            ->assertDatabaseCount('games',0 );
+            ->assertDatabaseCount('club_league', 4)
+            ->assertDatabaseCount('games', 0);
 
-        static::$league->refresh();
-        $this->assertEquals( 4 , static::$league->state_count['size']);
-        $this->assertEquals( 2 , static::$league->state_count['assigned']);
-        $this->assertEquals( 0 , static::$league->state_count['registered']);
-        $this->assertEquals( 0 , static::$league->state_count['charspicked']);
-        $this->assertEquals( 0 , static::$league->state_count['generated']);
-
+        $this->testleague->refresh();
+        $this->assertEquals(4, $this->testleague->state_count['size']);
+        $this->assertEquals(4, $this->testleague->state_count['assigned']);
+        $this->assertEquals(0, $this->testleague->state_count['registered']);
+        $this->assertEquals(0, $this->testleague->state_count['charspicked']);
+        $this->assertEquals(0, $this->testleague->state_count['generated']);
     }
 
     /**
-     * db_cleanup
+     * deasasing duplicate club
      *
      * @test
      * @group leaguemgmt
      *
      * @return void
      */
-    public function db_cleanup()
+    public function deassign_duplicate_club()
     {
-        /// clean up DB
-        Game::whereNotNull('id')->delete();
-        Gym::whereNotNull('id')->delete();
-        Team::whereNotNull('id')->delete();
-        foreach (Club::all() as $c) {
-            $c->leagues()->detach();
-            $c->members()->detach();
-            $c->delete();
-        }
-        $league = League::where('name', 'testleague')->first();
-        if (isset($league)) {
-            $league->schedule->events()->delete();
-            $league->delete();
-        }
-        
-        $schedule = Schedule::where('name', 'testschedule')->first();
-        if (isset($schedule)){
-            if ($schedule->events()->exists()){
-                $schedule->events()->delete();
-            }
-            $schedule->delete();
-        }
-        
-        //League::whereNotNull('id')->delete();
-        $this->assertDatabaseCount('leagues', 0)
-            ->assertDatabaseCount('clubs', 0)
-            ->assertDatabaseCount('teams', 0)
+        // now add a duplicate
+        $response = $this->authenticated()
+            ->followingRedirects()
+            ->post(
+                route('league.assign-clubs', ['league' => $this->testleague]),
+                ['club_id' => $this->testclub_assigned->id, 'item_id' => $this->testleague->id]
+            );
+
+        // and remove 1
+        $response = $this->authenticated()
+            ->followingRedirects()
+            ->delete(
+                route('league.deassign-club', ['league' => $this->testleague, 'club' => $this->testclub_assigned])
+            );
+
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Assignment()])
+            ->assertDatabaseMissing('games', ['league_id' => $this->testleague->id])
+            ->assertDatabaseCount('clubs', 4)
+            ->assertDatabaseCount('teams', 4)
+            ->assertDatabaseCount('club_league', 3)
             ->assertDatabaseCount('games', 0);
+
+        $this->testleague->refresh();
+        $this->assertEquals(4, $this->testleague->state_count['size']);
+        $this->assertEquals(3, $this->testleague->state_count['assigned']);
+        $this->assertEquals(0, $this->testleague->state_count['registered']);
+        $this->assertEquals(0, $this->testleague->state_count['charspicked']);
+        $this->assertEquals(0, $this->testleague->state_count['generated']);
     }
 }

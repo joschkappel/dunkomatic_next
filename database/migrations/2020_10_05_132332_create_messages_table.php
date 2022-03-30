@@ -17,9 +17,9 @@ class CreateMessagesTable extends Migration
             $table->increments('id');
             $table->timestamps();
             $table->unsignedBigInteger('user_id')->nullable;
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->unsignedInteger('region_id');
-            $table->foreign('region_id')->references('id')->on('regions');
+            $table->foreign('region_id')->references('id')->on('regions')->cascadeOnDelete();
             $table->string('title');
             $table->text('greeting');
             $table->longText('body');

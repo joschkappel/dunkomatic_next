@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Dashboard for /var/www/dunkonxt/app/Jobs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../_css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <link href="../_css/nv.d3.min.css" rel="stylesheet" type="text/css">
+  <link href="../_css/style.css" rel="stylesheet" type="text/css">
+  <link href="../_css/custom.css" rel="stylesheet" type="text/css">
+ </head>
+ <body>
+  <header>
+   <div class="container-fluid">
+    <div class="row">
+     <div class="col-md-12">
+      <nav aria-label="breadcrumb">
+       <ol class="breadcrumb">
+         <li class="breadcrumb-item"><a href="../index.html">/var/www/dunkonxt/app</a></li>
+         <li class="breadcrumb-item"><a href="index.html">Jobs</a></li>
+         <li class="breadcrumb-item active">(Dashboard)</li>
+
+       </ol>
+      </nav>
+     </div>
+    </div>
+   </div>
+  </header>
+  <div class="container-fluid">
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Classes</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="classCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="classComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="EmailValidation.php.html#20">App\Jobs\EmailValidation</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GameNotScheduled.php.html#20">App\Jobs\GameNotScheduled</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GameOverlaps.php.html#19">App\Jobs\GameOverlaps</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GenerateClubGamesReport.php.html#26">App\Jobs\GenerateClubGamesReport</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GenerateLeagueGamesReport.php.html#26">App\Jobs\GenerateLeagueGamesReport</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GenerateTeamwareReport.php.html#21">App\Jobs\GenerateTeamwareReport</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MissingLeadCheck.php.html#18">App\Jobs\MissingLeadCheck</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ProcessClubReports.php.html#26">App\Jobs\ProcessClubReports</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ProcessCustomMessages.php.html#23">App\Jobs\ProcessCustomMessages</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ProcessDbCleanup.php.html#16">App\Jobs\ProcessDbCleanup</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ProcessFilesCleanup.php.html#15">App\Jobs\ProcessFilesCleanup</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ProcessLeagueReports.php.html#22">App\Jobs\ProcessLeagueReports</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ProcessLeagueStateChanges.php.html#19">App\Jobs\ProcessLeagueStateChanges</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ProcessNewSeason.php.html#27">App\Jobs\ProcessNewSeason</a></td><td class="text-right">0%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="ProcessCustomMessages.php.html#23">App\Jobs\ProcessCustomMessages</a></td><td class="text-right">506</td></tr>
+       <tr><td><a href="ProcessLeagueStateChanges.php.html#19">App\Jobs\ProcessLeagueStateChanges</a></td><td class="text-right">420</td></tr>
+       <tr><td><a href="GenerateClubGamesReport.php.html#26">App\Jobs\GenerateClubGamesReport</a></td><td class="text-right">342</td></tr>
+       <tr><td><a href="ProcessClubReports.php.html#26">App\Jobs\ProcessClubReports</a></td><td class="text-right">182</td></tr>
+       <tr><td><a href="ProcessNewSeason.php.html#27">App\Jobs\ProcessNewSeason</a></td><td class="text-right">132</td></tr>
+       <tr><td><a href="EmailValidation.php.html#20">App\Jobs\EmailValidation</a></td><td class="text-right">110</td></tr>
+       <tr><td><a href="MissingLeadCheck.php.html#18">App\Jobs\MissingLeadCheck</a></td><td class="text-right">72</td></tr>
+       <tr><td><a href="GenerateLeagueGamesReport.php.html#26">App\Jobs\GenerateLeagueGamesReport</a></td><td class="text-right">56</td></tr>
+       <tr><td><a href="ProcessLeagueReports.php.html#22">App\Jobs\ProcessLeagueReports</a></td><td class="text-right">56</td></tr>
+       <tr><td><a href="GameNotScheduled.php.html#20">App\Jobs\GameNotScheduled</a></td><td class="text-right">42</td></tr>
+       <tr><td><a href="GameOverlaps.php.html#19">App\Jobs\GameOverlaps</a></td><td class="text-right">42</td></tr>
+       <tr><td><a href="GenerateTeamwareReport.php.html#21">App\Jobs\GenerateTeamwareReport</a></td><td class="text-right">20</td></tr>
+       <tr><td><a href="ProcessFilesCleanup.php.html#15">App\Jobs\ProcessFilesCleanup</a></td><td class="text-right">20</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Methods</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="methodCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="methodComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="EmailValidation.php.html#34"><abbr title="App\Jobs\EmailValidation::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EmailValidation.php.html#46"><abbr title="App\Jobs\EmailValidation::handle">handle</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GameNotScheduled.php.html#32"><abbr title="App\Jobs\GameNotScheduled::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GameNotScheduled.php.html#42"><abbr title="App\Jobs\GameNotScheduled::handle">handle</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GameOverlaps.php.html#32"><abbr title="App\Jobs\GameOverlaps::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GameOverlaps.php.html#42"><abbr title="App\Jobs\GameOverlaps::handle">handle</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GenerateClubGamesReport.php.html#44"><abbr title="App\Jobs\GenerateClubGamesReport::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GenerateClubGamesReport.php.html#82"><abbr title="App\Jobs\GenerateClubGamesReport::handle">handle</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GenerateLeagueGamesReport.php.html#42"><abbr title="App\Jobs\GenerateLeagueGamesReport::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GenerateLeagueGamesReport.php.html#62"><abbr title="App\Jobs\GenerateLeagueGamesReport::handle">handle</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GenerateTeamwareReport.php.html#37"><abbr title="App\Jobs\GenerateTeamwareReport::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GenerateTeamwareReport.php.html#55"><abbr title="App\Jobs\GenerateTeamwareReport::handle">handle</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MissingLeadCheck.php.html#32"><abbr title="App\Jobs\MissingLeadCheck::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MissingLeadCheck.php.html#43"><abbr title="App\Jobs\MissingLeadCheck::handle">handle</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ProcessClubReports.php.html#38"><abbr title="App\Jobs\ProcessClubReports::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ProcessClubReports.php.html#57"><abbr title="App\Jobs\ProcessClubReports::handle">handle</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ProcessCustomMessages.php.html#36"><abbr title="App\Jobs\ProcessCustomMessages::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ProcessCustomMessages.php.html#46"><abbr title="App\Jobs\ProcessCustomMessages::handle">handle</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ProcessDbCleanup.php.html#35"><abbr title="App\Jobs\ProcessDbCleanup::handle">handle</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ProcessFilesCleanup.php.html#34"><abbr title="App\Jobs\ProcessFilesCleanup::handle">handle</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ProcessLeagueReports.php.html#35"><abbr title="App\Jobs\ProcessLeagueReports::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ProcessLeagueReports.php.html#55"><abbr title="App\Jobs\ProcessLeagueReports::handle">handle</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ProcessLeagueStateChanges.php.html#32"><abbr title="App\Jobs\ProcessLeagueStateChanges::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ProcessLeagueStateChanges.php.html#43"><abbr title="App\Jobs\ProcessLeagueStateChanges::handle">handle</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ProcessNewSeason.php.html#46"><abbr title="App\Jobs\ProcessNewSeason::handle">handle</abbr></a></td><td class="text-right">0%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="ProcessCustomMessages.php.html#46"><abbr title="App\Jobs\ProcessCustomMessages::handle">handle</abbr></a></td><td class="text-right">462</td></tr>
+       <tr><td><a href="ProcessLeagueStateChanges.php.html#43"><abbr title="App\Jobs\ProcessLeagueStateChanges::handle">handle</abbr></a></td><td class="text-right">380</td></tr>
+       <tr><td><a href="GenerateClubGamesReport.php.html#82"><abbr title="App\Jobs\GenerateClubGamesReport::handle">handle</abbr></a></td><td class="text-right">156</td></tr>
+       <tr><td><a href="ProcessClubReports.php.html#57"><abbr title="App\Jobs\ProcessClubReports::handle">handle</abbr></a></td><td class="text-right">132</td></tr>
+       <tr><td><a href="ProcessNewSeason.php.html#46"><abbr title="App\Jobs\ProcessNewSeason::handle">handle</abbr></a></td><td class="text-right">110</td></tr>
+       <tr><td><a href="EmailValidation.php.html#46"><abbr title="App\Jobs\EmailValidation::handle">handle</abbr></a></td><td class="text-right">90</td></tr>
+       <tr><td><a href="MissingLeadCheck.php.html#43"><abbr title="App\Jobs\MissingLeadCheck::handle">handle</abbr></a></td><td class="text-right">56</td></tr>
+       <tr><td><a href="GenerateClubGamesReport.php.html#44"><abbr title="App\Jobs\GenerateClubGamesReport::__construct">__construct</abbr></a></td><td class="text-right">42</td></tr>
+       <tr><td><a href="GenerateLeagueGamesReport.php.html#62"><abbr title="App\Jobs\GenerateLeagueGamesReport::handle">handle</abbr></a></td><td class="text-right">42</td></tr>
+       <tr><td><a href="GameNotScheduled.php.html#42"><abbr title="App\Jobs\GameNotScheduled::handle">handle</abbr></a></td><td class="text-right">30</td></tr>
+       <tr><td><a href="GameOverlaps.php.html#42"><abbr title="App\Jobs\GameOverlaps::handle">handle</abbr></a></td><td class="text-right">30</td></tr>
+       <tr><td><a href="ProcessLeagueReports.php.html#55"><abbr title="App\Jobs\ProcessLeagueReports::handle">handle</abbr></a></td><td class="text-right">20</td></tr>
+       <tr><td><a href="GenerateTeamwareReport.php.html#55"><abbr title="App\Jobs\GenerateTeamwareReport::handle">handle</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="ProcessFilesCleanup.php.html#34"><abbr title="App\Jobs\ProcessFilesCleanup::handle">handle</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="ProcessLeagueReports.php.html#35"><abbr title="App\Jobs\ProcessLeagueReports::__construct">__construct</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="ProcessClubReports.php.html#38"><abbr title="App\Jobs\ProcessClubReports::__construct">__construct</abbr></a></td><td class="text-right">6</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <footer>
+    <hr/>
+    <p>
+     <small>Generated by <a href="https://github.com/sebastianbergmann/php-code-coverage" target="_top">php-code-coverage 9.2.14</a> using <a href="https://secure.php.net/" target="_top">PHP 8.0.15</a> and <a href="https://phpunit.de/">PHPUnit 9.5.16</a> at Tue Mar 29 15:22:41 CEST 2022.</small>
+    </p>
+   </footer>
+  </div>
+  <script src="../_js/jquery.min.js" type="text/javascript"></script>
+  <script src="../_js/d3.min.js" type="text/javascript"></script>
+  <script src="../_js/nv.d3.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+$(document).ready(function() {
+  nv.addGraph(function() {
+    var chart = nv.models.multiBarChart();
+    chart.tooltips(false)
+      .showControls(false)
+      .showLegend(false)
+      .reduceXTicks(false)
+      .staggerLabels(true)
+      .yAxis.tickFormat(d3.format('d'));
+
+    d3.select('#classCoverageDistribution svg')
+      .datum(getCoverageDistributionData([14,0,0,0,0,0,0,0,0,0,0,0], "Class Coverage"))
+      .transition().duration(500).call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  nv.addGraph(function() {
+    var chart = nv.models.multiBarChart();
+    chart.tooltips(false)
+      .showControls(false)
+      .showLegend(false)
+      .reduceXTicks(false)
+      .staggerLabels(true)
+      .yAxis.tickFormat(d3.format('d'));
+
+    d3.select('#methodCoverageDistribution svg')
+      .datum(getCoverageDistributionData([25,0,0,0,0,0,0,0,0,0,0,3], "Method Coverage"))
+      .transition().duration(500).call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  function getCoverageDistributionData(data, label) {
+    var labels = [
+      '0%',
+      '0-10%',
+      '10-20%',
+      '20-30%',
+      '30-40%',
+      '40-50%',
+      '50-60%',
+      '60-70%',
+      '70-80%',
+      '80-90%',
+      '90-100%',
+      '100%'
+    ];
+    var values = [];
+    $.each(labels, function(key) {
+      values.push({x: labels[key], y: data[key]});
+    });
+
+    return [
+      {
+        key: label,
+        values: values,
+        color: "#4572A7"
+      }
+    ];
+  }
+  nv.addGraph(function() {
+    var chart = nv.models.scatterChart()
+      .showDistX(true)
+      .showDistY(true)
+      .showLegend(false)
+      .forceX([0, 100]);
+    chart.tooltipContent(function(graph) {
+      return '<p>' + graph.point.class + '</p>';
+    });
+
+    chart.xAxis.axisLabel('Code Coverage (in percent)');
+    chart.yAxis.axisLabel('Cyclomatic Complexity');
+
+    d3.select('#classComplexity svg')
+      .datum(getComplexityData([[0,10,"<a href=\"EmailValidation.php.html#20\">App\\Jobs\\EmailValidation<\/a>"],[0,6,"<a href=\"GameNotScheduled.php.html#20\">App\\Jobs\\GameNotScheduled<\/a>"],[0,6,"<a href=\"GameOverlaps.php.html#19\">App\\Jobs\\GameOverlaps<\/a>"],[0,18,"<a href=\"GenerateClubGamesReport.php.html#26\">App\\Jobs\\GenerateClubGamesReport<\/a>"],[0,7,"<a href=\"GenerateLeagueGamesReport.php.html#26\">App\\Jobs\\GenerateLeagueGamesReport<\/a>"],[0,4,"<a href=\"GenerateTeamwareReport.php.html#21\">App\\Jobs\\GenerateTeamwareReport<\/a>"],[0,8,"<a href=\"MissingLeadCheck.php.html#18\">App\\Jobs\\MissingLeadCheck<\/a>"],[0,13,"<a href=\"ProcessClubReports.php.html#26\">App\\Jobs\\ProcessClubReports<\/a>"],[0,22,"<a href=\"ProcessCustomMessages.php.html#23\">App\\Jobs\\ProcessCustomMessages<\/a>"],[0,2,"<a href=\"ProcessDbCleanup.php.html#16\">App\\Jobs\\ProcessDbCleanup<\/a>"],[0,4,"<a href=\"ProcessFilesCleanup.php.html#15\">App\\Jobs\\ProcessFilesCleanup<\/a>"],[0,7,"<a href=\"ProcessLeagueReports.php.html#22\">App\\Jobs\\ProcessLeagueReports<\/a>"],[0,20,"<a href=\"ProcessLeagueStateChanges.php.html#19\">App\\Jobs\\ProcessLeagueStateChanges<\/a>"],[0,11,"<a href=\"ProcessNewSeason.php.html#27\">App\\Jobs\\ProcessNewSeason<\/a>"]], 'Class Complexity'))
+      .transition()
+      .duration(500)
+      .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  nv.addGraph(function() {
+    var chart = nv.models.scatterChart()
+      .showDistX(true)
+      .showDistY(true)
+      .showLegend(false)
+      .forceX([0, 100]);
+    chart.tooltipContent(function(graph) {
+      return '<p>' + graph.point.class + '</p>';
+    });
+
+    chart.xAxis.axisLabel('Code Coverage (in percent)');
+    chart.yAxis.axisLabel('Method Complexity');
+
+    d3.select('#methodComplexity svg')
+      .datum(getComplexityData([[0,1,"<a href=\"EmailValidation.php.html#34\">App\\Jobs\\EmailValidation::__construct<\/a>"],[0,9,"<a href=\"EmailValidation.php.html#46\">App\\Jobs\\EmailValidation::handle<\/a>"],[0,1,"<a href=\"GameNotScheduled.php.html#32\">App\\Jobs\\GameNotScheduled::__construct<\/a>"],[0,5,"<a href=\"GameNotScheduled.php.html#42\">App\\Jobs\\GameNotScheduled::handle<\/a>"],[0,1,"<a href=\"GameOverlaps.php.html#32\">App\\Jobs\\GameOverlaps::__construct<\/a>"],[0,5,"<a href=\"GameOverlaps.php.html#42\">App\\Jobs\\GameOverlaps::handle<\/a>"],[0,6,"<a href=\"GenerateClubGamesReport.php.html#44\">App\\Jobs\\GenerateClubGamesReport::__construct<\/a>"],[0,12,"<a href=\"GenerateClubGamesReport.php.html#82\">App\\Jobs\\GenerateClubGamesReport::handle<\/a>"],[0,1,"<a href=\"GenerateLeagueGamesReport.php.html#42\">App\\Jobs\\GenerateLeagueGamesReport::__construct<\/a>"],[0,6,"<a href=\"GenerateLeagueGamesReport.php.html#62\">App\\Jobs\\GenerateLeagueGamesReport::handle<\/a>"],[0,1,"<a href=\"GenerateTeamwareReport.php.html#37\">App\\Jobs\\GenerateTeamwareReport::__construct<\/a>"],[0,3,"<a href=\"GenerateTeamwareReport.php.html#55\">App\\Jobs\\GenerateTeamwareReport::handle<\/a>"],[0,1,"<a href=\"MissingLeadCheck.php.html#32\">App\\Jobs\\MissingLeadCheck::__construct<\/a>"],[0,7,"<a href=\"MissingLeadCheck.php.html#43\">App\\Jobs\\MissingLeadCheck::handle<\/a>"],[0,2,"<a href=\"ProcessClubReports.php.html#38\">App\\Jobs\\ProcessClubReports::__construct<\/a>"],[0,11,"<a href=\"ProcessClubReports.php.html#57\">App\\Jobs\\ProcessClubReports::handle<\/a>"],[0,1,"<a href=\"ProcessCustomMessages.php.html#36\">App\\Jobs\\ProcessCustomMessages::__construct<\/a>"],[0,21,"<a href=\"ProcessCustomMessages.php.html#46\">App\\Jobs\\ProcessCustomMessages::handle<\/a>"],[100,1,"<a href=\"ProcessDbCleanup.php.html#25\">App\\Jobs\\ProcessDbCleanup::__construct<\/a>"],[0,1,"<a href=\"ProcessDbCleanup.php.html#35\">App\\Jobs\\ProcessDbCleanup::handle<\/a>"],[100,1,"<a href=\"ProcessFilesCleanup.php.html#24\">App\\Jobs\\ProcessFilesCleanup::__construct<\/a>"],[0,3,"<a href=\"ProcessFilesCleanup.php.html#34\">App\\Jobs\\ProcessFilesCleanup::handle<\/a>"],[0,3,"<a href=\"ProcessLeagueReports.php.html#35\">App\\Jobs\\ProcessLeagueReports::__construct<\/a>"],[0,4,"<a href=\"ProcessLeagueReports.php.html#55\">App\\Jobs\\ProcessLeagueReports::handle<\/a>"],[0,1,"<a href=\"ProcessLeagueStateChanges.php.html#32\">App\\Jobs\\ProcessLeagueStateChanges::__construct<\/a>"],[0,19,"<a href=\"ProcessLeagueStateChanges.php.html#43\">App\\Jobs\\ProcessLeagueStateChanges::handle<\/a>"],[100,1,"<a href=\"ProcessNewSeason.php.html#36\">App\\Jobs\\ProcessNewSeason::__construct<\/a>"],[0,10,"<a href=\"ProcessNewSeason.php.html#46\">App\\Jobs\\ProcessNewSeason::handle<\/a>"]], 'Method Complexity'))
+      .transition()
+      .duration(500)
+      .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  function getComplexityData(data, label) {
+    var values = [];
+    $.each(data, function(key) {
+      var value = Math.round(data[key][0]*100) / 100;
+      values.push({
+        x: value,
+        y: data[key][1],
+        class: data[key][2],
+        size: 0.05,
+        shape: 'diamond'
+      });
+    });
+
+    return [
+      {
+        key: label,
+        values: values,
+        color: "#4572A7"
+      }
+    ];
+  }
+});
+  </script>
+ </body>
+</html>

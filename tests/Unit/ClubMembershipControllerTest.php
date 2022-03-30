@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Models\Member;
 use App\Models\Club;
+use App\Models\League;
 use App\Enums\Role;
 
 use Tests\TestCase;
@@ -12,6 +13,18 @@ use Tests\Support\Authentication;
 class ClubMembershipControllerTest extends TestCase
 {
     use Authentication;
+
+    private $testleague;
+    private $testclub_assigned;
+    private $testclub_free;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->testleague = League::factory()->registered(4, 4)->create();
+        $this->testclub_assigned = $this->testleague->clubs()->first();
+        $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
+    }
 
     /**
      * create
@@ -24,16 +37,13 @@ class ClubMembershipControllerTest extends TestCase
      */
     public function create()
     {
-      $club = Club::factory()->create(['name'=>'testclub']);
+        $response = $this->authenticated()
+            ->get(route('membership.club.create', ['language' => 'de', 'club' => $this->testclub_assigned]));
 
-      $response = $this->authenticated( )
-                        ->get(route('membership.club.create',['language'=>'de', 'club'=>$club]));
-
-      $response->assertStatus(200)
-               ->assertViewIs('member.member_new')
-               ->assertViewHas('entity',$club)
-               ->assertViewHas('entity_type',Club::class);
-
+        $response->assertStatus(200)
+            ->assertViewIs('member.member_new')
+            ->assertViewHas('entity', $this->testclub_assigned)
+            ->assertViewHas('entity_type', Club::class);
     }
     /**
      * store NOT OK
@@ -46,29 +56,27 @@ class ClubMembershipControllerTest extends TestCase
      */
     public function store_notok()
     {
-      $club = Club::where('name','testclub')->first();
+        $response = $this->authenticated()
+            ->post(route('member.store', ['club' => $this->testclub_assigned]), [
+                'member_id' => null,
+                'firstname' => 'testfirstname',
+                'lastname' => 'testmember',
+                'zipcode' => '1111',
+                'city' => 'testcity',
+                'street' => 'anystreet',
+                'mobile' => '123456',
+                'phone' => '123456',
+                'email1' => '12345',
+                'entity_id' => $this->testclub_assigned->id,
+                'entity_type' => Club::class,
+                'function' => null,
+                'email' => null,
+            ]);
+        $response
+            ->assertStatus(302)
+            ->assertSessionHasErrors(['role_id', 'email1']);
 
-      $response = $this->authenticated( )
-                        ->post(route('member.store', ['club'=>$club]), [
-                          'member_id' => null,
-                          'firstname' => 'testfirstname',
-                          'lastname' => 'testmember',
-                          'zipcode' => '1111',
-                          'city' => 'testcity',
-                          'street' => 'anystreet',
-                          'mobile' => '123456',
-                          'phone' => '123456',
-                          'email1' => '12345',
-                          'entity_id' => $club->id,
-                          'entity_type' => Club::class,
-                          'function' => null,
-                          'email' => null,
-                      ]);
-      $response
-          ->assertStatus(302)
-          ->assertSessionHasErrors(['role_id', 'email1']);
-
-      $this->assertDatabaseMissing('members', ['lastname' => 'testmember']);
+        $this->assertDatabaseMissing('members', ['lastname' => 'testmember']);
     }
     /**
      * store OK
@@ -81,34 +89,32 @@ class ClubMembershipControllerTest extends TestCase
      */
     public function store_ok()
     {
-      $club = Club::where('name','testclub')->first();
+        $response = $this->authenticated()
+            ->post(route('member.store'), [
+                'member_id' => null,
+                'role_id' => Role::getRandomValue(),
+                'firstname' => 'testfirstname',
+                'lastname' => 'testmember',
+                'zipcode' => '1111',
+                'city' => 'testcity',
+                'street' => 'anystreet',
+                'mobile' => '123456',
+                'phone' => '123456',
+                'email1' => 'testlastname@gmail.com',
+                'entity_id' => $this->testclub_assigned->id,
+                'entity_type' => Club::class,
+                'function' => null,
+                'email' => null,
+            ]);
 
-      $response = $this->authenticated( )
-                        ->post(route('member.store'), [
-                          'member_id' => null,
-                          'role_id' => Role::getRandomValue(),
-                          'firstname' => 'testfirstname',
-                          'lastname' => 'testmember',
-                          'zipcode' => '1111',
-                          'city' => 'testcity',
-                          'street' => 'anystreet',
-                          'mobile' => '123456',
-                          'phone' => '123456',
-                          'email1' => 'testlastname@gmail.com',
-                          'entity_id' => $club->id,
-                          'entity_type' => Club::class,
-                          'function' => null,
-                          'email' => null,
-                      ]);
+        $response->assertRedirect(route('club.dashboard', ['language' => 'de', 'club' => $this->testclub_assigned]))
+            ->assertSessionHasNoErrors();
 
-      $response->assertRedirect(route('club.dashboard', ['language'=>'de','club'=>$club]))
-               ->assertSessionHasNoErrors();
+        $member = Member::where('lastname', 'testmember')->first();
 
-      $member = Member::where('lastname','testmember')->first();
-
-      $this->assertDatabaseHas('members', ['id' => $member->id])
-           ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-           ->assertDatabaseCount('memberships', 2);
+        $this->assertDatabaseHas('members', ['id' => $member->id])
+            ->assertDatabaseHas('memberships', ['member_id' => $member->id])
+            ->assertDatabaseCount('memberships', 6);
     }
     /**
      * update NOT OK
@@ -121,26 +127,25 @@ class ClubMembershipControllerTest extends TestCase
      */
     public function update_notok()
     {
-      $club = Club::where('name','testclub')->first();
-      $member = Member::where('lastname','testmember')->first();
+        $member = $this->testclub_assigned->members->first();
 
-      $response = $this->authenticated( )
-                        ->put(route('member.update', ['member'=>$member]), [
-                          'firstname' => $member->firstname,
-                          'lastname' => 'testmember2',
-                          'zipcode' => $member->zipcode,
-                          'city' => $member->city,
-                          'street' => $member->street,
-                          'mobile' => $member->mobile,
-                          'backto' => url(route('club.dashboard', ['club'=>$club, 'language'=>'de'])),
-                      ]);
-      $response
-          ->assertStatus(302)
-          ->assertSessionHasErrors(['email1']);
+        $response = $this->authenticated()
+            ->put(route('member.update', ['member' => $member]), [
+                'firstname' => $member->firstname,
+                'lastname' => 'testmember2',
+                'zipcode' => $member->zipcode,
+                'city' => $member->city,
+                'street' => $member->street,
+                'mobile' => $member->mobile,
+                'backto' => url(route('club.dashboard', ['club' => $this->testclub_assigned, 'language' => 'de'])),
+            ]);
+        $response
+            ->assertStatus(302)
+            ->assertSessionHasErrors(['email1']);
 
-      $this->assertDatabaseHas('members', ['id' => $member->id])
+        $this->assertDatabaseHas('members', ['id' => $member->id])
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 2);
+            ->assertDatabaseCount('memberships', 5);
     }
     /**
      * update OK
@@ -153,30 +158,30 @@ class ClubMembershipControllerTest extends TestCase
      */
     public function udpate_ok()
     {
-      $club = Club::where('name','testclub')->first();
-      $member = Member::where('lastname','testmember')->first();
+        $member = $this->testclub_assigned->members->first();
 
-      $response = $this->authenticated( )
-                        ->put(route('member.update', ['member'=>$member]), [
-                          'firstname' => $member->firstname,
-                          'lastname' => 'testmember2',
-                          'zipcode' => $member->zipcode,
-                          'city' => $member->city,
-                          'street' => $member->street,
-                          'mobile' => $member->mobile,
-                          'email1' => 'test2@gmail.com',
-                          'backto' => url(route('club.dashboard', ['club'=>$club, 'language'=>'de'])),                      ]);
+        $response = $this->authenticated()
+            ->put(route('member.update', ['member' => $member]), [
+                'firstname' => $member->firstname,
+                'lastname' => 'testmember2',
+                'zipcode' => $member->zipcode,
+                'city' => $member->city,
+                'street' => $member->street,
+                'mobile' => $member->mobile,
+                'email1' => 'test2@gmail.com',
+                'backto' => url(route('club.dashboard', ['club' => $this->testclub_assigned, 'language' => 'de'])),
+            ]);
 
-      $response->assertRedirect(route('club.dashboard', ['language'=>'de','club'=>$club]))
-               ->assertSessionHasNoErrors();
+        $response->assertRedirect(route('club.dashboard', ['language' => 'de', 'club' => $this->testclub_assigned]))
+            ->assertSessionHasNoErrors();
 
-      $this->assertDatabaseHas('members', ['lastname' => 'testmember2'])
-          ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-          ->assertDatabaseCount('memberships', 2);
-
+        $this->assertDatabaseHas('members', ['lastname' => 'testmember2'])
+            ->assertDatabaseHas('memberships', ['member_id' => $member->id])
+            ->assertDatabaseCount('memberships', 5);
+        $member->refresh();
     }
 
-   /**
+    /**
      * add NOT OK
      *
      * @test
@@ -187,25 +192,23 @@ class ClubMembershipControllerTest extends TestCase
      */
     public function add_notok()
     {
-      $club = Club::where('name','testclub')->first();
-      $member = Member::where('lastname','testmember2')->first();
+        $member = $this->testclub_assigned->members->first();
 
-      $response = $this->authenticated( )
-                        ->post(route('membership.club.add', ['club'=>$club, 'member'=>$member]), [
-                          'function' => 'function',
-                          'email' => 'email'
-                      ]);
-      $response
-          ->assertStatus(302)
-          ->assertSessionHasErrors(['email', 'selRole']);
+        $response = $this->authenticated()
+            ->post(route('membership.club.add', ['club' => $this->testclub_assigned, 'member' => $member]), [
+                'function' => 'function',
+                'email' => 'email'
+            ]);
+        $response
+            ->assertStatus(302)
+            ->assertSessionHasErrors(['email', 'selRole']);
 
-      $this->assertDatabaseHas('members', ['id' => $member->id])
-        ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-        ->assertDatabaseCount('memberships', 2);
-
+        $this->assertDatabaseHas('members', ['id' => $member->id])
+            ->assertDatabaseHas('memberships', ['member_id' => $member->id])
+            ->assertDatabaseCount('memberships', 5);
     }
 
-   /**
+    /**
      * add  OK
      *
      * @test
@@ -216,24 +219,23 @@ class ClubMembershipControllerTest extends TestCase
      */
     public function add_ok()
     {
-      $club = Club::where('name','testclub')->first();
-      $member = Member::where('lastname','testmember2')->first();
+        $member = $this->testclub_assigned->members->first();
 
-      $response = $this->authenticated( )
-                        ->post(route('membership.club.add', ['club'=>$club, 'member'=>$member]), [
-                          'selRole' => Role::getRandomValue(),
-                          'function' => 'function',
-                          'email' => 'email@gmail.com'
-                      ]);
-      $response
-          ->assertStatus(302)
-          ->assertSessionHasNoErrors();
+        $response = $this->authenticated()
+            ->post(route('membership.club.add', ['club' => $this->testclub_assigned, 'member' => $member]), [
+                'selRole' => Role::getRandomValue(),
+                'function' => 'function',
+                'email' => 'email@gmail.com'
+            ]);
+        $response
+            ->assertStatus(302)
+            ->assertSessionHasNoErrors();
 
-      $this->assertDatabaseHas('members', ['id' => $member->id])
-        ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-        ->assertDatabaseCount('memberships', 3);
+        $this->assertDatabaseHas('members', ['id' => $member->id])
+            ->assertDatabaseHas('memberships', ['member_id' => $member->id])
+            ->assertDatabaseCount('memberships', 6);
     }
-   /**
+    /**
      * update mship NOT OK
      *
      * @test
@@ -244,22 +246,22 @@ class ClubMembershipControllerTest extends TestCase
      */
     public function update_mship_notok()
     {
-      $member = Member::where('lastname','testmember2')->first();
-      $membership = $member->memberships->first();
+        $member = $this->testclub_assigned->members->first();
+        $membership = $member->memberships->first();
 
-      $response = $this->authenticated( )
-                        ->put(route('membership.update', ['membership'=>$membership]), [
-                          'email' => '1234',
-                      ]);
-      $response
-          ->assertStatus(302)
-          ->assertSessionHasErrors(['email']);
+        $response = $this->authenticated()
+            ->put(route('membership.update', ['membership' => $membership]), [
+                'email' => '1234',
+            ]);
+        $response
+            ->assertStatus(302)
+            ->assertSessionHasErrors(['email']);
 
-      $this->assertDatabaseHas('members', ['id' => $member->id])
+        $this->assertDatabaseHas('members', ['id' => $member->id])
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 3);
+            ->assertDatabaseCount('memberships', 5);
     }
-   /**
+    /**
      * update mship OK
      *
      * @test
@@ -270,20 +272,20 @@ class ClubMembershipControllerTest extends TestCase
      */
     public function update_mship_ok()
     {
-      $member = Member::where('lastname','testmember2')->first();
-      $membership = $member->memberships->first();
+        $member = $this->testclub_assigned->members->first();
+        $membership = $member->memberships->first();
 
-      $response = $this->authenticated( )
-                        ->put(route('membership.update', ['membership'=>$membership]), [
-                          'email' => 'mship@gmail.com',
-                      ]);
-      $response
-          ->assertStatus(302)
-          ->assertSessionHasNoErrors();
+        $response = $this->authenticated()
+            ->put(route('membership.update', ['membership' => $membership]), [
+                'email' => 'mship@gmail.com',
+            ]);
+        $response
+            ->assertStatus(302)
+            ->assertSessionHasNoErrors();
 
-      $this->assertDatabaseHas('members', ['id' => $member->id])
+        $this->assertDatabaseHas('members', ['id' => $member->id])
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 3);
+            ->assertDatabaseCount('memberships', 5);
     }
     /**
      * destroy
@@ -296,21 +298,19 @@ class ClubMembershipControllerTest extends TestCase
      */
     public function destroy()
     {
-      $club = Club::where('name','testclub')->first();
-      $member2 = Member::where('lastname','testmember2')->first();
+        $member2 = $this->testclub_assigned->members->first();
+        $response = $this->authenticated()
+            ->delete(route('membership.club.destroy', ['club' => $this->testclub_assigned, 'member' => $member2]));
 
-      $response = $this->authenticated( )
-                        ->delete(route('membership.club.destroy', ['club'=>$club,'member'=>$member2]));
+        $response->assertStatus(302)
+            ->assertSessionHasNoErrors();
 
-      $response->assertStatus(302)
-               ->assertSessionHasNoErrors();
-
-      $this->assertDatabaseMissing('members', ['id' => $member2->id])
-           ->assertDatabaseMissing('memberships', ['member_id' => $member2->id])
-           ->assertDatabaseCount('memberships', 1);
+        $this->assertDatabaseMissing('members', ['id' => $member2->id])
+            ->assertDatabaseMissing('memberships', ['member_id' => $member2->id])
+            ->assertDatabaseCount('memberships', 4);
     }
     /**
-     * db_cleanup
+     * destroy mship
      *
      * @test
      * @group membership
@@ -318,14 +318,22 @@ class ClubMembershipControllerTest extends TestCase
      *
      * @return void
      */
-   public function db_cleanup()
-   {
-        /// clean up DB
-        $club = Club::where('name','testclub')->delete();
-        $member = Member::where('lastname','testmember')->delete();
-        $member2 = Member::where('lastname','testmember2')->delete();
+    public function destroy_mship()
+    {
+        $membership = $this->testclub_assigned->memberships->first();
+        $member = $membership->member;
+        $this->assertDatabaseHas('members', ['id' => $member->id])
+            ->assertDatabaseHas('memberships', ['id' => $membership->id]);
 
-        $this->assertDatabaseCount('clubs', 0);
-        $this->assertDatabaseCount('members', 4);
-   }
+        $response = $this->authenticated()
+            ->delete(route('membership.destroy', ['membership' => $membership]));
+
+        $response->assertStatus(200)
+            ->assertSessionHasNoErrors()
+            ->assertJson(['success'=>'all good']);
+
+        $this->assertDatabaseMissing('members', ['id' => $member->id])
+            ->assertDatabaseMissing('memberships', ['id' => $membership->id])
+            ->assertDatabaseCount('memberships', 4);
+    }
 }

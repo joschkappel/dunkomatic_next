@@ -50,7 +50,6 @@ use App\Http\Controllers\Auth\SocialAuthController;
 Route::get('/', function () { return redirect(app()->getLocale()); })->name('start');
 Route::get('healthy', function () { return 'OK'; });
 Route::get('health', HealthCheckResultsController::class);
-// Route::get('/fire', function () { event(new App\Events\TestEvent()); return 'ok'; });
 
 Route::get('/auth/{provider}/redirect/{invitation?}', [SocialAuthController::class, 'redirectToOauth'])->name('oauth.redirect');
 Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'registerFromOauth'])->name('oauth.callback');
@@ -165,7 +164,6 @@ Route::group([
         Route::get('membership/club/{club}/member', [ClubMembershipController::class, 'create'])->name('membership.club.create');
         Route::get('membership/league/{league}/member', [LeagueMembershipController::class, 'create'])->name('membership.league.create');
         Route::get('membership/region/{region}/member', [RegionMembershipController::class, 'create'])->name('membership.region.create');
-        Route::resource('membership', MembershipController::class)->only(['show']);
 
         Route::get('scheme/index', [LeagueSizeSchemeController::class, 'index'])->name('scheme.index');
 
@@ -282,7 +280,6 @@ Route::middleware(['auth',
     Route::delete('membership/region/{region}/member/{member}', [RegionMembershipController::class, 'destroy'])->name('membership.region.destroy');
     Route::put('membership/{membership}', [MembershipController::class, 'update'])->name('membership.update');
     Route::delete('membership/{membership}', [MembershipController::class, 'destroy'])->name('membership.destroy');
-    Route::post('membership', [MembershipController::class, 'store'])->name('membership.store');
 
     Route::delete('league/{league}/game', [LeagueGameController::class, 'destroy_game'])->name('league.game.destroy');
     Route::get('league/{league}/game/{game_no}', [LeagueGameController::class, 'show_by_number'])->name('league.game.show_bynumber');
@@ -301,7 +298,6 @@ Route::middleware(['auth',
     Route::get('scheme/{size}/list_piv', [LeagueSizeSchemeController::class, 'list_piv'])->name('scheme.list_piv');
     Route::get('size/index', [LeagueSizeController::class, 'index'])->name('size.index');
 
-    Route::post('schedule_event/list-piv', [ScheduleEventController::class, 'list_piv'])->name('schedule_event.list-piv');
     Route::get('schedule_event/{schedule}/list', [ScheduleEventController::class, 'list'])->name('schedule_event.list');
     Route::get('schedule_event/{schedule}/dt', [ScheduleEventController::class, 'datatable'])->name('schedule_event.dt');
     Route::post('schedule_event/{schedule}/shift', [ScheduleEventController::class, 'shift'])->name('schedule_event.shift');

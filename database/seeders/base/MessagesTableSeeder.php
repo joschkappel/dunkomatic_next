@@ -1,12 +1,12 @@
 <?php
 namespace Database\Seeders\base;
 
-use App\Enums\MessageType;
+
 use Silber\Bouncer\Database\Role;
 use App\Models\Region;
 use App\Models\User;
 use App\Models\Message;
-use App\Models\MessageDestination;
+
 
 
 use Illuminate\Database\Seeder;

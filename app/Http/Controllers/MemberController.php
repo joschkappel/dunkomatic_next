@@ -295,9 +295,14 @@ class MemberController extends Controller
      */
     public function destroy(Member $member)
     {
+        // first remove all memberships
+        foreach ($member->memberships as $mship){
+            $mship->delete();
+        }
+        // delete the member now
         $check = $member->delete();
         Log::notice('member deleted', ['member-id' => $member->id]);
 
-        return Response::json($check);
+        return Response::json(['deleted'=>$check]);
     }
 }

@@ -22,15 +22,6 @@ use Spatie\Health\Checks\Checks\EnvironmentCheck;
 
 class HealthServiceProvider extends ServiceProvider
 {
-    /**
-     * Register services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
-    }
 
     /**
      * Bootstrap services.
@@ -40,8 +31,9 @@ class HealthServiceProvider extends ServiceProvider
     public function boot()
     {
 
-        if (config('app.env') == 'prod'){
-            $checkurl = config('app.url');
+        $checkurl = config('app.url');
+
+        if (app()->environment('prod')){
             Health::checks([
                 UsedDiskSpaceCheck::new(),
                 CpuLoadCheck::new()
@@ -65,7 +57,30 @@ class HealthServiceProvider extends ServiceProvider
                 ->failWhenQueueLengthIsHigher(10),
                 MinioHealthCheck::new(),
             ]);
-        } elseif (config('app.env') == 'local'){
+        } elseif (app()->environment('staging')){
+            Health::checks([
+                UsedDiskSpaceCheck::new(),
+                CpuLoadCheck::new()
+                ->failWhenLoadIsHigherInTheLast5Minutes(10.0)
+                ->failWhenLoadIsHigherInTheLast15Minutes(5.5),
+                DbConnectionsCheck::new(),
+                DatabaseCheck::new(),
+                RedisCheck::new(),
+                PingCheck::new()->url( $checkurl .'/healthy'),
+                // ScheduleCheck::new(),
+                EnvironmentCheck::new()->expectEnvironment('staging'),
+                CacheCheck::new(),
+                LaravelEchoServerCheck::new(),
+                ConcurrentUsersCheck::new()
+                ->failWhenFailedLoginsIsHigherInTheLastMinute(80)
+                ->failWhenFailedLoginsIsHigherInTheLast5Minutes(50)
+                ->failWhenFailedLoginsIsHigherInTheLast15Minutes(30),
+                QueueLoadCheck::new()
+                ->failWhenFailedJobsIsHigher(5)
+                ->failWhenQueueLengthIsHigher(10),
+                MinioHealthCheck::new(),
+            ]);
+        } elseif (app()->environment('local')){
             Health::checks([
                 UsedDiskSpaceCheck::new(),
                 CpuLoadCheck::new()

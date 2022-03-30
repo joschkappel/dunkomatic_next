@@ -4,7 +4,7 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\DB;
+
 
 use App\Models\User;
 use App\Models\Region;
@@ -18,6 +18,18 @@ use App\Notifications\RejectUser;
 
 class RegistrationTest extends TestCase
 {
+
+    private $testleague;
+    private $testclub_assigned;
+    private $testclub_free;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->testleague = League::factory()->selected(3, 3)->create();
+        $this->testclub_assigned = $this->testleague->clubs()->first();
+        $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
+    }
 
     /**
      * register
@@ -117,9 +129,7 @@ class RegistrationTest extends TestCase
      */
     public function approve()
     {
-        // create a fake club
-        Club::factory()->create(['name'=>'testclub']);
-        $club = Club::where('name','testclub')->pluck('id')->toarray();
+        $club = Club::all()->pluck('id')->toarray();
 
         $region = Region::where('code','HBVDA')->first();
         $region_admin = $region->regionadmins()->first()->user()->first();
@@ -192,26 +202,22 @@ class RegistrationTest extends TestCase
         $region = Region::where('code','HBVDA')->first();
         $region_admin = $region->regionadmins()->first()->user()->first();
 
-        $club1 = Club::where('name','testclub')->first();
-        Club::factory()->create(['name'=>'testclub2']);
-        $club2 = Club::where('name','testclub2')->first();
+        $clubs = $this->testleague->clubs->pluck('id')->toArray();
 
-        League::factory()->create((['name'=>'testleague']));
-        $league = League::where('name','testleague')->first();
+        $league = $this->testleague;
 
         $response = $this->authenticated($region_admin)
                          ->followingRedirects()
                          ->put(route('admin.user.allowance',[
                             'user' => $user,
-                            'club_ids' => [ $club1->id, $club2->id],
+                            'club_ids' => $clubs,
                             'league_ids' => [ $league->id ],
                             'role' => 3
         ]));
 
         $response->assertStatus(200)
                  ->assertSessionHasNoErrors();
-//                 ->assertSeeText($club1->shortname.', '.$club2->shortname)
- //                ->assertSeeText($league->shortname);
+
     }
 
     /**
@@ -360,22 +366,6 @@ class RegistrationTest extends TestCase
 
         $this->assertDatabaseMissing('users', ['email'=>'test1@gmail.com']);
 
-    }
-
-    /**
-     * db clean up
-     *
-     * @test
-     * @group user
-     * @group controller
-     *
-     * @return void
-     */
-    public function db_cleanup()
-    {
-
-        DB::table('clubs')->delete();
-        DB::table('leagues')->delete();
     }
 
 

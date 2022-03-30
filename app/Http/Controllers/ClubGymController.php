@@ -154,9 +154,10 @@ class ClubGymController extends Controller
         $gym_no = $request['gym_no'];
         $club_id = $gym->club_id;
 
+        Log::debug('any games for gym?',['games count'=>$gym->games->count() ]);
         $data = $request->validate([
             'gym_no' => [
-                $gym->games()->exists() ? 'nullable' : 'required',
+                'required',
                 Rule::unique('gyms')->where(function ($query) use ($club_id, $gym_no) {
                     return $query->where('club_id', $club_id)
                         ->where('gym_no', $gym_no);

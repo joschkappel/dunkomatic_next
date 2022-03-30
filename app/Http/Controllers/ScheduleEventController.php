@@ -20,44 +20,6 @@ class ScheduleEventController extends Controller
 {
 
     /**
-     * get pivot table view.
-       select game_date,
-                 max(case when schedule_id = '1' then game_day else ' '  end) as '1',
-                 max(case when schedule_id = '2' then game_day else ' '  end) as '2',
-                 max(case when schedule_id = '5' then game_day else ' '  end) as '5'
-               from schedule_events
-               where schedule_id in (1,2,5)
-               group by game_date
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function list_piv(Request $request)
-    {
-        $selSchedules = $request->input('selVals');
-        Log::info('preparing schedule pivot table');
-
-        $select = "select date_format(game_date, '%a %d.%b.%Y') as '" . __('game.game_date') . "' ";
-        $where =  array();
-        $cols = array();
-
-        if ($request->input('selVals')) {
-            foreach ($selSchedules as $i => $item) {
-                $cols[] = 'max(case when schedule_id = ' . $selSchedules[$i]['id'] . ' then game_day else " " end) as "' . $selSchedules[$i]['text'] . '"';
-                $where[] = $selSchedules[$i]['id'];
-            }
-
-            $select .= ', ' . implode(' ,', $cols) . ' from schedule_events where schedule_id in (' . implode(' ,', $where) . ') group by game_date';
-        } else {
-            $select .= ' from schedule_events group by game_date';
-        }
-
-        $events = collect(DB::select($select));
-        $returnhtml =  view("schedule/includes/scheduleevent_pivot", ["events" => $events])->render();
-        return Response::json($returnhtml);
-    }
-
-    /**
      * Display a ‚listing of the resource.
      *
      * @param \App\Models\Schedule $schedule
@@ -251,6 +213,7 @@ class ScheduleEventController extends Controller
      */
     public function shift(Request $request, Schedule $schedule)
     {
+        
         $data = $request->validate([
             'direction' => 'required|in:+,-',
             'unit' => 'required|in:DAY,WEEK,MONTH,YEAR',

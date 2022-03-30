@@ -18,45 +18,6 @@ use Illuminate\Support\Facades\Log;
 class MembershipController extends Controller
 {
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     *
-     */
-    public function store(Request $request)
-    {
-        $entity_type = $request['entity_type'];
-        unset($request['entity_type']);
-        $entity_id = $request['entity_id'];
-        unset($request['entity_id']);
-
-        $data = $request->validate([
-            'member_id' => 'required|exists:members,id',
-            'role_id' => ['required', new EnumValue(Role::class, false)],
-            'function'  => 'nullable|max:40',
-            'email'     => 'nullable|max:60|email:rfc,dns'
-        ]);
-        Log::info('membership form data validated OK.');
-
-        $member = Member::findOrFail($data['member_id']);
-
-        if ($entity_type == Club::class) {
-            $club = Club::findOrFail($entity_id);
-            $ms = $club->memberships()->create($data);
-            Log::notice('club membership created.', ['club-id'=> $club->id, 'member-id'=>$member->id, 'membership-id'=>$ms->id]);
-        } elseif ($entity_type == League::class) {
-            $league = League::findOrFail($entity_id);
-            $ms = $league->memberships()->create($data);
-            Log::notice('league membership created.', ['league-id'=> $league->id, 'member-id'=>$member->id, 'membership-id'=>$ms->id]);
-        } elseif ($entity_type == Region::class) {
-            $region = Region::findOrFail($entity_id);
-            $ms = $region->memberships()->create($data);
-            Log::notice('region membership created.', ['region-id'=> $region->id, 'member-id'=>$member->id, 'membership-id'=>$ms->id]);
-        }
-        return Response::json(['success' => 'all good'], 200);
-    }
 
     /**
      * Remove the specified resource from storage.

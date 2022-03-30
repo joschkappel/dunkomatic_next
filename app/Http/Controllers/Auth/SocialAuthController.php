@@ -43,9 +43,13 @@ class SocialAuthController extends Controller
      */
     public function redirectToOauth(string $provider, Invitation $invitation)
     {
-        $invitation->update(['provider' => $provider]);
+        if ($invitation->id != null){
+            Log::debug('invitation avail',['invite'=>$invitation]);
+            $invitation->update(['provider' => $provider]);
+            Cookie::queue('_i', $invitation->id ?? null, 60);
+        }
         Log::info('redirecting oauth request to provider', ['provider' => $provider]);
-        Cookie::queue('_i', $invitation->id ?? null, 60);
+
         return Socialite::driver($provider)->redirect();
     }
 
@@ -90,7 +94,7 @@ class SocialAuthController extends Controller
         } else {
             // this is a registration of a new acccount
             if ($provider == 'google'){
-                $locale = $oauth_user->user['locale'];
+                $locale = $oauth_user->user['locale'] ?? 'de';
             } else {
                 $locale = 'de';
             }
@@ -105,7 +109,7 @@ class SocialAuthController extends Controller
                 'email_verified_at' => now(),
             ]);
 
-            if ( $request->cookie('_i') != null ) {
+            if ( $request->hasCookie('_i') ) {
                 // this user must have been invited
                 $invitation = Invitation::find($request->cookie('_i'));
 

@@ -3,16 +3,25 @@
 namespace Tests\Unit;
 
 use App\Models\Club;
+use App\Models\League;
 
 use Tests\TestCase;
 use Tests\Support\Authentication;
-use Illuminate\Support\Facades\Log;
 
 class TeamValidationTest extends TestCase
 {
     use Authentication;
+    private $testleague;
+    private $testclub_assigned;
+    private $testclub_free;
 
-    private $club;
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->testleague = League::factory()->selected(3, 3)->create();
+        $this->testclub_assigned = $this->testleague->clubs()->first();
+        $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
+    }
 
     /**
       * team validation
@@ -26,14 +35,8 @@ class TeamValidationTest extends TestCase
       */
     public function team_form_validation($formInput, $formInputValue): void
     {
-      if  (Club::where('name','testclub')->exists()){
-        $this->club = Club::where('name','testclub')->first();
-      } else {
-        $this->club = Club::factory()->create(['name'=>'testclub']);
-      }
-
       $response = $this->authenticated()
-           ->post(route('club.team.store',['club'=>$this->club->id]), [$formInput => $formInputValue]);
+           ->post(route('club.team.store',['club'=>$this->testclub_assigned]), [$formInput => $formInputValue]);
 
       $response->assertSessionHasErrors($formInput);
     }
@@ -57,7 +60,7 @@ class TeamValidationTest extends TestCase
                 'preferred_game_time missing' => ['preferred_game_time',''],
                 'preferred_game_time no time' => ['preferred_game_time','day:test'],
                 'preferred_game_time wrong minutes' => ['preferred_game_time','07:22'],
-                'preferred_game_time wrong hours' => ['preferred_game_time','05:00'],                
+                'preferred_game_time wrong hours' => ['preferred_game_time','05:00'],
                 'coach_name missing' => ['coach_name',''],
                 'coach_email missing' => ['coach_email',''],
                 'coach_email no email' => ['coach_email','testemail'],
