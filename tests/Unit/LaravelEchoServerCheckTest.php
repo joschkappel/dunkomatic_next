@@ -21,13 +21,15 @@ class LaravelEchoServerCheckTest extends TestCase
      */
     public function health_check()
     {
+        if ( app()->environment('local')){
 
-        $check = LaravelEchoServerCheck::new();
+            $check = LaravelEchoServerCheck::new();
 
-        $result = $check->run();
+            $result = $check->run();
 
-        $this->assertEquals('ok', $result->status->value);
-        $this->assertCount(1, $result->meta);
+            $this->assertEquals('ok', $result->status->value);
+            $this->assertCount(1, $result->meta);
+        }
 
     }
 
