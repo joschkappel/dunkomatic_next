@@ -319,12 +319,14 @@ class MemberControllerTest extends TestCase
     public function destroy()
     {
         //$this->withoutExceptionHandling();
-        $member = Member::doesnthave('memberships')->first();
+        $member = $this->testclub_assigned->members->first();
+
         $response = $this->authenticated()
             ->delete(route('member.destroy', ['member' => $member]));
 
         $response->assertStatus(200)
-            ->assertSessionHasNoErrors();
+            ->assertSessionHasNoErrors()
+            ->assertJson(['deleted' => 1]);
         $this->assertDatabaseMissing('members', ['id' => $member->id]);
     }
 }

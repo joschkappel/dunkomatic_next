@@ -5,7 +5,7 @@ namespace Tests;
 use App\Models\League;
 use App\Models\Club;
 use App\Models\Schedule;
-use App\Models\Member;
+use App\Models\Membership;
 
 use Tests\Support\MigrateFreshSeedOnce;
 use Tests\Support\Authentication;
@@ -39,21 +39,25 @@ abstract class TestCase extends BaseTestCase
 
     public function tearDown(): void
     {
+
         $leagues = League::all();
 
         foreach ($leagues as $l){
-            $clubs = $l->clubs;
+            $memberships = $l->memberships;
+            foreach ($memberships as $m){
+                $m->delete();
+            }
 
+            $clubs = $l->clubs;
             $l->clubs()->detach();
             $l->games()->delete();
             foreach ($clubs as $c) {
-                $c->gyms()->delete();
-                $c->teams()->delete();
-                $members = $c->members;
-                $c->members()->detach();
-                foreach ($members as $m){
+                $memberships = $c->memberships;
+                foreach ($memberships as $m){
                     $m->delete();
                 }
+                $c->gyms()->delete();
+                $c->teams()->delete();
                 $c->delete();
             };
             foreach ($l->teams as $t){
@@ -64,13 +68,12 @@ abstract class TestCase extends BaseTestCase
         }
         $clubs = Club::all();
         foreach ($clubs as $c) {
-            $c->gyms()->delete();
-            $c->teams()->delete();
-            $members = $c->members;
-            $c->members()->detach();
-            foreach ($members as $m){
+            $memberships = $c->memberships;
+            foreach ($memberships as $m){
                 $m->delete();
             }
+            $c->gyms()->delete();
+            $c->teams()->delete();
             $c->delete();
         };
         Schedule::whereNotNull('id')->delete();
@@ -80,6 +83,8 @@ abstract class TestCase extends BaseTestCase
         ->assertDatabaseCount('teams', 0)
         ->assertDatabaseCount('leagues', 0)
         ->assertDatabaseCount('games', 0);
+//        ->assertDatabaseCount('members', 4)
+//        ->assertDatabaseCount('memberships', 1);
 
         info( '[TEST STOPPING] ['.implode(' - ', $this->getGroups()).'] '.$this->getName() );
         parent::tearDown();

@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Models\Member;
+use App\Models\Membership;
 use App\Models\League;
 use App\Models\Club;
 use App\Enums\Role;
@@ -21,7 +22,9 @@ class LeagueMembershipControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->testleague = League::factory()->frozen(4, 4)->create();
+        $this->testleague = League::factory()
+            ->hasAttached(Member::factory()->count(1), ['role_id' => Role::LeagueLead()])
+            ->frozen(4, 4)->create();
         $this->testclub_assigned = $this->testleague->clubs()->first();
         $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
     }
@@ -113,7 +116,7 @@ class LeagueMembershipControllerTest extends TestCase
 
         $this->assertDatabaseHas('members', ['id' => $member->id])
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 6);
+            ->assertDatabaseCount('memberships', 7);
         // roollback
         $member->delete();
     }
@@ -147,7 +150,7 @@ class LeagueMembershipControllerTest extends TestCase
 
         $this->assertDatabaseHas('members', ['id' => $member->id])
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 5);
+            ->assertDatabaseCount('memberships', 6);
     }
     /**
      * update OK
@@ -180,7 +183,7 @@ class LeagueMembershipControllerTest extends TestCase
 
         $this->assertDatabaseHas('members', ['lastname' => 'testmember2'])
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 5);
+            ->assertDatabaseCount('memberships', 6);
     }
 
     /**
@@ -207,7 +210,7 @@ class LeagueMembershipControllerTest extends TestCase
 
         $this->assertDatabaseHas('members', ['id' => $member->id])
             ->assertDatabaseMissing('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 5);
+            ->assertDatabaseCount('memberships', 6);
     }
 
     /**
@@ -235,7 +238,7 @@ class LeagueMembershipControllerTest extends TestCase
 
         $this->assertDatabaseHas('members', ['id' => $member->id])
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 6);
+            ->assertDatabaseCount('memberships', 7);
 
         // rollback
         $member->memberships()->delete();
@@ -264,7 +267,7 @@ class LeagueMembershipControllerTest extends TestCase
 
         $this->assertDatabaseHas('members', ['id' => $member->id])
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 5);
+            ->assertDatabaseCount('memberships', 6);
     }
     /**
      * update mship OK
@@ -290,7 +293,7 @@ class LeagueMembershipControllerTest extends TestCase
 
         $this->assertDatabaseHas('members', ['id' => $member->id])
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 5);
+            ->assertDatabaseCount('memberships', 6);
     }
     /**
      * destroy
@@ -303,17 +306,17 @@ class LeagueMembershipControllerTest extends TestCase
      */
     public function destroy()
     {
-        $member = $this->testclub_assigned->members()->first();
+        $member = $this->testleague->members()->first();
         $this->assertDatabaseHas('members', ['id' => $member->id]);
 
         $response = $this->authenticated()
-            ->delete(route('membership.club.destroy', ['club' => $this->testclub_assigned, 'member' => $member]));
+            ->delete(route('membership.league.destroy', ['league' => $this->testleague, 'member' => $member]));
 
         $response->assertStatus(302)
             ->assertSessionHasNoErrors();
 
         $this->assertDatabaseMissing('members', ['id' => $member->id])
             ->assertDatabaseMissing('memberships', ['member_id' => $member->id])
-            ->assertDatabaseCount('memberships', 4);
+            ->assertDatabaseCount('memberships', 5);
     }
 }

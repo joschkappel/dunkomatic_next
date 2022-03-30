@@ -309,4 +309,31 @@ class ClubMembershipControllerTest extends TestCase
             ->assertDatabaseMissing('memberships', ['member_id' => $member2->id])
             ->assertDatabaseCount('memberships', 4);
     }
+    /**
+     * destroy mship
+     *
+     * @test
+     * @group membership
+     * @group controller
+     *
+     * @return void
+     */
+    public function destroy_mship()
+    {
+        $membership = $this->testclub_assigned->memberships->first();
+        $member = $membership->member;
+        $this->assertDatabaseHas('members', ['id' => $member->id])
+            ->assertDatabaseHas('memberships', ['id' => $membership->id]);
+
+        $response = $this->authenticated()
+            ->delete(route('membership.destroy', ['membership' => $membership]));
+
+        $response->assertStatus(200)
+            ->assertSessionHasNoErrors()
+            ->assertJson(['success'=>'all good']);
+
+        $this->assertDatabaseMissing('members', ['id' => $member->id])
+            ->assertDatabaseMissing('memberships', ['id' => $membership->id])
+            ->assertDatabaseCount('memberships', 4);
+    }
 }

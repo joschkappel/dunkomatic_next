@@ -22,15 +22,6 @@ use Spatie\Health\Checks\Checks\EnvironmentCheck;
 
 class HealthServiceProvider extends ServiceProvider
 {
-    /**
-     * Register services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
-    }
 
     /**
      * Bootstrap services.

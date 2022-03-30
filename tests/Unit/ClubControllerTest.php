@@ -4,13 +4,14 @@ namespace Tests\Unit;
 
 use App\Models\Club;
 use App\Models\League;
+use App\Traits\LeagueFSM;
 
 use Tests\TestCase;
 use Tests\Support\Authentication;
 
 class ClubControllerTest extends TestCase
 {
-    use Authentication;
+    use Authentication, LeagueFSM;
 
     private $testleague;
     private $testclub_assigned;
@@ -198,7 +199,7 @@ class ClubControllerTest extends TestCase
         $response = $this->authenticated()
             ->get(route('club.list', ['region' => $this->region]));
 
-        $clubs = array_fill(0, Club::count(), 0 );
+        $clubs = array_fill(0, Club::count(), 0);
         $response->assertStatus(200)
             ->assertJsonPath('data.*.games_home_count', $clubs);
 
@@ -221,13 +222,21 @@ class ClubControllerTest extends TestCase
     public function team_dt()
     {
 
-        $club = $this->region->clubs()->first();
+        // runwith league in selected state
         $response = $this->authenticated()
-            ->get(route('club.team.dt', ['language' => 'de', 'club' => $club]));
+            ->get(route('club.team.dt', ['language' => 'de', 'club' => $this->testclub_assigned]));
 
-        $response->assertStatus(200);
-            //->assertJsonPath('data.*.team', $club->teams->toArray());
+        $response->assertStatus(200)
+            ->assertJsonFragment(['team_no' => $this->testclub_assigned->teams->first()->team_no]);
 
+        // rerun with leagu in assigned
+        $this->open_registration($this->testleague);
+        $this->open_assignment($this->testleague);
+        $response = $this->authenticated()
+            ->get(route('club.team.dt', ['language' => 'de', 'club' => $this->testclub_assigned]));
+
+        $response->assertStatus(200)
+            ->assertJsonFragment(['team_no' => $this->testclub_assigned->teams->first()->team_no]);
     }
     /**
      * dashboard
@@ -323,6 +332,34 @@ class ClubControllerTest extends TestCase
             ->assertJsonFragment([['id' => $club->id, 'text' => '(' . $club->region->code . ') ' . $club->shortname]]);
     }
     /**
+     * sb_league
+     *
+     * @test
+     * @group club
+     * @group controller
+     *
+     * @return void
+     */
+    public function sb_league()
+    {
+        // test with league in not assigned state
+        $response = $this->authenticated()
+            ->get(route('club.sb.league', ['club' => $this->testclub_assigned]));
+
+        $response->assertStatus(200)
+            ->assertJsonFragment([]);
+
+        // move league back to assgined state and rerun
+        $this->open_registration($this->testleague);
+        $this->open_assignment($this->testleague);
+
+        $response = $this->authenticated()
+            ->get(route('club.sb.league', ['club' => $this->testclub_assigned]));
+
+        $response->assertStatus(200)
+            ->assertJsonFragment([['id' => $this->testleague->id, 'text' => $this->testleague->shortname]]);
+    }
+    /**
      * destroy
      *
      * @test
@@ -342,5 +379,4 @@ class ClubControllerTest extends TestCase
         $this->assertDatabaseMissing('clubs', ['id' => $this->testclub_free->id]);
         $this->assertDatabaseCount('clubs', 3);
     }
-
 }

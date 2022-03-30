@@ -217,8 +217,7 @@ class RegistrationTest extends TestCase
 
         $response->assertStatus(200)
                  ->assertSessionHasNoErrors();
-//                 ->assertSeeText($club1->shortname.', '.$club2->shortname)
- //                ->assertSeeText($league->shortname);
+
     }
 
     /**
