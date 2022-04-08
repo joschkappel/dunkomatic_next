@@ -68,11 +68,8 @@ class MemberController extends Controller
                 return $data->memberofleagues;
             })
             ->addColumn('roles', function ($data) {
-                $role_ids = $data->memberships->pluck('role_id');
-                foreach ($role_ids as $k => $r) {
-                    $role_ids[$k] = Role::coerce(intval($r))->description;
-                }
-                return $role_ids->implode(', ');
+                $roles = $data->memberships->pluck('role_title');
+                return $roles->implode(', ');
             })
             ->addColumn('user_account', function ($data) {
                 if ($data->isuser) {

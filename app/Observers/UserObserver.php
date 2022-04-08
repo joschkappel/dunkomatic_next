@@ -7,11 +7,34 @@ use App\Models\Club;
 use App\Models\League;
 use App\Enums\Role;
 use App\Models\Member;
-
+use App\Traits\UserAccessManager;
 use Illuminate\Support\Facades\Log;
 
 class UserObserver
 {
+    use UserAccessManager;
+
+    /**
+     * Handle the User "created" event.
+     *
+     * @param  \App\Models\User  $user
+     * @return void
+     */
+    public function created(User $user)
+    {
+        Log::info('[OBSERVER] user created - check for members', ['user-id' => $user->id]);
+
+        $member = Member::with('memberships')->where('email1', $user->email)->orWhere('email2', $user->email)->orWhereHas('memberships', function ($q) use($user) { $q->where('email',$user->email);} )->first();
+        if (isset($member)) {
+            // link user and member
+            $member->user()->save($user);
+            $this->cloneMemberAccessRights($user);
+            Log::info('[OBSERVER] user created - member found and linked', ['user-id' => $user->id, 'member-id' => $member->id]);
+        }
+
+    }
+
+
 
     /**
      * Handle the User "updated" event.
