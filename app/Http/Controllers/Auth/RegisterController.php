@@ -104,11 +104,6 @@ class RegisterController extends Controller
 
         $this->setInitialAccessRights($user, $region);
 
-        $member = Member::with('memberships')->where('email1', $user->email)->orWhere('email2', $user->email)->first();
-        if (isset($member)) {
-            // link user and member
-            $member->user()->save($user);
-        }
         // self-registrâtion ntoify region admin for approval
         $radmins = User::whereIs('regionadmin')->get();
         foreach ($radmins as $radmin) {

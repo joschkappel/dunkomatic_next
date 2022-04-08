@@ -21,9 +21,7 @@ class ProdDatabaseSeeder extends Seeder
           base\RegionsTableSeeder::class,
           base\LeagueSizesTableSeeder::class,
           base\LeagueSizeCharsTableSeeder::class,
-          base\LeagueSizeSchemesTableSeeder::class,
-          prod\UsersTableSeeder::class,
-          base\MessagesTableSeeder::class,
+          base\LeagueSizeSchemesTableSeeder::class
         ]);
 
         // migrate tables from v1
@@ -36,6 +34,8 @@ class ProdDatabaseSeeder extends Seeder
           prod\ClubLeagueTableSeeder::class,
           prod\TeamsTableSeeder::class,
           prod\MembersTableSeeder::class,
+          prod\UsersTableSeeder::class,
+          base\MessagesTableSeeder::class,
         ]);
     }
 }
