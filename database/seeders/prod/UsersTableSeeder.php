@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Models\Region;
 use App\Enums\Role;
 
-use Illuminate\Support\Facades\Hash;
+// use Illuminate\Support\Facades\Hash;   Hash::make('HBVXX-2022', ['rounds'=>12])
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
 
