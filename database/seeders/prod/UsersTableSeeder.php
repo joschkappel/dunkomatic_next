@@ -7,6 +7,8 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Region;
 use App\Enums\Role;
+
+use Illuminate\Support\Facades\Hash;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
 
@@ -27,7 +29,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'joschkappel@gmail.com',
             'email_verified_at' => now(),
             'approved_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'password' => '$2y$12$HOF0RNK6nYIu/tV12sUg5eMOFjFqSRwkf.6gUJadUX.VtFOBbBMRK'
         ]);
         Bouncer::assign('superadmin')->to($u);
         Bouncer::allow($u)->to('manage', $u);
@@ -40,7 +42,7 @@ class UsersTableSeeder extends Seeder
             'name' => 'Detlef Volk',
             'email' => 'bzvs@dunkomatic.de',
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'password' => '$2y$12$0sJK6yb8XjofKRjmUPWwLu90.z.nwI4eJ2YoEFJu6xn2n4mVZdDHO',
             'locale' => 'de',
         ]);
         $this->approveAndSetAcls($u, $r);
@@ -51,7 +53,7 @@ class UsersTableSeeder extends Seeder
             'name' => 'Karin Arndt',
             'email' => 'arndtkarin@t-online.de',
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'password' => '$2y$12$kKkm8t3teKQeeQGOxF0uDuZ8O4e5RquKbuLIg39n3gatZgYiKCQjq',
             'locale' => 'de',
         ]);
         $this->approveAndSetAcls($u, $r);
@@ -62,7 +64,7 @@ class UsersTableSeeder extends Seeder
             'name' => 'Günter Herzog',
             'email' => 'guenter_herzog@gmx.de',
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'password' => '$2y$12$6Ig7Hqtb2YBbZxHHHN4oBO37h4nWS0wi9DBe27k/xwRRZ7M12h0Rq',
             'locale' => 'de',
         ]);
         $this->approveAndSetAcls($u, $r);
@@ -73,7 +75,7 @@ class UsersTableSeeder extends Seeder
             'name' => 'Markus Hegler',
             'email' => 'kasselbasketball@gmail.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'password' => '$2y$12$Fh42iC6znKVHyvgekH5ZluBWN3RCENp1mmkFHXxQyxcEGmczrGpLm',
             'locale' => 'de',
         ]);
         $this->approveAndSetAcls($u, $r);
@@ -84,7 +86,7 @@ class UsersTableSeeder extends Seeder
             'name' => 'Petra Cramer',
             'email' => 'petra.cramer@gmx.de',
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'password' => '$2y$12$9FTuAquqJ.Sx7pPPkXOTmuHCLZe7Z6xRq/ukhb/zuNqSOAnm.oBA6',
             'locale' => 'de',
         ]);
         $this->approveAndSetAcls($u, $r);
