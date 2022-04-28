@@ -70,6 +70,7 @@ class DbBackupTest extends TestCase
 
         // now move to the future < 90 days and run again, still 1 files expected
         $this->travel( config('dunkomatic.db_backup_age',90)-2 )->days();
+        $this->artisan('queue:restart')->assertSuccessful();
         $job_instance = resolve( ProcessFilesCleanup::class);
         app()->call([$job_instance, 'handle']);
         $files =  Storage::disk('local')->allFiles($backup_folder);
@@ -77,6 +78,7 @@ class DbBackupTest extends TestCase
 
         // now move to the future > 90 days and run again, file should be gone
         $this->travel( config('dunkomatic.db_backup_age',90)+1 )->days();
+        $this->artisan('queue:restart')->assertSuccessful();
         $job_instance = resolve( ProcessFilesCleanup::class);
         app()->call([$job_instance, 'handle']);
         $files =  Storage::disk('local')->allFiles($backup_folder);
