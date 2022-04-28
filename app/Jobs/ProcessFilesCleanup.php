@@ -28,7 +28,7 @@ class ProcessFilesCleanup implements ShouldQueue
         $file_cnt = 0;
         collect(Storage::disk('local')->files( config('dunkomatic.folders.backup') ))
         ->each(function($file) use (&$file_cnt) {
-            if ( ( Str::contains($file, 'backup-dunkomatic_next')) and
+            if ( ( Str::contains($file, 'backup')) and
                  ( Storage::disk('local')->lastModified($file) < Carbon::now()->subDays( config('dunkomatic.db_backup_age',90)   )->getTimestamp())) {
                 Storage::disk('local')->delete($file);
                 Log::debug('[JOB][FILES CLEANUP] db backup deleted',['name'=>$file, 'date'=>Carbon::now()]);
