@@ -74,7 +74,6 @@ class DbBackupTest extends TestCase
         app()->call([$job_instance, 'handle']);
         $files =  Storage::disk('local')->allFiles($backup_folder);
         $this->assertCount(1, $files);
-        $this->travelBack();
 
         // now move to the future > 90 days and run again, file should be gone
         $this->travel( config('dunkomatic.db_backup_age',90)+1 )->days();
@@ -82,8 +81,8 @@ class DbBackupTest extends TestCase
         app()->call([$job_instance, 'handle']);
         $files =  Storage::disk('local')->allFiles($backup_folder);
         $this->assertCount(0, $files);
-        $this->travelBack();
 
+        $this->travelBack();
     }
 
 }
