@@ -25,12 +25,14 @@ class ProcessFilesCleanup implements ShouldQueue
     {
         // delete old DB backups
         $file_cnt = 0;
-        collect(Storage::disk('local')->files(   config('dunkomatic.folders.backup') ))
+        collect(Storage::disk('local')->files( config('dunkomatic.folders.backup') ))
         ->each(function($file) use (&$file_cnt) {
             if ( (Str::contains($file, 'backup-dunkomatic_next')) and (Storage::disk('local')->lastModified($file) < now()->subDays( config('dunkomatic.db_backup_age',90)   )->getTimestamp())) {
                 Storage::disk('local')->delete($file);
                 Log::debug('[JOB][FILES CLEANUP] db backup deleted',['name'=>$file]);
                 $file_cnt += 1;
+            } else {
+                Log::debug('[JOB][FILES CLEANUP] db backup found',['name'=>$file]);
             }
         });
         Log::notice('[JOB][FILES CLEANUP] DB backups removed '.$file_cnt.' files older than '.config('dunkomatic.db_backup_age',90) .' days');
