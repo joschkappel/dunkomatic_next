@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -17,16 +18,6 @@ class ProcessFilesCleanup implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * Create a new job instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
      * Execute the job.
      *
      * @return void
@@ -34,14 +25,19 @@ class ProcessFilesCleanup implements ShouldQueue
     public function handle()
     {
         // delete old DB backups
-        collect(Storage::files(   config('dunkomatic.folders.backup') ))
-        ->each(function($file) {
-            if ( (Str::contains($file, 'backup-dunkomatic_next')) and (Storage::lastModified($file) < now()->subDays( config('dunkomatic.db_backup_age',90)   )->getTimestamp())) {
-                Storage::delete($file);
-                Log::debug('[JOB][FILES CLEANUP] db backup deleted',['name'=>$file]);
+        $file_cnt = 0;
+        collect(Storage::disk('local')->files( config('dunkomatic.folders.backup') ))
+        ->each(function($file) use (&$file_cnt) {
+            if ( ( Str::contains($file, 'backup')) and
+                 ( Storage::disk('local')->lastModified($file) < Carbon::now()->subDays( config('dunkomatic.db_backup_age',90)   )->getTimestamp())) {
+                Storage::disk('local')->delete($file);
+                Log::debug('[JOB][FILES CLEANUP] db backup deleted',['name'=>$file, 'date'=>Carbon::now()]);
+                $file_cnt += 1;
+            } else {
+                Log::debug('[JOB][FILES CLEANUP] db backup found',['name'=>$file, 'date'=>Carbon::now()]);
             }
         });
-        Log::notice('[JOB][FILES CLEANUP] DB backups removed all files older than '.config('dunkomatic.db_backup_age',90) .' days');
+        Log::notice('[JOB][FILES CLEANUP] DB backups removed '.$file_cnt.' files older than '.config('dunkomatic.db_backup_age',90) .' days');
 
         // empty temp folder
 
