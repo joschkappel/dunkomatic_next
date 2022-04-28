@@ -77,6 +77,7 @@ class DbBackupTest extends TestCase
         $this->assertCount(1, $files);
 
         // now move to the future > 90 days and run again, file should be gone
+        $this->travelBack();
         $this->travel( config('dunkomatic.db_backup_age',90)+1 )->days();
 
         $job_instance = resolve( ProcessFilesCleanup::class);

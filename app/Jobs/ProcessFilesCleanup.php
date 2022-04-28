@@ -34,7 +34,7 @@ class ProcessFilesCleanup implements ShouldQueue
                 Log::debug('[JOB][FILES CLEANUP] db backup deleted',['name'=>$file, 'date'=>Carbon::now()]);
                 $file_cnt += 1;
             } else {
-                Log::debug('[JOB][FILES CLEANUP] db backup found',['name'=>$file]);
+                Log::debug('[JOB][FILES CLEANUP] db backup found',['name'=>$file, 'date'=>Carbon::now()]);
             }
         });
         Log::notice('[JOB][FILES CLEANUP] DB backups removed '.$file_cnt.' files older than '.config('dunkomatic.db_backup_age',90) .' days');
