@@ -4,6 +4,7 @@ namespace Tests\Jobs;
 
 use App\Jobs\GenerateClubGamesReport;
 use App\Models\League;
+use App\Models\Game;
 
 use Tests\TestCase;
 use App\Enums\ReportFileType;
@@ -140,6 +141,8 @@ class GenerateClubReportsTest extends TestCase
         $club = $this->testclub_assigned;
         $league = $this->testleague;
 
+        // update gaems referee with $club, so we get some referee report entries
+        Game::whereNull('referee_1')->update(['referee_1'=>'****']);
 
         $folder = $region->club_folder;
         Storage::assertExists($folder);
