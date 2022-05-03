@@ -41,8 +41,8 @@ class CalendarControllerTest extends TestCase
 
         $response->assertStatus(404);
 
-        $this->close_selection($league);
-        $this->close_freeze($league);
+        $this->freeze_league($league);
+        $this->open_game_scheduling($league);
         $response = $this->authenticated()
             ->get(route('cal.league', ['language' => 'de', 'league' => $league]));
 
@@ -71,8 +71,8 @@ class CalendarControllerTest extends TestCase
 
         $response->assertStatus(404);
 
-        $this->close_selection($league);
-        $this->close_freeze($league);
+        $this->freeze_league($league);
+        $this->open_game_scheduling($league);
 
         $response = $this->authenticated()
             ->get(route('cal.club', ['language' => 'de', 'club' => $club]));
@@ -102,8 +102,8 @@ class CalendarControllerTest extends TestCase
 
         $response->assertStatus(404);
 
-        $this->close_selection($league);
-        $this->close_freeze($league);
+        $this->freeze_league($league);
+        $this->open_game_scheduling($league);
 
         $response = $this->authenticated()
             ->get(route('cal.club.home', ['language' => 'de', 'club' => $club]));
@@ -132,8 +132,8 @@ class CalendarControllerTest extends TestCase
 
         $response->assertStatus(404);
 
-        $this->close_selection($league);
-        $this->close_freeze($league);
+        $this->freeze_league($league);
+        $this->open_game_scheduling($league);
         $game = $league->games()->first();
         $game->update(['referee_1' => $club->shortname]);
 

@@ -61,24 +61,7 @@ class ProcessNewSeason implements ShouldQueue
         $league = League::with('teams')->get();
 
         foreach ($league as $l) {
-            // delete league clubs (dont delete, as this keeps stable over seasons)
-            // $l->clubs()->delete();
-
-            // reset teams
-            foreach ($l->teams as $t) {
-                //Log::info('new season: reset team '.$l->shortname.' - '.$t->league_char);
-                $t->update([
-                    'league_char' => null,
-                    'league_no' => null,
-                    'league_prev' => $l->shortname,
-                    'league_id' => null
-                ]);
-            }
-            Log::notice('[JOB][NEW SEASON] teams de-registered.', ['league-id' => $l->id]);
-
-            $this->open_assignment($l);
-            $l->games()->delete();
-            Log::notice('[JOB][NEW SEASON] league games deleted.', ['league-id' => $l->id]);
+            $this->restart_league($l);
         }
 
         // clean up report folders

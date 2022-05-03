@@ -182,7 +182,7 @@
 
             <div class="form-row m-2">
                 <label for="closeassignment"
-                    class="col-sm-6 col-form-label">@lang('region.close_assignment')</label>
+                    class="col-sm-6 col-form-label">@lang('region.open_team_registration')</label>
                 <div class="col-sm-4">
                     <div class="input-group date" id="closeassignment" data-target-input="nearest">
                         <input type="text"
@@ -200,7 +200,7 @@
             </div>
             <div class="form-row m-2">
                 <label for="closeregistration"
-                    class="col-sm-6 col-form-label">@lang('region.close_registration')</label>
+                    class="col-sm-6 col-form-label">@lang('region.open_char_selection')</label>
                 <div class="col-sm-4">
                     <div class="input-group date" id="closeregistration"
                         data-target-input="nearest">
@@ -219,7 +219,7 @@
             </div>
             <div class="form-row m-2">
                 <label for="closeselection"
-                    class="col-sm-6 col-form-label">@lang('region.close_selection')</label>
+                    class="col-sm-6 col-form-label">@lang('region.freeze_league')</label>
                 <div class="col-sm-4">
                     <div class="input-group date" id="closeselection" data-target-input="nearest">
                         <input type="text"
@@ -237,7 +237,7 @@
             </div>
             <div class="form-row m-2">
                 <label for="closescheduling"
-                    class="col-sm-6 col-form-label">@lang('region.close_scheduling')</label>
+                    class="col-sm-6 col-form-label">@lang('region.open_ref_assignment')</label>
                 <div class="col-sm-4">
                     <div class="input-group date" id="closescheduling" data-target-input="nearest">
                         <input type="text"
@@ -255,7 +255,7 @@
             </div>
             <div class="form-row m-2">
                 <label for="closereferees"
-                    class="col-sm-6 col-form-label">@lang('region.close_referees')</label>
+                    class="col-sm-6 col-form-label">@lang('region.golive_league')</label>
                 <div class="col-sm-4">
                     <div class="input-group date" id="closereferees" data-target-input="nearest">
                         <input type="text"

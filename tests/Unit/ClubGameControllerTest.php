@@ -116,8 +116,8 @@ class ClubGameControllerTest extends TestCase
     public function import_csv_notok()
     {
 
-        $this->open_freeze( $this->testleague );
-        $this->close_freeze( $this->testleague );
+        $this->refreeze_league( $this->testleague );
+        $this->open_game_scheduling( $this->testleague );
         $club = $this->testleague->clubs->first();
 
         $name = 'CLUB_Heimspiele.csv';

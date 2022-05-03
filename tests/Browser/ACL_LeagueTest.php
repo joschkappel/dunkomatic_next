@@ -55,8 +55,8 @@ class ACL_LeagueTest extends DuskTestCase
         static::$team->league()->associate(static::$league)->save();
 
         //set status to registration
-        $this->open_assignment(static::$league);
-        $this->close_assignment(static::$league);
+        $this->reopen_club_assignment(static::$league);
+        $this->open_team_registration(static::$league);
 
         static::$region = Region::where('code','HBVDA')->first();
         $member = Member::factory()->create();
@@ -233,7 +233,7 @@ class ACL_LeagueTest extends DuskTestCase
 
     private function access_leaguedashboard( $user)
     {
-        
+
         $this->browse(function ($browser) use ($user) {
             $browser->loginAs($user)->visitRoute('league.dashboard',['language'=>'de', 'league'=>static::$league]); // ->screenshot($user->getRoles()[0]);
             $member = static::$member;

@@ -52,7 +52,7 @@ class LeagueStateControllerTest extends TestCase
         // change state to registration
         $response = $this->authenticated()
             ->post(route('league.state.change', ['league' => $this->testleague]), [
-                'action' => LeagueStateChange::CloseAssignment()
+                'action' => LeagueStateChange::OpenRegistration()
             ]);
 
         $response->assertStatus(200);
@@ -78,7 +78,7 @@ class LeagueStateControllerTest extends TestCase
      */
     public function goto_registration()
     {
-        $this->close_assignment($this->testleague);
+        $this->open_team_registration($this->testleague);
         $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Registration()]);
 
         Notification::fake();
@@ -87,7 +87,7 @@ class LeagueStateControllerTest extends TestCase
         // change state to registration
         $response = $this->authenticated()
             ->post(route('league.state.change', ['league' => $this->testleague]), [
-                'action' => LeagueStateChange::CloseRegistration()
+                'action' => LeagueStateChange::OpenSelection()
             ]);
 
         $response->assertStatus(200);
@@ -113,14 +113,14 @@ class LeagueStateControllerTest extends TestCase
      */
     public function goto_selection()
     {
-        $this->close_registration($this->testleague);
+        $this->open_char_selection($this->testleague);
 
         $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Selection()]);
 
         // change state to registration
         $response = $this->authenticated()
             ->post(route('league.state.change', ['league' => $this->testleague]), [
-                'action' => LeagueStateChange::CloseSelection()
+                'action' => LeagueStateChange::FreezeLeague()
             ]);
 
         $response->assertStatus(200);
@@ -139,7 +139,7 @@ class LeagueStateControllerTest extends TestCase
      */
     public function goto_freeze()
     {
-        $this->close_selection($this->testleague);
+        $this->freeze_league($this->testleague);
 
         $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Freeze()]);
 
@@ -149,7 +149,7 @@ class LeagueStateControllerTest extends TestCase
         // change state to scheduling
         $response = $this->authenticated()
             ->post(route('league.state.change', ['league' => $this->testleague]), [
-                'action' => LeagueStateChange::CloseFreeze()
+                'action' => LeagueStateChange::OpenScheduling()
             ]);
 
         $response->assertStatus(200);
@@ -169,7 +169,7 @@ class LeagueStateControllerTest extends TestCase
      */
     public function goto_scheduling()
     {
-        $this->close_freeze($this->testleague);
+        $this->open_game_scheduling($this->testleague);
 
         $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Scheduling()]);
 
@@ -180,7 +180,7 @@ class LeagueStateControllerTest extends TestCase
         // change state to registration
         $response = $this->authenticated()
             ->post(route('league.state.change', ['league' => $this->testleague->id]), [
-                'action' => LeagueStateChange::CloseScheduling()
+                'action' => LeagueStateChange::OpenReferees()
             ]);
 
         $response->assertStatus(200);
@@ -199,7 +199,7 @@ class LeagueStateControllerTest extends TestCase
      */
     public function goto_referees()
     {
-        $this->close_scheduling($this->testleague);
+        $this->open_ref_assignment($this->testleague);
 
         $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Referees()]);
 
@@ -210,7 +210,7 @@ class LeagueStateControllerTest extends TestCase
         // change state to registration
         $response = $this->authenticated()
             ->post(route('league.state.change', ['league' => $this->testleague->id]), [
-                'action' => LeagueStateChange::CloseReferees()
+                'action' => LeagueStateChange::GoLiveLeague()
             ]);
 
         $response->assertStatus(200);
@@ -229,7 +229,7 @@ class LeagueStateControllerTest extends TestCase
      */
     public function backto_referees()
     {
-        $this->close_referees($this->testleague);
+        $this->golive_league($this->testleague);
 
         $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Live()]);
 
@@ -255,14 +255,14 @@ class LeagueStateControllerTest extends TestCase
     public function backto_scheduling()
     {
 
-        $this->close_scheduling($this->testleague);
+        $this->open_ref_assignment($this->testleague);
 
         $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Referees()]);
 
         // change state to registration
         $response = $this->authenticated()
             ->post(route('league.state.change', ['league' => $this->testleague->id]), [
-                'action' => LeagueStateChange::OpenScheduling()
+                'action' => LeagueStateChange::ReOpenScheduling()
             ]);
 
         $response->assertStatus(200);
@@ -281,14 +281,14 @@ class LeagueStateControllerTest extends TestCase
      */
     public function backto_freeze()
     {
-        $this->close_freeze($this->testleague);
+        $this->open_game_scheduling($this->testleague);
 
         $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Scheduling()]);
 
         // change state to freeze
         $response = $this->authenticated()
             ->post(route('league.state.change', ['league' => $this->testleague->id]), [
-                'action' => LeagueStateChange::OpenFreeze()
+                'action' => LeagueStateChange::ReFreezeLeague()
             ]);
 
         $response->assertStatus(200);
@@ -308,14 +308,14 @@ class LeagueStateControllerTest extends TestCase
      */
     public function backto_selection()
     {
-        $this->close_selection($this->testleague);
+        $this->freeze_league($this->testleague);
 
         $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Freeze()]);
 
         // change state to registration
         $response = $this->authenticated()
             ->post(route('league.state.change', ['league' => $this->testleague->id]), [
-                'action' => LeagueStateChange::OpenSelection()
+                'action' => LeagueStateChange::ReOpenSelection()
             ]);
 
         $response->assertStatus(200);
@@ -333,14 +333,14 @@ class LeagueStateControllerTest extends TestCase
      */
     public function backto_registration()
     {
-        $this->close_registration($this->testleague);
+        $this->open_char_selection($this->testleague);
 
         $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Selection()]);
 
         // change state to registration
         $response = $this->authenticated()
             ->post(route('league.state.change', ['league' => $this->testleague->id]), [
-                'action' => LeagueStateChange::OpenRegistration()
+                'action' => LeagueStateChange::ReOpenRegistration()
             ]);
 
         $response->assertStatus(200);
@@ -359,13 +359,13 @@ class LeagueStateControllerTest extends TestCase
      */
     public function backto_assignment()
     {
-        $this->close_assignment($this->testleague);
+        $this->open_team_registration($this->testleague);
         $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Registration()]);
 
         // change state to registration
         $response = $this->authenticated()
             ->post(route('league.state.change', ['league' => $this->testleague->id]), [
-                'action' => LeagueStateChange::OpenAssignment()
+                'action' => LeagueStateChange::ReOpenAssignment()
             ]);
 
         $response->assertStatus(200);
