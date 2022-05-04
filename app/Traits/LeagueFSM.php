@@ -206,7 +206,7 @@ trait LeagueFSM
     }
     public function start_league(League $league): void
     {
-        Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Assignment()->key]);
+        Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key ?? 'UNSET', 'new-state' => LeagueState::Assignment()->key]);
 
         $league->state = LeagueState::Assignment();
         $league->save();
