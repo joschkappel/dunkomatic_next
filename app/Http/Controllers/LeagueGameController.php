@@ -115,7 +115,7 @@ class LeagueGameController extends Controller
     public function store(League $league)
     {
         Log::info('creating games.', ['league-id' => $league->id]);
-        $this->close_freeze($league);
+        $this->open_game_scheduling($league);
 
         return Response::json(['success' => 'all good'], 200);
     }
@@ -221,7 +221,7 @@ class LeagueGameController extends Controller
      */
     public function destroy_game(League $league)
     {
-        $this->open_freeze($league);
+        $this->refreeze_league($league);
         $league->refresh();
 
         return Response::json(['success' => 'all good'], 200);

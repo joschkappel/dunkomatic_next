@@ -79,7 +79,7 @@ class LeagueGameControllerTest extends TestCase
      */
     public function show_by_number()
     {
-        $this->close_freeze($this->testleague);
+        $this->open_game_scheduling($this->testleague);
         $game = $this->testleague->games()->first();
 
         $response = $this->authenticated()
@@ -100,7 +100,7 @@ class LeagueGameControllerTest extends TestCase
      */
     public function datatable()
     {
-        $this->close_freeze($this->testleague);
+        $this->open_game_scheduling($this->testleague);
 
         $response = $this->authenticated()
             ->get(route('league.game.dt', ['language' => 'de', 'league' => $this->testleague]));
@@ -121,7 +121,7 @@ class LeagueGameControllerTest extends TestCase
     public function store_ok()
     {
         $league = $this->testleague;
-        $this->close_selection($league);
+        $this->freeze_league($league);
         // generate the events
 
         $response = $this->authenticated()
@@ -152,8 +152,8 @@ class LeagueGameControllerTest extends TestCase
     public function update_home_notok()
     {
         $league = $this->testleague;
-        $this->close_selection($league);
-        $this->close_freeze($league);
+        $this->freeze_league($league);
+        $this->open_game_scheduling($league);
         $club = $this->testclub_assigned;
         $gym = Gym::factory()->create(['club_id' => $this->testclub_assigned->id, 'gym_no' => 9]);
 
@@ -184,8 +184,8 @@ class LeagueGameControllerTest extends TestCase
     {
         //$this->withoutExceptionHandling();
         $league = $this->testleague;
-        $this->close_selection($league);
-        $this->close_freeze($league);
+        $this->freeze_league($league);
+        $this->open_game_scheduling($league);
         $club = $this->testclub_assigned;
         $gym = Gym::factory()->create(['club_id' => $this->testclub_assigned->id, 'gym_no' => 9]);
 
@@ -218,8 +218,8 @@ class LeagueGameControllerTest extends TestCase
     {
         //$this->withoutExceptionHandling();
         $league = $this->testleague;
-        $this->close_selection($league);
-        $this->close_freeze($league);
+        $this->freeze_league($league);
+        $this->open_game_scheduling($league);
         $club = $this->testclub_assigned;
         $gym = Gym::factory()->create(['club_id' => $this->testclub_assigned->id, 'gym_no' => 9]);
 
@@ -251,8 +251,8 @@ class LeagueGameControllerTest extends TestCase
     public function destroy_game()
     {
         $league = $this->testleague;
-        $this->close_selection($league);
-        $this->close_freeze($league);
+        $this->freeze_league($league);
+        $this->open_game_scheduling($league);
         $this->assertDatabaseHas('games',['league_id' => $league->id ]);
 
         $response = $this->authenticated()
@@ -276,8 +276,8 @@ class LeagueGameControllerTest extends TestCase
     public function destroy_noshow_game()
     {
         $league = $this->testleague;
-        $this->close_selection($league);
-        $this->close_freeze($league);
+        $this->freeze_league($league);
+        $this->open_game_scheduling($league);
         $this->assertDatabaseHas('games',['league_id' => $league->id ]);
         $games_remaining = $league->games->count() - $league->games_noshow->count();
 

@@ -37,7 +37,7 @@ class LeagueSchedulingInjectTeamTest extends TestCase
     public function inject_team()
     {
         $c_toadd =$this->testclub_free;
-        $this->open_scheduling($this->testleague);
+        $this->reopen_game_scheduling($this->testleague);
 
         $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Scheduling()])
             ->assertDatabaseHas('games', ['league_id' => $this->testleague->id])
@@ -90,7 +90,7 @@ class LeagueSchedulingInjectTeamTest extends TestCase
      */
     public function withdraw_team()
     {
-        $this->open_scheduling($this->testleague);
+        $this->reopen_game_scheduling($this->testleague);
 
         // now withdraw a team
         $response = $this->authenticated()
@@ -129,7 +129,7 @@ class LeagueSchedulingInjectTeamTest extends TestCase
     public function reinject_team()
     {
         $c_toadd = $this->testclub_free;
-        $this->open_scheduling($this->testleague);
+        $this->reopen_game_scheduling($this->testleague);
         // now re-add the team
         $response = $this->authenticated()
             ->followingRedirects()

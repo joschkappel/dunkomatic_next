@@ -34,8 +34,8 @@ class ProcessLeagueStateChangesTest extends TestCase
     public function process_assigned()
     {
         // set to assigned
-        $this->open_registration($this->testleague);
-        $this->open_assignment($this->testleague);
+        $this->reopen_team_registration($this->testleague);
+        $this->reopen_club_assignment($this->testleague);
 
         $this->assertDatabaseHas('leagues', ['state' => LeagueState::Assignment]);
 
@@ -68,7 +68,7 @@ class ProcessLeagueStateChangesTest extends TestCase
     public function process_registered()
     {
         // set to registered
-        $this->open_registration($this->testleague);
+        $this->reopen_team_registration($this->testleague);
 
         $this->assertDatabaseHas('leagues', ['state' => LeagueState::Registration]);
 
@@ -111,8 +111,8 @@ class ProcessLeagueStateChangesTest extends TestCase
     public function process_scheduled()
     {
         // set to selected is done
-        $this->close_selection($this->testleague);
-        $this->close_freeze($this->testleague);
+        $this->freeze_league($this->testleague);
+        $this->open_game_scheduling($this->testleague);
 
         $this->assertDatabaseHas('leagues', ['state' => LeagueState::Scheduling]);
 
@@ -134,9 +134,9 @@ class ProcessLeagueStateChangesTest extends TestCase
     public function process_referees()
     {
         // set to selected is done
-        $this->close_selection($this->testleague);
-        $this->close_freeze($this->testleague);
-        $this->close_scheduling($this->testleague);
+        $this->freeze_league($this->testleague);
+        $this->open_game_scheduling($this->testleague);
+        $this->open_ref_assignment($this->testleague);
 
         $this->assertDatabaseHas('leagues', ['state' => LeagueState::Referees]);
         // make sure all refs are set

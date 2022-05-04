@@ -20,7 +20,7 @@ trait LeagueFSM
 {
     use GameManager;
 
-    public function close_assignment(League $league): void
+    public function open_team_registration(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Registration()->key]);
         $league->state = LeagueState::Registration();
@@ -43,7 +43,7 @@ trait LeagueFSM
         }
     }
 
-    public function close_registration(League $league): void
+    public function open_char_selection(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Selection()->key]);
 
@@ -68,7 +68,7 @@ trait LeagueFSM
         }
     }
 
-    public function close_selection(League $league): void
+    public function freeze_league(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Freeze()->key]);
 
@@ -77,7 +77,7 @@ trait LeagueFSM
         $league->save();
     }
 
-    public function close_freeze(League $league): void
+    public function open_game_scheduling(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Scheduling()->key]);
 
@@ -104,7 +104,7 @@ trait LeagueFSM
         }
     }
 
-    public function close_scheduling(League $league): void
+    public function open_ref_assignment(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Referees()->key]);
 
@@ -113,7 +113,7 @@ trait LeagueFSM
         $league->save();
     }
 
-    public function close_referees(League $league): void
+    public function golive_league(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Live()->key]);
 
@@ -122,7 +122,7 @@ trait LeagueFSM
         $league->save();
     }
 
-    public function open_assignment(League $league): void
+    public function reopen_club_assignment(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key ?? '', 'new-state' => LeagueState::Assignment()->key]);
 
@@ -135,7 +135,7 @@ trait LeagueFSM
         $league->save();
     }
 
-    public function open_registration(League $league): void
+    public function reopen_team_registration(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Registration()->key]);
 
@@ -144,7 +144,7 @@ trait LeagueFSM
         $league->save();
     }
 
-    public function open_selection(League $league): void
+    public function reopen_char_selection(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Selection()->key]);
 
@@ -153,7 +153,7 @@ trait LeagueFSM
         $league->save();
     }
 
-    public function open_freeze(League $league): void
+    public function refreeze_league(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Freeze()->key]);
         $this->delete_games($league);
@@ -162,7 +162,7 @@ trait LeagueFSM
         $league->save();
     }
 
-    public function open_scheduling(League $league): void
+    public function reopen_game_scheduling(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Scheduling()->key]);
 
@@ -171,23 +171,44 @@ trait LeagueFSM
         $league->save();
     }
 
-    public function open_referees(League $league): void
-    {
-        Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Referees()->key]);
-
-        $league->state = LeagueState::Referees();
-        $league->referees_closed_at = null;
-        $league->save();
-    }
-
-    public function open_setup(League $league): void
+    public function close_league(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Setup()->key]);
 
         $league->state = LeagueState::Setup();
+        $league->assignment_closed_at = null;
         $league->save();
         $league->games()->delete();
         $league->teams()->update(['league_id' => null]);
         $league->clubs()->detach();
+    }
+
+    public function restart_league(League $league): void
+    {
+        Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Assignment()->key]);
+
+        $league->state = LeagueState::Assignment();
+        $league->scheduling_closed_at = null;
+        $league->assignment_closed_at = null;
+        $league->selection_closed_at = null;
+        $league->selection_opened_at = null;
+        $league->registration_closed_at = null;
+        $league->generated_at = null;
+        $league->referees_closed_at = null;
+        $league->save();
+        $league->games()->delete();
+        $league->teams()->update([
+            'league_char' => null,
+            'league_no' => null,
+            'league_prev' => $league->shortname,
+            'league_id' => null
+        ]);
+    }
+    public function start_league(League $league): void
+    {
+        Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key ?? 'UNSET', 'new-state' => LeagueState::Assignment()->key]);
+
+        $league->state = LeagueState::Assignment();
+        $league->save();
     }
 }

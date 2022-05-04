@@ -230,8 +230,8 @@ class ClubControllerTest extends TestCase
             ->assertJsonFragment(['team_no' => $this->testclub_assigned->teams->first()->team_no]);
 
         // rerun with leagu in assigned
-        $this->open_registration($this->testleague);
-        $this->open_assignment($this->testleague);
+        $this->reopen_team_registration($this->testleague);
+        $this->reopen_club_assignment($this->testleague);
         $response = $this->authenticated()
             ->get(route('club.team.dt', ['language' => 'de', 'club' => $this->testclub_assigned]));
 
@@ -350,8 +350,8 @@ class ClubControllerTest extends TestCase
             ->assertJsonFragment([]);
 
         // move league back to assgined state and rerun
-        $this->open_registration($this->testleague);
-        $this->open_assignment($this->testleague);
+        $this->reopen_team_registration($this->testleague);
+        $this->reopen_club_assignment($this->testleague);
 
         $response = $this->authenticated()
             ->get(route('club.sb.league', ['club' => $this->testclub_assigned]));

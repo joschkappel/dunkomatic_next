@@ -28,8 +28,8 @@ class GameExportTest extends DuskTestCase
         parent::setUp();
         $this->artisan('db:seed', ['--class' => 'TestDatabaseSeeder']);
         static::$league = League::factory()->selected(4,4)->create();
-        $this->open_freeze( static::$league );
-        $this->close_freeze( static::$league );
+        $this->refreeze_league( static::$league );
+        $this->open_game_scheduling( static::$league );
 
         static::$region = Region::where('code','HBVDA')->first();
         static::$user = User::factory()->approved()->create();

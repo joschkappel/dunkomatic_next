@@ -22,10 +22,10 @@ class LeagueObserver
         if ($league->state == null) {
             if ($league->schedule()->exists()  and  $league->league_size()->exists()) {
                 Log::info('[OBSERVER] league created - set status ASSIGNMENT', ['league-id' => $league->id]);
-                $this->open_assignment($league);
+                $this->start_league($league);
             } else {
                 Log::info('[OBSERVER] league created - set status SETUP', ['league-id' => $league->id]);
-                $this->open_setup($league);
+                $this->close_league($league);
             }
         }
     }
@@ -41,14 +41,14 @@ class LeagueObserver
         if (!$league->schedule()->exists()  or  !$league->league_size()->exists()) {
             if (!$league->state->is(LeagueState::Setup())) {
                 Log::info('[OBSERVER] league updated - set status SETUP', ['league-id' => $league->id]);
-                $this->open_setup($league);
+                $this->close_league($league);
             }
         }
 
         if ($league->schedule()->exists()  and  $league->league_size()->exists() and ($league->state->is(LeagueState::Setup))) {
             if (!$league->state->is(LeagueState::Assignment())) {
                 Log::info('[OBSERVER] league updated - set status ASSIGNMENT', ['league-id' => $league->id]);
-                $this->open_assignment($league);
+                $this->start_league($league);
             }
         }
     }

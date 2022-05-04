@@ -60,23 +60,23 @@ class ProcessLeagueStateChanges implements ShouldQueue
                 // check if all clubs are assigned
                 if ($l->state->is( LeagueState::Assignment())){
                     if ( ( $l->state_count['assigned'] == $l->state_count['size'] ) or ( $close_assignment < now()) ){
-                        $this->close_assignment($l);
+                        $this->open_team_registration($l);
                     }
                 } elseif ($l->state->is( LeagueState::Registration())){
                     if (( $l->state_count['assigned'] == $l->state_count['registered'] ) or ( $close_registration < now()) ){
-                        $this->close_registration($l);
+                        $this->open_char_selection($l);
                     }
                 } elseif ($l->state->is( LeagueState::Selection())){
                     if ( ( $l->state_count['registered'] == $l->state_count['charspicked'] ) or ( $close_selection < now()) ){
-                        $this->close_selection($l);
+                        $this->freeze_league($l);
                     }
                 } elseif ($l->state->is( LeagueState::Scheduling())){
                     if ( (( $l->games_notime->count() == 0 ) and ($l->games_noshow->count() == 0 )) or ( $close_scheduling < now()) ){
-                        $this->close_scheduling($l);
+                        $this->open_ref_assignment($l);
                     }
                 } elseif ($l->state->is( LeagueState::Referees())){
                     if ( ( $l->state_count['referees'] == $l->games->count() )  or ( $close_referees < now()) ){
-                        $this->close_referees($l);
+                        $this->golive_league($l);
                     }
                 }
             }
