@@ -119,34 +119,10 @@ class AppServiceProvider extends ServiceProvider
             $clubmenu['text'] = trans_choice('club.club', 2);
             $clubmenu['icon_color'] = 'orange';
             $clubmenu['icon'] = 'fas fa-basketball-ball';
-
-            $smenu['text'] = __('club.menu.list');
-            $smenu['url']  = route('club.index', ['language' => app()->getLocale(), 'region'=> session('cur_region')]);
-            $smenu['icon_color'] = 'orange';
-            $smenu['icon'] =  'fas fa-list';
-            $smenu['can'] = 'view-clubs';
-            $smenu['shift'] = 'ml-3';
-            $clubmenu['submenu'][] = $smenu;
-
-            if (Auth::user()->isNotAn('superadmin')){
-                $allowed_clubs = Auth::user()->clubs();
-                foreach ($allowed_clubs as $c) {
-                    $smenu['text'] = $c->shortname;
-                    if (Auth::user()->can('update-clubs')){
-                        $smenu['url']  = route('club.dashboard', ['language' => app()->getLocale(), 'club' => $c]);
-                    } else {
-                        $smenu['url']  = route('club.briefing', ['language' => app()->getLocale(), 'club' => $c]);
-                    }
-                    $smenu['icon_color'] = 'orange';
-                    $smenu['icon'] =  'fas fa-list';
-                    $smenu['shift'] = 'ml-3';
-                    unset($smenu['can']);
-                    $clubmenu['submenu'][] = $smenu;
-                };
-            }
+            $clubmenu['url']  = route('club.index', ['language' => app()->getLocale(), 'region'=> session('cur_region')]);
+            $clubmenu['can'] = 'view-clubs';
 
             $event->menu->add($clubmenu);
-
             // MENU - LEAGUES
             $leaguemenu = array();
             $leaguemenu['text'] = trans_choice('league.league', 2);
@@ -161,24 +137,6 @@ class AppServiceProvider extends ServiceProvider
             $smenu['shift'] = 'ml-3';
             $leaguemenu['submenu'][] = $smenu;
 
-            if (Auth::user()->isNotAn('superadmin')){
-                $leagues = Auth::user()->leagues();
-                foreach ($leagues as $l) {
-                    if (Auth::user()->can('access', $l)){
-                        $smenu['text'] = $l->shortname;
-                        if (Auth::user()->can('update-leagues')){
-                            $smenu['url']  = route('league.dashboard', ['language' => app()->getLocale(), 'league' => $l]);
-                        } else {
-                            $smenu['url']  = route('league.briefing', ['language' => app()->getLocale(), 'league' => $l]);
-                        }
-                        $smenu['icon_color'] = 'yellow';
-                        $smenu['icon'] =  'fas fa-list';
-                        $smenu['shift'] = 'ml-3';
-                        unset($smenu['can']);
-                        $leaguemenu['submenu'][] = $smenu;
-                    }
-                };
-            }
 
             $smenu['text'] =  __('league.menu.manage');;
             $smenu['url']  = route('league.index_mgmt',['language' => app()->getLocale(), 'region'=> session('cur_region')]);
