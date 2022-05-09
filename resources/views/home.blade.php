@@ -1,6 +1,13 @@
 @extends('layouts.page')
 
 @section('content')
+    @isset($links)
+    <div class="row">
+        <div class="col-md-12">
+            @include('app.includes.quicklinks')
+        </div>
+    </div>
+    @endisset
     <div class="row">
         <div class="col-md-6">
             @include('message.includes.reminders_timeline')

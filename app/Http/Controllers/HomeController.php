@@ -58,9 +58,11 @@ class HomeController extends Controller
 
         $reminders  = [];
         $infos  = [];
+        $links = collect();
 
         foreach ($user->regions() as $region){
             if ($user->isAn('regionadmin', 'superadmin')) {
+                $links[] = ['text'=>$region->code, 'url'=> route('region.dashboard',['region'=>$region, 'language'=>app()->getLocale()])];
                 // check new users waiting for approval
                 $users_to_approve = $region->users()->whereNull('approved_at')->count();
                 if ($users_to_approve > 0) {
@@ -105,6 +107,8 @@ class HomeController extends Controller
                         $infos[] = $msg;
                     }
                 }
+            } else {
+                $links[] = ['text'=>$region->code, 'url'=> route('region.briefing',['region'=>$region,  'language'=>app()->getLocale()])];
             }
 
             if ($user->isAn('clubadmin')) {
@@ -175,6 +179,12 @@ class HomeController extends Controller
             }
         }
         foreach ($user->clubs() as $club) {
+            if ($user->can('update-clubs')) {
+                $links[] = ['text'=>$club->shortname, 'url'=> route('club.dashboard',['club'=>$club,  'language'=>app()->getLocale()])];
+            } else {
+                $links[] = ['text'=>$club->shortname, 'url'=> route('club.briefing',['club'=>$club,  'language'=>app()->getLocale()])];
+            }
+
             if ($club->filecount > 0) {
                 $msg = [];
                 $msg['msg'] =  __('message.reminder.download.clubs', ['club' => $club->shortname, 'count' => $club->filecount]);
@@ -185,6 +195,11 @@ class HomeController extends Controller
             }
         }
         foreach ($user->leagues() as $league) {
+            if ($user->can('update-leagues')) {
+                $links[] = ['text'=>$league->shortname, 'url'=> route('league.dashboard',['league'=>$league,  'language'=>app()->getLocale()])];
+            } else {
+                $links[] = ['text'=>$league->shortname, 'url'=> route('league.briefing',['league'=>$league,  'language'=>app()->getLocale()])];
+            }
             if ($league->filecount > 0) {
                 $msg = [];
                 $msg['msg'] =  __('message.reminder.download.leagues', ['league' => $league->shortname, 'count' => $league->filecount]);
@@ -195,6 +210,7 @@ class HomeController extends Controller
             }
         }
 
-        return view('home', ['msglist' => $msglist, 'reminders' => $reminders, 'infos' => $infos]);
+
+        return view('home', ['msglist' => $msglist, 'reminders' => $reminders, 'infos' => $infos, 'links' => $links->slice(0,20)]);
     }
 }
