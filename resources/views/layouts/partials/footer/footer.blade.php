@@ -11,6 +11,8 @@
             <div class="mx-2"><a href="{{ route('impressum', ['language'=>app()->getLocale()])}}" >Impressum</a></div>
             <div class="dot-rolling mx-4"></div>
             <div class="mx-2"><a href="{{ route('dsgvo', ['language'=>app()->getLocale()])}}" >Datenschutz</a></div>
+            <div class="dot-rolling mx-4"></div>
+            <div class="mx-2"><a href="{{ route('faq', ['language'=>app()->getLocale()])}}" >FAQ</a></div>
         </div>
     </div>
 </footer>

@@ -68,8 +68,9 @@ Route::group([
     Route::get('signin', function () { return view('welcome_signin'); })->name('welcome_signin');
     // Route::get('checkfire', function () { return view('broadcast.test'); });
     Route::get('cookies', function () { return view('app.cookie_info'); })->name('cookies');
-    Route::get('impressum', function () { return view('app.impressum'); })->name('impressum');
+    Route::get('impressum', function ($language) { return view('app.'.$language.'.impressum'); })->name('impressum');
     Route::get('dsgvo', function () { return view('app.dsgvo'); })->name('dsgvo');
+    Route::get('faq', function ($language) { return view('app.'.$language.'.faq'); })->name('faq');
     Route::get('captcha', [RegisterController::class, 'reloadCaptcha'] )->name('reload_captcha');
 
     Auth::routes(['verify' => true, 'middleware' => 'can:register']);

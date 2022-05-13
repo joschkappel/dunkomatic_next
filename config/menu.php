@@ -14,7 +14,7 @@ return [
   'layout_fixed_navbar' => null,
   'layout_fixed_footer' => true,
 
-  'classes_body' => '',
+  'classes_body' => 'sidebar_closed',
   'classes_brand' => '',
   'classes_brand_text' => '',
   'classes_content_wrapper' => '',

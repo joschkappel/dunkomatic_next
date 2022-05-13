@@ -4,7 +4,9 @@
         {{ $title }}
         <div class="card-tools">
             {{ $slot }}
-            <span class="badge badge-primary text-md ">{{ $count }}</span>
+            @if ($count!=null)
+                <span class="badge badge-primary text-md ">{{ $count }}</span>
+            @endif
             @if ($showtools)
             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
             @endif
