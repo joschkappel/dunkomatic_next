@@ -57,13 +57,21 @@
               <div class="card card-outline card-info collapsed-card">
                   <x-card-header title="möchte ich eine Mannschaft melden:" />
                   <div class="card-body">
-                      <p class="card-text"></p>
+                      <p class="card-text">
+                        <p class="card-text">
+                            Beschreibung kommt demnächst...
+                        </p>
+                      </p>
                   </div>
               </div>
               <div class="card card-outline card-info collapsed-card">
                   <x-card-header title="möchte ich Runden-Ziffern für meine Mannschaften wählen:" />
                   <div class="card-body">
-                      <p class="card-text"></p>
+                      <p class="card-text">
+                        <p class="card-text">
+                            Beschreibung kommt demnächst...
+                        </p>
+                      </p>
                   </div>
               </div>
               <div class="card card-outline card-info collapsed-card">
@@ -75,13 +83,21 @@
               <div class="card card-outline card-info collapsed-card">
                 <x-card-header title="möchte ich meine Spielpläne downloaden:" />
                 <div class="card-body">
-                    <p class="card-text"></p>
+                    <p class="card-text">
+                        <p class="card-text">
+                            Beschreibung kommt demnächst...
+                        </p>
+                    </p>
                 </div>
               </div>
               <div class="card card-outline card-info collapsed-card">
                   <x-card-header title="möchte ich einen Funktionsträger aufnehmen oder ändern:" />
                   <div class="card-body">
-                      <p class="card-text"></p>
+                      <p class="card-text">
+                        <p class="card-text">
+                            Beschreibung kommt demnächst...
+                        </p>
+                      </p>
                   </div>
               </div>
             </div>
@@ -92,13 +108,21 @@
               <div class="card card-outline card-info collapsed-card">
                 <x-card-header title="möchte ich meine Spielpläne downloaden:" />
                 <div class="card-body">
-                    <p class="card-text"></p>
+                    <p class="card-text">
+                        <p class="card-text">
+                            Beschreibung kommt demnächst...
+                        </p>
+                    </p>
                 </div>
               </div>
               <div class="card card-outline card-info collapsed-card">
                   <x-card-header title="möchte ich einen Funktionsträger aufnehmen oder ändern:" />
                   <div class="card-body">
-                      <p class="card-text"></p>
+                      <p class="card-text">
+                        <p class="card-text">
+                            Beschreibung kommt demnächst...
+                        </p>
+                      </p>
                   </div>
               </div>
             </div>
@@ -109,7 +133,11 @@
               <div class="card card-outline card-info collapsed-card">
                 <x-card-header title="möchte ich Schiedsrichter zuordnen:" />
                 <div class="card-body">
-                    <p class="card-text"></p>
+                    <p class="card-text">
+                        <p class="card-text">
+                            Beschreibung kommt demnächst...
+                        </p>
+                    </p>
                 </div>
               </div>
             </div>
