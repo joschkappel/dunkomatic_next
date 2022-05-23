@@ -70,7 +70,7 @@ Route::group([
     Route::get('cookies', function () { return view('app.cookie_info'); })->name('cookies');
     Route::get('impressum', function ($language) { return view('app.'.$language.'.impressum'); })->name('impressum');
     Route::get('dsgvo', function () { return view('app.dsgvo'); })->name('dsgvo');
-    Route::get('faq', function ($language) { return view('app.'.$language.'.faq'); })->name('faq');
+    Route::get('faq', function ($language ) { return view('app.'.$language.'.faq', ['region'=>session('cur_region'), 'language'=>$language, 'user'=>Auth::user() ] ); })->name('faq');
     Route::get('captcha', [RegisterController::class, 'reloadCaptcha'] )->name('reload_captcha');
 
     Auth::routes(['verify' => true, 'middleware' => 'can:register']);

@@ -15,9 +15,9 @@ return [
     */
 
     'name' => env('APP_NAME', 'DunkOmatic'),
-    'version' => env('APP_VERSION', '0.0.1'),
+    'version' => env('APP_VERSION', '1.0.0'),
     'creator_url' => 'https://github.com/joschkappel',
-    'contact' => 'dunkomatic.webmaster@gmail.com',
+    'contact' => 'dmatic.master@gmail.com',
 
     /*
     |--------------------------------------------------------------------------

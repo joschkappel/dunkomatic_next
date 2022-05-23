@@ -33,7 +33,7 @@ return [
   'auto_state_change' => 'Automatische Phasenübergänge',
   'generated' => 'GESPERRT',
   'agetype' => 'Altersklasse',
-  'gendertype' => 'Geschlect',
+  'gendertype' => 'Geschlecht',
   'pickchar_enabled' => 'Ziffernwahl freigegeben',
   'member.action.create' => 'Neuer Rundenmitarbeiter',
   'sb_freechar' => 'Wähle eine Ziffer',
