@@ -24,6 +24,7 @@ return [
   'salutation' => 'Salutation',
   'dest_to' => 'Send to',
   'dest_cc' => 'Copy to',
+  'dest_user_to' => 'to Users',
   'tl_to' => 'Message from ',
   'tl_cc' => 'Message Copy from ',
   'body.enter' => 'Enter your message text here...',

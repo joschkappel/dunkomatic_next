@@ -14,7 +14,7 @@ class SettingsTableSeeder extends Seeder
     public function run()
     {
       DB::table('settings')->insert([
-        ['name' => 'season', 'value' => '2020/21'],
+        ['name' => 'season', 'value' => '2021/22'],
         ['name' => 'global_alert', 'value' => null],
       ]);
     }

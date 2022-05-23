@@ -24,6 +24,7 @@ return [
   'salutation' => 'Grußformel',
   'dest_to' => 'Senden an',
   'dest_cc' => 'mit Kopie an',
+  'dest_user_to' => 'an Benutzer',
   'tl_to' => 'Nachricht von ',
   'tl_cc' => 'Nachricht-Kopie von ',
   'body.enter' => 'Hier steht deine Nachricht...',

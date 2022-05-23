@@ -1,7 +1,7 @@
 @extends('layouts.page')
 
 @section('content')
-<x-card-list cardTitle="{{ __('message.title.list',['user'=>$user->name, 'region'=>$region->name]) }}" cardNewAction="{{ route('message.create', ['language'=>app()->getLocale(),'user'=>$user, 'region'=>$region] ) }}" cardNewTitle="{{ __('message.action.create') }}" cardNewAbility="">
+<x-card-list cardTitle="{{ __('message.title.list',['user'=>$user->name, 'region'=>$region->name]) }}" cardNewAction="{{ route('message.create', ['language'=>app()->getLocale(),'user'=>$user, 'region'=>$region] ) }}" cardNewTitle="{{ __('message.action.create') }}" cardNewAbility="update-profile">
                   <th>Id</th>
                   <th>@lang('message.action.send')</th>
                   <th>@lang('message.title')</th>

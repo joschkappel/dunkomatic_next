@@ -37,7 +37,7 @@ class CardHeader extends Component
     public function __construct(string $title, string $count="0", string $icon='', bool $showtools=true )
     {
         $this->title = $title;
-        $this->icon = $icon;
+        $this->icon = $icon == '' ? null : $icon;
         $this->count = intval($count);
         $this->showtools = $showtools;
 
