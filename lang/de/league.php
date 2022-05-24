@@ -57,7 +57,7 @@ return [
   'league_no' => 'Ziffer',
   'next.state' => 'zur nächsten Phase',
   'prev.state' => 'zurück zu',
-  'member.action.create' => 'Neuer Staffelleiter',
+  'member.action.create' => 'Neue:r Staffelleiter:in',
   'preferred' => 'Bevorzugte Runden',
   'pickchar.closed' => 'Ziffernwahl beendet',
 ];

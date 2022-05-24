@@ -1,5 +1,5 @@
 <div class="modal fade right" id="modalSelectMember" tabindex="-1" role="dialog" aria-labelledby="selectMemberModal" aria-hidden="true" data-backdrop="false">
-    <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-dialog modal-md" role="document">
         <!--Content-->
         <div class="modal-content">
             <!--Header-->

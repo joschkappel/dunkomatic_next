@@ -2,7 +2,7 @@
 
 @section('content')
 <x-card-list cardTitle="{{ __('role.address.title.list', ['region'=> $region->code, 'role'=> App\Enums\Role::coerce(intval($role))->description ]) }}">
-    <th>@lang('role.member')</th>
+    <th>{{ trans_choice('role.member',1) }}</th>
     <th>@lang('role.email1')</th>
     <th>@lang('role.phone')</th>
 </x-card-list>

@@ -5,11 +5,11 @@ return [
     'app.greeting'    => 'Hallo !',
     'app.actionurl'     =>  'Wenn Du den Knopf ":actionText" nicht betätigen möchtest, kannst Du auch den folgenden Link in deinen Browser kopieren:',
 
-    'regionadmin.greeting'  => 'Hallo BezirsleiterIn !',
+    'regionadmin.greeting'  => 'Hallo Bezirsleiter:in !',
     'user.greeting'  => 'Hallo :username!',
 
-    'newuser.subject'   =>  'Neu Benutzer Registrierung',
-    'newuser.line'      =>  'Ein neuer Benutzer hat sich mit der eMail :email registriert. Bitte bestätige die Registrierung.',
+    'newuser.subject'   =>  'Neu Benutzer:in Registrierung',
+    'newuser.line'      =>  'Ein:e neue:r Benutzer:in hat sich mit der eMail :email registriert. Bitte bestätige die Registrierung.',
     'newuser.action'    =>  'Neuen Benutzer Validieren',
 
     'welcome.subject' => 'Willkommen bei '.config('app.name'),
@@ -47,9 +47,9 @@ return [
     'checkregionsetting.line3' => 'Bitte überprüfe die Daten und passe sie gegebenenfalls an.',
     'checkregionsetting.action' => 'Bezirkseinstellungen',
 
-    'missinglead.subject'   =>  'Fehlende Abteilungs- und Staffelleiter',
-    'missinglead.line1' =>  'Vereine ohne Abteilnugsleiter:',
-    'missinglead.line2' =>  'Spielrunden ohne Staffelleiter:',
+    'missinglead.subject'   =>  'Fehlende Abteilungs- und Staffelleiter:innnen',
+    'missinglead.line1' =>  'Vereine ohne Abteilnugsleiter:innen :',
+    'missinglead.line2' =>  'Spielrunden ohne Staffelleiter:innen :',
 
     'leaguerptavail.subject'    =>  ':LEAGUE Spielpläne sind verfügbar !',
     'leaguerptavail.line'   =>  'Die Spielpläne für die Spielrunde :league wurden erzeugt und stehen zum Download bereit!.',
@@ -66,7 +66,7 @@ return [
     'clubrptavail.action'   =>  'Download Reports',
 
     'invalidemail.subject'  =>  'Fehlerhafte eMail Adressen :CLUBCODE',
-    'invalidemail.line' =>  'Bei folgenden Vereinsmitarbeitern des Vereins :clubname wurden fehlerhafte eMail Adressen angegeben.',
+    'invalidemail.line' =>  'Für folgende Vereinsmitarbeiter:innen des Vereins :clubname wurden fehlerhafte eMail Adressen angegeben.',
     'invalidemail.action'   =>  'eMail Adressen Korrigieren',
 
     'registerteams.subject'  =>  'Mannschaftsmeldung für Spielrunde :LEAGUE',
@@ -92,9 +92,9 @@ return [
     'charpickenabled.action'    =>  'Ziffernwahl',
 
     'inviteuser.subject'    => 'Einladung für '.config('app.name'),
-    'inviteuser.action' =>  'Als Benutzer Registrieren',
-    'inviteuser.line1'  =>  ':sendername hat Dich als Benutzer für '.config('app.name').' eingeladen.',
-    'inviteuser.line2'  =>  'Mit Betätigen des Knopfes kannst Du Dich als Benutzer registrieren.',
+    'inviteuser.action' =>  'Als Benutzer:in Registrieren',
+    'inviteuser.line1'  =>  ':sendername hat Dich als Benutzer:in für '.config('app.name').' eingeladen.',
+    'inviteuser.line2'  =>  'Mit Betätigen des Knopfes kannst Du Dich registrieren.',
 
     'overlappinggames.subject'  => 'Überlappende Heimspielansetzungen',
     'overlappinggames.line1'  => 'Wir haben :games_count überlappende Heimspielansetzungen für deinen Verein :CLUB gefunden.',

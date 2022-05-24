@@ -1,6 +1,6 @@
 <div>
     <div class="card card-outline card-dark collapsed-card" id="membersCard">
-        <x-card-header title="{{__('role.member')}}" icon="fas fa-user-tie"  :count="count($members)">
+        <x-card-header title="{{ trans_choice('role.member',count($members) )}}" icon="fas fa-user-tie"  :count="count($members)">
                 @can('create-members')
                 <a href="{{ route('membership.'.$entityType.'.create', ['language' => app()->getLocale(), $entityType => $entity])}}"
                     class="btn btn-success">
