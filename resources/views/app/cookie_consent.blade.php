@@ -36,8 +36,10 @@
 
 @section('footer')
 <div class="alert text-center cookiealert" role="alert">
-    <b>@lang('Do you like cookies') ?</b> &#x1F36A; @lang('We use cookies to ensure you get the best experience on our website.') <a
-        href="{{ route('cookies', ['language'=>app()->getLocale()])}}" >@lang('Learn more') </a>
+    <b>@lang('Do you like cookies') ?</b> &#x1F36A;
+    @lang('We use cookies to ensure you get the best experience on our website.')
+    <a
+        href="{{ route('dsgvo', ['language'=>app()->getLocale()])}}" >@lang('Learn more') </a>
     <button type="button" class="btn btn-primary btn-sm acceptcookies">
         @lang('I agree')
     </button>
