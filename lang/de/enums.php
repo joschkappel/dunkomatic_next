@@ -21,13 +21,13 @@ return [
     ],
 
     Role::class => [
-      Role::ClubLead => 'Abteilungsleiter',
-      Role::RefereeLead => 'Schiedsrichterwart',
-      Role::LeagueLead => 'Staffelleiter',
-      Role::RegionTeam => 'Bezirksmitarbeiter',
+      Role::ClubLead => 'Abteilungsleiter:in',
+      Role::RefereeLead => 'Schiedsrichterwart:in',
+      Role::LeagueLead => 'Staffelleiter:in',
+      Role::RegionTeam => 'Bezirksmitarbeiter:in',
       Role::GirlsLead => 'Verantwtl. Mädchenbasket',
-      Role::JuniorsLead => 'Jugendwart',
-      Role::RegionLead => 'Bezirskvorstand'
+      Role::JuniorsLead => 'Jugendwart:in',
+      Role::RegionLead => 'Bezirskvorständ:in'
     ],
 
     JobFrequencyType::class => [

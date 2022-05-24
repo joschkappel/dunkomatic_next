@@ -45,7 +45,7 @@ return [
   'game_noshow.some' => ':noshow von :total Heimspielen ohne Gegner',
   'game_noshow.no' =>  'Alle Heimspiele finden statt',
   'game_noshow.all' => 'Alle Heimspiele ohne Gegner',
-  'member.action.create' => 'Neuer Vereinsmitarbeiter',
+  'member.action.create' => 'Neue:r Vereinsmitarbeiter:in',
   'preferred' => 'Bevorzugte Vereine',
   'pickchar.taken.other' => 'Ziffer xleague_nox ist schon vergeben !',
   'pickchar.taken.own' => 'Ziffer xleague_nox ist für Dein Team eingetragen und wird jetzt freigegeben!',

@@ -51,7 +51,7 @@ class RegisterTest extends DuskTestCase
                       ->screenshot('Registered_user')
                       ->press('Registrieren')
                       ->assertPathIs('/de/email/verify')
-                      ->assertSee('Dein Account muss noch bes');
+                      ->assertSee('Dein Konto muss noch bes');
             }
         });
 

@@ -55,7 +55,7 @@
                     <div class="info-box">
                         <span class="info-box-icon bg-info"><a href="{{ route('member.index', ['language' => app()->getLocale(), 'region'=>$region]); }}"><i class="fas fa-user-tie"></i></a></span>
                         <div class="info-box-content">
-                            <span class="info-box-text text-lg">{{ __('role.member') }}</span>
+                            <span class="info-box-text text-lg">{{ trans_choice('role.member', $member_count) }}</span>
                             <span class="info-box-number text-md"><a href="{{ route('member.index', ['language' => app()->getLocale(), 'region'=>$region]); }}">{{ $member_count }}</a></span>
                         </div>
                     </div>
@@ -194,7 +194,7 @@
     <x-confirm-deletion modalId="modalDeleteRegion" modalTitle="{{ __('region.title.delete')}}" modalConfirm="{{ __('region.confirm.delete') }}" deleteType="{{ trans_choice('region.region',1) }}" />
     @include('member/includes/membership_add')
     @include('member/includes/membership_modify')
-    <x-confirm-deletion modalId="modalDeleteMember" modalTitle="{{ __('role.title.delete')}}" modalConfirm="{{ __('role.confirm.delete') }}" deleteType="{{ __('role.member') }}" />
+    <x-confirm-deletion modalId="modalDeleteMember" modalTitle="{{ __('role.title.delete')}}" modalConfirm="{{ __('role.confirm.delete') }}" deleteType="{{ trans_choice('role.member', 1) }}" />
     <!-- all modals above -->
     </div>
 @endsection

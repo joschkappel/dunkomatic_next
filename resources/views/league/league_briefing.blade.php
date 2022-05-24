@@ -32,7 +32,7 @@
                 <!-- card MEMBERS -->
                 <div class="col-md">
                     <div class="card card-outline card-dark p-2">
-                        <x-card-header title="{{__('role.member')}}" icon="fas fa-user-tie"  :count="count($memberships)" :showtools="false"/>
+                        <x-card-header title="{{ trans_choice('role.member',count($memberships) )}}" icon="fas fa-user-tie"  :count="count($memberships)" :showtools="false"/>
                         <!-- /.card-header -->
                         <div class="card-body overflow-auto">
                             @forelse ( $memberships as $ms )
