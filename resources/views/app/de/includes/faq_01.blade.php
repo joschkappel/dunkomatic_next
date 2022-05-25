@@ -17,11 +17,12 @@
 </p>
 <h5><span class="text-info">Zugangsanfrage freigeben</span></h5>
 <p class="card-text">
-    Um die Anfrage zuzulassen und das Konto freizugeben musst du ein Häckchen im Feld "" setzen.
+    Um die Anfrage zuzulassen und das Konto freizugeben musst du ein Häckchen im Feld
+    <img class="rounded x-auto d-block border border-dark" src="{{ asset('img/approved.png') }}" alt="Zugang Freigeben"> setzen.
 </p>
 <h5><span class="text-info">Zugangsanfrage ablehnen</span></h5>
 <p class="card-text">
-    Um die Anfrage abzulehnen und das Konto zu sperren darfst du kein Häckchen im Feld "" setzen.
+    Um die Anfrage abzulehnen und das Konto zu sperren darfst du kein Häckchen im Feld  <img class="rounded x-auto d-block border border-dark" src="{{ asset('img/rejected.png') }}" alt="Zugang Ablehnen"> setzen. Gib eine Begründung für die Ablehnung ein.
 </p>
 <h5><span class="text-info">Ein Konto nachträglich sperren</span></h5>
 <p class="card-text">

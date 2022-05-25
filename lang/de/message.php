@@ -31,7 +31,7 @@ return [
   'delete' => 'Als gelesen markieren',
   'read_more' => 'Ganze Nachricht lesen',
   'reminder.approvals' => 'Da wartet :approvals Zugangsanfrage (in :REGION) auf Dein OK.|Da warten :approvals Zugangsanfragen (in :REGION) auf Dein OK.',
-  'reminder.approvals.action' => 'Zugnagsanfrage bestätigen',
+  'reminder.approvals.action' => 'Zugangsanfrage bestätigen',
   'reminder.deadline.assignment' => 'In :REGION endet die Vereinszuordnung :deadline',
   'reminder.deadline.registration' => 'In :REGION endet die Mannschaftsmeldung :deadline',
   'reminder.deadline.selection' => 'In :REGION endet die Ziffernwahl :deadline',
