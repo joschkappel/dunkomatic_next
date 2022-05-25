@@ -40,8 +40,8 @@ class ProcessDbCleanup implements ShouldQueue
 
         Artisan::call('model:prune');
         // drop all outdated (one week) messages;
-        // drop all users (incl messages and members) that have been rejected a week ago;
-        // drop all users (incl messages and members) that havent verfied their email since a month;
+        // drop all users (incl messages and members) that have been rejected four weeks ago;
+        // drop all users (incl messages and members) that havent verfied their email since a week;
 
         // drop all read notifications
         $old_notifs = DatabaseNotification::whereDate('read_at', '<',now()->subWeek())->delete();
@@ -49,7 +49,6 @@ class ProcessDbCleanup implements ShouldQueue
         // drop old invitations
         $old_invites = Invitation::whereDate('created_at', '<',now()->subWeek())->delete();
         Log::notice('[JOB][DB CLEANUP] deleting old invitations.', ['count' => $old_invites]);
-
 
     }
 }

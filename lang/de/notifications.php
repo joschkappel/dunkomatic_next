@@ -8,9 +8,9 @@ return [
     'regionadmin.greeting'  => 'Hallo Bezirsleiter:in !',
     'user.greeting'  => 'Hallo :username!',
 
-    'newuser.subject'   =>  'Neu Benutzer:in Registrierung',
-    'newuser.line'      =>  'Ein:e neue:r Benutzer:in hat sich mit der eMail :email registriert. Bitte bestätige die Registrierung.',
-    'newuser.action'    =>  'Neuen Benutzer Validieren',
+    'newuser.subject'   =>  'Registrierung eines Zugangskontos',
+    'newuser.line'      =>  'Jemand hat sich mit der eMail :email registriert. Bitte bestätige die Zugangsanfrage.',
+    'newuser.action'    =>  'Neues Zugangskonto Validieren',
 
     'welcome.subject' => 'Willkommen bei '.config('app.name'),
     'welcome.line1' => 'Du bist als :userroles für den :region eingetragen. ',
@@ -20,7 +20,7 @@ return [
     'verifyemail.subject'   =>  config('app.name').' Registrierung - Bestätigung Deiner eMail Addresse',
     'verifyemail.action'    =>  'eMail Bestätigen',
     'verifyemail.line1' =>  'Bitte bestätige Deine eMail Adresse unten.',
-    'verifyemail.line2' =>  'Falls Du kein Benutzerkonto registriert hast, ist keine weitere Aktion notwendig.',
+    'verifyemail.line2' =>  'Falls Du kein Zugangskonto registriert hast, ist keine weitere Aktion notwendig.',
 
     'resetpassword.subject' =>  'Passwort Zurücksetzen',
     'resetpassword.action' =>   'Password Zurücksetzen',
@@ -66,7 +66,7 @@ return [
     'clubrptavail.action'   =>  'Download Reports',
 
     'invalidemail.subject'  =>  'Fehlerhafte eMail Adressen :CLUBCODE',
-    'invalidemail.line' =>  'Für folgende Vereinsmitarbeiter:innen des Vereins :clubname wurden fehlerhafte eMail Adressen angegeben.',
+    'invalidemail.line' =>  'Für folgende Mitarbeitende des Vereins :clubname wurden fehlerhafte eMail Adressen angegeben.',
     'invalidemail.action'   =>  'eMail Adressen Korrigieren',
 
     'registerteams.subject'  =>  'Mannschaftsmeldung für Spielrunde :LEAGUE',
@@ -92,8 +92,8 @@ return [
     'charpickenabled.action'    =>  'Ziffernwahl',
 
     'inviteuser.subject'    => 'Einladung für '.config('app.name'),
-    'inviteuser.action' =>  'Als Benutzer:in Registrieren',
-    'inviteuser.line1'  =>  ':sendername hat Dich als Benutzer:in für '.config('app.name').' eingeladen.',
+    'inviteuser.action' =>  'Registrieren',
+    'inviteuser.line1'  =>  ':sendername hat Dich zur Anwendung von '.config('app.name').' eingeladen.',
     'inviteuser.line2'  =>  'Mit Betätigen des Knopfes kannst Du Dich registrieren.',
 
     'overlappinggames.subject'  => 'Überlappende Heimspielansetzungen',
