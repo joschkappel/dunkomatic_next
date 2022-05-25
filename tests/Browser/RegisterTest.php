@@ -40,7 +40,7 @@ class RegisterTest extends DuskTestCase
                       ->assertSee('Anbieter registrieren')
                       ->click('@register-button')
                       ->assertPathIs('/de/register')
-                      ->assertSee('lege dein Benutzerkonto an')
+                      ->assertSee('lege deinZugangskonto an')
                       ->type('name','tester')
                       ->type('email','test@gmail.com')
                       ->type('password','password')
