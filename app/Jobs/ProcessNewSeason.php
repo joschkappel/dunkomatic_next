@@ -18,6 +18,7 @@ use App\Models\User;
 use App\Models\Member;
 use App\Models\ScheduleEvent;
 use App\Models\Region;
+use App\Models\Team;
 use App\Notifications\CheckRegionSettings;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -127,6 +128,9 @@ class ProcessNewSeason implements ShouldQueue
             }
         }
         Log::notice('[JOB][NEW SEASON] region league state dates fwdd by 1 year.');
+
+        // hard reset for all teams:
+        Team::whereNotNull('league_no')->update(['league_id'=>null, 'league_no'=>null]);
 
         // notify region admin on these changes and ask to check/correct
 
