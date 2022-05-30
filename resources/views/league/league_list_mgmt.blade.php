@@ -109,7 +109,9 @@ th, td { white-space: nowrap; }
                 serverSide: false,
                 responsive: true,
                 retrieve: true,
-                language: { "url": "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}" },
+                language: { url: "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}",
+                            },
+                language: { processing: '<p>{{__('Loading')}}</p><div class="dot-rolling px-2"></div>'},
                 order: [
                     [1, 'asc']
                 ],
