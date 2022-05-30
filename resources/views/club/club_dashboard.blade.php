@@ -106,12 +106,12 @@
                     @endif
                 </div>
                 <div class="info-box">
-                    @if ($games_home_notime == 0)
+                    @if ( ($games_home_notime == 0) and (count($games_home)>0))
                         <span class="info-box-icon bg-success"><i class="far fa-clock"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text text-lg">@lang('club.game_notime.no')</span>
                         </div>
-                    @elseif ($games_home_notime == count($games_home) )
+                    @elseif ( ($games_home_notime == count($games_home) ) and (count($games_home)>0))
                         <span class="info-box-icon bg-danger"><i class="far fa-clock"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text text-lg">@lang('club.game_notime.all')</span>

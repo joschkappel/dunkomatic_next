@@ -1,4 +1,4 @@
-<x-modal modalId="modalAssignClub" modalTitle="{{ __('club.action.assign', ['league'=>$league->shortname]) }}">
+<x-modal modalId="modalAssignClub" modalTitle="{{ __('club.action.assign') }}">
         <input type="hidden" name="modalAssignClub_region_id" id="modalAssignClub_region_id" value=""  />
         <div class="form-group row">
             <label for="selClub" class="col-sm-4 col-form-label">{{ trans_choice('club.club',1)}}</label>

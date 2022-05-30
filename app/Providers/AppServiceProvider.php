@@ -129,13 +129,13 @@ class AppServiceProvider extends ServiceProvider
             $leaguemenu['icon_color'] = 'yellow';
             $leaguemenu['icon'] = 'fas fa-trophy';
 
-            $smenu['text'] = __('league.menu.list');
+/*             $smenu['text'] = __('league.menu.list');
             $smenu['url']  = route('league.index',  ['language' => app()->getLocale(), 'region'=> session('cur_region')]);
             $smenu['icon_color'] = 'yellow';
             $smenu['icon'] =  'fas fa-list';
             $smenu['can'] = 'view-leagues';
             $smenu['shift'] = 'ml-3';
-            $leaguemenu['submenu'][] = $smenu;
+            $leaguemenu['submenu'][] = $smenu; */
 
 
             $smenu['text'] =  __('league.menu.manage');;

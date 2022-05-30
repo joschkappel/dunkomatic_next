@@ -90,6 +90,30 @@ class TeamController extends Controller
     }
 
     /**
+     * select2 list with all unregistered teams of a region
+     *
+     * @param League $league
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
+    public function sb_freeteam_club(Club $club)
+    {
+        Log::notice('getting unregistered teams for club',['club-id'=>$club->id]);
+        $free_teams = $club->teams()->whereNull('league_id')->get();
+
+        $response = array();
+        Log::info('preparing select2 unregistered team list', ['club' => $club->id, 'count' => count($free_teams)]);
+
+        foreach ($free_teams as $t) {
+            $response[] = array(
+                "id" => $t->id,
+                "text" => $t->name . ' (' . $t->league_prev . ')'
+            );
+        }
+        return Response::json($response);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

@@ -1,16 +1,16 @@
 <?php
 
 return [
-    'app.salutation'    => 'Viele Grüße und Spaß !',
+    'app.salutation'    => 'Viele Grüße und Spaß wünscht',
     'app.greeting'    => 'Hallo !',
     'app.actionurl'     =>  'Wenn Du den Knopf ":actionText" nicht betätigen möchtest, kannst Du auch den folgenden Link in deinen Browser kopieren:',
 
-    'regionadmin.greeting'  => 'Hallo Bezirsleiter:in !',
+    'regionadmin.greeting'  => 'Hallo Bezirksleiter:in !',
     'user.greeting'  => 'Hallo :username!',
 
     'newuser.subject'   =>  'Registrierung eines Zugangskontos',
     'newuser.line'      =>  'Jemand hat sich mit der eMail :email registriert. Bitte bestätige die Zugangsanfrage.',
-    'newuser.action'    =>  'Neues Zugangskonto Validieren',
+    'newuser.action'    =>  'Zugangsanfrage Prüfen',
 
     'welcome.subject' => 'Willkommen bei '.config('app.name'),
     'welcome.line1' => 'Du bist als :userroles für den :region eingetragen. ',
@@ -19,8 +19,8 @@ return [
 
     'verifyemail.subject'   =>  config('app.name').' Registrierung - Bestätigung Deiner eMail Addresse',
     'verifyemail.action'    =>  'eMail Bestätigen',
-    'verifyemail.line1' =>  'Bitte bestätige Deine eMail Adresse unten.',
-    'verifyemail.line2' =>  'Falls Du kein Zugangskonto registriert hast, ist keine weitere Aktion notwendig.',
+    'verifyemail.line1' =>  'Bitte bestätige Deine eMail Adresse.',
+    'verifyemail.line2' =>  'Falls Du kein '.config('dunkomatic.title').' Zugangskonto registriert hast, ist keine weitere Aktion notwendig.',
 
     'resetpassword.subject' =>  'Passwort Zurücksetzen',
     'resetpassword.action' =>   'Password Zurücksetzen',
