@@ -213,7 +213,6 @@
                 }
             });
         };
-
         $(document).on("click", 'button#unregisterTeam', function(e) {
             var team_id = $(this).data("team-id");
             var url = "{{ route('league.unregister.team', ['league' => $league, 'team' => ':team:']) }}"
@@ -236,7 +235,6 @@
                 }
             });
         });
-
         $(document).on("click", 'button#assignClub', function(e) {
             $('#modalAssignClub_region_id').val($(this).data('region-id'));
             //$('#modalAssignClub_region').html($(this).data('region-code'));
@@ -244,7 +242,6 @@
             $('#modalAssignClub_Form').attr('action', url);
             $('#modalAssignClub').modal('show');
         });
-
         $(document).on("click", 'button#deassignClub', function(e) {
             var club_id = $(this).data("id");
             var url = "{{ route('league.deassign-club', ['league' => $league, 'club' => ':club:']) }}"
@@ -268,7 +265,6 @@
                 }
             });
         });
-
         $(document).on("click", "button#injectTeam", function(e) {
             var url = "{{ route('league.team.inject', ['league'=>$league->id]) }}";
             $('#modalInjectTeam_Form').attr('action', url);

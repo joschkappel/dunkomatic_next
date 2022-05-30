@@ -12,7 +12,7 @@
                     </button>
                 </div>
                 <!--Body-->
-                <form class="form-horizontal" id="{{ $modalId }}_Form" action="" method="POST">
+                <form class="form-horizontal" id="{{ $modalId }}_Form" action="" method="POST" >
                     @csrf
                     @method( $modalMethod )
                     <div class="modal-body">

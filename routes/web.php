@@ -258,7 +258,7 @@ Route::middleware(['auth',
 
     Route::post('league/{league}/club', [LeagueTeamController::class, 'assign_clubs'])->name('league.assign-clubs')->middleware('can:update-leagues');
     Route::delete('league/{league}/club/{club}', [LeagueTeamController::class, 'deassign_club'])->name('league.deassign-club')->middleware('can:update-leagues');
-    Route::put('league/{league}/team/{team}', [LeagueTeamController::class, 'league_register_team'])->name('league.register.team')->middleware('can:update-teams');
+    Route::put('league/{league}/team/{team?}', [LeagueTeamController::class, 'league_register_team'])->name('league.register.team')->middleware('can:update-teams');
     Route::delete('league/{league}/team/{team}', [LeagueTeamController::class, 'league_unregister_team'])->name('league.unregister.team')->middleware('can:update-teams');
     Route::put('team/{team}/league', [LeagueTeamController::class, 'team_register_league'])->name('team.register.league')->middleware('can:update-teams');
     Route::post('league/{league}/team', [LeagueTeamController::class, 'inject'])->name('league.team.inject')->middleware('can:update-teams');
@@ -289,6 +289,7 @@ Route::middleware(['auth',
 
     Route::get('league/{league}/team/sb', [TeamController::class, 'sb_league'])->name('league.team.sb');
     Route::get('team/league/{league}/free/sb', [TeamController::class, 'sb_freeteam'])->name('team.free.sb');
+    Route::get('team/club/{club}/free/sb', [TeamController::class, 'sb_freeteam_club'])->name('club.team.free.sb');
     Route::post('team/league/plan', [TeamController::class, 'store_plan'])->name('team.store-plan')->middleware('can:update-teams');
 
     Route::resource('club.team', ClubTeamController::class)->shallow()->except('index', 'create', 'edit');

@@ -6,7 +6,7 @@ return [
   'action.create' => 'Create Club',
   'action.delete' => 'Delete Club',
   'action.edit' => 'Modify Club',
-  'action.assign' => 'Assign Club to League :LEAGUE',
+  'action.assign' => 'Assign Club to this League',
   'action.select' => 'Select a club',
   'action.edit-homegame' => 'Edit Home Game Dates',
   'action.chart-homegame' => 'Home Games Overview',

@@ -6,7 +6,7 @@ return [
   'action.create' => 'Neuer Verein',
   'action.edit' => 'Vereinsdaten ändern',
   'action.delete' => 'Verein Löschen',
-  'action.assign' => 'Verein für Runde :LEAGUE zulassen',
+  'action.assign' => 'Verein für die Runde zulassen',
   'action.select' => 'Wähle einen Verein',
   'action.edit-homegame' => 'Heimspieltermine erfassen',
   'action.chart-homegame' => 'Heimspiele Übersicht',

@@ -150,13 +150,26 @@ class LeagueTeamController extends Controller
      * @return \Illuminate\Http\JsonResponse
      *
      */
-    public function league_register_team(League $league, Team $team)
+    public function league_register_team(Request $request, League $league, Team $team)
     {
+        if ($request->has('team_id')){
+            // get data
+            $data = $request->validate([
+                'team_id' => 'required|exists:teams,id',
+            ]);
+            $team = Team::findOrFail($data['team_id']);
+        }
+
+
         $team->league()->associate($league);
         $team->save();
         Log::notice('team registered for league.', ['team-id' => $team->id, 'league-id' => $league->id]);
 
-        return Response::json(['success' => 'all good'], 200);
+        if ( $request->has('team_id')) {
+            return redirect()->back();
+        } else {
+            return Response::json(['success' => 'all good'], 200);
+        }
     }
 
     /**
