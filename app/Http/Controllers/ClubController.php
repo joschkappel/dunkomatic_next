@@ -248,7 +248,7 @@ class ClubController extends Controller
                     }
                 } else {
                     if ( Auth::user()->can('update-teams')){
-                        $btn = '<div class="btn-group"><button type="button" class="btn btn-secondary dropdpwn-toggle" data-toggle="dropdown">'.__('league.action.select').'</button>';
+                        $btn = '<div class="btn-group"><button type="button" class="btn btn-secondary dropdpwn-toggle" data-toggle="dropdown">'.__('league.action.select').' ('.__('previous').': '. $ct->league_prev .')</button>';
                         $btn .= '<div class="dropdown-menu">';
                         foreach ($clubleagues as $cl){
                             $btn .= '<a class="dropdown-item" href="javascript:registerTeam('.$cl->id.','.$ct->id.') ">'.$cl->shortname.'</a>';
