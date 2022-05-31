@@ -55,7 +55,6 @@ class BouncerSeeder extends Seeder
         $create_users = Bouncer::ability()->firstOrCreate(['name' => 'create-users','title' => 'Create/Delete users', ]);
         $update_users = Bouncer::ability()->firstOrCreate(['name' => 'update-users','title' => 'Update users', ]);
         $view_users = Bouncer::ability()->firstOrCreate(['name' => 'view-users','title' => 'View users', ]);
-        $update_profile = Bouncer::ability()->firstOrCreate(['name' => 'update-profile','title' => 'Update user profile', ]);
         // auth
         $register = Bouncer::ability()->firstOrCreate(['name' => 'register','title' => 'guest registration', ]);
 
@@ -95,7 +94,7 @@ class BouncerSeeder extends Seeder
         Bouncer::allow($regionadmin)->to($create_users);
         Bouncer::allow($regionadmin)->to($update_users);
         Bouncer::allow($regionadmin)->to($view_users);
-        Bouncer::allow($regionadmin)->to($update_profile);
+
 
         $clubadmin = Bouncer::role()->firstOrCreate(['name' => 'clubadmin','title' => 'Manages Clubs',]);
         Bouncer::allow($clubadmin)->to($view_regions);
@@ -119,7 +118,6 @@ class BouncerSeeder extends Seeder
         Bouncer::allow($clubadmin)->to($create_members);
         Bouncer::allow($clubadmin)->to($update_members);
         Bouncer::allow($clubadmin)->to($view_members);
-        Bouncer::allow($clubadmin)->to($update_profile);
 
         $leagueadmin = Bouncer::role()->firstOrCreate(['name' => 'leagueadmin','title' => 'Manages Leagues',]);
         Bouncer::allow($leagueadmin)->to($view_regions);
@@ -135,15 +133,12 @@ class BouncerSeeder extends Seeder
         Bouncer::allow($leagueadmin)->to($update_members);
         Bouncer::allow($leagueadmin)->to($view_members);
 
-        Bouncer::allow($leagueadmin)->to($update_profile);
-
         $guest = Bouncer::role()->firstOrCreate(['name' => 'guest','title' => 'Guest',]);
         //Bouncer::forbid($guest)->everything();
         Bouncer::allow($guest)->to($view_regions);
         Bouncer::allow($guest)->to($view_clubs);
         Bouncer::allow($guest)->to($view_games);
         Bouncer::allow($guest)->to($view_leagues);
-        Bouncer::allow($guest)->to($update_profile);
         Bouncer::allow($guest)->to($view_members);
 
         $candidate = Bouncer::role()->firstOrCreate(['name' => 'candidate','title' => 'Candidate',]);

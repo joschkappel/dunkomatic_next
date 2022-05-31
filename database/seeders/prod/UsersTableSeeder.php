@@ -40,7 +40,7 @@ class UsersTableSeeder extends Seeder
         $r = Region::where('code', 'HBVDA')->first();
         $u = User::create([
             'name' => 'Detlef Volk',
-            'email' => 'bzvs@dunkomatic.de',
+            'email' => 'detlef.volk@icloud.com',
             'email_verified_at' => now(),
             'password' => '$2y$12$0sJK6yb8XjofKRjmUPWwLu90.z.nwI4eJ2YoEFJu6xn2n4mVZdDHO',
             'locale' => 'de',

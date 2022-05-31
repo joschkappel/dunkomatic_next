@@ -261,11 +261,11 @@ class RegionController extends Controller
             'fmt_club_reports.*' => ['required', new EnumValue(ReportFileType::class, false)],
             'fmt_league_reports' => 'required|array|min:1',
             'fmt_league_reports.*' => ['required', new EnumValue(ReportFileType::class, false)],
-            'close_assignment_at' => 'sometimes|required|date|after:today',
-            'close_registration_at' => 'sometimes|required|date|after:close_assignment_at',
-            'close_selection_at' => 'sometimes|required|date|after:close_registration_at',
-            'close_scheduling_at' => 'sometimes|required|date|after:close_selection_at',
-            'close_referees_at' => 'sometimes|required|date|after:close_scheduling_at'
+            'close_assignment_at' => 'sometimes|nullable|required_if:auto_state_change,on|date|after:today',
+            'close_registration_at' => 'sometimes|nullable|required_if:auto_state_change,on|date|after:close_assignment_at',
+            'close_selection_at' => 'sometimes|nullable|required_if:auto_state_change,on|date|after:close_registration_at',
+            'close_scheduling_at' => 'sometimes|nullable|required_if:auto_state_change,on|date|after:close_selection_at',
+            'close_referees_at' => 'sometimes|nullable|required_if:auto_state_change,on|date|after:close_scheduling_at'
         ]);
         Log::info('region details form data validated OK.');
         $auto_state_change = $request->input('auto_state_change');

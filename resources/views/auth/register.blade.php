@@ -109,7 +109,7 @@
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <input id="captcha" type="text" class="form-control {{ $errors->has('captcha') ? 'is-invalid' : '' }}" placeholder="Enter Captcha" name="captcha">
+                        <input id="captcha" type="text" class="form-control {{ $errors->has('captcha') ? 'is-invalid' : '' }}" placeholder="@lang('Enter the Result of the Equation')" name="captcha">
                         @if ($errors->has('captcha'))
                         <div class="invalid-feedback">
                             <strong>{{ $errors->first('captcha') }}</strong>

@@ -69,4 +69,8 @@ class LoginController extends Controller
         }
         return $returnPath;
     }
+    protected function loggedOut(Request $request)
+    {
+        return redirect('/'.app()->getLocale().'/signin');
+    }
 }
