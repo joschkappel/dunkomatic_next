@@ -40,7 +40,7 @@ return [
     'title.block'                => 'Zugangskonto sperren',
     'confirm.delete'               => 'Willst Du das Zugangskonto wirklich löschen ?',
     'confirm.block'                => 'Willst Du das Zugangskonto wirklich sperren ?',
-    'reason_join'                 => 'Warum benötigst du einen Zugang ?',
+    'reason_join'                 => 'Für welchen Verein/Runde und wozu benötigst du einen Zugang ?',
     'reason_reject'               => 'Grund für die Ablehnung',
     'complete.profile'            => 'Bitte vervollständinge Dein Nutzerprofil',
     'action.complete.profile'     => 'Profil vervollständigen',
