@@ -66,5 +66,6 @@
   "The given :attribute has appeared in a data leak. Please choose a different :attribute.": "The given :attribute has appeared in a data leak. Please choose a different :attribute.",
   "or": "oder",
   "Loading": "eine Sekunde Bitte",
-  "previous": "bisher"
+  "previous": "bisher",
+  "Enter the Result of the Equation": "Bitte das Ergebnis der Aufgabe oben eingeben"
 }

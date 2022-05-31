@@ -120,7 +120,9 @@ trait LeagueTeamManager
         }
 
         // handle disabled / enabled button status and function
-        if (( Bouncer::can('manage', $league->region)  and Bouncer::is($user)->a('regionadmin') ) or ( Bouncer::is($user)->a('superadmin') ) ){
+        if (( Bouncer::can('access', $league->region)  and Bouncer::is($user)->a('regionadmin') ) or
+            ( Bouncer::is($user)->an('superadmin') ) or
+            ( Bouncer::can('access', $league ) and Bouncer::is($user)->a('leagueadmin')) ){
             if ( $league->state->is(LeagueState::Assignment) ){
                 if ( $team_id == null ) {
                     $status = '';

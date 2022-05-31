@@ -123,6 +123,7 @@ class AppServiceProvider extends ServiceProvider
             $clubmenu['can'] = 'view-clubs';
 
             $event->menu->add($clubmenu);
+
             // MENU - LEAGUES
             $leaguemenu = array();
             $leaguemenu['text'] = trans_choice('league.league', 2);
@@ -139,10 +140,14 @@ class AppServiceProvider extends ServiceProvider
 
 
             $smenu['text'] =  __('league.menu.manage');;
-            $smenu['url']  = route('league.index_mgmt',['language' => app()->getLocale(), 'region'=> session('cur_region')]);
+            if (Auth::user()->isAn('superadmin','regionadmin','leagueadmin')) {
+                $smenu['url']  = route('league.index_mgmt',['language' => app()->getLocale(), 'region'=> session('cur_region')]);
+            } else {
+                $smenu['url']  = route('league.index',['language' => app()->getLocale(), 'region'=> session('cur_region')]);
+            }
             $smenu['icon_color'] = 'yellow';
             $smenu['icon'] =  'fas fa-chart-bar';
-            $smenu['can'] = ['create-leagues','update-leagues'];
+            $smenu['can'] = ['view-leagues'];
             $smenu['shift'] = 'ml-3';
             $leaguemenu['submenu'][] = $smenu;
 
@@ -173,7 +178,6 @@ class AppServiceProvider extends ServiceProvider
                         'url'  => route('schedule.compare', ['language'=>app()->getLocale(), 'region'=> session('cur_region') ]),
                         'icon' => 'fas fa-calendar-week',
                         'icon_color' => 'green',
-                        'can'  => 'view-schedules',
                         'shift' => 'ml-5'
                     ]
                 ];

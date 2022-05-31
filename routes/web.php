@@ -125,8 +125,8 @@ Route::group([
             Route::get('league/manage', [LeagueController::class, 'index_mgmt'])->name('league.index_mgmt');
             Route::get('schedule', [ScheduleController::class, 'index'])->name('schedule.index')->middleware('can:view-schedules');
             Route::get('schedule/create', [ScheduleController::class, 'create'])->name('schedule.create')->middleware('can:create-schedules');
-            Route::get('schedule/compare/dt', [ScheduleController::class, 'compare_datatable'])->name('schedule.compare.dt')->middleware('can:view-schedules');
-            Route::get('schedule/compare', [ScheduleController::class, 'compare'])->name('schedule.compare')->middleware('can:view-schedules');
+            Route::get('schedule/compare/dt', [ScheduleController::class, 'compare_datatable'])->name('schedule.compare.dt');
+            Route::get('schedule/compare', [ScheduleController::class, 'compare'])->name('schedule.compare');
 
 
             Route::get('user/new', [UserController::class, 'index_new'])->name('admin.user.index.new')->middleware('can:update-users');
@@ -207,7 +207,7 @@ Route::middleware(['auth',
 
     Route::delete('user/{user}', [UserController::class, 'destroy'])->name('admin.user.destroy')->middleware('can:update-users');
     Route::post('user/{user}/block', [UserController::class, 'block'])->name('admin.user.block')->middleware('can:update-users');
-    Route::put('user/{user}', [UserController::class, 'update'])->name('admin.user.update')->middleware('can:update-users');
+    Route::put('user/{user}', [UserController::class, 'update'])->name('admin.user.update')->middleware('can:manage,user');
     Route::put('user/{user}/allowance', [UserController::class, 'allowance'])->name('admin.user.allowance')->middleware('can:update-users');
 
     Route::put('member/{member}', [MemberController::class, 'update'])->name('member.update')->middleware('can:update-members');

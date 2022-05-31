@@ -53,12 +53,32 @@
                     </p>
                 </div>
             </div>
+            <div class="card card-outline card-info collapsed-card" id="faq_06">
+                <x-card-header title="möchte ich Spielrunden anlegen oder ändern:" />
+                <div class="card-body">
+                    <p class="card-text">
+                        <p class="card-text">
+                            Beschreibung kommt demnächst...
+                        </p>
+                    </p>
+                </div>
+            </div>
+            <div class="card card-outline card-info collapsed-card" id="faq_07">
+                <x-card-header title="möchte ich Spielrunden anlegen oder ändern:" />
+                <div class="card-body">
+                    <p class="card-text">
+                        <p class="card-text">
+                            Beschreibung kommt demnächst...
+                        </p>
+                    </p>
+                </div>
+            </div>
           </div>
         </div>
         <div class="card card-outline card-dark collapsed-card">
             <x-card-header title="Als Abteilungsleiter:in, ..." count=5 />
             <div class="card-body">
-              <div class="card card-outline card-info collapsed-card" id="faq_06">
+              <div class="card card-outline card-info collapsed-card" id="faq_20">
                   <x-card-header title="möchte ich eine Mannschaft melden:" />
                   <div class="card-body">
                       <p class="card-text">
@@ -68,7 +88,7 @@
                       </p>
                   </div>
               </div>
-              <div class="card card-outline card-info collapsed-card" id="faq_07">
+              <div class="card card-outline card-info collapsed-card" id="faq_21">
                   <x-card-header title="möchte ich Runden-Ziffern für meine Mannschaften wählen:" />
                   <div class="card-body">
                       <p class="card-text">
@@ -78,13 +98,13 @@
                       </p>
                   </div>
               </div>
-              <div class="card card-outline card-info collapsed-card" id="faq_08">
+              <div class="card card-outline card-info collapsed-card" id="faq_22">
                 <x-card-header title="möchte ich Hallenzeiten für Heimspiele ändern:" />
                 <div class="card-body">
                     <p class="card-text"></p>
                 </div>
             </div>
-              <div class="card card-outline card-info collapsed-card" id="faq_09">
+              <div class="card card-outline card-info collapsed-card" id="faq_23">
                 <x-card-header title="möchte ich meine Spielpläne downloaden:" />
                 <div class="card-body">
                     <p class="card-text">
@@ -94,7 +114,7 @@
                     </p>
                 </div>
               </div>
-              <div class="card card-outline card-info collapsed-card" id="faq_10">
+              <div class="card card-outline card-info collapsed-card" id="faq_24">
                   <x-card-header title="möchte ich eine:n Funktionsträger:in aufnehmen oder ändern:" />
                   <div class="card-body">
                       <p class="card-text">
@@ -109,7 +129,7 @@
         <div class="card card-outline card-dark collapsed-card">
             <x-card-header title="Als Staffelleiter:in, ..." count=2 />
             <div class="card-body">
-              <div class="card card-outline card-info collapsed-card" id="faq_11">
+              <div class="card card-outline card-info collapsed-card" id="faq_40">
                 <x-card-header title="möchte ich meine Spielpläne downloaden:" />
                 <div class="card-body">
                     <p class="card-text">
@@ -119,7 +139,7 @@
                     </p>
                 </div>
               </div>
-              <div class="card card-outline card-info collapsed-card" id="faq_12">
+              <div class="card card-outline card-info collapsed-card" id="faq_41">
                   <x-card-header title="möchte ich eine:n Funktionsträger:in aufnehmen oder ändern:" />
                   <div class="card-body">
                       <p class="card-text">
@@ -134,7 +154,7 @@
         <div class="card card-outline card-dark collapsed-card">
             <x-card-header title="Als Schiedsrichterwart:in, ..." count=1 />
             <div class="card-body">
-              <div class="card card-outline card-info collapsed-card" id="faq_13">
+              <div class="card card-outline card-info collapsed-card" id="faq_60">
                 <x-card-header title="möchte ich Schiedsrichter:innen zuordnen:" />
                 <div class="card-body">
                     <p class="card-text">

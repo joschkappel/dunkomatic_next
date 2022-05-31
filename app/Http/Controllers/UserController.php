@@ -247,32 +247,36 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
 
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'locale' => ['required', 'string', 'max:2',]
-        ]);
-        Log::info('user form data validated OK.');
+        if ($user->can('manage', $user)) {
+            $data = $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+                'locale' => ['required', 'string', 'max:2',]
+            ]);
+            Log::info('user form data validated OK.');
 
-        $old_email = $user->email;
-        if ($data['email'] != $user->email) {
-            $data['email_verified_at'] = null;
+            $old_email = $user->email;
+            if ($data['email'] != $user->email) {
+                $data['email_verified_at'] = null;
+            }
+
+            $user->update($data);
+            Log::notice('user updated.', ['user-id' => $user->id]);
+            app()->setLocale($data['locale']);
+
+            if ($data['email'] != $old_email) {
+                $user->sendEmailVerificationNotification();
+                //Auth::logout();
+                $request->session()->flush();
+                Auth::logout();
+                Log::notice('user has modifed his email.', ['user-id' => $user->id, 'old-email' => $old_email, 'new-email' => $data['email']]);
+                return redirect()->route('login', app()->getLocale());
+            }
+
+            return redirect()->route('home', app()->getLocale());
+        } else {
+            abort(403, 'Unauthorized action.');
         }
-
-        $user->update($data);
-        Log::notice('user updated.', ['user-id' => $user->id]);
-        app()->setLocale($data['locale']);
-
-        if ($data['email'] != $old_email) {
-            $user->sendEmailVerificationNotification();
-            //Auth::logout();
-            $request->session()->flush();
-            Auth::logout();
-            Log::notice('user has modifed his email.', ['user-id' => $user->id, 'old-email' => $old_email, 'new-email' => $data['email']]);
-            return redirect()->route('login', app()->getLocale());
-        }
-
-        return redirect()->route('home', app()->getLocale());
     }
 
     /**
