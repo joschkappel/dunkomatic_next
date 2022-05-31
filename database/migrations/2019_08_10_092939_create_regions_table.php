@@ -37,7 +37,7 @@ class CreateRegionsTable extends Migration
             $table->date('close_selection_at')->nullable();
             $table->date('close_scheduling_at')->nullable();
             $table->date('close_referees_at')->nullable();
-            $table->boolean('auto_state_change')->default(True);
+            $table->boolean('auto_state_change')->default(False);
         });
     }
 

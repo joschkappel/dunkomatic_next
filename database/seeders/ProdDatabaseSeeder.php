@@ -38,8 +38,8 @@ class ProdDatabaseSeeder extends Seeder
           base\MessagesTableSeeder::class,
         ]);
 
-        $this->call([
+/*         $this->call([
             base\LeagueStateTableSeeder::class,
-        ]);
+        ]); */
     }
 }
