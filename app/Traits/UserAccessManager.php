@@ -135,6 +135,7 @@ trait UserAccessManager
     {
         // remove all other roles and abilities
         $this->removeAllAccessRights($user);
+        Bouncer::allow($user)->to('access', session('cur_region'));
 
         // assign candidate role
         $user->assign('candidate');

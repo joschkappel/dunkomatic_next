@@ -39,7 +39,7 @@
         </div>
     </div>
     <div class="form-group row ">
-        <label for='selRegions' class="col-sm-4 col-form-label">{{ __('region.preferred')}}</label>
+        <label for='selRegions' class="col-sm-4 col-form-label">{{ __('auth.user.regions')}}</label>
         <div class="col-sm-6">
             <div class="input-group mb-3">
                 <select class='js-regions-placeholder-single form-control select2 @error('region_ids') /> is-invalid @enderror' disabled id='selRegions' name="region_ids[]">
@@ -66,7 +66,7 @@
         </div>
     </div>
     <div class="form-group row ">
-        <label for='selClubs' class="col-sm-4 col-form-label">{{ __('club.preferred')}}</label>
+        <label for='selClubs' class="col-sm-4 col-form-label">{{ __('auth.user.clubs')}}</label>
         <div class="col-sm-6">
             <div class="input-group mb-3">
                 <select class='js-clubs-placeholder-single js-states form-control select2' multiple="multiple" id='selClubs' name="club_ids[]">
@@ -90,7 +90,7 @@
         </div>
     </div>
     <div class="form-group row ">
-        <label for='selLeagues' class="col-sm-4 col-form-label">{{ __('league.preferred')}}</label>
+        <label for='selLeagues' class="col-sm-4 col-form-label">{{ __('auth.user.leagues')}}</label>
         <div class="col-sm-6">
             <div class="input-group mb-3">
                 <select class='js-leagues-placeholder-single js-states form-control select2' multiple="multiple" id='selLeagues' name="league_ids[]">
