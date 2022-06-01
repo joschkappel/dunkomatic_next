@@ -27,7 +27,7 @@ trait LeagueFSM
         $league->assignment_closed_at = now();
         $league->save();
 
-        $clubs = $league->clubs()->get();
+/*         $clubs = $league->clubs()->get();
         foreach ($clubs as $c) {
             $member = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
 
@@ -40,7 +40,7 @@ trait LeagueFSM
                     Log::info('[NOTIFICATION] register teams.', ['league-id' => $league->id, 'user-id' => $user->id]);
                 }
             }
-        }
+        } */
     }
 
     public function open_char_selection(League $league): void
@@ -51,7 +51,7 @@ trait LeagueFSM
         $league->registration_closed_at = now();
         $league->save();
 
-        $clubs = $league->clubs;
+/*         $clubs = $league->clubs;
         foreach ($clubs as $c) {
             $member = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
 
@@ -65,7 +65,7 @@ trait LeagueFSM
                     Log::info('[NOTIFICATION] select league team number.', ['league-id' => $league->id, 'user-id' => $user->id]);
                 }
             }
-        }
+        } */
     }
 
     public function freeze_league(League $league): void
@@ -86,7 +86,7 @@ trait LeagueFSM
         $league->generated_at = now();
         $league->save();
 
-        $clubs = $league->teams()->pluck('club_id');
+/*         $clubs = $league->teams()->pluck('club_id');
         foreach ($clubs as $c) {
             $club = Club::find($c);
             $member = $club->members()->wherePivot('role_id', Role::ClubLead)->first();
@@ -101,7 +101,7 @@ trait LeagueFSM
                     Log::info('[NOTIFICATION] league games generated.', ['league-id'=>$league->id, 'user-id'=>$user->id]);
                 }
             }
-        }
+        } */
     }
 
     public function open_ref_assignment(League $league): void

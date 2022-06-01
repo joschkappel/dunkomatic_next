@@ -127,7 +127,7 @@ class LeagueTeamController extends Controller
 
             $member = $club->members()->wherePivot('role_id', Role::ClubLead)->first();
 
-            if (isset($member)) {
+/*             if (isset($member)) {
                 $member->notify(new ClubDeAssigned($league, $club, $team, Auth::user()->name, $member->name));
                 Log::info('[NOTIFICATION] club deassigned.', ['league-id' => $league->id, 'club-id' => $club->id, 'team-id' => $team->id, 'member-id' => $member->id]);
 
@@ -136,7 +136,7 @@ class LeagueTeamController extends Controller
                     $user->notify(new ClubDeAssigned($league, $club, $team, Auth::user()->name, $user->name));
                     Log::info('[NOTIFICATION] club deassigned.', ['league-id' => $league->id, 'club-id' => $club->id, 'team-id' => $team->id, 'user-id' => $user->id]);
                 }
-            }
+            } */
         }
 
         return Response::json(['success' => 'all good'], 200);

@@ -59,7 +59,7 @@ class Kernel extends ConsoleKernel
                 $this->scheduleRegionTask($schedule, new EmailValidation($r), $r->job_email_valid);
                 $this->scheduleRegionTask($schedule, new ProcessLeagueReports($r), $r->job_league_reports);
                 $this->scheduleRegionTask($schedule, new ProcessClubReports($r), $r->job_club_reports);
-                $this->scheduleRegionTask($schedule, new ProcessLeagueStateChanges($r), JobFrequencyType::daily);
+                // $this->scheduleRegionTask($schedule, new ProcessLeagueStateChanges($r), JobFrequencyType::daily);
             }
         }
 
