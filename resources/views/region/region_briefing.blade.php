@@ -67,12 +67,14 @@
                         <div class="card-body overflow-auto">
                             @forelse ( $clubs as $c )
                                 <div class="info-box">
-                                    <span class="info-box-icon bg-primary text-md p-2">{{ $c->clubs->first()->shortname }}</span>
+                                    <span class="info-box-icon bg-primary text-md p-2">{{ $c->shortname }}</span>
+                                    @foreach( $c->members->where('pivot.role_id', \App\Enums\Role::ClubLead ) as $m)
                                     <div class="info-box-content">
-                                        <span class="info-box-number">{{ $c->name }}</span>
-                                        <span class="info-box-text"><i class="fas fa-mobile"></i><a href="tel:{{ $c->mobile }}" target="_blank"> {{ $c->mobile}}</a> <i class="fas fa-phone"></i> <a href="tel:{{ $c->phone }}" target="_blank"> {{ $c->phone}}</a></span>
-                                        <span class="info-box-text"><i class="fas fa-at"></i><a href="mailto:{{ $c->email1 }}" target="_blank"> {{ $c->email1 }}</a></span>
+                                        <span class="info-box-number">{{ $m->name }}</span>
+                                        <span class="info-box-text"><i class="fas fa-mobile"></i><a href="tel:{{ $m->mobile }}" target="_blank"> {{ $m->mobile}}</a> <i class="fas fa-phone"></i> <a href="tel:{{ $m->phone }}" target="_blank"> {{ $m->phone}}</a></span>
+                                        <span class="info-box-text"><i class="fas fa-at"></i><a href="mailto:{{ $m->email1 }}" target="_blank"> {{ $m->email1 }}</a></span>
                                     </div>
+                                    @endforeach
                                 </div>
                             @empty
                                 <div class="info-box">
@@ -98,11 +100,13 @@
                         <div class="card-body overflow-auto">
                             @forelse ( $leagues as $l )
                                 <div class="info-box">
-                                    <span class="info-box-icon bg-primary text-md p-2">{{ $l->leagues->first()->shortname }}</span>
+                                    <span class="info-box-icon bg-primary text-md p-2">{{ $l->shortname }}</span>
                                     <div class="info-box-content">
-                                        <span class="info-box-number">{{ $l->name }}</span>
-                                        <span class="info-box-text"><i class="fas fa-mobile"></i><a href="tel:{{ $l->mobile }}" target="_blank"> {{ $l->mobile}}</a> <i class="fas fa-phone"></i> <a href="tel:{{ $l->phone }}" target="_blank"> {{ $l->phone}}</a></span>
-                                        <span class="info-box-text"><i class="fas fa-at"></i><a href="mailto:{{ $l->email1 }}" target="_blank"> {{ $l->email1 }}</a></span>
+                                        @foreach( $l->members->where('pivot.role_id', \App\Enums\Role::LeagueLead ) as $m)
+                                            <span class="info-box-number">{{ $m->name }}</span>
+                                            <span class="info-box-text"><i class="fas fa-mobile"></i><a href="tel:{{ $m->mobile }}" target="_blank"> {{ $m->mobile}}</a> <i class="fas fa-phone"></i> <a href="tel:{{ $m->phone }}" target="_blank"> {{ $m->phone}}</a></span>
+                                            <span class="info-box-text"><i class="fas fa-at"></i><a href="mailto:{{ $m->email1 }}" target="_blank"> {{ $m->email1 }}</a></span>
+                                        @endforeach
                                     </div>
                                 </div>
                             @empty

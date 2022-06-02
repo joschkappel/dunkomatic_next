@@ -85,16 +85,10 @@ class RegionController extends Controller
 
 
         $data['memberships'] = $region->memberships()->with('member')->get();
-        $c_members = collect();
-        foreach ($region->clubs->sortBy('shortname') as $c) {
-            $c_members = $c_members->concat($c->members()->wherePivot('role_id', Role::ClubLead())->get());
-        }
-        $data['clubs'] = $c_members;
-        $l_members = collect();
-        foreach ($region->leagues->sortBy('shortname') as $l) {
-            $l_members = $l_members->concat($l->members()->wherePivot('role_id', Role::LeagueLead())->get());
-        }
-        $data['leagues'] = $l_members;
+
+        $data['clubs'] = $region->clubs()->with('members')->orderBy('shortname')->get();
+
+        $data['leagues'] = $region->leagues()->with('members')->orderBy('shortname')->get();
 
         Log::info('showing region briefing', ['region-id' => $region->id]);
         return view('region/region_briefing', $data);
