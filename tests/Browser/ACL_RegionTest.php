@@ -148,7 +148,7 @@ class ACL_RegionTest extends DuskTestCase
         $this->browse(function ($browser) use ($user, $region) {
             $browser->loginAs($user)->visitRoute('region.index', ['language' => 'de']);
 
-            if ($user->can('view-regions')) {
+            if ($user->can('update-regions')) {
                 $browser->assertRouteIs('region.index', ['language' => 'de']);
                 ($user->can('create-regions')) ? $browser->assertSee(__('region.action.create', $locale = ['de'])) : $browser->assertDontSee(__('region.action.create', $locale = ['de']));
                 $browser->waitFor('.table');
@@ -158,8 +158,9 @@ class ACL_RegionTest extends DuskTestCase
                     $browser->clickLink($region->code)
                         ->assertRouteIs('region.dashboard', ['language' => 'de', 'region' => $region->id]);
                 } else {
-                    // $browser ->assertDontSeeLink($region->code)
-                    //    ->assertSee($region->code);
+                    $browser->assertSeeLink($region->code);
+                    $browser->clickLink($region->code)
+                        ->assertRouteIs('region.briefing', ['language' => 'de', 'region' => $region->id]);
                 }
             } else {
                 $browser->assertSee('403');
@@ -174,7 +175,7 @@ class ACL_RegionTest extends DuskTestCase
             $member = static::$member;
             $region = static::$region;
 
-            if ($user->can('access', $region)) {
+            if ( $user->can('access', $region) ){
                 ($user->can('update-regions')) ? $browser->assertSee(__('region.action.edit', $locale = ['de'])) : $browser->assertDontSee(__('region.action.edit', $locale = ['de']));
                 ($user->can('create-regions')) ? $browser->assertSee(__('region.action.delete', $locale = ['de'])) : $browser->assertDontSee(__('region.action.delete', $locale = ['de']));
                 ($user->can('create-members')) ? $browser->assertSee(__('region.member.action.create', $locale = ['de'])) : $browser->assertDontSee(__('region.member.action.create', $locale = ['de']));
