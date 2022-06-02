@@ -203,13 +203,9 @@ class ACL_LeagueTest extends DuskTestCase
         $this->browse(function ($browser) use ($user, $league) {
             $browser->loginAs($user)->visitRoute('league.index_mgmt',['language'=>'de','region'=>static::$region]);
 
-            if ( $user->can('access', $league) ) {
-                $browser->assertRouteIs('league.index_mgmt',['language'=>'de','region'=>static::$region]);
-                ($user->can('create-leagues')) ? $browser->assertSee(__('league.action.create',$locale=['de'])) : $browser->assertDontSee(__('league.action.create',$locale=['de']));
-                $browser->waitFor('.table')->assertSeeLink($league->shortname)->clickLink($league->shortname)->assertRouteIs('league.dashboard', ['language'=>'de','league'=>$league->id]);
-            } else {
-                $browser->assertSee('403');
-            }
+            $browser->assertRouteIs('league.index_mgmt',['language'=>'de','region'=>static::$region]);
+            ($user->can('create-leagues')) ? $browser->assertSee(__('league.action.create',$locale=['de'])) : $browser->assertDontSee(__('league.action.create',$locale=['de']));
+            $browser->waitFor('.table')->assertSeeLink($league->shortname)->clickLink($league->shortname)->assertRouteIs('league.dashboard', ['language'=>'de','league'=>$league->id]);
         });
     }
 
