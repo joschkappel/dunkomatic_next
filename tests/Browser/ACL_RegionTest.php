@@ -174,7 +174,7 @@ class ACL_RegionTest extends DuskTestCase
             $member = static::$member;
             $region = static::$region;
 
-            if ($user->canAny(['create-regions', 'update-regions'])) {
+            if ($user->can('access', $region)) {
                 ($user->can('update-regions')) ? $browser->assertSee(__('region.action.edit', $locale = ['de'])) : $browser->assertDontSee(__('region.action.edit', $locale = ['de']));
                 ($user->can('create-regions')) ? $browser->assertSee(__('region.action.delete', $locale = ['de'])) : $browser->assertDontSee(__('region.action.delete', $locale = ['de']));
                 ($user->can('create-members')) ? $browser->assertSee(__('region.member.action.create', $locale = ['de'])) : $browser->assertDontSee(__('region.member.action.create', $locale = ['de']));

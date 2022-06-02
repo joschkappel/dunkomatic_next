@@ -191,7 +191,7 @@ class ACL_ClubTest extends DuskTestCase
             $gym = static::$gym;
             $member = static::$member;
 
-            if ( $user->canAny(['create-clubs', 'update-clubs'])){
+            if ( $user->can('access', $club)){
                 ($user->can('update-clubs')) ? $browser->assertSee(__('club.action.edit',$locale=['de'])) : $browser->assertDontSee(__('club.action.edit',$locale=['de']));
                 ($user->can('create-clubs')) ? $browser->assertSee(__('club.action.delete',$locale=['de'])) : $browser->assertDontSee(__('club.action.delete',$locale=['de']));
                 ($user->can('create-members')) ? $browser->assertSee(__('club.member.action.create',$locale=['de'])) : $browser->assertDontSee(__('club.member.action.create',$locale=['de']));

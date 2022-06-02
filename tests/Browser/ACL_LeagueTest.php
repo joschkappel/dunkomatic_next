@@ -242,7 +242,7 @@ class ACL_LeagueTest extends DuskTestCase
             $t = $league->teams->first()->name;
             // $browser->storeSource($user->getRoles()[0].'_leaguedashboard');
 
-            if ( $user->canAny(['create-leagues', 'update-leagues'])){
+            if ( $user->can('access', $league)){
                 ($user->can('update-leagues')) ? $browser->assertSee(__('league.action.edit',$locale=['de'])) : $browser->assertDontSee(__('league.action.edit',$locale=['de']));
                 ($user->can('create-leagues')) ? $browser->assertSee(__('league.action.delete',$locale=['de'])) : $browser->assertDontSee(__('league.action.delete',$locale=['de']));
                 ($user->can('create-members')) ? $browser->assertSee(__('league.member.action.create',$locale=['de'])) : $browser->assertDontSee(__('league.member.action.create',$locale=['de']));
