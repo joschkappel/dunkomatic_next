@@ -91,12 +91,12 @@ Route::group([
         Route::get('region/{region}', [RegionController::class, 'show'])->name('region.show')->middleware('can:view-regions');
         Route::get('region/{region}/edit', [RegionController::class, 'edit'])->name('region.edit')->middleware('can:update-regions');
         Route::get('regions/dt', [RegionController::class, 'datatable'])->name('region.list.dt')->middleware('can:view-regions');
-        Route::get('region/{region}/dashboard', [RegionController::class, 'dashboard'])->name('region.dashboard');
+        Route::get('region/{region}/dashboard', [RegionController::class, 'dashboard'])->name('region.dashboard')->middleware('can:access,region');
         Route::get('region/{region}/briefing', [RegionController::class, 'briefing'])->name('region.briefing')->middleware('can:view-regions');
         Route::get('region/{region}/game/upload', [RegionGameController::class, 'upload'])->name('region.upload.game');
         Route::post('region/{region}/game/ref/import', [RegionGameController::class, 'import_referees'])->name('region.import.refgame');
 
-        Route::get('club/{club}/dashboard', [ClubController::class, 'dashboard'])->name('club.dashboard');
+        Route::get('club/{club}/dashboard', [ClubController::class, 'dashboard'])->name('club.dashboard')->middleware('can:access,club');
         Route::get('club/{club}/briefing', [ClubController::class, 'briefing'])->name('club.briefing')->middleware('can:view-clubs');
         Route::get('club/{club}/game/home', [ClubController::class, 'list_homegame'])->name('club.list.homegame')->middleware('can:view-games');
         Route::get('club/{club}', [ClubController::class, 'show'])->name('club.show')->middleware('can:view-clubs');
@@ -149,7 +149,7 @@ Route::group([
 
         Route::get('league/{league}/game/upload', [LeagueGameController::class, 'upload'])->name('league.upload.game');
         Route::post('league/{league}/game/import', [LeagueGameController::class, 'import'])->name('league.import.game');
-        Route::get('league/{league}/dashboard', [LeagueController::class, 'dashboard'])->name('league.dashboard');
+        Route::get('league/{league}/dashboard', [LeagueController::class, 'dashboard'])->name('league.dashboard')->middleware('can:access,league');
         Route::get('league/{league}/briefing', [LeagueController::class, 'briefing'])->name('league.briefing')->middleware('can:view-leagues');
         Route::get('league/{league}', [LeagueController::class, 'show'])->name('league.show')->middleware('can:view-leagues');
         Route::get('league/{league}/edit', [LeagueController::class, 'edit'])->name('league.edit')->middleware('can:update-leagues');

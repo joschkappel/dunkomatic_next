@@ -175,7 +175,7 @@ class ACL_ClubTest extends DuskTestCase
                 $browser->assertRouteIs('club.index',['language'=>'de','region'=>$region]);
                 ($user->can('create-clubs')) ? $browser->assertSee(__('club.action.create',$locale=['de'])) : $browser->assertDontSee(__('club.action.create',$locale=['de']));
                 $browser->waitFor('.table')->assertSeeLink($club->shortname)->clickLink($club->shortname);
-                ( $user->canAny(['create-clubs', 'update-clubs']))  ? $browser->assertRouteIs('club.dashboard', ['language'=>'de','club'=>$club->id]) :  $browser->assertRouteIs('club.briefing', ['language'=>'de','club'=>$club->id]);
+                ( $user->can('access', $club) )  ? $browser->assertRouteIs('club.dashboard', ['language'=>'de','club'=>$club->id]) :  $browser->assertRouteIs('club.briefing', ['language'=>'de','club'=>$club->id]);
             } else {
                 $browser->assertSee('403');
             }
@@ -191,7 +191,7 @@ class ACL_ClubTest extends DuskTestCase
             $gym = static::$gym;
             $member = static::$member;
 
-            if ( $user->canAny(['create-clubs', 'update-clubs'])){
+            if ( $user->can('access', $club)){
                 ($user->can('update-clubs')) ? $browser->assertSee(__('club.action.edit',$locale=['de'])) : $browser->assertDontSee(__('club.action.edit',$locale=['de']));
                 ($user->can('create-clubs')) ? $browser->assertSee(__('club.action.delete',$locale=['de'])) : $browser->assertDontSee(__('club.action.delete',$locale=['de']));
                 ($user->can('create-members')) ? $browser->assertSee(__('club.member.action.create',$locale=['de'])) : $browser->assertDontSee(__('club.member.action.create',$locale=['de']));

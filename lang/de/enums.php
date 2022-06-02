@@ -27,7 +27,7 @@ return [
       Role::RegionTeam => 'Bezirksmitarbeiter:in',
       Role::GirlsLead => 'Verantwtl. Mädchenbasket',
       Role::JuniorsLead => 'Jugendwart:in',
-      Role::RegionLead => 'Bezirskleitung'
+      Role::RegionLead => 'Bezirksleitung'
     ],
 
     JobFrequencyType::class => [

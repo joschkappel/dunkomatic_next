@@ -88,7 +88,7 @@ class LeagueController extends Controller
                 'size.display', 'state'
             ])
             ->editColumn('shortname', function ($l) {
-                if (Bouncer::canAny(['create-leagues', 'update-leagues'])) {
+                if (Bouncer::can('access', $l))  {
                     $link = '<a href="' . route('league.dashboard', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" >' . $l->shortname . '</a>';
                 } else {
                     $link = '<a href="' . route('league.briefing', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" class="text-info">' . $l->shortname . '</a>';
@@ -228,7 +228,7 @@ class LeagueController extends Controller
     public function dashboard(Request $request, $language, League $league)
     {
 
-        if (!Bouncer::canAny(['create-leagues', 'update-leagues'])) {
+        if ( Bouncer::cannot( 'access', $league)) {
             Log::warning('[ACCESS DENIED]', ['url' => $request->path(), 'ip' => $request->ip()]);
             abort(403);
         }
@@ -449,7 +449,7 @@ class LeagueController extends Controller
      */
     public function index_mgmt(Request $request, $language, Region $region)
     {
-        if (!Bouncer::canAny(['create-leagues', 'update-leagues'])) {
+        if (Bouncer::is(Auth::user())->notA('superadmin','regionadmin','leagueadmin')) {
             Log::warning('[ACCESS DENIED]', ['url' => $request->path(), 'ip' => $request->ip()]);
             abort(403);
         }
@@ -543,7 +543,11 @@ class LeagueController extends Controller
                 't1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9', 't10', 't11', 't12', 't13', 't14', 't15', 't16'
             ])
             ->editColumn('shortname', function ($l) {
-                $link = '<a href="' . route('league.dashboard', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" >' . $l->shortname . '</a>';
+                if (Bouncer::can('access',$l)){
+                    $link = '<a href="' . route('league.dashboard', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" >' . $l->shortname . '</a>';
+                } else {
+                    $link = '<a href="' . route('league.briefing', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" >' . $l->shortname . '</a>';
+                }
                 return array('display' => $link, 'sort' => $l->shortname);
             })
             ->editColumn('age_type', function ($l) {
