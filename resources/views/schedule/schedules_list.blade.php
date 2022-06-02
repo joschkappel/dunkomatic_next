@@ -15,11 +15,13 @@
 </x-card-list>
 @endsection
 
-@section('css')
-td.highlight {
-    background-color: whitesmoke !important;
-}
-@endsection
+@push('css')
+<style>
+    td.highlight {
+        background-color: whitesmoke !important;
+    }
+</style>
+@endpush
 
 @section('js')
 
