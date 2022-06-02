@@ -41,8 +41,8 @@ class DatabaseRestore extends Command
         $filename = $this->argument('backupfile');
         $backup_folder = config('dunkomatic.folders.backup').'/';
 
-        if ( Storage::exists($backup_folder.$filename)){
-            Storage::disk('local')->writeStream( 'tmp/'.$filename, Storage::readStream( $backup_folder.$filename));
+        if ( Storage::disk('local')->exists($backup_folder.$filename)){
+            Storage::disk('local')->writeStream( 'tmp/'.$filename, Storage::disk('local')->readStream( $backup_folder.$filename));
 
             $filepath = Storage::disk('local')->path('tmp/'.$filename);
             $command = 'zcat '.$filepath.' | mysql --user='.env('DB_USERNAME').' --password='.env('DB_PASSWORD').' --host='.env('DB_HOST').' '.env('DB_DATABASE');
