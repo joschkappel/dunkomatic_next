@@ -449,7 +449,7 @@ class LeagueController extends Controller
      */
     public function index_mgmt(Request $request, $language, Region $region)
     {
-        if (!Bouncer::canAny(['create-leagues', 'update-leagues'])) {
+        if (Bouncer::is(Auth::user())->notA('superadmin','regionadmin','leagueadmin')) {
             Log::warning('[ACCESS DENIED]', ['url' => $request->path(), 'ip' => $request->ip()]);
             abort(403);
         }
