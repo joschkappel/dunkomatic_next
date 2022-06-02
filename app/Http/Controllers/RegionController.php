@@ -156,10 +156,10 @@ class RegionController extends Controller
             ->addIndexColumn()
             ->rawColumns(['regionadmin', 'code'])
             ->editColumn('code', function ($data) {
-                if (Bouncer::canAny(['create-regions', 'update-regions'])) {
+                if ( (Bouncer::can('access', $data)) and (Bouncer::is(Auth::user())->a('regionadmin','superadmin'))) {
                     return '<a href="' . route('region.dashboard', ['language' => Auth::user()->locale, 'region' => $data->id]) . '">' . $data->code . '</a>';
                 } else {
-                    return $data->code;
+                    return '<a href="' . route('region.briefing', ['language' => Auth::user()->locale, 'region' => $data->id]) . '">' . $data->code . '</a>';
                 }
             })
             ->editColumn('regionadmin', function ($r) {

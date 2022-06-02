@@ -61,7 +61,7 @@ class HomeController extends Controller
         $links = collect();
 
         foreach ($user->regions() as $region){
-            if ($user->isAn('regionadmin', 'superadmin')) {
+            if ( ($user->isAn('regionadmin', 'superadmin')) and $user->can('access,$region') ) {
                 $links[] = ['text'=>$region->code, 'url'=> route('region.dashboard',['region'=>$region, 'language'=>app()->getLocale()])];
                 // check new users waiting for approval
                 $users_to_approve = $region->users()->whereNull('approved_at')->count();
@@ -182,7 +182,7 @@ class HomeController extends Controller
             }
         }
         foreach ($user->clubs() as $club) {
-            if ($user->can('update-clubs')) {
+            if ($user->can('access', $club)) {
                 $links[] = ['text'=>$club->shortname, 'url'=> route('club.dashboard',['club'=>$club,  'language'=>app()->getLocale()])];
             } else {
                 $links[] = ['text'=>$club->shortname, 'url'=> route('club.briefing',['club'=>$club,  'language'=>app()->getLocale()])];
@@ -198,7 +198,7 @@ class HomeController extends Controller
             }
         }
         foreach ($user->leagues() as $league) {
-            if ($user->can('update-leagues')) {
+            if ($user->can('access',$league)) {
                 $links[] = ['text'=>$league->shortname, 'url'=> route('league.dashboard',['league'=>$league,  'language'=>app()->getLocale()])];
             } else {
                 $links[] = ['text'=>$league->shortname, 'url'=> route('league.briefing',['league'=>$league,  'language'=>app()->getLocale()])];

@@ -69,7 +69,7 @@ class ClubController extends Controller
             ->addIndexColumn()
             ->rawColumns(['shortname.display', 'name.display', 'assigned_rel.display', 'registered_rel.display', 'selected_rel.display'])
             ->editColumn('shortname', function ($data) {
-                if (Bouncer::canAny(['create-clubs', 'update-clubs'])) {
+                if (Bouncer::can('access', $data)) {
                     $link = '<a href="' . route('club.dashboard', ['language' => Auth::user()->locale, 'club' => $data->id]) . '">' . $data->shortname . '</a>';
                 } else {
                     $link = '<a href="' . route('club.briefing', ['language' => Auth::user()->locale, 'club' => $data->id]) . '" class="text-info" >' . $data->shortname . '</a>';
@@ -133,7 +133,7 @@ class ClubController extends Controller
      */
     public function dashboard(Request $request, $language, Club $club)
     {
-        if  ( !Bouncer::canAny(['create-clubs', 'update-clubs'])) {
+        if  ( Bouncer::cannot('access', $club)) {
             Log::warning('[ACCESS DENIED]',['url'=> $request->path(), 'ip'=> $request->ip() ]);
             abort(403);
         }
