@@ -23,7 +23,7 @@ class LeagueControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->testleague_1 = League::factory()->assigned(4)->create();
+        $this->testleague_1 = League::factory()->registered(4)->create();
         $this->testleague_2 = League::factory()->selected(3, 3)->create();
         $this->testleague_3 = League::factory()->frozen(3, 3)->create();
         $this->testleague = League::factory()->registered(4, 3)->create();
