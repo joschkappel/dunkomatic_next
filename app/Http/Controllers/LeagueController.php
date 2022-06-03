@@ -468,6 +468,14 @@ class LeagueController extends Controller
      */
     public function list_mgmt(Request $request, $language, Region $region)
     {
+
+/*         $btn = '<div class="btn-group"><button type="button" class="btn btn-secondary dropdpwn-toggle" data-toggle="dropdown">'.__('league.action.select').' ('.__('previous').': '. $ct->league_prev .')</button>';
+        $btn .= '<div class="dropdown-menu">';
+        foreach ($clubleagues as $cl){
+            $btn .= '<a class="dropdown-item" href="javascript:registerTeam('.$cl->id.','.$ct->id.') ">'.$cl->shortname.'</a>';
+        }
+        $btn .='</div></div>'; */
+
         if (!Bouncer::canAny(['create-leagues', 'update-leagues'])) {
             Log::warning('[ACCESS DENIED]', ['url' => $request->path(), 'ip' => $request->ip()]);
             abort(403);
@@ -514,13 +522,30 @@ class LeagueController extends Controller
                         $c['team_name']
                     );
 
-                    $l['t' . $i] = '<button id="'.$btn_function.'" type="button" class="btn btn-sm '.$btn_color.'" '.$btn_status .
-                                    ' data-club-id="' . $c['club_id'] . '"'.
-                                    ' data-team-id="' . $c['team_id'] . '"'.
-                                    ' data-region-id="' . $l->region->id . '"'.
-                                    ' data-league-no="' . $i . '"'.
-                                    ' data-league-id="' . $l->id . '">'
-                                    . $btn_text . '</button>';
+                    $btn_function = Str::of($btn_function)->explode('#');
+                    if ( $btn_function->count() == 2 ){
+                        $btn = '<div class="btn-group"><button type="button" class="btn btn-sm '.$btn_color.' dropdpwn-toggle" data-toggle="dropdown" '.$btn_status.'>'.$btn_text.'</button>';
+                        $btn .= '<div class="dropdown-menu">';
+                        foreach ($btn_function as $bf){
+                            $btn .= '<button id="'.$bf.'" type="button" class="btn btn-sm btn-light" '.
+                            ' data-club-id="' . $c['club_id'] . '"'.
+                            ' data-team-id="' . $c['team_id'] . '"'.
+                            ' data-region-id="' . $l->region->id . '"'.
+                            ' data-league-no="' . $i . '"'.
+                            ' data-league-id="' . $l->id . '">'
+                            . __('league.action.'.$bf) . '</button>';
+                        }
+                        $btn .='</div></div>';
+                        $l['t' . $i] = $btn;
+                    } else {
+                        $l['t' . $i] = '<button id="'.$btn_function->pop().'" type="button" class="btn btn-sm '.$btn_color.'" '.$btn_status .
+                                        ' data-club-id="' . $c['club_id'] . '"'.
+                                        ' data-team-id="' . $c['team_id'] . '"'.
+                                        ' data-region-id="' . $l->region->id . '"'.
+                                        ' data-league-no="' . $i . '"'.
+                                        ' data-league-id="' . $l->id . '">'
+                                        . $btn_text . '</button>';
+                    }
 
                 } else {
                     $l['t' . $i] = 'X';

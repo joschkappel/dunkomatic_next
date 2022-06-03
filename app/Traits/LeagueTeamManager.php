@@ -133,7 +133,7 @@ trait LeagueTeamManager
                         $text = Str::limit(__('league.action.assign'), 6, '...');
                     } else {
                         if ($team_id == null){
-                            $function = 'registerTeam';
+                            $function = 'registerTeam#deassignClub';
                         } else {
                             $function = 'unregisterTeam';
                         }

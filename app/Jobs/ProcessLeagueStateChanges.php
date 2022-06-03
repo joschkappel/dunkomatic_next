@@ -59,7 +59,7 @@ class ProcessLeagueStateChanges implements ShouldQueue
             foreach ($leagues as $l){
                 // check if all clubs are assigned
                 if ($l->state->is( LeagueState::Registration())){
-                    if (( $l->state_count['assigned'] == $l->state_count['registered'] ) or ( $close_registration < now()) ){
+                    if (( $l->state_count['size'] == $l->state_count['registered'] ) or ( $close_registration < now()) ){
                         $this->open_char_selection($l);
                     }
                 } elseif ($l->state->is( LeagueState::Selection())){
