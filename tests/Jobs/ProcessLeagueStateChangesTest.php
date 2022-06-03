@@ -35,9 +35,8 @@ class ProcessLeagueStateChangesTest extends TestCase
     {
         // set to assigned
         $this->reopen_team_registration($this->testleague);
-        $this->reopen_club_assignment($this->testleague);
 
-        $this->assertDatabaseHas('leagues', ['state' => LeagueState::Assignment]);
+        $this->assertDatabaseHas('leagues', ['state' => LeagueState::Registration()]);
 
         // disbale auto change
         $this->testleague->region->update(['auto_state_change' => false]);
@@ -45,7 +44,7 @@ class ProcessLeagueStateChangesTest extends TestCase
         $job_instance = resolve(ProcessLeagueStateChanges::class, ['region' => $this->testleague->region]);
         app()->call([$job_instance, 'handle']);
 
-        $this->assertDatabaseHas('leagues', ['state' => LeagueState::Assignment]);
+        $this->assertDatabaseHas('leagues', ['state' => LeagueState::Registration()]);
 
         // enable auto change
         $this->testleague->region->update(['auto_state_change' => true]);
@@ -53,7 +52,6 @@ class ProcessLeagueStateChangesTest extends TestCase
         $job_instance = resolve(ProcessLeagueStateChanges::class, ['region' => $this->testleague->region]);
         app()->call([$job_instance, 'handle']);
 
-        $this->assertDatabaseMissing('leagues', ['state' => LeagueState::Assignment]);
         $this->assertDatabaseHas('leagues', ['state' => LeagueState::Registration]);
     }
     /**

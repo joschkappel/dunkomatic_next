@@ -55,8 +55,7 @@ class ACL_LeagueTest extends DuskTestCase
         static::$team->league()->associate(static::$league)->save();
 
         //set status to registration
-        $this->reopen_club_assignment(static::$league);
-        $this->open_team_registration(static::$league);
+        $this->start_league(static::$league);
 
         static::$region = Region::where('code','HBVDA')->first();
         $member = Member::factory()->create();
@@ -250,8 +249,8 @@ class ACL_LeagueTest extends DuskTestCase
 
                 $browser->with('#clubsCard', function ($clubsCard) use ($user, $league, $c, $t) {
                     $clubsCard->waitFor('#table');
-                    ( ($user->can('update-leagues')) and ($league->state->in([ LeagueState::Assignment, LeagueState::Selection, LeagueState::Registration ])) ) ? $clubsCard->assertButtonEnabled('#deassignClub') : $clubsCard->assertSee($c)  ;
-                    ( ($user->can('update-leagues')) and ($league->state->in([ LeagueState::Assignment, LeagueState::Selection, LeagueState::Registration ])) ) ? $clubsCard->assertButtonEnabled('#unregisterTeam') : $clubsCard->assertSee($t)  ;
+                    ( ($user->can('update-leagues')) and ($league->state->in([ LeagueState::Selection, LeagueState::Registration ])) ) ? $clubsCard->assertButtonEnabled('#deassignClub') : $clubsCard->assertSee($c)  ;
+                    ( ($user->can('update-leagues')) and ($league->state->in([ LeagueState::Selection, LeagueState::Registration ])) ) ? $clubsCard->assertButtonEnabled('#unregisterTeam') : $clubsCard->assertSee($t)  ;
 
                 });
                 $browser->with('#membersCard', function ($memberCard) use ($user, $member) {

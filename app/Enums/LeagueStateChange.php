@@ -5,8 +5,6 @@ namespace App\Enums;
 use BenSampo\Enum\Enum;
 
 /**
- * @method static static ReOpenAssignment()
- * @method static static OpenRegistration()
  * @method static static ReOpenRegistration()
  * @method static static OpenSelection()
  * @method static static ReOpenSelection()
@@ -24,8 +22,7 @@ use BenSampo\Enum\Enum;
 
 final class LeagueStateChange extends Enum
 {
-    const ReOpenAssignment      =  0;
-    const OpenRegistration      =  1;
+    const StartLeague           =  1;
     const ReOpenRegistration    =  2;
     const OpenSelection         =  3;
     const ReOpenSelection       =  4;
@@ -36,7 +33,6 @@ final class LeagueStateChange extends Enum
     const OpenScheduling        =  9;
     const ReOpenReferees        =  10;
     const GoLiveLeague          =  11;
-    const StartLeague           =  12;
-    const ReStartLeague         =  13;
-    const CloseLeague           =  14;
+    const ReStartLeague         =  12;
+    const CloseLeague           =  13;
 }

@@ -1,7 +1,5 @@
 {{-- @if ($currentState->is(App\Enums\LeagueState::Setup()))
     <span class="badge badge-danger"><i class="fas fa-pencil-ruler fa-lg"></i></span>
-@elseif ($currentState->is(App\Enums\LeagueState::Assignment()))
-    <span class="badge badge-info"><i class="fas fa-battery-empty fa-lg"></i></span>
 @elseif ($currentState->is(App\Enums\LeagueState::Registration()))
     <span class="badge badge-info"><i class="fas fa-battery-quarter fa-lg"></i></span>
 @elseif ($currentState->is(App\Enums\LeagueState::Selection()))
@@ -17,8 +15,6 @@
 @endif --}}
 @if ($currentState->is(App\Enums\LeagueState::Setup()))
     <span><i class="fas fa-cog fa-lg text-danger"></i></span>
-@elseif ($currentState->is(App\Enums\LeagueState::Assignment()))
-    <span><i class="fas fa-link fa-lg text-info"></i></span>
 @elseif ($currentState->is(App\Enums\LeagueState::Registration()))
     <span><i class="fas fa-file-signature fa-lg text-info"></i></span>
 @elseif ($currentState->is(App\Enums\LeagueState::Selection()))

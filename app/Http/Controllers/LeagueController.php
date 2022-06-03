@@ -576,25 +576,22 @@ class LeagueController extends Controller
                     if ($region->is($data->region)) {
                         if ($data->state->is(LeagueState::Setup())) {
                             $btn = '<button type="button" class="btn btn-primary btn-sm" id="changeState" data-league="' . $data->id . '"
-                            data-action="' . LeagueStateChange::ReOpenAssignment() . '"><i class="fas fa-lock"> </i> ' . __('league.action.open.assignment') . '</button>';
-                        } elseif ($data->state->is(LeagueState::Assignment())) {
-                            $btn = '<button type="button" class="btn btn-primary btn-sm" id="changeState" data-league="' . $data->id . '"
-                            data-action="' . LeagueStateChange::OpenRegistration() . '"><i class="fas fa-lock"> </i> ' . __('league.action.close.assignment') . '</button>';
+                            data-action="' . LeagueStateChange::StartLeague() . '"><i class="fas fa-lock"> </i> ' . __('league.action.open.registration') . '</button>';
                         } elseif ($data->state->is(LeagueState::Registration())) {
                             $btn = '<button type="button" class="btn btn-primary btn-sm" id="changeState" data-league="' . $data->id . '"
-                            data-action="' . LeagueStateChange::OpenSelection() . '"><i class="fas fa-lock"> </i> ' . __('league.action.close.registration') . '</button>';
+                            data-action="' . LeagueStateChange::OpenSelection() . '"><i class="fas fa-lock"> </i> ' . __('league.action.close.selection') . '</button>';
                         } elseif ($data->state->is(LeagueState::Selection())) {
                             $btn = '<button type="button" class="btn btn-primary btn-sm" id="changeState" data-league="' . $data->id . '"
-                            data-action="' . LeagueStateChange::FreezeLeague() . '"><i class="fas fa-lock"> </i> ' . __('league.action.close.selection') . '</button>';
+                            data-action="' . LeagueStateChange::FreezeLeague() . '"><i class="fas fa-lock"> </i> ' . __('league.action.close.freeze') . '</button>';
                         } elseif ($data->state->is(LeagueState::Freeze())) {
                             $btn = '<button type="button" class="btn btn-primary btn-sm" id="changeState" data-league="' . $data->id . '"
-                            data-action="' . LeagueStateChange::OpenScheduling() . '"><i class="fas fa-lock"> </i> ' . __('league.action.close.freeze') . '</button>';
+                            data-action="' . LeagueStateChange::OpenScheduling() . '"><i class="fas fa-lock"> </i> ' . __('league.action.close.scheduling') . '</button>';
                         } elseif ($data->state->is(LeagueState::Scheduling())) {
                             $btn = '<button type="button" class="btn btn-primary btn-sm" id="changeState" data-league="' . $data->id . '"
-                            data-action="' . LeagueStateChange::OpenReferees() . '"><i class="fas fa-lock"> </i> ' . __('league.action.close.scheduling') . '</button>';
+                            data-action="' . LeagueStateChange::OpenReferees() . '"><i class="fas fa-lock"> </i> ' . __('league.action.close.referees') . '</button>';
                         } elseif ($data->state->is(LeagueState::Referees())) {
                             $btn = '<button type="button" class="btn btn-primary btn-sm" id="changeState" data-league="' . $data->id . '"
-                            data-action="' . LeagueStateChange::GoLiveLeague() . '"><i class="fas fa-lock"> </i> ' . __('league.action.close.referees') . '</button>';
+                            data-action="' . LeagueStateChange::GoLiveLeague() . '"><i class="fas fa-lock"> </i> ' . __('league.action.close.golive') . '</button>';
                         }
 
                     }
@@ -607,7 +604,7 @@ class LeagueController extends Controller
                     if ($region->is($data->region)) {
                         if ($data->state->is(LeagueState::Registration())) {
                             $btn .= '<button type="button" class="btn btn-outline-danger btn-sm" id="changeState" data-league="' . $data->id . '"
-                            data-action="' . LeagueStateChange::ReOpenAssignment() . '"><i class="fas fa-lock"> </i> ' . __('league.action.open.assignment') . '</button>';
+                            data-action="' . LeagueStateChange::CloseLeague() . '"><i class="fas fa-lock"> </i> ' . __('league.action.close.setup') . '</button>';
                         } elseif ($data->state->is(LeagueState::Selection())) {
                             $btn .= '<button type="button" class="btn btn-outline-danger btn-sm" id="changeState" data-league="' . $data->id . '"
                             data-action="' . LeagueStateChange::ReOpenRegistration() . '"><i class="fas fa-lock"> </i> ' . __('league.action.open.registration') . '</button>';
@@ -623,7 +620,7 @@ class LeagueController extends Controller
                             data-action="' . LeagueStateChange::ReOpenScheduling() . '"><i class="fas fa-lock"> </i> ' . __('league.action.open.scheduling') . '</button>';
                         } elseif ($data->state->is(LeagueState::Live())) {
                             $btn .= '<button type="button" class="btn btn-outline-danger btn-sm" id="changeState" data-league="' . $data->id . '"
-                            data-action="' . LeagueStateChange::OpenReferees() . '"><i class="fas fa-lock"> </i> ' . __('league.action.open.referees') . '</button>';
+                            data-action="' . LeagueStateChange::ReOpenReferees() . '"><i class="fas fa-lock"> </i> ' . __('league.action.open.referees') . '</button>';
                         }
                     }
                 }
@@ -685,7 +682,7 @@ class LeagueController extends Controller
                 'club_shortname.display', 'team_name', 'team_league_no.display'
             ])
             ->editColumn('club_shortname', function ($ct) use ($league, &$c_keys, $regions) {
-                if ((Auth::user()->can('update-leagues')) and ($league->state->in([LeagueState::Assignment, LeagueState::Selection, LeagueState::Registration]))) {
+                if ((Auth::user()->can('update-leagues')) and ($league->state->in([ LeagueState::Selection, LeagueState::Registration]))) {
                     if ($ct['club_shortname'] != null) {
                         $btn = '<button id="deassignClub" data-id="' . $ct['club_id'] . '" type="button" class="btn btn-success btn-sm">';
                         $btn .= $ct['club_shortname'];

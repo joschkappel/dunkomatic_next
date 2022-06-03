@@ -7,34 +7,6 @@ th, td { white-space: nowrap; }
 
 @section('content')
     <div class="row">
-        <div class="col-6">
-            <div class="collapse" id="collapseAssignment">
-                <div class="card card-outline card-primary">
-                    <h5 class="card-header">{{ __('league.action.open.assignment')}}</h5>
-                    <form id="frmAssignClubs" action="#" method="post">
-                        <div class="card-body">
-                            @csrf
-                            @method('POST')
-                            <div class="input-group mb-3">
-                            <select multiple="multiple" id="clubsduallistbox" name="assignedClubs[]">
-                            </select>
-                            <br>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <div class="btn-toolbar justify-content-between" role="toolbar"  aria-label="Toolbar with button groups">
-                                <button type="submit" class="btn btn-primary">@lang('Submit')</button>
-                                <button type="button" data-toggle="collapse" data-target="#collapseAssignment"
-                                    class="btn btn-secondary">@lang('Cancel')</button>
-                            </div>
-                        </div>
-                    </form>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
         <div class="col-12">
             <div class="card card-outline card-primary">
                 <div class="card-header">

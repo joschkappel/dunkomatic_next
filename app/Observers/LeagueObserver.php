@@ -46,8 +46,8 @@ class LeagueObserver
         }
 
         if ($league->schedule()->exists()  and  $league->league_size()->exists() and ($league->state->is(LeagueState::Setup))) {
-            if (!$league->state->is(LeagueState::Assignment())) {
-                Log::info('[OBSERVER] league updated - set status ASSIGNMENT', ['league-id' => $league->id]);
+            if (!$league->state->is(LeagueState::Registration())) {
+                Log::info('[OBSERVER] league updated - set status REGISTRATION', ['league-id' => $league->id]);
                 $this->start_league($league);
             }
         }
