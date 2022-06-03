@@ -21,6 +21,8 @@ class ProcessLeagueStateChangesTest extends TestCase
     {
         parent::setUp();
         $this->testleague = League::factory()->selected(4, 4)->create();
+        // enable auto state change
+        $this->testleague->region->update(['auto_state_change'=>True]);
     }
 
     /**
@@ -28,7 +30,6 @@ class ProcessLeagueStateChangesTest extends TestCase
      *
      * @test
      * @group job
-     * @group report
      *
      * @return void
      */
@@ -50,7 +51,6 @@ class ProcessLeagueStateChangesTest extends TestCase
      *
      * @test
      * @group job
-     * @group report
      *
      * @return void
      */
