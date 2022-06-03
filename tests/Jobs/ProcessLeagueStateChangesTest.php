@@ -21,47 +21,15 @@ class ProcessLeagueStateChangesTest extends TestCase
     {
         parent::setUp();
         $this->testleague = League::factory()->selected(4, 4)->create();
+        // enable auto state change
+        $this->testleague->region->update(['auto_state_change'=>True]);
     }
-    /**
-     * process assigned
-     *
-     * @test
-     * @group job
-     * @group report
-     *
-     * @return void
-     */
-    public function process_assigned()
-    {
-        // set to assigned
-        $this->reopen_team_registration($this->testleague);
-        $this->reopen_club_assignment($this->testleague);
 
-        $this->assertDatabaseHas('leagues', ['state' => LeagueState::Assignment]);
-
-        // disbale auto change
-        $this->testleague->region->update(['auto_state_change' => false]);
-
-        $job_instance = resolve(ProcessLeagueStateChanges::class, ['region' => $this->testleague->region]);
-        app()->call([$job_instance, 'handle']);
-
-        $this->assertDatabaseHas('leagues', ['state' => LeagueState::Assignment]);
-
-        // enable auto change
-        $this->testleague->region->update(['auto_state_change' => true]);
-
-        $job_instance = resolve(ProcessLeagueStateChanges::class, ['region' => $this->testleague->region]);
-        app()->call([$job_instance, 'handle']);
-
-        $this->assertDatabaseMissing('leagues', ['state' => LeagueState::Assignment]);
-        $this->assertDatabaseHas('leagues', ['state' => LeagueState::Registration]);
-    }
     /**
      * process registered
      *
      * @test
      * @group job
-     * @group report
      *
      * @return void
      */
@@ -83,7 +51,6 @@ class ProcessLeagueStateChangesTest extends TestCase
      *
      * @test
      * @group job
-     * @group report
      *
      * @return void
      */

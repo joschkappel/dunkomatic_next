@@ -20,29 +20,6 @@ trait LeagueFSM
 {
     use GameManager;
 
-    public function open_team_registration(League $league): void
-    {
-        Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Registration()->key]);
-        $league->state = LeagueState::Registration();
-        $league->assignment_closed_at = now();
-        $league->save();
-
-/*         $clubs = $league->clubs()->get();
-        foreach ($clubs as $c) {
-            $member = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
-
-            if (isset($member)) {
-                $member->notify(new RegisterTeams($league, $c, $member->name));
-                Log::info('[NOTIFICATION] register teams.', ['league-id' => $league->id, 'member-id' => $member->id]);
-                $user = $member->user;
-                if (isset($user)) {
-                    $user->notify(new RegisterTeams($league, $c, $user->name));
-                    Log::info('[NOTIFICATION] register teams.', ['league-id' => $league->id, 'user-id' => $user->id]);
-                }
-            }
-        } */
-    }
-
     public function open_char_selection(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Selection()->key]);
@@ -122,16 +99,11 @@ trait LeagueFSM
         $league->save();
     }
 
-    public function reopen_club_assignment(League $league): void
+    public function reopen_ref_assignment(League $league): void
     {
-        Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key ?? '', 'new-state' => LeagueState::Assignment()->key]);
+        Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key ?? '', 'new-state' => LeagueState::Referees()->key]);
 
-        $league->state = LeagueState::Assignment();
-        $league->generated_at = null;
-        $league->assignment_closed_at = null;
-        $league->registration_closed_at = null;
-        $league->selection_closed_at = null;
-        $league->selection_opened_at = null;
+        $league->state = LeagueState::Referees();
         $league->save();
     }
 
@@ -185,11 +157,11 @@ trait LeagueFSM
 
     public function restart_league(League $league): void
     {
-        Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Assignment()->key]);
+        Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Registration()->key]);
 
-        $league->state = LeagueState::Assignment();
+        $league->state = LeagueState::Registration();
         $league->scheduling_closed_at = null;
-        $league->assignment_closed_at = null;
+        $league->assignment_closed_at = now();
         $league->selection_closed_at = null;
         $league->selection_opened_at = null;
         $league->registration_closed_at = null;
@@ -206,9 +178,10 @@ trait LeagueFSM
     }
     public function start_league(League $league): void
     {
-        Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key ?? 'UNSET', 'new-state' => LeagueState::Assignment()->key]);
+        Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key ?? 'UNSET', 'new-state' => LeagueState::Registration()->key]);
 
-        $league->state = LeagueState::Assignment();
+        $league->state = LeagueState::Registration();
+        $league->assignment_closed_at = now();
         $league->save();
     }
 }

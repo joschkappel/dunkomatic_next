@@ -27,44 +27,11 @@ class LeagueStateControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->testleague = League::factory()->assigned(4, 4)->create();
+        $this->testleague = League::factory()->registered(4, 4)->create();
         $this->testclub_assigned = $this->testleague->clubs()->first();
         $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
     }
 
-    /**
-     * close assignment
-     *
-     * @test
-     * @group league
-     * @group leaguestate
-     * @group controller
-     *
-     * @return void
-     */
-    public function goto_assignment()
-    {
-        $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Assignment()]);
-
-        Notification::fake();
-        Notification::assertNothingSent();
-
-        // change state to registration
-        $response = $this->authenticated()
-            ->post(route('league.state.change', ['league' => $this->testleague]), [
-                'action' => LeagueStateChange::OpenRegistration()
-            ]);
-
-        $response->assertStatus(200);
-        $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Registration()]);
-
-        $member = $this->testclub_assigned->members()->first();
-        //  assert club members are notified
-/*         Notification::assertSentTo(
-            [$member],
-            RegisterTeams::class
-        ); */
-    }
 
     /**
      * close registration
@@ -78,7 +45,7 @@ class LeagueStateControllerTest extends TestCase
      */
     public function goto_registration()
     {
-        $this->open_team_registration($this->testleague);
+        $this->start_league($this->testleague);
         $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Registration()]);
 
         Notification::fake();
@@ -347,29 +314,6 @@ class LeagueStateControllerTest extends TestCase
         $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Registration()]);
     }
 
-    /**
-     * reopen assignment
-     *
-     * @test
-     * @group league
-     * @group leaguestate
-     * @group controller
-     *
-     * @return void
-     */
-    public function backto_assignment()
-    {
-        $this->open_team_registration($this->testleague);
-        $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Registration()]);
 
-        // change state to registration
-        $response = $this->authenticated()
-            ->post(route('league.state.change', ['league' => $this->testleague->id]), [
-                'action' => LeagueStateChange::ReOpenAssignment()
-            ]);
-
-        $response->assertStatus(200);
-        $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Assignment()]);
-    }
 
 }

@@ -235,7 +235,7 @@ class ClubController extends Controller
             })
             ->addColumn('league', function ($ct) use($clubleagues) {
                 if ( $ct->league_id != null ){
-                    if ( $ct->league->state->in([LeagueState::Registration, LeagueState::Selection, LeagueState::Assignment ]) ){
+                    if ( $ct->league->state->in([LeagueState::Registration, LeagueState::Selection ]) ){
                         $btn = '<span data-toggle="tooltip" title="'.__('team.tooltip.deassign',['name'=> $ct->name]).'">';
                         $btn .= '<button id="unregisterTeam" data-league-id="'.$ct->league->id.'" data-team-id="'.$ct->id.'" ';
                         $btn .= 'type="button" class="btn btn-secondary btn-sm">'.$ct->league['shortname'].'</button>';
@@ -336,7 +336,7 @@ class ClubController extends Controller
         $response = array();
 
         foreach ($leagues as $league) {
-            if ($league->state->is(LeagueState::Assignment())) {
+            if ($league->state->is(LeagueState::Registration())) {
                 $response[] = array(
                     "id" => $league->id,
                     "text" => $league->shortname

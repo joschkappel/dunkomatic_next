@@ -123,24 +123,20 @@ trait LeagueTeamManager
         if (( Bouncer::can('access', $league->region)  and Bouncer::is($user)->a('regionadmin') ) or
             ( Bouncer::is($user)->an('superadmin') ) or
             ( Bouncer::can('access', $league ) and Bouncer::is($user)->a('leagueadmin')) ){
-            if ( $league->state->is(LeagueState::Assignment) ){
-                if ( $team_id == null ) {
+
+            if ( $league->state->is(LeagueState::Registration) ){
+                if ( $team_league_no == null ) {
                     $status = '';
                     if ($club_id == null){
                         $function = 'assignClub';
                         $color = 'btn-light';
                         $text = Str::limit(__('league.action.assign'), 6, '...');
                     } else {
-                        $function = 'deassignClub';
-                    }
-                }
-            } elseif ( $league->state->is(LeagueState::Registration) ){
-                if ( $team_league_no == null ) {
-                    $status = '';
-                    if ($team_id == null){
-                        $function = 'registerTeam';
-                    } else {
-                        $function = 'unregisterTeam';
+                        if ($team_id == null){
+                            $function = 'registerTeam#deassignClub';
+                        } else {
+                            $function = 'unregisterTeam';
+                        }
                     }
                 }
             } elseif ( $league->state->is(LeagueState::Selection) ){

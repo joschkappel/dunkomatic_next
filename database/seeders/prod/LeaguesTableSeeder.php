@@ -72,7 +72,7 @@ class LeaguesTableSeeder extends Seeder
                     'created_at'    => now(),
                     'age_type'      => $ageclass,
                     'gender_type'   => $genderclass,
-                    'state'         => LeagueState::Assignment()
+                    'state'         => LeagueState::Registration()
                 ]);
             } else {
                 DB::connection('dunknxt')->table('leagues')->insert([

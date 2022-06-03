@@ -1,7 +1,5 @@
 @if ($currentState->is(App\Enums\LeagueState::Setup()))
     <span class="info-box-icon bg-danger"><i class="fas fa-cog"></i></span>
-@elseif ($currentState->is(App\Enums\LeagueState::Assignment()))
-    <span class="info-box-icon bg-info"><i class="fas fa-link"></i></span>
 @elseif ($currentState->is(App\Enums\LeagueState::Registration()))
     <span class="info-box-icon bg-info"><i class="fas fa-file-signature"></i></span>
 @elseif ($currentState->is(App\Enums\LeagueState::Selection()))

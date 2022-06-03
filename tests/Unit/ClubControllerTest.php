@@ -231,7 +231,6 @@ class ClubControllerTest extends TestCase
 
         // rerun with leagu in assigned
         $this->reopen_team_registration($this->testleague);
-        $this->reopen_club_assignment($this->testleague);
         $response = $this->authenticated()
             ->get(route('club.team.dt', ['language' => 'de', 'club' => $this->testclub_assigned]));
 
@@ -351,7 +350,6 @@ class ClubControllerTest extends TestCase
 
         // move league back to assgined state and rerun
         $this->reopen_team_registration($this->testleague);
-        $this->reopen_club_assignment($this->testleague);
 
         $response = $this->authenticated()
             ->get(route('club.sb.league', ['club' => $this->testclub_assigned]));

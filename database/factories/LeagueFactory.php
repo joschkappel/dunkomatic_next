@@ -69,7 +69,7 @@ class LeagueFactory extends Factory
     {
         if ($club_cnt > 4 ){ $club_cnt = 4;};
 
-        return $this->state( [ 'state' => LeagueState::Assignment() ])
+        return $this->state( [ 'state' => LeagueState::Registration() ])
                     ->afterCreating( function (League $league) use($club_cnt){
                         for ($i=1; $i <= $club_cnt; $i++) {
                             ClubFactory::new()
