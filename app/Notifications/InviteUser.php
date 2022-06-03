@@ -49,7 +49,7 @@ class InviteUser extends Notification
      */
     public function toMail($notifiable)
     {
-        if ( $this->sender->member->memberships->count() >0 ){
+        if ($this->sender->member()->exists()){
             $sender = $this->sender->member->name . ' (' . Role::fromValue($this->sender->member->memberships->first()->role_id)->description . ' von ' . $this->sender->member->region->first()->name . ') ';
         } else {
             $sender = $this->sender->name ;
