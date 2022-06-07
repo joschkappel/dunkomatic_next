@@ -93,10 +93,10 @@
             toastr.options.progressBar = true;
             toastr.options.positionClass = "toast-top-center";
             toastr.options.preventDuplicates = false;
-            toastr.options.showDuration = 300;
-            toastr.options.hideDuration = 1000;
+            toastr.options.showDuration = 200;
+            toastr.options.hideDuration = 500;
             toastr.options.timeOut = 5000;
-            toastr.options.extendedTimeOut = 1000;
+            toastr.options.extendedTimeOut = 500;
             toastr.options.showEasing = "swing";
             toastr.options.hideEasing = "linear";
             toastr.options.showMethod = "fadeIn";
