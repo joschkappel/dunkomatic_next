@@ -128,6 +128,7 @@ class BouncerSeeder extends Seeder
         Bouncer::allow($leagueadmin)->to($view_regions);
         Bouncer::allow($leagueadmin)->to($update_leagues);
         Bouncer::allow($leagueadmin)->to($view_leagues);
+        Bouncer::allow($leagueadmin)->to($update_teams);
 
         Bouncer::allow($leagueadmin)->to($view_schedules);
 
