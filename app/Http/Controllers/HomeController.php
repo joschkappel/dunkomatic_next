@@ -61,7 +61,7 @@ class HomeController extends Controller
         $links = collect();
 
         foreach ($user->regions() as $region){
-            if ( ($user->isAn('regionadmin', 'superadmin')) and $user->can('access,$region') ) {
+            if ( ($user->isAn('regionadmin', 'superadmin')) and $user->can('access',$region) ) {
                 $links[] = ['text'=>$region->code, 'url'=> route('region.dashboard',['region'=>$region, 'language'=>app()->getLocale()])];
                 // check new users waiting for approval
                 $users_to_approve = $region->users()->whereNull('approved_at')->count();
