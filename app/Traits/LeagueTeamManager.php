@@ -142,10 +142,16 @@ trait LeagueTeamManager
             } elseif ( $league->state->is(LeagueState::Selection) ){
                 $status = '';
                 if ( $team_league_no == null ) {
-                    if ($team_id == null){
-                        $function = 'registerTeam';
+                    if ($club_id == null){
+                        $function = 'assignClub';
+                        $color = 'btn-light';
+                        $text = Str::limit(__('league.action.assign'), 6, '...');
                     } else {
-                        $function = 'pickChar';
+                        if ($team_id == null){
+                            $function = 'registerTeam';
+                        } else {
+                            $function = 'pickChar';
+                        }
                     }
                 } else {
                     $function = 'releaseChar';
