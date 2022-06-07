@@ -41,12 +41,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->job(new ProcessDbCleanup(), 'janitor')->weekly();
-        $schedule->job(new ProcessFilesCleanup(), 'janitor')->weekly();
+        $schedule->job(new ProcessDbCleanup(), 'janitor')->weeklyOn(1,'00:30');
+        $schedule->job(new ProcessFilesCleanup(), 'janitor')->weeklyOn(1,'00:40');
         $schedule->job(new ProcessNewSeason(), 'janitor')->yearly();
-        $schedule->command('db:backup')->daily();
-        $schedule->command('telescope:prune')->daily();
-        $schedule->command('authentication-log:purge')->monthly();
+        $schedule->command('db:backup')->dailyAt('00:10');
+        $schedule->command('telescope:prune')->dailyAt('00:15');
+        $schedule->command('authentication-log:purge')->monthlyOn(2,'00:20');
 
         // schedule region specific jobs
         $regions = Region::with('regionadmins')->get();
