@@ -46,11 +46,11 @@ class ScheduleController extends Controller
     {
         if ($region->is_base_level) {
             Log::notice('getting schedules for base level region');
-            $schedules = Schedule::whereIn('region_id', [$region->id, $region->parentRegion->id])->orderBy('region_id', 'ASC')->get();
+            $schedules = Schedule::whereIn('region_id', [$region->id, $region->parentRegion->id])->has('events')->orderBy('region_id', 'ASC')->get();
             $parentRegion = $region->parentRegion;
         } else {
             Log::notice('getting schedules for top level region');
-            $schedules = $region->schedules()->orderBy('region_id', 'ASC')->get();
+            $schedules = $region->schedules()->has('events')->orderBy('region_id', 'ASC')->get();
             $parentRegion = $region;
         }
 
@@ -70,9 +70,9 @@ class ScheduleController extends Controller
     {
         Log::info('retrieving schedules.');
         if ($region->is_base_level) {
-            $schedules = Schedule::whereIn('region_id', [$region->id, $region->parentRegion->id])->orderBy('region_id', 'ASC')->get();
+            $schedules = Schedule::whereIn('region_id', [$region->id, $region->parentRegion->id])->has('events')->orderBy('region_id', 'ASC')->get();
         } else {
-            $schedules = $region->schedules()->orderBy('region_id', 'ASC')->get();
+            $schedules = $region->schedules()->has('events')->get();
         }
         Log::info('schedules found.', ['schedules' => $schedules->pluck('id')]);
 
