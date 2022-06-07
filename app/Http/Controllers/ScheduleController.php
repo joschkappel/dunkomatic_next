@@ -249,8 +249,14 @@ class ScheduleController extends Controller
                 if ($data->custom_events) {
                     return __('Custom');
                 } else {
+                    // get minx and max evetn date
+                    if ($data->events()->exists() ){
+                        $mine = $data->events()->get()->min('game_date')->isoFormat('l');
+                        $maxe = $data->events()->get()->max('game_date')->isoFormat('l');
+                        $eventrange = ' ('.$mine.'-'.$maxe.')';
+                    }
                     if ((League::where('schedule_id', $data->id)->has('games')->count() == 0) and (Bouncer::can('update-schedules'))) {
-                        return '<a href="' . route('schedule_event.list', $data) . '">' . $data->events_count . ' <i class="fas fa-arrow-circle-right"></i></a>';
+                        return '<a href="' . route('schedule_event.list', $data) . '">' . $data->events_count . ' <i class="fas fa-arrow-circle-right"></i></a>'. $eventrange ;
                     } else {
                         return $data->events_count;
                     }
