@@ -85,10 +85,18 @@ class UserController extends Controller
                 return substr($roles, 0, -2);
             })
             ->addColumn('clubs', function ($u) {
-                return $u->clubs()->implode('shortname', ', ');
+                if ($u->isAn('superadmin', 'regionadmin')){
+                    return __('All clubs in region');
+                } else {
+                    return $u->clubs()->implode('shortname', ', ');
+                }
             })
             ->addColumn('leagues', function ($u) {
-                return $u->leagues()->implode('shortname', ', ');
+                if ($u->isAn('superadmin', 'regionadmin')){
+                    return __('All leagues in region');
+                } else {
+                    return $u->leagues()->implode('shortname', ', ');
+                }
             })
             ->addColumn('regions', function ($u) {
                 return $u->regions()->implode('code', ', ');
