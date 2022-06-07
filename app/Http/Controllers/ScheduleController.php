@@ -260,7 +260,7 @@ class ScheduleController extends Controller
                     if ((League::where('schedule_id', $data->id)->has('games')->count() == 0) and (Bouncer::can('update-schedules'))) {
                         return '<a href="' . route('schedule_event.list', $data) . '">' . $data->events_count . ' <i class="fas fa-arrow-circle-right"></i></a>'. $eventrange ;
                     } else {
-                        return $data->events_count;
+                        return $data->events_count . $eventrange;
                     }
                 }
             })
