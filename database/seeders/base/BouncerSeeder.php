@@ -2,6 +2,9 @@
 
 namespace Database\Seeders\base;
 
+use App\Models\Club;
+use App\Models\League;
+
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Illuminate\Database\Seeder;
 
@@ -67,6 +70,8 @@ class BouncerSeeder extends Seeder
         Bouncer::allow($superadmin)->everything();
 
         $regionadmin = Bouncer::role()->firstOrCreate(['name' => 'regionadmin','title' => 'Manages Regions',]);
+        Bouncer::allow($regionadmin)->to('access', Club::class);
+        Bouncer::allow($regionadmin)->to('access', League::class);
         Bouncer::allow($regionadmin)->to($create_clubs);
         Bouncer::allow($regionadmin)->to($update_clubs);
         Bouncer::allow($regionadmin)->to($view_clubs);

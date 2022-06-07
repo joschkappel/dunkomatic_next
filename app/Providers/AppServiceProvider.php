@@ -207,7 +207,7 @@ class AppServiceProvider extends ServiceProvider
                         'icon'  => 'fas fa-globe-europe',
                         'icon_color' => 'blue',
                         'route' => ['region.index', ['language' => app()->getLocale()]],
-                        'can' => 'update-regions',
+                        'can' => 'view-regions',
                         'shift' => 'ml-3'
                     ],
                     [

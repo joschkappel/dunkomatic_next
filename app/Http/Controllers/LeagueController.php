@@ -88,7 +88,7 @@ class LeagueController extends Controller
                 'size.display', 'state'
             ])
             ->editColumn('shortname', function ($l) {
-                if (Bouncer::can('access', $l))  {
+                if ( (Bouncer::can('access', $l)) or (Bouncer::is(Auth::user())->a('regionadmin')) ) {
                     $link = '<a href="' . route('league.dashboard', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" >' . $l->shortname . '</a>';
                 } else {
                     $link = '<a href="' . route('league.briefing', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" class="text-info">' . $l->shortname . '</a>';
@@ -568,7 +568,7 @@ class LeagueController extends Controller
                 't1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9', 't10', 't11', 't12', 't13', 't14', 't15', 't16'
             ])
             ->editColumn('shortname', function ($l) {
-                if (Bouncer::can('access',$l)){
+                if ( (Bouncer::can('access',$l)) or (Bouncer::is(Auth::user())->a('regionadmin')) ){
                     $link = '<a href="' . route('league.dashboard', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" >' . $l->shortname . '</a>';
                 } else {
                     $link = '<a href="' . route('league.briefing', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" >' . $l->shortname . '</a>';

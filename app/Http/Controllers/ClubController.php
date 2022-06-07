@@ -69,7 +69,7 @@ class ClubController extends Controller
             ->addIndexColumn()
             ->rawColumns(['shortname.display', 'name.display', 'assigned_rel.display', 'registered_rel.display', 'selected_rel.display'])
             ->editColumn('shortname', function ($data) {
-                if (Bouncer::can('access', $data)) {
+                if ((Bouncer::can('access', $data)) or (Bouncer::is(Auth::user())->a('regionadmin'))) {
                     $link = '<a href="' . route('club.dashboard', ['language' => Auth::user()->locale, 'club' => $data->id]) . '">' . $data->shortname . '</a>';
                 } else {
                     $link = '<a href="' . route('club.briefing', ['language' => Auth::user()->locale, 'club' => $data->id]) . '" class="text-info" >' . $data->shortname . '</a>';
