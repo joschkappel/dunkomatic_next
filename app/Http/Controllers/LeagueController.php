@@ -749,7 +749,7 @@ class LeagueController extends Controller
                                 $btn = '<div class="btn-group btn-group-sm"><button type="button" class="btn btn-sm btn-secondary dropdpwn-toggle" data-toggle="dropdown">' . __('team.action.select') . '</button>';
                                 $btn .= '<div class="dropdown-menu">';
                                 foreach ($unregistered_teams as $urt) {
-                                    $btn .= '<a class="dropdown-item" href="javascript:registerTeam(' . $urt->id . ') ">' . $urt->name . '</a>';
+                                    $btn .= '<a class="dropdown-item" href="javascript:registerTeam(' . $urt->id . ') ">' . $urt->name .' ('.$urt->league_prev.')</a>';
                                 }
                                 $btn .= '</div></div>';
                             } else {
@@ -767,7 +767,7 @@ class LeagueController extends Controller
             })
             ->editColumn('team_league_no', function ($ct) use ($league, &$t_keys, $available_no) {
                 if ((Auth::user()->can('update-leagues')) and
-                    ($league->state->in([LeagueState::Selection, LeagueState::Scheduling, LeagueState::Freeze]))
+                    ($league->state->in([LeagueState::Registration, LeagueState::Selection, LeagueState::Scheduling, LeagueState::Freeze]))
                 ) {
                     if ($ct['team_league_no'] != null) {
                         $btn = '<button type="button" class="btn btn-danger btn-sm" id="releaseChar"';

@@ -124,37 +124,22 @@ trait LeagueTeamManager
             ( Bouncer::is($user)->an('superadmin') ) or
             ( Bouncer::can('access', $league ) and Bouncer::is($user)->a('leagueadmin')) ){
 
-            if ( $league->state->is(LeagueState::Registration) ){
-                if ( $team_league_no == null ) {
-                    $status = '';
-                    if ($club_id == null){
-                        $function = 'assignClub';
-                        $color = 'btn-light';
-                        $text = Str::limit(__('league.action.assign'), 6, '...');
-                    } else {
-                        if ($team_id == null){
-                            $function = 'registerTeam#deassignClub';
-                        } else {
-                            $function = 'unregisterTeam';
-                        }
-                    }
-                }
-            } elseif ( $league->state->is(LeagueState::Selection) ){
+            if ( $league->state->in([LeagueState::Registration, LeagueState::Selection()]) ){
                 $status = '';
-                if ( $team_league_no == null ) {
-                    if ($club_id == null){
-                        $function = 'assignClub';
-                        $color = 'btn-light';
-                        $text = Str::limit(__('league.action.assign'), 6, '...');
+                if ($club_id == null){
+                    $function = 'assignClub';
+                    $color = 'btn-light';
+                    $text = Str::limit(__('league.action.assign'), 6, '...');
+                } else {
+                    if ($team_id == null){
+                        $function = 'registerTeam#deassignClub';
                     } else {
-                        if ($team_id == null){
-                            $function = 'registerTeam';
+                        if ($team_league_no ==  null){
+                            $function = 'unregisterTeam#pickChar';
                         } else {
-                            $function = 'pickChar';
+                            $function = 'releaseChar';
                         }
                     }
-                } else {
-                    $function = 'releaseChar';
                 }
             }
         }
