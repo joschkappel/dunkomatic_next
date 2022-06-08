@@ -205,9 +205,9 @@ class ACL_LeagueTest extends DuskTestCase
             if ( $user->isAn('superadmin','regionadmin','leagueadmin')) {
                 $browser->assertRouteIs('league.index_mgmt',['language'=>'de','region'=>static::$region]);
                 ($user->can('create-leagues')) ? $browser->assertSee(__('league.action.create',$locale=['de'])) : $browser->assertDontSee(__('league.action.create',$locale=['de']));
-                $browser->waitFor('.table', 5)->assertSeeLink($league->shortname)->clickLink($league->shortname);
+/*                 $browser->waitFor('.table', 5)->assertSeeLink($league->shortname)->clickLink($league->shortname);
                 ( $user->can('access', $league) )  ? $browser->assertRouteIs('league.dashboard', ['language'=>'de','league'=>$league->id]) : $browser->assertRouteIs('league.briefing', ['language'=>'de','league'=>$league->id]);
-            } else {
+ */            } else {
                 $browser->assertSee('403');
             }
         });
