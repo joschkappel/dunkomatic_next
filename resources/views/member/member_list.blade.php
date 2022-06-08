@@ -5,6 +5,7 @@
     <th>Id</th>
     <th>Name</th>
     <th>{{__('role.email1')}}</th>
+    <th>{{__('role.email2')}}</th>
     <th>{{__('role.phone')}}</th>
     <th>{{ trans_choice('club.club',2)}}</th>
     <th>{{ trans_choice('league.league',2)}}</th>
@@ -101,6 +102,7 @@
                           { data: 'id', name: 'id', visible: false },
                           { data: 'name', name: 'name' },
                           { data: 'email1', name: 'email1' },
+                          { data: 'email2', name: 'email2' },
                           { data: 'phone', name: 'phone' },
                           { data: 'clubs', name: 'clubs' },
                           { data: 'leagues', name: 'leagues' },
