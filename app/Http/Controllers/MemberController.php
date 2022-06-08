@@ -57,7 +57,7 @@ class MemberController extends Controller
         $mlist = datatables()::of(Member::whereIn('id', $members)->with('user', 'memberships')->get());
 
         return $mlist
-            ->rawColumns(['user_account', 'email1', 'phone'])
+            ->rawColumns(['user_account', 'email1', 'email2','phone'])
             ->addColumn('name', function ($data) {
                 return $data->lastname . ', ' . $data->firstname;
             })
@@ -83,6 +83,13 @@ class MemberController extends Controller
             ->editColumn('email1', function ($m) {
                 if (isset($m->email1)) {
                     return '<a href="mailto:' . $m->email1 . '" target="_blank">' . $m->email1 . '</a>';
+                } else {
+                    return "";
+                }
+            })
+            ->editColumn('email2', function ($m) {
+                if (isset($m->email2)) {
+                    return '<a href="mailto:' . $m->email2 . '" target="_blank">' . $m->email2 . '</a>';
                 } else {
                     return "";
                 }
