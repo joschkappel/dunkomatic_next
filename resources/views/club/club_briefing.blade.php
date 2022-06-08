@@ -11,7 +11,7 @@
                         <div class="row">
                             <div class="col-sm-6 pd-2">
                                 <h3>{{ $club->shortname }}</h3><a class="text-white" href="{{ $club->url }}" target="_blank"><i class="fas fa-external-link-alt fa-sm"></i></a></h3>
-                                <h5>{{ $club->name }}</h5>
+                                <h5>{{ $club->club_no }} - {{ $club->name }}</h5>
                             </div>
                         </div>
                     </div>

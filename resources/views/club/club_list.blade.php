@@ -8,6 +8,7 @@
     @endif
     <th>@lang('club.shortname')</th>
     <th>@lang('club.name')</th>
+    <th>@lang('club.club_no')</th>
     <th>{{ trans_choice('team.team', 2) }}</th>
     <th>{{ __('containing') }}@lang('team.assigned')</th>
     <th>{{ __('containing') }}@lang('team.registered')</th>
@@ -64,6 +65,10 @@
                             sort: 'name.sort'
                         },
                         name: 'name.sort'
+                    },
+                    {
+                        data: 'club_no',
+                        name: 'club_no'
                     },
                     {
                         data: 'teams_count',
