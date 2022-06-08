@@ -35,6 +35,6 @@ final class ScheduleColor extends Enum
     const lime =   [true, 12, 1];
     const yellow =  [true, 14, 1];
     const amber =   [true, 16, 1];
-    const gray = [false, 0 , 1];
-    const brown = [true, 0 , 1];
+    const gray = [false, 0 , '*'];
+    const brown = [true, 0 , '*'];
 }
