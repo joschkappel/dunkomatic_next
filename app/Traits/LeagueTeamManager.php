@@ -99,7 +99,7 @@ trait LeagueTeamManager
     protected function get_button_settings(League $league, User $user,  $club_id, $team_id, $club_league_no, $team_league_no, $club_name, $team_name): array
     {
         $status = 'disabled'; // default is disabled
-        $function = '#';
+        $function = '';
         $color = 'btn-light';
         $scolor = 'btn-light';
         $text = '';

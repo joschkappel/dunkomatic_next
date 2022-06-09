@@ -482,17 +482,17 @@ class LeagueController extends Controller
         }
 
         if ($region->is_base_level) {
-            Log::notice('getting leagues for base level region');
             $leagues = League::whereIn('region_id', [$region->id, $region->parentRegion->id])->with('clubs', 'teams')->withCount([
                 'clubs', 'teams', 'registered_teams', 'selected_teams', 'games',
                 'games_notime', 'games_noshow'
             ])->get();
+            Log::notice('getting leagues for base level region',['count'=>count($leagues)]);
         } else {
-            Log::notice('getting leagues for top level region');
             $leagues = League::whereIn('region_id', [$region->id])->with('clubs', 'teams')->withCount([
                 'clubs', 'teams', 'registered_teams', 'selected_teams', 'games',
                 'games_notime', 'games_noshow'
             ])->get();
+            Log::notice('getting leagues for top level region',['count'=>count($leagues)]);
         }
 
         foreach ($leagues as $l) {
@@ -523,7 +523,6 @@ class LeagueController extends Controller
                         $c['club_shortname'],
                         $c['team_name']
                     );
-
                     $btn_function = Str::of($btn_function)->explode('#');
                     $subbtn_color = Str::of($subbtn_color)->explode('#');
                     if ( $btn_function->count() == 2 ){
