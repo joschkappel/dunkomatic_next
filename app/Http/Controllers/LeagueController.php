@@ -482,36 +482,38 @@ class LeagueController extends Controller
         }
 
         if ($region->is_base_level) {
-            Log::notice('getting leagues for base level region');
             $leagues = League::whereIn('region_id', [$region->id, $region->parentRegion->id])->with('clubs', 'teams')->withCount([
                 'clubs', 'teams', 'registered_teams', 'selected_teams', 'games',
                 'games_notime', 'games_noshow'
             ])->get();
+            Log::notice('getting leagues for base level region',['count'=>count($leagues)]);
         } else {
-            Log::notice('getting leagues for top level region');
             $leagues = League::whereIn('region_id', [$region->id])->with('clubs', 'teams')->withCount([
                 'clubs', 'teams', 'registered_teams', 'selected_teams', 'games',
                 'games_notime', 'games_noshow'
             ])->get();
+            Log::notice('getting leagues for top level region',['count'=>count($leagues)]);
         }
 
         foreach ($leagues as $l) {
             list($clubteam, $c_keys, $t_keys) = $this->get_registrations($l);
+            $available_no = $t_keys->collect();
 
             for ($i = 1; $i < 17; $i++) {
                 if ($i <= $l->size) {
-                    $ckey = $clubteam->search( function ($item, $key) use($i) {
-                        return $item['team_league_no'] == $i;
+                    $x = 0;
+                    $ckey = collect($clubteam)->search( function ($item, $key) use($i) {
+                        return ($item['team_league_no'] == $i);
                     });
-                    if ($ckey){
+                    if ($ckey !== false){
                         $c = $clubteam->pull($ckey);
                     } else {
-                        $ckey = $clubteam->search( function ($item, $key) use($i) {
+                        $ckey = $clubteam->search( function ($item) {
                             return $item['team_league_no'] == null;
                         });
                         $c = $clubteam->pull($ckey);
                     }
-                    list($btn_status, $btn_color, $btn_text, $btn_function) = $this->get_button_settings(
+                    list($btn_status, $btn_color, $btn_text, $btn_function, $subbtn_color) = $this->get_button_settings(
                         $l,
                         Auth::user(),
                         $c['club_id'],
@@ -521,19 +523,33 @@ class LeagueController extends Controller
                         $c['club_shortname'],
                         $c['team_name']
                     );
-
                     $btn_function = Str::of($btn_function)->explode('#');
+                    $subbtn_color = Str::of($subbtn_color)->explode('#');
                     if ( $btn_function->count() == 2 ){
-                        $btn = '<div class="btn-group"><button type="button" class="btn btn-sm '.$btn_color.' dropdpwn-toggle" data-toggle="dropdown" '.$btn_status.'>'.$btn_text.'</button>';
+                        $btn = '<div class="btn-group" role="group">';
+                        $btn .= '<button type="button" class="btn btn-sm dropdpwn-toggle '.$btn_color.'" data-toggle="dropdown" '.$btn_status.'>'.$btn_text.'</button>';
                         $btn .= '<div class="dropdown-menu">';
-                        foreach ($btn_function as $bf){
-                            $btn .= '<button id="'.$bf.'" type="button" class="btn btn-sm btn-light" '.
-                            ' data-club-id="' . $c['club_id'] . '"'.
-                            ' data-team-id="' . $c['team_id'] . '"'.
-                            ' data-region-id="' . $l->region->id . '"'.
-                            ' data-league-no="' . $i . '"'.
-                            ' data-league-id="' . $l->id . '">'
-                            . __('league.action.'.$bf) . '</button>';
+                        foreach ($btn_function as $k=>$bf){
+                            if ( $bf == 'pickChar'){
+                                $btn .= __('league.action.'.$bf).': ';
+                                foreach( $available_no as $an ){
+                                    $btn .= '<button id="'.$bf.'" type="button" class="btn btn-sm '.$subbtn_color[$k].'" '.
+                                    ' data-club-id="' . $c['club_id'] . '"'.
+                                    ' data-team-id="' . $c['team_id'] . '"'.
+                                    ' data-region-id="' . $l->region->id . '"'.
+                                    ' data-league-no="' . $an . '"'.
+                                    ' data-league-id="' . $l->id . '">'
+                                    . $an . '</button>';
+                                }
+                            } else {
+                                $btn .= '<button id="'.$bf.'" type="button" class="btn btn-sm '.$subbtn_color[$k].'" '.
+                                ' data-club-id="' . $c['club_id'] . '"'.
+                                ' data-team-id="' . $c['team_id'] . '"'.
+                                ' data-region-id="' . $l->region->id . '"'.
+                                ' data-league-no="' .$c['team_league_no'] . '"'.
+                                ' data-league-id="' . $l->id . '">'
+                                . __('league.action.'.$bf) . '</button>';
+                            }
                         }
                         $btn .='</div></div>';
                         $l['t' . $i] = $btn;
@@ -542,7 +558,7 @@ class LeagueController extends Controller
                                         ' data-club-id="' . $c['club_id'] . '"'.
                                         ' data-team-id="' . $c['team_id'] . '"'.
                                         ' data-region-id="' . $l->region->id . '"'.
-                                        ' data-league-no="' . $i . '"'.
+                                        ' data-league-no="' . $c['team_league_no'] . '"'.
                                         ' data-league-id="' . $l->id . '">'
                                         . $btn_text . '</button>';
                     }
