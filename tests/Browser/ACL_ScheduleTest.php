@@ -34,8 +34,7 @@ class ACL_ScheduleTest extends DuskTestCase
         static::$user = User::factory()->approved()->for(static::$member)->create();
         Bouncer::allow(static::$user)->to('access',static::$region);
 
-        static::$schedule = Schedule::factory()->create(['name' => 'testschedule']);
-
+        static::$schedule = Schedule::factory()->events(12)->create(['name' => 'testschedule']);
     }
 
     use withFaker;
