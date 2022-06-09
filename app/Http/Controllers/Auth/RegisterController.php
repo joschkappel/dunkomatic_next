@@ -124,7 +124,10 @@ class RegisterController extends Controller
     protected function register_invitee(Request $request)
     {
         $data = $request->validate([
-
+            'name' => 'required|string',
+            'email' => 'required|email:rfc,dns',
+            'password' => 'required|string',
+            'reason_join' => 'required|string',
         ]);
 
         if ( $request->cookie('_i') == null){

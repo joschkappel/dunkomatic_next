@@ -16,7 +16,7 @@
     <div class="card-body ">
         <div class="row justify-content-center">
             <div class="col-sm">
-                <form action="{{ route('register_invitee',['language'=>app()->getLocale(),'invitation'=>$invitation])}}" method="post">
+                <form action="{{ route('register.invitee',['language'=>app()->getLocale(),'invitation'=>$invitation])}}" method="post">
                     @csrf
                     <p class="login-box-msg">{{ __('auth.title.apply') }}</p>
                     <div class="input-group mb-3">
