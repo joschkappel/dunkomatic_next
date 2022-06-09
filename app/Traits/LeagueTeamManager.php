@@ -100,7 +100,8 @@ trait LeagueTeamManager
     {
         $status = 'disabled'; // default is disabled
         $function = '#';
-        $color = 'btn-white';
+        $color = 'btn-light';
+        $scolor = 'btn-light';
         $text = '';
 
         // handle color and text
@@ -128,22 +129,25 @@ trait LeagueTeamManager
                 $status = '';
                 if ($club_id == null){
                     $function = 'assignClub';
-                    $color = 'btn-light';
+                    $scolor = 'btn-primary';
                     $text = Str::limit(__('league.action.assign'), 6, '...');
                 } else {
                     if ($team_id == null){
                         $function = 'registerTeam#deassignClub';
+                        $scolor = 'btn-warning#btn-light';
                     } else {
                         if ($team_league_no ==  null){
-                            $function = 'unregisterTeam#pickChar';
+                            $function = 'pickChar#unregisterTeam';
+                            $scolor = 'btn-success#btn-primary';
                         } else {
                             $function = 'releaseChar';
+                            $scolor = 'btn-warning';
                         }
                     }
                 }
             }
         }
 
-        return array($status, $color, $text, $function);
+        return array($status, $color, $text, $function, $scolor);
     }
 }
