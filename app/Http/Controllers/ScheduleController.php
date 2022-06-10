@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\LeagueState;
 use App\Models\LeagueSize;
 use App\Models\Schedule;
 use App\Models\Region;
@@ -235,7 +236,8 @@ class ScheduleController extends Controller
         return $stlist
             ->addIndexColumn()
             ->addColumn('action', function ($data) use($region) {
-                if ( (!$data->leagues()->exists()) and ($data->region->id == $region->id) ) {
+                if ( ( !$data->leagues()->whereIn('state',[LeagueState::Scheduling, LeagueState::Referees, LeagueState::Live])->exists())
+                      and ($data->region->id == $region->id) ) {
                     $btn = '<button type="button" id="deleteSchedule" name="deleteSchedule" class="btn btn-outline-danger btn-sm" data-schedule-id="' . $data->id . '"
                     data-schedule-name="' . $data->name . '" data-events="' . $data->events_count . '" data-toggle="modal" data-target="#modalDeleteSchedule"><i class="fa fa-trash"></i></button>';
                     return $btn;
@@ -393,6 +395,12 @@ class ScheduleController extends Controller
     {
         $schedule->events()->delete();
         Log::info('schedule events deleted.',['schedule-id'=>$schedule->id]);
+
+        $leagues = $schedule->leagues;
+        foreach ($leagues as $l){
+            $l->update(['schedule_id'=>null]);
+        }
+        Log::info('schedule removed from leagues.',['schedule-id'=>$schedule->id, 'league-ids'=>$leagues->pluck('id')]);
 
         $schedule->delete();
         Log::notice('schedule deleted.',['schedule-id'=>$schedule->id]);

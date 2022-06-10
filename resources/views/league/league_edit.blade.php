@@ -179,7 +179,31 @@
                     }
                 });
             });
-
         });
+        $(document).ready(function(){
+            var selected = $(".js-selSize").val();
+            console.log(selected);
+            var url = "{{ route('schedule.sb.region_size', ['region' => $league->region, 'size'=>':size:' ]) }}";
+            url = url.replace(':size:', selected);
+
+            $(".js-sel-schedule").select2({
+                width: '100%',
+                multiple: false,
+                allowClear: false,
+                minimumResultsForSearch: 5,
+                ajax: {
+                    url: url,
+                    type: "get",
+                    delay: 250,
+                    processResults: function(response) {
+                        return {
+                            results: response
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+
     </script>
 @endpush
