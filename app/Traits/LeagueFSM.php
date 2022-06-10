@@ -151,8 +151,9 @@ trait LeagueFSM
         $league->assignment_closed_at = null;
         $league->save();
         $league->games()->delete();
-        $league->teams()->update(['league_id' => null]);
-        $league->clubs()->detach();
+       // remove: if schedule is removed, than teams and clubs should stay
+       //  $league->teams()->update(['league_id' => null]);
+       //  $league->clubs()->detach();
     }
 
     public function restart_league(League $league): void
