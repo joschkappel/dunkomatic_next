@@ -34,8 +34,7 @@ class ACL_ScheduleTest extends DuskTestCase
         static::$user = User::factory()->approved()->for(static::$member)->create();
         Bouncer::allow(static::$user)->to('access',static::$region);
 
-        static::$schedule = Schedule::factory()->create(['name' => 'testschedule']);
-
+        static::$schedule = Schedule::factory()->events(12)->create(['name' => 'testschedule']);
     }
 
     use withFaker;
@@ -148,7 +147,7 @@ class ACL_ScheduleTest extends DuskTestCase
                 ($user->can('create-schedules')) ? $browser->assertSee(__('schedule.action.create',$locale=['de'])) : $browser->assertDontSee(__('schedule.action.create',$locale=['de']));
                 $browser->waitFor('.table');
 
-                $events_count = $schedule->events_count ?? '0';
+                $events_count = $schedule->events->count() ?? '0';
 
                 if ($user->canAny(['create-schedules', 'update-schedules'])) {
                     $browser->with('.table', function ($sRow) use ($schedule) {

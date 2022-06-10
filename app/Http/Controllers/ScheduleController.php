@@ -223,15 +223,19 @@ class ScheduleController extends Controller
      */
     public function list(Region $region)
     {
-        $schedule = $region->schedules()->with('league_size','leagues')->withCount('events')->get();
+        if ($region->is_top_level){
+            $schedule = $region->schedules()->with('league_size','leagues')->withCount('events')->get();
+        } else {
+            $schedule = Schedule::whereIn('region_id', [ $region->id, $region->parentRegion->id ])->has('events')->with('league_size','leagues')->withCount('events')->get();
+        }
 
         Log::info('preparing schedule list');
         $stlist = datatables()::of($schedule);
 
         return $stlist
             ->addIndexColumn()
-            ->addColumn('action', function ($data) {
-                if (!$data->leagues()->exists()) {
+            ->addColumn('action', function ($data) use($region) {
+                if ( (!$data->leagues()->exists()) and ($data->region->id == $region->id) ) {
                     $btn = '<button type="button" id="deleteSchedule" name="deleteSchedule" class="btn btn-outline-danger btn-sm" data-schedule-id="' . $data->id . '"
                     data-schedule-name="' . $data->name . '" data-events="' . $data->events_count . '" data-toggle="modal" data-target="#modalDeleteSchedule"><i class="fa fa-trash"></i></button>';
                     return $btn;
@@ -245,7 +249,7 @@ class ScheduleController extends Controller
             ->addColumn('used_by_leagues', function ($data) {
                 return $data->leagues->pluck('shortname')->implode(', ');
             })
-            ->addColumn('events', function ($data) {
+            ->addColumn('events', function ($data) use($region){
                 if ($data->custom_events) {
                     return __('Custom');
                 } else {
@@ -257,7 +261,7 @@ class ScheduleController extends Controller
                     } else {
                         $eventrange = '';
                     }
-                    if ((League::where('schedule_id', $data->id)->has('games')->count() == 0) and (Bouncer::can('update-schedules'))) {
+                    if ((League::where('schedule_id', $data->id)->has('games')->count() == 0) and (Bouncer::can('update-schedules')) and ($data->region->id == $region->id)) {
                         return '<a href="' . route('schedule_event.list', $data) . '">' . $data->events_count . ' <i class="fas fa-arrow-circle-right"></i></a>'. $eventrange ;
                     } else {
                         return $data->events_count . $eventrange;
@@ -268,8 +272,8 @@ class ScheduleController extends Controller
             ->editColumn('created_at', function ($user) {
                 return $user->created_at->format('d.m.Y H:i');
             })
-            ->editColumn('name', function ($data) {
-                if (Bouncer::canAny(['create-schedules', 'update-schedules'])) {
+            ->editColumn('name', function ($data) use($region){
+                if (Bouncer::canAny(['create-schedules', 'update-schedules']) and ($data->region->id == $region->id)) {
                     return '<a href="' . route('schedule.edit', ['language' => Auth::user()->locale, 'schedule' => $data->id]) . '">' . $data->name . ' <i class="fas fa-arrow-circle-right"></i></a>';
                 } else {
                     return $data->name;
