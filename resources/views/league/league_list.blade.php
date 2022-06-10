@@ -29,6 +29,8 @@
          processing: true,
          serverSide: false,
          responsive: true,
+         stateSave: true,
+         pageLength: {{ config('dunkomatic.table_page_length', 50)}},
          language: { "url": "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}" },
          order: [[1,'asc']],
          ajax: '{{ route('league.list', ['language'=>app()->getLocale(),'region'=>$region]) }}',

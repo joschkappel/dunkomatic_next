@@ -27,6 +27,7 @@
                 processing: true,
                 serverSide: true,
                 responsive: true,
+                stateSave: true,
                 language: { "url": "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}" },
                 order: [
                     [1, 'asc']

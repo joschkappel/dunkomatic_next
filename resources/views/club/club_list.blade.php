@@ -32,6 +32,8 @@
                 processing: true,
                 serverSide: true,
                 responsive: true,
+                stateSave: true,
+                pageLength: {{ config('dunkomatic.table_page_length', 50)}},
                 language: { "url": "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}" },
                 order: [
                     [1, 'asc']

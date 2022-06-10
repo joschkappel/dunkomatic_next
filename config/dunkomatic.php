@@ -9,6 +9,8 @@ return [
     'use_ico_only' => true,
     'use_full_favicon' => true,
 
+    'table_page_length' => 50, // 10,20,50,100
+
     'dashboard_url' => 'home',
     'logout_url' => 'logout',
     'login_url' => 'login',
