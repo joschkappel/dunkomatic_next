@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Exception;
 
 class DatabaseBackUp extends Command
 {
@@ -49,32 +50,27 @@ class DatabaseBackUp extends Command
         $backup_folder = config('dunkomatic.folders.backup');
 
         $filename = 'backup-' . $db .'-'.Carbon::now()->format('Y-m-d-His') . '.gz';
-        $filepath = Storage::disk('local')->path('tmp/'.$filename);
+        $filepath = storage_path( 'app/'.$backup_folder.'/'.$filename);
 
         $command = 'mysqldump --column-statistics=0 --user='.$db_usr.' --password='.$db_pwd.' --host='.$db_host.' '.$db.' | gzip > '. $filepath;
         $returnVar = NULL;
         $output = NULL;
 
-        exec($command, $output, $returnVar);
+        try {
+            exec($command, $output, $returnVar);
 
-        if ($returnVar == COMMAND::SUCCESS){
-            Log::notice('[CMD] db backup ran successfull',['file'=>$filepath]);
-            $stream = Storage::disk('local')->readStream('tmp/'.$filename);
-            $target = $backup_folder . '/' . $filename;
-            if ( Storage::disk('local')->writeStream( $target, $stream ) ){
-                Log::notice('[CMD] db backup copied to target successfull',['file'=>$target]);
-                $this->info('DB backup to '.$target.' was successful!');
+            if ($returnVar == COMMAND::SUCCESS){
+                Log::notice('[CMD] db backup ran successfull',['file'=>$filepath]);
+                Log::info($output);
             } else {
-                Log::error('[CMD] db backup could not be copied to target',['file'=>$target]);
-                $this->error('Oops someting went wrong, could not move the file to storage disk!');
+                Log::error('[CMD] db backup failed');
+                $this->error('Oops someting went wrong, DB not backed up!');
             }
-
-        } else {
-            Log::error('[CMD] db backup failed');
-            $this->error('Oops someting went wrong, DB not backed up!');
+        } catch (Exception $exception) {
+            $this->error('The backup process has failed.');
+            $this->line($exception->getMessage());
+            $this->line($exception->getTraceAsString());
         }
-        // remove file
-        Storage::disk('local')->delete('tmp/'.$filename);
 
         return $returnVar;
     }

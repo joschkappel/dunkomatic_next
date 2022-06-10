@@ -44,7 +44,8 @@ class Kernel extends ConsoleKernel
         $schedule->job(new ProcessDbCleanup(), 'janitor')->weeklyOn(1,'00:30');
         $schedule->job(new ProcessFilesCleanup(), 'janitor')->weeklyOn(1,'00:40');
         $schedule->job(new ProcessNewSeason(), 'janitor')->yearly();
-        $schedule->command('db:backup')->dailyAt('00:10');
+        $schedule->command('db:backup')->dailyAt('00:10')->emailOutputTo('dmatic.master@gmail.com');  //dailyAt('00:10');
+        // $schedule->exec('php artisan db:backup')->everyMinute();
         $schedule->command('telescope:prune')->dailyAt('00:15');
         $schedule->command('authentication-log:purge')->monthlyOn(2,'00:20');
 
