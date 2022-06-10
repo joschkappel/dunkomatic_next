@@ -81,6 +81,8 @@ th, td { white-space: nowrap; }
                 serverSide: false,
                 responsive: true,
                 retrieve: true,
+                stateSave: true,
+                pageLength: {{ config('dunkomatic.table_page_length', 50)}},
                 language: { url: "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}",
                             },
                 language: { processing: '<p>{{__('Loading')}}</p><div class="dot-rolling px-2"></div>'},
