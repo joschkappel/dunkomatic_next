@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class DatabaseBackUp extends Command
 {
@@ -40,6 +41,7 @@ class DatabaseBackUp extends Command
      */
     public function handle()
     {
+        Log::notice('[CMD] running db backup');
         $db = config('database.connections.dunknxt.database');
         $db_usr = config('database.connections.dunknxt.username');
         $db_pwd = config('database.connections.dunknxt.password');
@@ -56,15 +58,19 @@ class DatabaseBackUp extends Command
         exec($command, $output, $returnVar);
 
         if ($returnVar == COMMAND::SUCCESS){
+            Log::notice('[CMD] db backup ran successfull',['file'=>$filepath]);
             $stream = Storage::disk('local')->readStream('tmp/'.$filename);
             $target = $backup_folder . '/' . $filename;
             if ( Storage::disk('local')->writeStream( $target, $stream ) ){
+                Log::notice('[CMD] db backup copied to target successfull',['file'=>$target]);
                 $this->info('DB backup to '.$target.' was successful!');
             } else {
+                Log::error('[CMD] db backup could not be copied to target',['file'=>$target]);
                 $this->error('Oops someting went wrong, could not move the file to storage disk!');
             }
 
         } else {
+            Log::error('[CMD] db backup failed');
             $this->error('Oops someting went wrong, DB not backed up!');
         }
         // remove file
