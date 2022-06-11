@@ -52,7 +52,12 @@ class DatabaseBackUp extends Command
         $filename = 'backup-' . $db .'-'.Carbon::now()->format('Y-m-d-His') . '.gz';
         $filepath = storage_path( 'app/'.$backup_folder.'/'.$filename);
 
-        $command = 'mysqldump --column-statistics=0 --user='.$db_usr.' --password='.$db_pwd.' --host='.$db_host.' '.$db.' | gzip > '. $filepath;
+        if (app()->runningInConsole()){
+            $command = 'mysqldump --column-statistics=0 --user='.$db_usr.' --password='.$db_pwd.' --host='.$db_host.' '.$db.' | gzip > '. $filepath;
+        } else {
+            $command = 'mysqldump --user='.$db_usr.' --password='.$db_pwd.' --host='.$db_host.' '.$db.' | gzip > '. $filepath;
+        }
+        // $command = 'which mysqldump';
         $returnVar = NULL;
         $output = NULL;
 
@@ -60,6 +65,7 @@ class DatabaseBackUp extends Command
             exec($command, $output, $returnVar);
 
             if ($returnVar == COMMAND::SUCCESS){
+                Log::notice($command);
                 Log::notice('[CMD] db backup ran successfull',['file'=>$filepath]);
                 Log::info($output);
             } else {
