@@ -4,10 +4,11 @@
 <x-card-list cardTitle="{{ __('schedule.title.list', ['region'=>$region->name ]) }}" cardNewAction="{{ route('schedule.create', ['language'=>app()->getLocale(),'region'=>$region]) }}" cardNewTitle="{{ __('schedule.action.create') }}" cardNewAbility="create-schedules">
     <th>Id</th>
     <th>Name</th>
-    <th>@lang('schedule.color')</th>
     <th>@lang('schedule.size')</th>
     <th>@lang('schedule.iterations')</th>
     <th>@lang('schedule.events')</th>
+    <th>@lang('schedule.first_event')</th>
+    <th>@lang('schedule.last_event')</th>
     <th>{{ __('schedule.leagues') }}</th>
     <th>{{ __('Action') }}</th>
 </x-card-list>
@@ -43,12 +44,6 @@
                         name: 'name'
                     },
                     {
-                        data: 'color',
-                        name: 'color',
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
                         data: 'league_size.description',
                         name: 'description'
                     },
@@ -60,6 +55,15 @@
                         data: 'events',
                         name: 'events'
                     },
+                    {
+                        data: 'first_event',
+                        name: 'first_event'
+                    },
+                    {
+                        data: 'last_event',
+                        name: 'last_event'
+                    },
+
                     {
                         data: 'used_by_leagues',
                         name: 'used_by_leagues'

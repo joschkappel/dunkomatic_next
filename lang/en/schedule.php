@@ -3,6 +3,8 @@
 return [
   'scheme' => 'League-Scheme|League-Schemes',
   'schedule' => 'League-Schedule|League-Schedules',
+  'first_event' => 'First Game on',
+  'last_event' => 'Last Game on',
   'action.create' => 'Create a Schedule',
   'action.delete' => 'Delete Schedule',
   'action.size.select' => 'Please select the number of teams',
