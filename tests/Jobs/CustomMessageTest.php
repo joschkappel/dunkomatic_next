@@ -4,7 +4,7 @@ namespace Tests\Jobs;
 
 use Tests\SysTestCase;
 
-use App\Jobs\ProcessCustomMessages;
+use App\Jobs\SendCustomMessage;
 
 use App\Models\Region;
 use App\Enums\Role;
@@ -35,7 +35,7 @@ class CustomMessageTest extends SysTestCase
 
         $msg = Region::where('code','HBVDA')->first()->messages->first();
         $msg->to_users = ['1'];
-        $job_instance = resolve(ProcessCustomMessages::class, ['message'=>$msg]);
+        $job_instance = resolve(SendCustomMessage::class, ['message'=>$msg]);
         app()->call([$job_instance, 'handle']);
 
         // check that message has beeen sent to users
@@ -66,7 +66,7 @@ class CustomMessageTest extends SysTestCase
 
         $msg = Region::where('code','HBVDA')->first()->messages->first();
         $msg->to_members = [Role::ClubLead()->value];
-        $job_instance = resolve(ProcessCustomMessages::class, ['message'=>$msg]);
+        $job_instance = resolve(SendCustomMessage::class, ['message'=>$msg]);
         app()->call([$job_instance, 'handle']);
 
         // check that email has beeen sent to users
@@ -96,7 +96,7 @@ class CustomMessageTest extends SysTestCase
 
         $msg = Region::where('code','HBVDA')->first()->messages->first();
         $msg->to_members = [Role::LeagueLead()->value];
-        $job_instance = resolve(ProcessCustomMessages::class, ['message'=>$msg]);
+        $job_instance = resolve(SendCustomMessage::class, ['message'=>$msg]);
         app()->call([$job_instance, 'handle']);
 
         // check that email has beeen sent to users
