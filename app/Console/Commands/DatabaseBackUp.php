@@ -16,7 +16,7 @@ class DatabaseBackUp extends Command
      *
      * @var string
      */
-    protected $signature = 'db:backup';
+    protected $signature = 'db:backup {--c|colstat : Use column-statistics }';
 
     /**
      * The console command description.
@@ -51,8 +51,9 @@ class DatabaseBackUp extends Command
 
         $filename = 'backup-' . $db .'-'.Carbon::now()->format('Y-m-d-His') . '.gz';
         $filepath = storage_path( 'app/'.$backup_folder.'/'.$filename);
+        $columnstats = $this->option('colstat');
 
-        if (app()->runningInConsole()){
+        if (! $columnstats){
             $command = 'mysqldump --column-statistics=0 --user='.$db_usr.' --password='.$db_pwd.' --host='.$db_host.' '.$db.' | gzip > '. $filepath;
         } else {
             $command = 'mysqldump --user='.$db_usr.' --password='.$db_pwd.' --host='.$db_host.' '.$db.' | gzip > '. $filepath;
@@ -65,10 +66,10 @@ class DatabaseBackUp extends Command
             exec($command, $output, $returnVar);
 
             if ($returnVar == COMMAND::SUCCESS){
-                Log::notice($command);
                 Log::notice('[CMD] db backup ran successfull',['file'=>$filepath]);
                 Log::info($output);
             } else {
+                Log::error($command);
                 Log::error('[CMD] db backup failed');
                 $this->error('Oops someting went wrong, DB not backed up!');
             }
