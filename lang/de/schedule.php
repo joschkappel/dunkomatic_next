@@ -3,6 +3,8 @@
 return [
   'scheme' => 'Rundenschema|Rundenschemata',
   'schedule' => 'Rahmenterminplan|Rahmenterminpläne',
+  'first_event' => 'Erster Spieltag',
+  'last_event' => 'Letzter Spieltag',
   'action.create' => 'Neuer Rahmenterminplan',
   'action.delete' => 'Rahmenterminplan Löschen',
   'action.select' => 'Wähle einen Rahmenterminplan',

@@ -71,9 +71,9 @@ class ScheduleController extends Controller
     {
         Log::info('retrieving schedules.');
         if ($region->is_base_level) {
-            $schedules = Schedule::whereIn('region_id', [$region->id, $region->parentRegion->id])->has('events')->orderBy('region_id', 'ASC')->get();
+            $schedules = Schedule::whereIn('region_id', [$region->id, $region->parentRegion->id])->has('events')->orderBy('region_id', 'ASC')->orderBy('name')->get();
         } else {
-            $schedules = $region->schedules()->has('events')->get();
+            $schedules = $region->schedules()->has('events')->orderBy('name')->get();
         }
         Log::info('schedules found.', ['schedules' => $schedules->pluck('id')]);
 
@@ -225,9 +225,9 @@ class ScheduleController extends Controller
     public function list(Region $region)
     {
         if ($region->is_top_level){
-            $schedule = $region->schedules()->with('league_size','leagues')->withCount('events')->get();
+            $schedule = $region->schedules()->with('league_size','leagues')->withCount('events')->orderBy('name')->get();
         } else {
-            $schedule = Schedule::whereIn('region_id', [ $region->id, $region->parentRegion->id ])->has('events')->with('league_size','leagues')->withCount('events')->get();
+            $schedule = Schedule::whereIn('region_id', [ $region->id, $region->parentRegion->id ])->has('events')->with('league_size','leagues')->withCount('events')->orderBy('name')->get();
         }
 
         Log::info('preparing schedule list');
@@ -245,9 +245,9 @@ class ScheduleController extends Controller
                     return '';
                 }
             })
-            ->addColumn('color', function ($data) {
+/*             ->addColumn('color', function ($data) {
                 return '<spawn style="background-color:' . $data->color . '">' . $data->color . '</div>';
-            })
+            }) */
             ->addColumn('used_by_leagues', function ($data) {
                 return $data->leagues->pluck('shortname')->implode(', ');
             })
@@ -255,22 +255,28 @@ class ScheduleController extends Controller
                 if ($data->custom_events) {
                     return __('Custom');
                 } else {
-                    // get minx and max evetn date
-                    if ($data->events()->exists() ){
-                        $mine = $data->events()->get()->min('game_date')->isoFormat('l');
-                        $maxe = $data->events()->get()->max('game_date')->isoFormat('l');
-                        $eventrange = ' ('.$mine.'-'.$maxe.')';
-                    } else {
-                        $eventrange = '';
-                    }
                     if ((League::where('schedule_id', $data->id)->has('games')->count() == 0) and (Bouncer::can('update-schedules')) and ($data->region->id == $region->id)) {
-                        return '<a href="' . route('schedule_event.list', $data) . '">' . $data->events_count . ' <i class="fas fa-arrow-circle-right"></i></a>'. $eventrange ;
+                        return '<a href="' . route('schedule_event.list', $data) . '">' . $data->events_count . ' <i class="fas fa-arrow-circle-right"></i></a>';
                     } else {
-                        return $data->events_count . $eventrange;
+                        return $data->events_count;
                     }
                 }
             })
-            ->rawColumns(['name', 'color', 'events', 'action'])
+            ->addColumn('first_event', function ($data) {
+                if ($data->events()->exists() ){
+                    return $data->events()->get()->min('game_date')->isoFormat('l');
+                } else {
+                    return '';
+                }
+            })
+            ->addColumn('last_event', function ($data) {
+                if ($data->events()->exists() ){
+                    return $data->events()->get()->max('game_date')->isoFormat('l');
+                } else {
+                    return '';
+                }
+            })
+            ->rawColumns(['name', 'events', 'action'])
             ->editColumn('created_at', function ($user) {
                 return $user->created_at->format('d.m.Y H:i');
             })
