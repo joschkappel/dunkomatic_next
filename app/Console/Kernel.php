@@ -19,7 +19,9 @@ use App\Jobs\GameNotScheduled;
 use App\Models\Region;
 use App\Enums\JobFrequencyType;
 use App\Jobs\ProcessFilesCleanup;
+use App\Jobs\ProcessCustomMessages;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Monolog\Handler\SendGridHandler;
 use Spatie\Health\Commands\RunHealthChecksCommand;
 use Spatie\Health\Commands\ScheduleCheckHeartbeatCommand;
 
@@ -42,12 +44,13 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->job(new ProcessDbCleanup(), 'janitor')->weeklyOn(1,'00:30')->emailOutputTo('dmatic.master@gmail.com');
-        $schedule->job(new ProcessFilesCleanup(), 'janitor')->weeklyOn(1,'00:35')->emailOutputTo('dmatic.master@gmail.com');
+        $schedule->job(new ProcessFilesCleanup(), 'janitor')->weeklyOn(1,'00:35')->emailOutputOnFailure('dmatic.master@gmail.com');
+        $schedule->job(new ProcessCustomMessages(), 'janitor')->dailyAt('03:00')->emailOutputOnFailure('dmatic.master@gmail.com');
         $schedule->job(new ProcessNewSeason(), 'janitor')->yearly();
-        $schedule->command('db:backup -c')->daily()->emailOutputTo('dmatic.master@gmail.com');
+        $schedule->command('db:backup -c')->daily()->emailOutputOnFailure('dmatic.master@gmail.com');
         // $schedule->exec('php artisan db:backup -c')->everyMinute()->emailOutputTo('dmatic.master@gmail.com');
         $schedule->command('telescope:prune')->dailyAt('00:10');
-        $schedule->command('authentication-log:purge')->monthlyOn(2,'00:05')->emailOutputTo('dmatic.master@gmail.com');
+        $schedule->command('authentication-log:purge')->monthlyOn(2,'00:05')->emailOutputOnFailure('dmatic.master@gmail.com');
 
         // schedule region specific jobs
         $regions = Region::with('regionadmins')->get();

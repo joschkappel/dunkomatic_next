@@ -15,7 +15,7 @@ use Datatables;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
-use App\Jobs\ProcessCustomMessages;
+use App\Jobs\SendCustomMessage;
 
 
 class MessageController extends Controller
@@ -226,7 +226,7 @@ class MessageController extends Controller
     {
         Log::info('prepare notification for message.', ['message->id' => $message->id]);
 
-        ProcessCustomMessages::dispatchSync($message);
+        SendCustomMessage::dispatchSync($message);
         //->delay(now()->addMinutes(1));
 
         return true;
