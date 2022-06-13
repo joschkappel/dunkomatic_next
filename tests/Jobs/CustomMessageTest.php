@@ -4,7 +4,7 @@ namespace Tests\Jobs;
 
 use Tests\SysTestCase;
 
-use App\Jobs\ProcessCustomMessages;
+use App\Jobs\SendCustomMessage;
 
 use App\Models\Region;
 use App\Enums\Role;
