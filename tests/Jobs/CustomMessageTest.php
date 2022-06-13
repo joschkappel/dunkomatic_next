@@ -96,7 +96,7 @@ class CustomMessageTest extends SysTestCase
 
         $msg = Region::where('code','HBVDA')->first()->messages->first();
         $msg->to_members = [Role::LeagueLead()->value];
-        $job_instance = resolve(ProcessCustomMessages::class, ['message'=>$msg]);
+        $job_instance = resolve(SendCustomMessage::class, ['message'=>$msg]);
         app()->call([$job_instance, 'handle']);
 
         // check that email has beeen sent to users
