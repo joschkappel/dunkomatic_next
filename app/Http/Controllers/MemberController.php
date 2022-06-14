@@ -57,9 +57,14 @@ class MemberController extends Controller
         $mlist = datatables()::of(Member::whereIn('id', $members)->with('user', 'memberships')->get());
 
         return $mlist
-            ->rawColumns(['user_account', 'email1', 'email2','phone'])
+            ->rawColumns(['user_account', 'email1', 'email2','phone', 'name'])
+            ->addColumn('action', function ($data) {
+                return '<button type="button" id="copyAddress" name="copyAddress" class="btn btn-outline-primary btn-sm m-2" data-member-id="' . $data->id . '"
+                ><i class="far fa-clipboard"></i></button>';
+            })
             ->addColumn('name', function ($data) {
-                return $data->lastname . ', ' . $data->firstname;
+                 //return $data->lastname . ', ' . $data->firstname;
+                 return '<a href="#copyAddress" id="copyAddress" name="copyAddress" data-member-id="' . $data->id . '">'.$data->lastname.', '.$data->firstname.'</a>';
             })
             ->addColumn('clubs', function ($data) {
                 return $data->memberofclubs;

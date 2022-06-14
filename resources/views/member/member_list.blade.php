@@ -120,7 +120,45 @@
                     console.log(value); // <-- the value
               }); */
 
+              $(document).on('click', '#copyAddress', function () {
+               var url = "{{ route('member.show', [ 'language'=>app()->getLocale(), 'member'=>':memberid:'])}}"
+               url = url.replace(':memberid:',$(this).data('member-id') );
+               $.ajax( {
+                       url: url,
+                       type: "get",
+                       dataType: 'json',
+                       data: {
+                         _token: "{{ csrf_token() }}",
+                         _method: 'GET'
+                       },
+                       delay: 250,
+                       success: function (response) {
+                            let adr = response['firstname']+' '+response['lastname'];
+                            adr += '\n'+response['street'];
+                            adr += '\n'+response['zipcode']+' '+response['city'];
 
+                            if (navigator.clipboard && window.isSecureContext) {
+                                // navigator clipboard api method'
+                                return navigator.clipboard.writeText(adr);
+                            } else {
+                                // text area method
+                                let textArea = document.createElement("textarea");
+
+                                textArea.value = adr;
+                                // make the textarea out of viewport
+                                textArea.style.position = "fixed";
+                                textArea.style.left = "-999999px";
+                                textArea.style.top = "-999999px";
+                                document.body.appendChild(textArea);
+                                textArea.focus();
+                                textArea.select();
+                                document.execCommand('copy');
+                                textArea.remove();
+                            }
+                       },
+                       cache: false
+                     });
+                });
 
             });
 
