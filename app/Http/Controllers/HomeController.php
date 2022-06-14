@@ -64,7 +64,7 @@ class HomeController extends Controller
             if ( ($user->isAn('regionadmin', 'superadmin')) and $user->can('access',$region) ) {
                 $links[] = ['text'=>$region->code, 'url'=> route('region.dashboard',['region'=>$region, 'language'=>app()->getLocale()])];
                 // check new users waiting for approval
-                $users_to_approve = $region->users()->whereNull('approved_at')->count();
+                $users_to_approve = $region->users()->whereNull('approved_at')->whereNull('rejected_at')->count();
                 if ($users_to_approve > 0) {
                     $msg = [];
                     $msg['msg'] =  trans_choice('message.reminder.approvals', $users_to_approve, ['approvals' => $users_to_approve, 'region'=>$region->code ]);
