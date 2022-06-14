@@ -67,7 +67,7 @@ class TeamControllerTest extends TestCase
         //$response->dump();
         if ($team->count() > 0) {
             $response->assertStatus(200)
-                ->assertJsonFragment([['id' => $team->id, 'text' => $team->club->shortname . $team->team_no . ' (' . $team->league_prev . ')']]);
+                ->assertJsonFragment([['id' => $team->id, 'text' => $team->namedesc]]);
         } else {
             $response->assertStatus(200)
                 ->assertJson([[]]);

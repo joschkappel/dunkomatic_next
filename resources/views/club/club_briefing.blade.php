@@ -91,7 +91,7 @@
                     <div class="card-body overflow-auto">
                         @forelse ( $teams->sortBy('league.shortname') as $t )
                             <div class="info-box">
-                                <span class="info-box-icon @if ( isset($t->league->region) ? $t->league->region->is_top_level : false ) bg-indigo @else bg-gray @endif text-md p-2"><i class="">{{ isset($t->league) ? $t->league->shortname : 'not registered'}}</i></span>
+                                <span class="info-box-icon @if ( isset($t->league->region) ? $t->league->region->is_top_level : false ) bg-indigo @else bg-gray @endif text-xs p-1"><i class="">{{ $t->namedesc}}</i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-number">{{ $t->coach_name }}</span>
                                     <span class="info-box-text"><i class="fas fa-phone"></i><a href="tel:{{ $t->coach_phone1 }}" target="_blank"> {{ $t->coach_phone1}}</a></span>
