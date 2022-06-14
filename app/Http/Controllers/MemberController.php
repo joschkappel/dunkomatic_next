@@ -7,6 +7,7 @@ use App\Models\Membership;
 use App\Models\Region;
 use App\Models\League;
 use App\Models\Club;
+use App\Models\User;
 use BenSampo\Enum\Rules\EnumValue;
 use App\Enums\Role;
 use App\Models\Invitation;
@@ -210,6 +211,14 @@ class MemberController extends Controller
         } else {
             $member = Member::findOrFail($member_id);
         }
+
+        // check if a user existst
+        $user = User::where('email', $member->email1)->first();
+        if ($user){
+            $user->member()->associate($member);
+            $user->save();
+        }
+
         $member_id = $member->id;
         $mship['member_id'] = $member_id;
 
