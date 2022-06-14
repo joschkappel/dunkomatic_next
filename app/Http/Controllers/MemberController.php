@@ -118,15 +118,17 @@ class MemberController extends Controller
             Log::notice('getting members for top level region');
             $m_ids = collect();
             foreach ($region->childRegions as $r) {
-                $m_ids = $m_ids->merge($r->clubs()->pluck('id'));
+                $m_ids = $m_ids->concat($r->clubs()->pluck('id'));
+                $m_ids = $m_ids->concat($r->leagues()->pluck('id'));
             };
         } else {
             Log::notice('getting members for base level region');
             $m_ids = $region->clubs()->pluck('id');
+            $m_ids = $m_ids->concat($region->leagues()->pluck('id'));
         }
 
         $members = Membership::whereIn('membership_id', $m_ids)
-            ->where('membership_type', Club::class)
+            ->whereIn('membership_type', [Club::class, League::class])
             ->with('member')
             ->get()
             ->sortBy('member.lastname')
