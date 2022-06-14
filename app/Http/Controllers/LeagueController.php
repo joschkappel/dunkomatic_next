@@ -765,7 +765,7 @@ class LeagueController extends Controller
                                 $btn = '<div class="btn-group btn-group-sm"><button type="button" class="btn btn-sm btn-secondary dropdpwn-toggle" data-toggle="dropdown">' . __('team.action.select') . '</button>';
                                 $btn .= '<div class="dropdown-menu">';
                                 foreach ($unregistered_teams as $urt) {
-                                    $btn .= '<a class="dropdown-item" href="javascript:registerTeam(' . $urt->id . ') ">' . $urt->name .' ('.$urt->league_prev.')</a>';
+                                    $btn .= '<a class="dropdown-item" href="javascript:registerTeam(' . $urt->id . ') ">' . $urt->namedesc.'</a>';
                                 }
                                 $btn .= '</div></div>';
                             } else {

@@ -77,12 +77,12 @@ class TeamController extends Controller
             if ($region->is_top_level) {
                 $response[] = array(
                     "id" => $t->id,
-                    "text" => $t->club->region->code . ' : ' . $t->name . ' (' . $t->league_prev . ')'
+                    "text" => $t->club->region->code . ' : ' . $t->namedesc
                 );
             } else {
                 $response[] = array(
                     "id" => $t->id,
-                    "text" => $t->name . ' (' . $t->league_prev . ')'
+                    "text" => $t->namedesc
                 );
             }
         }
@@ -107,7 +107,7 @@ class TeamController extends Controller
         foreach ($free_teams as $t) {
             $response[] = array(
                 "id" => $t->id,
-                "text" => $t->name . ' (' . $t->league_prev . ')'
+                "text" => $t->namedesc
             );
         }
         return Response::json($response);

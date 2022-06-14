@@ -75,49 +75,57 @@ use OwenIt\Auditing\Contracts\Auditable;
  */
 class Team extends Model implements Auditable
 {
-  use \OwenIt\Auditing\Auditable, hasFactory;
+    use \OwenIt\Auditing\Auditable, hasFactory;
 
-  protected $with = ['club','league'];
+    protected $with = ['club', 'league'];
 
-  public function generateTags(): array
-  {
-      return [
-          $this->id,
-          $this->club->shortname,
-          $this->league->shortname ?? '',
-          '('.$this->club->region->code.')'
-      ];
-  }
+    public function generateTags(): array
+    {
+        return [
+            $this->id,
+            $this->club->shortname,
+            $this->league->shortname ?? '',
+            '(' . $this->club->region->code . ')'
+        ];
+    }
 
-  protected $fillable = [
-        'id','league_char','league_no','team_no','league_id','club_id','changeable', 'league_prev',
+    protected $fillable = [
+        'id', 'league_char', 'league_no', 'team_no', 'league_id', 'club_id', 'changeable', 'league_prev',
         'training_day', 'training_time', 'preferred_game_day', 'preferred_game_time',
         'coach_name', 'coach_phone1', 'coach_phone2', 'coach_email', 'shirt_color',
-        'preferred_league_char','preferred_league_no',
+        'preferred_league_char', 'preferred_league_no',
     ];
 
-  public function club(): BelongsTo
-  {
-      return $this->belongsTo(Club::class);
-  }
+    public function club(): BelongsTo
+    {
+        return $this->belongsTo(Club::class);
+    }
 
-  public function league(): BelongsTo
-  {
-      return $this->belongsTo(League::class);
-  }
+    public function league(): BelongsTo
+    {
+        return $this->belongsTo(League::class);
+    }
 
-  public function games_home(): HasMany
-  {
-      return $this->hasMany(Game::class, 'team_id_home');
-  }
+    public function games_home(): HasMany
+    {
+        return $this->hasMany(Game::class, 'team_id_home');
+    }
 
-  public function games_guest(): HasMany
-  {
-      return $this->hasMany(Game::class,'team_id_guest');
-  }
+    public function games_guest(): HasMany
+    {
+        return $this->hasMany(Game::class, 'team_id_guest');
+    }
 
-  public function getNameAttribute(): string
-  {
-    return $this->club->shortname.$this->team_no;
-  }
+    public function getNameAttribute(): string
+    {
+        return $this->club->shortname . $this->team_no;
+    }
+    public function getNameDescAttribute(): string
+    {
+        $name = $this->club->shortname . $this->team_no .' (';
+        $league = $this->league()->exists() ? $this->league->shortname : $this->league_prev;
+        $name .= ($league == null) ? $this->coach_name : $league;
+        $name .= ') ';
+        return $name;
+    }
 }

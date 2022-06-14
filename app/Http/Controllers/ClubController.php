@@ -226,7 +226,7 @@ class ClubController extends Controller
             ->addColumn('team', function ($ct) {
                 if (Auth::user()->can('update-teams')){
                     $item = '<span data-toggle="tooltip" title="'.__('team.action.edit',['name'=> $ct->name]).'">';
-                    $item .= '<a href="'.route('team.edit', ['language' => app()->getLocale(), 'team' => $ct->id]).'">'.$ct->name;
+                    $item .= '<a href="'.route('team.edit', ['language' => app()->getLocale(), 'team' => $ct->id]).'">'.$ct->namedesc;
                     $item .= '<i class="fas fa-arrow-circle-right"></i></a></span>';
                 } else {
                     $item = $ct->name;
