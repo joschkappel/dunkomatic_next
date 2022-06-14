@@ -98,6 +98,12 @@ class MembershipObserver
 
         if ($member->memberships->count() == 0) {
             // none, delete member as well
+            // unlink from user
+            if ($member->user()->exists()){
+                $user = $member->user;
+                $user->member()->dissociate();
+                $user->save();
+            }
             $member->delete();
             Log::info('member with no memberships deleted.', ['member-id' => $member->id]);
         }

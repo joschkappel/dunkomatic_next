@@ -311,6 +311,13 @@ class MemberController extends Controller
             $mship->delete();
         }
         // delete the member now
+        if ($member->user()->exists()){
+            // unlink from user
+            $user = $member->user;
+            $user->member()->dissociate();
+            $user->save();
+            Log::notice('[] member deleted - associated user kept', ['user-id' => $user->id, 'member-id' => $member->id]);
+        }
         $check = $member->delete();
         Log::notice('member deleted', ['member-id' => $member->id]);
 

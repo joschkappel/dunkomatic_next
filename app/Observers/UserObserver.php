@@ -66,8 +66,10 @@ class UserObserver
     public function deleting(User $user)
     {
         if ($user->member()->exists()) {
-            $user->member->delete();
-            Log::notice('[OBSERVER] user deleted - delete associated member', ['user-id' => $user->id, 'member-id' => $user->member->id]);
+            $user->member()->dissociate();
+            $user->save();
+            // Log::notice('[OBSERVER] user deleted - delete associated member', ['user-id' => $user->id, 'member-id' => $user->member->id]);
+            Log::notice('[OBSERVER] user deleted - ssociated member kept', ['user-id' => $user->id, 'member-id' => $user->member->id]);
         }
     }
 }
