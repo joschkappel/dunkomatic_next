@@ -32,6 +32,9 @@ class ScheduleEventController extends Controller
         $data['schedule'] = $schedule;
         $data['eventcount'] = $schedule->events()->count();
 
+        // calc max events
+        $data['eventmax'] = $schedule->max_events;
+
         return view('schedule/scheduleevent_list', $data);
     }
 
@@ -213,12 +216,12 @@ class ScheduleEventController extends Controller
      */
     public function shift(Request $request, Schedule $schedule)
     {
-        
+
         $data = $request->validate([
             'direction' => 'required|in:+,-',
             'unit' => 'required|in:DAY,WEEK,MONTH,YEAR',
             'unitRange' => 'required|integer|between:1,12',
-            'gamedayRange' => array('required', new SliderRange(1, $schedule->events->count())),
+            'gamedayRange' => array('required', new SliderRange(1, $schedule->max_events)),
         ]);
         Log::info('shift schedule events form data validated OK.');
 
@@ -231,6 +234,74 @@ class ScheduleEventController extends Controller
         } else {
             $schedule->events()->whereBetween('game_day', [$min_gameday, $max_gameday])->update(['game_date' => DB::raw('DATE_SUB(game_date, INTERVAL ' . $data['unitRange'] . ' ' . $data['unit'] . ')')]);
             Log::notice('shifting schedule events to the past.', ['schedule-id'=>$schedule->id, 'game-days' => $data['gamedayRange'], 'shift-by' => $data['unitRange'].' '.$data['unitRange']  ] );
+        }
+        $schedule->refresh();
+
+        return redirect()->action( [ScheduleEventController::class, 'list'], ['schedule' => $schedule]);
+    }
+    /**
+     * Remove game days from schedule events.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param \App\Models\Schedule $schedule
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     */
+    public function remove(Request $request, Schedule $schedule)
+    {
+
+        $data = $request->validate([
+            'gamedayRemoveRange' => array('required', new SliderRange(1, $schedule->max_events)),
+        ]);
+        Log::info('remove schedule events form data validated OK.');
+
+        $min_gameday = explode(";", $data['gamedayRemoveRange'])[0];
+        $max_gameday = explode(";", $data['gamedayRemoveRange'])[1];
+
+        $schedule->events()->whereBetween('game_day', [$min_gameday, $max_gameday])->delete();
+        Log::notice('removing schedule events.', ['schedule-id'=>$schedule->id, 'game-days' => $data['gamedayRemoveRange'] ] );
+        $schedule->refresh();
+
+        return redirect()->action( [ScheduleEventController::class, 'list'], ['schedule' => $schedule]);
+    }
+    /**
+     * Add game days to schedule events.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param \App\Models\Schedule $schedule
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     */
+    public function add(Request $request, Schedule $schedule)
+    {
+
+        $data = $request->validate([
+            'gamedayAddRange' => array('required', new SliderRange(1, $schedule->max_events)),
+        ]);
+        Log::info('add schedule events form data validated OK.');
+
+        $min_gameday = explode(";", $data['gamedayAddRange'])[0];
+        $max_gameday = explode(";", $data['gamedayAddRange'])[1];
+
+        // get missgin games days in above range
+        $all_events = collect( range( $min_gameday, $max_gameday));
+        $missing_events = $all_events->diff( $schedule->events->pluck('game_day'));
+
+
+        // $schedule->events()->whereBetween('game_day', [$min_gameday, $max_gameday])->delete();
+        Log::notice('adding schedule events.', ['schedule-id'=>$schedule->id, 'game-day-range' => $data['gamedayAddRange'], 'added-days'=>$missing_events ] );
+        $startdate = $schedule->events->where('game_day', 1)->first()->game_date ?? now();
+        $startdate = CarbonImmutable::parse($startdate);
+        $startweekend = $startdate->endOfWeek(Carbon::SATURDAY);
+
+        foreach ($missing_events as $me) {
+            $gamedate = $startweekend;
+            $ev = new ScheduleEvent;
+            $ev->schedule_id = $schedule->id;
+            $ev->game_day = $me;
+            $ev->game_date = $gamedate->addWeeks($me-1)->startOfDay();
+            $ev->full_weekend = true;
+            $ev->save();
         }
         $schedule->refresh();
 

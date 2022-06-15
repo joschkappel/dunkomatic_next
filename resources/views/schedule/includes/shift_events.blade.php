@@ -57,7 +57,7 @@
     var directionlabel = '{{  __('schedule.event.forward') }}';
     var unitlabel = '{{  trans_choice('schedule.event.unit.day',1) }}';
     var unitcountlabel = '1';
-    var gamedayrangelabel = '1 - {{$eventcount}}';
+    var gamedayrangelabel = '1 - {{$eventmax}}';
 
     function setActionLabel(){
         var labeltext = "{{ __('schedule.event.move') }}";
@@ -128,9 +128,9 @@
     $('#gamedayRange').ionRangeSlider({
       skin: "big",
       min     : 1,
-      max     : {{ $eventcount }},
+      max     : {{ $eventmax }},
       from    : 1,
-      to      :  {{ $eventcount }},
+      to      :  {{ $eventmax }},
       type    : 'double',
       drag_interval: true,
       grid    : true,
