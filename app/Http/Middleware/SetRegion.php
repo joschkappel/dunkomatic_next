@@ -28,6 +28,9 @@ class SetRegion
                 $request->session()->put('cur_region', $region);
                 session()->put('cur_region', $region );
             }
+            if ( (session('cur_region') == null) and (Auth::check()) ){
+                session()->put('cur_region', Auth::user()->regions()->first() );
+            }
         }
         /* else {
 
