@@ -182,8 +182,6 @@ class ScheduleEventControllerTest extends TestCase
             ]);
 
         $response->assertSessionHasErrors(['direction', 'unit', 'unitRange']);
-        //$response->assertSessionHasNoErrors();
-
 
         $this->assertDatabaseHas('schedule_events', ['schedule_id' => $schedule->id])
             ->assertDatabaseCount('schedule_events', 12);
@@ -236,6 +234,134 @@ class ScheduleEventControllerTest extends TestCase
             ->assertDatabaseCount('schedule_events', 24);
     }
     /**
+     * remove NOT OK
+     *
+     * @test
+     * @group schedule
+     * @group controller
+     *
+     * @return void
+     */
+    public function remove_notok()
+    {
+        // get schedule
+        $schedule =  Schedule::factory()->events(6)->create(['name' => 'testschedule']);
+
+        $response = $this->authenticated()
+            ->post(route('schedule_event.remove', ['schedule' => $schedule]), [
+                'gamedayRemoveRange' => '1;20',
+            ]);
+
+        $response->assertSessionHasErrors(['gamedayRemoveRange']);
+
+        $this->assertDatabaseHas('schedule_events', ['schedule_id' => $schedule->id])
+            ->assertDatabaseCount('schedule_events', 6);
+    }
+    /**
+     * remove OK
+     *
+     * @test
+     * @group schedule
+     * @group controller
+     *
+     * @return void
+     */
+    public function remove_ok()
+    {
+        // get schedule
+        $schedule =  Schedule::factory()->events(6)->create(['name' => 'testschedule']);
+
+        $response = $this->authenticated()
+            ->post(route('schedule_event.remove', ['schedule' => $schedule]), [
+                'gamedayRemoveRange' => '4;4',
+            ]);
+
+        $response->assertSessionHasNoErrors(['gamedayRemoveRange']);
+
+        $this->assertDatabaseHas('schedule_events', ['schedule_id' => $schedule->id])
+            ->assertDatabaseCount('schedule_events', 5);
+
+        $response = $this->authenticated()
+            ->post(route('schedule_event.remove', ['schedule' => $schedule]), [
+                'gamedayRemoveRange' => '5;6',
+            ]);
+
+        $response->assertSessionHasNoErrors(['gamedayRemoveRange']);
+
+        $this->assertDatabaseHas('schedule_events', ['schedule_id' => $schedule->id])
+            ->assertDatabaseCount('schedule_events', 3);
+
+    }
+    /**
+     * add NOT OK
+     *
+     * @test
+     * @group schedule
+     * @group controller
+     *
+     * @return void
+     */
+    public function add_notok()
+    {
+        // get schedule
+        $schedule =  Schedule::factory()->events(6)->create(['name' => 'testschedule']);
+
+        $response = $this->authenticated()
+            ->post(route('schedule_event.add', ['schedule' => $schedule]), [
+                'gamedayAddRange' => '1;20',
+            ]);
+
+        $response->assertSessionHasErrors(['gamedayAddRange']);
+
+        $this->assertDatabaseHas('schedule_events', ['schedule_id' => $schedule->id])
+            ->assertDatabaseCount('schedule_events', 6);
+    }
+    /** add OK
+    *
+    * @test
+    * @group schedule
+    * @group controller
+    *
+    * @return void
+    */
+   public function add_ok()
+   {
+       // get schedule
+       $schedule =  Schedule::factory()->events(6)->create(['name' => 'testschedule']);
+
+       $response = $this->authenticated()
+           ->post(route('schedule_event.remove', ['schedule' => $schedule]), [
+               'gamedayRemoveRange' => '2;2',
+           ]);
+        $response = $this->authenticated()
+           ->post(route('schedule_event.remove', ['schedule' => $schedule]), [
+               'gamedayRemoveRange' => '5;6',
+           ]);
+
+       $this->assertDatabaseHas('schedule_events', ['schedule_id' => $schedule->id])
+           ->assertDatabaseCount('schedule_events',3);
+
+       $response = $this->authenticated()
+           ->post(route('schedule_event.add', ['schedule' => $schedule]), [
+               'gamedayAddRange' => '2;2',
+           ]);
+
+       $response->assertSessionHasNoErrors(['gamedayAddRange']);
+
+       $this->assertDatabaseHas('schedule_events', ['schedule_id' => $schedule->id])
+           ->assertDatabaseCount('schedule_events', 4);
+        $response = $this->authenticated()
+           ->post(route('schedule_event.add', ['schedule' => $schedule]), [
+               'gamedayAddRange' => '1;6',
+           ]);
+
+       $response->assertSessionHasNoErrors(['gamedayAddRange']);
+
+       $this->assertDatabaseHas('schedule_events', ['schedule_id' => $schedule->id])
+           ->assertDatabaseCount('schedule_events', 6);
+
+   }
+    /**
      * update NOT OK
      *
      * @test
@@ -261,8 +387,9 @@ class ScheduleEventControllerTest extends TestCase
         $this->assertDatabaseHas('schedule_events', ['schedule_id' => $schedule->id])
             ->assertDatabaseCount('schedule_events', 12);
     }
+
     /**
-     * update NOT OK
+     * update  OK
      *
      * @test
      * @group schedule
