@@ -302,6 +302,8 @@ Route::middleware(['auth',
     Route::get('schedule_event/{schedule}/list', [ScheduleEventController::class, 'list'])->name('schedule_event.list');
     Route::get('schedule_event/{schedule}/dt', [ScheduleEventController::class, 'datatable'])->name('schedule_event.dt');
     Route::post('schedule_event/{schedule}/shift', [ScheduleEventController::class, 'shift'])->name('schedule_event.shift');
+    Route::post('schedule_event/{schedule}/remove', [ScheduleEventController::class, 'remove'])->name('schedule_event.remove');
+    Route::post('schedule_event/{schedule}/add', [ScheduleEventController::class, 'add'])->name('schedule_event.add');
     Route::post('schedule_event/{schedule}/clone', [ScheduleEventController::class, 'clone'])->name('schedule_event.clone');
     Route::delete('schedule_event/{schedule}/destroy', [ScheduleEventController::class, 'list_destroy'])->name('schedule_event.list-destroy');
     Route::post('schedule_event/{schedule}', [ScheduleEventController::class, 'store'])->name('schedule_event.store');

@@ -47,6 +47,20 @@
                 </div>
                 @include('schedule/includes/shift_events')
             </div>
+            <div class="card card-danger">
+                <div class="card-header">
+                    <h3 class="card-title">@lang('schedule.title.event.remove', ['schedule'=>$schedule->name])</h3>
+                </div>
+                @include('schedule/includes/remove_events')
+            </div>
+            @endif
+            @if ($eventcount < $eventmax)
+            <div class="card card-success">
+                <div class="card-header">
+                    <h3 class="card-title">@lang('schedule.title.event.add', ['schedule'=>$schedule->name])</h3>
+                </div>
+                @include('schedule/includes/add_events')
+            </div>
             @endif
         </div>
                 <!-- all modals here -->

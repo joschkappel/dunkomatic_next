@@ -99,4 +99,14 @@ class Schedule extends Model
         return ScheduleColor::coerce([ $this->region->is_top_level, $this->league_size->size, $this->iterations ])->key;
       }
   }
+  public function getMaxEventsAttribute(): int
+  {
+    $size = $this->league_size->size ?? 0;
+    if ($size == 0){
+        return 0;
+    } else {
+        $repeat = $this->iterations ?? 0;
+        return (($size - 1) * 2 * $repeat);
+    }
+  }
 }
