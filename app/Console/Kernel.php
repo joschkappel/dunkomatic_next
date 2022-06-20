@@ -18,6 +18,7 @@ use App\Jobs\GameNotScheduled;
 
 use App\Models\Region;
 use App\Enums\JobFrequencyType;
+use App\Jobs\ExportStatistics;
 use App\Jobs\ProcessFilesCleanup;
 use App\Jobs\ProcessCustomMessages;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -51,6 +52,7 @@ class Kernel extends ConsoleKernel
         // $schedule->exec('php artisan db:backup -c')->everyMinute()->emailOutputTo('dmatic.master@gmail.com');
         $schedule->command('telescope:prune')->dailyAt('00:10');
         $schedule->command('authentication-log:purge')->monthlyOn(2,'00:05')->emailOutputOnFailure('dmatic.master@gmail.com');
+        // $schedule->job(new ExportStatistics(), 'janitor')->everyMinute();
 
         // schedule region specific jobs
         $regions = Region::with('regionadmins')->get();
