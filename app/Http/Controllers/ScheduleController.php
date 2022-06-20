@@ -95,17 +95,17 @@ class ScheduleController extends Controller
         $curYear = '';
         return $elist
             ->addColumn('sat_game', function ($e) use ($language) {
-                $gdate = Carbon::parse($e->game_date);
-                if ($gdate->isSaturday()) {
+                return $gdate = Carbon::parse($e->game_date)->locale($language)->isoFormat('ddd L');
+/*                 if ($gdate->isSaturday()) {
                     return $gdate->locale($language)->isoFormat('ddd L');
-                }
+                } */
             })
             ->addColumn('sun_game', function ($e) use ($language) {
                 $gdate = Carbon::parse($e->game_date);
-                if ($gdate->isSaturday() and $e->full_weekend) {
+                if ($e->full_weekend) {
                     return $gdate->addDay()->locale($language)->isoFormat('ddd L');
-                } elseif (!$e->full_weekend) {
-                    return $gdate->locale($language)->isoFormat('ddd L');
+/*                 } elseif (!$e->full_weekend) {
+                    return $gdate->locale($language)->isoFormat('ddd L'); */
                 }
             })
             ->addColumn('year', function ($e) use (&$curYear) {
