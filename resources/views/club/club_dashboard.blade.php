@@ -138,46 +138,6 @@
                 <!-- card MEMBERS -->
                 <x-member-card :members="$members" :entity="$club" entity-class="App\Models\Club" />
                 <!-- /.card -->
-                <!-- card CLUB TEAM ASSIGNMENT -->
-                <div class="card card-outline card-dark collapsed-card" id="teamsCard">
-                    <x-card-header title="{{trans_choice('team.team', 2)}}" icon="fas fa-basketball-ball"  :count="$teams">
-                            @can('create-teams')
-                            <a href="{{ route('club.team.create', ['language' => app()->getLocale(), 'club' => $club]) }}"
-                            class="btn btn-success">
-                            <i class="fas fa-plus-circle"></i> @lang('team.action.create')</a>
-                            @endcan
-                    </x-card-header>
-                    <div class="card-body">
-                        <table width="100%" class="table table-hover table-bordered table-sm" id="teamtable">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>@lang('Action')</th>
-                                    <th scope="col">{{ trans_choice('team.team', 1) }}</th>
-                                    <th scope="col">@lang('league.state.registered')</th>
-                                    <th scope="col">@lang('league.state.selected')</th>
-                                    <th scope="col">{{ trans_choice('league.league', 1) }}</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
-                    <!-- /.card-body -->
-                    <div class="card-footer">
-                        <div class="card-tools">
-                            @can('update-teams')
-                            @if ($club->leagues->where('state', App\Enums\LeagueState::Selection())->count() > 0)
-                            <a href="{{ route('team.plan-leagues', ['language' => app()->getLocale(), 'club' => $club]) }}"
-                                class="btn btn-primary float-right">
-                                <i class="fas fa-map"></i> @lang('team.action.plan.season')</a>
-
-                            <a href="{{ route('club.team.pickchar', ['language' => app()->getLocale(), 'club' => $club]) }}"
-                                    class="btn btn-outline-primary float-right mr-2">
-                                    <i class="fas fa-edit"></i> @lang('team.action.pickchars')</a>
-                            @endif
-                            @endcan
-                        </div>
-                    </div>
-                    <!-- /.card-footer -->
-                </div>
             </div>
             <div class="col-sm-6">
                 <!-- card GYMS -->
@@ -227,6 +187,60 @@
                     <!-- /.card-footer -->
                 </div>
                 <!-- /.card -->
+
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <!-- card CLUB TEAM ASSIGNMENT -->
+                <div class="card card-outline card-dark collapsed-card" id="teamsCard">
+                    <x-card-header title="{{trans_choice('team.team', 2)}}" icon="fas fa-basketball-ball"  :count="$teams">
+                            @can('create-teams')
+                            <a href="{{ route('club.team.create', ['language' => app()->getLocale(), 'club' => $club]) }}"
+                            class="btn btn-success">
+                            <i class="fas fa-plus-circle"></i> @lang('team.action.create')</a>
+                            @endcan
+                    </x-card-header>
+                    <div class="card-body">
+                        <table width="100%" class="table table-hover table-bordered table-sm" id="teamtable">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>@lang('Action')</th>
+                                    <th scope="col">{{ trans_choice('team.team', 1) }}</th>
+                                    <th scope="col">@lang('league.state.registered')</th>
+                                    <th scope="col">@lang('league.state.selected')</th>
+                                    <th scope="col">{{ trans_choice('league.league', 1) }}</th>
+                                    <th scope="col">{{ trans_choice('team.shirtcolor', 1) }}</th>
+                                    <th scope="col">{{ trans_choice('team.training', 1) }}</th>
+                                    <th scope="col">{{Str::limit( trans_choice('team.game.preferred', 1),18) }}</th>
+                                    <th scope="col">{{ Str::limit(trans_choice('team.coach', 1),10) }}</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer">
+                        <div class="card-tools">
+                            @can('update-teams')
+                            @if ($club->leagues->where('state', App\Enums\LeagueState::Selection())->count() > 0)
+                            <a href="{{ route('team.plan-leagues', ['language' => app()->getLocale(), 'club' => $club]) }}"
+                                class="btn btn-primary float-right">
+                                <i class="fas fa-map"></i> @lang('team.action.plan.season')</a>
+
+                            <a href="{{ route('club.team.pickchar', ['language' => app()->getLocale(), 'club' => $club]) }}"
+                                    class="btn btn-outline-primary float-right mr-2">
+                                    <i class="fas fa-edit"></i> @lang('team.action.pickchars')</a>
+                            @endif
+                            @endcan
+                        </div>
+                    </div>
+                    <!-- /.card-footer -->
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
                 <!-- card GAMES -->
                 <div class="card card-outline card-dark collapsed-card" id="gamesCard">
                     <x-card-header title="{{__('game.home')}}" icon="fas fa-trophy"  :count="count($games_home)" />
@@ -266,18 +280,18 @@
                     <!-- /.card-footer -->
                 </div>
                 <!-- /.card -->
-                <!-- all modals here -->
-                @include('club/includes/assign_league')
-                <x-confirm-deletion modalId="modalDeleteClub" modalTitle="{{ __('club.title.delete') }}" modalConfirm="{{ __('club.confirm.delete') }}" deleteType="{{ trans_choice('club.club',1) }}" />
-                <x-confirm-deletion modalId="modalDeleteMember" modalTitle="{{ __('role.title.delete') }}" modalConfirm="{{ __('role.confirm.delete') }}" deleteType="{{ trans_choice('role.member', 1) }}" />
-                <x-confirm-deletion modalId="modalDeleteGym" modalTitle="{{ __('gym.title.delete') }}" modalConfirm="{{ __('gym.confirm.delete') }}" deleteType="{{ trans_choice('gym.gym',1) }}" />
-                <x-confirm-deletion modalId="modalDeleteTeam" modalTitle="{{ __('team.title.delete') }}" modalConfirm="{{ __('team.confirm.delete') }}" deleteType="{{ trans_choice('team.team',1) }}" />
-                @include('member/includes/membership_add')
-                @include('member/includes/membership_modify')
-                <!-- all modals above -->
             </div>
         </div>
     </div>
+    <!-- all modals here -->
+    @include('club/includes/assign_league')
+    <x-confirm-deletion modalId="modalDeleteClub" modalTitle="{{ __('club.title.delete') }}" modalConfirm="{{ __('club.confirm.delete') }}" deleteType="{{ trans_choice('club.club',1) }}" />
+    <x-confirm-deletion modalId="modalDeleteMember" modalTitle="{{ __('role.title.delete') }}" modalConfirm="{{ __('role.confirm.delete') }}" deleteType="{{ trans_choice('role.member', 1) }}" />
+    <x-confirm-deletion modalId="modalDeleteGym" modalTitle="{{ __('gym.title.delete') }}" modalConfirm="{{ __('gym.confirm.delete') }}" deleteType="{{ trans_choice('gym.gym',1) }}" />
+    <x-confirm-deletion modalId="modalDeleteTeam" modalTitle="{{ __('team.title.delete') }}" modalConfirm="{{ __('team.confirm.delete') }}" deleteType="{{ trans_choice('team.team',1) }}" />
+    @include('member/includes/membership_add')
+    @include('member/includes/membership_modify')
+    <!-- all modals above -->
 @stop
 
 @section('js')
@@ -359,12 +373,16 @@
                         { data: 'action', name: 'action'},
                         { data: 'team', name: 'team'},
                         { data: 'registered', name: 'registered'},
-                        { data: 'selected', name: 'selected', width: '20%'},
+                        { data: 'selected', name: 'selected', width: '5%'},
                         { data: {
                             _: 'league.sort',
                             display: 'league.display',
                             sort: 'league.sort'
                          }, name: 'league'},
+                        {data: 'shirt_color', name: 'shirt_color'},
+                        {data: 'training', name: 'training'},
+                        {data: 'gameday', name: 'gameday'},
+                        {data: 'coach', name: 'coach'},
                         ]
             });
             $("button#addMembership").click(function() {
