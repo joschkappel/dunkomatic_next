@@ -48,8 +48,9 @@ class DatabaseBackUp extends Command
         $db_pwd = config('database.connections.dunknxt.password');
         $db_host = config('database.connections.dunknxt.host');
         $backup_folder = config('dunkomatic.folders.backup');
+        $env = env('APP_ENV') ?? 'unkown';
 
-        $filename = 'backup-' . $db .'-'.Carbon::now()->format('Y-m-d-His') . '.gz';
+        $filename = 'backup-' . $db .'-'.$env.'-'.Carbon::now()->format('Y-m-d-His') . '.gz';
         $filepath = storage_path( 'app/'.$backup_folder.'/'.$filename);
         $columnstats = $this->option('colstat');
 
