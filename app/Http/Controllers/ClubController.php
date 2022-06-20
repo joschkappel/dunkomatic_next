@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
 
 class ClubController extends Controller
 {
@@ -195,8 +196,21 @@ class ClubController extends Controller
         return $teamlist
             ->addIndexColumn()
             ->rawColumns([
-                'action','team','registered', 'selected','league.display'
+                'action','team','registered', 'selected','league.display','coach'
             ])
+            ->addColumn('training', function ($ct) {
+                return  Carbon::now()->startOfWeek($ct->training_day)->locale(app()->getLocale())->shortDayName .', '. Carbon::create($ct->training_time)->isoFormat('HH:mm');
+            })
+            ->addColumn('gameday', function ($ct) {
+                if ($ct->preferred_game_day != null){
+                    return Carbon::now()->startOfWeek($ct->preferred_game_day)->locale(app()->getLocale())->shortDayName .', '. Carbon::create($ct->preferred_game_time)->isoFormat('HH:mm');
+                } else {
+                    return '';
+                }
+            })
+            ->addColumn('coach', function ($ct) {
+                return '<a href="mailto:'.$ct->coach_email .'" >'.$ct->coach_name . '</a><i class="fas fa-phone m-2"></i>'. $ct->coach_phone1 ;
+            })
             ->addColumn('action', function ($ct) use ($club) {
                 if ( ! ( ($ct->league_id != null ) and ($ct->league->state->in([ LeagueState::Selection, LeagueState::Scheduling, LeagueState::Freeze, LeagueState::Live, LeagueState::Referees ])) )) {
                     $btn = '<span data-toggle="tooltip" title="'.__('team.action.delete',['name'=> $ct->name]).'">';
