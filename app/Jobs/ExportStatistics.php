@@ -51,7 +51,7 @@ class ExportStatistics implements ShouldQueue
         ->whereDate('created_at', $readdate)
         ->count();
 
-        $handle = fopen(storage_path("user_stats.csv"),"a");
+        $handle = fopen(storage_path("exports/user_stats.csv"),"a");
 
         fputcsv($handle, $data , ',');
 
