@@ -83,8 +83,12 @@ class FileDownloadControllerTest extends TestCase
     public function get_user_archive()
     {
 
-        $this->region_user->allow('access', $this->region);
-        Bouncer::refreshFor($this->region_user);
+        Bouncer::assign('regionadmin')->to($this->region_user);
+        Bouncer::allow($this->region_user)->to('manage', $this->region_user);
+        Bouncer::allow($this->region_user)->to('access', $this->testleague->region);
+        Bouncer::allow($this->region_user)->to('access', $this->testleague);
+        Bouncer::allow($this->region_user)->to('access', $this->testclub_assigned);
+        Bouncer::refresh();
 
         // check no file found
 

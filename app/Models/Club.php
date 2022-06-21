@@ -12,6 +12,7 @@ use App\Models\Membership;
 use App\Models\Game;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 
@@ -132,12 +133,36 @@ class Club extends Model implements Auditable
     public function users(): Collection
     {
         // get all users with access to this club
-        $club = $this;
-        return User::all()->filter( function ($user) use ($club) {
-            return $user->can('access', $club);
-        });
+        $users = DB::table('abilities')
+        ->join('permissions', 'abilities.id', '=', 'permissions.ability_id')
+        ->where('abilities.name','access')
+        ->where('abilities.entity_type', Club::class)
+        ->where('abilities.entity_id', $this->id)
+        ->where('permissions.entity_type', User::class)
+        ->select('permissions.entity_id')
+        ->get();
+        return User::whereIn('id', $users->pluck('entity_id'))->get();
     }
+    public function getHasAdminUserAttribute(): bool
+    {
+        // get all users with access to this club
+        $has_admin = false;
+        $users = DB::table('abilities')
+            ->join('permissions', 'abilities.id', '=', 'permissions.ability_id')
+            ->where('abilities.name','access')
+            ->where('abilities.entity_type', Club::class)
+            ->where('abilities.entity_id', $this->id)
+            ->where('permissions.entity_type', User::class)
+            ->select('permissions.entity_id')
+            ->get();
+        foreach(User::whereIn('id', $users->pluck('entity_id'))->get() as $u){
+            if ( $u->isAn('clubadmin') and $u->isNotAn('regionadmin')){
+                $has_admin = true;
+            }
+        }
 
+        return $has_admin;
+    }
     public function registered_teams(): HasMany
     {
         return $this->hasMany(Team::class)->whereNotNull('league_id');
