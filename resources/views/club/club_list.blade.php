@@ -9,6 +9,7 @@
     <th>@lang('club.shortname')</th>
     <th>@lang('club.name')</th>
     <th>@lang('club.club_no')</th>
+    <th>@lang('auth.user.account')</th>
     <th>{{ trans_choice('team.team', 2) }}</th>
     <th>{{ __('containing') }}@lang('team.assigned')</th>
     <th>{{ __('containing') }}@lang('team.registered')</th>
@@ -71,6 +72,15 @@
                     {
                         data: 'club_no',
                         name: 'club_no'
+                    },
+                    {
+                        data: {
+                            _: 'has_account.sort',
+                            filter: 'has_account.sort',
+                            display: 'has_account.display',
+                            sort: 'has_account.sort'
+                        },
+                        name: 'has_account.sort'
                     },
                     {
                         data: 'teams_count',

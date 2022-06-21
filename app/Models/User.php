@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Member;
 use App\Models\Region;
@@ -169,24 +169,42 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
 
     public function regions(): Collection
     {
-        $user = $this;
-        return Region::all()->filter(function ($region) use ($user) {
-            return $user->can('access', $region);
-        });
+        // get all regions this user can access
+        $regions = DB::table('abilities')
+        ->join('permissions', 'abilities.id', '=', 'permissions.ability_id')
+        ->where('abilities.name','access')
+        ->where('abilities.entity_type', Region::class)
+        ->where('permissions.entity_id', $this->id)
+        ->where('permissions.entity_type', User::class)
+        ->select('abilities.entity_id')
+        ->get();
+        return Region::whereIn('id', $regions->pluck('entity_id'))->get();
     }
     public function clubs(): Collection
     {
-        $user = $this;
-        return Club::all()->filter(function ($club) use ($user) {
-            return $user->can('access', $club);
-        });
+        // get all clubs this user can access
+        $clubs = DB::table('abilities')
+        ->join('permissions', 'abilities.id', '=', 'permissions.ability_id')
+        ->where('abilities.name','access')
+        ->where('abilities.entity_type', Club::class)
+        ->where('permissions.entity_id', $this->id)
+        ->where('permissions.entity_type', User::class)
+        ->select('abilities.entity_id')
+        ->get();
+        return Club::whereIn('id', $clubs->pluck('entity_id'))->get();
     }
     public function leagues(): Collection
     {
-        $user = $this;
-        return League::all()->filter(function ($league) use ($user) {
-            return $user->can('access', $league);
-        });
+        // get all leagues this user can access
+        $leagues = DB::table('abilities')
+        ->join('permissions', 'abilities.id', '=', 'permissions.ability_id')
+        ->where('abilities.name','access')
+        ->where('abilities.entity_type', League::class)
+        ->where('permissions.entity_id', $this->id)
+        ->where('permissions.entity_type', User::class)
+        ->select('abilities.entity_id')
+        ->get();
+        return League::whereIn('id', $leagues->pluck('entity_id'))->get();
     }
 
     public function messages(): HasMany

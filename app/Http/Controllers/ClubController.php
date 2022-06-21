@@ -68,7 +68,7 @@ class ClubController extends Controller
 
         return $clublist
             ->addIndexColumn()
-            ->rawColumns(['shortname.display', 'name.display', 'assigned_rel.display', 'registered_rel.display', 'selected_rel.display'])
+            ->rawColumns(['shortname.display', 'name.display', 'assigned_rel.display', 'registered_rel.display', 'selected_rel.display', 'has_account.display'])
             ->editColumn('shortname', function ($data) {
                 if ((Bouncer::can('access', $data)) or (Bouncer::is(Auth::user())->a('regionadmin'))) {
                     $link = '<a href="' . route('club.dashboard', ['language' => Auth::user()->locale, 'club' => $data->id]) . '">' . $data->shortname . '</a>';
@@ -76,6 +76,13 @@ class ClubController extends Controller
                     $link = '<a href="' . route('club.briefing', ['language' => Auth::user()->locale, 'club' => $data->id]) . '" class="text-info" >' . $data->shortname . '</a>';
                 }
                 return array('display' => $link, 'sort' => $data->shortname);
+            })
+            ->addColumn('has_account', function ($club) {
+                if ($club->has_admin_user){
+                    return array('display' => '<i class="fas fa-check-square text-success"></i>', 'sort' => true );
+                } else {
+                    return array('display' => '', 'sort' => false );
+                }
             })
             ->editColumn('region', function ($data) {
                 return $data->region->code;
