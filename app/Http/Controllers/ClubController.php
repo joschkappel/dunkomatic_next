@@ -79,9 +79,9 @@ class ClubController extends Controller
             })
             ->addColumn('has_account', function ($club) {
                 if ($club->has_admin_user){
-                    return array('display' => '<i class="fas fa-check-square text-success"></i>', 'sort' => true );
+                    return array('display' => '<i class="fas fa-check-square text-success"></i>', 'sort' => 'zugang' );
                 } else {
-                    return array('display' => '', 'sort' => false );
+                    return array('display' => '', 'sort' => '' );
                 }
             })
             ->editColumn('region', function ($data) {
