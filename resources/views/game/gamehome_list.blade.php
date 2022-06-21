@@ -16,7 +16,7 @@
   <th class="text-center">{{ __('game.overlap') }}</th>
 </x-card-list>
 <!-- all modals here -->
-@include('game/includes/edit_gamedate')
+@include('game/includes/edit_gamedate_home')
 <!-- all modals above -->
 @endsection
 

@@ -340,6 +340,10 @@ class LeagueTeamController extends Controller
 
         $team = Team::findOrFail($data['team_id']);
         $team->update($udata);
+        if ($league->games()->exists()){
+            // games are generated, insert team into gamelist
+            $this->inject_team_games($league, $team,  $data['league_no']);
+        }
         Log::notice('team league no set.', ['team-id' => $team->id, 'league-id' => $league->id, 'league-team-no' => $data['league_no']]);
 
         $action = __('notifications.event.char.picked', [
@@ -377,6 +381,12 @@ class LeagueTeamController extends Controller
 
         $team = Team::where('id', $data['team_id'])->where('league_id', $league->id)->where('league_no', $data['league_no'])->first();
         if ($team != null) {
+
+            if ($league->games()->exists()){
+                // games are generagted, remove/blank games of this team
+                $this->blank_team_games($league, $team);
+            }
+
             $action = __('notifications.event.char.released', [
                 'league' => $league->shortname,
                 'club' => $team->club->shortname,
