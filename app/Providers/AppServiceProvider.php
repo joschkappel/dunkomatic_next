@@ -102,6 +102,7 @@ class AppServiceProvider extends ServiceProvider
         // build menu events
         $events->listen(BuildingMenu::class, function (BuildingMenu $event) {
             // MAIN MENU REGION
+
             $regionmenu = [
                 'text' => Str::length( session('cur_region')->name ) > 20 ? session('cur_region')->code : session('cur_region')->name,
                 'icon' => 'fas fa-globe-europe',

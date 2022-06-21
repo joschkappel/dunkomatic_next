@@ -170,41 +170,53 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
     public function regions(): Collection
     {
         // get all regions this user can access
-        $regions = DB::table('abilities')
-        ->join('permissions', 'abilities.id', '=', 'permissions.ability_id')
-        ->where('abilities.name','access')
-        ->where('abilities.entity_type', Region::class)
-        ->where('permissions.entity_id', $this->id)
-        ->where('permissions.entity_type', User::class)
-        ->select('abilities.entity_id')
-        ->get();
-        return Region::whereIn('id', $regions->pluck('entity_id'))->get();
+        if ($this->isAn('superadmin')){
+            return Region::all();
+        } else {
+            $regions = DB::table('abilities')
+            ->join('permissions', 'abilities.id', '=', 'permissions.ability_id')
+            ->where('abilities.name','access')
+            ->where('abilities.entity_type', Region::class)
+            ->where('permissions.entity_id', $this->id)
+            ->where('permissions.entity_type', User::class)
+            ->select('abilities.entity_id')
+            ->get();
+            return Region::whereIn('id', $regions->pluck('entity_id'))->get();
+        }
     }
     public function clubs(): Collection
     {
-        // get all clubs this user can access
-        $clubs = DB::table('abilities')
-        ->join('permissions', 'abilities.id', '=', 'permissions.ability_id')
-        ->where('abilities.name','access')
-        ->where('abilities.entity_type', Club::class)
-        ->where('permissions.entity_id', $this->id)
-        ->where('permissions.entity_type', User::class)
-        ->select('abilities.entity_id')
-        ->get();
-        return Club::whereIn('id', $clubs->pluck('entity_id'))->get();
+        if ($this->isAn('superadmin')){
+            return Club::all();
+        } else {
+            // get all clubs this user can access
+            $clubs = DB::table('abilities')
+            ->join('permissions', 'abilities.id', '=', 'permissions.ability_id')
+            ->where('abilities.name','access')
+            ->where('abilities.entity_type', Club::class)
+            ->where('permissions.entity_id', $this->id)
+            ->where('permissions.entity_type', User::class)
+            ->select('abilities.entity_id')
+            ->get();
+            return Club::whereIn('id', $clubs->pluck('entity_id'))->get();
+        }
     }
     public function leagues(): Collection
     {
-        // get all leagues this user can access
-        $leagues = DB::table('abilities')
-        ->join('permissions', 'abilities.id', '=', 'permissions.ability_id')
-        ->where('abilities.name','access')
-        ->where('abilities.entity_type', League::class)
-        ->where('permissions.entity_id', $this->id)
-        ->where('permissions.entity_type', User::class)
-        ->select('abilities.entity_id')
-        ->get();
-        return League::whereIn('id', $leagues->pluck('entity_id'))->get();
+        if ($this->isAn('superadmin')){
+            return League::all();
+        } else {
+            // get all leagues this user can access
+            $leagues = DB::table('abilities')
+            ->join('permissions', 'abilities.id', '=', 'permissions.ability_id')
+            ->where('abilities.name','access')
+            ->where('abilities.entity_type', League::class)
+            ->where('permissions.entity_id', $this->id)
+            ->where('permissions.entity_type', User::class)
+            ->select('abilities.entity_id')
+            ->get();
+            return League::whereIn('id', $leagues->pluck('entity_id'))->get();
+        }
     }
 
     public function messages(): HasMany
