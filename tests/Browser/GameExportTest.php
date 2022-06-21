@@ -35,7 +35,7 @@ class GameExportTest extends DuskTestCase
         static::$user = User::factory()->approved()->create();
         Bouncer::retract( static::$user->getRoles()  )->from(static::$user);
         Bouncer::assign( 'superadmin')->to(static::$user);
-        Bouncer::refreshFor(static::$user);
+        Bouncer::refresh();
     }
 
     use withFaker, LeagueFSM;
