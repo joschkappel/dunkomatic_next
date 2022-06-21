@@ -75,7 +75,11 @@ class BouncerSeeder extends Seeder
         Bouncer::allow($regionadmin)->to($create_clubs);
         Bouncer::allow($regionadmin)->to($update_clubs);
         Bouncer::allow($regionadmin)->to($view_clubs);
+
+        Bouncer::allow($regionadmin)->to($create_teams);
+        Bouncer::allow($regionadmin)->to($update_teams);
         Bouncer::allow($regionadmin)->to($view_teams);
+
         Bouncer::allow($regionadmin)->to($view_gyms);
 
         Bouncer::allow($regionadmin)->to($update_regions);

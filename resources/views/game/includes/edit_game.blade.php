@@ -200,6 +200,7 @@
                             var url = "{{ route('game.update', ['game' => ':game:']) }}";
                             url = url.replace(':game:', data.id);
                             $('#formGame').attr('action', url);
+                            $('#selGym').val(null).empty().select2('destroy');
 
                             moment.locale('{{ app()->getLocale() }}');
                             var gdate = moment(data.game_date).format('L');
@@ -242,6 +243,8 @@
                         type: "get",
                         delay: 250,
                         processResults: function(response) {
+                            console.log('got gyms for club');
+                            console.log(urlgyms);
                             return {
                                 results: response
                             };
@@ -309,7 +312,7 @@
                 $("#game_no").ionRangeSlider({
                     skin: "big",
                     min: 1,
-                    max: {{ $league->size * ( $league->size-1) }} ,
+                    max: {{ $league->size * ( $league->size-1) * $league->schedule->iterations }} ,
                     grid: true,
                     step: 1,
                     prettify: true,
@@ -338,7 +341,7 @@
                     $("#game_no").data("ionRangeSlider").update({ from: $('#game_no').val()-1 });
                     if ( $('#game_no').val() == '1'){
                       $('#btnPrev').addClass('disabled');
-                    } else if ( $('#game_no').val() == '{{ $league->size * ( $league->size-1) }}' ){
+                    } else if ( $('#game_no').val() == '{{ $league->size * ( $league->size-1) * $league->schedule->iterations }}' ){
                         $('#btnNext').addClass('disabled')
                     } else {
                         $('#btnNext').removeClass('disabled');
@@ -349,7 +352,7 @@
                     $("#game_no").data("ionRangeSlider").update({ from: parseInt($('#game_no').val())+1 });
                     if ( $('#game_no').val() == '1'){
                       $('#btnPrev').addClass('disabled');
-                    } else if ( $('#game_no').val() == '{{ $league->size * ( $league->size-1) }}' ){
+                    } else if ( $('#game_no').val() == '{{ $league->size * ( $league->size-1) * $league->schedule->iterations }}' ){
                         $('#btnNext').addClass('disabled')
                     } else {
                         $('#btnNext').removeClass('disabled');

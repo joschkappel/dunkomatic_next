@@ -79,12 +79,13 @@ class LeagueGameController extends Controller
                 return ($game->game_time == null) ? '' : Carbon::parse($game->game_time)->isoFormat('LT');
             })
             ->editColumn('game_no', function ($game) {
-                $link = '<a href="#" id="gameEditLink" data-id="' . $game->id .
+/*                 $link = '<a href="#" id="gameEditLink" data-id="' . $game->id .
                     '" data-game-date="' . $game->game_date . '" data-game-time="' . $game->game_time . '" data-club-id-home="' . $game->club_id_home .
                     '" data-gym-no="' . $game->gym_no . '" data-gym-id="' . $game->gym_id . '" data-league="' . $game->league['shortname'] .
                     '" data-team-home="' . $game->team_home . '" data-team-id-home="' . $game->team_id_home . '" data-team-guest="' . $game->team_guest . '" data-team-id-guest="' . $game->team_id_guest .
                     '" data-game-no="' . $game->game_no . '" data-league-id="' . $game->league_id .
-                    '">' . $game->game_no . ' <i class="fas fa-arrow-circle-right"></i></a>';
+                    '">' . $game->game_no . ' <i class="fas fa-arrow-circle-right"></i></a>'; */
+                $link = $game->game_no;
                 return array('display' => $link, 'sort' => $game->game_no);
             })
             ->editColumn('game_date', function ($game) use ($language) {
