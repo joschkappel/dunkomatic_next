@@ -237,7 +237,7 @@ class ScheduleController extends Controller
         if ($region->is_top_level){
             $schedule = $region->schedules()->with('league_size','leagues')->withCount('events')->orderBy('name')->get();
         } else {
-            $schedule = Schedule::whereIn('region_id', [ $region->id, $region->parentRegion->id ])->has('events')->with('league_size','leagues')->withCount('events')->orderBy('name')->get();
+            $schedule = Schedule::whereIn('region_id', [ $region->id, $region->parentRegion->id ])->with('league_size','leagues')->withCount('events')->orderBy('name')->get();
         }
 
         Log::info('preparing schedule list');
