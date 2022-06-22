@@ -166,12 +166,22 @@ class ScheduleController extends Controller
      */
     public function sb_region_size(Region $region, LeagueSize $size)
     {
-        $schedules = $region->schedules()
+/*         $schedules = $region->schedules()
             ->where(function (Builder $query) use ($size) {
                 return $query->where('league_size_id', $size->id)
                     ->orWhere('league_size_id', LeagueSize::UNDEFINED);
             })
-            ->orderBy('name', 'ASC')->get();
+            ->orderBy('name', 'ASC')->get(); */
+
+        $schedules = Schedule::where('league_size_id', $size->id)
+        ->whereIn('region_id', [$region->id, $region->parentRegion->id] )
+        ->orderBy('name', 'ASC')
+        ->get();
+        $cust_schedules = Schedule::where('league_size_id', LeagueSize::UNDEFINED)
+        ->where('region_id', $region->id )
+        ->orderBy('name', 'ASC')
+        ->get();
+        $schedules = $schedules->concat($cust_schedules);
 
 
         Log::info('preparing select2 schedule for leaguesize list.', ['leaguesize-id'=>$size->id, 'count' => count($schedules)] );
