@@ -323,8 +323,7 @@ class RegionControllerTest extends TestCase
             ]);
 
         $response
-            ->assertStatus(302)
-            ->assertViewIs('region.region_edit');
+            ->assertStatus(302);
         $this->assertDatabaseHas('regions', ['name' => 'HBVDAupdated']);
     }
 
@@ -378,8 +377,7 @@ class RegionControllerTest extends TestCase
             ]);
 
         // $response->dumpHeaders();
-        $response->assertStatus(302)
-            ->assertViewIs('region.region_edit');
+        $response->assertStatus(302);
 
         Notification::assertNothingSent();
 
