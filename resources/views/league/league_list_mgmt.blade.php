@@ -12,6 +12,34 @@ th, td { white-space: nowrap; }
                 <div class="card-header">
                     <h3 class="card-title font-weight-bold">@lang('league.title.management')</h3>
                     <div class="card-tools">
+                        @if (Auth::user()->isAn('regionadmin','superadmin'))
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-danger">all to previous state</button>
+                            <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu">
+                                @foreach ($states as $s)
+                                @if ($s->is( App\Enums\LeagueState::Selection))
+                                    <button id="btnStateChange" class="dropdown-item btn btn-info"><i class="fas  fa-list-ol pr-2"></i> nach <i class="fas fa-file-signature"></i></button>
+                                @endif
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-danger">all to next state</button>
+                            <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu">
+                                @foreach ($states as $s)
+                                @if ($s->is( App\Enums\LeagueState::Selection))
+                                    <button id="btnStateChange" class="dropdown-item btn btn-info" data-from-state="{{App\Enums\LeagueState::Selection}}" data-action="{{App\Enums\LeagueStateChange::FreezeLeague}}"><i class="fas  fa-list-ol pr-2"></i> nach <i class="fas fa-pause-circle"></i></button>
+                                @endif
+                                @endforeach
+                            </div>
+                        </div>
+                        @endif
                         <span>
                             @can('create-leagues')
                             <a href="{{ route('league.create', ['language'=>app()->getLocale(), 'region'=>$region]) }}" class="btn btn-success"><i
@@ -295,7 +323,7 @@ th, td { white-space: nowrap; }
                 var team_id = $(this).data("team-id");
                 var league_no = $(this).data("league-no");
                 var league_id = $(this).data("league-id");
-                var url = "{{ route('league.team.releasechar', ['league' => ':league:']) }}"
+                var url = "{{ route('league.team.releasechar', ['league' => ':league:']) }}";
                 url = url.replace(':league:', league_id);
 
                 $.ajax( {
@@ -313,6 +341,31 @@ th, td { white-space: nowrap; }
                         msg = msg.replace('xleague_nox', league_no);
                         toastr.success(msg, '{{__('team.action.pickchars')}}');
                         console.log('reloading ...');
+                    },
+                    error: function (xhr){
+                        toastr.error(xhr.responseText, '{{__('team.action.pickchars')}}');
+                    },
+                    cache: false
+                });
+            })
+
+            $(document).on("click", "button#btnStateChange", function (e) {
+                var from_state = $(this).data("from-state");
+                var action = $(this).data("action");
+                var url = "{{ route('region.league.state.change', ['region' => $region]) }}";
+
+                $.ajax( {
+                    url: url,
+                    dataType: "json",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        action: action,
+                        from_state: from_state,
+                    },
+                    type: "post",
+                    delay: 250,
+                    success: function (response) {
+                        toastr.success(msg, '{{__('team.action.pickchars')}}');
                     },
                     error: function (xhr){
                         toastr.error(xhr.responseText, '{{__('team.action.pickchars')}}');
