@@ -174,7 +174,7 @@ class ScheduleController extends Controller
             ->orderBy('name', 'ASC')->get(); */
 
         $schedules = Schedule::where('league_size_id', $size->id)
-        ->whereIn('region_id', [$region->id, $region->parentRegion->id] )
+        ->whereIn('region_id', [$region->id, $region->parentRegion->id ?? null ] )
         ->orderBy('name', 'ASC')
         ->get();
         $cust_schedules = Schedule::where('league_size_id', LeagueSize::UNDEFINED)
