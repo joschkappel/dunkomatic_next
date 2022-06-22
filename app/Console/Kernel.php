@@ -19,6 +19,8 @@ use App\Jobs\GameNotScheduled;
 use App\Models\Region;
 use App\Enums\JobFrequencyType;
 use App\Jobs\ExportStatistics;
+use App\Jobs\OpenLeagueState;
+use App\Jobs\CloseLeagueState;
 use App\Jobs\ProcessFilesCleanup;
 use App\Jobs\ProcessCustomMessages;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -53,6 +55,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('telescope:prune')->dailyAt('00:10');
         $schedule->command('authentication-log:purge')->monthlyOn(2,'00:05')->emailOutputOnFailure('dmatic.master@gmail.com');
         // $schedule->job(new ExportStatistics(), 'janitor')->everyMinute();
+        $schedule->job(new OpenLeagueState(), 'janitor')->dailyAt('07:58')->emailOutputOnFailure('dmatic.master@gmail.com');
+        $schedule->job(new CloseLeagueState(), 'janitor')->dailyAt('19:58')->emailOutputOnFailure('dmatic.master@gmail.com');
 
         // schedule region specific jobs
         $regions = Region::with('regionadmins')->get();
