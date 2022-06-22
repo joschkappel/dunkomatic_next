@@ -167,7 +167,7 @@
         </div>
         <div class="tab-pane fade " id="leaguestates" role="tabpanel" aria-labelledby="leaguestates-tab">
 
-            <div class="form-row m-2">
+{{--             <div class="form-row m-2">
                 <div class="col-sm-6">
                 </div>
                 <div class="col-sm-4">
@@ -178,40 +178,21 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             <div class="form-row m-2">
-                <label for="closeassignment"
-                    class="col-sm-6 col-form-label">@lang('region.open_team_registration')</label>
-                <div class="col-sm-4">
-                    <div class="input-group date" id="closeassignment" data-target-input="nearest">
-                        <input type="text"
-                            class="form-control datetimepicker-input @error('close_assignment_at') is-invalid @enderror"
-                            data-target="#closeassignment" name="close_assignment_at" />
-                        <div class="input-group-append" data-target="#closeassignment"
-                            data-toggle="datetimepicker">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                        </div>
-                        @error('close_assignment_at')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
-            </div>
-            <div class="form-row m-2">
-                <label for="closeregistration"
+                <label for="openselection"
                     class="col-sm-6 col-form-label">@lang('region.open_char_selection')</label>
                 <div class="col-sm-4">
-                    <div class="input-group date" id="closeregistration"
-                        data-target-input="nearest">
+                    <div class="input-group date" id="openselection" data-target-input="nearest">
                         <input type="text"
-                            class="form-control datetimepicker-input @error('close_registration_at') is-invalid @enderror"
-                            data-target="#closeregistration" name="close_registration_at" />
-                        <div class="input-group-append" data-target="#closeregistration"
+                            class="form-control datetimepicker-input @error('open_selection_at') is-invalid @enderror"
+                            data-target="#openselection" name="open_selection_at" />
+                        <div class="input-group-append" data-target="#openselection"
                             data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                         </div>
-                        @error('close_registration_at')
+                        @error('open_selection_at')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -219,7 +200,7 @@
             </div>
             <div class="form-row m-2">
                 <label for="closeselection"
-                    class="col-sm-6 col-form-label">@lang('region.freeze_league')</label>
+                    class="col-sm-6 col-form-label">@lang('region.close_char_selection')</label>
                 <div class="col-sm-4">
                     <div class="input-group date" id="closeselection" data-target-input="nearest">
                         <input type="text"
@@ -236,8 +217,27 @@
                 </div>
             </div>
             <div class="form-row m-2">
+                <label for="openscheduling"
+                    class="col-sm-6 col-form-label">@lang('region.open_game_scheduling')</label>
+                <div class="col-sm-4">
+                    <div class="input-group date" id="openscheduling"
+                        data-target-input="nearest">
+                        <input type="text"
+                            class="form-control datetimepicker-input @error('open_scheduling_at') is-invalid @enderror"
+                            data-target="#openscheduling" name="open_scheduling_at" />
+                        <div class="input-group-append" data-target="#openscheduling"
+                            data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                        @error('open_scheduling_at')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+            <div class="form-row m-2">
                 <label for="closescheduling"
-                    class="col-sm-6 col-form-label">@lang('region.open_ref_assignment')</label>
+                    class="col-sm-6 col-form-label">@lang('region.close_game_scheduling')</label>
                 <div class="col-sm-4">
                     <div class="input-group date" id="closescheduling" data-target-input="nearest">
                         <input type="text"
@@ -305,35 +305,65 @@
 
             moment.locale('{{ app()->getLocale() }}');
 
-            $('#closeassignment').datetimepicker({
+            $('#openselection').datetimepicker({
                 useCurrent: true,
                 format: 'L',
                 locale: '{{ app()->getLocale() }}',
-                // defaultDate: moment('{{ $region->close_assignment_at ?? now()->modify("+1 day") }}')
+                @if( old('open_selection_at') !== null )
+                    defaultDate: moment('{{ old('open_selection_at') }}', 'L')
+                @else
+                    @isset( $region->open_selection_at)
+                        defaultDate: moment('{{ $region->open_selection_at}}')
+                    @endisset
+                @endif
             });
-            $('#closeregistration').datetimepicker({
+            $('#openscheduling').datetimepicker({
                 useCurrent: false,
                 format: 'L',
                 locale: '{{ app()->getLocale() }}',
-                // defaultDate: moment('{{ $region->close_registration_at ?? now()->modify("+2 week") }}')
+                @if( old('open_scheduling_at') !== null )
+                    defaultDate: moment('{{ old('open_scheduling_at') }}', 'L')
+                @else
+                    @isset( $region->open_scheduling_at)
+                        defaultDate: moment('{{ $region->open_scheduling_at}}')
+                    @endisset
+                @endif
             });
             $('#closeselection').datetimepicker({
                 useCurrent: false,
                 format: 'L',
                 locale: '{{ app()->getLocale() }}',
-                // defaultDate: moment('{{ $region->close_selection_at ?? now()->modify("+4 week") }}')
+                @if( old('close_selection_at') !== null )
+                    defaultDate: moment('{{ old('close_selection_at') }}', 'L')
+                @else
+                    @isset( $region->close_selection_at)
+                        defaultDate: moment('{{ $region->close_selection_at}}')
+                    @endisset
+                @endif
             });
             $('#closescheduling').datetimepicker({
                 useCurrent: false,
                 format: 'L',
                 locale: '{{ app()->getLocale() }}',
-                // defaultDate: moment('{{ $region->close_scheduling_at ?? now()->modify("+6 week") }}')
+                @if( old('close_scheduling_at') !== null )
+                    defaultDate: moment('{{ old('close_scheduling_at') }}', 'L')
+                @else
+                    @isset( $region->close_scheduling_at)
+                        defaultDate: moment('{{ $region->close_scheduling_at}}')
+                    @endisset
+                @endif
             });
             $('#closereferees').datetimepicker({
                 useCurrent: false,
                 format: 'L',
                 locale: '{{ app()->getLocale() }}',
-                // defaultDate: moment('{{ $region->close_referees_at ?? now()->modify("+8 week") }}')
+                @if( old('close_referees_at') !== null )
+                    defaultDate: moment('{{ old('close_referees_at') }}', 'L')
+                @else
+                    @isset( $region->close_referees_at)
+                        defaultDate: moment('{{ $region->close_referees_at}}')
+                    @endisset
+                @endif
             });
 
             $("#selNolead").select2({

@@ -44,8 +44,8 @@ use Illuminate\Support\Str;
  * @property int $job_club_reports
  * @property mixed $fmt_club_reports
  * @property int $job_exports
- * @property \Illuminate\Support\Carbon|null $close_assignment_at
- * @property \Illuminate\Support\Carbon|null $close_registration_at
+ * @property \Illuminate\Support\Carbon|null $open_scheduling_at
+ * @property \Illuminate\Support\Carbon|null $open_selection_at
  * @property \Illuminate\Support\Carbon|null $close_selection_at
  * @property \Illuminate\Support\Carbon|null $close_scheduling_at
  * @property \Illuminate\Support\Carbon|null $close_referees_at
@@ -121,7 +121,7 @@ class Region extends Model
         'job_game_notime', 'job_noleads', 'job_email_valid',
         'job_league_reports', 'job_club_reports', 'job_exports',
         'fmt_league_reports', 'fmt_club_reports',
-        'close_assignment_at', 'close_registration_at',
+        'open_scheduling_at', 'open_selection_at',
         'close_selection_at', 'close_scheduling_at', 'close_referees_at',
         'auto_state_change'
     ];
@@ -129,8 +129,8 @@ class Region extends Model
     protected $casts = [
         'fmt_league_reports' => ReportFileType::class,
         'fmt_club_reports' => ReportFileType::class,
-        'close_assignment_at' => 'date',
-        'close_registration_at' => 'date',
+        'open_scheduling_at' => 'date',
+        'open_selection_at' => 'date',
         'close_selection_at' => 'date',
         'close_scheduling_at' => 'date',
         'close_referees_at' => 'date',
