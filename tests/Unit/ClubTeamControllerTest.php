@@ -177,7 +177,7 @@ class ClubTeamControllerTest extends TestCase
                           'preferred_game_day' => $team->preferred_game_day,
                           'preferred_game_time' => '12:00',
                           'coach_name'  => 'testteam2',
-                          'coach_email' => $team->coach_email,
+                          'coach_email' => 'coach@gmail.com',
                           'coach_phone1' => $team->coach_phone1,
                           'shirt_color' => $team->shirt_color
                         ]);
