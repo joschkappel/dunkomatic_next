@@ -62,9 +62,7 @@ class TeamValidationTest extends TestCase
                 'preferred_game_time wrong minutes' => ['preferred_game_time','07:22'],
                 'preferred_game_time wrong hours' => ['preferred_game_time','05:00'],
                 'coach_name missing' => ['coach_name',''],
-                'coach_email missing' => ['coach_email',''],
                 'coach_email no email' => ['coach_email','testemail'],
-                'coach_phone1 missing' => ['coach_phone1',''],
                 'shirt_color missing' => ['shirt_color',''],
             ];
     }
