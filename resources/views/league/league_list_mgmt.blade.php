@@ -14,29 +14,49 @@ th, td { white-space: nowrap; }
                     <div class="card-tools">
                         @if (Auth::user()->isAn('regionadmin','superadmin'))
                         <div class="btn-group">
-                            <button type="button" class="btn btn-danger">all to previous state</button>
-                            <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              <span class="sr-only">Toggle Dropdown</span>
-                            </button>
+                            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lang('league.prev.state')</button>
                             <div class="dropdown-menu">
-                                @foreach ($states as $s)
-                                @if ($s->is( App\Enums\LeagueState::Selection))
-                                    <button id="btnStateChange" class="dropdown-item btn btn-info"><i class="fas  fa-list-ol pr-2"></i> nach <i class="fas fa-file-signature"></i></button>
+                                @if ( $states->contains(App\Enums\LeagueState::Referees()))
+                                    <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::ReOpenScheduling }}" data-from-state="{{ App\Enums\LeagueState::Referees }}">
+                                        @lang('league.action.open.scheduling') <i class="fas fa-arrow-left px-2"></i>{!! App\Enums\LeagueState::Referees()->getIcon() !!}</button>
                                 @endif
-                                @endforeach
+                                @if ( $states->contains(App\Enums\LeagueState::Scheduling()))
+                                    <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::ReFreezeLeague }}" data-from-state="{{ App\Enums\LeagueState::Scheduling }}">
+                                        @lang('league.action.open.freeze') <i class="fas fa-arrow-left px-2"></i>{!! App\Enums\LeagueState::Scheduling()->getIcon() !!}</button>
+                                @endif
+                                @if ( $states->contains(App\Enums\LeagueState::Freeze()))
+                                    <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::ReOpenSelection }}" data-from-state="{{ App\Enums\LeagueState::Freeze }}">
+                                        @lang('league.action.open.selection') <i class="fas fa-arrow-left px-2"></i>{!! App\Enums\LeagueState::Freeze()->getIcon() !!}</button>
+                                @endif
+                                @if ( $states->contains(App\Enums\LeagueState::Selection()))
+                                    <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::ReOpenRegistration }}" data-from-state="{{ App\Enums\LeagueState::Selection }}">
+                                        @lang('league.action.open.registration') <i class="fas fa-arrow-left px-2"></i>{!! App\Enums\LeagueState::Selection()->getIcon() !!}</button>
+                                @endif
                             </div>
                         </div>
                         <div class="btn-group">
-                            <button type="button" class="btn btn-danger">all to next state</button>
-                            <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
+                            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lang('league.next.state')</button>
                             <div class="dropdown-menu">
-                                @foreach ($states as $s)
-                                @if ($s->is( App\Enums\LeagueState::Selection))
-                                    <button id="btnStateChange" class="dropdown-item btn btn-info" data-from-state="{{App\Enums\LeagueState::Selection}}" data-action="{{App\Enums\LeagueStateChange::FreezeLeague}}"><i class="fas  fa-list-ol pr-2"></i> nach <i class="fas fa-pause-circle"></i></button>
+                                @if ( $states->contains(App\Enums\LeagueState::Registration()))
+                                    <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::OpenSelection }}" data-from-state="{{ App\Enums\LeagueState::Registration }}">
+                                        {!! App\Enums\LeagueState::Registration()->getIcon() !!}<i class="fas fa-arrow-right px-2"></i> @lang('league.action.open.selection')</button>
                                 @endif
-                                @endforeach
+                                @if ( $states->contains(App\Enums\LeagueState::Selection()))
+                                    <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::FreezeLeague }}" data-from-state="{{ App\Enums\LeagueState::Selection }}">
+                                        {!! App\Enums\LeagueState::Selection()->getIcon() !!}<i class="fas fa-arrow-right px-2"></i> @lang('league.action.open.freeze')</button>
+                                @endif
+                                @if ( $states->contains(App\Enums\LeagueState::Freeze()))
+                                    <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::OpenScheduling }}" data-from-state="{{ App\Enums\LeagueState::Freeze }}">
+                                        {!! App\Enums\LeagueState::Freeze()->getIcon() !!}<i class="fas fa-arrow-right px-2"></i> @lang('league.action.open.scheduling')</button>
+                                @endif
+                                @if ( $states->contains(App\Enums\LeagueState::Scheduling()))
+                                    <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::OpenReferees }}" data-from-state="{{ App\Enums\LeagueState::Scheduling }}">
+                                        {!! App\Enums\LeagueState::Scheduling()->getIcon() !!}<i class="fas fa-arrow-right px-2"></i> @lang('league.action.open.referees')</button>
+                                @endif
+                                @if ( $states->contains(App\Enums\LeagueState::Referees()))
+                                    <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::GoLiveLeague }}" data-from-state="{{ App\Enums\LeagueState::Referees }}">
+                                        {!! App\Enums\LeagueState::Referees()->getIcon() !!}<i class="fas fa-arrow-right px-2"></i> @lang('league.action.close.golive')</button>
+                                @endif
                             </div>
                         </div>
                         @endif
@@ -365,10 +385,10 @@ th, td { white-space: nowrap; }
                     type: "post",
                     delay: 250,
                     success: function (response) {
-                        toastr.success(msg, '{{__('team.action.pickchars')}}');
+                        toastr.success('{{__('league.action.statechanged')}}');
                     },
                     error: function (xhr){
-                        toastr.error(xhr.responseText, '{{__('team.action.pickchars')}}');
+                        toastr.error(xhr.responseText, '{{__('league.action.statechanged')}}');
                     },
                     cache: false
                 });

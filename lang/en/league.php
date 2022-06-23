@@ -38,6 +38,7 @@ return [
   'pickchar_enabled' => 'League character picking enbaled',
   'member.action.create' => 'New Member',
   'sb_freechar' => 'Select a free League No',
+  'action.statechanged' => 'State of all selected leagues is changed',
   'action.assignClub' => 'Assign Club',
   'action.deassignClub' => 'Remove Club',
   'action.registerTeam' => 'Register Team',

@@ -82,7 +82,7 @@ class LeagueStateController extends Controller
         return true;
     }
     /**
-     * change state by seeting state dates
+     * change state by setting state dates
      *
      * @param Request $request
      * @param  \App\Models\Region  $region
@@ -100,9 +100,12 @@ class LeagueStateController extends Controller
 
         // get all leagues that are in from_state
         $leagues = $region->leagues()->where('state',$data['from_state'])->get();
-        Log::debug($leagues);
+        foreach ($leagues as $l){
+            // for each league call state change
+            $this->change_state($request, $l);
+        }
 
-        // for each league call state chenge
+
 
         return true;
     }
