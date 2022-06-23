@@ -14,7 +14,7 @@
                         <div class="form-group row">
                             <label for="greeting" class="col-sm-2 col-form-label">@lang('message.greeting')</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control @error('greeting') is-invalid @enderror" name="greeting" id="greeting"></input>
+                                <input type="text" class="form-control @error('greeting') is-invalid @enderror" name="greeting" id="greeting" placeholder="@lang('message.greeting')" value="{{ old('greeting') }}"></input>
                               @error('greeting')
                               <div class="invalid-feedback">{{ $message }}</div>
                               @enderror
@@ -32,7 +32,7 @@
                         <div class="form-group row">
                             <label for="salutation" class="col-sm-2 col-form-label">@lang('message.salutation')</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control @error('salutation') is-invalid @enderror" name="salutation" id="salutation"></input>
+                                <input type="text" class="form-control @error('salutation') is-invalid @enderror" name="salutation" id="salutation" placeholder="@lang('message.salutation')" value="{{ old('salutation') }}"></input>
                               @error('salutation')
                               <div class="invalid-feedback">{{ $message }}</div>
                               @enderror
@@ -125,6 +125,8 @@
             ['view', ['fullscreen', 'codeview', 'help']],
           ],
         });
+        var content = '{!! (old('body')!='') ? old('body') : '' !!}';
+        $('#summernote').summernote('code',content);
 
         $("#selDestTo").select2({
             width: '100%',
