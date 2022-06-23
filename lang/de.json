@@ -69,5 +69,11 @@
   "previous": "bisher",
   "Enter the Result of the Equation": "Bitte das Ergebnis der Aufgabe oben eingeben",
   "All clubs in region": "Alle Vereine des Bezirks",
-  "All leagues in region": "Alle Runden des Bezirks"
+  "All leagues in region": "Alle Runden des Bezirks",
+  "superadmin": "Administratoren",
+  "regionadmin": "Bezirksverwalter",
+  "clubadmin": "Vereinsverwalter",
+  "leagueadmin": "Rundenverwalter",
+  "guest": "Gäste",
+  "candidate": "Registrierte"
 }

@@ -88,7 +88,7 @@
         <div class="input-group mb-3">
             <select class='js-sel-user-to form-control select2 @error("to_users") is-invalid @enderror' id='selDestToUser' name="to_users[]">
                 @foreach ( $user_scopetype as $k => $st )
-                <option value="{{ $k }}">{{ $st }}</option>
+                <option value="{{ $k }}">{{  __( $st )  }}</option>
                 @endforeach
             </select>
             @error("to_users")
