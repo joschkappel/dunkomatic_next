@@ -246,8 +246,6 @@ class RegionController extends Controller
 
         $openselectionrule = $daterule;
         if ($request->input('open_selection_at')){
-            $openselectionrule .= '|after:today';
-
             if ($request->input('close_selection_at')){
                 $openselectionrule .= '|before:close_selection_at';
             } elseif ($request->input('open_scheduling_at')){
@@ -263,8 +261,6 @@ class RegionController extends Controller
         if ($request->input('close_selection_at')){
             if ($request->input('open_selection_at')){
                 $closeselectionrule .= '|after:open_selection_at';
-            } else {
-                $closeselectionrule .= '|after:today';
             }
 
             if ($request->input('open_scheduling_at')){
