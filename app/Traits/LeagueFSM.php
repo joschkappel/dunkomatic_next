@@ -4,12 +4,10 @@ namespace App\Traits;
 
 use App\Enums\LeagueState;
 use App\Models\League;
-use App\Models\Club;
 use App\Enums\Role;
 
 use App\Traits\GameManager;
 
-use App\Notifications\RegisterTeams;
 use App\Notifications\SelectTeamLeagueNo;
 use App\Notifications\LeagueGamesGenerated;
 
@@ -20,7 +18,7 @@ trait LeagueFSM
 {
     use GameManager;
 
-    public function open_char_selection(League $league): void
+    public function open_char_selection(League $league, $send_email=false): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Selection()->key]);
 
@@ -28,21 +26,23 @@ trait LeagueFSM
         $league->registration_closed_at = now();
         $league->save();
 
-/*         $clubs = $league->clubs;
-        foreach ($clubs as $c) {
-            $member = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
+        if ($send_email){
+            $teams = $league->teams;
+            foreach ($teams as $t) {
+                $member = $t->club->members()->wherePivot('role_id', Role::ClubLead)->first();
 
-            if (isset($member)) {
-                $member->notify(new SelectTeamLeagueNo($league, $c, $member->name));
-                Log::info('[NOTIFICATION] select league team number.', ['league-id' => $league->id, 'member-id' => $member->id]);
+                if (isset($member)) {
+                    $member->notify(new SelectTeamLeagueNo($league, $t->club, $member->name));
+                    Log::info('[NOTIFICATION] select league team number.', ['league-id' => $league->id, 'member-id' => $member->id]);
 
-                $user = $member->user;
-                if (isset($user)) {
-                    $user->notify(new SelectTeamLeagueNo($league, $c, $user->name));
-                    Log::info('[NOTIFICATION] select league team number.', ['league-id' => $league->id, 'user-id' => $user->id]);
+                    $user = $member->user;
+                    if (isset($user)) {
+                        $user->notify(new SelectTeamLeagueNo($league, $t->club, $user->name));
+                        Log::info('[NOTIFICATION] select league team number.', ['league-id' => $league->id, 'user-id' => $user->id]);
+                    }
                 }
             }
-        } */
+        }
     }
 
     public function freeze_league(League $league): void
@@ -54,7 +54,7 @@ trait LeagueFSM
         $league->save();
     }
 
-    public function open_game_scheduling(League $league): void
+    public function open_game_scheduling(League $league, $send_email=false): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Scheduling()->key]);
 
@@ -63,22 +63,23 @@ trait LeagueFSM
         $league->generated_at = now();
         $league->save();
 
-/*         $clubs = $league->teams()->pluck('club_id');
-        foreach ($clubs as $c) {
-            $club = Club::find($c);
-            $member = $club->members()->wherePivot('role_id', Role::ClubLead)->first();
+        if ($send_email){
+            $teams = $league->teams;
+            foreach ($teams as $t) {
+                $member = $t->club->members()->wherePivot('role_id', Role::ClubLead)->first();
 
-            if (isset($member)) {
-                $member->notify(new LeagueGamesGenerated($league, $club, $member->name));
-                Log::info('[NOTIFICATION] league games generated.', ['league-id' => $league->id, 'member-id' => $member->id]);
+                if (isset($member)) {
+                    $member->notify(new LeagueGamesGenerated($league, $t->club, $member->name));
+                    Log::info('[NOTIFICATION] league games generated.', ['league-id' => $league->id, 'member-id' => $member->id]);
 
-                $user = $member->user;
-                if (isset($user)) {
-                    $user->notify(new LeagueGamesGenerated($league, $club, $user->name));
-                    Log::info('[NOTIFICATION] league games generated.', ['league-id'=>$league->id, 'user-id'=>$user->id]);
+                    $user = $member->user;
+                    if (isset($user)) {
+                        $user->notify(new LeagueGamesGenerated($league, $t->club, $user->name));
+                        Log::info('[NOTIFICATION] league games generated.', ['league-id'=>$league->id, 'user-id'=>$user->id]);
+                    }
                 }
             }
-        } */
+        }
     }
 
     public function open_ref_assignment(League $league): void

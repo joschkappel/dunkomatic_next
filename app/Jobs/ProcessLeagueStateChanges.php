@@ -49,8 +49,8 @@ class ProcessLeagueStateChanges implements ShouldQueue
             $leagues = $this->region->leagues;
 
             // set close date defaults to future if empty
-            $close_assignment = $this->region->close_assignment_at ??  Carbon::now()->nextWeekday();
-            $close_registration = $this->region->close_registration_at ??  Carbon::now()->nextWeekday();
+            $open_selection = $this->region->open_selection_at ??  Carbon::now()->nextWeekday();
+            $open_scheduling = $this->region->open_scheduling_at ??  Carbon::now()->nextWeekday();
             $close_selection = $this->region->close_selection_at ??  Carbon::now()->nextWeekday();
             $close_scheduling = $this->region->close_scheduling_at ??  Carbon::now()->nextWeekday();
             $close_referees = $this->region->close_referees_at ??  Carbon::now()->nextWeekday();

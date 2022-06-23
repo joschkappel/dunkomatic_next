@@ -39,7 +39,7 @@ trait GameManager
     {
         Log::info('creating games for league.', ['league-id' => $league->id]);
         // get size
-        $league->load('schedule');
+        $league->load('schedule','league_size');
         // get scheme
         if ($league->schedule->custom_events) {
             $scheme = $league->league_size->schemes()->get();

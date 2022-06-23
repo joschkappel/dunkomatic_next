@@ -454,7 +454,10 @@ class LeagueController extends Controller
             abort(403);
         }
         Log::info('showing league management list');
-        return view('league.league_list_mgmt', ['language' => $language, 'region' => $region]);
+
+        $states = $region->leagues()->pluck('state')->unique();
+
+        return view('league.league_list_mgmt', ['language' => $language, 'region' => $region, 'states'=> $states ]);
     }
 
     /**

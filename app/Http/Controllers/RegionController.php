@@ -242,6 +242,85 @@ class RegionController extends Controller
      */
     public function update_details(Request $request, Region $region)
     {
+        $daterule = 'sometimes|nullable|date|';
+
+        $openselectionrule = $daterule;
+        if ($request->input('open_selection_at')){
+            if ($request->input('close_selection_at')){
+                $openselectionrule .= '|before:close_selection_at';
+            } elseif ($request->input('open_scheduling_at')){
+                $openselectionrule .= '|before:open_scheduling_at';
+            } elseif ($request->input('close_scheduling_at')){
+                $openselectionrule .= '|before:close_scheduling_at';
+            } elseif ($request->input('close_referees_at')){
+                $openselectionrule .= '|before:close_referees_at';
+            }
+        }
+
+        $closeselectionrule = $daterule;
+        if ($request->input('close_selection_at')){
+            if ($request->input('open_selection_at')){
+                $closeselectionrule .= '|after:open_selection_at';
+            }
+
+            if ($request->input('open_scheduling_at')){
+                $closeselectionrule .= '|before:open_scheduling_at';
+            } elseif ($request->input('close_scheduling_at')){
+                $closeselectionrule .= '|before:close_scheduling_at';
+            } elseif ($request->input('close_referees_at')){
+                $closeselectionrule .= '|before:close_referees_at';
+            }
+        }
+
+        $openschedulingrule = $daterule;
+        if ($request->input('open_scheduling_at')){
+            if ($request->input('close_selection_at')){
+                $openschedulingrule .= '|after:close_selection_at';
+            } elseif ($request->input('open_selection_at')){
+                $openschedulingrule .= '|after:open_selection_at';
+            } else {
+                $openschedulingrule .= '|after:today';
+            }
+
+            if ($request->input('close_scheduling_at')){
+                $openschedulingrule .= '|before:close_scheduling_at';
+            } elseif ($request->input('close_referees_at')){
+                $openschedulingrule .= '|before:close_referees_at';
+            }
+        }
+
+        $closeschedulingrule = $daterule;
+        if ($request->input('close_scheduling_at')){
+            if ($request->input('open_scheduling_at')){
+                $closeschedulingrule .= '|after:open_scheduling_at';
+            } elseif ($request->input('close_selection_at')){
+                $closeschedulingrule .= '|after:close_selection_at';
+            } elseif ($request->input('open_selection_at')){
+                $closeschedulingrule .= '|after:open_selection_at';
+            } else {
+                $closeschedulingrule .= '|after:today';
+            }
+
+            if ($request->input('close_referees_at')){
+                $closeschedulingrule .= '|before:close_referees_at';
+            }
+        }
+
+        $closerefereesrule = $daterule;
+        if ($request->input('close_referees_at')){
+            if ($request->input('close_scheduling_at')){
+                $closerefereesrule .= '|after:close_scheduling_at';
+            } elseif ($request->input('open_scheduling_at')){
+                $closerefereesrule .= '|after:open_scheduling_at';
+            } elseif ($request->input('close_selection_at')){
+                $closerefereesrule .= '|after:close_selection_at';
+            } elseif ($request->input('open_selection_at')){
+                $closerefereesrule .= '|after:open_selection_at';
+            } else {
+                $closerefereesrule .= '|after:today';
+            }
+        }
+
         $data = $request->validate([
             'name' => 'required|max:40',
             'game_slot' => 'required|integer|in:60,75,90,105,120,135,150',
@@ -255,11 +334,11 @@ class RegionController extends Controller
             'fmt_club_reports.*' => ['required', new EnumValue(ReportFileType::class, false)],
             'fmt_league_reports' => 'required|array|min:1',
             'fmt_league_reports.*' => ['required', new EnumValue(ReportFileType::class, false)],
-            'close_assignment_at' => 'sometimes|nullable|required_if:auto_state_change,on|date|after:today',
-            'close_registration_at' => 'sometimes|nullable|required_if:auto_state_change,on|date|after:close_assignment_at',
-            'close_selection_at' => 'sometimes|nullable|required_if:auto_state_change,on|date|after:close_registration_at',
-            'close_scheduling_at' => 'sometimes|nullable|required_if:auto_state_change,on|date|after:close_selection_at',
-            'close_referees_at' => 'sometimes|nullable|required_if:auto_state_change,on|date|after:close_scheduling_at'
+            'open_selection_at' => $openselectionrule,
+            'close_selection_at' => $closeselectionrule,
+            'open_scheduling_at' => $openschedulingrule,
+            'close_scheduling_at' => $closeschedulingrule,
+            'close_referees_at' => $closerefereesrule
         ]);
         Log::info('region details form data validated OK.');
         $auto_state_change = $request->input('auto_state_change');
@@ -273,7 +352,7 @@ class RegionController extends Controller
         $region->refresh();
         Log::notice('region updated.', ['region-id' => $region->id]);
 
-        return redirect()->route('region.dashboard', ['language' => app()->getLocale(), 'region' => $region]);
+        return redirect()->back();
     }
 
     /**

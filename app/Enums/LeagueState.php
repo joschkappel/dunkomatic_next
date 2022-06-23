@@ -24,4 +24,34 @@ final class LeagueState extends Enum implements LocalizedEnum
     const Referees = 6;
     const Live = 7;
 
+
+    function getIcon(){
+        switch ($this->value) {
+            case 0:
+                return '<i class="fas fa-cog"></i>';
+                break;
+            case 1:
+                return '<i class="fas fa-file-signature"></i>';
+                break;
+            case 3:
+                return '<i class="fas fa-list-ol"></i>';
+                break;
+            case 4:
+                return '<i class="fas fa-pause-circle"></i>';
+                break;
+            case 5:
+                return '<i class="fas fa-calendar-alt"></i>';
+                break;
+            case 6:
+                return '<i class="fas fa-stopwatch"></i>';
+                break;
+            case 7:
+                return '<i class="fas fa-fire"></i>';
+                break;
+            default:
+                return '<i class="fas fa-question"></i>';
+                break;
+        }
+    }
+
 }

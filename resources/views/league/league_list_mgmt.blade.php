@@ -12,6 +12,54 @@ th, td { white-space: nowrap; }
                 <div class="card-header">
                     <h3 class="card-title font-weight-bold">@lang('league.title.management')</h3>
                     <div class="card-tools">
+                        @if (Auth::user()->isAn('regionadmin','superadmin'))
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lang('league.prev.state')</button>
+                            <div class="dropdown-menu">
+                                @if ( $states->contains(App\Enums\LeagueState::Referees()))
+                                    <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::ReOpenScheduling }}" data-from-state="{{ App\Enums\LeagueState::Referees }}">
+                                        @lang('league.action.open.scheduling') <i class="fas fa-arrow-left px-2"></i>{!! App\Enums\LeagueState::Referees()->getIcon() !!}</button>
+                                @endif
+                                @if ( $states->contains(App\Enums\LeagueState::Scheduling()))
+                                    <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::ReFreezeLeague }}" data-from-state="{{ App\Enums\LeagueState::Scheduling }}">
+                                        @lang('league.action.open.freeze') <i class="fas fa-arrow-left px-2"></i>{!! App\Enums\LeagueState::Scheduling()->getIcon() !!}</button>
+                                @endif
+                                @if ( $states->contains(App\Enums\LeagueState::Freeze()))
+                                    <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::ReOpenSelection }}" data-from-state="{{ App\Enums\LeagueState::Freeze }}">
+                                        @lang('league.action.open.selection') <i class="fas fa-arrow-left px-2"></i>{!! App\Enums\LeagueState::Freeze()->getIcon() !!}</button>
+                                @endif
+                                @if ( $states->contains(App\Enums\LeagueState::Selection()))
+                                    <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::ReOpenRegistration }}" data-from-state="{{ App\Enums\LeagueState::Selection }}">
+                                        @lang('league.action.open.registration') <i class="fas fa-arrow-left px-2"></i>{!! App\Enums\LeagueState::Selection()->getIcon() !!}</button>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lang('league.next.state')</button>
+                            <div class="dropdown-menu">
+                                @if ( $states->contains(App\Enums\LeagueState::Registration()))
+                                    <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::OpenSelection }}" data-from-state="{{ App\Enums\LeagueState::Registration }}">
+                                        {!! App\Enums\LeagueState::Registration()->getIcon() !!}<i class="fas fa-arrow-right px-2"></i> @lang('league.action.open.selection')</button>
+                                @endif
+                                @if ( $states->contains(App\Enums\LeagueState::Selection()))
+                                    <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::FreezeLeague }}" data-from-state="{{ App\Enums\LeagueState::Selection }}">
+                                        {!! App\Enums\LeagueState::Selection()->getIcon() !!}<i class="fas fa-arrow-right px-2"></i> @lang('league.action.open.freeze')</button>
+                                @endif
+                                @if ( $states->contains(App\Enums\LeagueState::Freeze()))
+                                    <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::OpenScheduling }}" data-from-state="{{ App\Enums\LeagueState::Freeze }}">
+                                        {!! App\Enums\LeagueState::Freeze()->getIcon() !!}<i class="fas fa-arrow-right px-2"></i> @lang('league.action.open.scheduling')</button>
+                                @endif
+                                @if ( $states->contains(App\Enums\LeagueState::Scheduling()))
+                                    <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::OpenReferees }}" data-from-state="{{ App\Enums\LeagueState::Scheduling }}">
+                                        {!! App\Enums\LeagueState::Scheduling()->getIcon() !!}<i class="fas fa-arrow-right px-2"></i> @lang('league.action.open.referees')</button>
+                                @endif
+                                @if ( $states->contains(App\Enums\LeagueState::Referees()))
+                                    <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::GoLiveLeague }}" data-from-state="{{ App\Enums\LeagueState::Referees }}">
+                                        {!! App\Enums\LeagueState::Referees()->getIcon() !!}<i class="fas fa-arrow-right px-2"></i> @lang('league.action.close.golive')</button>
+                                @endif
+                            </div>
+                        </div>
+                        @endif
                         <span>
                             @can('create-leagues')
                             <a href="{{ route('league.create', ['language'=>app()->getLocale(), 'region'=>$region]) }}" class="btn btn-success"><i
@@ -295,7 +343,7 @@ th, td { white-space: nowrap; }
                 var team_id = $(this).data("team-id");
                 var league_no = $(this).data("league-no");
                 var league_id = $(this).data("league-id");
-                var url = "{{ route('league.team.releasechar', ['league' => ':league:']) }}"
+                var url = "{{ route('league.team.releasechar', ['league' => ':league:']) }}";
                 url = url.replace(':league:', league_id);
 
                 $.ajax( {
@@ -316,6 +364,31 @@ th, td { white-space: nowrap; }
                     },
                     error: function (xhr){
                         toastr.error(xhr.responseText, '{{__('team.action.pickchars')}}');
+                    },
+                    cache: false
+                });
+            })
+
+            $(document).on("click", "button#btnStateChange", function (e) {
+                var from_state = $(this).data("from-state");
+                var action = $(this).data("action");
+                var url = "{{ route('region.league.state.change', ['region' => $region]) }}";
+
+                $.ajax( {
+                    url: url,
+                    dataType: "json",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        action: action,
+                        from_state: from_state,
+                    },
+                    type: "post",
+                    delay: 250,
+                    success: function (response) {
+                        toastr.success('{{__('league.action.statechanged')}}');
+                    },
+                    error: function (xhr){
+                        toastr.error(xhr.responseText, '{{__('league.action.statechanged')}}');
                     },
                     cache: false
                 });

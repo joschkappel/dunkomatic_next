@@ -96,11 +96,11 @@ class ProcessNewSeason implements ShouldQueue
         // move region league state end date 1 year fowrward
         $regions = Region::with('regionadmins')->get();
         foreach ($regions as $r){
-            $close_assignment_at = $r->close_assignment_at ?? now();
-            $close_assignment_at = $close_assignment_at->addYear()->addDays( $close_assignment_at->weekday() - $close_assignment_at->addYear()->weekday() );
+            $open_selection_at = $r->open_selection_at ?? now();
+            $open_selection_at = $open_selection_at->addYear()->addDays( $open_selection_at->weekday() - $open_selection_at->addYear()->weekday() );
 
-            $close_registration_at = $r->close_registration_at ?? now();
-            $close_registration_at = $close_registration_at->addYear()->addDays( $close_registration_at->weekday() - $close_registration_at->addYear()->weekday() );
+            $open_scheduling_at = $r->open_scheduling_at ?? now();
+            $open_scheduling_at = $open_scheduling_at->addYear()->addDays( $open_scheduling_at->weekday() - $open_scheduling_at->addYear()->weekday() );
 
             $close_selection_at = $r->close_selection_at ?? now();
             $close_selection_at = $close_selection_at->addYear()->addDays( $close_selection_at->weekday() - $close_selection_at->addYear()->weekday() );
@@ -112,8 +112,8 @@ class ProcessNewSeason implements ShouldQueue
             $close_referees_at = $close_referees_at->addYear()->addDays( $close_referees_at->weekday() - $close_referees_at->addYear()->weekday() );
 
             $r->update(
-                ['close_assignment_at' => $close_assignment_at,
-                'close_registration_at' => $close_registration_at,
+                ['open_selection_at' => $open_selection_at,
+                'open_scheduling_at' => $open_scheduling_at,
                 'close_selection_at' => $close_selection_at,
                 'close_scheduling_at' => $close_scheduling_at,
                 'close_referees_at' => $close_referees_at]
