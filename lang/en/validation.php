@@ -176,7 +176,10 @@ return [
       'game_no' => 'Game #',
       'team_id_home' => 'Home Team',
       'team_id_guest' => 'Guest Team',
-
+      'greeting' => 'Greeting',
+      'body' => 'Message Body',
+      'salutation' => 'Salutation',
+      'send_at' => 'Send at Date'
     ],
 
 ];

@@ -178,6 +178,10 @@ return [
       'game_no' => 'Spielnummer',
       'team_id_home' => 'Heimteam',
       'team_id_guest' => 'Gastteam',
+      'greeting' => 'Anrede',
+      'body' => 'Nachricht',
+      'salutation' => 'Grußformel',
+      'send_at' => 'Senden am Datum'
 
     ],
 

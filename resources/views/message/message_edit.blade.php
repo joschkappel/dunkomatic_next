@@ -14,7 +14,7 @@
     <div class="form-group row">
         <label for="greeting" class="col-sm-2 col-form-label">@lang('message.greeting')</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control @error('greeting') is-invalid @enderror" name="greeting" id="greeting"></input>
+            <input type="text" class="form-control @error('greeting') is-invalid @enderror" name="greeting" id="greeting" placeholder="@lang('message.greeting')" value="{{ (old('greeting')!='') ? old('greeting') : $message->greeting }}"></input>
             @error('greeting')
             <div class="invalid-feedback">{{ $message }}</div>
             @enderror
