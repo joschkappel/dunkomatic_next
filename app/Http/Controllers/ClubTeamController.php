@@ -278,8 +278,8 @@ class ClubTeamController extends Controller
             'preferred_game_day' => 'present|integer|min:1|max:7',
             'preferred_game_time' => array('required','date_format:H:i', new GameMinute, new GameHour),
             'coach_name'  => 'required|string|max:40',
-            'coach_email' => 'present|email:rfc,dns',
-            'coach_phone1' => 'present|string|max:20',
+            'coach_email' => 'nullable|email:rfc,dns',
+            'coach_phone1' => 'nullable|string|max:20',
             'coach_phone2' => 'nullable|string|max:20',
             'league_prev' => 'nullable|string|max:20',
             'shirt_color' => 'required|string|max:20'
@@ -335,8 +335,8 @@ class ClubTeamController extends Controller
             'preferred_game_day' => 'present|integer|min:1|max:7',
             'preferred_game_time' => array('required','date_format:H:i', new GameMinute, new GameHour),
             'coach_name'  => 'required|string|max:40',
-            'coach_email' => 'present|email:rfc,dns',
-            'coach_phone1' => 'present|string|max:20',
+            'coach_email' => 'nullable|email:rfc,dns',
+            'coach_phone1' => 'nullable|string|max:20',
             'coach_phone2' => 'nullable|string|max:20',
             'league_prev' => 'nullable|string|max:20',
             'shirt_color' => 'required|string|max:20'
