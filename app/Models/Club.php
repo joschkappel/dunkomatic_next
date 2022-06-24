@@ -199,7 +199,7 @@ class Club extends Model implements Auditable
     }
     public function memberIsA( Role $role): bool
     {
-        return $this->members()->wherePivot('role_id', $role->key)->exists();
+        return $this->members()->wherePivot('role_id', $role->value)->exists();
     }
     public function getFilecountAttribute(): int
     {
