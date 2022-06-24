@@ -34,12 +34,8 @@
             <div class="card card-outline card-info collapsed-card" id="faq_04">
                 <x-card-header title="möchte ich eine Nachricht an Benutzer oder Funktionsträger schicken:" />
                 <div class="card-body">
-                    <p class="card-text">
-                        <p class="card-text">
-                            Beschreibung kommt demnächst...
-                        </p>
-                        <a href="{{ route('message.create',['region'=>$region, 'language'=>$language, 'user'=>$user]) }}" class="btn btn-primary">@lang('message.title.new',['region'=>$region->name])</a>
-                    </p>
+                    @include('app.de.includes.faq_04')
+                    <a href="{{ route('message.create',['region'=>$region, 'language'=>$language, 'user'=>$user]) }}" class="btn btn-primary">@lang('message.title.new',['region'=>$region->name])</a>
                 </div>
             </div>
             <div class="card card-outline card-info collapsed-card" id="faq_05">
@@ -53,18 +49,19 @@
                     </p>
                 </div>
             </div>
-            <div class="card card-outline card-info collapsed-card" id="faq_06">
-                <x-card-header title="möchte ich Spielrunden anlegen oder ändern:" />
-                <div class="card-body">
-                    <p class="card-text">
-                        <p class="card-text">
-                            Beschreibung kommt demnächst...
-                        </p>
-                    </p>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-outline card-info collapsed-card" id="faq_06">
+                        <x-card-header title="möchte ich Spielrunden verwalten:" />
+                        <div class="card-body">
+                            @include('app.de.includes.faq_06')
+                            <a href="{{ route('league.index_mgmt',['region'=>$region, 'language'=>$language]) }}" class="btn btn-primary">@lang('league.title.list',['region'=>$region->name])</a>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="card card-outline card-info collapsed-card" id="faq_07">
-                <x-card-header title="möchte ich Spielrunden anlegen oder ändern:" />
+                <x-card-header title="möchte ich eine Runde mit manuellem Rahmenplan verwalten:" />
                 <div class="card-body">
                     <p class="card-text">
                         <p class="card-text">
