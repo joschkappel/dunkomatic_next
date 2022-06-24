@@ -113,7 +113,10 @@
                     <li class="list-group-item">Starte Heimspieltermine - bringt alle Runden im Status "Warten auf Freigabe/Spielerzeugung" in die Phase "Heimspieltermine". Jetzt können Vereine Heimspiele bearbeiten.</li>
                     <li class="list-group-item">Ende Heimspieltermine - bringt alle Runden im Status "Heimspieltermine" in die Phase "Schiedsrichterzuordnung". DIe Vereine könne nichts mehr an den Heimspielen ändern.</li>
                     <li class="list-group-item">Starte Spielrunde - bringt alle Runden im Status "Schiedsrichterzuordnung" in die Phase "Live". Die Runden ist für jegliche Änderung gesperrt.</li>
-                  </ul>
+                </ul>
+                <p class="card-text text-danger">
+                    Generell gilt, dass der automatische Start einer Phase am gewählten Tag morgens um 08:00 Uhr erfolgt. Die Phase wird am gewählten Datum um 20:00 beendet.
+                </p>
 
 
         </li>

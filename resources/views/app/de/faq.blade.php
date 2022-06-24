@@ -7,6 +7,17 @@
         <div class="card card-outline card-dark collapsed-card">
           <x-card-header title="Als Bezirksleiter:in, ..." count=4 />
           <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-outline card-info collapsed-card" id="faq_06">
+                        <x-card-header title="möchte ich Spielrunden verwalten:" />
+                        <div class="card-body">
+                            @include('app.de.includes.faq_06')
+                            <a href="{{ route('league.index_mgmt',['region'=>$region, 'language'=>$language]) }}" class="btn btn-primary">@lang('league.title.list',['region'=>$region->name])</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="card card-outline card-info collapsed-card" id="faq_01">
                 <x-card-header title="möchte ich eine:n neue:n Benutzer:in zulassen oder ablehnen:" />
                 <div class="card-body">
@@ -47,17 +58,6 @@
                         </p>
                         <a href="{{ route('schedule.index',['region'=>$region, 'language'=>$language]) }}" class="btn btn-primary">@lang('schedule.title.list',['region'=>$region->name])</a>
                     </p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="card card-outline card-info collapsed-card" id="faq_06">
-                        <x-card-header title="möchte ich Spielrunden verwalten:" />
-                        <div class="card-body">
-                            @include('app.de.includes.faq_06')
-                            <a href="{{ route('league.index_mgmt',['region'=>$region, 'language'=>$language]) }}" class="btn btn-primary">@lang('league.title.list',['region'=>$region->name])</a>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="card card-outline card-info collapsed-card" id="faq_07">
