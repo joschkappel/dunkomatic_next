@@ -24,18 +24,22 @@
                         <i class="fas fa-trophy"></i>
                     </div>
                     @can('update-leagues')
+                    @can('access',$league->region)
                     <a href="{{ route('league.edit', ['language' => app()->getLocale(), 'league' => $league]) }}"
                         class="small-box-footer">
                         @lang('league.action.edit') <i class="fas fa-arrow-circle-right"></i>
                     </a>
                     @endcan
+                    @endcan
                     @can('create-leagues')
+                    @can('access',$league->region)
                     @if (count($games) == 0)
                         <a id="deleteLeague" href="#" data-toggle="modal" data-target="#modalDeleteLeague"
                             class="small-box-footer" dusk="btn-delete">
                             @lang('league.action.delete') <i class="fa fa-trash"></i>
                         </a>
                     @endif
+                    @endcan
                     @endcan
                     @if ($league->filecount > 0)
                     <a href="{{ route('league_archive.get', ['league' => $league]) }}" class="small-box-footer bg-secondary">

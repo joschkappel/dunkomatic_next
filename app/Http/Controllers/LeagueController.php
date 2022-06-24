@@ -587,7 +587,8 @@ class LeagueController extends Controller
                 't1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9', 't10', 't11', 't12', 't13', 't14', 't15', 't16'
             ])
             ->editColumn('shortname', function ($l) {
-                if ( (Bouncer::can('access',$l)) or (Bouncer::is(Auth::user())->a('regionadmin')) ){
+                if ( ((Bouncer::can('access',$l)) or (Bouncer::is(Auth::user())->a('regionadmin'))) and
+                     (Bouncer::can('access',$l->region)) ){
                     $link = '<a href="' . route('league.dashboard', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" >' . $l->shortname . '</a>';
                 } else {
                     $link = '<a href="' . route('league.briefing', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" >' . $l->shortname . '</a>';
@@ -726,7 +727,8 @@ class LeagueController extends Controller
                 'club_shortname.display', 'team_name', 'team_league_no.display'
             ])
             ->editColumn('club_shortname', function ($ct) use ($league, &$c_keys, $regions) {
-                if ((Auth::user()->can('update-leagues')) and ($league->state->in([ LeagueState::Selection, LeagueState::Registration]))) {
+                if ((Auth::user()->can('update-leagues')) and ($league->state->in([ LeagueState::Selection, LeagueState::Registration]))
+                    and (Auth::user()->can('access',$league->region))) {
                     if ($ct['club_shortname'] != null) {
                         $btn = '<button id="deassignClub" data-id="' . $ct['club_id'] . '" type="button" class="btn btn-success btn-sm">';
                         $btn .= $ct['club_shortname'];
@@ -756,7 +758,8 @@ class LeagueController extends Controller
             })
             ->editColumn('team_name', function ($ct) use ($league) {
                 if ((Auth::user()->can('update-leagues')) and
-                    ($league->state->in([LeagueState::Selection, LeagueState::Registration, LeagueState::Scheduling, LeagueState::Freeze]))
+                    ($league->state->in([LeagueState::Selection, LeagueState::Registration, LeagueState::Scheduling, LeagueState::Freeze])) and
+                    (Auth::user()->can('access', $league->region))
                 ) {
                     if ($ct['team_name'] != null) {
                         $btn = '<button type="button" class="btn btn-secondary btn-sm" id="unregisterTeam"';
@@ -786,7 +789,8 @@ class LeagueController extends Controller
             })
             ->editColumn('team_league_no', function ($ct) use ($league, &$t_keys, $available_no) {
                 if ((Auth::user()->can('update-leagues')) and
-                    ($league->state->in([LeagueState::Registration, LeagueState::Selection, LeagueState::Scheduling, LeagueState::Freeze]))
+                    ($league->state->in([LeagueState::Registration, LeagueState::Selection, LeagueState::Scheduling, LeagueState::Freeze])) and
+                    (Auth::user()->can('access', $league->region))
                 ) {
                     if ($ct['team_league_no'] != null) {
                         $btn = '<button type="button" class="btn btn-danger btn-sm" id="releaseChar"';
