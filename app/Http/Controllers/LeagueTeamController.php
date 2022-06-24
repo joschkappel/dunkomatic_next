@@ -35,9 +35,9 @@ class LeagueTeamController extends Controller
     {
 
         $data = $request->validate([
-            'assignedClubs' => ['nullable', 'array', 'min:0', 'max:' . $league->size],
+            'assignedClubs' => 'required_without:club_id|array|min:0|max:' . $league->size,
             'assignedClubs.*' => 'nullable|exists:clubs,id',
-            'club_id' => 'nullable|exists:clubs,id',
+            'club_id' => 'required_without:assignedClubs|exists:clubs,id',
         ]);
         Log::info('club assignment form data validated OK.');
 
@@ -73,12 +73,9 @@ class LeagueTeamController extends Controller
                 ]
             );
             Log::notice('assign new club to league.', ['league-id' => $league->id, 'club-id' => $data['club_id']]);
-        }
-
-        if (count($data) == 0) { // remove all assigned clubs
-            Log::notice('de-assign ALL clubs.', ['league-id' => $league->id]);
-            // delete all assignments
-            $league->clubs()->detach();
+        } else {
+            Log::warning('nothind to de-assign');
+            return redirect()->back();
         }
 
         return redirect()->back();

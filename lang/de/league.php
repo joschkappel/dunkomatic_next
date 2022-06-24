@@ -41,6 +41,8 @@ return [
   'action.statechanged' => 'Status für alle betroffenenen Runden geändert',
   'action.assignClub' => 'Verein zuordnen',
   'action.deassignClub' => 'Verein entfernen',
+  'confirm.deassignClub' => 'Willst Du den Verein :CLUB wirklich aus der Runden entfernen ?',
+  'confirm.unregisterTeam' => 'Willst Du die Mannschaft :TEAM wirklich von der Runde abmelden ?',
   'action.registerTeam' => 'Mannschaft melden',
   'action.unregisterTeam' => 'Mannschaft abmelden',
   'action.pickChar' => 'Ziffer wählen',

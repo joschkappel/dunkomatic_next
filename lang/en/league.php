@@ -11,6 +11,8 @@ return [
   'action.register' => 'Register a team for thies league',
   'action.withdraw' => 'Remove Team from League :LEAGUE',
   'action.game.list' => 'Games Schedule',
+  'confirm.deassignClub' => 'Do you really want to remove club :CLUB from this league ?',
+  'confirm.unregisterTeam' => 'Do you really want to remove team :TEAM from this league ?',
   'confirm.delete' => 'Do you really want to delete this league ?',
   'info.delete' => ':LEAGUE and its :noteam teams and :nomember members',
   'title.list' => 'Leaguelist for :region',
