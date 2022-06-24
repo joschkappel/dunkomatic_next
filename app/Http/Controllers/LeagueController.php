@@ -538,6 +538,8 @@ class LeagueController extends Controller
                                 foreach( $available_no as $an ){
                                     $btn .= '<button id="'.$bf.'" type="button" class="btn btn-sm '.$subbtn_color[$k].'" '.
                                     ' data-club-id="' . $c['club_id'] . '"'.
+                                    ' data-club-shortname="' . $c['club_shortname'] . '"'.
+                                    ' data-team-name="' . $c['team_name'] . '"'.
                                     ' data-team-id="' . $c['team_id'] . '"'.
                                     ' data-region-id="' . $l->region->id . '"'.
                                     ' data-league-no="' . $an . '"'.
@@ -547,7 +549,9 @@ class LeagueController extends Controller
                             } else {
                                 $btn .= '<button id="'.$bf.'" type="button" class="btn btn-sm '.$subbtn_color[$k].'" '.
                                 ' data-club-id="' . $c['club_id'] . '"'.
+                                ' data-club-shortname="' . $c['club_shortname'] . '"'.
                                 ' data-team-id="' . $c['team_id'] . '"'.
+                                ' data-team-name="' . $c['team_name'] . '"'.
                                 ' data-region-id="' . $l->region->id . '"'.
                                 ' data-league-no="' .$c['team_league_no'] . '"'.
                                 ' data-league-id="' . $l->id . '">'
@@ -559,7 +563,9 @@ class LeagueController extends Controller
                     } else {
                         $l['t' . $i] = '<button id="'.$btn_function->pop().'" type="button" class="btn btn-sm '.$btn_color.'" '.$btn_status .
                                         ' data-club-id="' . $c['club_id'] . '"'.
+                                        ' data-club-shortname="' . $c['club_shortname'] . '"'.
                                         ' data-team-id="' . $c['team_id'] . '"'.
+                                        ' data-team-name="' . $c['team_name'] . '"'.
                                         ' data-region-id="' . $l->region->id . '"'.
                                         ' data-league-no="' . $c['team_league_no'] . '"'.
                                         ' data-league-id="' . $l->id . '">'

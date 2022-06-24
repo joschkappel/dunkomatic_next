@@ -241,23 +241,30 @@ th, td { white-space: nowrap; }
                 url = url.replace(':club:', club_id);
                 url = url.replace(':league:', league_id);
 
-                $.ajax({
-                    type: "POST",
-                    dataType: 'json',
-                    data: {
-                        id: club_id,
-                        _token: "{{ csrf_token() }}",
-                        _method: 'DELETE'
-                    },
-                    url: url,
-                    success: function(data) {
-                        toastr.success('{{__('club.deassign.ok')}}', '{{__('club.action.register')}}');
-                    },
-                    error: function(data) {
-                        toastr.error('{{__('club.deassign.notok')}}', '{{__('club.action.register')}}');
-                        console.log('Error:', data);
-                    }
-                });
+                var txt = '{{__('league.confirm.deassignClub', ['club'=>':club:']) }}';
+                txt = txt.replace(':CLUB:',$(this).data("club-shortname"));
+                var res = confirm(txt);
+
+                if (res == true){
+                    $.ajax({
+                        type: "POST",
+                        dataType: 'json',
+                        data: {
+                            id: club_id,
+                            _token: "{{ csrf_token() }}",
+                            _method: 'DELETE'
+                        },
+                        url: url,
+                        success: function(data) {
+                            toastr.success('{{__('club.deassign.ok')}}', '{{__('club.action.register')}}');
+                        },
+                        error: function(data) {
+                            toastr.error('{{__('club.deassign.notok')}}', '{{__('club.action.register')}}');
+                            console.log('Error:', data);
+                        }
+                    });
+                }
+
             });
 
             $(document).on("click", 'button#assignClub', function(e) {
@@ -291,22 +298,28 @@ th, td { white-space: nowrap; }
                 url = url.replace(':team:', team_id);
                 url = url.replace(':league:', league_id);
 
-                $.ajax({
-                    type: "DELETE",
-                    dataType: 'json',
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        _method: 'DELETE'
-                    },
-                    url: url,
-                    success: function(data) {
-                        toastr.success('{{__('team.unregister.ok')}}', '{{__('team.action.register')}}');
-                    },
-                    error: function(data) {
-                        console.log('Error:', data);
-                        toastr.error('{{__('team.unregister.notok')}}', '{{__('team.action.register')}}');
-                    }
-                });
+                var txt = '{{__('league.confirm.unregisterTeam', ['team'=>':team:']) }}';
+                txt = txt.replace(':TEAM:',$(this).data("team-name"));
+                var res = confirm(txt);
+
+                if ( res == true){
+                    $.ajax({
+                        type: "DELETE",
+                        dataType: 'json',
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            _method: 'DELETE'
+                        },
+                        url: url,
+                        success: function(data) {
+                            toastr.success('{{__('team.unregister.ok')}}', '{{__('team.action.register')}}');
+                        },
+                        error: function(data) {
+                            console.log('Error:', data);
+                            toastr.error('{{__('team.unregister.notok')}}', '{{__('team.action.register')}}');
+                        }
+                    });
+                }
             });
 
             $(document).on("click", "button#pickChar", function(e) {
