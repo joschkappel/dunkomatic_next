@@ -22,7 +22,7 @@
 </p>
 <h5><span class="text-info">Zugangsanfrage ablehnen</span></h5>
 <p class="card-text">
-    Um die Anfrage abzulehnen und das Konto zu sperren darfst du kein Häckchen im Feld  <img class="rounded x-auto d-block border border-dark" src="{{ asset('img/rejected.png') }}" alt="Zugang Ablehnen"> setzen. Gib eine Begründung für die Ablehnung ein.
+    Um die Anfrage abzulehnen und das Konto zu sperren darfst du kein Häckchen im Feld  <img class="rounded x-auto d-block border border-dark img-fluid" src="{{ asset('img/rejected.png') }}" alt="Zugang Ablehnen"> setzen. Gib eine Begründung für die Ablehnung ein.
 </p>
 <h5><span class="text-info">Ein Konto nachträglich sperren</span></h5>
 <p class="card-text">
