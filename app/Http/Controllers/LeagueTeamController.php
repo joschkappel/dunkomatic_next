@@ -158,17 +158,25 @@ class LeagueTeamController extends Controller
                 'team_id' => 'required|exists:teams,id',
             ]);
             $team = Team::findOrFail($data['team_id']);
-        }
+            $team->league()->associate($league);
+            $team->save();
 
+            Log::notice('team registered for league.', ['team-id' => $team->id, 'league-id' => $league->id]);
 
-        $team->league()->associate($league);
-        $team->save();
-        Log::notice('team registered for league.', ['team-id' => $team->id, 'league-id' => $league->id]);
-
-        if ( $request->has('team_id')) {
             return redirect()->back();
         } else {
-            return Response::json(['success' => 'all good'], 200);
+            if ( $team->exists ){
+                $team->league()->associate($league);
+                $team->save();
+
+                Log::notice('team registered for league.', ['team-id' => $team->id, 'league-id' => $league->id]);
+                return Response::json(['success' => 'all good'], 200);
+            } else {
+                Log::warning('trying to register an empty team for league.', ['league-id' => $league->id]);
+                return redirect()->back();
+
+            }
+
         }
     }
 
