@@ -35,9 +35,9 @@ class LeagueTeamController extends Controller
     {
 
         $data = $request->validate([
-            'assignedClubs' => 'required_unless:club_id,null|array|min:0|max:' . $league->size,
+            'assignedClubs' => 'required_without:club_id|array|min:0|max:' . $league->size,
             'assignedClubs.*' => 'nullable|exists:clubs,id',
-            'club_id' => 'required_unless:assignedClubs,null|exists:clubs,id',
+            'club_id' => 'required_without:assignedClubs|exists:clubs,id',
         ]);
         Log::info('club assignment form data validated OK.');
 
