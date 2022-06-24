@@ -92,10 +92,10 @@ class EmailValidation implements ShouldQueue
 
                 if ($validator->fails()) {
                     if ($validator->messages()->has('email1')) {
-                        $msgs[] = $m->name . ' with invalid main email ' . $m->email1;
+                        $msgs[] = $m->name . ' mit ungültiger Haupt-eMail:  ' . $m->email1;
                         $invalid_emails[] = $m->email1;
                     } else {
-                        $msgs[] = $m->name . ' with invalid alternative email ' . $m->email2;
+                        $msgs[] = $m->name . ' mit ungültiger 2. eMail:  ' . $m->email2;
                         $invalid_emails[] = $m->email2;
                     }
                     $fails = true;
