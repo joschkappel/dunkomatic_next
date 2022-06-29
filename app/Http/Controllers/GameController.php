@@ -38,11 +38,14 @@ class GameController extends Controller
      */
     public function datatable($language, Region $region)
     {
-        // $leagues = $region->leagues()->pluck('id');
-        // $games = Game::whereIn('league_id', $leagues)->orderBy('game_date')->get();
-        $clubs = $region->clubs()->pluck('id');
-        //$games = Game::whereIn('club_id_home', $clubs)->orWhereIn('club_id_guest',$clubs)->orderBy('game_date')->get();
-        $games = Game::whereIn('club_id_home', $clubs)->with(['league', 'gym'])->orderBy('game_date')->get();
+
+        if ($region->is_base_level){
+            $clubs = $region->clubs()->pluck('id');
+            //$games = Game::whereIn('club_id_home', $clubs)->orWhereIn('club_id_guest',$clubs)->orderBy('game_date')->get();
+            $games = Game::whereIn('club_id_home', $clubs)->with(['league', 'gym'])->orderBy('game_date')->get();
+        } else {
+            $games = Game::where('region', $region->code)->with(['league', 'gym'])->orderBy('game_date')->get();
+        }
 
         Log::info('preparing game list');
         $glist = datatables()::of($games);
