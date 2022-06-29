@@ -64,7 +64,11 @@ class RegionController extends Controller
             $region->members->pluck('id')->flatten()
         )->unique()->count();
 
-        $data['games_count'] = $region->clubs()->with('games_home')->get()->pluck('games_home.*.id')->flatten()->count();
+        if ($region->is_top_level){
+            $data['games_count'] = Game::where('region', $region->code)->count();
+        } else {
+            $data['games_count'] = $region->clubs()->with('games_home')->get()->pluck('games_home.*.id')->flatten()->count();
+        };
         $data['games_noref_count'] = $region->clubs()->with('games_noreferee')->get()->pluck('games_noreferee.*.id')->flatten()->count();
 
         Log::info('showing region dashboard', ['region-id' => $region->id]);
