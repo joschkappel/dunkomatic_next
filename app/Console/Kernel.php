@@ -52,7 +52,7 @@ class Kernel extends ConsoleKernel
         $schedule->job(new ProcessNewSeason(), 'janitor')->yearly();
         $schedule->command('db:backup -c')->daily()->emailOutputOnFailure('dmatic.master@gmail.com');
         // $schedule->exec('php artisan db:backup -c')->everyMinute()->emailOutputTo('dmatic.master@gmail.com');
-        $schedule->command('telescope:prune')->dailyAt('00:10');
+        $schedule->command('telescope:prune')->dailyAt('00:10')->environments(['staging', 'local','dev']);
         $schedule->command('authentication-log:purge')->monthlyOn(2,'00:05')->emailOutputOnFailure('dmatic.master@gmail.com');
         // $schedule->job(new ExportStatistics(), 'janitor')->everyMinute();
         $schedule->job(new OpenLeagueState(), 'janitor')->dailyAt('07:58')->emailOutputOnFailure('dmatic.master@gmail.com');
