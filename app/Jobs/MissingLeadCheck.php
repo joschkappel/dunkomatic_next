@@ -32,7 +32,7 @@ class MissingLeadCheck implements ShouldQueue
     public function __construct(Region $region)
     {
       $this->region = $region->load('regionadmins');
-      $this->region_admin = $region->regionadmins()->first();
+      $this->region_admins = $region->regionadmins();
     }
 
     /**
@@ -64,10 +64,12 @@ class MissingLeadCheck implements ShouldQueue
       }
 
       if ( (count($clubs_nolead) > 0 ) or (count($leagues_nolead)>0 )){
-        $this->region_admin->notify( new MissingLead($clubs_nolead, $leagues_nolead) );
-        Log::warning('[JOB][MISSING ADMINS] clubs without clublead/admin.', ['region-id' => $this->region->id, 'club-ids'=>$clubs_nolead ]);
-        Log::warning('[JOB][MISSING ADMINS] leagues without leaguelead/admin.', ['region-id' => $this->region->id, 'league-ids'=>$leagues_nolead ]);
-        Log::info('[NOTIFICATION][MEMBER] missing admins.', ['member-id' => $this->region_admin->id]);
+        foreach( $this->region_admins as $ra ){
+            $ra->notify( new MissingLead($clubs_nolead, $leagues_nolead) );
+            Log::warning('[JOB][MISSING ADMINS] clubs without clublead/admin.', ['region-id' => $this->region->id, 'club-ids'=>$clubs_nolead ]);
+            Log::warning('[JOB][MISSING ADMINS] leagues without leaguelead/admin.', ['region-id' => $this->region->id, 'league-ids'=>$leagues_nolead ]);
+            Log::info('[NOTIFICATION][MEMBER] missing admins.', ['member-id' => $ra->id]);
+        }
       }
     }
 }
