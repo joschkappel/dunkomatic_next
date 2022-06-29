@@ -32,7 +32,7 @@ class MissingLeadCheck implements ShouldQueue
     public function __construct(Region $region)
     {
       $this->region = $region->load('regionadmins');
-      $this->region_admins = $region->regionadmins();
+      $this->region_admins = $region->regionadmins;
     }
 
     /**
