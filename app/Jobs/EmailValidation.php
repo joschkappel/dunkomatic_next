@@ -35,7 +35,7 @@ class EmailValidation implements ShouldQueue
     {
         $this->region = $region->load('regionadmins');
         //        $region_user = User::regionAdmin($this->region->code)->with('member')->first();
-        $this->region_admin = $region->regionadmins()->first();
+        $this->region_admins = $region->regionadmins();
     }
 
     /**
@@ -105,13 +105,17 @@ class EmailValidation implements ShouldQueue
             if ($fails) {
                 Log::warning('[JOB][EMAIL VALIDATION] found club members with an invalid email.',[ 'club-id'=>$c->id, 'count'=>count($msgs) ]);
                 if ($lead_member == null) {
-                    $this->region_admin->notify(new InvalidEmail($c, null, $msgs));
-                    Log::info('[NOTIFICATION][MEMBER] invalid email.', ['member-id' => $this->region_admin->id]);
+                    foreach ($this->region_admins as $ra){
+                        $ra->notify(new InvalidEmail($c, null, $msgs));
+                        Log::info('[NOTIFICATION][MEMBER] invalid email.', ['member-id' => $ra->id]);
+                    }
                 } elseif (in_array($lead_member->email1, $invalid_emails)) {
-                    $this->region_admin->notify(new InvalidEmail($c, null, $msgs));
-                    Log::info('[NOTIFICATION][MEMBER] invalid email.', ['member-id' => $this->region_admin->id]);
+                    foreach ($this->region_admins as $ra){
+                        $ra->notify(new InvalidEmail($c, null, $msgs));
+                        Log::info('[NOTIFICATION][MEMBER] invalid email.', ['member-id' => $ra->id]);
+                    }
                 } else {
-                    $lead_member->notify(new InvalidEmail($c, $this->region_admin, $msgs));
+                    $lead_member->notify(new InvalidEmail($c, $this->region_admins->first(), $msgs));
                     Log::info('[NOTIFICATION][MEMBER] invalid email.', ['member-id' => $lead_member->id]);
                 }
             }
