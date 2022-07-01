@@ -126,65 +126,83 @@ class AppServiceProvider extends ServiceProvider
             $event->menu->add($clubmenu);
 
             // MENU - LEAGUES
-            $leaguemenu = array();
-            $leaguemenu['text'] = trans_choice('league.league', 2);
-            $leaguemenu['icon_color'] = 'yellow';
-            $leaguemenu['icon'] = 'fas fa-trophy';
-
-/*             $smenu['text'] = __('league.menu.list');
-            $smenu['url']  = route('league.index',  ['language' => app()->getLocale(), 'region'=> session('cur_region')]);
-            $smenu['icon_color'] = 'yellow';
-            $smenu['icon'] =  'fas fa-list';
-            $smenu['can'] = 'view-leagues';
-            $smenu['shift'] = 'ml-3';
-            $leaguemenu['submenu'][] = $smenu; */
-
-
-            $smenu['text'] =  __('league.menu.manage');;
             if (Auth::user()->isAn('superadmin','regionadmin','leagueadmin')) {
-                $smenu['url']  = route('league.index_mgmt',['language' => app()->getLocale(), 'region'=> session('cur_region')]);
-            } else {
+                $leaguemenu = array();
+                $leaguemenu['text'] = trans_choice('league.league', 2);
+                $leaguemenu['icon_color'] = 'yellow';
+                $leaguemenu['icon'] = 'fas fa-trophy';
+
+                $smenu['text'] =  __('league.menu.list');
                 $smenu['url']  = route('league.index',['language' => app()->getLocale(), 'region'=> session('cur_region')]);
+                $smenu['icon_color'] = 'yellow';
+                $smenu['icon'] =  'fas fa-trophy';
+                $smenu['can'] = ['view-leagues'];
+                $smenu['shift'] = 'ml-3';
+                $leaguemenu['submenu'][] = $smenu;
+
+
+                $smenu['text'] =  __('league.menu.manage');
+                $smenu['url']  = route('league.index_mgmt',['language' => app()->getLocale(), 'region'=> session('cur_region')]);
+                $smenu['icon_color'] = 'yellow';
+                $smenu['icon'] =  'fas fa-chart-bar';
+                $smenu['can'] = ['view-leagues'];
+                $smenu['shift'] = 'ml-3';
+                $leaguemenu['submenu'][] = $smenu;
+
+                // SUBMENU - SCHEDULES
+                $smenu['text'] = trans_choice('league.schedule', 2);
+                $smenu['icon'] = 'fa fa-calendar';
+                $smenu['icon_color'] = 'green';
+                $smenu['shift'] = 'ml-3';
+                unset($smenu['url']);
+                unset($smenu['can']);
+                $smenu['submenu'] = [
+                        [
+                            'text' => __('Manage'),
+                            'url'  => route('schedule.index',['language'=>app()->getLocale(), 'region'=> session('cur_region') ]),
+                            'icon' => 'fas fa-calendar-plus',
+                            'icon_color' => 'green',
+                            'can' => 'view-schedules',
+                            'shift' => 'ml-5'
+                        ], [
+                            'text' => __('Calendar'),
+                            'url'  => route('schedule_event.cal', app()->getLocale()),
+                            'icon' => 'fas fa-calendar-alt',
+                            'icon_color' => 'green',
+                            'can'  => 'view-schedules',
+                            'shift' => 'ml-5'
+                        ], [
+                            'text' => __('Compare'),
+                            'url'  => route('schedule.compare', ['language'=>app()->getLocale(), 'region'=> session('cur_region') ]),
+                            'icon' => 'fas fa-calendar-week',
+                            'icon_color' => 'green',
+                            'shift' => 'ml-5'
+                        ]
+                    ];
+                $leaguemenu['submenu'][] = $smenu;
+
+                $event->menu->add($leaguemenu);
+            } else {
+                $leaguemenu = array();
+                $leaguemenu['text'] = trans_choice('league.league', 2);
+                $leaguemenu['icon_color'] = 'yellow';
+                $leaguemenu['icon'] = 'fas fa-trophy';
+                $leaguemenu['url']  = route('league.index',['language' => app()->getLocale(), 'region'=> session('cur_region')]);
+                $leaguemenu['can'] = ['view-leagues'];
+
+                $event->menu->add($leaguemenu);
+
+                $schedulemenu = array();
+                $schedulemenu['text'] = trans_choice('league.schedule', 2);
+                $schedulemenu['icon'] = 'fa fa-calendar-week';
+                $schedulemenu['icon_color'] = 'green';
+                $schedulemenu['url'] = route('schedule.compare', ['language'=>app()->getLocale(), 'region'=> session('cur_region') ]);
+
+                $event->menu->add($schedulemenu);
             }
-            $smenu['icon_color'] = 'yellow';
-            $smenu['icon'] =  'fas fa-chart-bar';
-            $smenu['can'] = ['view-leagues'];
-            $smenu['shift'] = 'ml-3';
-            $leaguemenu['submenu'][] = $smenu;
 
-            // SUBMENU - SCHEDULES
-            $smenu['text'] = trans_choice('league.schedule', 2);
-            $smenu['icon'] = 'fa fa-calendar';
-            $smenu['icon_color'] = 'green';
-            $smenu['shift'] = 'ml-3';
-            unset($smenu['url']);
-            unset($smenu['can']);
-            $smenu['submenu'] = [
-                    [
-                        'text' => __('Manage'),
-                        'url'  => route('schedule.index',['language'=>app()->getLocale(), 'region'=> session('cur_region') ]),
-                        'icon' => 'fas fa-calendar-plus',
-                        'icon_color' => 'green',
-                        'can' => 'view-schedules',
-                        'shift' => 'ml-5'
-                    ], [
-                        'text' => __('Calendar'),
-                        'url'  => route('schedule_event.cal', app()->getLocale()),
-                        'icon' => 'fas fa-calendar-alt',
-                        'icon_color' => 'green',
-                        'can'  => 'view-schedules',
-                        'shift' => 'ml-5'
-                    ], [
-                        'text' => __('Compare'),
-                        'url'  => route('schedule.compare', ['language'=>app()->getLocale(), 'region'=> session('cur_region') ]),
-                        'icon' => 'fas fa-calendar-week',
-                        'icon_color' => 'green',
-                        'shift' => 'ml-5'
-                    ]
-                ];
-            $leaguemenu['submenu'][] = $smenu;
 
-            $event->menu->add($leaguemenu);
+
 
             // MAIN MENU MEMBERS
             $membermenu = [
