@@ -73,7 +73,6 @@ class OpenLeagueState implements ShouldQueue
                         Log::warning('[JOB][OPEN LEAGUE STATES] league in wrong state.',['league-id'=>$l->id, 'state'=>$l->state]);
                     }
                 }
-                Log::debug($radmins);
                 Notification::send($radmins, new LeagueStateOpened( __('league.action.open.selection') , $selection_opened, $selection_not_opened));
             }
 

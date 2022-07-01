@@ -108,4 +108,14 @@ return [
 
     'event.char.picked' => ':LEAGUE: :CLUB has picked Number :LEAGUE_NO',
     'event.char.released' => ':LEAGUE: :CLUB has released Number :LEAGUE_NO',
+
+    'league.state.opened.subject'   => ':phase started',
+    'league.state.opened.line1'   => ':phase has been started for these leagues:',
+    'league.state.opened.line2'   => 'We could NOT start :phase for these leagues:',
+    'league.state.opened.line3'   => 'They are not in the required state.',
+
+    'league.state.closed.subject'   => ':phase closed',
+    'league.state.closed.line1'   => ':phase has been closed for these leagues:',
+    'league.state.closed.line2'   => 'We could NOT close :phase for these leagues:',
+    'league.state.closed.line3'   => 'They are not in the required state.',
 ];

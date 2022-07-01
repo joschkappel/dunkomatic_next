@@ -2,9 +2,6 @@
 
 namespace App\Notifications;
 
-use App\Enums\LeagueState;
-
-use App\View\Components\LeagueStatus;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
