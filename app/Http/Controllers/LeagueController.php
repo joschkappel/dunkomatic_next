@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 
 use App\View\Components\LeagueStatus;
-
+use App\View\Components\LeagueContent;
 
 class LeagueController extends Controller
 {
@@ -59,7 +59,7 @@ class LeagueController extends Controller
 
         if ($region->is_base_level) {
             Log::notice('getting leagues for top level region');
-            $leagues = League::whereIn('region_id', [$region->id, $region->parentRegion->id])->with('schedule.league_size')
+            $leagues = League::whereIn('region_id', [$region->id, $region->parentRegion->id])->with('schedule.league_size','clubs','teams')
                 ->withCount([
                     'clubs', 'teams', 'registered_teams', 'selected_teams', 'games',
                     'games_notime', 'games_noshow'
@@ -68,7 +68,7 @@ class LeagueController extends Controller
                 ->get();
         } else {
             Log::notice('getting leagues for base level region');
-            $leagues = League::where('region_id', $region->id)->with('schedule.league_size')
+            $leagues = League::where('region_id', $region->id)->with('schedule.league_size','clubs','teams')
                 ->withCount([
                     'clubs', 'teams', 'registered_teams', 'selected_teams', 'games',
                     'games_notime', 'games_noshow'
@@ -119,7 +119,8 @@ class LeagueController extends Controller
                 return ($l->updated_at == null) ? null : $l->updated_at->format('d.m.Y H:i');
             })
             ->editColumn('state', function ($l) {
-                $content = new LeagueStatus($l);
+                // $content = new LeagueStatus($l);
+                $content = new LeagueContent($l);
                 return $content->render()->with($content->data());
             })
             ->make(true);
@@ -588,8 +589,7 @@ class LeagueController extends Controller
             ->addIndexColumn()
             ->rawColumns([
                 'shortname.display', 'nextaction', 'rollbackaction', 'clubs', 'teams',
-                'state', 'age_type.display', 'gender_type.display',
-                'size.display',
+                'state',
                 't1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9', 't10', 't11', 't12', 't13', 't14', 't15', 't16'
             ])
             ->editColumn('shortname', function ($l) {
@@ -600,19 +600,6 @@ class LeagueController extends Controller
                     $link = '<a href="' . route('league.briefing', ['language' => Auth::user()->locale, 'league' => $l->id]) . '" >' . $l->shortname . '</a>';
                 }
                 return array('display' => $link, 'sort' => $l->shortname);
-            })
-            ->editColumn('age_type', function ($l) {
-                return array('display' => LeagueAgeType::getDescription($l->age_type), 'sort' => $l->age_type);
-            })
-            ->editColumn('gender_type', function ($l) {
-                return array('display' => LeagueGenderType::getDescription($l->gender_type), 'sort' => $l->gender_type);
-            })
-            ->addColumn('size', function ($l) {
-                if ($l->schedule()->exists()) {
-                    return ($l->size == null) ? array('display' => null, 'sort' => 0) : array('display' => $l->size, 'sort' => $l->size);
-                } else {
-                    return array('display' => null, 'sort' => 0);
-                }
             })
             ->addColumn('alien_region', function ($l) use ($region) {
                 if ($region->is_base_level and $l->region->is_top_level) {

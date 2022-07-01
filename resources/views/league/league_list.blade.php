@@ -14,7 +14,6 @@
                   <th>{{__('Total Games')}}</th>
                   <th>{{__('Games No Time')}}</th>
                   <th>{{__('Games No Teams')}}</th>
-                  <th>{{__('Updated at')}}</th>
 </x-card-list>
 @endsection
 
@@ -50,26 +49,25 @@
                      filter: 'age_type.display',
                      display: 'age_type.display',
                      sort: 'age_type.sort'
-                     }, name: 'age_type.display'
+                     }, name: 'age_type.display', width: '1%'
                   },
                    { data: {
                      _: 'gender_type.display',
                      filter: 'gender_type.display',
                      display: 'gender_type.display',
                      sort: 'gender_type.sort'
-                     }, name: 'gender_type.display'
+                     }, name: 'gender_type.display', width: '1%'
                   },
                   { data: {
                      _: 'size.sort',
                      filter: 'size.sort',
                      display: 'size.display',
                      sort: 'size.sort'
-                     }, name: 'size.sort', width: '2%'},
-                  { data: 'state', name: 'state', width: '20%'},
-                  { data: 'games_count', name: 'games_count', width: '2%'},
-                  { data: 'games_notime_count', name: 'games_notime_count', width: '2%'},
-                  { data: 'games_noshow_count', name: 'games_noshow_count', width: '2%'},
-                  { data: 'updated_at', name: 'updated_at'},
+                     }, name: 'size.sort', width: '1%'},
+                  { data: 'state', name: 'state', width: '60%'},
+                  { data: 'games_count', name: 'games_count', width: '1%'},
+                  { data: 'games_notime_count', name: 'games_notime_count', width: '1%'},
+                  { data: 'games_noshow_count', name: 'games_noshow_count', width: '1%'}
                ]
       });
    });

@@ -96,13 +96,6 @@ th, td { white-space: nowrap; }
                                 <th>16</th>
                                 <th>@lang('league.next.state')</th>
                                 <th>@lang('league.prev.state')</th>
-                                <th>@lang('league.agetype')</th>
-                                <th>@lang('league.gendertype')</th>
-                                <th>@lang('league.size')</th>
-                                <th>{{__('Total Games')}}</th>
-                                <th>{{__('Games No Time')}}</th>
-                                <th>{{__('Games No Teams')}}</th>
-
                             </tr>
                         </thead>
                     </table>
@@ -170,30 +163,7 @@ th, td { white-space: nowrap; }
                     { data: 't15', name: 't15', width: '1%'},
                     { data: 't16', name: 't16', width: '1%'},
                     { data: 'nextaction', name: 'nextaction'},
-                    { data: 'rollbackaction', name: 'rollbackaction'},
-                    { data: {
-                     _: 'age_type.display',
-                     filter: 'age_type.display',
-                     display: 'age_type.display',
-                     sort: 'age_type.sort'
-                     }, name: 'age_type.display'
-                  },
-                   { data: {
-                     _: 'gender_type.display',
-                     filter: 'gender_type.display',
-                     display: 'gender_type.display',
-                     sort: 'gender_type.sort'
-                     }, name: 'gender_type.display'
-                  },
-                  { data: {
-                     _: 'size.sort',
-                     filter: 'size.sort',
-                     display: 'size.display',
-                     sort: 'size.sort'
-                     }, name: 'size.sort', width: '2%'},
-                  { data: 'games_count', name: 'games_count', width: '2%'},
-                  { data: 'games_notime_count', name: 'games_notime_count', width: '2%'},
-                  { data: 'games_noshow_count', name: 'games_noshow_count', width: '2%'},
+                    { data: 'rollbackaction', name: 'rollbackaction'}
                 ],
                 columnDefs: [ {
                     targets: '_all',
