@@ -4,6 +4,8 @@ namespace App\Jobs;
 
 use App\Enums\LeagueState;
 use App\Models\Region;
+use App\Models\User;
+use App\Notifications\LeagueStateOpened;
 use App\Traits\LeagueFSM;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
@@ -14,6 +16,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Notification;
 
 class OpenLeagueState implements ShouldQueue
 {
@@ -38,8 +41,22 @@ class OpenLeagueState implements ShouldQueue
     {
         Log::info('[JOB][OPEN LEAGUE STATES] started.');
 
+        $scheduling_opened = collect();
+        $scheduling_not_opened = collect();
+        $selection_opened = collect();
+        $selection_not_opened = collect();
+        $users = User::whereIs('regionadmin')->get();
+
         // for each region
         foreach ( Region::with('leagues')->get() as $r){
+            // get regionadmins for notifications
+            $radmins = collect();
+            foreach($users as $u) {
+                if ($u->can('access',$r)){
+                    $radmins->push($u);
+                }
+            }
+
             // set close date defaults to future if empty
             $open_selection = $r->open_selection_at ??  Carbon::now()->addDays(2);
             $open_scheduling = $r->open_scheduling_at ??  Carbon::now()->addDays(2);
@@ -50,11 +67,16 @@ class OpenLeagueState implements ShouldQueue
                 foreach ( $r->leagues as $l){
                     if ($l->state->is(LeagueState::Registration())){
                         $this->open_char_selection($l->load('clubs','teams'), true);
+                        $selection_opened->push($l);
                     } else {
+                        $selection_not_opened->push($l);
                         Log::warning('[JOB][OPEN LEAGUE STATES] league in wrong state.',['league-id'=>$l->id, 'state'=>$l->state]);
                     }
                 }
+                Notification::send($radmins, new LeagueStateOpened( __('league.action.open.selection') , $selection_opened, $selection_not_opened));
             }
+
+
 
             // if open_scheduling is today then change state for all region leagues
             if ($open_scheduling->isToday()){
@@ -62,10 +84,13 @@ class OpenLeagueState implements ShouldQueue
                 foreach ( $r->leagues as $l){
                     if ($l->state->is(LeagueState::Freeze())){
                         $this->open_game_scheduling($l->load('clubs','teams'), true);
+                        $scheduling_opened->push($l);
                     } else {
+                        $scheduling_not_opened->push($l);
                         Log::warning('[JOB][OPEN LEAGUE STATES] league in wrong state.',['league-id'=>$l->id, 'state'=>$l->state]);
                     }
                 }
+                Notification::send($radmins, new LeagueStateOpened(__('league.action.open.scheduling'), $scheduling_opened, $scheduling_not_opened));
             }
 
         }

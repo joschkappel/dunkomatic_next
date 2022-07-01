@@ -108,4 +108,14 @@ return [
 
     'event.char.picked' => ':LEAGUE: :CLUB hat Ziffer :LEAGUE_NO gewählt',
     'event.char.released' => ':LEAGUE: :CLUB hat Ziffer :LEAGUE_NO freigegeben',
+
+    'league.state.opened.subject'   => ':phase gestartet',
+    'league.state.opened.line1'   => 'Für die folgenden Spielrunden wurde die :phase gestartet.',
+    'league.state.opened.line2'   => 'Für die folgenden Spielrunden konnte die :phase NICHT gestartet werden.',
+    'league.state.opened.line3'   => 'Diese Runden befinden sich nicht im gewünschten Status',
+
+    'league.state.closed.subject'   => ':phase beendet',
+    'league.state.closed.line1'   => 'Für die folgenden Spielrunden wurde die :phase beendet.',
+    'league.state.closed.line2'   => 'Für die folgenden Spielrunden konnte die :phase NICHT beendet werden.',
+    'league.state.closed.line3'   => 'Diese Runden befinden sich nicht im gewünschten Status',
 ];

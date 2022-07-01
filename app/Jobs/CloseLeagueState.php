@@ -3,10 +3,13 @@
 namespace App\Jobs;
 
 use App\Enums\LeagueState;
+use App\Models\User;
 use App\Models\Region;
 use App\Traits\LeagueFSM;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
+use App\Notifications\LeagueStateClosed;
+use Illuminate\Support\Facades\Notification;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -37,9 +40,25 @@ class CloseLeagueState implements ShouldQueue
     public function handle()
     {
         Log::info('[JOB][CLOSE LEAGUE STATES] started.');
+        $freeze_opened = collect();
+        $freeze_not_opened = collect();
+        $referees_opened = collect();
+        $referees_not_opened = collect();
+        $live_opened = collect();
+        $live_not_opened = collect();
+
+        $users = User::whereIs('regionadmin')->get();
 
         // for each region
         foreach ( Region::with('leagues')->get() as $r){
+            // get regionadmins for notifications
+            $radmins = collect();
+            foreach($users as $u) {
+                if ($u->can('access',$r)){
+                    $radmins->push($u);
+                }
+            }
+
             // set close date defaults to future if empty
             $close_selection = $r->close_selection_at ??  Carbon::now()->addDays(2);
             $close_scheduling = $r->close_scheduling_at ??  Carbon::now()->addDays(2);
@@ -51,10 +70,13 @@ class CloseLeagueState implements ShouldQueue
                 foreach ( $r->leagues as $l){
                     if ($l->state->is(LeagueState::Selection())){
                         $this->freeze_league($l);
+                        $freeze_opened->push($l);
                     } else {
                         Log::warning('[JOB][CLOSE LEAGUE STATES] league in wrong state.',['league-id'=>$l->id, 'state'=>$l->state]);
+                        $freeze_not_opened->push($l);
                     }
                 }
+                Notification::send($radmins, new LeagueStateClosed( __('league.action.close.selection') , $freeze_opened, $freeze_not_opened));
             }
             // if close_scheduöing is today then change state for all region leagues
             if ($close_scheduling->isToday()){
@@ -62,10 +84,13 @@ class CloseLeagueState implements ShouldQueue
                 foreach ( $r->leagues as $l){
                     if ($l->state->is(LeagueState::Scheduling())){
                         $this->open_ref_assignment($l);
+                        $referees_opened->push($l);
                     } else {
                         Log::warning('[JOB][CLOSE LEAGUE STATES] league in wrong state.',['league-id'=>$l->id, 'state'=>$l->state]);
+                        $referees_not_opened->push($l);
                     }
                 }
+                Notification::send($radmins, new LeagueStateClosed( __('league.action.close.scheduling') , $referees_opened, $referees_not_opened));
             }
             // if close_referees is today then change state for all region leagues
             if ($close_referees->isToday()){
@@ -73,10 +98,13 @@ class CloseLeagueState implements ShouldQueue
                 foreach ( $r->leagues as $l){
                     if ($l->state->is(LeagueState::Referees())){
                         $this->golive_league($l);
+                        $live_opened->push($l);
                     } else {
                         Log::warning('[JOB][CLOSE LEAGUE STATES] league in wrong state.',['league-id'=>$l->id, 'state'=>$l->state]);
+                        $live_not_opened->push($l);
                     }
                 }
+                Notification::send($radmins, new LeagueStateClosed( __('league.action.close.referees') , $live_opened, $live_not_opened));
             }
         }
     }

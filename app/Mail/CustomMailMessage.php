@@ -30,9 +30,9 @@ class CustomMailMessage extends Mailable
       $this->message = $message;
 
       $user = $message->user;
-      Log::info('[EMAIL] Sending to.',['user'=>$user->email]);
-      $this->sender_name = $user['name'];
-      $this->sender_email = $user['email'];
+      Log::info('[EMAIL] Sending from.',['user'=>$user->email]);
+      $this->sender_name = $user->name;
+      $this->sender_email = $user->email;
 
     }
 
@@ -54,7 +54,7 @@ class CustomMailMessage extends Mailable
                         'outroLines' => [],
                         'salutation' => $this->message['salutation'],
                       ])
-                  ->from([['email'=>$this->sender_email, 'name'=>$this->sender_name]]);
+                  ->from($this->sender_email, $this->sender_name);
 
     }
 }
