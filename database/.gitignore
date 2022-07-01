@@ -1,2 +1,5 @@
 *.sqlite
 *.sqlite-journal
+ProdDatabaseSeeder.php
+prod/*.php
+dev/*.php

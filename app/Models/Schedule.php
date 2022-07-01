@@ -92,7 +92,7 @@ class Schedule extends Model
   }
   public function getColorAttribute(): string
   {
-      Log::info('Searching schedule color key', ['key'=>[ $this->region->is_top_level, $this->league_size->size, $this->iterations ]]);
+      Log::debug('Searching schedule color key', ['key'=>[ $this->region->is_top_level, $this->league_size->size, $this->iterations ]]);
       if ( $this->league_size->size == 0 ){
         return ScheduleColor::coerce([ $this->region->is_top_level, 0, '*' ])->key;
       } else {
