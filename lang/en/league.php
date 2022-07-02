@@ -62,6 +62,9 @@ return [
   'state.assigned' => 'entitled',
   'state.registered' => 'registered',
   'state.selected' => 'assigned',
+  'legend.assigned' => 'Club assigned',
+  'legend.registered' => 'Team registered',
+  'legend.selected' => 'League No selected',
 
   'action.assign' => 'Assign Club',
   'action.register' => 'Register Team',

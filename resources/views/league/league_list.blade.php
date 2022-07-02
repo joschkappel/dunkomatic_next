@@ -1,6 +1,12 @@
 @extends('layouts.page')
 
 @section('content')
+<div class="d-flex flex-wrap justify-content-start align-content-center">
+    <h5><span class="badge badge-white m-2">@lang('Colorcode'): </span></h5>
+    <h5><span class="badge badge-primary m-2">@lang('league.legend.assigned')</span></h5>
+    <h5><span class="badge badge-warning m-2">@lang('league.legend.registered')</span></h5>
+    <h5><span class="badge badge-success m-2">@lang('league.legend.selected')</span></h5>
+</div>
 <x-card-list cardTitle="{{ __('league.title.list', ['region' => $region->name ]) }}">
                   <th>Id</th>
                   @if ($region->is_base_level)

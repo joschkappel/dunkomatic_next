@@ -8,6 +8,12 @@ th, td { white-space: nowrap; }
 @section('content')
     <div class="row">
         <div class="col-12">
+            <div class="d-flex flex-wrap justify-content-start align-content-center">
+                <h5><span class="badge badge-white m-2">@lang('Colorcode'): </span></h5>
+                <h5><span class="badge badge-primary m-2">@lang('league.legend.assigned')</span></h5>
+                <h5><span class="badge badge-warning m-2">@lang('league.legend.registered')</span></h5>
+                <h5><span class="badge badge-success m-2">@lang('league.legend.selected')</span></h5>
+            </div>
             <div class="card card-outline card-primary">
                 <div class="card-header">
                     <h3 class="card-title font-weight-bold">@lang('league.title.management')</h3>
@@ -69,6 +75,7 @@ th, td { white-space: nowrap; }
                     </div>
                 </div>
                 <div class="card-body">
+
                     <table width="100%" class="table table-hover table-bordered table-sm" id="tblAssignClubs">
                         <thead class="thead-light">
                             <tr>
