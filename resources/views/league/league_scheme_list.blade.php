@@ -14,7 +14,7 @@
 @stop
 
 @section('content')
-<x-card-list cardTitle="{{ __('Scheme') }}" >
+<x-card-list cardTitle="{{ trans_choice('schedule.scheme',1) }}" >
     <th>@lang('game.game_day')</th>
     <th>@lang('game.team_home'): 1</th>
     <th>2</th>
