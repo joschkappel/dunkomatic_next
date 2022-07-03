@@ -1,43 +1,43 @@
 @extends('layouts.page')
 
 @section('content_header')
-
+<div class="row">
+    <div class="col-8">
+        <div>
+            <label for='selSize'>@lang('schedule.action.size.select')</label>
+            <select class='js-example-placeholder-single js-states form-control select2'
+                id='selSize'>
+            </select>
+        </div>
+    </div>
+</div>
 @stop
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col col-10">
-                <div class="card card-secondary">
-                    <h4 class="card-header">@lang('schedule.title.scheme.list')</h4>
-                    <!-- For defining autocomplete -->
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-8">
-                                <div>
-                                    <label for='selSize'>@lang('schedule.action.size.select')</label>
-                                    <select class='js-example-placeholder-single js-states form-control select2'
-                                        id='selSize'>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <div class="btn-toolbar justify-content-end" role="toolbar" aria-label="Toolbar with button groups">
-                            <button type="button" class="btn btn-outline-secondary mr-2" id="getHelp">{{ __('Help')}}</button>
-                            <button type="button" class="btn btn-outline-primary mr-2" id="goBack">{{ __('Cancel')}}</button>
-                        </div>
-                    </div>
-                    <!-- /.card-footer -->
+<x-card-list cardTitle="{{ __('Scheme') }}" >
+    <th>@lang('game.game_day')</th>
+    <th>@lang('game.team_home'): 1</th>
+    <th>2</th>
+    <th>3</th>
+    <th>4</th>
+    <th>5</th>
+    <th>6</th>
+    <th>7</th>
+    <th>8</th>
+    <th>9</th>
+    <th>10</th>
+    <th>11</th>
+    <th>12</th>
+    <th>13</th>
+    <th>14</th>
+    <th>15</th>
+    <th>16</th>
+    <x-slot:addButtons>
+        <button type="button" class="btn btn-outline-secondary mr-2" id="getHelp">{{ __('Help')}}</button>
+    </x-slot:addButtons>
+</x-card-list>
 
-                </div>
-                @include('league/includes/league_scheme_pivot')
-                @include('league.includes.league_scheme_list_help')
-
-            </div>
-        </div>
-    </div>
+@include('league.includes.league_scheme_list_help')
 @stop
 
 @section('js')
@@ -68,21 +68,37 @@
                 }
             });
 
-            $('#selSize').on('select2:select', function(e) {
+            var myTable = $('#table').DataTable({
+                responsive: true,
+                paging: false,
+                language: { "url": "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}" },
+                columns: [
+                    { data: 'game_day', name: 'game_day' },
+                    { data: '1', name: '1' },
+                    { data: '2', name: '2' },
+                    { data: '3', name: '3' },
+                    { data: '4', name: '4' },
+                    { data: '5', name: '5' },
+                    { data: '6', name: '6' },
+                    { data: '7', name: '7' },
+                    { data: '8', name: '8' },
+                    { data: '9', name: '9' },
+                    { data: '10', name: '10' },
+                    { data: '11', name: '11' },
+                    { data: '12', name: '12' },
+                    { data: '13', name: '13' },
+                    { data: '14', name: '14' },
+                    { data: '15', name: '15' },
+                    { data: '16', name: '16' }
+                ]
+            });
+
+            $(".js-example-placeholder-single").on('select2:select', function(e) {
                 var data = e.params.data;
                 var url = '{{ route('scheme.list_piv', ['size' => ':size:']) }}';
                 url = url.replace(':size:', data.id);
+                myTable.ajax.url( url ).load();
 
-                $.ajax({
-                    type: 'GET',
-                    url: url,
-                    success: function(data) {
-                        $('.collapse').collapse('show');
-                        $('#pivottable').html(data);
-                    },
-
-
-                });
             });
         });
     </script>
