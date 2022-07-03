@@ -8,12 +8,6 @@ th, td { white-space: nowrap; }
 @section('content')
     <div class="row">
         <div class="col-12">
-            <div class="d-flex flex-wrap justify-content-start align-content-center">
-                <h5><span class="badge badge-white m-2">@lang('Colorcode'): </span></h5>
-                <h5><span class="badge badge-primary m-2">@lang('league.legend.assigned')</span></h5>
-                <h5><span class="badge badge-warning m-2">@lang('league.legend.registered')</span></h5>
-                <h5><span class="badge badge-success m-2">@lang('league.legend.selected')</span></h5>
-            </div>
             <div class="card card-outline card-primary">
                 <div class="card-header">
                     <h3 class="card-title font-weight-bold">@lang('league.title.management')</h3>
@@ -111,11 +105,16 @@ th, td { white-space: nowrap; }
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
+                    <div class="btn-toolbar justify-content-end" role="toolbar" aria-label="Toolbar with button groups">
+                        <button type="button" class="btn btn-outline-secondary mr-2" id="getHelp">{{ __('Help')}}</button>
+                        <button type="button" class="btn btn-outline-primary mr-2" id="goBack">{{ __('Cancel')}}</button>
+                    </div>
                 </div>
                 <!-- /.card-footer -->
             </div>
             @include('league/includes/assign_club')
             @include('league/includes/register_team')
+            @include('league.includes.league_list_help')
         </div>
     </div>
 @stop
@@ -133,7 +132,7 @@ th, td { white-space: nowrap; }
                 pageLength: {{ config('dunkomatic.table_page_length', 50)}},
                 language: { url: "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}",
                             },
-                language: { processing: '<p>{{__('Loading')}}</p><div class="dot-rolling px-2"></div>'},
+                // language: { processing: '<p>{{__('Loading')}}</p><div class="dot-rolling px-2"></div>'},
                 order: [
                     [1, 'asc']
                 ],
@@ -187,6 +186,12 @@ th, td { white-space: nowrap; }
             toastr.options.onHidden = function () {
                             window.location.reload();
             };
+            $(document).on('click', 'button#getHelp', function() {
+                $('#modalLeagueListHelp').modal('show');
+            });
+            $('#goBack').click(function(e){
+                history.back();
+            });
 
             $(document).on('click', 'button#changeState', function() {
                 var leagueid = $(this).data("league");

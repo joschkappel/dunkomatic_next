@@ -1,12 +1,6 @@
 @extends('layouts.page')
 
 @section('content')
-<div class="d-flex flex-wrap justify-content-start align-content-center">
-    <h5><span class="badge badge-white m-2">@lang('Colorcode'): </span></h5>
-    <h5><span class="badge badge-primary m-2">@lang('league.legend.assigned')</span></h5>
-    <h5><span class="badge badge-warning m-2">@lang('league.legend.registered')</span></h5>
-    <h5><span class="badge badge-success m-2">@lang('league.legend.selected')</span></h5>
-</div>
 <x-card-list cardTitle="{{ __('league.title.list', ['region' => $region->name ]) }}">
                   <th>Id</th>
                   @if ($region->is_base_level)
@@ -20,7 +14,12 @@
                   <th>{{__('Total Games')}}</th>
                   <th>{{__('Games No Time')}}</th>
                   <th>{{__('Games No Teams')}}</th>
+
+                  <x-slot:addButtons>
+                    <button type="button" class="btn btn-outline-secondary mr-2" id="getHelp">{{ __('Help')}}</button>
+                  </x-slot:addButtons>
 </x-card-list>
+@include('league.includes.league_list_help')
 @endsection
 
 @section('js')
@@ -29,6 +28,10 @@
          $('#goBack').click(function(e){
             history.back();
          });
+
+         $(document).on('click', 'button#getHelp', function() {
+                $('#modalLeagueListHelp').modal('show');
+        });
 
          $('#table').DataTable({
          processing: true,
