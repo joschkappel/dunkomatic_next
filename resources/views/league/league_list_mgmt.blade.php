@@ -69,6 +69,7 @@ th, td { white-space: nowrap; }
                     </div>
                 </div>
                 <div class="card-body">
+
                     <table width="100%" class="table table-hover table-bordered table-sm" id="tblAssignClubs">
                         <thead class="thead-light">
                             <tr>
@@ -104,11 +105,16 @@ th, td { white-space: nowrap; }
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
+                    <div class="btn-toolbar justify-content-end" role="toolbar" aria-label="Toolbar with button groups">
+                        <button type="button" class="btn btn-outline-secondary mr-2" id="getHelp">{{ __('Help')}}</button>
+                        <button type="button" class="btn btn-outline-primary mr-2" id="goBack">{{ __('Cancel')}}</button>
+                    </div>
                 </div>
                 <!-- /.card-footer -->
             </div>
             @include('league/includes/assign_club')
             @include('league/includes/register_team')
+            @include('league.includes.league_list_help')
         </div>
     </div>
 @stop
@@ -126,7 +132,7 @@ th, td { white-space: nowrap; }
                 pageLength: {{ config('dunkomatic.table_page_length', 50)}},
                 language: { url: "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}",
                             },
-                language: { processing: '<p>{{__('Loading')}}</p><div class="dot-rolling px-2"></div>'},
+                // language: { processing: '<p>{{__('Loading')}}</p><div class="dot-rolling px-2"></div>'},
                 order: [
                     [1, 'asc']
                 ],
@@ -180,6 +186,12 @@ th, td { white-space: nowrap; }
             toastr.options.onHidden = function () {
                             window.location.reload();
             };
+            $(document).on('click', 'button#getHelp', function() {
+                $('#modalLeagueListHelp').modal('show');
+            });
+            $('#goBack').click(function(e){
+                history.back();
+            });
 
             $(document).on('click', 'button#changeState', function() {
                 var leagueid = $(this).data("league");

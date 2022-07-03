@@ -14,7 +14,12 @@
                   <th>{{__('Total Games')}}</th>
                   <th>{{__('Games No Time')}}</th>
                   <th>{{__('Games No Teams')}}</th>
+
+                  <x-slot:addButtons>
+                    <button type="button" class="btn btn-outline-secondary mr-2" id="getHelp">{{ __('Help')}}</button>
+                  </x-slot:addButtons>
 </x-card-list>
+@include('league.includes.league_list_help')
 @endsection
 
 @section('js')
@@ -23,6 +28,10 @@
          $('#goBack').click(function(e){
             history.back();
          });
+
+         $(document).on('click', 'button#getHelp', function() {
+                $('#modalLeagueListHelp').modal('show');
+        });
 
          $('#table').DataTable({
          processing: true,

@@ -154,19 +154,16 @@
             var data = $("#teamLeaguePlanForm").serialize();
             data = data + '&'+ $("#teamLeagueOptForm").serialize();
 
-            Pace.restart();
-            Pace.track(function () {
-              $.ajax({
-                  type: 'POST',
-                  url: '{{ route('team.propose', app()->getLocale() )}}',
-                  data: data,
-                  dataType: 'json',
-                  success: function(response) {
-                      leagues = response['leagues'];
-                      c_day = response['c_day'];
-                      initDayRange();
-                  }
-              });
+            $.ajax({
+                type: 'POST',
+                url: '{{ route('team.propose', app()->getLocale() )}}',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    leagues = response['leagues'];
+                    c_day = response['c_day'];
+                    initDayRange();
+                }
             });
         });
 
@@ -235,8 +232,6 @@
         $("#savebtn").click(function (e){
           e.preventDefault();
           var data = $("#teamLeaguePlanForm").serialize();
-          Pace.restart();
-          Pace.track(function () {
             $.ajax({
                 type: 'POST',
                 url: '{{ route('team.store-plan') }}',
@@ -245,7 +240,6 @@
                 success: function(response) {
                 },
             });
-          });
         });
 
 
