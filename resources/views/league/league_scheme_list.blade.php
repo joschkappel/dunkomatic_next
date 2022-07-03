@@ -23,9 +23,17 @@
                             </div>
                         </div>
                     </div>
+                    <div class="card-footer">
+                        <div class="btn-toolbar justify-content-end" role="toolbar" aria-label="Toolbar with button groups">
+                            <button type="button" class="btn btn-outline-secondary mr-2" id="getHelp">{{ __('Help')}}</button>
+                            <button type="button" class="btn btn-outline-primary mr-2" id="goBack">{{ __('Cancel')}}</button>
+                        </div>
+                    </div>
+                    <!-- /.card-footer -->
 
                 </div>
                 @include('league/includes/league_scheme_pivot')
+                @include('league.includes.league_scheme_list_help')
 
             </div>
         </div>
@@ -35,7 +43,12 @@
 @section('js')
     <script>
         $(function() {
-
+            $(document).on('click', 'button#getHelp', function() {
+                $('#modalLeagueSchemeListHelp_{{app()->getLocale()}}').modal('show');
+            });
+            $('#goBack').click(function(e){
+                history.back();
+            });
 
             $(".js-example-placeholder-single").select2({
                 placeholder: "@lang('schedule.action.size.select')...",
