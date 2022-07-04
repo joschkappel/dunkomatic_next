@@ -155,7 +155,7 @@ class TeamController extends Controller
         Log::info('show league planning dashboard.', ['club-id' => $club->id]);
         $data['club'] =  $club;
         $teams = $data['club']->teams()->whereNotNull('league_id')->with('league')->get();
-        $data['teams'] = $teams->where('league.size', '>', 0)->sortBy('league.schedule_id');
+        $data['teams'] = $teams->where('league.size', '>', 0)->whereNotNull('league.schedule_id')->sortBy('league.schedule_id');
         $data['team_total_cnt'] = $teams->count();
 
         return view('team/teamleague_dashboard', $data);
@@ -215,7 +215,7 @@ class TeamController extends Controller
         $select = "select date_format(se.game_date, '%b-%d-%Y') AS 'gamedate', count(*) as 'homegames' ";
         $where =  array();
 
-        if (isset($data['club_id'])) {
+        if (isset($data['club_id']) and (count($request->input())<=2)) {
             $teams = Club::find($data['club_id'])->teams->whereNotNull('league_id')->whereNotNull('league_no');
             foreach ($teams as $t) {
                 $where[] = '(l.id = ' . $t->league->id . ' AND lts.team_home = ' . $t->league_no . ')';

@@ -223,11 +223,12 @@
                     <div class="card-footer">
                         <div class="card-tools">
                             @can('update-teams')
-                            @if ($club->leagues->where('state', App\Enums\LeagueState::Selection())->count() > 0)
+                            @if ($club->leagues->where('state', App\Enums\LeagueState::Registration())->count() > 0)
                             <a href="{{ route('team.plan-leagues', ['language' => app()->getLocale(), 'club' => $club]) }}"
                                 class="btn btn-primary float-right">
                                 <i class="fas fa-map"></i> @lang('team.action.plan.season')</a>
-
+                            @endif
+                            @if ($club->leagues->where('state', App\Enums\LeagueState::Selection())->count() > 0)
                             <a href="{{ route('club.team.pickchar', ['language' => app()->getLocale(), 'club' => $club]) }}"
                                     class="btn btn-outline-primary float-right mr-2">
                                     <i class="fas fa-edit"></i> @lang('team.action.pickchars')</a>
