@@ -45,8 +45,6 @@
     </x-slot:addButtons>
 </x-card-list>
 
-@include('league.includes.league_scheme_list_help')
-
 <x-card-list tableId="tblSchemeMatch"  cardTitle="{{ __('schedule.title.scheme.matches', ['size'=>'?']) }}">
     <th>Ziffern</th>
     <th>1</th>
@@ -66,7 +64,7 @@
     <th>15</th>
     <th>16</th>
     <x-slot:addButtons>
-        <button type="button" class="btn btn-outline-secondary mr-2" id="getHelp">{{ __('Help')}}</button>
+        <button type="button" class="btn btn-outline-secondary mr-2" id="getHelp2">{{ __('Help')}}</button>
     </x-slot:addButtons>
 </x-card-list>
 
@@ -89,9 +87,14 @@
     <th>15</th>
     <th>16</th>
     <x-slot:addButtons>
-        <button type="button" class="btn btn-outline-secondary mr-2" id="getHelp">{{ __('Help')}}</button>
+        <button type="button" class="btn btn-outline-secondary mr-2" id="getHelp3">{{ __('Help')}}</button>
     </x-slot:addButtons>
 </x-card-list>
+
+@include('league.includes.league_scheme_list_help')
+@include('league.includes.league_scheme_match_help')
+@include('league.includes.league_scheme_compare_help')
+
 @stop
 
 @section('js')
@@ -99,6 +102,12 @@
         $(function() {
             $(document).on('click', 'button#getHelp', function() {
                 $('#modalLeagueSchemeListHelp_{{app()->getLocale()}}').modal('show');
+            });
+            $(document).on('click', 'button#getHelp2', function() {
+                $('#modalLeagueSchemeMatchHelp_{{app()->getLocale()}}').modal('show');
+            });
+            $(document).on('click', 'button#getHelp3', function() {
+                $('#modalLeagueSchemeCompareHelp_{{app()->getLocale()}}').modal('show');
             });
             $('#goBack').click(function(e){
                 history.back();
