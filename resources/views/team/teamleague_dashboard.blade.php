@@ -189,6 +189,10 @@
                     leagues = response['leagues'];
                     c_day = response['c_day'];
                     initDayRange();
+                    toastr.remove();
+                },
+                error: function (r){
+                    toastr.remove();
                 }
             });
         });
