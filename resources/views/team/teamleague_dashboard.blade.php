@@ -66,6 +66,27 @@
 @section('js')
 <script >
     $(function() {
+
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": false,
+            "positionClass": "toast-top-full-width",
+            "preventDuplicates": true,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": 0,
+            "onclick": null,
+            "onCloseClick": null,
+            "extendedTimeOut": 0,
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut",
+            "tapToDismiss": false
+            };
+
         var leagues = [];
         var c_day = [];
         var c_sel = [];
@@ -80,7 +101,7 @@
             grid_num: 0,
             step: 1,
             prettify: true,
-            postfix: " Heimspiele/Tag",
+            postfix: " {{__('game.homegame.day')}}",
             onFinish: function (data){
                 initOptionRangeForDay( day_vals[data.from] );
             }
@@ -151,6 +172,11 @@
 
         $("#teamLeagueOptForm").submit(function(e) {
             e.preventDefault();
+            @if(count($teams)<=6)
+            toastr.info("{{__('game.calc.wait.sec')}}","{{__('game.calc.options')}}");
+            @else
+            toastr.info("{{__('game.calc.wait.min')}}","{{__('game.calc.options')}}");
+            @endif
             var data = $("#teamLeaguePlanForm").serialize();
             data = data + '&'+ $("#teamLeagueOptForm").serialize();
 
@@ -163,6 +189,10 @@
                     leagues = response['leagues'];
                     c_day = response['c_day'];
                     initDayRange();
+                    toastr.remove();
+                },
+                error: function (r){
+                    toastr.remove();
                 }
             });
         });
@@ -205,9 +235,9 @@
         });
 
 
-        $("#teamLeaguePlanForm").submit(function(e) {
+        $("#refreshbtn").click(function (e){
             e.preventDefault();
-            var data = $(this).serialize();
+            var data =$("#teamLeaguePlanForm").serialize();
             $.ajax({
                 type: 'POST',
                 url: '{{ route('team.list-chart', app()->getLocale()) }}',
@@ -237,11 +267,8 @@
                 url: '{{ route('team.store-plan') }}',
                 data: data,
                 dataType: 'json',
-                success: function(response) {
-                },
             });
         });
-
 
     });
 </script>

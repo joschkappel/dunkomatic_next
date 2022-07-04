@@ -34,10 +34,24 @@ class CardList extends Component
      */
     public $cardNewAbility;
 
+    /**
+     * HTML id for table
+     *
+     * @var string
+     */
+    public $tableId;
+    /**
+     * HTML table classe
+     *
+     * @var string
+     */
+    public $tableClass;
 
-    public function __construct(string $cardTitle, string $cardNewAction=null, string $cardNewTitle='', string $cardNewAbility='' )
+    public function __construct(string $cardTitle, string $tableId='table', string $tableClass='table-hover table-bordered', string $cardNewAction=null, string $cardNewTitle='', string $cardNewAbility='' )
     {
         $this->cardTitle = $cardTitle;
+        $this->tableId = $tableId ?? 'table';
+        $this->tableClass = $tableClass ?? 'table-hover table-bordered';
         if ($cardNewAction){
             $this->cardNewAction = $cardNewAction;
             $this->cardNewTitle = $cardNewTitle;

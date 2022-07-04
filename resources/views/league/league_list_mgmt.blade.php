@@ -132,7 +132,7 @@ th, td { white-space: nowrap; }
                 pageLength: {{ config('dunkomatic.table_page_length', 50)}},
                 language: { url: "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}",
                             },
-                // language: { processing: '<p>{{__('Loading')}}</p><div class="dot-rolling px-2"></div>'},
+                language: { processing: '<p>{{__('Loading')}}</p><div class="dot-rolling px-2"></div>'},
                 order: [
                     [1, 'asc']
                 ],

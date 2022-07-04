@@ -298,6 +298,8 @@ Route::middleware(['auth',
     Route::post('role/index', [RoleController::class, 'index'])->name('role.index');
 
     Route::get('scheme/{size}/list_piv', [LeagueSizeSchemeController::class, 'list_piv'])->name('scheme.list_piv');
+    Route::get('scheme/{size}/list_match', [LeagueSizeSchemeController::class, 'list_match'])->name('scheme.list_match');
+    Route::get('scheme/{size1}/list_compare/{size2}', [LeagueSizeSchemeController::class, 'list_compare'])->name('scheme.list_compare');
     Route::get('size/index', [LeagueSizeController::class, 'index'])->name('size.index');
 
     Route::get('schedule_event/{schedule}/list', [ScheduleEventController::class, 'list'])->name('schedule_event.list');

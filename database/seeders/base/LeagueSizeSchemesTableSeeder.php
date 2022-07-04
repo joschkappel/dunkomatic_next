@@ -684,7 +684,7 @@ class LeagueSizeSchemesTableSeeder extends Seeder
         ['league_size_id' => '8','game_day' => '20','game_no' => '157','team_home' => '13','team_guest' => '9'],
         ['league_size_id' => '8','game_day' => '20','game_no' => '158','team_home' => '10','team_guest' => '12'],
         ['league_size_id' => '8','game_day' => '20','game_no' => '159','team_home' => '8','team_guest' => '14'],
-        ['league_size_id' => '8','game_day' => '20','game_no' => '160','team_home' => '1','team_guest' => '16'],
+        ['league_size_id' => '8','game_day' => '20','game_no' => '160','team_home' => '6','team_guest' => '16'],
         ['league_size_id' => '8','game_day' => '21','game_no' => '161','team_home' => '3','team_guest' => '2'],
         ['league_size_id' => '8','game_day' => '21','game_no' => '162','team_home' => '16','team_guest' => '4'],
         ['league_size_id' => '8','game_day' => '21','game_no' => '163','team_home' => '14','team_guest' => '6'],
