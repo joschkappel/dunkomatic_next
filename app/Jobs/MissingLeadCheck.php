@@ -47,7 +47,7 @@ class MissingLeadCheck implements ShouldQueue
       $clubs_nolead = array();
       $leagues_nolead = array();
 
-      $clubs = $this->region->clubs()->get();
+      $clubs = $this->region->clubs()->active()->get();
       foreach ($clubs as $c){
         if (!$c->memberIsA(Role::ClubLead())){
           $clubs_nolead[] = $c->shortname;

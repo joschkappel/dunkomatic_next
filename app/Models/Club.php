@@ -33,6 +33,7 @@ use Illuminate\Support\Collection;
  * @property string $shortname
  * @property string $name
  * @property string $club_no
+ * @property boolean $inactive
  * @property string|null $url
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -96,7 +97,7 @@ class Club extends Model implements Auditable
         ];
     }
     protected $fillable = [
-        'id', 'name', 'shortname', 'region_id', 'url', 'club_no'
+        'id', 'name', 'shortname', 'region_id', 'url', 'club_no', 'inactive'
     ];
 
 
@@ -221,6 +222,27 @@ class Club extends Model implements Auditable
             //return (strpos($value,$llist[0]) !== false);
         });
         return $reports;
+    }
+
+    /**
+     * Scope a query to only include active clubs.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return void
+     */
+    public function scopeActive($query)
+    {
+        $query->where('inactive', false);
+    }
+    /**
+     * Scope a query to only include inactive clubs.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return void
+     */
+    public function scopeInactive($query)
+    {
+        $query->where('inactive', true);
     }
 
 }

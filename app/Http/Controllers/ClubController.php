@@ -68,7 +68,7 @@ class ClubController extends Controller
 
         return $clublist
             ->addIndexColumn()
-            ->rawColumns(['shortname.display', 'name.display', 'assigned_rel.display', 'registered_rel.display', 'selected_rel.display', 'has_account.display'])
+            ->rawColumns(['shortname.display', 'name.display', 'assigned_rel.display', 'registered_rel.display', 'selected_rel.display', 'has_account.display','inactive.display'])
             ->editColumn('shortname', function ($data) {
                 if ((Bouncer::can('access', $data)) or (Bouncer::is(Auth::user())->a('regionadmin'))) {
                     $link = '<a href="' . route('club.dashboard', ['language' => Auth::user()->locale, 'club' => $data->id]) . '">' . $data->shortname . '</a>';
@@ -80,6 +80,13 @@ class ClubController extends Controller
             ->addColumn('has_account', function ($club) {
                 if ($club->has_admin_user){
                     return array('display' => '<i class="fas fa-check-square text-success"></i>', 'sort' => 'zugang' );
+                } else {
+                    return array('display' => '', 'sort' => '' );
+                }
+            })
+            ->editColumn('inactive', function ($club) {
+                if ($club->inactive){
+                    return array('display' => '<i class="fas fa-check-square text-success"></i>', 'sort' => 'inaktiv' );
                 } else {
                     return array('display' => '', 'sort' => '' );
                 }
@@ -316,10 +323,10 @@ class ClubController extends Controller
     {
         if ($region->is_top_level) {
             Log::notice('getting clubs for top level region');
-            $clubs = Club::whereIn('region_id', $region->childRegions->pluck('id'))->orderBy('shortname', 'ASC')->get();
+            $clubs = Club::whereIn('region_id', $region->childRegions->pluck('id'))->active()->orderBy('shortname', 'ASC')->get();
         } else {
             Log::notice('getting clubs for base level region');
-            $clubs = $region->clubs()->orderBy('shortname', 'ASC')->get();
+            $clubs = $region->clubs()->active()->orderBy('shortname', 'ASC')->get();
         }
 
         Log::info('preparing select2 club list.', ['count' => count($clubs)] );

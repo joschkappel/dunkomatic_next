@@ -57,7 +57,7 @@ class ProcessClubReports implements ShouldQueue
     public function handle()
     {
         // get all clubs with games
-        $clubs = $this->region->clubs()->get();
+        $clubs = $this->region->clubs()->active()->get();
         $rtypes = $this->region->fmt_club_reports->getFlags();
         // add calendar format as default.
         $rtypes[] = ReportFileType::ICS();
