@@ -76,7 +76,7 @@ trait GameManager
                     if ($full_weekend){
                         if (isset($hteam['preferred_game_day'])) {
                             $pref_gday = $hteam['preferred_game_day'] % 7;
-                            $g['game_date'] = $gday->subDay(1)->next($pref_gday);
+                            $g['game_date'] = $gday->subDay(2)->next($pref_gday);
                         } else {
                             $g['game_date'] = $gday;
                         };
