@@ -57,6 +57,10 @@ class UsersTableSeeder extends Seeder
             'locale' => 'de',
         ]);
         $this->approveAndSetAcls($u, $r);
+        // top level region, also allow for children
+        foreach($r->childRegions as $child){
+            $u->allow('access', $child);
+        }
 
         // HBVF
         $r = Region::where('code', 'HBVF')->first();
