@@ -8,6 +8,8 @@ use App\Models\Team;
 use App\Models\Game;
 use App\Models\Club;
 
+use Carbon\CarbonImmutable;
+
 use Illuminate\Support\Facades\Log;
 
 
@@ -48,6 +50,7 @@ trait GameManager
             $scheme = $league->schedule->schemes()->get();
             // get game days and dates
             $gdate_by_day = $league->schedule->events()->orderBy('game_day')->pluck('game_date', 'game_day');
+            $weekend_by_day = $league->schedule->events()->orderBy('game_day')->pluck('full_weekend', 'game_day');
         }
         $iterations = $league->schedule->iterations ?? 1;
         $max_gday = $scheme->max('game_day') ?? 1;
@@ -58,21 +61,30 @@ trait GameManager
 
         for ($i=0; $i < $iterations ; $i++) {
             foreach ($scheme as $s) {
-                $gday = $gdate_by_day[$s->game_day + ( $max_gday * $i)] ?? 'notset';
+                $gday = CarbonImmutable::parse($gdate_by_day[$s->game_day + ( $max_gday * $i)]) ?? 'notset';
+                $full_weekend = $weekend_by_day[$s->game_day + ( $max_gday * $i)];
 
                 if ($gday != 'notset'){
+                    Log::debug('[GAME GENERATION] working on game day',['league-id'=>$league->id, 'game-day'=>$s->game_day ]);
                     $hteam = $teams->firstWhere('league_no', $s->team_home);
                     $gteam = $teams->firstWhere('league_no', $s->team_guest);
 
                     $g = array();
                     $g['region'] = $league->region->code;
                     $g['game_plandate'] = $gday;
-                    if (isset($hteam['preferred_game_day'])) {
-                        $pref_gday = $hteam['preferred_game_day'] % 7;
-                        $g['game_date'] = $gday->subDay(1)->next($pref_gday);
+
+                    if ($full_weekend){
+                        if (isset($hteam['preferred_game_day'])) {
+                            $pref_gday = $hteam['preferred_game_day'] % 7;
+                            $g['game_date'] = $gday->subDay(1)->next($pref_gday);
+                        } else {
+                            $g['game_date'] = $gday;
+                        };
                     } else {
                         $g['game_date'] = $gday;
-                    };
+                    }
+
+
 
                     if ($league->age_type->in([LeagueAgeType::Junior(), LeagueAgeType::Mini()])) {
                         $g['referee_1'] = "****";
@@ -98,6 +110,8 @@ trait GameManager
 
                     //Log::debug(print_r($g, true));
                     Game::updateOrCreate(['league_id' => $league->id, 'game_no' => $s->game_no + ( $max_gday * $i * $g_perday) ], $g);
+                } else {
+                    Log::warning('[GAME GENERATION] Gameday not set',['league-id'=>$league->id, 'game-day'=>$s->game_day ]);
                 }
             }
         }
