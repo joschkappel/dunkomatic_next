@@ -272,6 +272,13 @@
         $(document).on("click", "button#injectTeam", function(e) {
             var url = "{{ route('league.team.inject', ['league'=>$league->id]) }}";
             $('#modalInjectTeam_Form').attr('action', url);
+
+            var urlsb1 = "{{ route('league.sb_freechar', ['league'=>$league]) }}";
+            $('#modalInjectTeam').attr( "data-urlsb1",  urlsb1);
+
+            var urlsb2 = "{{ route('team.free.sb', ['league'=>$league]) }}";
+            $('#modalInjectTeam').attr( "data-urlsb2",  urlsb2);
+
             $('#modalInjectTeam').modal('show');
         });
         $(document).on("click", "button#releaseChar", function(e) {

@@ -720,7 +720,7 @@ class LeagueController extends Controller
                 'club_shortname.display', 'team_name', 'team_league_no.display'
             ])
             ->editColumn('club_shortname', function ($ct) use ($league, &$c_keys, $regions) {
-                if ((Auth::user()->can('update-leagues')) and ($league->state->in([ LeagueState::Selection, LeagueState::Registration]))
+                if ((Auth::user()->can('update-leagues')) and ($league->state->in([ LeagueState::Selection, LeagueState::Registration, LeagueState::Scheduling, LeagueState::Freeze]))
                     and (Auth::user()->can('access',$league->region))) {
                     if ($ct['club_shortname'] != null) {
                         $btn = '<button id="deassignClub" data-id="' . $ct['club_id'] . '" type="button" class="btn btn-success btn-sm">';

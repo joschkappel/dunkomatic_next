@@ -146,7 +146,7 @@ trait GameManager
             $g_perday = ($league->league_size->size / 2) ?? 1;
 
             // get teams
-            $teams = $league->teams()->with('club')->get();
+            $teams = $league->teams()->with('club','club.gyms')->get();
 
 
             if ($league->games()->exists()) {
