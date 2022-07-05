@@ -223,7 +223,8 @@
                     <div class="card-footer">
                         <div class="card-tools">
                             @can('update-teams')
-                            @if ($club->leagues->where('state', App\Enums\LeagueState::Registration())->count() > 0)
+                            @if ( ($club->leagues->where('state', App\Enums\LeagueState::Registration())->count() > 0) and
+                                  ($club->teams->whereNotNull('league_id')->count() > 0  ))
                             <a href="{{ route('team.plan-leagues', ['language' => app()->getLocale(), 'club' => $club]) }}"
                                 class="btn btn-primary float-right">
                                 <i class="fas fa-map"></i> @lang('team.action.plan.season')</a>
