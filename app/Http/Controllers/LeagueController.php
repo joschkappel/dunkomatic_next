@@ -138,7 +138,7 @@ class LeagueController extends Controller
     {
         //Log::debug(print_r($club,true));
 
-        $clubs = League::find($league->id)->region->clubs()->orderBy('shortname', 'ASC')->get();
+        $clubs = League::find($league->id)->region->clubs()->active()->orderBy('shortname', 'ASC')->get();
         $leagueclubs = $league->clubs()->pluck('id');
 
         Log::info('preparing select2 club list for a league', ['league' => $league->id, 'count' => count($clubs)]);

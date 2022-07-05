@@ -10,6 +10,7 @@
     <th>@lang('club.name')</th>
     <th>@lang('club.club_no')</th>
     <th>@lang('auth.user.account')</th>
+    <th>@lang('Inactive')</th>
     <th>{{ trans_choice('team.team', 2) }}</th>
     <th>{{ __('containing') }}@lang('team.assigned')</th>
     <th>{{ __('containing') }}@lang('team.registered')</th>
@@ -81,6 +82,15 @@
                             sort: 'has_account.sort'
                         },
                         name: 'has_account.sort'
+                    },
+                    {
+                        data: {
+                            _: 'inactive.sort',
+                            filter: 'inactive.sort',
+                            display: 'inactive.display',
+                            sort: 'inactive.sort'
+                        },
+                        name: 'inactive.sort'
                     },
                     {
                         data: 'teams_count',

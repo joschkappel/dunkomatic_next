@@ -49,6 +49,18 @@
                                     @enderror
                                 </div>
                             </div>
+                            <div class="form-group row ">
+                                <div class="col-md-4">
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group  clearfix">
+                                        <div class="icheck-info d-inline">
+                                            <input type="checkbox" id="inactive" name="inactive">
+                                            <label for="inactive">@lang('Inactive')</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 </x-card-form>
 @endsection
 

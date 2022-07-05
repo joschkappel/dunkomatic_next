@@ -54,7 +54,7 @@ class SendCustomMessage implements ShouldQueue
         $cc_member_roles = array();
         $to_users = collect();
 
-        $clubs = $this->message->region->clubs;
+        $clubs = $this->message->region->clubs()->active()->get();
         $leagues = $this->message->region->leagues;
         $regions = $this->message->region->get();
 
