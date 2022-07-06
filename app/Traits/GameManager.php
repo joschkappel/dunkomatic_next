@@ -61,10 +61,12 @@ trait GameManager
 
         for ($i=0; $i < $iterations ; $i++) {
             foreach ($scheme as $s) {
-                $gday = CarbonImmutable::parse($gdate_by_day[$s->game_day + ( $max_gday * $i)]) ?? 'notset';
-                $full_weekend = $weekend_by_day[$s->game_day + ( $max_gday * $i)];
+                $gdate = $gdate_by_day[$s->game_day + ( $max_gday * $i)] ?? 'notset';
 
-                if ($gday != 'notset'){
+                if ($gdate != 'notset'){
+                    $gday = CarbonImmutable::parse($gdate);
+                    $full_weekend = $weekend_by_day[$s->game_day + ( $max_gday * $i)];
+
                     Log::debug('[GAME GENERATION] working on game day',['league-id'=>$league->id, 'game-day'=>$s->game_day ]);
                     $hteam = $teams->firstWhere('league_no', $s->team_home);
                     $gteam = $teams->firstWhere('league_no', $s->team_guest);
@@ -118,7 +120,7 @@ trait GameManager
             'size'=>$league->league_size->size,
             'iterations'=>$iterations,
             'games-per-day'=>$g_perday,
-            'games-count'=> count($scheme)*$iterations]);
+            'games-count'=> $league->schedule->events->count()]);
     }
 
     /**
@@ -156,11 +158,12 @@ trait GameManager
                         $i_game_day = $s->game_day + ( $max_gday * $i);
 
                         if (($s->team_home == $league_no) or ($s->team_guest == $league_no)) {
-                            $gday = CarbonImmutable::parse($gdate_by_day[$i_game_day]) ?? 'notset';
-                            $full_weekend = $weekend_by_day[$i_game_day];
+                            $gdate = $gdate_by_day[$i_game_day] ?? 'notset';
+                            if ($gdate != 'notset'){
+                                $gday = CarbonImmutable::parse($gdate);
+                                $full_weekend = $weekend_by_day[$i_game_day];
 
-                            if (!$league->games()->where('game_no', $i_game_no )->exists()) {
-                                if ($gday != 'notset'){
+                                if (!$league->games()->where('game_no', $i_game_no )->exists()) {
                                     $hteam = $teams->firstWhere('league_no', $s->team_home);
                                     $gteam = $teams->firstWhere('league_no', $s->team_guest);
 
@@ -206,45 +209,45 @@ trait GameManager
                                     Log::debug('creating game no.', ['game-no' => $g['game_no']]);
                                     Game::create($g);
                                 } else {
-                                    Log::warning('[GAME GENERATION] Gameday not set',['league-id'=>$league->id, 'game-day'=>$s->game_day ]);
-                                }
-                            } else {
-                                $game = $league->games()->where('game_no', $i_game_no)->where('team_char_home', $league_no)->first();
-                                if (isset($game)) {
-                                    $game->club_id_home = $team->club->id;
-                                    $game->team_id_home = $team->id;
-                                    $game->team_home = $team->name;
-                                    $game->game_time = $team->preferred_game_time;
+                                    $game = $league->games()->where('game_no', $i_game_no)->where('team_char_home', $league_no)->first();
+                                    if (isset($game)) {
+                                        $game->club_id_home = $team->club->id;
+                                        $game->team_id_home = $team->id;
+                                        $game->team_home = $team->name;
+                                        $game->game_time = $team->preferred_game_time;
 
-                                    if ($full_weekend){
-                                        if (isset($team['preferred_game_day'])) {
-                                            $pref_gday = $team['preferred_game_day'] % 7;
-                                            $game->game_date = $game->game_date->subDay(3)->next($pref_gday);
+                                        if ($full_weekend){
+                                            if (isset($team['preferred_game_day'])) {
+                                                $pref_gday = $team['preferred_game_day'] % 7;
+                                                $game->game_date = $game->game_date->subDay(3)->next($pref_gday);
+                                            } else {
+                                                $game->game_date = $gday;
+                                            }
                                         } else {
                                             $game->game_date = $gday;
-                                        }
-                                    } else {
-                                        $game->game_date = $gday;
-                                    };
+                                        };
 
-                                    $game->gym_no  = $team->club->gyms->first()->gym_no;
-                                    $game->gym_id = $team->club->gyms->first()->id;
-                                    $game->save();
-                                    Log::debug('updating game no.', ['game-no' => $game->game_no]);
+                                        $game->gym_no  = $team->club->gyms->first()->gym_no;
+                                        $game->gym_id = $team->club->gyms->first()->id;
+                                        $game->save();
+                                        Log::debug('updating game no.', ['game-no' => $game->game_no]);
+                                    }
+
+                                    $league->games()->where('game_no', $i_game_no)->where('team_char_guest', $league_no)->update([
+                                        'club_id_guest' => $team->club->id,
+                                        'team_id_guest' => $team->id,
+                                        'team_guest' => $team->club->shortname . $team->team_no
+                                    ]);
                                 }
-
-                                $league->games()->where('game_no', $i_game_no)->where('team_char_guest', $league_no)->update([
-                                    'club_id_guest' => $team->club->id,
-                                    'team_id_guest' => $team->id,
-                                    'team_guest' => $team->club->shortname . $team->team_no
-                                ]);
+                            } else {
+                                Log::warning('[GAME GENERATION] Gameday not set',['league-id'=>$league->id, 'game-day'=>$s->game_day ]);
                             }
                         }
                     }
                 }
             }
         } else {
-            Log::notice('cannot inject games for the new team. this is a league with custom schedule.', ['league-id' => $league->id, 'team-id'=>$team->id]);
+            Log::warning('cannot inject games for the new team. this is a league with custom schedule.', ['league-id' => $league->id, 'team-id'=>$team->id]);
         }
     }
 
