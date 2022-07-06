@@ -166,7 +166,7 @@
                                 class="btn btn-outline-primary float-right mr-2">
                                 <i class="fas fa-calendar-alt"></i> {{ __('reports.ical.league')}}</a>
                             @endcan
-                            @if( (Auth::user()->can('update-games')) and (  $league->state->is(App\Enums\LeagueState::Referees())) )
+                            @if( (Auth::user()->can('update-games')) and (  $league->state->in([App\Enums\LeagueState::Scheduling(), App\Enums\LeagueState::Referees()])) )
                             <button type="button" class="btn btn-outline-danger float-right mr-2" id="deleteNoshowGames"><i class="fa fa-trash"></i> @lang('game.action.delete.noshow')
                             </button>
                             @endif
@@ -401,7 +401,7 @@
                     },
                     url: "{{ route('league.game.destroy', ['league' => $league]) }}",
                     success: function(data) {
-                        toastr.success('{{__('games.deleted')}}', '{{__('game.action.delete')}}');
+                        toastr.success('{{__('game.deleted')}}', '{{__('game.action.delete')}}');
                     },
                     error: function(data) {
                         toastr.error(data.responseText, '{{__('game.action.delete')}}');
@@ -419,7 +419,7 @@
                     },
                     url: "{{ route('league.game.destroy_noshow', ['league' => $league]) }}",
                     success: function(data) {
-                        toastr.success('{{__('games.deleted')}}', '{{__('game.action.delete.noshow')}}');
+                        toastr.success('{{__('game.deleted')}}', '{{__('game.action.delete.noshow')}}');
                     },
                     error: function(data) {
                         toastr.error(data.responseText, '{{__('game.action.delete.noshow')}}');
