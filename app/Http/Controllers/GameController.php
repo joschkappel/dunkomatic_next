@@ -66,8 +66,8 @@ class GameController extends Controller
             })
             ->editColumn('gym_no', function ($game) {
                 return array(
-                    'display' => $game->gym_no . ' - ' . $game['gym']['name'],
-                    'default' => $game->gym_no
+                    'display' => ($game->gym_no ?? '?') . ' - ' . ($game['gym']->name ?? '?' ),
+                    'default' => ($game->gym_no ?? '?')
                 );
             })
             ->addColumn('game_league', function ($game) {
