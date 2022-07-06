@@ -59,7 +59,7 @@ class UsersTableSeeder extends Seeder
         $this->approveAndSetAcls($u, $r);
         // top level region, also allow for children
         foreach($r->childRegions as $child){
-            $u->allow('access', $child);
+            $u->allow('coaccess', $child);
         }
 
         // HBVF

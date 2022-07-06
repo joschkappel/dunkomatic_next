@@ -175,7 +175,10 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
         } else {
             $regions = DB::table('abilities')
             ->join('permissions', 'abilities.id', '=', 'permissions.ability_id')
-            ->where('abilities.name','access')
+            ->where(function($query) {
+                $query->where('abilities.name','access')
+                      ->orWhere('abilities.name','coaccess');
+            })
             ->where('abilities.entity_type', Region::class)
             ->where('permissions.entity_id', $this->id)
             ->where('permissions.entity_type', User::class)

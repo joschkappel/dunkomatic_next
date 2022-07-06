@@ -108,7 +108,7 @@ class AppServiceProvider extends ServiceProvider
                 'icon' => 'fas fa-globe-europe',
                 'icon_color' => 'danger'
             ];
-            if (Auth::user()->can('update-regions')){
+            if ( (Auth::user()->can('update-regions')) and (Auth::user()->can('access', session('cur_region'))) ){
                 $regionmenu['route']  = ['region.dashboard', ['language' => app()->getLocale(), 'region' => session('cur_region')]];
             } else {
                 $regionmenu['route']  = ['region.briefing', ['language' => app()->getLocale(), 'region' => session('cur_region')]];
@@ -288,7 +288,7 @@ class AppServiceProvider extends ServiceProvider
             $regions = Region::all();
 
             foreach ($regions as $r) {
-                if (Auth::user()->can('access', $r)) {
+                if ( (Auth::user()->can('access', $r)) or (Auth::user()->can('coaccess', $r))) {
                     $rs['text'] = $r->name;
                     // $rs['url'] = route('region.set', ['region' => $r->id]);
                     $rs['url'] = route(Route::currentRouteName(), array_merge(Route::current()->parameters(), ['new_region' => $r,'region' => $r])  );
