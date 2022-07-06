@@ -70,7 +70,7 @@ class LeagueGameController extends Controller
     {
         Log::info('preparing game list', ['league-id' => $league->id]);
 
-        $games = $league->games()->with('league')->get();
+        $games = $league->games()->with('league','gym')->get();
         $glist = datatables()::of($games);
 
         $glist =  $glist
@@ -79,13 +79,13 @@ class LeagueGameController extends Controller
                 return ($game->game_time == null) ? '' : Carbon::parse($game->game_time)->isoFormat('LT');
             })
             ->editColumn('game_no', function ($game) {
-/*                 $link = '<a href="#" id="gameEditLink" data-id="' . $game->id .
+                $link = '<a href="#" id="gameEditLink" data-id="' . $game->id .
                     '" data-game-date="' . $game->game_date . '" data-game-time="' . $game->game_time . '" data-club-id-home="' . $game->club_id_home .
                     '" data-gym-no="' . $game->gym_no . '" data-gym-id="' . $game->gym_id . '" data-league="' . $game->league['shortname'] .
                     '" data-team-home="' . $game->team_home . '" data-team-id-home="' . $game->team_id_home . '" data-team-guest="' . $game->team_guest . '" data-team-id-guest="' . $game->team_id_guest .
                     '" data-game-no="' . $game->game_no . '" data-league-id="' . $game->league_id .
-                    '">' . $game->game_no . ' <i class="fas fa-arrow-circle-right"></i></a>'; */
-                $link = $game->game_no;
+                    '">' . $game->game_no . ' <i class="fas fa-arrow-circle-right"></i></a>';
+                // $link = $game->game_no;
                 return array('display' => $link, 'sort' => $game->game_no);
             })
             ->editColumn('game_date', function ($game) use ($language) {
@@ -97,8 +97,8 @@ class LeagueGameController extends Controller
             })
             ->editColumn('gym_no', function ($game) {
                 return array(
-                    'display' => $game->gym_no,
-                    'default' => $game->gym_no
+                    'display' => ($game->gym_no ?? '').' - '.($game['gym']->name ?? ''),
+                    'default' => $game->gym_no ?? ''
                 );
             })
             ->make(true);

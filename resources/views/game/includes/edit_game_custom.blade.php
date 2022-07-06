@@ -1,16 +1,29 @@
 
-@extends('layouts.modal', ['modalId' => 'modalEditGame', 'modalFormId' => 'formGame', 'modalFormMethod' => 'PUT', 'stayOnSuccess' => true ])
+@extends('layouts.modal', ['modalId' => 'modalEditGameCustom', 'modalFormId' => 'formGame', 'modalFormMethod' => 'PUT', 'stayOnSuccess' => true ])
 
 @section('modal_content')
                             <input type="hidden" name="gym_id" id="gym_id" />
                             <input type="hidden" name="club_id_home" id="club_id_home" />
-                            <input type="hidden" name="team_id_home" id="team_id_home" />
-                            <input type="hidden" name="team_id_guest" id="team_id_guest" />
+                            <input type="hidden" name="team_id_home_old" id="team_id_home_old" />
+                            <input type="hidden" name="team_home" id="team_home" />
+                            <input type="hidden" name="team_id_guest_old" id="team_id_guest_old" />
+                            <input type="hidden" name="team_guest" id="team_guest" />
                             <input type="hidden" name="gym_no" id="gym_no" />
                             <input type="hidden" name="game_id" id="game_id" />
                             <input type="hidden" name="game_no_old" id="game_no_old" />
                             <input type="hidden" name="league" id="league" />
                             <input type="hidden" name="league_id" id="league_id" />
+                            <div class="form-group row justify-content-between">
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-secondary" id="btnPrev"><i class="far fa-arrow-alt-circle-left"></i></button>
+                                    </div>
+                                    <div class="col-8">
+                                        <label for="game_no" class="col-form-label">@lang('game.action.game_no')</label>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-secondary" id="btnNext"><i class="far fa-arrow-alt-circle-right"></i></button>
+                                    </div>
+                            </div>
                             <div class="form-group row">
                                 <div class="col-sm-12">
                                     <input class="form-control " id="game_no" name="game_no" type="text" value=""></input>
@@ -47,10 +60,18 @@
                                 <label for='team_id_home'
                                     class="col-sm-4 col-form-label">{{ __('game.team_home') }}</label>
                                 <div class="col-sm-8">
+                                @if ($league->schedule->custom_events)
                                     <div class="input-group mb-3" id="team_id_home_grp">
-                                        <input type="text" class="form-control" type="text" readonly id='team_home'>
+                                        <select class='js-team-home js-states form-control select2' id='team_id_home' name="team_id_home">
+                                            <option id="selOptionTeamHome" value="" selected="selected"></option>
+                                        </select>
+                                    </div>
+                                @else
+                                    <div class="input-group mb-3" id="team_id_home_grp">
+                                        <input type="text" class="form-control" type="text" readonly id='team_id_home'>
                                         </input>
                                     </div>
+                                @endif
                                 </div>
                             </div>
                             <div class="form-group row ">
@@ -68,10 +89,19 @@
                                 <label for='team_id_guest'
                                     class="col-sm-4 col-form-label">{{ __('game.team_guest') }}</label>
                                 <div class="col-sm-8">
+                                @if ($league->schedule->custom_events)
                                     <div class="input-group mb-3" id="team_id_guest_grp">
-                                        <input type="text" class="form-control" type="text" readonly id='team_guest'>
+                                        <select class='js-team-guest js-states form-control select2' id='team_id_guest' name="team_id_guest">
+                                            <option id="selOptionTeamGuest" value="" selected="selected"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                @else
+                                    <div class="input-group mb-3" id="team_id_guest_grp">
+                                        <input type="text" class="form-control" type="text" readonly id='team_id_guest'>
                                         </input>
                                     </div>
+                                @endif
                             </div>
 @endsection
 
@@ -79,7 +109,11 @@
   gym_id: $('#selGym').find(':selected').val(),
   game_date: $('#game_date').val(),
   game_time: $('#game_time').val(),
-
+  @if ($league->schedule->custom_events)
+  team_id_home: $('#team_id_home').find(':selected').val(),
+  team_id_guest: $('#team_id_guest').find(':selected').val(),
+  game_no: $('#game_no').val(),
+  @endif
 @endsection
 
 @section('modal_js')
@@ -104,12 +138,14 @@
                 var urlteams = "{{ route('league.team.sb', ['league' => ':leagueid:']) }}";
                 urlteams = urlteams.replace(':leagueid:', $("#league_id").val());
 
+                var teamhomeSelect = $('#team_id_home');
+                var teamguestSelect = $('#team_id_guest');
                 var gymSelect = $('#selGym');
 
                 function getGymDataTeam ( ) {
                     var url = "{{ route('gym.sb.team', ['team' => ':teamid:']) }}";
-                    var selTeam = $('#team_id_home').val();
-                    url = url.replace(':teamid:', selTeam);
+                    var selTeam = $('#team_id_home').find(':selected');
+                    url = url.replace(':teamid:', selTeam.val() );
                     $('#selGym').val(null).empty().select2('destroy');
 
                     $("#selGym").select2({
@@ -148,10 +184,10 @@
                     };
                 }
 
-                function getGameData(from){
+                function getGameData(data){
                         var urlgames = "{{ route('league.game.show_bynumber', ['league' => ':leagueid:', 'game_no' => ':gameno:']) }}";
                         urlgames = urlgames.replace(':leagueid:', $("#league_id").val());
-                        urlgames = urlgames.replace(':gameno:', from);
+                        urlgames = urlgames.replace(':gameno:', data.from);
                         $('.alert').hide();
 
                         $.ajax({
@@ -174,23 +210,21 @@
                             $("#game_date").val(gdate);
 
                            if (data.team_guest != null){
-                                $('#team_id_guest').val(data.team_id_guest);
-                                $('#team_guest').val(data.team_guest);
+                                var tgoption = new Option( data.team_guest, data.team_id_guest, true, true);
+                                teamguestSelect.append(tgoption).trigger('change');
                                 $("#club_id_guest").val(data.club_id_guest);
                            } else {
-                                $('#team_id_guest').val(null);
-                                $('#team_guest').val(null);
+                                teamguestSelect.val(null).trigger('change');
                                 $("#club_id_guest").val(null);
                            }
                            if (data.team_home != null){
-                                $('#team_id_home').val(data.team_id_home);
-                                $('#team_home').val(data.team_home);
+                                var thoption = new Option( data.team_home, data.team_id_home, true, true);
+                                teamhomeSelect.append(thoption).trigger('change');
                                 $("#club_id_home").val(data.club_id_home);
                                 getGymDataTeam( );
                                 selectGymForTeam ();
                            } else {
-                                $('#team_id_home').val(null);
-                                $('#team_home').val(null);
+                                teamhomeSelect.val(null).trigger('change');
                                 $("#club_id_home").val(null);
                                 gymSelect.val(null).trigger('change');
                            }
@@ -220,8 +254,61 @@
                     }
                 });
 
+                @if ($league->schedule->custom_events)
+                $(".js-team-home").on("change", function() {
+                   getGymDataTeam( );
+                });
+
+                $("#team_id_home").select2({
+                    placeholder: "select hoeme team",
+                    width: '100%',
+                    multiple: false,
+                    allowClear: false,
+                    dropdownParent: $('#modalEditGame'),
+                    ajax: {
+                        url: urlteams,
+                        type: "get",
+                        delay: 250,
+                        processResults: function(response) {
+                            return {
+                                results: response
+                            };
+                        },
+                        cache: true
+                    }
+                });
+
+                var thoption = new Option($("#team_home").val(), $("#team_id_home_old").val(), true, true);
+                teamhomeSelect.append(thoption).trigger('change');
+                @else
                 $("#team_id_home").val( $("#team_home").val() );
+                @endif
+
+                @if ($league->schedule->custom_events)
+                $("#team_id_guest").select2({
+                    placeholder: "select guest team",
+                    width: '100%',
+                    multiple: false,
+                    allowClear: false,
+                    dropdownParent: $('#modalEditGame'),
+                    ajax: {
+                        url: urlteams,
+                        type: "get",
+                        delay: 250,
+                        processResults: function(response) {
+                            return {
+                                results: response
+                            };
+                        },
+                        cache: true
+                    }
+                });
+                var tgoption = new Option($("#team_guest").val(), $("#team_id_guest_old").val(), true, true);
+                teamguestSelect.append(tgoption).trigger('change');
+                @else
                 $("#team_id_guest").val( $("#team_guest").val() );
+                @endif
+
 
                 $("#game_no").ionRangeSlider({
                     skin: "big",
@@ -230,11 +317,17 @@
                     grid: true,
                     step: 1,
                     prettify: true,
-                    block: false
-                });
-                $("#game_no").on("change", function() {
-                    var $inp = $(this);
-                    getGameData($inp.data("from"));
+                    @if ($league->schedule->custom_events)
+                        block: false,
+                    @else
+                        block: true,
+                    @endif
+                    onChange: function (data) {
+                        getGameData(data);
+                    },
+                    onUpdate: function (data) {
+                        getGameData(data);
+                    }
                 });
 
                 $("#game_no").data("ionRangeSlider").update({ from: $('#game_no_old').val() });
@@ -244,6 +337,30 @@
                 } else {
                     gymSelect.val(null).trigger('change');
                 }
+
+                $("#btnPrev").click(function() {
+                    $("#game_no").data("ionRangeSlider").update({ from: $('#game_no').val()-1 });
+                    if ( $('#game_no').val() == '1'){
+                      $('#btnPrev').addClass('disabled');
+                    } else if ( $('#game_no').val() == '{{ $league->size * ( $league->size-1) * $league->schedule->iterations }}' ){
+                        $('#btnNext').addClass('disabled')
+                    } else {
+                        $('#btnNext').removeClass('disabled');
+                        $('#btnPrev').removeClass('disabled');
+                    }
+                });
+                $("#btnNext").click(function() {
+                    $("#game_no").data("ionRangeSlider").update({ from: parseInt($('#game_no').val())+1 });
+                    if ( $('#game_no').val() == '1'){
+                      $('#btnPrev').addClass('disabled');
+                    } else if ( $('#game_no').val() == '{{ $league->size * ( $league->size-1) * $league->schedule->iterations }}' ){
+                        $('#btnNext').addClass('disabled')
+                    } else {
+                        $('#btnNext').removeClass('disabled');
+                        $('#btnPrev').removeClass('disabled');
+                    }
+
+                });
 
             });
 
