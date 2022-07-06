@@ -144,15 +144,20 @@
                 $("#league").val($(this).data('league'));
                 $("#league_id").val($(this).data('league-id'));
                 $("#club_id_home").val($(this).data('club-id-home'));
-                $("#team_id_home_old").val($(this).data('team-id-home'));
+                $("#team_id_home").val($(this).data('team-id-home'));
                 $("#team_home").val($(this).data('team-home'));
-                $("#team_id_guest_old").val($(this).data('team-id-guest'));
+                $("#team_id_guest").val($(this).data('team-id-guest'));
                 $("#team_guest").val($(this).data('team-guest'));
                 $("#modalTitle").html( $(this).data('league') + ' - '+ $(this).data('game-no') + '  {{ __('game.action.editdate') }}' );
                 var url = "{{ route('game.update', ['game' => ':game:']) }}";
                 url = url.replace(':game:', $(this).data('id'));
+                @if ($league->schedule->custom_events)
+               // $('#formGameCustom').attr('action', url);
+               // $("#modalEditGameCustom").modal('show');
+                @else
                 $('#formGame').attr('action', url);
                 $("#modalEditGame").modal('show');
+                @endif
             });
 
         });
