@@ -68,6 +68,7 @@ class DatabaseBackUp extends Command
 
             if ($returnVar == COMMAND::SUCCESS){
                 Log::notice('[CMD] db backup ran successfull',['file'=>$filepath]);
+                $this->info('db backup ran successfull: '.$filepath);
                 Log::info($output);
             } else {
                 Log::error($command);

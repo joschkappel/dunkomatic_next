@@ -47,8 +47,8 @@ class CalendarComposer
                     ->createdAt(Carbon::now())
                     ->startsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT')))
                     ->endsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT'))->addHours(2))
-                    ->address($g->gym->street . ', ' . $g->gym->zip . ' ' . $g->gym->city)
-                    ->addressName($g->gym->name)
+                    ->address( ($g->gym->street ?? '') . ', ' . ( $g->gym->zip ?? '') . ' ' . ( $g->gym->city ?? ''))
+                    ->addressName($g->gym->name ?? '')
                     ->organizer( config('app.contact'), config('app.name') )
                     ->alertMinutesBefore(120, $g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
             }
@@ -98,8 +98,8 @@ class CalendarComposer
                     ->createdAt(Carbon::now())
                     ->startsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT')))
                     ->endsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT'))->addHours(2))
-                    ->address($g->gym->street . ', ' . $g->gym->zip . ' ' . $g->gym->city)
-                    ->addressName($g->gym->name)
+                    ->address( ($g->gym->street ?? '') . ', ' . ( $g->gym->zip ?? '') . ' ' . ( $g->gym->city ?? ''))
+                    ->addressName($g->gym->name ?? '')
                     ->organizer(config('app.contact'), config('app.name') )
                     ->alertMinutesBefore(120, $g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
             }
@@ -145,8 +145,8 @@ class CalendarComposer
                     ->createdAt(Carbon::now())
                     ->startsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT')))
                     ->endsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT'))->addHours(2))
-                    ->address($g->gym->street . ', ' . $g->gym->zip . ' ' . $g->gym->city)
-                    ->addressName($g->gym->name)
+                    ->address( ($g->gym->street ?? '') . ', ' . ( $g->gym->zip ?? '') . ' ' . ( $g->gym->city ?? ''))
+                    ->addressName($g->gym->name ?? '')
                     ->organizer(config('app.contact'), config('app.name') )
                     ->alertMinutesBefore(120, $g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
             }
@@ -198,8 +198,8 @@ class CalendarComposer
                     ->createdAt(Carbon::now())
                     ->startsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT')))
                     ->endsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT'))->addHours(2))
-                    ->address($g->gym->street . ', ' . $g->gym->zip . ' ' . $g->gym->city)
-                    ->addressName($g->gym->name)
+                    ->address( ($g->gym->street ?? '') . ', ' . ( $g->gym->zip ?? '') . ' ' . ( $g->gym->city ?? ''))
+                    ->addressName($g->gym->name ?? '')
                     ->organizer(config('app.contact'), config('app.name') )
                     ->alertMinutesBefore(120, $g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
             }
@@ -254,8 +254,8 @@ class CalendarComposer
                     ->createdAt(Carbon::now())
                     ->startsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT')))
                     ->endsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT'))->addHours(2))
-                    ->address($g->gym->street . ', ' . $g->gym->zip . ' ' . $g->gym->city)
-                    ->addressName($g->gym->name)
+                    ->address( ($g->gym->street ?? '') . ', ' . ( $g->gym->zip ?? '') . ' ' . ( $g->gym->city ?? ''))
+                    ->addressName($g->gym->name ?? '')
                     ->organizer(config('app.contact'), config('app.name') )
                     ->alertMinutesBefore(120, $g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
             }
