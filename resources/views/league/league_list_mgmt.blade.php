@@ -97,6 +97,7 @@ th, td { white-space: nowrap; }
                                 <th>16</th>
                                 <th>@lang('league.next.state')</th>
                                 <th>@lang('league.prev.state')</th>
+                                <th>{{ trans_choice('schedule.schedule',1)}}</th>
                             </tr>
                         </thead>
                     </table>
@@ -168,7 +169,8 @@ th, td { white-space: nowrap; }
                     { data: 't15', name: 't15', width: '1%'},
                     { data: 't16', name: 't16', width: '1%'},
                     { data: 'nextaction', name: 'nextaction'},
-                    { data: 'rollbackaction', name: 'rollbackaction'}
+                    { data: 'rollbackaction', name: 'rollbackaction'},
+                    { data: 'schedulename', name: 'schedulename'}
                 ],
                 columnDefs: [ {
                     targets: '_all',
