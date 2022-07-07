@@ -486,16 +486,10 @@ class LeagueController extends Controller
         }
 
         if ($region->is_base_level) {
-            $leagues = League::whereIn('region_id', [$region->id, $region->parentRegion->id])->with('clubs', 'teams')->withCount([
-                'clubs', 'teams', 'registered_teams', 'selected_teams', 'games',
-                'games_notime', 'games_noshow'
-            ])->get();
+            $leagues = League::whereIn('region_id', [$region->id, $region->parentRegion->id])->with('clubs', 'teams','schedule')->get();
             Log::notice('getting leagues for base level region',['count'=>count($leagues)]);
         } else {
-            $leagues = League::whereIn('region_id', [$region->id])->with('clubs', 'teams')->withCount([
-                'clubs', 'teams', 'registered_teams', 'selected_teams', 'games',
-                'games_notime', 'games_noshow'
-            ])->get();
+            $leagues = League::whereIn('region_id', [$region->id])->with('clubs', 'teams','schedule')->get();
             Log::notice('getting leagues for top level region',['count'=>count($leagues)]);
         }
 
@@ -592,6 +586,17 @@ class LeagueController extends Controller
                 'state',
                 't1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9', 't10', 't11', 't12', 't13', 't14', 't15', 't16'
             ])
+            ->addColumn('schedulename', function ($l) {
+                if ($l->schedule == null){
+                    return __('Undefined');
+                } else {
+                    if ($l->schedule->custom_events){
+                        return __('Custom');
+                    } else {
+                        return $l->schedule->name;
+                    }
+                }
+            })
             ->editColumn('shortname', function ($l) {
                 if ( ((Bouncer::can('access',$l)) or (Bouncer::is(Auth::user())->a('regionadmin'))) and
                      (Bouncer::can('access',$l->region)) ){

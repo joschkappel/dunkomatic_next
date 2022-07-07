@@ -6,6 +6,11 @@
             <div class="col-sm">
                 <!-- small card CLUB -->
                 <div class="small-box bg-primary ">
+                    @if ($club->inactive)
+                    <div class="ribbon-wrapper ribbon-lg">
+                        <div class="ribbon bg-danger">@lang('Inactive')</div>
+                    </div>
+                    @endif
                     <div class="inner">
                         <div class="row">
                             <input type="hidden" id="entitytype" value="App\Models\Club">
