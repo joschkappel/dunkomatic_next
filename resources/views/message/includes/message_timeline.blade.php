@@ -6,17 +6,15 @@
     <div class="card-body">
 <!-- Main node for this component -->
   <div class="timeline">
-    <div class="time-label">
     @empty ($msglist)
+    <div class="time-label">
         <span class="bg-info">{{__('message.message.empty')}}</span>
-    @else
-        <span class="bg-success">{{__('Eingang am')}}</span>
-    @endempty
     </div>
+    @endempty
     @foreach ( $msglist as $msgdate)
     <!-- Timeline time label -->
     <div class="time-label">
-      <span class="bg-green">{{ \Carbon\CarbonImmutable::parse($msgdate['valid_from'])->locale( app()->getLocale() )->isoFormat('ll') }}</span>
+      <span class="bg-green text-sm">{{ \Carbon\CarbonImmutable::parse($msgdate['valid_from'])->locale( app()->getLocale() )->isoFormat('ll') }}</span>
     </div>
         @foreach ( $msgdate['items'] as $msg )
             <div>
@@ -27,15 +25,8 @@
                 <!-- Time -->
                     <span class="time"><i class="fas fa-clock"></i> {{ \Carbon\CarbonImmutable::parse($msg->created_at)->locale( app()->getLocale() )->isoFormat('HH:mm:ss') }}</span>
                     <!-- Header. Optional -->
-                    <h3 class="timeline-header"><a href="#">{{ App\Models\User::find($msg->notifiable_id)->name }}</a> {{ Str::title($msg->data['subject']) }}</h3>
-                    <!-- Body -->
-                    <div class="timeline-body">
-                    {!! Str::limit( Str::of($msg->data['greeting'].', '.$msg->data['lines'])->ltrim(','), 40) !!}
-                    </div>
-                    <div class="timeline-footer">
-                        <button class="btn btn-primary btn-sm" id="btnShowMessage" data-title="{{ $msg->data['subject'] }}" data-body="{{ $msg->data['lines']}}" data-greeting="{{ $msg->data['greeting'] ?? ''}}" data-salutation="{{ $msg->data['salutation'] ?? ''}}" >{{ __('message.read_more') }}</button>
-                        <a class="btn btn-danger btn-sm" href="{{ route('message.mark_as_read', ['message'=>$msg->id])}}">{{ __('message.delete')}}</a>
-                    </div>
+                    <div class="timeline-header">{{ $msg->data['sender'] ?? '' }}<a href="#" onClick="btnShowMessage('{{$msg->id}}','{{$msg->data['subject']}}','{{$msg->data['greeting']}}','{{$msg->data['lines']}}','{{$msg->data['salutation']}}')">{!! Str::title($msg->data['subject']) !!}</a></div>
+
                 </div>
                 </div>
         @endforeach

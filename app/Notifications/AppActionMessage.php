@@ -51,6 +51,7 @@ class AppActionMessage extends Notification
               'subject' => $this->subject,
               'lines' => $this->msg,
               'salutation' => config('app.name'),
+              'sender'=>config('app.name')
         ];
     }
 }

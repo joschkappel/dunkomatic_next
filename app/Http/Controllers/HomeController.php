@@ -29,7 +29,6 @@ class HomeController extends Controller
      */
     public function home()
     {
-        $today = Carbon::today()->toDateString();
         $user = Auth::user();
 
         $msglist = array();
