@@ -74,40 +74,21 @@ class HomeController extends Controller
                     $reminders[] = $msg;
                 }
                 // check region deadlines
-                if ( $region->auto_state_change ){
-                    // check close assignment deadline
-                    if ( ($region->close_assignment_at != null) and ( $region->close_assignment_at > now())) {
-                        $msg = [];
-                        $msg['action'] = '';
+                // check close referees deadline
+                if ( ( $region->close_referees_at != null) and  ( $region->close_referees_at > now())) {
+                    $msg = [];
+                    $msg['action'] = '';
 
-                        if ( $region->close_assignment_at <= now()->addWeeks(1)) {
-                            $msg['msg'] =  __('message.reminder.deadline.assignment', ['deadline' => $region->close_assignment_at->diffForHumans(['parts' => 3, 'join' => true]), 'region'=>$region->code ]);
-                            $msg['action_msg'] =  __('message.reminder.deadline.action');
-                            $msg['action'] = route('league.index_mgmt', ['language' => app()->getLocale(), 'region'=>$region]);
-                            $msg['action_color'] = 'danger';
-                            $reminders[] = $msg;
-                        } else {
-                            $msg['msg'] =  __('message.reminder.deadline.assignment', ['deadline' => $region->close_assignment_at->diffForHumans(['parts' => 1]), 'region'=>$region->code]);
-                            $msg['msg_color'] = 'warning';
-                            $infos[] = $msg;
-                        }
-                    }
-                    // check close referees deadline
-                    if ( ( $region->close_referees_at != null) and  ( $region->close_referees_at > now())) {
-                        $msg = [];
-                        $msg['action'] = '';
-
-                        if ( $region->close_referees_at <= now()->addWeeks(1)) {
-                            $msg['msg'] =  __('message.reminder.deadline.referees', ['deadline' => $region->close_referees_at->diffForHumans(['parts' => 3, 'join' => true]), 'region'=>$region->code]);
-                            $msg['action_msg'] =  __('message.reminder.deadline.action');
-                            $msg['action'] = route('game.index', ['language' => app()->getLocale(), 'region'=>$region]);
-                            $msg['action_color'] = 'danger';
-                            $reminders[] = $msg;
-                        } else {
-                            $msg['msg'] =  __('message.reminder.deadline.referees', ['deadline' => $region->close_referees_at->diffForHumans(['parts' => 1]), 'region'=>$region->code]);
-                            $msg['msg_color'] = 'warning';
-                            $infos[] = $msg;
-                        }
+                    if ( $region->close_referees_at <= now()->addWeeks(1)) {
+                        $msg['msg'] =  __('message.reminder.deadline.referees', ['deadline' => $region->close_referees_at->diffForHumans(['parts' => 3, 'join' => true]), 'region'=>$region->code]);
+                        $msg['action_msg'] =  __('message.reminder.deadline.action');
+                        $msg['action'] = route('game.index', ['language' => app()->getLocale(), 'region'=>$region]);
+                        $msg['action_color'] = 'danger';
+                        $reminders[] = $msg;
+                    } else {
+                        $msg['msg'] =  __('message.reminder.deadline.referees', ['deadline' => $region->close_referees_at->diffForHumans(['parts' => 1]), 'region'=>$region->code]);
+                        $msg['msg_color'] = 'warning';
+                        $infos[] = $msg;
                     }
                 }
 
@@ -121,7 +102,7 @@ class HomeController extends Controller
                 $links[] = ['text'=>$region->code, 'url'=> route('region.briefing',['region'=>$region,  'language'=>app()->getLocale()])];
             }
 
-            if ( ($user->isAn('clubadmin')) and ( $region->auto_state_change )) {
+            if ($user->isAn('clubadmin','regionadmin','superadmin')) {
                 // check close registration deadline
                 if ( ( $region->close_registration_at != null) and ( $region->close_registration_at > now())) {
                     $msg = [];
@@ -137,17 +118,47 @@ class HomeController extends Controller
                         $infos[] = $msg;
                     }
                 }
+                // check open selection deadline
+                if ( ( $region->open_selection_at != null) and ( $region->open_selection_at > now())) {
+                    $msg = [];
+                    $msg['action'] = '';
+
+                    if ( $region->open_selection_at <= now()->addWeeks(1)) {
+                        $msg['msg'] =  __('message.reminder.deadline.start.selection', ['deadline' => $region->open_selection_at->diffForHumans(['parts' => 3, 'join' => true]), 'region'=>$region->code]);
+                        $msg['action_color'] = 'info';
+                        $reminders[] = $msg;
+                    } else {
+                        $msg['msg'] =  __('message.reminder.deadline.start.selection', ['deadline' => $region->open_selection_at->diffForHumans(['parts' => 1]), 'region'=>$region->code]);
+                        $msg['msg_color'] = 'warning';
+                        $infos[] = $msg;
+                    }
+                }
                 // check close selection deadline
                 if ( ( $region->close_selection_at != null) and ( $region->close_selection_at > now())) {
                     $msg = [];
                     $msg['action'] = '';
 
                     if ( $region->close_selection_at <= now()->addWeeks(1)) {
-                        $msg['msg'] =  __('message.reminder.deadline.selection', ['deadline' => $region->close_selection_at->diffForHumans(['parts' => 3, 'join' => true]), 'region'=>$region->code]);
+                        $msg['msg'] =  __('message.reminder.deadline.close.selection', ['deadline' => $region->close_selection_at->diffForHumans(['parts' => 3, 'join' => true]), 'region'=>$region->code]);
                         $msg['action_color'] = 'info';
                         $reminders[] = $msg;
                     } else {
-                        $msg['msg'] =  __('message.reminder.deadline.selection', ['deadline' => $region->close_selection_at->diffForHumans(['parts' => 1]), 'region'=>$region->code]);
+                        $msg['msg'] =  __('message.reminder.deadline.close.selection', ['deadline' => $region->close_selection_at->diffForHumans(['parts' => 1]), 'region'=>$region->code]);
+                        $msg['msg_color'] = 'warning';
+                        $infos[] = $msg;
+                    }
+                }
+                // check open scheduling deadline
+                if ( ( $region->open_scheduling_at != null) and ( $region->open_scheduling_at > now())) {
+                    $msg = [];
+                    $msg['action'] = '';
+
+                    if ( $region->open_scheduling_at <= now()->addWeeks(1)) {
+                        $msg['msg'] =  __('message.reminder.deadline.start.scheduling', ['deadline' => $region->open_scheduling_at->diffForHumans(['parts' => 3, 'join' => true]), 'region'=>$region->code]);
+                        $msg['action_color'] = 'info';
+                        $reminders[] = $msg;
+                    } else {
+                        $msg['msg'] =  __('message.reminder.deadline.start.scheduling', ['deadline' => $region->open_scheduling_at->diffForHumans(['parts' => 1]), 'region'=>$region->code]);
                         $msg['msg_color'] = 'warning';
                         $infos[] = $msg;
                     }
@@ -158,11 +169,11 @@ class HomeController extends Controller
                     $msg['action'] = '';
 
                     if ( $region->close_scheduling_at <= now()->addWeeks(1)) {
-                        $msg['msg'] =  __('message.reminder.deadline.scheduling', ['deadline' => $region->close_scheduling_at->diffForHumans(['parts' => 3, 'join' => true]), 'region'=>$region->code]);
+                        $msg['msg'] =  __('message.reminder.deadline.close.scheduling', ['deadline' => $region->close_scheduling_at->diffForHumans(['parts' => 3, 'join' => true]), 'region'=>$region->code]);
                         $msg['action_color'] = 'info';
                         $reminders[] = $msg;
                     } else {
-                        $msg['msg'] =  __('message.reminder.deadline.scheduling', ['deadline' => $region->close_scheduling_at->diffForHumans(['parts' => 1]), 'region'=>$region->code]);
+                        $msg['msg'] =  __('message.reminder.deadline.close.scheduling', ['deadline' => $region->close_scheduling_at->diffForHumans(['parts' => 1]), 'region'=>$region->code]);
                         $msg['msg_color'] = 'warning';
                         $infos[] = $msg;
                     }
