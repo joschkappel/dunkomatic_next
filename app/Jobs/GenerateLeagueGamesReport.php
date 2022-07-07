@@ -71,7 +71,8 @@ class GenerateLeagueGamesReport implements ShouldQueue
         Log::info('[JOB][LEAGUE GAMES REPORTS] started.', [
             'region-id' => $this->region->id,
             'league-id' => $this->league->id,
-            'format' => $this->rtype->key]);
+            'format' => $this->rtype->key,
+            'path' => $this->rpt_name]);
 
         if ($this->rtype->hasFlag(ReportFileType::PDF)) {
             Excel::store(new LeagueGamesExport($this->league->id ), $this->rpt_name, null, \Maatwebsite\Excel\Excel::MPDF);

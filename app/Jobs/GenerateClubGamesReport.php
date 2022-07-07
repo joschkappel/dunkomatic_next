@@ -92,7 +92,8 @@ class GenerateClubGamesReport implements ShouldQueue
             'club-id' => $this->club->id,
             'league-id' => $this->league->id ?? '',
             'format' => $this->rtype->key,
-            'scope' => ReportScope::coerce($this->scope)->key]);
+            'scope' => ReportScope::coerce($this->scope)->key,
+            'path' => $this->rpt_name]);
 
         if ($this->rtype->hasFlag(ReportFileType::PDF)) {
             Excel::store( new ClubGamesExport($this->club->id, $this->scope, (isset($this->league->id)) ? $this->league->id : NULL),
