@@ -113,7 +113,7 @@ class HomeController extends Controller
                     $msg['action'] = '';
 
                     if ( $region->close_registration_at <= now()->addWeeks(1)) {
-                        $msg['msg'] =  __('message.reminder.deadline.registration', ['deadline' => $region->close_registration_at->diffForHumans(['parts' => 3, 'join' => true]), 'region'=>$region->code ]);
+                        $msg['msg'] =  __('message.reminder.deadline.registration', ['deadline' => $region->close_registration_at->setHour(20)->diffForHumans(['parts' => 3, 'join' => true]), 'region'=>$region->code ]);
                         $msg['action_color'] = 'info';
                         $reminders[] = $msg;
                     } else {
@@ -128,7 +128,7 @@ class HomeController extends Controller
                     $msg['action'] = '';
 
                     if ( $region->open_selection_at <= now()->addWeeks(1)) {
-                        $msg['msg'] =  __('message.reminder.deadline.start.selection', ['deadline' => $region->open_selection_at->diffForHumans(['parts' => 3, 'join' => true]), 'region'=>$region->code]);
+                        $msg['msg'] =  __('message.reminder.deadline.start.selection', ['deadline' => $region->open_selection_at->setHour(8)->diffForHumans(['parts' => 3, 'join' => true]), 'region'=>$region->code]);
                         $msg['action_color'] = 'info';
                         $reminders[] = $msg;
                     } else {
@@ -143,7 +143,7 @@ class HomeController extends Controller
                     $msg['action'] = '';
 
                     if ( $region->close_selection_at <= now()->addWeeks(1)) {
-                        $msg['msg'] =  __('message.reminder.deadline.close.selection', ['deadline' => $region->close_selection_at->diffForHumans(['parts' => 3, 'join' => true]), 'region'=>$region->code]);
+                        $msg['msg'] =  __('message.reminder.deadline.close.selection', ['deadline' => $region->close_selection_at->setHour(20)->diffForHumans(['parts' => 3, 'join' => true]), 'region'=>$region->code]);
                         $msg['action_color'] = 'info';
                         $reminders[] = $msg;
                     } else {
@@ -158,7 +158,7 @@ class HomeController extends Controller
                     $msg['action'] = '';
 
                     if ( $region->open_scheduling_at <= now()->addWeeks(1)) {
-                        $msg['msg'] =  __('message.reminder.deadline.start.scheduling', ['deadline' => $region->open_scheduling_at->diffForHumans(['parts' => 3, 'join' => true]), 'region'=>$region->code]);
+                        $msg['msg'] =  __('message.reminder.deadline.start.scheduling', ['deadline' => $region->open_scheduling_at->setHour(8)->diffForHumans(['parts' => 3, 'join' => true]), 'region'=>$region->code]);
                         $msg['action_color'] = 'info';
                         $reminders[] = $msg;
                     } else {
@@ -173,7 +173,7 @@ class HomeController extends Controller
                     $msg['action'] = '';
 
                     if ( $region->close_scheduling_at <= now()->addWeeks(1)) {
-                        $msg['msg'] =  __('message.reminder.deadline.close.scheduling', ['deadline' => $region->close_scheduling_at->diffForHumans(['parts' => 3, 'join' => true]), 'region'=>$region->code]);
+                        $msg['msg'] =  __('message.reminder.deadline.close.scheduling', ['deadline' => $region->close_scheduling_at->setHour(20)->diffForHumans(['parts' => 3, 'join' => true]), 'region'=>$region->code]);
                         $msg['action_color'] = 'info';
                         $reminders[] = $msg;
                     } else {
