@@ -6,16 +6,22 @@
             <div class="col-sm ">
                 <!-- small card LEAGUE -->
                 <div class="small-box bg-primary">
-                    @if ($league->schedule->custom_events)
-                    <div class="ribbon-wrapper ribbon-xl">
-                        <div class="ribbon bg-danger">@lang('Custom')</div>
-                    </div>
-                    @else
-                    <div class="ribbon-wrapper ribbon-xl">
-                        <div class="ribbon bg-light">{{ $league->schedule->name }}</div>
-                    </div>
-
-                    @endif
+                    @isset($league->schedule)
+                        @if ($league->schedule->custom_events)
+                        <div class="ribbon-wrapper ribbon-xl">
+                            <div class="ribbon bg-danger">@lang('Custom')</div>
+                        </div>
+                        @else
+                        <div class="ribbon-wrapper ribbon-xl">
+                            <div class="ribbon bg-light">{{ $league->schedule->name }}</div>
+                        </div>
+                        @endif
+                        @endisset
+                        @empty($league->schedule)
+                        <div class="ribbon-wrapper ribbon-xl">
+                            <div class="ribbon bg-danger">{{ __('Undefined') }}</div>
+                        </div>
+                        @endempty
                     <div class="inner">
                         <div class="row">
                             <input type="hidden" id="entitytype" value="App\Models\League">

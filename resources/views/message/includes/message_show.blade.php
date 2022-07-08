@@ -15,6 +15,7 @@
                     <div id="msgSalutation"></div>
                 </div>
                 <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="btnMarkUnread" data-dismiss="modal">{{__('message.delete')}}</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
                 </div>
             </div>

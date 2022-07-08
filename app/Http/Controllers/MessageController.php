@@ -60,6 +60,10 @@ class MessageController extends Controller
                   data-msg-title="' . $data->title . '" data-toggle="modal" data-target="#modalDeleteMessage"><i class="fa fa-trash"></i></button>';
                 $btn .= '<button type="button" id="copyMessage" name="copyMessage" class="btn btn-outline-primary btn-sm m-2" data-msg-id="' . $data->id . '"
                   ><i class="fas fa-copy"></i></button>';
+                if ($data->sent_at != null){
+                    $btn .= '<button type="button" id="showMessage" name="showMessage" class="btn btn-outline-primary btn-sm m-2" data-msg-id="' . $data->id . '"
+                    data-msg-greeting="' . $data->greeting . '" data-msg-subject="' . $data->title . '"  data-msg-body="' . htmlentities($data->body) . '"><i class="far fa-eye"></i></button>';
+                };
                 return $btn;
             })
             ->addColumn('action_send', function ($data) {

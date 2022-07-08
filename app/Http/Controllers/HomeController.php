@@ -29,7 +29,6 @@ class HomeController extends Controller
      */
     public function home()
     {
-        $today = Carbon::today()->toDateString();
         $user = Auth::user();
 
         $msglist = array();
@@ -60,8 +59,13 @@ class HomeController extends Controller
         $infos  = [];
         $links = collect();
 
+        //bouncer db access is massive !
+        $user_is_region_super = $user->isAn('regionadmin', 'superadmin');
+        $user_is_club_region_super = $user->isAn('clubadmin','regionadmin','superadmin');
+        $user_can_view_regions = $user->can('view-regions');
+
         foreach ($user->regions() as $region){
-            if ( ($user->isAn('regionadmin', 'superadmin')) and $user->can('access',$region) ) {
+            if ( ($user_is_region_super) and $user->can('access',$region) ) {
                 $links[] = ['text'=>$region->code, 'url'=> route('region.dashboard',['region'=>$region, 'language'=>app()->getLocale()])];
                 // check new users waiting for approval
                 $users_to_approve = $region->users()->whereNull('approved_at')->whereNull('rejected_at')->count();
@@ -102,7 +106,7 @@ class HomeController extends Controller
                 $links[] = ['text'=>$region->code, 'url'=> route('region.briefing',['region'=>$region,  'language'=>app()->getLocale()])];
             }
 
-            if ($user->isAn('clubadmin','regionadmin','superadmin')) {
+            if ($user_is_club_region_super) {
                 // check close registration deadline
                 if ( ( $region->close_registration_at != null) and ( $region->close_registration_at > now())) {
                     $msg = [];
@@ -180,7 +184,7 @@ class HomeController extends Controller
                 }
             }
 
-            if ($user->can('view-regions')) {
+            if ($user_can_view_regions) {
                 if ($region->league_filecount > 0) {
                     $msg = [];
                     $msg['msg'] =  __('message.reminder.download.region.leagues', ['region' => $region->code, 'count' => $region->league_filecount]);
@@ -199,13 +203,9 @@ class HomeController extends Controller
                 }
             }
         }
-        if ($user->isNotAn('regionadmin', 'superadmin')){
+        if (!$user_is_region_super){
             foreach ($user->clubs() as $club) {
-                if ($user->can('access', $club)) {
-                    $links[] = ['text'=>$club->shortname, 'url'=> route('club.dashboard',['club'=>$club,  'language'=>app()->getLocale()])];
-                } else {
-                    $links[] = ['text'=>$club->shortname, 'url'=> route('club.briefing',['club'=>$club,  'language'=>app()->getLocale()])];
-                }
+                $links[] = ['text'=>$club->shortname, 'url'=> route('club.dashboard',['club'=>$club,  'language'=>app()->getLocale()])];
 
                 if ($club->filecount > 0) {
                     $msg = [];
@@ -217,11 +217,7 @@ class HomeController extends Controller
                 }
             }
             foreach ($user->leagues() as $league) {
-                if ($user->can('access',$league)) {
-                    $links[] = ['text'=>$league->shortname, 'url'=> route('league.dashboard',['league'=>$league,  'language'=>app()->getLocale()])];
-                } else {
-                    $links[] = ['text'=>$league->shortname, 'url'=> route('league.briefing',['league'=>$league,  'language'=>app()->getLocale()])];
-                }
+                $links[] = ['text'=>$league->shortname, 'url'=> route('league.dashboard',['league'=>$league,  'language'=>app()->getLocale()])];
                 if ($league->filecount > 0) {
                     $msg = [];
                     $msg['msg'] =  __('message.reminder.download.leagues', ['league' => $league->shortname, 'count' => $league->filecount]);

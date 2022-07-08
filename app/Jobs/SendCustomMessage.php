@@ -51,6 +51,7 @@ class SendCustomMessage implements ShouldQueue
         $to_members = collect();
         $to_member_roles = array();
         $cc_members = collect();
+        $cc_members->push(['name'=>$this->message->user->name , 'email'=>$this->message->user->email]);
         $cc_member_roles = array();
         $to_users = collect();
 
