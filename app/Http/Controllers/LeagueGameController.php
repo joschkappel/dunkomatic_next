@@ -7,13 +7,13 @@ use App\Models\League;
 use App\Models\Gym;
 use App\Models\Team;
 use App\Traits\LeagueFSM;
-use App\Traits\GameManager;
 use App\Imports\LeagueGamesImport;
+use App\Imports\LeagueCustomGamesImport;
 
 
 use Datatables;
 use Illuminate\Support\Carbon;
-use Spatie\TemporaryDirectory\TemporaryDirectory;
+use Maatwebsite\Excel\Facades\Excel;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -282,13 +282,15 @@ class LeagueGameController extends Controller
         Log::info('upload form data validated OK.');
         Log::info('processing file upload.', ['league-id' => $league->id, 'file' => $data['gfile']->getClientOriginalName()]);
 
-        $tmpDir = (new TemporaryDirectory())->create();
-        $path = $data['gfile']->store($tmpDir->path());
-        $hgImport = new LeagueGamesImport($league);
         try {
             // $hgImport->import($path, 'local', \Maatwebsite\Excel\Excel::XLSX);
             Log::info('validating import data.', ['league-id' => $league->id]);
-            $hgImport->import($path, 'local');
+            if ($league->is_custom){
+                $hgImport = new LeagueCustomGamesImport($league);
+            } else {
+                $hgImport = new LeagueGamesImport($league);
+            }
+            Excel::import( $hgImport, $request->gfile->store('temp'));
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             $failures = Arr::sortRecursive($e->failures());
             $ebag = array();
@@ -301,10 +303,8 @@ class LeagueGameController extends Controller
                 $frow = $failure->row();
             }
             Log::warning('errors found in import data.', ['count' => count($failures)]);
-            $tmpDir->delete();
             return redirect()->back()->withErrors($ebag);
         }
-        $tmpDir->delete();
 
         return redirect()->back()->with(['status' => 'All data imported']);
         //return redirect()->route('club.list.homegame', ['language'=>$language, 'club' => $club]);

@@ -15,7 +15,7 @@ use Illuminate\Support\Collection;
 
 use Datatables;
 use Illuminate\Support\Carbon;
-use Spatie\TemporaryDirectory\TemporaryDirectory;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 class ClubGameController extends Controller
@@ -189,13 +189,11 @@ class ClubGameController extends Controller
         //$fname = $request->gfile->getClientOriginalName();
         //$fname = $club->shortname.'_homegames.'.$request->gfile->extension();
 
-        $tmpDir = (new TemporaryDirectory())->create();
-        $path = $data['gfile']->store($tmpDir->path());
-        $hgImport = new HomeGamesImport();
         try {
             // $hgImport->import($path, 'local', \Maatwebsite\Excel\Excel::XLSX);
             Log::info('validating import data.', ['club-id' => $club->id]);
-            $hgImport->import($path, 'local');
+            $hgImport = new HomeGamesImport();
+            Excel::import( $hgImport, $request->gfile->store('temp'));
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             $failures = Arr::sortRecursive($e->failures());
             $ebag = array();
@@ -208,10 +206,8 @@ class ClubGameController extends Controller
                 $frow = $failure->row();
             }
             Log::warning('errors found in import data.', ['count' => count($failures)]);
-            $tmpDir->delete();
             return redirect()->back()->withErrors($ebag);
         }
-        $tmpDir->delete();
 
         return redirect()->back()->with(['status' => 'All data imported']);
         //return redirect()->route('club.list.homegame', ['language'=>$language, 'club' => $club]);

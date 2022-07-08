@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Region;
 use App\Imports\RefereesImport;
 
-use Spatie\TemporaryDirectory\TemporaryDirectory;
+use Maatwebsite\Excel\Facades\Excel;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -44,13 +44,10 @@ class RegionGameController extends Controller
         //$fname = $club->shortname.'_homegames.'.$request->gfile->extension();
         Log::info('processing file upload.', ['region-id'=> $region->id, 'file'=> $request->gfile->getClientOriginalName() ]);
 
-        $tmpDir = (new TemporaryDirectory())->create();
-        $path = $request->gfile->store($tmpDir->path());
-        $refImport = new RefereesImport();
         try {
-          // $hgImport->import($path, 'local', \Maatwebsite\Excel\Excel::XLSX);
           Log::info('validating import data.', ['region-id'=> $region->id]);
-          $refImport->import($path, 'local' );
+          $hgImport = new RefereesImport();
+          Excel::import( $hgImport, $request->gfile->store('temp'));
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
           $failures = $e->failures();
           $ebag = array();
@@ -58,10 +55,8 @@ class RegionGameController extends Controller
               $ebag[] = __('import.row').' "'.$failure->row().'", '.__('import.column').' "'.$failure->attribute().': '.$failure->errors()[0];
           }
           Log::warning('errors found in import data.', ['count'=> count($failures) ]);
-          $tmpDir->delete();
           return redirect()->back()->withErrors($ebag);
         }
-        $tmpDir->delete();
 
         return redirect()->back()->with(['status'=>'All data imported']);
     }
