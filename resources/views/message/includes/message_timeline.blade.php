@@ -14,7 +14,7 @@
     @foreach ( $msglist as $msgdate)
     <!-- Timeline time label -->
     <div class="time-label">
-      <span class="bg-green text-sm">{{ \Carbon\CarbonImmutable::parse($msgdate['valid_from'])->locale( app()->getLocale() )->isoFormat('ll') }}</span>
+      <span class="bg-green text-xs">{{ \Carbon\CarbonImmutable::parse($msgdate['valid_from'])->locale( app()->getLocale() )->isoFormat('ll') }}</span>
     </div>
         @foreach ( $msgdate['items'] as $msg )
             <div>
@@ -25,7 +25,7 @@
                 <!-- Time -->
                     <span class="time"><i class="fas fa-clock"></i> {{ \Carbon\CarbonImmutable::parse($msg->created_at)->locale( app()->getLocale() )->isoFormat('HH:mm:ss') }}</span>
                     <!-- Header. Optional -->
-                    <div class="timeline-header">{{ $msg->data['sender'] ?? '' }}<a href="#" onClick="btnShowMessage('{{$msg->id}}','{{$msg->data['subject']}}','{{$msg->data['greeting']}}','{{$msg->data['lines']}}','{{$msg->data['salutation']}}')">{!! Str::title($msg->data['subject']) !!}</a></div>
+                    <div class="timeline-header text-sm">{{ isset($msg->data['sender']) ?  $msg->data['sender'].': ' : '' }}<a href="#" class="text-sm" onClick="btnShowMessage('{{$msg->id}}','{{$msg->data['subject']}}','{{$msg->data['greeting']}}','{{$msg->data['lines']}}','{{$msg->data['salutation']}}')">{!! Str::title($msg->data['subject']) !!}</a></div>
 
                 </div>
                 </div>

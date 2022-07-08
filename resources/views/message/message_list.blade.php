@@ -13,6 +13,7 @@
 </x-card-list>
 
 <x-confirm-deletion modalId="modalDeleteMessage" modalTitle="{{ __('message.title.delete') }}" modalConfirm="{{ __('message.confirm.delete') }}" deleteType="{{ trans_choice('message.message',1) }}" />
+@include('message.includes.message_show')
 @endsection
 
 @section('js')
@@ -87,6 +88,15 @@
                        },
                        cache: false
                      });
+            });
+            $(document).on('click', '#showMessage', function (data) {
+                // console.log($(this).data('msg-id'));
+                $('#modalShowMessageTitle').html( $(this).data('msg-subject') );
+                $('#msgSalutation').html( $(this).data('msg-salutation') );
+                $('#msgBody').html( $(this).data('msg-body') );
+                $('#msgGreeting').html( $(this).data('msg-greeting') );
+                $('#btnMarkUnread').hide();
+                $('#modalShowMessage').modal('show');
             });
 
 
