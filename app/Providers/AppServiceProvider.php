@@ -90,6 +90,9 @@ class AppServiceProvider extends ServiceProvider
 
         });
 
+        // enable Bouncer cache
+        Bouncer::cache();
+
         // create MUST have folders
         Storage::makeDirectory( config('dunkomatic.folders.backup') );
         Storage::makeDirectory( config('dunkomatic.folders.export') );

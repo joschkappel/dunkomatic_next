@@ -11,16 +11,19 @@
     </div>
     <!-- /.card-header -->
     <div class="card-body">
-            @forelse ($infos as $i)
-            <div class="col">
-                <div class="alert alert-{{$i['msg_color']}} text-sm" role="alert">{!! $i['msg'] !!}
+            @isset($infos)
+                @foreach ($infos as $i)
+                <div class="col">
+                    <div class="alert alert-{{$i['msg_color']}} text-sm" role="alert">{!! $i['msg'] !!}
+                    </div>
                 </div>
-            </div>
-            @empty
+                @endforeach
+            @endisset
+            @empty($infos)
             <div class="col">
                 <div class="alert alert-info tex-sm" role="alert">{{__('message.note.empty')}}</div>
             </div>
-            @endforelse
+            @endempty
         <!-- The last icon means the story is complete -->
     </div>
 </div>

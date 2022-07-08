@@ -11,7 +11,8 @@
     </div>
     <!-- /.card-header -->
     <div class="card-body">
-            @forelse ($reminders as $r)
+        @isset($reminders)
+            @foreach ($reminders as $r)
                 <div class="col">
                     <div class="alert alert-{{$r['action_color']}} text-sm" role="alert">{!! $r['msg'] !!}
                     @if ($r['action'] != '')
@@ -19,11 +20,14 @@
                     @endif
                     </div>
                 </div>
-            @empty
+            @endforeach
+        @endisset
+        @empty($reminders)
                 <div class="col">
                     <div class="alert alert-info" role="alert">{{__('message.reminder.empty')}}</div>
                 </div>
-            @endforelse
+        @endempty
+
         <!-- The last icon means the story is complete -->
     </div>
 </div>
