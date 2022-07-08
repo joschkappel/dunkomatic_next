@@ -57,11 +57,11 @@ class LeagueCustomGamesImport implements ToCollection, WithStartRow, WithValidat
                     'club_id_home' => $row['club_id_home'],
                     'team_id_home' => $row['team_id_home'],
                     'team_home'    => $row[3],
-                    'team_char_home' => 0,
+                    'team_char_home' => $this->league->teams()->where('id', $row['team_id_home'])->first()->league_no ?? 1,
                     'club_id_guest' => $row['club_id_guest'],
                     'team_id_guest' => $row['team_id_guest'],
                     'team_guest'    => $row[4],
-                    'team_char_guest' => 0,
+                    'team_char_guest' => $this->league->teams()->where('id', $row['team_id_guest'])->first()->league_no ?? 2,
                     'gym_id' => $row['gym_id'],
                     'gym_no' => $row[5]
                 ]);

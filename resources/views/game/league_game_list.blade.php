@@ -67,7 +67,7 @@
                     { extend: 'print',
                         exportOptions: { orthogonal: 'export', columns: ':visible' },
                     },
-                    @if ( ( now()->isBefore( $league->region->close_scheduling_at ?? now()->addMinute(1) )) and
+                    @if ( ( $league->state->in([ App\Enums\LeagueState::Scheduling, App\Enums\LeagueState::Freeze])) and
                           ( $league->isCustom  ) )
                         ,{ extend: 'spacer',
                                     style: 'bar'
