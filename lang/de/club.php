@@ -9,6 +9,7 @@ return [
   'action.assign' => 'Verein für die Runde zulassen',
   'action.select' => 'Wähle einen Verein',
   'action.edit-homegame' => 'Heimspieltermine erfassen',
+  'action.game' => 'Spielplan',
   'action.chart-homegame' => 'Heimspiele Übersicht',
   'action.import-homegame' => 'Heimspieltermine importieren',
   'action.download' => 'Spielplan Download',
