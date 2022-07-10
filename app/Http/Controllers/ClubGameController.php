@@ -68,8 +68,11 @@ class ClubGameController extends Controller
 
         $ogames = collect(DB::select($select))->pluck('id')->unique();
 
-        Log::info('got home games for club.', ['club-id' => $club->id, 'count' => $ogames->count()]);
-        $games = Game::query()->where('club_id_home', $club->id)->with('league', 'gym')->get();
+        $games = $club->games_home()->with('league', 'gym')->get();
+        $games = $games->concat($club->games_guest()->with('league', 'gym')->get());
+        $games = $games->sortBy([['game_date','asc'],['gym_no','asc'],['game_time','asc']]);
+        Log::info('got home games for club.', ['club-id' => $club->id, 'count' => $games->count()]);
+
         $glist = datatables()::of($games);
 
         $glist =  $glist
@@ -77,12 +80,17 @@ class ClubGameController extends Controller
             ->editColumn('game_time', function ($game) {
                 return ($game->game_time == null) ? '' :  Carbon::parse($game->game_time)->isoFormat('LT');
             })
-            ->editColumn('game_no', function ($game) {
-                $link = '<a href="#" id="gameEditLink" data-id="' . $game->id .
-                    '" data-game-date="' . $game->game_date . '" data-game-time="' . $game->game_time . '" data-club-id-home"' . $game->club_id_home .
-                    '" data-gym-no="' . $game->gym_no . '" data-gym-id="' . $game->gym_id . '" data-league="' . $game->league['shortname'] .
-                    '">' . $game->game_no . ' <i class="fas fa-arrow-circle-right"></i></a>';
-                return array('display' => $link, 'sort' => $game->game_no);
+            ->editColumn('game_no', function ($game) use($club) {
+                if ($game->club_id_home == $club->id ){
+                    // this is a home game, can be edited
+                    $link = '<a href="#" id="gameEditLink" data-id="' . $game->id .
+                        '" data-game-date="' . $game->game_date . '" data-game-time="' . $game->game_time . '" data-club-id-home"' . $game->club_id_home .
+                        '" data-gym-no="' . $game->gym_no . '" data-gym-id="' . $game->gym_id . '" data-league="' . $game->league['shortname'] .
+                        '">' . $game->game_no . ' <i class="fas fa-arrow-circle-right"></i></a>';
+                    return array('display' => $link, 'sort' => $game->game_no, 'filter'=>'Heim');
+                } else {
+                    return array('display' =>  $game->game_no, 'sort' => $game->game_no, 'filter'=>'Gast');
+                }
             })
             ->addColumn('duplicate', function ($game) use ($ogames, $game_slot) {
                 $warning = '';
@@ -101,8 +109,8 @@ class ClubGameController extends Controller
             })
             ->editColumn('gym_no', function ($game) {
                 return array(
-                    'display' => $game->gym_no . ' - ' . $game['gym']['name'],
-                    'default' => $game->gym_no
+                    'display' => ($game->gym_no ?? '?') . ' - ' . ($game['gym']['name']??'?'),
+                    'default' => ($game->gym_no ?? '?' )
                 );
             })
             ->make(true);
