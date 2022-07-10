@@ -9,7 +9,6 @@ return [
   'action.assign' => 'Assign Club to this League',
   'action.select' => 'Select a club',
   'action.edit-homegame' => 'Edit Home Game Dates',
-  'action.game' => 'Gameplan',
   'action.chart-homegame' => 'Home Games Overview',
   'action.import-homegame' => 'Import Home Game Dates',
   'action.download' => 'Download Reports',

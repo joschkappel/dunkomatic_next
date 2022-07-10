@@ -109,47 +109,6 @@ class ClubGameController extends Controller
         //Log::debug(print_r($glist,true));
         return $glist;
     }
-        /**
-     * datatables.net with home games
-     *
-     * @param string $language
-     * @param \App\Models\Club $club
-     * @return \Illuminate\Http\JsonResponse
-     *
-     */
-    public function list(string $language, Club $club)
-    {
-
-        $games = $club->games_home()->with('league', 'gym')->get();
-        $games = $games->concat($club->games_guest()->with('league', 'gym')->get());
-        Log::info('got all games for club.', ['club-id' => $club->id, 'count' => $games->count()]);
-
-        $glist = datatables()::of($games);
-
-        $glist =  $glist
-            ->editColumn('game_time', function ($game) {
-                return ($game->game_time == null) ? '' :  Carbon::parse($game->game_time)->isoFormat('LT');
-            })
-            ->editColumn('game_no', function ($game) {
-                return array('display' => $game->game_no, 'sort' => $game->game_no);
-            })
-            ->editColumn('game_date', function ($game) use ($language) {
-                return array(
-                    'display' => Carbon::parse($game->game_date)->locale($language)->isoFormat('ddd L'),
-                    'ts' => Carbon::parse($game->game_date)->timestamp,
-                    'filter' => Carbon::parse($game->game_date)->locale($language)->isoFormat('L')
-                );
-            })
-            ->editColumn('gym_no', function ($game) {
-                return array(
-                    'display' => $game->gym_no . ' - ' . $game['gym']['name'],
-                    'default' => $game->gym_no
-                );
-            })
-            ->make(true);
-        //Log::debug(print_r($glist,true));
-        return $glist;
-    }
 
     /**
      * chart.js with home games

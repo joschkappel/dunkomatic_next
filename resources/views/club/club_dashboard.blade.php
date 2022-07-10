@@ -270,9 +270,6 @@
                             <i class="far fa-edit"></i> @lang('club.action.edit-homegame')</a>
                         @endcan
                         @can('view-games')
-                        <a href="{{ route('club.list.game', ['language' => app()->getLocale(), 'club' => $club]) }}"
-                            class="btn btn-primary float-right mr-2">
-                            <i class="far fa-eye"></i> @lang('club.action.game')</a>
                         <a href="{{ route('cal.club', ['language' => app()->getLocale(), 'club' => $club]) }}"
                             class="btn btn-outline-primary float-right mr-2">
                             <i class="fas fa-calendar-alt"></i> {{ __('reports.ical.club.all')}}</a>

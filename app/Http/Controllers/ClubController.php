@@ -447,19 +447,7 @@ class ClubController extends Controller
         Log::info('listing homegames for club ',['club-id'=> $club->id] );
         return view('game/gamehome_list', ['club' => $club]);
     }
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param string $language
-     * @param  \App\Models\Club  $club
-     * @return \Illuminate\View\View
-     *
-     */
-    public function list_game($language, Club $club)
-    {
-        Log::info('listing all games for club ',['club-id'=> $club->id] );
-        return view('game/club_game_list', ['club' => $club]);
-    }
+
     /**
      * Update the specified resource in storage.
      *
