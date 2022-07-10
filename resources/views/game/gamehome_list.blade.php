@@ -80,6 +80,7 @@ $(function() {
                  { data: 'id', name: 'id', visible: false },
                  { data: {
                      _: 'game_no.display',
+                     filter: 'game_no.filter',
                      sort: 'game_no.sort'
                    }, name: 'game_no.sort'},
                  { data: {
@@ -101,7 +102,18 @@ $(function() {
                   { data: 'referee_2', name: 'referee_2'},
                  { data: 'gym_id', name: 'gym_id', visible: false },
                  { data: 'duplicate', name: 'duplicate' }
-              ]
+              ],
+              createdRow: function( row, data, dataIndex){
+                if ( data['duplicate'] != '') {
+                    $(row).addClass('table-danger');
+                } else {
+                    if ( (data['club_id_home'] == '{{$club->id}}') && (data['game_time'] ==  '')) {
+                        $(row).addClass('table-warning');
+                    } else if (data['club_id_home'] == '{{$club->id}}') {
+                        $(row).addClass('table-success');
+                    };
+                };
+            }
     });
 
     $('body').on('click', '#gameEditLink', function() {
