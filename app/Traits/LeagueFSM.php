@@ -26,19 +26,23 @@ trait LeagueFSM
         $league->registration_closed_at = now();
         $league->save();
 
-        if ($send_email){
-            $teams = $league->teams;
-            foreach ($teams as $t) {
-                $member = $t->club->members()->wherePivot('role_id', Role::ClubLead)->first();
+        if ($league->is_custom){
+            $this->freeze_league($league);
+        } else {
+            if ($send_email){
+                $teams = $league->teams;
+                foreach ($teams as $t) {
+                    $member = $t->club->members()->wherePivot('role_id', Role::ClubLead)->first();
 
-                if (isset($member)) {
-                    $member->notify(new SelectTeamLeagueNo($league, $t->club, $member->name));
-                    Log::info('[NOTIFICATION] select league team number.', ['league-id' => $league->id, 'member-id' => $member->id]);
+                    if (isset($member)) {
+                        $member->notify(new SelectTeamLeagueNo($league, $t->club, $member->name));
+                        Log::info('[NOTIFICATION] select league team number.', ['league-id' => $league->id, 'member-id' => $member->id]);
 
-                    $user = $member->user;
-                    if (isset($user)) {
-                        $user->notify(new SelectTeamLeagueNo($league, $t->club, $user->name));
-                        Log::info('[NOTIFICATION] select league team number.', ['league-id' => $league->id, 'user-id' => $user->id]);
+                        $user = $member->user;
+                        if (isset($user)) {
+                            $user->notify(new SelectTeamLeagueNo($league, $t->club, $user->name));
+                            Log::info('[NOTIFICATION] select league team number.', ['league-id' => $league->id, 'user-id' => $user->id]);
+                        }
                     }
                 }
             }
@@ -124,6 +128,10 @@ trait LeagueFSM
         $league->state = LeagueState::Selection();
         $league->selection_closed_at = null;
         $league->save();
+
+        if ($league->is_custom){
+            $this->reopen_team_registration($league);
+        }
     }
 
     public function refreeze_league(League $league): void

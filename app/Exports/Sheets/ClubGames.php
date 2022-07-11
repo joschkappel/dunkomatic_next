@@ -85,6 +85,7 @@ class ClubGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
                        $query->where('referee_1',$shortname)
                              ->orWhere('referee_2',$shortname);
                      })
+                     ->with('league','gym')
                      ->orderBy('game_date','asc')
                      ->orderBy('game_time','asc')
                      ->orderBy('game_no','asc')

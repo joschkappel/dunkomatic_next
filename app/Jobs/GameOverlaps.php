@@ -61,7 +61,7 @@ class GameOverlaps implements ShouldQueue
             if (count($ogames) > 0) {
                 Log::warning('[JOB][OVERLAPPING GAMES] found overlapping games.', ['club-id' => $c->id, 'gameslot'=>$game_slot, 'count' => count($ogames)]);
 
-                $members = $c->members->where('pivot.role_id', Role::ClubLead);
+                $members = $c->members->load('user')->where('pivot.role_id', Role::ClubLead);
                 foreach ($members as $m){
                     $m->notify( new ClubOverlappingGames($c, count($ogames)) );
                     if ($m->user()->exists()){

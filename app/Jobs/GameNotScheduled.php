@@ -53,7 +53,7 @@ class GameNotScheduled implements ShouldQueue
 
             if (count($ogames) > 0) {
                 Log::warning('[JOB][UNSCHEDULED GAMES] found games with no date and time.',[ 'club-id'=>$c->id, 'count'=> count($ogames) ]);
-                $members = $c->members->where('pivot.role_id', Role::ClubLead);
+                $members = $c->members->load('user')->where('pivot.role_id', Role::ClubLead);
                 foreach ($members as $m){
                     $m->notify( new ClubUnscheduledGames($c, count($ogames)) );
                     if ($m->user()->exists()){

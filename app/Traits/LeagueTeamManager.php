@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Enums\LeagueState;
 use App\Models\League;
+use App\Models\Team;
 
 use App\Models\User;
 use Bouncer as Bouncer;
@@ -136,12 +137,17 @@ trait LeagueTeamManager
                         $function = 'registerTeam#deassignClub';
                         $scolor = 'btn-warning#btn-light';
                     } else {
-                        if ($team_league_no ==  null){
-                            $function = 'pickChar#unregisterTeam';
-                            $scolor = 'btn-success#btn-primary';
+                        if (! $league->load('schedule','league_size')->is_custom){
+                            if ($team_league_no ==  null){
+                                $function = 'pickChar#unregisterTeam';
+                                $scolor = 'btn-success#btn-primary';
+                            } else {
+                                $function = 'releaseChar';
+                                $scolor = 'btn-warning';
+                            }
                         } else {
-                            $function = 'releaseChar';
-                            $scolor = 'btn-warning';
+                            $function = 'unregisterTeam';
+                            $scolor = 'btn-primary';
                         }
                     }
                 }
@@ -149,5 +155,19 @@ trait LeagueTeamManager
         }
 
         return array($status, $color, $text, $function, $scolor);
+    }
+
+    protected function get_custom_league_league_no(League $league, Team $team){
+        $chars = config('dunkomatic.league_team_chars');
+        $all_nos = collect(array_slice($chars, 0, $league->size, true));
+        $used_nos = $league->teams->pluck('league_no','league_no');
+        $free_nos = $all_nos->diffKeys($used_nos);
+
+        $league_no = $league->clubs()->where('club_id', $team->club->id)->first()->pivot->league_no;
+        if ( ($league_no > $league->size) or ($used_nos->keys()->contains($league_no) )){
+            $league_no = $free_nos->keys()->first();
+        }
+        $league_char = $all_nos[$league_no];
+        return array($league_no, $league_char);
     }
 }
