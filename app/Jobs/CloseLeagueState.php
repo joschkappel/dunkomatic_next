@@ -6,6 +6,9 @@ use App\Enums\LeagueState;
 use App\Models\User;
 use App\Models\Region;
 use App\Traits\LeagueFSM;
+use App\Enums\JobFrequencyType;
+use App\Enums\ReportFileType;
+
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
 use App\Notifications\LeagueStateClosed;
@@ -104,6 +107,16 @@ class CloseLeagueState implements ShouldQueue
                         $live_not_opened->push($l);
                     }
                 }
+                if (count($live_not_opened)==0){
+                    $r->update([
+                        'job_game_overlaps' => false,
+                        'job_game_notime' => false,
+                        'job_club_reports' => JobFrequencyType::never(),
+                        'fmt_club_reports' => null,
+                        'job_league_reports' => JobFrequencyType::never(),
+                        'fmt_league_reports' => null
+                    ]);
+                };
                 Notification::send($radmins, new LeagueStateClosed( __('league.action.close.referees') , $live_opened, $live_not_opened));
             }
         }

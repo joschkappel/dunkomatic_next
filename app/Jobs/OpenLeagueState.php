@@ -2,7 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Enums\JobFrequencyType;
 use App\Enums\LeagueState;
+use App\Enums\ReportFileType;
 use App\Models\Region;
 use App\Models\User;
 use App\Notifications\LeagueStateOpened;
@@ -11,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\Job;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -65,12 +68,12 @@ class OpenLeagueState implements ShouldQueue
             if ($open_selection->isToday()){
                 Log::info('[JOB][OPEN LEAGUE STATES] opening selection for region.',['region-id'=>$r->id]);
                 foreach ( $r->leagues as $l){
-                    if ($l->state->is(LeagueState::Registration())){
+                    if ( ($l->state->is(LeagueState::Registration())) and (!$l->is_custom)){
                         $this->open_char_selection($l->load('clubs','teams'), true);
                         $selection_opened->push($l);
                     } else {
                         $selection_not_opened->push($l);
-                        Log::warning('[JOB][OPEN LEAGUE STATES] league in wrong state.',['league-id'=>$l->id, 'state'=>$l->state]);
+                        Log::warning('[JOB][OPEN LEAGUE STATES] league in wrong state or custom.',['league-id'=>$l->id, 'state'=>$l->state]);
                     }
                 }
                 Notification::send($radmins, new LeagueStateOpened( __('league.action.open.selection') , $selection_opened, $selection_not_opened));
@@ -90,6 +93,15 @@ class OpenLeagueState implements ShouldQueue
                         Log::warning('[JOB][OPEN LEAGUE STATES] league in wrong state.',['league-id'=>$l->id, 'state'=>$l->state]);
                     }
                 }
+                if (count($scheduling_opened)>0){
+                    $r->update([
+                        'job_game_overlaps' => true,
+                        'job_game_notime' => true,
+                        'job_club_reports' => JobFrequencyType::daily(),
+                        'fmt_club_reports' => ReportFileType::XLSX()
+                    ]);
+                };
+
                 Notification::send($radmins, new LeagueStateOpened(__('league.action.open.scheduling'), $scheduling_opened, $scheduling_not_opened));
             }
 
