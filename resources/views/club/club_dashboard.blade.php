@@ -162,7 +162,7 @@
                            <li class="list-group-item ">
                                 <span data-toggle="tooltip" title="{{__('gym.action.delete')}}">
                                     <button type="button" id="deleteGym" class="btn btn-outline-danger btn-sm"
-                                        @cannot('create-gyms') disabled @else @if ($gym->games()->exists()) disabled @endif @endcannot
+                                        @cannot('create-gyms') disabled @else @if (($gym->games()->exists()) or ($club->teams->load('gym')->where('gym_id',$gym->id)->count() >0 )) disabled @endif @endcannot
                                         data-gym-id="{{ $gym->id }}"
                                         data-gym-name="{{ $gym->gym_no }} - {{ $gym->name }}"
                                         data-club-sname="{{ $club->shortname }}" data-toggle="modal"
