@@ -180,7 +180,8 @@ class ClubTeamControllerTest extends TestCase
                           'coach_name'  => 'testteam2',
                           'coach_email' => 'coach@gmail.com',
                           'coach_phone1' => $team->coach_phone1,
-                          'shirt_color' => $team->shirt_color
+                          'shirt_color' => $team->shirt_color,
+                          'gym_id' => $team->club->gyms()->first()->id
                         ]);
       $team->refresh();
       $response->assertStatus(302)
