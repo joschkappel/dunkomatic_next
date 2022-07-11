@@ -18,7 +18,8 @@ class FixesDatabaseSeeder extends Seeder
         // load base tables
         $this->call([
           // fixes\InactiveClubs::class
-          fixes\CustomLeagues::class
+          // fixes\CustomLeagues::class
+          fixes\TeamGym::class
         ]);
 
     }

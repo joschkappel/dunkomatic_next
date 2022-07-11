@@ -57,7 +57,7 @@ trait GameManager
         $g_perday = ($league->league_size->size / 2) ?? 1;
 
         // get teams
-        $teams = $league->teams()->with('club')->get();
+        $teams = $league->teams()->with('club','gym')->get();
 
         for ($i=0; $i < $iterations ; $i++) {
             foreach ($scheme as $s) {
@@ -95,8 +95,8 @@ trait GameManager
 
                     if (isset($hteam)) {
                         $g['game_time'] = $hteam['preferred_game_time'];
-                        $g['gym_no'] = Club::find($hteam['club']['id'])->gyms()->first()->gym_no ?? null;
-                        $g['gym_id'] = Club::find($hteam['club']['id'])->gyms()->first()->id ?? null;
+                        $g['gym_no'] = $hteam['gym']['gym_no'] ?? null;
+                        $g['gym_id'] = $hteam['gym']['id'] ?? null;
                         $g['club_id_home'] = $hteam['club']['id'];
                         $g['team_id_home'] = $hteam['id'];
                         $g['team_home'] = $hteam['club']['shortname'] . $hteam['team_no'];
@@ -148,7 +148,7 @@ trait GameManager
             $g_perday = ($league->league_size->size / 2) ?? 1;
 
             // get teams
-            $teams = $league->teams()->with('club','club.gyms')->get();
+            $teams = $league->teams()->with('club','gym')->get();
 
 
             if ($league->games()->exists()) {
@@ -193,8 +193,8 @@ trait GameManager
 
                                     if (isset($hteam)) {
                                         $g['game_time'] = $hteam['preferred_game_time'];
-                                        $g['gym_no'] = $hteam->club->gyms->first()->gym_no;
-                                        $g['gym_id'] = $hteam->club->gyms->first()->id;
+                                        $g['gym_no'] = $hteam->gym->gym_no;
+                                        $g['gym_id'] = $hteam->gym->id;
                                         $g['club_id_home'] = $hteam['club']['id'];
                                         $g['team_id_home'] = $hteam['id'];
                                         $g['team_home'] = $hteam['club']['shortname'] . $hteam['team_no'];
@@ -227,8 +227,9 @@ trait GameManager
                                             $game->game_date = $gday;
                                         };
 
-                                        $game->gym_no  = $team->club->gyms->first()->gym_no;
-                                        $game->gym_id = $team->club->gyms->first()->id;
+                                        $team->load('gym');
+                                        $game->gym_no  = $team->gym->gym_no;
+                                        $game->gym_id = $team->gym->id;
                                         $game->save();
                                         Log::debug('updating game no.', ['game-no' => $game->game_no]);
                                     }

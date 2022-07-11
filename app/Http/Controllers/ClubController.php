@@ -190,7 +190,7 @@ class ClubController extends Controller
      */
     public function team_dt(Request $request, string $language, Club $club): JsonResponse
     {
-        $clubteam = $club->teams;
+        $clubteam = $club->teams->load('gym');
 
         // get leagues where club is assigned
         $clubleagues = $club->leagues;
@@ -221,6 +221,9 @@ class ClubController extends Controller
                 } else {
                     return '';
                 }
+            })
+            ->addColumn('gym', function ($ct) {
+                return '('.$ct->gym->gym_no.') '.$ct->gym->name;
             })
             ->addColumn('coach', function ($ct) {
                 return '<a href="mailto:'.$ct->coach_email .'" >'.$ct->coach_name . '</a><i class="fas fa-phone m-2"></i>'. $ct->coach_phone1 ;

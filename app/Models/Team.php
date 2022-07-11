@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Club;
 use App\Models\League;
 use App\Models\Game;
+use App\Models\Gym;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -20,6 +21,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property int $team_no
  * @property int|null $league_id
  * @property int $club_id
+ * @property int|null $gym_id
  * @property string|null $league_char
  * @property int|null $league_no
  * @property string|null $preferred_league_char
@@ -90,7 +92,7 @@ class Team extends Model implements Auditable
     }
 
     protected $fillable = [
-        'id', 'league_char', 'league_no', 'team_no', 'league_id', 'club_id', 'changeable', 'league_prev',
+        'id', 'league_char', 'league_no', 'team_no', 'league_id', 'club_id', 'gym_id',  'changeable', 'league_prev',
         'training_day', 'training_time', 'preferred_game_day', 'preferred_game_time',
         'coach_name', 'coach_phone1', 'coach_phone2', 'coach_email', 'shirt_color',
         'preferred_league_char', 'preferred_league_no',
@@ -104,6 +106,10 @@ class Team extends Model implements Auditable
     public function league(): BelongsTo
     {
         return $this->belongsTo(League::class);
+    }
+    public function gym(): BelongsTo
+    {
+        return $this->belongsTo(Gym::class);
     }
 
     public function games_home(): HasMany

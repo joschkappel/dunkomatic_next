@@ -25,6 +25,7 @@ return [
     'game.perday.min' => 'min',
     'game.perday.num' => '# games',
     'game.preferred' => 'Homegame preferred Day/Time',
+    'gym.preferred' => 'Preferred Arena',
     'league.previous' => 'Previous League',
     'league.unassigned' => 'unassigned (was: :LEAGUE)',
     'no' => 'Team Number',

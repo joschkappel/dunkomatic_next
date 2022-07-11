@@ -219,6 +219,7 @@
                                     <th scope="col">{{ trans_choice('team.shirtcolor', 1) }}</th>
                                     <th scope="col">{{ trans_choice('team.training', 1) }}</th>
                                     <th scope="col">{{Str::limit( trans_choice('team.game.preferred', 1),18) }}</th>
+                                    <th scope="col">{{Str::limit( trans_choice('team.gym.preferred', 1),18) }}</th>
                                     <th scope="col">{{ Str::limit(trans_choice('team.coach', 1),10) }}</th>
                                 </tr>
                             </thead>
@@ -389,6 +390,7 @@
                         {data: 'shirt_color', name: 'shirt_color'},
                         {data: 'training', name: 'training'},
                         {data: 'gameday', name: 'gameday'},
+                        {data: 'gym', name: 'gym'},
                         {data: 'coach', name: 'coach'},
                         ]
             });

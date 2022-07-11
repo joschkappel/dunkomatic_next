@@ -25,6 +25,7 @@ return [
     'game.perday.min' => 'Min',
     'game.perday.num' => '# Spiele',
     'game.preferred' => 'Heimspiel Wunsch-Tag/Uhrzeit',
+    'gym.preferred' => 'Bevorzugte Spielhalle',
     'league.previous' => 'Vorherige Spielrunde',
     'league.unassigned' => 'nicht zugeordnet (vorherige Runde: :LEAGUE)',
     'no' => 'Mannschaftsnummer',

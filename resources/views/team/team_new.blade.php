@@ -97,6 +97,21 @@
     </div>
 
     <div class="form-group row ">
+        <label for='selGym'
+            class="col-sm-4 col-form-label">{{ __('team.gym.preferred') }}</label>
+        <div class="col-sm-6">
+        <div class="input-group mb-3">
+            <select class='js-gym-single js-states form-control select2 @error('gym_id')
+                is-invalid @enderror' id='selGym' name="gym_id">
+            </select>
+            @error('gym_id')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group row ">
         <label for="coach_name" class="col-sm-4 col-form-label">@lang('team.coach')</label>
         <div class="col-sm-4">
             <input type="text" class="form-control @error('coach_name') is-invalid @enderror" id="coach_name" name="coach_name" placeholder="@lang('team.coach')" value="{{ old('coach_name') }}">
@@ -179,6 +194,23 @@
             multiple: false,
             allowClear: false,
             minimumResultsForSearch: 20
+        });
+        $("#selGym").select2({
+            placeholder: "{{ __('gym.action.select') }}...",
+            width: '100%',
+            multiple: false,
+            allowClear: false,
+            ajax: {
+                url: '{{ route('gym.sb.club', ['club' => $club->id]) }}',
+                type: "get",
+                delay: 250,
+                processResults: function(response) {
+                    return {
+                        results: response
+                    };
+                },
+                cache: true
+            }
         });
 
     });
