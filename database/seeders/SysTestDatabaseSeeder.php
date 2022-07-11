@@ -33,6 +33,7 @@ class SysTestDatabaseSeeder extends Seeder
             systest\MembersSeeder::class,
             systest\ClubsSeeder::class,
             systest\LeaguesSeeder::class,
+            fixes\TeamGym::class
         ]);
     }
 }

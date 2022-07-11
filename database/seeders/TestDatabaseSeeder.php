@@ -29,6 +29,7 @@ class TestDatabaseSeeder extends Seeder
         // load test tables
         $this->call([
             base\LeagueStateTableSeeder::class,
+            fixes\TeamGym::class,
         ]);
     }
 }
