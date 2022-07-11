@@ -13,6 +13,7 @@ use App\Notifications\ClubDeAssigned;
 use App\Events\LeagueTeamCharUpdated;
 
 use App\Traits\GameManager;
+use App\Traits\LeagueTeamManager;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,7 +22,7 @@ use Illuminate\Support\Facades\Response;
 
 class LeagueTeamController extends Controller
 {
-    use GameManager;
+    use GameManager, LeagueTeamManager;
 
     /**
      * Attach club to league
@@ -156,6 +157,14 @@ class LeagueTeamController extends Controller
             ]);
             $team = Team::findOrFail($data['team_id']);
             $team->league()->associate($league);
+
+            if ($league->is_custom){
+                // assign also league_no
+                list( $league_no, $league_char) = $this->get_custom_league_league_no($league, $team);
+                $team['league_no']  = $league_no;
+                $team['league_char'] = $league_char;
+            }
+
             $team->save();
 
             Log::notice('team registered for league.', ['team-id' => $team->id, 'league-id' => $league->id]);
@@ -164,6 +173,12 @@ class LeagueTeamController extends Controller
         } else {
             if ( $team->exists ){
                 $team->league()->associate($league);
+                if ($league->is_custom){
+                    // assign also league_no
+                    list( $league_no, $league_char) = $this->get_custom_league_league_no($league, $team);
+                    $team['league_no']  = $league_no;
+                    $team['league_char'] = $league_char;
+                }
                 $team->save();
 
                 Log::notice('team registered for league.', ['team-id' => $team->id, 'league-id' => $league->id]);
@@ -219,8 +234,15 @@ class LeagueTeamController extends Controller
         Log::info('team registration form data validated OK.');
 
         $league = League::findOrFail($data['league_id']);
-
         $team->league()->associate($league);
+
+        if ($league->is_custom){
+            // assign also league_no
+            list( $league_no, $league_char) = $this->get_custom_league_league_no($league, $team);
+            $team['league_no']  = $league_no;
+            $team['league_char'] = $league_char;
+        }
+
         $team->save();
         Log::notice('team registered for league.', ['team-id' => $team->id, 'league-id' => $league->id]);
 

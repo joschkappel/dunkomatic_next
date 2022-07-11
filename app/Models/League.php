@@ -241,7 +241,11 @@ class League extends Model implements Auditable
     }
     public function getIsCustomAttribute(): bool
     {
-        return $this->loadMissing('schedule')->schedule->league_size->size == 0;
+        return ($this->loadMissing('schedule','league_size')->schedule->league_size->size ?? 'undefined') == 0 ;
+    }
+    public function getIsNotReadyAttribute(): bool
+    {
+        return $this->loadMissing('schedule')->schedule == null;
     }
     public function getStateCountAttribute(): array
     {
