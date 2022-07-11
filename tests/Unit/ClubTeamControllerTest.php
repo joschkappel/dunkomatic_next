@@ -97,7 +97,8 @@ class ClubTeamControllerTest extends TestCase
                           'coach_name'  => 'testteam',
                           'coach_email' => 'teamcoach@gmail.com',
                           'coach_phone1' => '0123',
-                          'shirt_color' => 'red'
+                          'shirt_color' => 'red',
+                          'gym_id' => $this->testclub_assigned->gyms()->first()->id
                         ]);
       $response
           ->assertStatus(302)
