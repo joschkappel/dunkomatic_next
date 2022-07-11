@@ -73,10 +73,11 @@ class LeagueFactory extends Factory
                     ->afterCreating( function (League $league) use($club_cnt){
                         for ($i=1; $i <= $club_cnt; $i++) {
                             ClubFactory::new()
-                                ->hasTeams(1)
                                 ->has( Gym::factory(['gym_no'=>$i])->count(1) )
+                                ->hasTeams(1)
                                 ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
                                 ->assigned($league, range('A','Z')[$i-1], $i)
+                                ->configure()
                                 ->create();
                         }
                         for ($i=$club_cnt+1; $i <= 4; $i++){
@@ -84,6 +85,7 @@ class LeagueFactory extends Factory
                             ->hasTeams(1)
                             ->has( Gym::factory(['gym_no'=>$i])->count(1) )
                             ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
+                            ->configure()
                             ->create();
                         }
                     });
@@ -109,6 +111,7 @@ class LeagueFactory extends Factory
                                     ->has( Gym::factory(['gym_no'=>$i])->count(1) )
                                     ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
                                     ->assigned($league, range('A','Z')[$i-1], $i)
+                                    ->configure()
                                     ->create();
                             } else {
                                 ClubFactory::new()
@@ -116,6 +119,7 @@ class LeagueFactory extends Factory
                                     ->has( Gym::factory(['gym_no'=>$i])->count(1) )
                                     ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
                                     ->assigned($league, range('A','Z')[$i-1], $i)
+                                    ->configure()
                                     ->create();
                             }
                         }
@@ -124,6 +128,7 @@ class LeagueFactory extends Factory
                             ->hasTeams(1)
                             ->hasGyms(1)
                             ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
+                            ->configure()
                             ->create();
                         }
                     });
@@ -149,6 +154,7 @@ class LeagueFactory extends Factory
                                     ->has( Gym::factory(['gym_no'=>$i])->count(1) )
                                     ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
                                     ->assigned($league, range('A','Z')[$i-1], $i)
+                                    ->configure()
                                     ->create();
                             } else {
                                 ClubFactory::new()
@@ -156,6 +162,7 @@ class LeagueFactory extends Factory
                                     ->has( Gym::factory(['gym_no'=>$i])->count(1) )
                                     ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
                                     ->assigned($league, range('A','Z')[$i-1], $i)
+                                    ->configure()
                                     ->create();
                             }
                         }
@@ -164,6 +171,7 @@ class LeagueFactory extends Factory
                             ->hasTeams(1)
                             ->has( Gym::factory(['gym_no'=>$i])->count(1) )
                             ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
+                            ->configure()
                             ->create();
                         }
                     });
@@ -189,6 +197,7 @@ class LeagueFactory extends Factory
                                     ->has( Gym::factory(['gym_no'=>$i])->count(1) )
                                     ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
                                     ->assigned($league, range('A','Z')[$i-1], $i)
+                                    ->configure()
                                     ->create();
                             } else {
                                 ClubFactory::new()
@@ -196,6 +205,7 @@ class LeagueFactory extends Factory
                                     ->has( Gym::factory(['gym_no'=>$i])->count(1) )
                                     ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
                                     ->assigned($league, range('A','Z')[$i-1], $i)
+                                    ->configure()
                                     ->create();
                             }
                         }
@@ -204,6 +214,7 @@ class LeagueFactory extends Factory
                             ->hasTeams(1)
                             ->has( Gym::factory(['gym_no'=>$i])->count(1) )
                             ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
+                            ->configure()
                             ->create();
                         }
                         $this->create_games($league);

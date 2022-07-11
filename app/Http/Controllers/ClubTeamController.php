@@ -277,6 +277,7 @@ class ClubTeamController extends Controller
             'training_time'  => array( 'required','date_format:H:i', new GameMinute, new GameHour),
             'preferred_game_day' => 'present|integer|min:1|max:7',
             'preferred_game_time' => array('required','date_format:H:i', new GameMinute, new GameHour),
+            'gym_id' => 'required|exists:gyms,id',
             'coach_name'  => 'required|string|max:40',
             'coach_email' => 'nullable|email:rfc,dns',
             'coach_phone1' => 'nullable|string|max:20',
@@ -307,7 +308,7 @@ class ClubTeamController extends Controller
     public function edit($language, Team $team)
     {
         Log::info('editing team.', ['team-id' => $team->id]);
-        $team->load('club', 'league');
+        $team->load('club', 'league','gym');
 
         return view('team/team_edit', ['team' => $team]);
     }
@@ -334,6 +335,7 @@ class ClubTeamController extends Controller
             'training_time'  => array('required','date_format:H:i', new GameMinute, new GameHour),
             'preferred_game_day' => 'present|integer|min:1|max:7',
             'preferred_game_time' => array('required','date_format:H:i', new GameMinute, new GameHour),
+            'gym_id' => 'required|exists:gyms,id',
             'coach_name'  => 'required|string|max:40',
             'coach_email' => 'nullable|email:rfc,dns',
             'coach_phone1' => 'nullable|string|max:20',

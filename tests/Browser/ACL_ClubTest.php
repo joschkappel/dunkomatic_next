@@ -207,8 +207,10 @@ class ACL_ClubTest extends DuskTestCase
                 });
                 $browser->with('#gymsCard', function ($gymCard) use ($user, $gym) {
                     $gymCard->click('.btn-tool')->waitFor('.btn-tool');
-                    ($user->can('create-gyms')) ? $gymCard->assertButtonEnabled('#deleteGym') :  $gymCard->assertButtonDisabled('#deleteGym');
-                    ($user->can('update-gyms')) ? $gymCard->assertSeeLink($gym->gym_no.' - '.$gym->name) : $gymCard->assertDontSeeLink($gym->gym_no.' - '.$gym->name);
+                    if (! ( ($gym->games()->exists()) or ($gym->club->teams->load('gym')->where('gym_id',$gym->id)->count() >0 ))){
+                        ($user->can('create-gyms')) ? $gymCard->assertButtonEnabled('#deleteGym') :  $gymCard->assertButtonDisabled('#deleteGym');
+                        ($user->can('update-gyms')) ? $gymCard->assertSeeLink($gym->gym_no.' - '.$gym->name) : $gymCard->assertDontSeeLink($gym->gym_no.' - '.$gym->name);
+                    };
                 });
                 $browser->with('#membersCard', function ($memberCard) use ($user, $member) {
                     $memberCard->click('.btn-tool')->waitFor('.btn-tool');

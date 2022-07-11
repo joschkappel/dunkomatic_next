@@ -56,8 +56,8 @@ abstract class TestCase extends BaseTestCase
                 foreach ($memberships as $m){
                     $m->delete();
                 }
-                $c->gyms()->delete();
                 $c->teams()->delete();
+                $c->gyms()->delete();
                 $c->delete();
             };
             foreach ($l->teams as $t){
@@ -72,8 +72,8 @@ abstract class TestCase extends BaseTestCase
             foreach ($memberships as $m){
                 $m->delete();
             }
-            $c->gyms()->delete();
             $c->teams()->delete();
+            $c->gyms()->delete();
             $c->delete();
         };
         Schedule::whereNotNull('id')->delete();

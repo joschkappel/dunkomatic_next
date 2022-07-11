@@ -37,6 +37,7 @@ class TeamFactory extends Factory
         ];
     }
 
+
     public function registered(League $league)
     {
         return $this->state(function () use ($league) {

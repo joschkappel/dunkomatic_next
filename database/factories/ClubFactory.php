@@ -36,6 +36,16 @@ class ClubFactory extends Factory
             'region_id' => Region::where('code','HBVDA')->first()->id,
         ];
     }
+    public function configure()
+    {
+        return $this->afterCreating(function (Club $club) {
+            $gym = $club->gyms()->first();
+            foreach ($club->teams as $t){
+                $t->gym()->associate($gym);
+                $t->save();
+            }
+        });
+    }
 
     public function assigned(League $league, $lchar, $lno)
     {

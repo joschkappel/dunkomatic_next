@@ -87,11 +87,6 @@
         <div class="col-md-4">
         <div class="input-group mb-3">
             <select class='js-gday-placeholder-single js-states form-control select2 @error('preferred_game_day') is-invalid @enderror' id='selGday' name="preferred_game_day">
-                {{-- <option value="1" @if ( $team->preferred_game_day == '1' ) selected @endif>{{ Carbon\Carbon::now()->startOfWeek(Carbon\Carbon::MONDAY)->locale(Config::get('app.locale'))->dayName }}
-                <option value="2" @if ( $team->preferred_game_day == '2' ) selected @endif>{{ Carbon\Carbon::now()->startOfWeek(Carbon\Carbon::TUESDAY)->locale(Config::get('app.locale'))->dayName }}
-                <option value="3" @if ( $team->preferred_game_day == '3' ) selected @endif>{{ Carbon\Carbon::now()->startOfWeek(Carbon\Carbon::WEDNESDAY)->locale(Config::get('app.locale'))->dayName }}
-                <option value="4" @if ( $team->preferred_game_day == '4' ) selected @endif>{{ Carbon\Carbon::now()->startOfWeek(Carbon\Carbon::THURSDAY)->locale(Config::get('app.locale'))->dayName }}
-                <option value="5" @if ( $team->preferred_game_day == '5' ) selected @endif>{{ Carbon\Carbon::now()->startOfWeek(Carbon\Carbon::FRIDAY)->locale(Config::get('app.locale'))->dayName }} --}}
                 <option value="6" @if ( $team->preferred_game_day == '6' ) selected @endif>{{ Carbon\Carbon::now()->startOfWeek(Carbon\Carbon::SATURDAY)->locale(Config::get('app.locale'))->dayName }}
                 <option value="7" @if ( $team->preferred_game_day == '7' ) selected @endif>{{ Carbon\Carbon::now()->startOfWeek(Carbon\Carbon::SUNDAY)->locale(Config::get('app.locale'))->dayName }}
             </select>
@@ -107,6 +102,24 @@
                 <div class="input-group-text"><i class="far fa-clock"></i></div>
             </div>
             @error('preferred_game_time')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+            </div>
+        </div>
+    </div>
+    <div class="form-group row ">
+        <label for='selGym'
+            class="col-sm-4 col-form-label">{{ __('team.gym.preferred') }}</label>
+        <div class="col-sm-6">
+        <div class="input-group mb-3">
+            <select class='js-gym-single js-states form-control select2 @error('gym_id')
+                is-invalid @enderror' id='selGym' name="gym_id">
+                @if ($team->gym()->exists())
+                <option value="{{ old('gym_id',$team->gym->id ) }}" selected >{{ old('gym_id') ? ( App\Models\Gym::find(old('gym_id'))->gym_no.' - '.App\Models\Gym::find(old('gym_id'))->name ) : ( $team->gym->gym_no.' - '.$team->gym->name ) }}</option>
+                @endif
+
+            </select>
+            @error('gym_id')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
             </div>
@@ -201,6 +214,23 @@
             multiple: false,
             allowClear: false,
             minimumResultsForSearch: 20
+        });
+        $("#selGym").select2({
+            placeholder: "{{ __('gym.action.select') }}...",
+            width: '100%',
+            multiple: false,
+            allowClear: false,
+            ajax: {
+                url: '{{ route('gym.sb.club', ['club' => $team->club->id]) }}',
+                type: "get",
+                delay: 250,
+                processResults: function(response) {
+                    return {
+                        results: response
+                    };
+                },
+                cache: true
+            }
         });
 
     });

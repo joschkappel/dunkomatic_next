@@ -162,7 +162,7 @@
                            <li class="list-group-item ">
                                 <span data-toggle="tooltip" title="{{__('gym.action.delete')}}">
                                     <button type="button" id="deleteGym" class="btn btn-outline-danger btn-sm"
-                                        @cannot('create-gyms') disabled @else @if ($gym->games()->exists()) disabled @endif @endcannot
+                                        @cannot('create-gyms') disabled @else @if (($gym->games()->exists()) or ($club->teams->load('gym')->where('gym_id',$gym->id)->count() >0 )) disabled @endif @endcannot
                                         data-gym-id="{{ $gym->id }}"
                                         data-gym-name="{{ $gym->gym_no }} - {{ $gym->name }}"
                                         data-club-sname="{{ $club->shortname }}" data-toggle="modal"
@@ -219,6 +219,7 @@
                                     <th scope="col">{{ trans_choice('team.shirtcolor', 1) }}</th>
                                     <th scope="col">{{ trans_choice('team.training', 1) }}</th>
                                     <th scope="col">{{Str::limit( trans_choice('team.game.preferred', 1),18) }}</th>
+                                    <th scope="col">{{Str::limit( trans_choice('team.gym.preferred', 1),18) }}</th>
                                     <th scope="col">{{ Str::limit(trans_choice('team.coach', 1),10) }}</th>
                                 </tr>
                             </thead>
@@ -389,6 +390,7 @@
                         {data: 'shirt_color', name: 'shirt_color'},
                         {data: 'training', name: 'training'},
                         {data: 'gameday', name: 'gameday'},
+                        {data: 'gym', name: 'gym'},
                         {data: 'coach', name: 'coach'},
                         ]
             });

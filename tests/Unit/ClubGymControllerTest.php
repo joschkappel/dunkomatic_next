@@ -223,6 +223,7 @@ class ClubGymControllerTest extends TestCase
     public function destroy()
     {
       $gym = $this->testclub_assigned->gyms()->first();
+      $this->testclub_assigned->teams()->update(['gym_id'=>null]);
       $response = $this->authenticated()
                         ->delete(route('gym.destroy',['gym'=>$gym]));
 

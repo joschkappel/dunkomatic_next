@@ -97,7 +97,8 @@ class ClubTeamControllerTest extends TestCase
                           'coach_name'  => 'testteam',
                           'coach_email' => 'teamcoach@gmail.com',
                           'coach_phone1' => '0123',
-                          'shirt_color' => 'red'
+                          'shirt_color' => 'red',
+                          'gym_id' => $this->testclub_assigned->gyms()->first()->id
                         ]);
       $response
           ->assertStatus(302)
@@ -179,7 +180,8 @@ class ClubTeamControllerTest extends TestCase
                           'coach_name'  => 'testteam2',
                           'coach_email' => 'coach@gmail.com',
                           'coach_phone1' => $team->coach_phone1,
-                          'shirt_color' => $team->shirt_color
+                          'shirt_color' => $team->shirt_color,
+                          'gym_id' => $team->club->gyms()->first()->id
                         ]);
       $team->refresh();
       $response->assertStatus(302)
