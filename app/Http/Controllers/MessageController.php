@@ -14,9 +14,10 @@ use BenSampo\Enum\Rules\EnumValue;
 use Datatables;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\DB;
 
 use App\Jobs\SendCustomMessage;
-
 
 class MessageController extends Controller
 {
@@ -109,6 +110,19 @@ class MessageController extends Controller
         Log::info('create new message');
         $user_scopetype = UserRole::all()->pluck('name','id');
         return view('message/message_new', ['user_scopetype'=>$user_scopetype, 'scopetype' => EnumRole::getInstances(), 'user' => $user, 'region' => $region]);
+    }
+    /**
+     * show resource
+     *
+     * @param string $notification
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
+    public function show(string $notification)
+    {
+        $raw_note = DB::table('notifications')->where('id',$notification)->first();
+        return $raw_note->data;
+
     }
 
     /**

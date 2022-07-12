@@ -320,7 +320,7 @@ Route::middleware(['auth',
     Route::put('message/{message}', [MessageController::class, 'update'])->name('message.update');
     Route::get('message/{message}/markread', [MessageController::class, 'mark_as_read'])->name('message.mark_as_read');
     Route::delete('message/{message}', [MessageController::class, 'destroy'])->name('message.destroy');
-
+    Route::get('message/{notification}', [MessageController::class, 'show'])->name('notification.show');
 
     Route::get('file/exports', [FileDownloadController::class, 'get_file'])->name('file.get');
     Route::get('archive/region/{region}/league', [FileDownloadController::class, 'get_region_league_archive'])->name('region_league_archive.get');

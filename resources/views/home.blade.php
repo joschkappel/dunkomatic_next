@@ -32,14 +32,25 @@
 @section('js')
     <script> console.log('Hi there! going Dunkomatic now'); </script>
     <script>
-        function btnShowMessage(msg_id, msg_subject, msg_greeting, msg_body, msg_salutation){
+        function btnShowMessage(msg_id){
             console.log(msg_id);
-            $('#modalShowMessageTitle').html( msg_subject );
-            $('#msgSalutation').html( msg_salutation );
-            $('#msgBody').html( msg_body );
-            $('#msgGreeting').html( msg_greeting );
-            $('#btnMarkUnread').data('msg-id', msg_id);
-            $('#modalShowMessage').modal('show');
+            var url = '{{ route("notification.show",["notification"=>":notificationid:"]) }}';
+            url = url.replace(':notificationid:', msg_id);
+
+            $.ajax({
+                type: 'GET',
+                url: url,
+                success: function (data) {
+                    var note = JSON.parse(data);
+                    $('#modalShowMessageTitle').html( note.subject );
+                    $('#msgSalutation').html( note.salutation );
+                    $('#msgBody').html( note.lines );
+                    $('#msgGreeting').html( note.greeting );
+                    $('#btnMarkUnread').data('msg-id', msg_id);
+                    $('#modalShowMessage').modal('show');
+                }
+            });
+
         };
         $('#btnMarkUnread').on('click', function(data){
             console.log($(this).data('msg-id'));
