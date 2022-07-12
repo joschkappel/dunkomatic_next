@@ -64,7 +64,6 @@ class TeamValidationTest extends TestCase
                 'coach_name missing' => ['coach_name',''],
                 'coach_email no email' => ['coach_email','testemail'],
                 'shirt_color missing' => ['shirt_color',''],
-                'gym_id missing' => ['gym_id',''],
                 'gym_id not existing' => ['gym_id', 12000]
             ];
     }

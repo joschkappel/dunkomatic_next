@@ -223,7 +223,11 @@ class ClubController extends Controller
                 }
             })
             ->addColumn('gym', function ($ct) {
-                return '('.$ct->gym->gym_no.') '.$ct->gym->name;
+                if ($ct->gym()->exists()){
+                    return '('.$ct->gym->gym_no.') '.$ct->gym->name;
+                } else {
+                    return '';
+                }
             })
             ->addColumn('coach', function ($ct) {
                 return '<a href="mailto:'.$ct->coach_email .'" >'.$ct->coach_name . '</a><i class="fas fa-phone m-2"></i>'. $ct->coach_phone1 ;
