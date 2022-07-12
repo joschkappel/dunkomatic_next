@@ -54,7 +54,8 @@ class CustomMailMessage extends Mailable
                         'outroLines' => [],
                         'salutation' => $this->message['salutation'],
                       ])
-                  ->from($this->sender_email, $this->sender_name);
+                  ->from($this->sender_email, $this->sender_name)
+                  ->replyTo($this->sender_email, $this->sender_name);
 
     }
 }
