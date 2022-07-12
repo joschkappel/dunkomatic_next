@@ -95,8 +95,8 @@ trait GameManager
 
                     if (isset($hteam)) {
                         $g['game_time'] = $hteam['preferred_game_time'];
-                        $g['gym_no'] = $hteam['gym']['gym_no'] ?? null;
-                        $g['gym_id'] = $hteam['gym']['id'] ?? null;
+                        $g['gym_no'] = $hteam->gym()->exists() ? $hteam->gym->gym_no : $hteam->club->gyms()->first()->gym_no;
+                        $g['gym_id'] = $hteam->gym()->exists() ? $hteam->gym->id : $hteam->club->gyms()->first()->id;
                         $g['club_id_home'] = $hteam['club']['id'];
                         $g['team_id_home'] = $hteam['id'];
                         $g['team_home'] = $hteam['club']['shortname'] . $hteam['team_no'];
@@ -193,8 +193,8 @@ trait GameManager
 
                                     if (isset($hteam)) {
                                         $g['game_time'] = $hteam['preferred_game_time'];
-                                        $g['gym_no'] = $hteam->gym->gym_no;
-                                        $g['gym_id'] = $hteam->gym->id;
+                                        $g['gym_no'] = $hteam->gym()->exists() ? $hteam->gym->gym_no : $hteam->club->gyms()->first()->gym_no;
+                                        $g['gym_id'] = $hteam->gym()->exists() ? $hteam->gym->id : $hteam->club->gyms()->first()->id;
                                         $g['club_id_home'] = $hteam['club']['id'];
                                         $g['team_id_home'] = $hteam['id'];
                                         $g['team_home'] = $hteam['club']['shortname'] . $hteam['team_no'];
@@ -228,8 +228,8 @@ trait GameManager
                                         };
 
                                         $team->load('gym');
-                                        $game->gym_no  = $team->gym->gym_no;
-                                        $game->gym_id = $team->gym->id;
+                                        $game->gym_no  = $team->gym()->exists() ? $team->gym->gym_no : $team->club->gyms()->first()->gym_no;
+                                        $game->gym_id = $team->gym()->exists() ? $team->gym->id : $team->club->gyms()->first()->id;
                                         $game->save();
                                         Log::debug('updating game no.', ['game-no' => $game->game_no]);
                                     }
