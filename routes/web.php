@@ -99,6 +99,8 @@ Route::group([
         Route::get('club/{club}/dashboard', [ClubController::class, 'dashboard'])->name('club.dashboard')->middleware('can:access,club');
         Route::get('club/{club}/briefing', [ClubController::class, 'briefing'])->name('club.briefing')->middleware('can:view-clubs');
         Route::get('club/{club}/game/home', [ClubController::class, 'list_homegame'])->name('club.list.homegame')->middleware('can:view-games');
+        Route::get('club/{club}/game', [ClubGameController::class, 'show_games'])->name('club.show.games')->middleware('can:view-games');
+        // Route::get('club/{club}/game/{date}', [ClubGameController::class, 'list_games_for_date'])->name('club.games.date.dt')->middleware('can:view-games');
         Route::get('club/{club}', [ClubController::class, 'show'])->name('club.show')->middleware('can:view-clubs');
         Route::get('club/{club}/edit', [ClubController::class, 'edit'])->name('club.edit')->middleware('can:update-clubs');
         Route::get('club/{club}/team/dt', [ClubController::class, 'team_dt'])->name('club.team.dt');
@@ -106,6 +108,7 @@ Route::group([
         Route::get('club/{club}/game/upload', [ClubGameController::class, 'upload'])->name('club.upload.homegame');
         Route::post('club/{club}/game/import', [ClubGameController::class, 'import'])->name('club.import.homegame');
         Route::get('club/{club}/game/list_home', [ClubGameController::class, 'list_home'])->name('club.game.list_home')->middleware('can:view-games');
+        Route::get('club/{club}/game/date/{game_date}', [ClubGameController::class, 'games_by_date_dt'])->name('club.game.bydate.dt')->middleware('can:view-games');
         Route::get('club/{club}/game/chart', [ClubGameController::class, 'chart'])->name('club.game.chart')->middleware('can:view-games');
         Route::get('club/{club}/team/pickchar', [ClubTeamController::class, 'pickchar'])->name('club.team.pickchar')->middleware('can:update-teams');
         Route::get('club/{club}/league_char_dt', [ClubTeamController::class, 'league_char_dt'])->name('club.league_char.dt')->middleware('can:view-teams');
@@ -221,6 +224,7 @@ Route::middleware(['auth',
     Route::delete('club/{club}', [ClubController::class, 'destroy'])->name('club.destroy')->middleware('can:create-clubs');
     Route::get('club/{club}/league/sb', [ClubController::class, 'sb_league'])->name('club.sb.league');
 
+    Route::get('club/{club}/game', [ClubGameController::class, 'chart_games'])->name('club.games.byday.chart');
     Route::get('club/{club}/game/chart_home', [ClubGameController::class, 'chart_home'])->name('club.game.chart_home');
     Route::get('gym/{gym}/list', [ClubGymController::class, 'sb_gym'])->name('gym.sb.gym');
     Route::get('club/{club}/list/gym', [ClubGymController::class, 'sb_club'])->name('gym.sb.club');

@@ -266,7 +266,7 @@
                     <!-- /.card-body -->
                     <div class="card-footer">
                         @can('update-games')
-                        <a href="{{ route('club.list.homegame', ['language' => app()->getLocale(), 'club' => $club]) }}"
+                        <a href="{{ route('club.show.games', ['language' => app()->getLocale(), 'club' => $club]) }}"
                             class="btn btn-primary float-right mr-2">
                             <i class="far fa-edit"></i> @lang('club.action.edit-homegame')</a>
                         @endcan
