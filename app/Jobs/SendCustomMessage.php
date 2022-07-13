@@ -11,6 +11,7 @@ use Illuminate\Queue\SerializesModels;
 
 use App\Models\Message;
 use App\Models\User;
+use App\Models\Club;
 use App\Notifications\CustomDbMessage;
 use App\Notifications\AppActionMessage;
 use Illuminate\Support\Facades\Mail;
@@ -55,7 +56,14 @@ class SendCustomMessage implements ShouldQueue
         $cc_member_roles = array();
         $to_users = collect();
 
-        $clubs = $this->message->region->clubs()->active()->get();
+        if ($this->message->region->is_top_level){
+            $clubs = $this->message->region->clubs()->active()->get();
+            $clubs_base = Club::whereIn('region_id', $this->message->region->childRegions->pluck('id'))->active()->get();
+            $clubs = $clubs->concat($clubs_base);
+        } else {
+            $clubs = $this->message->region->clubs()->active()->get();
+        }
+
         $leagues = $this->message->region->leagues;
         $regions = $this->message->region->get();
 
