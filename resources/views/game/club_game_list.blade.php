@@ -1,16 +1,29 @@
 @extends('layouts.page')
 
 @section('content')
-<x-card-header title="HEIMspiele terminieren" count=20 :showtools="false" />
+<div class="card card-outline card-primary ">
+<x-card-header title="{{__('club.title.homegame.chart')}}"  :showtools="false" />
 <div class="card-body">
+    <div class="text-info">
+        @lang('club.chart.gamesbyday.hint')
+    </div>
         <canvas id="gameChart" height="60" width="200"></canvas>
 </div>
+<div class="card-footer">
+    <a role="button" class="btn btn-info" href="{{ route('club.list.homegame',['language'=>app()->getLocale(), 'club'=>$club])}}">@lang('Open Listview')</a>
+</div>
+</div>
 <x-card-list cardTitle="{{ __('club.title.gamehome.edit', ['club'=>$club->shortname]) }}" :showtools="false">
+    <xslot-extra-header-slot>
+    <div class="text-info">
+        @lang('club.action.gamesbyday.hint')
+    </div>
+    </xslot-extra-header-slot>
     <th>{{ __('Spielbeginn')}}</th>
     @foreach($club->gyms->sortBy('gym_no') as $g)
     <th>{{ $g->name }}</th>
     @endforeach
-    <th>{{ __('Auswärts')}}</th>
+    <th>{{ __('game.guest')}}</th>
   </x-card-list>
 
 <!-- all modals here -->
@@ -33,7 +46,7 @@ $(function() {
               responsive: true,
               title: {
                 display: true,
-                text: '{{ __('region.chart.title.leaguestate') }}'
+                text: '{{ __('club.chart.gamesbyday') }}'
               },
             scales: {
                 yAxes: [{

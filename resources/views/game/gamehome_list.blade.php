@@ -14,6 +14,13 @@
   <th>{{ __('game.referee') }} 2</th>
   <th>gym_id</th>
   <th class="text-center">{{ __('game.overlap') }}</th>
+  <x-slot:addButtons>
+    @can('update-games')
+    <a href="{{ route('club.show.games', ['language' => app()->getLocale(), 'club' => $club]) }}"
+        class="btn btn-info float-right mr-2">
+        <i class="far fa-edit"></i> @lang('club.action.edit-homegame')</a>
+    @endcan
+  </x-slot:addBbuttons>
 </x-card-list>
 <!-- all modals here -->
 @include('game/includes/edit_gamedate_home')

@@ -46,24 +46,25 @@ class ClubGameController extends Controller
     {
         Log::info('collecting club game chart data.', ['club-id' => $club->id]);
 
+        $game_slot = $club->region->game_slot;
+        $min_slot = $game_slot - 1;
+
         $data = array();
         $datasets = array();
 
-        $datasets[0]['label'] = 'Auswärts';
+        $datasets[0]['label'] = __('game.guest');
         $datasets[0]['data'] = [];
-        $datasets[0]['backgroundColor'] = 'lightblue';
-        $datasets[1]['label'] = 'Heim OK';
+        $datasets[0]['backgroundColor'] = 'DeepSkyBlue';
+        $datasets[1]['label'] = trans_choice('game.homegame',2);
         $datasets[1]['data'] = [];
-        $datasets[1]['backgroundColor'] = 'green';
-        $datasets[2]['label'] = 'Heim ohne Zeit';
+        $datasets[1]['backgroundColor'] = 'MediumSeaGreen';
+        $datasets[2]['label'] = __('club.game_notime');
         $datasets[2]['data'] = [];
-        $datasets[2]['backgroundColor'] = 'orange';
-        $datasets[3]['label'] = 'Heim Überschneidung';
+        $datasets[2]['backgroundColor'] = 'Gold';
+        $datasets[3]['label'] = __('club.game_overlap',['overlap'=>$game_slot]);
         $datasets[3]['data'] = [];
-        $datasets[3]['backgroundColor'] = 'red';
+        $datasets[3]['backgroundColor'] = 'Crimson';
 
-        $game_slot = $club->region->game_slot;
-        $min_slot = $game_slot - 1;
 
         $select = 'SELECT ga.id
                 FROM games ga
@@ -169,7 +170,7 @@ class ClubGameController extends Controller
                         }
                     }
                 } else {
-                    $new_row['guest'] .= '<button class="btn btn-outline-dark btn-sm text-sm" disabled>('.$g->league->shortname.') '.$g->team_home.' - '.$g->team_guest.'</button>';
+                    $new_row['guest'] .= '<button class="btn btn-primary btn-sm text-sm" disabled>('.$g->league->shortname.') '.$g->team_home.' - '.$g->team_guest.'</button>';
                 }
             }
             $gameslist->push($new_row);
