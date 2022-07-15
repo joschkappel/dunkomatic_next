@@ -1,7 +1,7 @@
 @extends('layouts.page')
 
 @section('content')
-<x-card-list cardTitle="{{ __('club.title.list', ['region' => $region->name ]) }}" cardNewAction="{{ route('club.create', ['language'=>app()->getLocale(), 'region'=>$region]) }}" cardNewTitle="{{ __('club.action.create') }}" cardNewAbility="create-clubs">
+<x-card-list cardTitle="{{ __('club.title.list', ['region' => $region->name ]) }}"  cardNewAction="{{ ($region->is_base_level) ? route('club.create', ['language'=>app()->getLocale(), 'region'=>$region]) : '' }}" cardNewTitle="{{ ($region->is_base_level) ? __('club.action.create') : '' }}" cardNewAbility="create-clubs">
     <th>Id</th>
     @if ($region->is_top_level)
      <th>{{ trans_choice('region.region',1) }}</th>
