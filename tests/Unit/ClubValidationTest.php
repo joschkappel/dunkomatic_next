@@ -36,7 +36,7 @@ class ClubValidationTest extends TestCase
                 'shortname small chars' => ['shortname', 'ismu'],
                 'shortname 5 chars' => ['shortname', 'AAAAA'],
                 'shortname 3 chars' => ['shortname', 'AAA'],
-                'url missing' => ['url', ''],
+                // 'url missing' => ['url', ''],
                 'url wrong' => ['url', 'lorem-ipsum'],
                 'club_no missing' => ['club_no', ''],
                 'club_no 8 digits' => ['club_no', '12345678'],
