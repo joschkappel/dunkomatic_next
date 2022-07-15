@@ -63,7 +63,7 @@ class ClubControllerTest extends TestCase
             ]);
         $response
             ->assertStatus(302)
-            ->assertSessionHasErrors(['shortname', 'url', 'club_no']);
+            ->assertSessionHasErrors(['shortname', 'club_no']);
 
         $this->assertDatabaseMissing('clubs', ['name' => 'testclub']);
     }
