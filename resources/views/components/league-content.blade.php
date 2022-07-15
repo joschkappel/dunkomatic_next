@@ -14,7 +14,7 @@
 <div>
     @foreach ( $league_content as $team )
          @if ( $team['team_league_no'] != null )
-             <span class="badge text-xs badge-success">{{ $team['club_shortname'].$team['team_no'].' ('.$team['team_league_no'].')'. }}</span>
+             <span class="badge text-xs badge-success">{{ $team['club_shortname'].$team['team_no'].' ('.$team['team_league_no'].')' }}</span>
          @else
              @if ($team['team_id'] != null)
              <span class="badge text-xs badge-warning">{{ $team['club_shortname'].$team['team_no'] }}</span>
