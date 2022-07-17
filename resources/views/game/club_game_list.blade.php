@@ -1,7 +1,7 @@
 @extends('layouts.page')
 
 @section('content')
-<div class="card card-outline card-primary" id="chartCard">
+<div class="card card-outline card-primary">
 <x-card-header title="{{__('club.title.homegame.chart')}}"  :showtools="false" />
 <div class="card-body">
     <div class="text-info">
@@ -9,7 +9,7 @@
     </div>
         <canvas id="gameChart" height="60" width="200"></canvas>
 </div>
-<div class="card-footer">
+<div class="card-footer" id="chartCard">
     <a role="button" class="btn btn-info" href="{{ route('club.list.homegame',['language'=>app()->getLocale(), 'club'=>$club])}}">@lang('Open Listview')</a>
 </div>
 </div>
