@@ -53,15 +53,19 @@ class ClubGameController extends Controller
         $datasets = array();
 
         $datasets[0]['label'] = __('game.guest');
+        $datasets[0]['stack'] = 'Auswärts';
         $datasets[0]['data'] = [];
         $datasets[0]['backgroundColor'] = 'DeepSkyBlue';
         $datasets[1]['label'] = trans_choice('game.homegame',2);
+        $datasets[1]['stack'] = 'Heim';
         $datasets[1]['data'] = [];
         $datasets[1]['backgroundColor'] = 'MediumSeaGreen';
         $datasets[2]['label'] = __('club.game_notime');
+        $datasets[2]['stack'] = 'Heim';
         $datasets[2]['data'] = [];
         $datasets[2]['backgroundColor'] = 'Gold';
         $datasets[3]['label'] = __('club.game_overlap',['overlap'=>$game_slot]);
+        $datasets[3]['stack'] = 'Heim';
         $datasets[3]['data'] = [];
         $datasets[3]['backgroundColor'] = 'Crimson';
 
@@ -147,7 +151,7 @@ class ClubGameController extends Controller
         foreach ($games_bytime as $key => $gtime){
             $new_row = array();
             $gym_row_list= collect();
-            $new_row['game_time'] = $key == '' ? 'undefined' : Carbon::parse($key)->IsoFormat('LT');
+            $new_row['game_time'] = $key == '' ? __('Undefined') : Carbon::parse($key)->IsoFormat('LT');
             $new_row['guest'] = '';
             $gym_row_list->push('guest');
             foreach($club->gyms as $g){

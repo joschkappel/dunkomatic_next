@@ -118,11 +118,14 @@ class GameExportTest extends DuskTestCase
                 $gamesCard->click('.btn-tool')
                           ->waitFor('.btn-tool')
                           ->assertSeeLink(__('club.action.edit-homegame'))
-                          ->clickLink(__('club.action.edit-homegame'))
-                          ->assertButtonEnabled(__('Open Listview'))
-                          ->press(__('Open Listview'))
-                          ->screenshot('club_game_export_club_game_list')
-                          ->waitFor('#table');
+                          ->clickLink(__('club.action.edit-homegame'));
+
+                $gamesCard->with('#chartCard', function ($chartCard) {
+                    $chartCard->assertButtonEnabled(__('Open Listview'))
+                            ->press(__('Open Listview'))
+                            ->screenshot('club_game_export_club_game_list')
+                            ->waitFor('#table');
+                });
             });
             $browser->assertSee('Export')
                     ->press('Export')

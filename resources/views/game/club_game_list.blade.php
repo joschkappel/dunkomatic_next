@@ -1,7 +1,7 @@
 @extends('layouts.page')
 
 @section('content')
-<div class="card card-outline card-primary ">
+<div class="card card-outline card-primary" id="chartCard">
 <x-card-header title="{{__('club.title.homegame.chart')}}"  :showtools="false" />
 <div class="card-body">
     <div class="text-info">
@@ -54,6 +54,9 @@ $(function() {
                             scaleLabel: {
                             display: true,
                             labelString: '@lang('Anzahl Spiele')'
+                            },
+                            ticks: {
+                               precision: 0
                             }
                         }],
                 xAxes: [{
