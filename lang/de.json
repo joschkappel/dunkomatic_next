@@ -76,9 +76,9 @@
   "regionadmin": "Bezirksverwalter",
   "clubadmin": "Vereinsverwalter",
   "leagueadmin": "Rundenverwalter",
-  "guest": "Gäste",
-  "candidate": "Registrierte",
   "Colorcode": "Farbcodes",
+  "Open Listview": "Zur Listenansicht wechseln",
   "Undefined": "Nicht definiert",
-  "Open Listview": "Zur Listenansicht wechseln"
+  "guest": "Gäste",
+  "candidate": "Registrierte"
 }
