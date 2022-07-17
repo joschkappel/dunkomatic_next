@@ -55,8 +55,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('telescope:prune')->dailyAt('00:10')->environments(['staging', 'local','dev']);
         $schedule->command('authentication-log:purge')->monthlyOn(2,'00:05')->emailOutputOnFailure('dmatic.master@gmail.com');
         // $schedule->job(new ExportStatistics(), 'janitor')->everyMinute();
-        $schedule->job(new OpenLeagueState(), 'janitor')->dailyAt('07:58')->emailOutputOnFailure('dmatic.master@gmail.com');
-        $schedule->job(new CloseLeagueState(), 'janitor')->dailyAt('19:58')->emailOutputOnFailure('dmatic.master@gmail.com');
+        $schedule->job(new OpenLeagueState(), 'janitor')->dailyAt('07:45')->emailOutputOnFailure('dmatic.master@gmail.com');
+        $schedule->job(new CloseLeagueState(), 'janitor')->dailyAt('20:00')->emailOutputOnFailure('dmatic.master@gmail.com');
 
         // schedule region specific jobs
         $regions = Region::with('regionadmins')->get();

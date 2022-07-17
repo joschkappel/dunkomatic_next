@@ -57,5 +57,7 @@ return [
     'register.notok' => 'Registration failed, the team is NOT registered',
     'unregister.ok' => 'The team is de-registered',
     'unregister.notok' => 'Registration failed, the team is NOT de-registered',
+    'plan.saved.ok' => 'Preferred league numbers saved',
+    'plan.saved.notok' => 'There is a problem! Your preferred league numbers could not be saved'
 
 ];

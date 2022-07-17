@@ -11,6 +11,7 @@ use Illuminate\Queue\SerializesModels;
 
 use App\Models\Message;
 use App\Models\User;
+use App\Models\Club;
 use App\Notifications\CustomDbMessage;
 use App\Notifications\AppActionMessage;
 use Illuminate\Support\Facades\Mail;
@@ -55,7 +56,14 @@ class SendCustomMessage implements ShouldQueue
         $cc_member_roles = array();
         $to_users = collect();
 
-        $clubs = $this->message->region->clubs()->active()->get();
+        if ($this->message->region->is_top_level){
+            $clubs = $this->message->region->clubs()->active()->get();
+            $clubs_base = Club::whereIn('region_id', $this->message->region->childRegions->pluck('id'))->active()->get();
+            $clubs = $clubs->concat($clubs_base);
+        } else {
+            $clubs = $this->message->region->clubs()->active()->get();
+        }
+
         $leagues = $this->message->region->leagues;
         $regions = $this->message->region->get();
 
@@ -108,11 +116,20 @@ class SendCustomMessage implements ShouldQueue
             Log::info('[JOB][CUSTOM MESSAGE] members cc email.', ['members' => $cc_members->count()]);
         }
 
-        if (count($to_members) > 0) {
-            Mail::to($to_members)
-                ->cc($cc_members)
-                ->send(new CustomMailMessage($this->message));
-            Log::notice('[JOB][EMAIL] custom email sent.', ['message-id' => $this->message->id, 'to_count' => count($to_members), 'cc_count' => count($cc_members)]);
+        if ($to_members->count() >= $cc_members->count()){
+            $to_chunks = $to_members->chunk(60);
+            $cc_chunks = $cc_members->split($to_chunks->count());
+            foreach ($to_chunks as $i => $chunk){
+                Mail::to($chunk ?? [])->cc($cc_chunks[$i] ?? [])->send(new CustomMailMessage($this->message));
+                Log::notice('[JOB][EMAIL] custom email sent.', ['message-id' => $this->message->id, 'to_count' => ( ($chunk ?? collect())->count() ),'cc_count' => ( ($cc_chunks[$i] ?? collect())->count()) ]);
+            }
+        } else {
+            $cc_chunks = $cc_members->chunk(60);
+            $to_chunks = $to_members->split($cc_chunks->count());
+            foreach ($cc_chunks as $i => $chunk){
+                Mail::cc($chunk ?? [])->to($to_chunks[$i] ?? [])->send(new CustomMailMessage($this->message));
+                Log::notice('[JOB][EMAIL] custom email sent.', ['message-id' => $this->message->id, 'cc_count' => ($chunk ?? collect())->count(),'to_count' => ($to_chunks[$i] ?? collect())->count() ]);
+            }
         }
 
         $user_region = $this->message->region;

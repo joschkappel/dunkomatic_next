@@ -260,13 +260,19 @@
         });
 
         $("#savebtn").click(function (e){
-          e.preventDefault();
-          var data = $("#teamLeaguePlanForm").serialize();
+            e.preventDefault();
+            var data = $("#teamLeaguePlanForm").serialize();
             $.ajax({
                 type: 'POST',
                 url: '{{ route('team.store-plan') }}',
                 data: data,
                 dataType: 'json',
+                success: function(data) {
+                    toastr.success("{{__('team.plan.saved.ok')}}", "{{__('team.action.save-assignment')}}",{ timeOut: 3000 });
+                },
+                error: function(data) {
+                    toastr.error("{{__('team.plan.saved.notok')}}", "{{__('team.action.save-assignment')}}", { timeOut: 3000 });
+                }
             });
         });
 

@@ -95,7 +95,11 @@ class ClubController extends Controller
                 return $data->region->code;
             })
             ->editColumn('name', function ($data) {
-                $link = '<a href="http://' . $data->url . '" target="_blank">' . $data->name . '</a>';
+                if ($data->url != ''){
+                    $link = '<a href="http://' . $data->url . '" target="_blank">' . $data->name . '</a>';
+                } else {
+                    $link = $data->name ;
+                }
                 return array('display' => $link, 'sort' => Str::slug($data->name, '-'));
             })
             ->addColumn('assigned_rel', function ($data) {
@@ -409,7 +413,7 @@ class ClubController extends Controller
         $data = $request->validate([
             'shortname' => array('required', 'string', 'unique:clubs', 'max:4', 'min:4', new Uppercase),
             'name' => 'required|max:255',
-            'url' => 'required|url|max:255',
+            'url' => 'nullable|url|max:255',
             'club_no' => 'required|unique:clubs|max:7',
             'inactive' => 'sometimes|required|accepted',
         ]);
@@ -468,7 +472,7 @@ class ClubController extends Controller
         $data = $request->validate([
             'shortname' => array('required', 'string', Rule::unique('clubs')->ignore($club->id), 'max:4', 'min:4', new Uppercase),
             'name' => 'required|max:255',
-            'url' => 'required|url|max:255',
+            'url' => 'nullable|url|max:255',
             'club_no' => array('required', Rule::unique('clubs')->ignore($club->id), 'max:7'),
             'inactive' => 'sometimes|required|accepted'
         ]);
