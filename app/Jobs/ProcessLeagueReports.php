@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\LeagueState;
 use App\Enums\ReportFileType;
 use App\Models\Region;
 use App\Jobs\GenerateLeagueGamesReport;
@@ -81,7 +82,7 @@ class ProcessLeagueReports implements ShouldQueue
             $batch = Bus::batch($rpt_jobs)
                 ->then(function (Batch $batch) use ($l, $note) {
                     // All jobs completed successfully...
-                    if ($l->memberIsA(Role::LeagueLead())) {
+                    if ( ($l->memberIsA(Role::LeagueLead())) and ($l->is(LeagueState::Live()))) {
                         $llead = $l->members()->wherePivot('role_id', Role::LeagueLead)->first();
                         $llead->notify($note);
                         Log::info('[NOTIFICATION] league reports available.', ['member-id' => $llead->id]);

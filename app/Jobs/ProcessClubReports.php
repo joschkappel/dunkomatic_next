@@ -94,7 +94,7 @@ class ProcessClubReports implements ShouldQueue
                     // All jobs completed successfully...
                     if ($c->memberIsA(Role::ClubLead())) {
                         $clead = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
-                        $clead->notify( $note);
+/*                         $clead->notify( $note); */
                         Log::info('[NOTIFICATION] club reports available.', ['member-id' => $clead->id]);
                     }
                 })->name('Club Reports ' . $c->shortname)
