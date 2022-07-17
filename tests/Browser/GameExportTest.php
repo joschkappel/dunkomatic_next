@@ -119,7 +119,8 @@ class GameExportTest extends DuskTestCase
                           ->waitFor('.btn-tool')
                           ->assertSeeLink(__('club.action.edit-homegame'))
                           ->clickLink(__('club.action.edit-homegame'))
-                          ->clickLink(__('Open Listview'))
+                          ->assertButtonEnabled(__('Open Listview'))
+                          ->press(__('Open Listview'))
                           ->screenshot('club_game_export_club_game_list')
                           ->waitFor('#table');
             });
