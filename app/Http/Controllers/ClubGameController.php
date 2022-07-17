@@ -55,7 +55,7 @@ class ClubGameController extends Controller
         $datasets[0]['label'] = __('game.guest');
         $datasets[0]['stack'] = 'Auswärts';
         $datasets[0]['data'] = [];
-        $datasets[0]['backgroundColor'] = 'DeepSkyBlue';
+        $datasets[0]['backgroundColor'] = 'DarkGray';
         $datasets[1]['label'] = trans_choice('game.homegame',2);
         $datasets[1]['stack'] = 'Heim';
         $datasets[1]['data'] = [];
@@ -174,7 +174,7 @@ class ClubGameController extends Controller
                         }
                     }
                 } else {
-                    $new_row['guest'] .= '<button class="btn btn-primary btn-sm text-sm" disabled>('.$g->league->shortname.') '.$g->team_home.' - '.$g->team_guest.'</button>';
+                    $new_row['guest'] .= '<button class="btn btn-secondary btn-sm text-sm" disabled>('.$g->league->shortname.') '.$g->team_home.' - '.$g->team_guest.'</button>';
                 }
             }
             $gameslist->push($new_row);
