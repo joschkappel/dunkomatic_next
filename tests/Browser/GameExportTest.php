@@ -91,7 +91,7 @@ class GameExportTest extends DuskTestCase
     }
 
     /**
-     * @test_notused
+     * @test
      * @group export
      * @group club
      * @group game
@@ -123,8 +123,8 @@ class GameExportTest extends DuskTestCase
             });
 
             $browser->with('#chartCard', function ($chartCard) {
-                $chartCard->assertButtonEnabled(__('Open Listview'))
-                        ->press(__('Open Listview'))
+                $chartCard->assertSeeLink(__('Open Listview'))
+                        ->clickLink(__('Open Listview'))
                         ->screenshot('club_game_export_club_game_list2');
             });
             $browser->waitFor('#table')
