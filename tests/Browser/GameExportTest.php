@@ -91,7 +91,7 @@ class GameExportTest extends DuskTestCase
     }
 
     /**
-     * @test
+     * @test_notused
      * @group export
      * @group club
      * @group game

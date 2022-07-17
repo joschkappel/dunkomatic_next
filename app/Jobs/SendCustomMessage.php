@@ -120,14 +120,18 @@ class SendCustomMessage implements ShouldQueue
             $to_chunks = $to_members->chunk(60);
             $cc_chunks = $cc_members->split($to_chunks->count());
             foreach ($to_chunks as $i => $chunk){
-                Mail::to($chunk ?? [])->cc($cc_chunks[$i] ?? [])->send(new CustomMailMessage($this->message));
+                Mail::to($chunk ?? [])
+                    ->cc($cc_chunks[$i] ?? [])
+                    ->send(new CustomMailMessage($this->message));
                 Log::notice('[JOB][EMAIL] custom email sent.', ['message-id' => $this->message->id, 'to_count' => ( ($chunk ?? collect())->count() ),'cc_count' => ( ($cc_chunks[$i] ?? collect())->count()) ]);
             }
         } else {
             $cc_chunks = $cc_members->chunk(60);
             $to_chunks = $to_members->split($cc_chunks->count());
             foreach ($cc_chunks as $i => $chunk){
-                Mail::cc($chunk ?? [])->to($to_chunks[$i] ?? [])->send(new CustomMailMessage($this->message));
+                Mail::cc($chunk ?? [])
+                    ->to($to_chunks[$i] ?? [])
+                    ->send(new CustomMailMessage($this->message));
                 Log::notice('[JOB][EMAIL] custom email sent.', ['message-id' => $this->message->id, 'cc_count' => ($chunk ?? collect())->count(),'to_count' => ($to_chunks[$i] ?? collect())->count() ]);
             }
         }
