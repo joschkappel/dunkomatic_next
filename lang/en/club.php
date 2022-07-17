@@ -26,6 +26,7 @@ return [
   'title.membership.add'  => 'Add new role for member',
   'title.membership.mod'  => 'Modify oder Delete role of a member',
   'title.pickchars' => 'Pick league numbers for your teams',
+  'title.homegame.chart' => 'All homegames by type and game day',
   'menu.list' => 'Overview',
   'menu.stats' => 'Statistics',
   'registered' => 'Registered Teams',
@@ -42,9 +43,12 @@ return [
   'game_notime.some' => ':notime out of :total unscheduled Games',
   'game_notime.no' => 'ALL Games are scheduled',
   'game_notime.all' => 'NO Game scheduled',
+  'game_notime' => 'Game NOT scheduled',
   'game_noshow.some' => ':noshow out of :total Games without guest',
   'game_noshow.no' => 'All games with guest',
   'game_noshow.all' => 'All games without guest',
+  'game_noshow' => 'Games without guest',
+  'game_overlap' => 'Homegames with overpa of less than :overlap minutes',
   'member.action.create' => 'New Member',
   'preferred' => 'Preferred Clubs',
   'pickchar.taken.other' => 'Number xleague_nox is already taken !',
@@ -57,5 +61,8 @@ return [
   'deassign.notok' => 'Assigment failed, the cub is NOT de-assigned',
   'assign.ok' => 'Club assigned',
   'assign.notok' => 'Assignment failed, the club is NOT assigned',
-  'action.register' => 'Club Assignment'
+  'action.register' => 'Club Assignment',
+  'chart.gamesbyday' => 'All Club Games by Gameday',
+  'chart.gamesbyday.hint' => 'Click on the bar of a game day to see game details in the table below',
+  'action.gamesbyday.hint' => 'Click on a homegame in this table to modify details fo this game'
 ];

@@ -26,6 +26,7 @@ return [
   'title.membership.add'  => 'Füge eine neue Funktion zu',
   'title.membership.mod'  => 'Ändere oder Lösche eine Funktion',
   'title.pickchars' => 'Ziffernwahl für Mannschaften',
+  'title.homegame.chart' => 'Alle Spiele je Typ und Spieltag',
   'menu.list' => 'Übersicht',
   'menu.stats' => 'Statistiken',
   'entitled' => 'Zugelassene Vereine',
@@ -42,9 +43,12 @@ return [
   'game_notime.some' => ':notime von :total Heimspielen ohne Termin',
   'game_notime.no' => 'Alle Heimspiele MIT Termin',
   'game_notime.all' => 'Alle Heimspiele OHNE Termin',
+  'game_notime' => 'Heimspiele OHNE Termin',
   'game_noshow.some' => ':noshow von :total Heimspielen ohne Gegner',
   'game_noshow.no' =>  'Alle Heimspiele finden statt',
   'game_noshow.all' => 'Alle Heimspiele ohne Gegner',
+  'game_noshow' => 'Heimspiele ohne Gegner',
+  'game_overlap' => 'Heimspiele in einem Abstand von weniger als :overlap Minuten',
   'member.action.create' => 'Neues Vereinsmitglied',
   'preferred' => 'Bevorzugte Vereine',
   'pickchar.taken.other' => 'Ziffer xleague_nox ist schon vergeben !',
@@ -57,5 +61,8 @@ return [
   'deassign.notok' => 'Abmeldung ist fehlgeschlagen. Der Verein ist NICHT abgemeldet',
   'assign.ok' => 'Verein gemeldet',
   'assign.notok' => 'Meldung ist fehlgeschlagen. Der Verein ist NICHT gemeldet',
-  'action.register' => 'Vereinsmeldung'
+  'action.register' => 'Vereinsmeldung',
+  'chart.gamesbyday' => 'Vereinsspiele je Spieltag',
+  'chart.gamesbyday.hint' => 'Klicke auf den Balken eines Spieltages um die detaillierten Spielansetzugen für diesen Tag in der Tabelle unten zu sehen.',
+  'action.gamesbyday.hint' => 'Klicke auf ein Heimspiel um die Ansetzung (Datum, Spielbeginn und Halle) zu ändern'
 ];

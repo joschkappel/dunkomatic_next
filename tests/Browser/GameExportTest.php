@@ -119,10 +119,16 @@ class GameExportTest extends DuskTestCase
                           ->waitFor('.btn-tool')
                           ->assertSeeLink(__('club.action.edit-homegame'))
                           ->clickLink(__('club.action.edit-homegame'))
-                          ->screenshot('club_game_export_club_game_list')
-                          ->waitFor('#table');
+                          ->screenshot('club_game_export_club_game_list');
             });
-            $browser->assertSee('Export')
+
+            $browser->with('#chartCard', function ($chartCard) {
+                $chartCard->assertSeeLink(__('Open Listview'))
+                        ->clickLink(__('Open Listview'))
+                        ->screenshot('club_game_export_club_game_list2');
+            });
+            $browser->waitFor('#table')
+                    ->assertSee('Export')
                     ->press('Export')
                     ->waitForText('CSV')
                     ->assertSeeLink('CSV')
@@ -145,10 +151,15 @@ class GameExportTest extends DuskTestCase
                           ->waitFor('.btn-tool')
                           ->assertSeeLink(__('club.action.edit-homegame'))
                           ->clickLink(__('club.action.edit-homegame'))
-                          ->screenshot('club_game_export_club_game_list')
-                          ->waitFor('#table');
+                          ->screenshot('club_game_export_club_game_list');
             });
-            $browser->assertSee('Import (.csv, .xlsx)')
+            $browser->with('#chartCard', function ($chartCard) {
+                $chartCard->assertSeeLink(__('Open Listview'))
+                        ->clickLink(__('Open Listview'))
+                        ->screenshot('club_game_export_club_game_list2');
+            });
+            $browser->waitFor('#table')
+                    ->assertSee('Import (.csv, .xlsx)')
                     ->press('Import (.csv, .xlsx)')
                     ->assertPathIs('/de/club/'.$club->id.'/game/upload')
                     ->attach('gfile', __DIR__.'/Exportfiles/'.$club->shortname.'_Heimspiele.csv')
@@ -161,7 +172,7 @@ class GameExportTest extends DuskTestCase
                     ->screenshot('club_game_import_club_game_list4')
                     ->press('Senden')
                     ->waitFor('.alert-success')
-                    ->screenshot('club_game_import_club_game_list5');;
+                    ->screenshot('club_game_import_club_game_list5');
 
         });
 
