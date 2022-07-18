@@ -72,7 +72,7 @@
             </div>
           </div>
         </div>
-        <div class="card card-outline card-dark collapsed-card">
+        <div class="card card-outline card-dark collapsed-card" id="faq2">
             <x-card-header title="Als Abteilungsleiter:in, ..." count=5 />
             <div class="card-body">
               <div class="card card-outline card-info collapsed-card" id="faq_20">
@@ -98,7 +98,7 @@
               <div class="card card-outline card-info collapsed-card" id="faq_22">
                 <x-card-header title="möchte ich Hallenzeiten für Heimspiele ändern:" />
                 <div class="card-body">
-                    <p class="card-text"></p>
+                    @include('app.de.includes.faq_22')
                 </div>
             </div>
               <div class="card card-outline card-info collapsed-card" id="faq_23">
@@ -168,5 +168,19 @@
 </div>
 </x-card-list>
 
+@endsection
+
+@section('js')
+<script>
+    $(document).ready(function(){
+        var hash = window.location.hash; // would be "#div1" or something
+        if(hash != "") {
+            //var id = hash.substr(1); // get rid of #
+            $(hash).removeClass('collapsed-card');
+        };
+    });
+
+
+</script>
 @endsection
 
