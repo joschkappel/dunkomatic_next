@@ -170,3 +170,17 @@
 
 @endsection
 
+@section('js')
+<script>
+    $(document).ready(function(){
+        var hash = window.location.hash; // would be "#div1" or something
+        if(hash != "") {
+            //var id = hash.substr(1); // get rid of #
+            $(hash).removeClass('collapsed-card');
+        };
+    });
+
+
+</script>
+@endsection
+

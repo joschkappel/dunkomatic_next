@@ -266,7 +266,7 @@
                     <!-- /.card-body -->
                     <div class="card-footer">
                         @can('update-games')
-                        <a href="{{ route('faq', ['language' => app()->getLocale()]) }}#faq_22" target="_blank"
+                        <a href="{{ route('faq', ['language' => app()->getLocale()]) }}#faq2" target="_blank"
                             class="btn btn-outline-info float-right mr-2">
                             <i class="far fa-question-circle"></i></a>
                         <a href="{{ route('club.show.games', ['language' => app()->getLocale(), 'club' => $club]) }}"
