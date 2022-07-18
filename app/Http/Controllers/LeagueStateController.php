@@ -12,6 +12,7 @@ use App\Enums\LeagueState;
 use App\Traits\LeagueFSM;
 
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 
 class LeagueStateController extends Controller
 {
@@ -109,4 +110,37 @@ class LeagueStateController extends Controller
 
         return true;
     }
+
+    /**
+     * remove games with missing teams
+     *
+     * @param Request $request
+     * @param  \App\Models\Region  $region
+     * @return boolean
+     *
+     */
+    public function  destroy_noshow_games(Request $request, Region $region)
+    {
+
+        $data = $request->validate([
+            'from_state' => ['required', new EnumValue(LeagueState::class, false)],
+        ]);
+        Log::info('purge game form data validated OK.', ['region-id' => $region->id]);
+
+        // get all leagues that are in from_state
+        $leagues = $region->leagues()->where('state',$data['from_state'])->get();
+        foreach ($leagues as $l){
+            // for each league emove games with no home ro guest team
+            $count = $l->games()->where(function (Builder $query) {
+                return $query->whereNull('club_id_home')
+                    ->orWhereNull('club_id_guest');
+            })->delete();
+            Log::notice('no show games deleted.', ['league-id' => $l->id, 'count'=>$count]);
+
+        }
+
+        return true;
+    }
+
+
 }

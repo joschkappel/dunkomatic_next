@@ -53,6 +53,10 @@ th, td { white-space: nowrap; }
                                     <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::OpenReferees }}" data-from-state="{{ App\Enums\LeagueState::Scheduling }}">
                                         {!! App\Enums\LeagueState::Scheduling()->getIcon() !!}<i class="fas fa-arrow-right px-2"></i> @lang('league.action.open.referees')</button>
                                 @endif
+                                @if ( $states->contains(App\Enums\LeagueState::Scheduling()))
+                                <button id="btnDeleteGames" class="dropdown-item btn btn-info" data-from-state="{{ App\Enums\LeagueState::Scheduling }}">
+                                    {!! App\Enums\LeagueState::Scheduling()->getIcon() !!}<i class="fas fa-arrow-right px-2"></i> @lang('league.action.delete.games')</button>
+                                @endif
                                 @if ( $states->contains(App\Enums\LeagueState::Referees()))
                                     <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::GoLiveLeague }}" data-from-state="{{ App\Enums\LeagueState::Referees }}">
                                         {!! App\Enums\LeagueState::Referees()->getIcon() !!}<i class="fas fa-arrow-right px-2"></i> @lang('league.action.close.golive')</button>
@@ -379,6 +383,28 @@ th, td { white-space: nowrap; }
                         from_state: from_state,
                     },
                     type: "post",
+                    delay: 250,
+                    success: function (response) {
+                        toastr.success('{{__('league.action.statechanged')}}');
+                    },
+                    error: function (xhr){
+                        toastr.error(xhr.responseText, '{{__('league.action.statechanged')}}');
+                    },
+                    cache: false
+                });
+            })
+            $(document).on("click", "button#btnDeleteGames", function (e) {
+                var from_state = $(this).data("from-state");
+
+                $.ajax( {
+                    url: "{{ route('region.league.game.destroy_noshow', ['region' => $region]) }}",
+                    dataType: "json",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        _method: "DELETE",
+                        from_state: from_state,
+                    },
+                    type: "delete",
                     delay: 250,
                     success: function (response) {
                         toastr.success('{{__('league.action.statechanged')}}');

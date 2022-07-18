@@ -274,6 +274,7 @@ Route::middleware(['auth',
     Route::get('league/{league}/club/sb', [LeagueController::class, 'sb_club'])->name('league.sb.club');
     Route::post('league/{league}/state', [LeagueStateController::class, 'change_state'])->name('league.state.change')->middleware('can:update-leagues');
     Route::post('region/{region}/state', [LeagueStateController::class, 'change_state_region'])->name('region.league.state.change')->middleware('can:update-leagues');
+    Route::delete('region/{region}/game/noshow', [LeagueStateController::class, 'destroy_noshow_games'])->name('region.league.game.destroy_noshow')->middleware('can:update-leagues');
     Route::put('league/{league}', [LeagueController::class, 'update'])->name('league.update')->middleware('can:update-leagues');
     Route::delete('league/{league}', [LeagueController::class, 'destroy'])->name('league.destroy')->middleware('can:create-leagues');
 

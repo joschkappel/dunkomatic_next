@@ -59,6 +59,7 @@ return [
   'action.open.freeze' => 'Spielerzeugung',
   'action.open.scheduling' => 'Heimspieltermine',
   'action.open.referees' => 'Schirieinteilung',
+  'action.delete.games' => 'Spiele ohne Gegner löschen',
   'state.assigned' => 'zugelassen',
   'state.registered' => 'gemeldet',
   'state.selected' => 'zugeordnet',
