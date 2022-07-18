@@ -10,6 +10,13 @@
         </x-card-header>
         <!-- /.card-header -->
         <div class="card-body">
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <h5><i class="icon fas fa-ban"></i>Oops</h5>
+                    {{ session('error') }}
+                </div>
+            @endif
             <ul class="list-group list-group-flush">
                 @foreach ($members as $member)
                     <li class="list-group-item ">
@@ -28,7 +35,7 @@
                         @else
                         {{ $member->name }}
                         @endcan
-                        @if (!$member->is_user)
+                        @if ( (!$member->is_user) and (!$member->invitation()->exists()))
                             @can('update-members')
                             <span data-toggle="tooltip" title="{{__('role.tooltip.invite',['name'=> $member->name])}}">
                                 <a href="{{ route('member.invite', ['member' => $member]) }}" type="button" id="inviteMember"

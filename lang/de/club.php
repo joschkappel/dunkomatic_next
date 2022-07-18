@@ -64,5 +64,6 @@ return [
   'action.register' => 'Vereinsmeldung',
   'chart.gamesbyday' => 'Vereinsspiele je Spieltag',
   'chart.gamesbyday.hint' => 'Klicke auf den Balken eines Spieltages um die detaillierten Spielansetzugen für diesen Tag in der Tabelle unten zu sehen.',
-  'action.gamesbyday.hint' => 'Klicke auf ein Heimspiel um die Ansetzung (Datum, Spielbeginn und Halle) zu ändern'
+  'action.gamesbyday.hint' => 'Klicke auf ein Heimspiel um die Ansetzung (Datum, Spielbeginn und Halle) zu ändern',
+  'invitation.exists' => 'Das Mitglied ist bereits eingeladen'    
 ];

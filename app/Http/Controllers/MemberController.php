@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 use App\Notifications\InviteUser;
 
@@ -296,15 +298,26 @@ class MemberController extends Controller
      */
     public function invite(Member $member)
     {
-        $invite = Invitation::create(['email_invitee'=>$member->email1]);
-        Auth::user()->invitations()->save($invite);
-        $member->invitations()->save($invite);
-        session('cur_region')->invitations()->save($invite);
+        // cehck if invite existsts already
+        if ( ($member->invitation()->exists() ) or ( Invitation::where('email_invitee',$member->email1)->exists() )){
+            // do nothing return false
+            return Redirect::back()->with(['error' => __('club.invitation.exists')]);
+        } else {
+            // create invitation
+            DB::transaction(function () use($member) {
+                $invite = Invitation::create(['email_invitee'=>$member->email1]);
+                Auth::user()->invitations()->save($invite);
+                $member->invitation()->save($invite);
+                session('cur_region')->invitations()->save($invite);
 
-        $member->notify(new InviteUser($invite));
-        Log::info('[NOTIFICATION] invite user.', ['invitation' => $invite]);
+                $member->notify(new InviteUser($invite));
+                Log::info('[NOTIFICATION] invite user.', ['invitation' => $invite]);
+            });
 
-        return redirect()->back();
+
+            return Redirect::back();
+
+        }
     }
     /**
      * Remove the specified resource from storage.

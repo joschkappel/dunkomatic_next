@@ -90,9 +90,9 @@ class Member extends Model
   {
       return $this->hasMany(Membership::class);
   }
-  public function invitations(): HasMany
+  public function invitation(): HasOne
   {
-      return $this->hasMany(Invitation::class);
+      return $this->hasOne(Invitation::class);
   }
 
   /**
