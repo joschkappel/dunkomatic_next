@@ -64,5 +64,6 @@ return [
   'action.register' => 'Club Assignment',
   'chart.gamesbyday' => 'All Club Games by Gameday',
   'chart.gamesbyday.hint' => 'Click on the bar of a game day to see game details in the table below',
-  'action.gamesbyday.hint' => 'Click on a homegame in this table to modify details fo this game'
+  'action.gamesbyday.hint' => 'Click on a homegame in this table to modify details fo this game',
+  'invitation.exists' => 'Das Mitglied ist bereits eingeladen'
 ];
