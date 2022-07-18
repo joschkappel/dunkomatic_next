@@ -59,6 +59,7 @@ return [
   'action.open.freeze' => 'Game Generation',
   'action.open.scheduling' => 'Scheduling',
   'action.open.referees' => 'Referees',
+  'action.delete.games' => 'Delete Games w/out Guest',
   'state.assigned' => 'entitled',
   'state.registered' => 'registered',
   'state.selected' => 'assigned',
