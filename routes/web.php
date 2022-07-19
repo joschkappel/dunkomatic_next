@@ -323,7 +323,7 @@ Route::middleware(['auth',
     Route::delete('schedule/{schedule}', [ScheduleController::class, 'destroy'])->name('schedule.destroy')->middleware('can:create-schedules');
 
     Route::put('message/{message}', [MessageController::class, 'update'])->name('message.update');
-    Route::get('message/{message}/markread', [MessageController::class, 'mark_as_read'])->name('message.mark_as_read');
+    Route::post('message/{message}/markread', [MessageController::class, 'mark_as_read'])->name('message.mark_as_read');
     Route::delete('message/{message}', [MessageController::class, 'destroy'])->name('message.destroy');
     Route::get('message/{notification}', [MessageController::class, 'show'])->name('notification.show');
 
