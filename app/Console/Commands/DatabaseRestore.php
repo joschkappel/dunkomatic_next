@@ -38,14 +38,16 @@ class DatabaseRestore extends Command
      */
     public function handle()
     {
+        $db = config('database.connections.dunknxt.database');
+        $db_usr = config('database.connections.dunknxt.username');
+        $db_pwd = config('database.connections.dunknxt.password');
+        $db_host = config('database.connections.dunknxt.host');
         $filename = $this->argument('backupfile');
         $backup_folder = config('dunkomatic.folders.backup').'/';
 
         if ( Storage::disk('local')->exists($backup_folder.$filename)){
-            Storage::disk('local')->writeStream( 'tmp/'.$filename, Storage::disk('local')->readStream( $backup_folder.$filename));
-
-            $filepath = Storage::disk('local')->path('tmp/'.$filename);
-            $command = 'zcat '.$filepath.' | mysql --user='.env('DB_USERNAME').' --password='.env('DB_PASSWORD').' --host='.env('DB_HOST').' '.env('DB_DATABASE');
+            $filepath = storage_path( 'app/'.$backup_folder.$filename);
+            $command = 'zcat '.$filepath.' | mysql --user='.$db_usr.' --password='.$db_pwd.' --host='.$db_host.' '.$db;
             $returnVar = NULL;
             $output = NULL;
 
