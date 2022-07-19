@@ -6,10 +6,9 @@ use App\Enums\LeagueAgeType;
 use App\Models\League;
 use App\Models\Team;
 use App\Models\Game;
-use App\Models\Club;
 
+use Illuminate\Database\Eloquent\Builder;
 use Carbon\CarbonImmutable;
-
 use Illuminate\Support\Facades\Log;
 
 
@@ -277,5 +276,21 @@ trait GameManager
             'club_id_guest' => null,
             'team_guest' => null,
         ]);
+    }
+
+    /**
+     * delete games of a league if home or guest team are not set
+     *
+     * @param League $league
+     * @return void
+     */
+    public function delete_noshow_games(League $league): void
+    {
+        $count = $league->games()->where(function (Builder $query) {
+            return $query->whereNull('club_id_home')
+                ->orWhereNull('club_id_guest');
+        })->delete();
+        Log::notice('no show games deleted.', ['league-id' => $league->id, 'count'=>$count]);
+
     }
 }
