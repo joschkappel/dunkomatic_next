@@ -9,8 +9,7 @@ use App\Models\Team;
 use App\Traits\LeagueFSM;
 use App\Imports\LeagueGamesImport;
 use App\Imports\LeagueCustomGamesImport;
-
-
+use App\Traits\GameManager;
 use Datatables;
 use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
@@ -26,7 +25,7 @@ use Illuminate\Support\Arr;
 
 class LeagueGameController extends Controller
 {
-    use LeagueFSM;
+    use LeagueFSM, GameManager;
 
     /**
      * Display a listing of the resource.
@@ -237,13 +236,7 @@ class LeagueGameController extends Controller
      */
     public function destroy_noshow_game(League $league)
     {
-        $check = $league->games()->where(function (Builder $query) {
-            return $query->whereNull('club_id_home')
-                ->orWhereNull('club_id_guest');
-        })->delete();
-        Log::notice('no show games deleted.', ['league-id' => $league->id]);
-
-        //Log::debug($check);
+        $this->delete_noshow_games($league);
         return Response::json(['success' => 'all good'], 200);
     }
 

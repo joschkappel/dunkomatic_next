@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 use BenSampo\Enum\Rules\EnumValue;
 use App\Enums\LeagueStateChange;
 use App\Enums\LeagueState;
-
+use App\Traits\GameManager;
 use App\Traits\LeagueFSM;
 
 use Illuminate\Http\Request;
@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 class LeagueStateController extends Controller
 {
 
-    use LeagueFSM;
+    use LeagueFSM, GameManager;
 
     /**
      * change state by seeting state dates
@@ -131,12 +131,7 @@ class LeagueStateController extends Controller
         $leagues = $region->leagues()->where('state',$data['from_state'])->get();
         foreach ($leagues as $l){
             // for each league emove games with no home ro guest team
-            $count = $l->games()->where(function (Builder $query) {
-                return $query->whereNull('club_id_home')
-                    ->orWhereNull('club_id_guest');
-            })->delete();
-            Log::notice('no show games deleted.', ['league-id' => $l->id, 'count'=>$count]);
-
+            $this->delete_noshow_games($l);
         }
 
         return true;
