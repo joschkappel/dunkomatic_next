@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\RateLimiter;
 
 use Illuminate\Support\Carbon;
 
@@ -248,7 +249,18 @@ class HomeController extends Controller
         ]);
         Log::info('feedback form data validated OK.',['input'=>$data]);
 
-        Mail::to( config('app.contact') )->send(new Feedback(Auth::user(), $data['title'], $data['body']));
+        $executed = RateLimiter::attempt(
+            'send-message:'.Auth::user()->id,
+            $perHour = 4,
+            function() use ($data){
+                Mail::to( config('app.contact') )->send(new Feedback(Auth::user(), $data['title'], $data['body']));                // Send message...
+            }
+        );
+
+        if (! $executed) {
+            Log::warning('Too many mails sent!');
+        }
+
         return redirect('home');
 
     }
