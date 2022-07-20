@@ -12,6 +12,7 @@ return [
   'title.list' => 'Liste aller Nachrichten für :USER für :REGION',
   'title.delete' => 'Nachricht Löschen',
   'title.edit' => 'Nachricht Ändern',
+  'title.contact' => 'Vorschläge oder Fehlermeldungen - Lass uns wissen, wie wir '.config('dunkomatic.title').' verbessern können',
   'confirm.delete' => 'Willst Du diese Nachricht löschen ?',
   'action.create' =>  'Neue Nachricht',
   'action.send' => 'Nachricht jetzt senden',

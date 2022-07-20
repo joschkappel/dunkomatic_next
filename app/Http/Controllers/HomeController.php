@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\Feedback;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 use Illuminate\Support\Carbon;
 
@@ -231,4 +234,23 @@ class HomeController extends Controller
 
         return view('home', ['msglist' => $msglist, 'reminders' => $reminders, 'infos' => $infos, 'links' => $links->slice(0,20)]);
     }
+    /**
+     * send feedback to webadmin
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     */
+    public function send_feedback(Request $request){
+        $data = $request->validate([
+            'title' => 'required|string|max:60',
+            'body' => 'required|string|max:1000'
+        ]);
+        Log::info('feedback form data validated OK.',['input'=>$data]);
+
+        Mail::to( config('app.contact') )->send(new Feedback(Auth::user(), $data['title'], $data['body']));
+        return redirect('home');
+
+    }
+
 }

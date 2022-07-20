@@ -68,6 +68,7 @@ Route::group([
     Route::get('signin', function () { return view('welcome_signin'); })->name('welcome_signin');
     // Route::get('checkfire', function () { return view('broadcast.test'); });
     Route::get('impressum', function ($language) { return view('app.'.'de'.'.impressum'); })->name('impressum');
+    Route::get('contact-us', function ($language) { return view('app.contact',['language'=>$language]); })->name('contact');
     Route::get('dsgvo', function ($language) { return view('app.'.'de'.'.dsgvo'); })->name('dsgvo');
     Route::get('faq', function ($language ) { return view('app.'.'de'.'.faq', ['region'=>session('cur_region'), 'language'=>$language, 'user'=>Auth::user() ] ); })->name('faq');
     Route::get('captcha', [RegisterController::class, 'reloadCaptcha'] )->name('reload_captcha');
@@ -202,6 +203,7 @@ Route::middleware(['auth',
     // APIs , no locale or language required !
     Route::redirect('/', '/de/signin');
     Route::redirect('home', '/de/home');
+    Route::post('contac-us', [HomeController::class, 'send_feedback'])->name('contact.feedback');
 
     Route::post('region', [RegionController::class, 'store'])->name('region.store')->middleware('can:create-regions');
     Route::put('region/{region}', [RegionController::class, 'update'])->name('region.update')->middleware('can:update-regions');
