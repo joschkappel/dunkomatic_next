@@ -12,6 +12,7 @@ return [
   'title.list' => 'List of all messages of user :USER for :REGION',
   'title.delete' => 'Delete message',
   'title.edit' => 'Modify message',
+  'title.contact' => 'Suggestions or Issues - Please send us your proposal how to improve '.config('dunkomatic.title'),
   'confirm.delete' => 'Do you really want to delete this message ?',
   'action.create' =>  'New Message',
   'action.send' => 'Send Message Now',
