@@ -10,7 +10,7 @@ use App\Traits\GameManager;
 
 use App\Notifications\SelectTeamLeagueNo;
 use App\Notifications\LeagueGamesGenerated;
-
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 
@@ -83,6 +83,18 @@ trait LeagueFSM
                     }
                 }
             }
+        }
+    }
+
+    public function get_unscheduled_games_clubs(League $league): Collection
+    {
+        if ($league->state->is(LeagueState::Scheduling())){
+            // league is in scheduling, get all clubs that still have emtpy games
+            $league->load('games_notime');
+            $clubs = $league->games_notime->pluck('club_id_home')->unique();
+            return $clubs;
+        } else {
+            return collect();
         }
     }
 
