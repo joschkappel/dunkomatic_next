@@ -35,7 +35,6 @@
                  language: { "url": "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}" },
                  ordering: true,
                 stateSave: true,
-                @if ( now()->between( $region->close_scheduling_at ?? now()->subMinutes(1), $region->close_referees_at ?? now()->addMinutes(1) ) )
                 dom: 'Bflrtip',
                 buttons: [
                     { extend: 'collection',
@@ -68,10 +67,11 @@
                     ,{ extend: 'spacer',
                         style: 'bar'
                     },
+                    @if ( now()->between( $region->close_scheduling_at ?? now()->subMinutes(1), $region->close_referees_at ?? now()->addMinutes(1) ) )
                     'import'
+                    @endif
                     @endcan
                 ],
-                @endif
                  ajax: '{{ route('game.datatable', ['region' => $region, 'language'=> app()->getLocale()]) }}',
                  order: [[ 1, 'asc' ], [ 3, 'asc' ],[ 4, 'asc' ]],
                  columns:  [
