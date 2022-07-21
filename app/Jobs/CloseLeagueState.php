@@ -117,7 +117,7 @@ class CloseLeagueState implements ShouldQueue
                 // get club  leads
                 $members = collect();
                 foreach ($clubs as $c){
-                    $members = $members->concat( Club::find($c)->members()->wherePivot('role_id', Role::ClubLead)->get()->transform(function ($item, $key) { return ['name'=>$item->name,'email'=>$item->email1];}) );
+                    $members = $members->concat( Club::find($c)->members()->wherePivot('role_id', Role::ClubLead)->get());
                 }
                 // send notification
                 if ($members->count() > 0){
@@ -125,7 +125,7 @@ class CloseLeagueState implements ShouldQueue
                     $to_chunks = $members->chunk(60);
                     foreach ($to_chunks as $i => $chunk){
                         Mail::to($chunk ?? [])
-                            ->cc( $r->regionadmins->transform(function ($item, $key) { return ['name'=>$item->name,'email'=>$item->email1];}) )
+                            ->cc( $r->regionadmins )
                             ->send(new GametimeMissing(2) );
                         Log::notice('[JOB][CLOSE LEAGUE STATES] gametime missing reminder eMail sent.', ['to_count' => ( ($chunk ?? collect())->count() ) ]);
                     }

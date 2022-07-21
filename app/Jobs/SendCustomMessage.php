@@ -76,17 +76,17 @@ class SendCustomMessage implements ShouldQueue
             if ( $tm->in([EnumRole::ClubLead(), EnumRole::RefereeLead(), EnumRole::JuniorsLead(), EnumRole::GirlsLead()]) ) {
                 // get in scope clubs
                 foreach ($clubs as $c) {
-                    $to_members = $to_members->concat( $c->members()->wherePivot('role_id', $tm)->get()->transform(function ($item, $key) { return ['name'=>$item->name,'email'=>$item->email1];}) );
+                    $to_members = $to_members->concat( $c->members()->wherePivot('role_id', $tm)->get());
                 }
             } else if ( $tm->is(EnumRole::LeagueLead()) ) {
                 // get in scope leagues
                 foreach ($leagues as $l) {
-                    $to_members = $to_members->concat( $l->members()->wherePivot('role_id', EnumRole::LeagueLead)->get()->transform(function ($item, $key) { return ['name'=>$item->name,'email'=>$item->email1];}) );
+                    $to_members = $to_members->concat( $l->members()->wherePivot('role_id', EnumRole::LeagueLead)->get() );
                 }
             } else if ( $tm->in([ EnumRole::RegionLead(), EnumRole::RegionTeam() ]) ) {
                 // get in scope regions
                 foreach ($regions as $r) {
-                    $to_members = $to_members->concat( $r->members()->wherePivot('role_id', $tm)->get()->transform(function ($item, $key) { return ['name'=>$item->name,'email'=>$item->email1];}) );
+                    $to_members = $to_members->concat( $r->members()->wherePivot('role_id', $tm)->get());
                 }
             }
             Log::info('[JOB][CUSTOM MESSAGE] members to email.', ['members' => $to_members->count()]);
@@ -100,17 +100,17 @@ class SendCustomMessage implements ShouldQueue
             if ( $cm->in([EnumRole::ClubLead(), EnumRole::RefereeLead(), EnumRole::JuniorsLead(), EnumRole::GirlsLead()]) ) {
                 // get in scope clubs
                 foreach ($clubs as $c) {
-                    $cc_members = $cc_members->concat( $c->members()->wherePivot('role_id', $cm)->get()->transform(function ($item, $key) { return ['name'=>$item->name,'email'=>$item->email1];}) );
+                    $cc_members = $cc_members->concat( $c->members()->wherePivot('role_id', $cm)->get());
                 }
             } elseif ( $cm->is(EnumRole::LeagueLead()) ) {
                 // get in scope leagues
                 foreach ($leagues as $l) {
-                    $cc_members = $cc_members->concat( $l->members()->wherePivot('role_id', EnumRole::LeagueLead)->get()->transform(function ($item, $key) { return ['name'=>$item->name,'email'=>$item->email1];}) );
+                    $cc_members = $cc_members->concat( $l->members()->wherePivot('role_id', EnumRole::LeagueLead)->get() );
                 }
             } elseif ( $cm->in([ EnumRole::RegionLead(), EnumRole::RegionTeam() ]) ) {
                 // get in scope regions
                 foreach ($regions as $r) {
-                    $cc_members = $cc_members->concat( $r->members()->wherePivot('role_id', $cm)->get()->transform(function ($item, $key) { return ['name'=>$item->name,'email'=>$item->email1];}) );
+                    $cc_members = $cc_members->concat( $r->members()->wherePivot('role_id', $cm)->get());
                 }
             }
             Log::info('[JOB][CUSTOM MESSAGE] members cc email.', ['members' => $cc_members->count()]);
