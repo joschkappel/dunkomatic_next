@@ -4,15 +4,19 @@ namespace App\Jobs;
 
 use App\Enums\LeagueState;
 use App\Models\User;
+use App\Models\Club;
 use App\Models\Region;
 use App\Traits\LeagueFSM;
 use App\Enums\JobFrequencyType;
 use App\Enums\ReportFileType;
+use App\Enums\Role;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
 use App\Notifications\LeagueStateClosed;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\GametimeMissing;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -63,9 +67,9 @@ class CloseLeagueState implements ShouldQueue
             }
 
             // set close date defaults to future if empty
-            $close_selection = $r->close_selection_at ??  Carbon::now()->addDays(2);
-            $close_scheduling = $r->close_scheduling_at ??  Carbon::now()->addDays(2);
-            $close_referees = $r->close_referees_at ??  Carbon::now()->addDays(2);
+            $close_selection = $r->close_selection_at ??  Carbon::now()->addDays(8);
+            $close_scheduling = $r->close_scheduling_at ??  Carbon::now()->addDays(8);
+            $close_referees = $r->close_referees_at ??  Carbon::now()->addDays(8);
 
             // if close_selection is today then change state for all region leagues
             if ($close_selection->isToday()){
@@ -102,6 +106,30 @@ class CloseLeagueState implements ShouldQueue
                     ]);
                 };
                 Notification::send($radmins, new LeagueStateClosed( __('league.action.close.scheduling') , $referees_opened, $referees_not_opened));
+            } elseif ($close_scheduling->subDays(2)->isToday()  ){
+                // on 2 days from now scheduling will be closed, send notification
+                $clubs = collect();
+                // collect all clubs
+                foreach ( $r->leagues as $l){
+                    $clubs = $clubs->concat($this->get_unscheduled_games_clubs($l));
+                }
+                $clubs = $clubs->unique();
+                // get club  leads
+                $members = collect();
+                foreach ($clubs as $c){
+                    $members = $members->concat( Club::find($c)->members()->wherePivot('role_id', Role::ClubLead)->get());
+                }
+                // send notification
+                if ($members->count() > 0){
+                    $r->load('regionadmins');
+                    $to_chunks = $members->chunk(60);
+                    foreach ($to_chunks as $i => $chunk){
+                        Mail::to($chunk ?? [])
+                            ->cc( $r->regionadmins )
+                            ->send(new GametimeMissing(2) );
+                        Log::notice('[JOB][CLOSE LEAGUE STATES] gametime missing reminder eMail sent.', ['to_count' => ( ($chunk ?? collect())->count() ) ]);
+                    }
+                }
             }
             // if close_referees is today then change state for all region leagues
             if ($close_referees->isToday()){

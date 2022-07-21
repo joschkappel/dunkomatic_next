@@ -47,7 +47,7 @@ class LeagueSchedulingInjectTeamTest extends TestCase
             ->assertDatabaseCount('games', 12);
 
         $this->testleague->refresh();
-        $this->assertCount(3, $this->testleague->games_notime);
+        $this->assertCount(0, $this->testleague->games_notime);
         $this->assertCount(3, $this->testleague->games_noshow);
         $this->assertEquals(4, $this->testleague->state_count['size']);
         $this->assertEquals(3, $this->testleague->state_count['assigned']);
@@ -109,7 +109,7 @@ class LeagueSchedulingInjectTeamTest extends TestCase
             ->assertDatabaseCount('games', 12);
 
         $this->testleague->refresh();
-        $this->assertCount(3, $this->testleague->games_notime);
+        $this->assertCount(0, $this->testleague->games_notime);
         $this->assertCount(6, $this->testleague->games_noshow);
         $this->assertEquals(4, $this->testleague->state_count['size']);
         $this->assertEquals(2, $this->testleague->state_count['assigned']);
@@ -147,7 +147,7 @@ class LeagueSchedulingInjectTeamTest extends TestCase
             ->assertDatabaseCount('games', 12);
 
         $this->testleague->refresh();
-        $this->assertCount(3, $this->testleague->games_notime);
+        $this->assertCount(0, $this->testleague->games_notime);
         $this->assertCount(3, $this->testleague->games_noshow);
         $this->assertEquals(4, $this->testleague->state_count['size']);
         $this->assertEquals(4, $this->testleague->state_count['assigned']);

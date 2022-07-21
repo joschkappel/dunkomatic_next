@@ -211,7 +211,7 @@ class League extends Model implements Auditable
 
     public function games_notime(): HasMany
     {
-        return $this->hasMany(Game::class)->whereNull('game_time');
+        return $this->hasMany(Game::class)->whereNull('game_time')->whereNotNull('club_id_home')->whereNotNull('club_id_guest');
     }
     public function games_noreferee(): HasMany
     {
