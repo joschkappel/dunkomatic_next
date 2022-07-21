@@ -44,7 +44,7 @@ class GenerateLeagueReportsTest extends TestCase
         }
 
         $report = $folder . '/' . $this->testleague->shortname;
-        $report .= '_games.pdf';
+        $report .= '_Rundenplan.pdf';
 
         $job_instance = resolve(GenerateLeagueGamesReport::class, ['region' => $region, 'league' => $this->testleague, 'rtype' => ReportFileType::PDF()]);
         app()->call([$job_instance, 'handle']);
@@ -72,7 +72,7 @@ class GenerateLeagueReportsTest extends TestCase
 
 
         $report = $folder . '/' . $this->testleague->shortname;
-        $report .= '_games.xlsx';
+        $report .= '_Rundenplan.xlsx';
 
         $job_instance = resolve(GenerateLeagueGamesReport::class, ['region' => $region, 'league' => $this->testleague, 'rtype' => ReportFileType::XLSX()]);
         app()->call([$job_instance, 'handle']);
@@ -101,7 +101,7 @@ class GenerateLeagueReportsTest extends TestCase
         Storage::delete($files);
 
         $report = $folder . '/' . $this->testleague->shortname;
-        $report .= '_games.ics';
+        $report .= '_Rundenplan.ics';
 
         $job_instance = resolve(GenerateLeagueGamesReport::class, ['region' => $region, 'league' => $this->testleague, 'rtype' => ReportFileType::ICS()]);
         app()->call([$job_instance, 'handle']);

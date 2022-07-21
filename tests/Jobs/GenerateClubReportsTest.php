@@ -50,19 +50,19 @@ class GenerateClubReportsTest extends TestCase
             $report = $folder . '/' . $club->shortname;
             switch ($rscope->value) {
                 case ReportScope::ms_all:
-                    $report .= '_games.pdf';
+                    $report .= '_Gesamtplan.pdf';
                     break;
                 case ReportScope::ss_club_all:
-                    $report .= '_games_all.pdf';
+                    $report .= '_Vereinsplan.pdf';
                     break;
                 case ReportScope::ss_club_home:
-                    $report .= '_games_home.pdf';
+                    $report .= '_Heimspielplan.pdf';
                     break;
                 case ReportScope::ss_club_referee:
-                    $report .= '_games_referee.pdf';
+                    $report .= '_Schiriplan.pdf';
                     break;
                 case ReportScope::ss_club_league:
-                    $report .= '_' . $league->shortname . '_games.pdf';
+                    $report .= '_' . $league->shortname . '_Rundenplan.pdf';
                     break;
             }
 
@@ -100,19 +100,19 @@ class GenerateClubReportsTest extends TestCase
             $report = $folder . '/' . $club->shortname;
             switch ($rscope->value) {
                 case ReportScope::ms_all:
-                    $report .= '_games.xlsx';
+                    $report .= '_Gesamtplan.xlsx';
                     break;
                 case ReportScope::ss_club_all:
-                    $report .= '_games_all.xlsx';
+                    $report .= '_Vereinsplan.xlsx';
                     break;
                 case ReportScope::ss_club_home:
-                    $report .= '_games_home.xlsx';
+                    $report .= '_Heimspielplan.xlsx';
                     break;
                 case ReportScope::ss_club_referee:
-                    $report .= '_games_referee.xlsx';
+                    $report .= '_Schiriplan.xlsx';
                     break;
                 case ReportScope::ss_club_league:
-                    $report .= '_' . $league->shortname . '_games.xlsx';
+                    $report .= '_' . $league->shortname . '_Rundenplan.xlsx';
                     break;
             }
 
@@ -151,19 +151,19 @@ class GenerateClubReportsTest extends TestCase
             $report = $folder . '/' . $club->shortname;
             switch ($rscope->value) {
                 case ReportScope::ms_all:
-                    $report .= '_games.ics';
+                    $report .= '_Gesamtplan.ics';
                     break;
                 case ReportScope::ss_club_all:
-                    $report .= '_games_all.ics';
+                    $report .= '_Vereinsplan.ics';
                     break;
                 case ReportScope::ss_club_home:
-                    $report .= '_games_home.ics';
+                    $report .= '_Heimspielplan.ics';
                     break;
                 case ReportScope::ss_club_referee:
-                    $report .= '_games_referee.ics';
+                    $report .= '_Schiriplan.ics';
                     break;
                 case ReportScope::ss_club_league:
-                    $report .= '_' . $league->shortname . '_games.ics';
+                    $report .= '_' . $league->shortname . '_Rundenplan.ics';
                     break;
             }
 
