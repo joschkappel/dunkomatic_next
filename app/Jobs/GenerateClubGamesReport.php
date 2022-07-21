@@ -56,19 +56,19 @@ class GenerateClubGamesReport implements ShouldQueue
 
         switch ($this->scope->value) {
             case ReportScope::ms_all:
-                $this->rpt_name .= '_games.';
+                $this->rpt_name .= '_Gesamtplan.';
                 break;
             case ReportScope::ss_club_all:
-                $this->rpt_name .= '_games_all.';
+                $this->rpt_name .= '_Vereinsplan.';
                 break;
             case ReportScope::ss_club_home:
-                $this->rpt_name .= '_games_home.';
+                $this->rpt_name .= '_Heimspielplan.';
                 break;
             case ReportScope::ss_club_referee:
-                $this->rpt_name .= '_games_referee.';
+                $this->rpt_name .= '_Schiriplan.';
                 break;
             case ReportScope::ss_club_league:
-                $this->rpt_name .= '_' . $this->league->shortname . '_games.';
+                $this->rpt_name .= '_' . $this->league->shortname . '_Rundenplan.';
                 break;
         }
         $this->rpt_name .= $this->rtype->description;

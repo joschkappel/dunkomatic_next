@@ -49,7 +49,7 @@ class GenerateLeagueGamesReport implements ShouldQueue
         // make sure folders are there
         $this->export_folder = $region->league_folder;
         $this->rpt_name = $this->export_folder . '/' . $this->league->shortname;
-        $this->rpt_name .= '_games.';
+        $this->rpt_name .= '_Rundenplan.';
         $this->rpt_name .= $this->rtype->description;
 
     }
