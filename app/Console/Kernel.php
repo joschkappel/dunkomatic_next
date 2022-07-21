@@ -10,6 +10,7 @@ use App\Jobs\ProcessClubReports;
 use App\Jobs\ProcessNewSeason;
 use App\Jobs\ProcessDbCleanup;
 use App\Jobs\ProcessLeagueStateChanges;
+use App\Jobs\ProcessRegionReport;
 
 use App\Jobs\EmailValidation;
 use App\Jobs\MissingLeadCheck;
@@ -27,6 +28,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Monolog\Handler\SendGridHandler;
 use Spatie\Health\Commands\RunHealthChecksCommand;
 use Spatie\Health\Commands\ScheduleCheckHeartbeatCommand;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -61,14 +63,16 @@ class Kernel extends ConsoleKernel
         // schedule region specific jobs
         $regions = Region::with('regionadmins')->get();
 
-        foreach ($regions as $r) {
-            if ($r->regionadmins()->exists()) {
-                $this->scheduleRegionTask($schedule, new GameOverlaps($r), $r->job_game_overlaps);
-                $this->scheduleRegionTask($schedule, new GameNotScheduled($r), $r->job_game_notime);
-                $this->scheduleRegionTask($schedule, new MissingLeadCheck($r), $r->job_noleads);
-                $this->scheduleRegionTask($schedule, new EmailValidation($r), $r->job_email_valid);
-                $this->scheduleRegionTask($schedule, new ProcessLeagueReports($r), $r->job_league_reports);
-                $this->scheduleRegionTask($schedule, new ProcessClubReports($r), $r->job_club_reports);
+        foreach ($regions as $region) {
+            if ($region->regionadmins()->exists()) {
+                $this->scheduleRegionTask($schedule, new GameOverlaps($region), $region->job_game_overlaps);
+                $this->scheduleRegionTask($schedule, new GameNotScheduled($region), $region->job_game_notime);
+                $this->scheduleRegionTask($schedule, new MissingLeadCheck($region), $region->job_noleads);
+                $this->scheduleRegionTask($schedule, new EmailValidation($region), $region->job_email_valid);
+                $this->scheduleRegionTask($schedule, new ProcessLeagueReports($region), $region->job_league_reports);
+                $this->scheduleRegionTask($schedule, new ProcessClubReports($region), $region->job_club_reports);
+                $this->scheduleRegionTask($schedule, new ProcessRegionReport($region->id), $region->job_league_reports);
+
                 // $this->scheduleRegionTask($schedule, new ProcessLeagueStateChanges($r), JobFrequencyType::daily);
             }
         }

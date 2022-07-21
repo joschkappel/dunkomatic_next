@@ -6,6 +6,7 @@ return [
   'action.create' => 'Create Region',
   'action.delete' => 'Delete Region',
   'action.select' => 'Select a Region',
+  'action.download' => 'Download Reports',
   'title.edit' => 'Modify settings for :Region',
   'title.list' => 'Regions',
   'title.create' => 'Create a new Region',

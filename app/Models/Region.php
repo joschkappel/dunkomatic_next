@@ -225,6 +225,30 @@ class Region extends Model
     {
         return   config('dunkomatic.folders.export').'/'.Str::of(config('global.season'))->replace('/', '_') . '/' . $this->code . '/' . config('dunkomatic.export_folders.teamware');
     }
+    public function getFilecountAttribute(): int
+    {
+        $directory = $this->league_folder;
+        $reports = collect();
+
+        $shortname = $this->code;
+        $reports = $reports->concat(collect(Storage::files($directory))->filter(function ($value, $key) use ($shortname, $directory) {
+            //return (preg_match('/^' . $shortname . '/',  substr($value,5)) === 1);
+            return Str::startsWith($value, $directory.'/'.$shortname);
+        }));
+        return count($reports);
+    }
+    public function getFilenamesAttribute(): Collection
+    {
+        $directory = $this->league_folder;
+        $reports = collect();
+
+        $shortname = $this->code;
+        $reports = $reports->concat(collect(Storage::files($directory))->filter(function ($value, $key) use ($shortname, $directory) {
+            //return (preg_match('/^' . $shortname . '/',  substr($value,5)) === 1);
+            return Str::startsWith($value, $directory.'/'.$shortname);
+        }));
+        return $reports;
+    }
 
     public function getLeagueFilecountAttribute(): int
     {

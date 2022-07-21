@@ -11,6 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use App\Models\Region;
 
 use App\Notifications\InvalidEmail;
+use Illuminate\Support\Facades\Notification;
 use App\Enums\Role;
 use App\Models\Member;
 
@@ -105,17 +106,13 @@ class EmailValidation implements ShouldQueue
             if ($fails) {
                 Log::warning('[JOB][EMAIL VALIDATION] found club members with an invalid email.',[ 'club-id'=>$c->id, 'count'=>count($msgs) ]);
                 if ($lead_member == null) {
-                    foreach ($this->region_admins as $ra){
-                        $ra->notify(new InvalidEmail($c, null, $msgs));
-                        Log::info('[NOTIFICATION][MEMBER] invalid email.', ['member-id' => $ra->id]);
-                    }
+                    Notification::send($this->region_admins, new InvalidEmail($c, null, $msgs));
+                    Log::info('[NOTIFICATION][MEMBER] invalid email.', ['members' => $this->region_admins->pluck('id')]);
                 } elseif (in_array($lead_member->email1, $invalid_emails)) {
-                    foreach ($this->region_admins as $ra){
-                        $ra->notify(new InvalidEmail($c, null, $msgs));
-                        Log::info('[NOTIFICATION][MEMBER] invalid email.', ['member-id' => $ra->id]);
-                    }
+                    Notification::send($this->region_admins, new InvalidEmail($c, null, $msgs));
+                    Log::info('[NOTIFICATION][MEMBER] invalid email.', ['member-id' => $ra->id]);
                 } else {
-                    $lead_member->notify(new InvalidEmail($c, $this->region_admins->first(), $msgs));
+                    Notification::send($lead_member, new InvalidEmail($c, $this->region_admins->first(), $msgs));
                     Log::info('[NOTIFICATION][MEMBER] invalid email.', ['member-id' => $lead_member->id]);
                 }
             }

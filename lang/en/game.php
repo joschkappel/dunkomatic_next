@@ -17,6 +17,7 @@ return [
   'notstarted' => 'Competition not started',
   'game_date' => 'Date Gameday',
   'game_day' => 'Gameday No',
+  'league' => 'League',
   'game_no' => 'Game No.',
   'team_home' => 'Home',
   'team_guest' => 'Guest',

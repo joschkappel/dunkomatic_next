@@ -20,6 +20,7 @@ return [
   'game_no' => 'Nr',
   'team_home' => 'Heim',
   'team_guest' => 'Gast',
+  'league' => 'Runde',
   'gym_no' => 'Halle',
   'game_wday' => 'Tag',
   'game_time' => 'Beginn',
