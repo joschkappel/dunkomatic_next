@@ -12,6 +12,7 @@ return [
   'action.team.add' => 'Inject Team',
   'action.game_no' => 'Select the game number',
   'action.assign-referees' => 'Assign referees',
+  'title.missingtime' => 'Missing Home Game Dates',
   'created.no' => 'No games created',
   'created.some' => ':total games created',
   'notstarted' => 'Competition not started',

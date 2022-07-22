@@ -12,6 +12,7 @@ return [
   'action.team.add' => 'Mannschaft aufnehmen',
   'action.game_no' => 'Wähle eine Spielnummer aus',
   'action.assign-referees' => 'Schiedsrichter zuordnen',
+  'title.missingtime' => 'Fehlende Heimspielansetzungen',
   'created.no' => 'Keine Spiele erzeugt',
   'created.some' => ':total Spiele erzeugt',
   'notstarted' => 'Spielrunde nocht nicht begonnen',
