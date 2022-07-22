@@ -110,7 +110,7 @@ class EmailValidation implements ShouldQueue
                     Log::info('[NOTIFICATION][MEMBER] invalid email.', ['members' => $this->region_admins->pluck('id')]);
                 } elseif (in_array($lead_member->email1, $invalid_emails)) {
                     Notification::send($this->region_admins, new InvalidEmail($c, null, $msgs));
-                    Log::info('[NOTIFICATION][MEMBER] invalid email.', ['member-id' => $ra->id]);
+                    Log::info('[NOTIFICATION][MEMBER] invalid email.', ['member-id' => $this->region_admins->pluck('id')]);
                 } else {
                     Notification::send($lead_member, new InvalidEmail($c, $this->region_admins->first(), $msgs));
                     Log::info('[NOTIFICATION][MEMBER] invalid email.', ['member-id' => $lead_member->id]);
