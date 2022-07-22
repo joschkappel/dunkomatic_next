@@ -2,8 +2,10 @@
 
 namespace App\Helpers;
 
+use App\Models\Region;
 use App\Models\League;
 use App\Models\Club;
+
 use App\Models\Game;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Log;
@@ -15,7 +17,51 @@ use Illuminate\Support\Carbon;
 
 class CalendarComposer
 {
+    public static function createRegionCalendar(Region $region): ?Calendar
+    {
+        Log::notice('[CALENDAR EXPORT] creating calendar events.',['region-id'=>$region->id]);
+        // get games
+        $games =  Game::where('region', $region->code)
+            ->whereNotNull('game_date')
+            ->whereNotNull('game_time')
+            ->whereNotNull('team_home')
+            ->whereNotNull('team_guest')
+            ->with('league', 'gym')
+            ->orderBy('game_date', 'asc')
+            ->orderBy('game_time', 'asc')
+            ->orderBy('game_no', 'asc')
+            ->get();
 
+        if ($games->count() > 0) {
+            Log::notice('[CALENDAR EXPORT] games found for region.',['region-id'=>$region->id, 'count'=>$games->count()]);
+            $calendar = Calendar::create()
+                ->name($region->code)
+                ->description( $region->code.' '.__('Season').' '.Setting::where('name', 'season')->first()->value);
+
+            $eventlist = array();
+            // add games as calendar events
+            foreach ($games as $g) {
+                $eventlist[] = Event::create()
+                    ->name($g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest)
+                    ->description( $g->league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 )
+                    ->uniqueIdentifier($g->league->shortname . $g->game_no)
+                    ->createdAt(Carbon::now())
+                    ->startsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT')))
+                    ->endsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT'))->addHours(2))
+                    ->address( ($g->gym->street ?? '') . ', ' . ( $g->gym->zip ?? '') . ' ' . ( $g->gym->city ?? ''))
+                    ->addressName($g->gym->name ?? '')
+                    ->organizer( config('app.contact'), config('app.name') )
+                    ->alertMinutesBefore(120, $g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
+            }
+
+            $calendar = $calendar->event($eventlist);
+
+            return $calendar;
+        } else {
+            Log::warning('[CALENDAR EXPORT] no games found for region.',['region-id'=>$region->id]);
+            return null;
+        }
+    }
     public static function createLeagueCalendar(League $league): ?Calendar
     {
         Log::notice('[CALENDAR EXPORT] creating calendar events.',['league-id'=>$league->id]);

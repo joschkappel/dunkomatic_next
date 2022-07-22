@@ -42,6 +42,11 @@
                     </a>
                     @endif
                     @endcan
+                    @if ($region->filecount > 0)
+                    <a href="{{ route('region_archive.get', ['region' => $region]) }}" class="small-box-footer bg-secondary">
+                        @lang('region.action.download') <i class="fas fa-file-download"></i>
+                    </a>
+                    @endif
                 </div>
                 </div>
                 <div class="col-sm ">

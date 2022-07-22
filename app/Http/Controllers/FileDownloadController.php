@@ -172,7 +172,46 @@ class FileDownloadController extends Controller
             return abort(404);
         }
     }
+    /**
+     * download archive with region reports
+     *
+     * @param \App\Models\Region $region
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\RedirectResponse
+     *
+     */
 
+    public function get_region_archive(Region $region)
+    {
+        Log::info('region file archive download.', ['region-id' => $region->id]);
+
+        if ($region->filecount > 0) {
+            $zip = new ZipArchive;
+            $filename = $region->code . '-reports.zip';
+            Storage::disk('public')->delete($filename);
+            $pf = Storage::disk('public')->path($filename);
+            Log::info('archive location.', ['path' => $pf]);
+
+            if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
+                $files = $region->filenames;
+
+                foreach ($files as $f) {
+                    $check = $zip->addFromString(basename($f), Storage::get($f));
+                }
+
+                $zip->close();
+                //  Storage::move(public_path($fileName), 'public/'.$fileName);
+                Log::notice('downloading ZIP archive for region', ['region-id' => $region->id, 'filecount' => count($files)]);
+
+                return Storage::disk('public')->download( $filename);
+            } else {
+                Log::error('archive corrupt.', ['region-id' => $region->id]);
+                return abort(500);
+            }
+        } else {
+            Log::error('no files found for region.', ['region-id' => $region->id]);
+            return abort(404);
+        }
+    }
     /**
      * download archive with regino reports
      *

@@ -31,7 +31,7 @@ class GametimeMissing extends Mailable
     public function build()
     {
         return $this->markdown('mail.gametime_missing_mail')
-                    ->subject('pls enter game tmies')
+                    ->subject(__('game.title.missingtime'))
                     ->with([
                         'days_to_go' => $this->days_to_go,
                         'url' => route('faq', ['language' => app()->getLocale()])
