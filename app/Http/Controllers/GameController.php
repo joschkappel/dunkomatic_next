@@ -43,6 +43,7 @@ class GameController extends Controller
             $clubs = $region->clubs()->pluck('id');
             //$games = Game::whereIn('club_id_home', $clubs)->orWhereIn('club_id_guest',$clubs)->orderBy('game_date')->get();
             $games = Game::whereIn('club_id_home', $clubs)->with(['league', 'gym'])->orderBy('game_date')->get();
+            $games = $games->concat(Game::whereIn('club_id_guest', $clubs)->with(['league', 'gym'])->orderBy('game_date')->get());
         } else {
             $games = Game::where('region', $region->code)->with(['league', 'gym'])->orderBy('game_date')->get();
         }
