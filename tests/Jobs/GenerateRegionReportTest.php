@@ -2,7 +2,7 @@
 
 namespace Tests\Jobs;
 
-use App\Jobs\GenerateLeagueGamesReport;
+use App\Jobs\GenerateRegionGamesReport;
 use App\Models\League;
 use App\Models\Game;
 
