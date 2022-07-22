@@ -24,8 +24,19 @@
     <th>{{ $g->name }}</th>
     @endforeach
     <th>{{ __('game.guest')}}</th>
-  </x-card-list>
-
+</x-card-list>
+<x-card-list cardTitle="{{ __('club.title.gamehome.edit', ['club'=>$club->shortname]) }}" tableId="gametable2" :showtools="false">
+    <xslot-extra-header-slot>
+    <div class="text-info">
+        @lang('club.action.gamesbyday.hint')
+    </div>
+    </xslot-extra-header-slot>
+    <th>{{ __('Spielbeginn')}}</th>
+    @foreach($club->gyms->sortBy('gym_no') as $g)
+    <th>{{ $g->name }}</th>
+    @endforeach
+    <th>{{ __('game.guest')}}</th>
+</x-card-list>
 <!-- all modals here -->
 @include('game/includes/edit_gamedate_home')
 <!-- all modals above -->
@@ -93,6 +104,7 @@ $(function() {
     };
 
     load_game_chart( gameChart);
+    var colwidth = (100 / ({{ count($club->gyms)}} + 1))+'%';
 
     var myGameTable = $('#table').DataTable({
         processing: true,
@@ -103,11 +115,27 @@ $(function() {
         paging: false,
         language: { "url": "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}" },
         columns: [
-            { data: 'game_time', name: 'game_time' },
+            { data: 'game_time', name: 'game_time', width: '10px' },
             @foreach($club->gyms->sortBy('gym_no') as $g)
-            { data: 'gym_{{$g->gym_no}}', name: 'gym_{{$g->gym_no}}' },
+            { data: 'gym_{{$g->gym_no}}', name: 'gym_{{$g->gym_no}}', width: colwidth },
             @endforeach
-            { data: 'guest', name: 'guest' }
+            { data: 'guest', name: 'guest', width: colwidth  }
+        ]
+    });
+    var myGameTable2 = $('#gametable2').DataTable({
+        processing: true,
+        serverSide: false,
+        responsive: true,
+        bSort: false,
+        bFilter: false,
+        paging: false,
+        language: { "url": "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}" },
+        columns: [
+            { data: 'game_time', name: 'game_time', width: '10px' },
+            @foreach($club->gyms->sortBy('gym_no') as $g)
+            { data: 'gym_{{$g->gym_no}}', name: 'gym_{{$g->gym_no}}', width: colwidth },
+            @endforeach
+            { data: 'guest', name: 'guest', width: colwidth  }
         ]
     });
 
@@ -115,8 +143,14 @@ $(function() {
         var url = "{{ route('club.game.bydate.dt', ['language'=>app()->getLocale(),'club'=>$club->id, 'game_date'=> ':date:']) }}";
         moment.locale('{{app()->getLocale()}}');
         var gdate = moment(game_date,'L');
-        url = url.replace(':date:', gdate.format('X')  );
-        myGameTable.ajax.url( url ).load();
+        url1 = url.replace(':date:', gdate.format('X')  );
+        myGameTable.ajax.url( url1 ).load();
+        var gdate2 = moment(game_date,'L').add(1,'days');
+        url2 = url.replace(':date:', gdate2.format('X')  );
+        myGameTable2.ajax.url( url2 ).load();
+
+        $('#titletable').html("{{__('club.title.gamehome.edit') }} {{__('for') }} "+ moment(gdate).format('ddd L'));
+        $('#titlegametable2').html("{{__('club.title.gamehome.edit') }} {{__('for')}} "+ moment(gdate2).format('ddd L'));
 
     };
     $('body').on('click', '#gameEditLink', function() {

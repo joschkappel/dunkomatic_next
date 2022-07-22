@@ -85,7 +85,11 @@ class ClubGameController extends Controller
         $game_dates = $games->pluck('game_date')->unique()->sort();
         // transform from carno date to date string
         $game_dates->transform(function ($item, $key) {
-            return $item->isoFormat('L');
+            if ($item->isSaturday()){
+                return $item->isoFormat('ddd L');
+            } else {
+                return $item->isoFormat('L');
+            }
         });
         $chart_date = array();
         foreach($game_dates as $g){
@@ -165,26 +169,31 @@ class ClubGameController extends Controller
                         '" data-game-date="' . $g->game_date . '" data-game-time="' . $g->game_time . '" data-club-id-home"' . $g->club_id_home .
                         '" data-gym-no="' . $g->gym_no . '" data-gym-id="' . $g->gym_id . '" data-league="' . $g->league['shortname'] . '"';
                     if ($g->game_time == ''){
-                        $new_row['gym_'.$g->gym_no] .= '<button id="gameEditLink" class="btn btn-warning btn-sm text-sm" '.$btndata.'>('.$g->league->shortname.') '.$g->team_home.' - '.$g->team_guest.'</button>';
+                        $new_row['gym_'.$g->gym_no] .= '<button id="gameEditLink" class="btn btn-warning btn-sm text-sm" '.$btndata.'>('.$g->league->shortname.')<br>'.$g->team_home.' - '.$g->team_guest.'</button>';
                     } else {
                         if ($ogames->contains($g->id)){
-                            $new_row['gym_'.$g->gym_no] .= '<button id="gameEditLink" class="btn btn-danger btn-sm text-sm" '.$btndata.'>('.$g->league->shortname.') '.$g->team_home.' - '.$g->team_guest.'</button>';
+                            $new_row['gym_'.$g->gym_no] .= '<button id="gameEditLink" class="btn btn-danger btn-sm text-sm" '.$btndata.'>('.$g->league->shortname.')<br>'.$g->team_home.' - '.$g->team_guest.'</button>';
                         } else {
-                            $new_row['gym_'.$g->gym_no] .= '<button id="gameEditLink" class="btn btn-success btn-sm text-sm" '.$btndata.'>('.$g->league->shortname.') '.$g->team_home.' - '.$g->team_guest.'</button>';
+                            $new_row['gym_'.$g->gym_no] .= '<button id="gameEditLink" class="btn btn-success btn-sm text-sm" '.$btndata.'>('.$g->league->shortname.')<br>'.$g->team_home.' - '.$g->team_guest.'</button>';
                         }
                     }
                 } else {
-                    $new_row['guest'] .= '<button class="btn btn-secondary btn-sm text-sm" disabled>('.$g->league->shortname.') '.$g->team_home.' - '.$g->team_guest.'</button>';
+                    $new_row['guest'] .= '<button class="btn btn-secondary btn-sm text-sm" disabled>('.$g->league->shortname.')<br>'.$g->team_home.' - '.$g->team_guest.'</button>';
                 }
             }
             $gameslist->push($new_row);
         }
 
         $gamelist_dt = Datatables::collection($gameslist);
-        return $gamelist_dt
-            ->rawColumns($gym_row_list->toArray())
-            ->setRowClass('text-sm')
-            ->make(true);
+        if ($gameslist->count() > 0){
+            return $gamelist_dt
+                ->rawColumns($gym_row_list->toArray())
+                ->setRowClass('text-sm')
+                ->make(true);
+        } else {
+            return $gamelist_dt
+                ->make(true);
+        }
 
 
     }
