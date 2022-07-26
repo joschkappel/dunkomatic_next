@@ -120,6 +120,9 @@ $(function() {
                         $(row).addClass('table-success');
                     };
                 };
+                if ( ! moment().hour(data['game_time'].split(":")[0]).isBetween(moment().hour(9).minute(0), moment().hour(20).minute(50))) {
+                    $(row).addClass('table-info');
+                };
             }
     });
 
