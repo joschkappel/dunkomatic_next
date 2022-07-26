@@ -190,20 +190,20 @@ class FileDownloadControllerTest extends TestCase
     {
         // check no files found
         $response = $this->authenticated()
-            ->get(route('region_league_archive.get', ['region' => $this->testleague->region, 'format' => ReportFileType::ODS]));
+            ->get(route('region_league_archive.get', ['region' => $this->testleague->region]));
 
-        $response->assertSessionHasErrors();
+        $response->assertStatus(404);
 
         // now create files
         $folder = $this->testleague->region->league_folder;
-        $filename = $this->testleague->shortname . '.test.html';
+        $filename = $this->testleague->shortname . '.test';
         $archive = $this->testleague->region->code . '-runden-reports.zip';
 
         UploadedFile::fake()->create($filename)
             ->storeAs($folder, $filename);
 
         $response = $this->authenticated()
-            ->get(route('region_league_archive.get', ['region' => $this->testleague->region, 'format' => ReportFileType::HTML]));
+            ->get(route('region_league_archive.get', ['region' => $this->testleague->region]));
 
         $response->assertStatus(200)
             ->assertDownload($archive);
