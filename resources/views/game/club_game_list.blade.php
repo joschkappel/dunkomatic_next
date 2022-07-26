@@ -120,7 +120,12 @@ $(function() {
             { data: 'gym_{{$g->gym_no}}', name: 'gym_{{$g->gym_no}}', width: colwidth },
             @endforeach
             { data: 'guest', name: 'guest', width: colwidth  }
-        ]
+        ],
+        createdRow: function( row, data, dataIndex){
+                if ( ! moment().hour(data['game_time'].split(":")[0]).isBetween(moment().hour(9).minute(0), moment().hour(20).minute(50))) {
+                    $(row).addClass('table-info');
+                };
+        }
     });
     var myGameTable2 = $('#gametable2').DataTable({
         processing: true,
@@ -136,7 +141,12 @@ $(function() {
             { data: 'gym_{{$g->gym_no}}', name: 'gym_{{$g->gym_no}}', width: colwidth },
             @endforeach
             { data: 'guest', name: 'guest', width: colwidth  }
-        ]
+        ],
+        createdRow: function( row, data, dataIndex){
+                if ( ! moment().hour(data['game_time'].split(":")[0]).isBetween(moment().hour(9).minute(0), moment().hour(20).minute(50))) {
+                    $(row).addClass('table-info');
+                };
+        }
     });
 
     function getGamesForDate(game_date) {
