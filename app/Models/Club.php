@@ -10,6 +10,7 @@ use App\Models\League;
 use App\Models\Member;
 use App\Models\Membership;
 use App\Models\Game;
+use App\Enums\ReportFileType;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -213,6 +215,17 @@ class Club extends Model implements Auditable
         });
         return count($reports);
     }
+    public function filecount_for_type(ReportFileType $format): int
+    {
+        $directory = $this->region->club_folder;
+        $shortname = $this->shortname;
+        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname, $format) {
+            $sstr = "/(" . $shortname . ")(.*)(" . Str::lower($format->key) . ")/";
+            return (preg_match($sstr, $value) === 1);
+            //return (strpos($value,$llist[0]) !== false);
+        });
+        return count($reports);
+    }
     public function getFilenamesAttribute(): Collection
     {
         $directory = $this->region->club_folder;
@@ -220,6 +233,17 @@ class Club extends Model implements Auditable
 
         $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname) {
             return (preg_match('(' . $shortname . ')', $value) === 1);
+            //return (strpos($value,$llist[0]) !== false);
+        });
+        return $reports;
+    }
+    public function filenames_for_type(ReportFileType $format): Collection
+    {
+        $directory = $this->region->club_folder;
+        $shortname = $this->shortname;
+
+        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname, $format) {
+            return (preg_match('/(' . $shortname . ')(.*)('. Str::lower($format->key).')/', $value) === 1);
             //return (strpos($value,$llist[0]) !== false);
         });
         return $reports;
