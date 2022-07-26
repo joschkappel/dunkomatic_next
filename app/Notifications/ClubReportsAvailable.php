@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Enums\ReportFileType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -50,7 +51,7 @@ class ClubReportsAvailable extends Notification
                     ->subject( __('notifications.clubrptavail.subject', ['club'=>$this->club->shortname]) )
                     ->greeting( __('notifications.user.greeting', ['username'=>$notifiable->name]) )
                     ->line( __('notifications.clubrptavail.line', ['club'=>$this->club->name]) )
-                    ->action( __('notifications.clubrptavail.action'), route('club_archive.get', $this->club ) );
+                    ->action( __('notifications.clubrptavail.action'), route('club_archive.get',[ 'club' => $this->club, 'format'=> ReportFileType::None] ) );
     }
 
 }

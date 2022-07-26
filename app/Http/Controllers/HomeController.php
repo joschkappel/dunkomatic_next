@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ReportFileType;
 use App\Mail\Feedback;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -215,7 +216,7 @@ class HomeController extends Controller
                     $msg = [];
                     $msg['msg'] =  __('message.reminder.download.clubs', ['club' => $club->shortname, 'count' => $club->filecount]);
                     $msg['action_msg'] =  __('message.reminder.download.action');
-                    $msg['action'] = route('club_archive.get', ['club' => $club]);
+                    $msg['action'] = route('club_archive.get', ['club' => $club, 'format'=> ReportFileType::None]);
                     $msg['action_color'] = 'info';
                     $reminders[] = $msg;
                 }

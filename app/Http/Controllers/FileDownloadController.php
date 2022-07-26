@@ -108,34 +108,67 @@ class FileDownloadController extends Controller
      */
     public function get_club_archive(Club $club, int $format)
     {
-        $format = ReportFileType::coerce($format);
-        Log::info('club file archive download.', ['club-id' => $club->id,'format'=>$format]);
+        if ($format == ReportFileType::None){
+            Log::info('club file archive download.', ['club-id' => $club->id,'format'=>'all']);
 
-        if ($club->filecount_for_type($format) > 0) {
-            $zip = new ZipArchive;
-            $filename = $club->region->code . '-reports-' . Str::slug($club->shortname, '-') . '.zip';
-            Storage::disk('public')->delete($filename);
-            $pf = Storage::disk('public')->path($filename);
-            Log::info('archive location.', ['path' => $pf]);
 
-            if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
-                $files = $club->filenames_for_type($format);
+            if ($club->filecount > 0) {
+                $zip = new ZipArchive;
+                $filename = $club->region->code . '-reports-' . Str::slug($club->shortname, '-') . '.zip';
+                Storage::disk('public')->delete($filename);
+                $pf = Storage::disk('public')->path($filename);
+                Log::info('archive location.', ['path' => $pf]);
 
-                foreach ($files as $f) {
-                    $check = $zip->addFromString(basename($f), Storage::get($f));
+                if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
+                    $files = $club->filenames;
+
+                    foreach ($files as $f) {
+                        $check = $zip->addFromString(basename($f), Storage::get($f));
+                    }
+
+                    $zip->close();
+                    Log::notice('downloading ZIP archive for club', ['club-id' => $club->id, 'filecount' => count($files)]);
+
+                    return Storage::disk('public')->download( $filename);
+                } else {
+                    Log::error('archive corrupt.', ['club-id' => $club->id]);
+                    return abort(500);
                 }
-
-                $zip->close();
-                Log::notice('downloading ZIP archive for club', ['club-id' => $club->id, 'filecount' => count($files)]);
-
-                return Storage::disk('public')->download( $filename);
             } else {
-                Log::error('archive corrupt.', ['club-id' => $club->id]);
-                return abort(500);
+                Log::error('no files found for club.', ['club-id' => $club->id]);
+                return Redirect::back()->withErrors(['format' => $format->key]);
             }
         } else {
-            Log::error('no files found for club.', ['club-id' => $club->id]);
-            return Redirect::back()->withErrors(['format' => $format->key]);
+            $format = ReportFileType::coerce($format);
+            Log::info('club file archive download.', ['club-id' => $club->id,'format'=>$format]);
+
+
+            if ($club->filecount_for_type($format) > 0) {
+                $zip = new ZipArchive;
+                $filename = $club->region->code . '-reports-' . Str::slug($club->shortname, '-') . '.zip';
+                Storage::disk('public')->delete($filename);
+                $pf = Storage::disk('public')->path($filename);
+                Log::info('archive location.', ['path' => $pf]);
+
+                if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
+                    $files = $club->filenames_for_type($format);
+
+                    foreach ($files as $f) {
+                        $check = $zip->addFromString(basename($f), Storage::get($f));
+                    }
+
+                    $zip->close();
+                    Log::notice('downloading ZIP archive for club', ['club-id' => $club->id, 'filecount' => count($files)]);
+
+                    return Storage::disk('public')->download( $filename);
+                } else {
+                    Log::error('archive corrupt.', ['club-id' => $club->id]);
+                    return abort(500);
+                }
+            } else {
+                Log::error('no files found for club.', ['club-id' => $club->id]);
+                return Redirect::back()->withErrors(['format' => $format->key]);
+            }
         }
     }
 
