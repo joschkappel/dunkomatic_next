@@ -190,7 +190,7 @@ class FileDownloadControllerTest extends TestCase
     {
         // check no files found
         $response = $this->authenticated()
-            ->get(route('region_league_archive.get', ['region' => $this->testleague->region, 'format' => ReportFileType::HTML]));
+            ->get(route('region_league_archive.get', ['region' => $this->testleague->region, 'format' => ReportFileType::ODS]));
 
         $response->assertSessionHasErrors();
 
