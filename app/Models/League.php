@@ -12,11 +12,13 @@ use App\Models\Member;
 use App\Models\Membership;
 use App\Models\Schedule;
 use App\Enums\LeagueState;
+use App\Enums\ReportFileType;
 use App\Enums\Role;
 use App\Models\LeagueSize;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
+use Illuminate\Support\Str;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -268,6 +270,17 @@ class League extends Model implements Auditable
         });
         return count($reports);
     }
+    public function filecount_for_type(ReportFileType $format): int
+    {
+        $directory = $this->region->league_folder;
+        $shortname = $this->shortname;
+        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname, $format) {
+            $sstr = "/(" . $shortname . ")(.*)(" . Str::lower($format->key) . ")/";
+            return (preg_match($sstr, $value) === 1);
+            //return (strpos($value,$llist[0]) !== false);
+        });
+        return count($reports);
+    }
     public function getFilenamesAttribute(): Collection
     {
         $directory = $this->region->league_folder;
@@ -275,6 +288,17 @@ class League extends Model implements Auditable
 
         $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname) {
             return (preg_match('(' . $shortname . ')', $value) === 1);
+            //return (strpos($value,$llist[0]) !== false);
+        });
+        return $reports;
+    }
+    public function filenames_for_type(ReportFileType $format): Collection
+    {
+        $directory = $this->region->league_folder;
+        $shortname = $this->shortname;
+
+        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname, $format) {
+            return (preg_match('/(' . $shortname . ')(.*)('. Str::lower($format->key).')/', $value) === 1);
             //return (strpos($value,$llist[0]) !== false);
         });
         return $reports;

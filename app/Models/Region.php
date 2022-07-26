@@ -14,6 +14,7 @@ use App\Models\Gym;
 use App\Models\Message;
 use App\Models\Invitation;
 
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -237,6 +238,17 @@ class Region extends Model
         }));
         return count($reports);
     }
+    public function filecount_for_type(ReportFileType $format): int
+    {
+        $directory = $this->league_folder;
+        $shortname = $this->shortname;
+        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname, $format) {
+            $sstr = "/(" . $shortname . ")(.*)(" . Str::lower($format->key) . ")/";
+            return (preg_match($sstr, $value) === 1);
+            //return (strpos($value,$llist[0]) !== false);
+        });
+        return count($reports);
+    }
     public function getFilenamesAttribute(): Collection
     {
         $directory = $this->league_folder;
@@ -247,6 +259,17 @@ class Region extends Model
             //return (preg_match('/^' . $shortname . '/',  substr($value,5)) === 1);
             return Str::startsWith($value, $directory.'/'.$shortname);
         }));
+        return $reports;
+    }
+    public function filenames_for_type(ReportFileType $format): Collection
+    {
+        $directory = $this->league_folder;
+        $shortname = $this->shortname;
+
+        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname, $format) {
+            return (preg_match('/(' . $shortname . ')(.*)('. Str::lower($format->key).')/', $value) === 1);
+            //return (strpos($value,$llist[0]) !== false);
+        });
         return $reports;
     }
 

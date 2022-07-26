@@ -58,9 +58,18 @@
                     @endcan
                     @endcan
                     @if ($league->filecount > 0)
-                    <a href="{{ route('league_archive.get', ['league' => $league]) }}" class="small-box-footer bg-secondary">
-                        @lang('club.action.download') <i class="fas fa-file-download"></i>
-                    </a>
+                    <div class="small-box-footer bg-secondary">@lang('club.action.download')
+                    @foreach ( $league->region->fmt_league_reports->getFlags() as $format )
+                        <a href="{{ route('league_archive.get', ['league' => $league, 'format'=>$format->value]) }}">
+                            {{ $format->description }}<i class="fas fa-file-download p-2"></i>
+                        </a>
+                    @endforeach
+                    @error('format')
+                    <div class="alert alert-danger">
+                            no {{ $message }} files found
+                    </div>
+                    @enderror
+                    </div>
                     @endif
                 </div>
             </div>
@@ -163,10 +172,12 @@
                     <div class="card-body">
                         <div class="list-group overflow-auto">
                             @foreach ($files as $f)
+                            @if (pathinfo($f)['extension']=='html')
                                 @php $fname=explode('/',$f); @endphp
-                                <a href="{{ route('file.get', [ 'type' => 'App\Models\League', 'league' => $league->id, 'file' => $fname[4]]) }}"
+                                <a target="_blank" rel="noopener noreferrer" href="{{ route('file.get', [ 'type' => 'App\Models\League', 'league' => $league->id, 'file' => $fname[4]]) }}"
                                     class="list-group-item list-group-item-action list-group-item-info">
                                     {{ basename($f) }}</a>
+                            @endif
                             @endforeach
                         </div>
 
@@ -350,7 +361,7 @@
                 },
                 cache: false
             });
-        })
+        });
 
         $(function() {
 

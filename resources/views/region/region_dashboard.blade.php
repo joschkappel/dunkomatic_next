@@ -43,9 +43,18 @@
                     @endif
                     @endcan
                     @if ($region->filecount > 0)
-                    <a href="{{ route('region_archive.get', ['region' => $region]) }}" class="small-box-footer bg-secondary">
-                        @lang('region.action.download') <i class="fas fa-file-download"></i>
-                    </a>
+                    <div class="small-box-footer bg-secondary">@lang('club.action.download')
+                        @foreach ( $region->fmt_league_reports->getFlags() as $format )
+                            <a href="{{ route('region_archive.get', ['region' => $region, 'format'=>$format->value]) }}">
+                                {{ $format->description }}<i class="fas fa-file-download p-2"></i>
+                            </a>
+                        @endforeach
+                        @error('format')
+                        <div class="alert alert-danger">
+                                no {{ $message }} files found
+                        </div>
+                        @enderror
+                        </div>
                     @endif
                 </div>
                 </div>

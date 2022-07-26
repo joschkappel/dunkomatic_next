@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ReportFileType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -12,6 +13,9 @@ use App\Models\User;
 use App\Models\Club;
 use App\Models\League;
 use App\Models\Region;
+
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Response;
 
 class FileDownloadController extends Controller
 {
@@ -41,13 +45,14 @@ class FileDownloadController extends Controller
             return back();
         }
         $filepath .= '/'. $data['file'];
-        Log::info('downloading files.', ['path' => $filepath]);
+        Log::info('downloading file.', ['path' => $filepath]);
         Storage::disk('public')->delete($data['file']);
         Storage::disk('public')->writeStream(
             $data['file'],
             Storage::readStream($filepath)
         );
-        return Storage::disk('public')->download($data['file'], $data['file']);
+        // return Storage::disk('public')->download($data['file'], $data['file']);
+        return response()->file(Storage::disk('public')->path($data['file']));
     }
 
     /**
@@ -97,14 +102,16 @@ class FileDownloadController extends Controller
      * download archive with a users reports
      *
      * @param \App\Models\Club $club
+     * @param \App\Enums\ReportFileType $format
      * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\RedirectResponse
      *
      */
-    public function get_club_archive(Club $club)
+    public function get_club_archive(Club $club, int $format)
     {
-        Log::info('club file archive download.', ['club-id' => $club->id]);
+        $format = ReportFileType::coerce($format);
+        Log::info('club file archive download.', ['club-id' => $club->id,'format'=>$format]);
 
-        if ($club->filecount > 0) {
+        if ($club->filecount_for_type($format) > 0) {
             $zip = new ZipArchive;
             $filename = $club->region->code . '-reports-' . Str::slug($club->shortname, '-') . '.zip';
             Storage::disk('public')->delete($filename);
@@ -112,7 +119,7 @@ class FileDownloadController extends Controller
             Log::info('archive location.', ['path' => $pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
-                $files = $club->filenames;
+                $files = $club->filenames_for_type($format);
 
                 foreach ($files as $f) {
                     $check = $zip->addFromString(basename($f), Storage::get($f));
@@ -128,7 +135,7 @@ class FileDownloadController extends Controller
             }
         } else {
             Log::error('no files found for club.', ['club-id' => $club->id]);
-            return abort(404);
+            return Redirect::back()->withErrors(['format' => $format->key]);
         }
     }
 
@@ -136,15 +143,17 @@ class FileDownloadController extends Controller
      * download archive with leagues reports
      *
      * @param \App\Models\League $league
+     * @param \App\Enums\ReportFileType $format
      * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\RedirectResponse
      *
      */
 
-    public function get_league_archive(League $league)
+    public function get_league_archive(League $league, int $format)
     {
-        Log::info('league file archive download.', ['league-id' => $league->id]);
+        $format = ReportFileType::coerce($format);
+        Log::info('league file archive download.', ['league-id' => $league->id,'format'=>$format]);
 
-        if ($league->filecount > 0) {
+        if ($league->filecount_for_type($format) > 0) {
             $zip = new ZipArchive;
             $filename = $league->region->code . '-reports-' . Str::slug($league->shortname, '-') . '.zip';
             Storage::disk('public')->delete($filename);
@@ -152,7 +161,7 @@ class FileDownloadController extends Controller
             Log::info('archive location.', ['path' => $pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
-                $files = $league->filenames;
+                $files = $league->filenames_for_type($format);
 
                 foreach ($files as $f) {
                     $check = $zip->addFromString(basename($f), Storage::get($f));
@@ -169,22 +178,24 @@ class FileDownloadController extends Controller
             }
         } else {
             Log::error('no files found for league.', ['league-id' => $league->id]);
-            return abort(404);
+            return Redirect::back()->withErrors(['format' => $format->key]); //abort(404);
         }
     }
     /**
      * download archive with region reports
      *
      * @param \App\Models\Region $region
+     * @param \App\Enums\ReportFileType $format
      * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\RedirectResponse
      *
      */
 
-    public function get_region_archive(Region $region)
+    public function get_region_archive(Region $region, int $format)
     {
-        Log::info('region file archive download.', ['region-id' => $region->id]);
+        $format = ReportFileType::coerce($format);
+        Log::info('region file archive download.', ['region-id' => $region->id,'format'=>$format]);
 
-        if ($region->filecount > 0) {
+        if ($region->filecount_for_type($format) > 0) {
             $zip = new ZipArchive;
             $filename = $region->code . '-reports.zip';
             Storage::disk('public')->delete($filename);
@@ -192,7 +203,7 @@ class FileDownloadController extends Controller
             Log::info('archive location.', ['path' => $pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
-                $files = $region->filenames;
+                $files = $region->filenames_for_type($format);
 
                 foreach ($files as $f) {
                     $check = $zip->addFromString(basename($f), Storage::get($f));
@@ -209,7 +220,7 @@ class FileDownloadController extends Controller
             }
         } else {
             Log::error('no files found for region.', ['region-id' => $region->id]);
-            return abort(404);
+            return Redirect::back()->withErrors(['format' => $format->key]);
         }
     }
     /**
