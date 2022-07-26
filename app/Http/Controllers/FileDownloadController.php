@@ -136,7 +136,7 @@ class FileDownloadController extends Controller
                 }
             } else {
                 Log::error('no files found for club.', ['club-id' => $club->id]);
-                return Redirect::back()->withErrors(['format' => $format->key]);
+                return Redirect::back()->withErrors(['format' => 'all']);
             }
         } else {
             $format = ReportFileType::coerce($format);
