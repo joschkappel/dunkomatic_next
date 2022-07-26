@@ -35,19 +35,19 @@ class QueueLoadCheck extends Check
         $failed_jobs = ($failed_jobs > 5) ? $failed_jobs - 5 : 0;  // 5 lines go to header/separator/etc
         Artisan::call('queue:monitor default,janitor,exports');
         $output = Str::of(Artisan::output())->explode(PHP_EOL);
-        $q_default = Str::of($output[3])->explode('|');
-        $q_janitor = Str::of($output[4])->explode('|');
-        $q_exports = Str::of($output[5])->explode('|');
+        $q_default = Str::of($output[2])->explode(' ');
+        $q_janitor = Str::of($output[3])->explode(' ');
+        $q_exports = Str::of($output[4])->explode(' ');
 
-        $q_def_status = trim($q_default[4]);
+        $q_def_status = trim($q_default[5]);
         $q_def_name = trim($q_default[2]);
-        $q_def_size = trim($q_default[3]);
-        $q_jan_status = trim($q_janitor[4]);
+        $q_def_size = trim(Str::between($q_default[4],'[',']'));
+        $q_jan_status = trim($q_janitor[5]);
         $q_jan_name = trim($q_janitor[2]);
-        $q_jan_size = trim($q_janitor[3]);
-        $q_exp_status = trim($q_exports[4]);
+        $q_jan_size = trim(Str::between($q_janitor[4],'[',']'));
+        $q_exp_status = trim($q_exports[5]);
         $q_exp_name = trim($q_exports[2]);
-        $q_exp_size = trim($q_exports[3]);
+        $q_exp_size = trim(Str::between($q_exports[4],'[',']'));
 
 
         $result = Result::make()
