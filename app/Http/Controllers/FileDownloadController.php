@@ -106,7 +106,7 @@ class FileDownloadController extends Controller
      * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\RedirectResponse
      *
      */
-    public function get_club_archive(Club $club, int $format)
+    public function get_club_archive(Club $club, int $format=ReportFileType::None)
     {
         if ($format == ReportFileType::None){
             Log::info('club file archive download.', ['club-id' => $club->id,'format'=>'all']);
