@@ -178,6 +178,37 @@ class FileDownloadControllerTest extends TestCase
             ->assertDownload($archive);
     }
     /**
+     * get_region_archve
+     *
+     * @test
+     * @group game
+     * @group controller
+     *
+     * @return void
+     */
+    public function get_region_archive()
+    {
+        // check no file found
+        $response = $this->authenticated()
+            ->get(route('region_archive.get', ['region' => $this->testleague->region, 'format' => ReportFileType::ODS]));
+
+        $response->assertSessionHasErrors();
+
+        // now create files
+        $folder = $this->testleague->region->league_folder;
+        $filename = $this->testleague->region->code . '.test.html';
+        $archive = $this->testleague->region->code . '-reports.zip';
+
+        UploadedFile::fake()->create($filename)
+            ->storeAs($folder, $filename);
+
+        $response = $this->authenticated()
+            ->get(route('region_archive.get', ['region' => $this->testleague->region, 'format' => ReportFileType::HTML]));
+
+        $response->assertStatus(200)
+            ->assertDownload($archive);
+    }
+    /**
      * get_region_league_archve
      *
      * @test
