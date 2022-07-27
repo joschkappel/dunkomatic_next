@@ -226,50 +226,80 @@ class Region extends Model
     {
         return   config('dunkomatic.folders.export').'/'.Str::of(config('global.season'))->replace('/', '_') . '/' . $this->code . '/' . config('dunkomatic.export_folders.teamware');
     }
-    public function getFilecountAttribute(): int
+    public function getRegionFolderAttribute(): string
     {
-        $directory = $this->league_folder;
-        $reports = collect();
-
+        return   config('dunkomatic.folders.export').'/'.Str::of(config('global.season'))->replace('/', '_') . '/' . $this->code ;
+    }
+    public function filecount(ReportFileType $format=null): int
+    {
+        $directory = $this->region_folder;
         $shortname = $this->code;
-        $reports = $reports->concat(collect(Storage::files($directory))->filter(function ($value, $key) use ($shortname, $directory) {
-            //return (preg_match('/^' . $shortname . '/',  substr($value,5)) === 1);
-            return Str::startsWith($value, $directory.'/'.$shortname);
+        if ($format == null){
+            $format = ReportFileType::coerce(ReportFileType::None);
+        } else {
+            $format = ReportFileType::coerce($format);
+        }
+
+        // main region folder files
+        $reports = collect(Storage::files($directory))->filter(function ($value, $key) use ($shortname, $format) {
+            if ($format->value == ReportFileType::None){
+                return Str::contains($value, $shortname);
+            } else {
+                return Str::contains($value, $shortname) and Str::contains($value, '.'.Str::lower($format->key) );
+            };
+        });
+        // add league folder files
+        $reports = $reports->concat(collect(Storage::files($directory.'/'.config('dunkomatic.export_folders.leagues')))->filter(function ($value, $key) use ($shortname, $format) {
+            if ($format->value == ReportFileType::None){
+                return Str::contains($value, $shortname);
+            } else {
+                return Str::contains($value, $shortname) and Str::contains($value, '.'.Str::lower($format->key) );
+            };
+        }));
+        // add teamware folder files
+        $reports = $reports->concat(collect(Storage::files($directory.'/'.config('dunkomatic.export_folders.teamware')))->filter(function ($value, $key) use ($shortname, $format) {
+            if ($format->value == ReportFileType::None){
+                return Str::contains($value, $shortname);
+            } else {
+                return Str::contains($value, $shortname) and Str::contains($value, '.'.Str::lower($format->key) );
+            };
         }));
         return count($reports);
     }
-    public function filecount_for_type(ReportFileType $format): int
+    public function filenames(ReportFileType $format=null): Collection
     {
-        $directory = $this->league_folder;
-        $shortname = $this->shortname;
-        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname, $format) {
-            $sstr = "/(" . $shortname . ")(.*)(" . Str::lower($format->key) . ")/";
-            return (preg_match($sstr, $value) === 1);
-            //return (strpos($value,$llist[0]) !== false);
-        });
-        return count($reports);
-    }
-    public function getFilenamesAttribute(): Collection
-    {
-        $directory = $this->league_folder;
-        $reports = collect();
-
+        $directory = $this->region_folder;
         $shortname = $this->code;
-        $reports = $reports->concat(collect(Storage::files($directory))->filter(function ($value, $key) use ($shortname, $directory) {
-            //return (preg_match('/^' . $shortname . '/',  substr($value,5)) === 1);
-            return Str::startsWith($value, $directory.'/'.$shortname);
-        }));
-        return $reports;
-    }
-    public function filenames_for_type(ReportFileType $format): Collection
-    {
-        $directory = $this->league_folder;
-        $shortname = $this->shortname;
+        if ($format == null){
+            $format = ReportFileType::coerce(ReportFileType::None);
+        } else {
+            $format = ReportFileType::coerce($format);
+        }
 
-        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname, $format) {
-            return (preg_match('/(' . $shortname . ')(.*)('. Str::lower($format->key).')/', $value) === 1);
-            //return (strpos($value,$llist[0]) !== false);
+        // get main region folder files
+        $reports = collect(Storage::files($directory))->filter(function ($value, $key) use ($shortname, $format) {
+            if ($format->value == ReportFileType::None){
+                return Str::contains($value, $shortname);
+            } else {
+                return Str::contains($value, $shortname) and Str::contains($value, '.'.Str::lower($format->key) );
+            };
         });
+        // add league folder files
+        $reports = $reports->concat(collect(Storage::files($directory.'/'.config('dunkomatic.export_folders.leagues')))->filter(function ($value, $key) use ($shortname, $format) {
+            if ($format->value == ReportFileType::None){
+                return Str::contains($value, $shortname);
+            } else {
+                return Str::contains($value, $shortname) and Str::contains($value, '.'.Str::lower($format->key) );
+            };
+        }));
+        // add teamware folder files
+        $reports = $reports->concat(collect(Storage::files($directory.'/'.config('dunkomatic.export_folders.teamware')))->filter(function ($value, $key) use ($shortname, $format) {
+            if ($format->value == ReportFileType::None){
+                return Str::contains($value, $shortname);
+            } else {
+                return Str::contains($value, $shortname) and Str::contains($value, '.'.Str::lower($format->key) );
+            };
+        }));
         return $reports;
     }
 

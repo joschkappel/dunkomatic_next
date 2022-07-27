@@ -37,15 +37,6 @@ class ProcessLeagueReports implements ShouldQueue
     {
         // set report scope
         $this->region = $region;
-
-        if (! Storage::exists($region->league_folder)) {
-            // make sure folders are there
-            Storage::makeDirectory($region->league_folder);
-        };
-        if (! Storage::exists($region->teamware_folder)) {
-            // make sure folders are there
-            Storage::makeDirectory($region->teamware_folder);
-        };
     }
 
     /**
@@ -55,6 +46,19 @@ class ProcessLeagueReports implements ShouldQueue
      */
     public function handle()
     {
+        if ( Storage::exists($this->region->league_folder)) {
+            // clean folder
+            Storage::deleteDirectory($this->region->league_folder);
+        } ;
+        // and recretae
+        Storage::makeDirectory($this->region->league_folder);
+
+        if ( Storage::exists($this->region->teamware_folder)) {
+            // delete old files
+            Storage::deleteDirectory($this->region->teamware_folder);
+        };
+        // and recreate folder
+        Storage::makeDirectory($this->region->teamware_folder);
 
         // get all leagues with games
         $leagues = $this->region->leagues;

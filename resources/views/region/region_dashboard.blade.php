@@ -42,7 +42,7 @@
                     </a>
                     @endif
                     @endcan
-                    @if ($region->filecount > 0)
+                    @if ($region->filecount() > 0)
                     <div class="small-box-footer bg-secondary">@lang('club.action.download')
                         @foreach ( $region->fmt_league_reports->getFlags() as $format )
                             <a href="{{ route('region_archive.get', ['region' => $region, 'format'=>$format->value]) }}">

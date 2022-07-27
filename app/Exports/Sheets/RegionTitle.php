@@ -2,29 +2,26 @@
 
 namespace App\Exports\Sheets;
 
-use App\Models\Club;
 use App\Models\Region;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class Title implements FromView, WithTitle, ShouldAutoSize
+class RegionTitle implements FromView, WithTitle, ShouldAutoSize
 {
-    protected Club $club;
-    protected Region $hq;
+    protected Region $region;
     protected string $rptname;
 
-    public function __construct(Club $club, string $rptname)
+    public function __construct(Region $region, string $rptname)
     {
-        $this->club = $club;
+        $this->region = $region;
         $this->rptname = $rptname;
-        $this->hq = Region::where('code', $club->region()->first()->hq)->first();
     }
 
     public function view(): View
     {
-        return view('reports.title', ['club' => $this->club, 'hqregion' => $this->hq, 'rptname' => $this->rptname]);
+        return view('reports.region_title', ['region' => $this->region, 'rptname' => $this->rptname]);
     }
 
     /**

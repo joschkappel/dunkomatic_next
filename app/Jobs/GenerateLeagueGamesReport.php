@@ -11,8 +11,6 @@ use App\Helpers\CalendarComposer;
 use Illuminate\Support\Facades\Storage;
 
 use App\Exports\LeagueGamesExport;
-use App\Exports\TeamwareTeamsExport;
-use App\Exports\TeamwareGamesExport;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Bus\Batchable;

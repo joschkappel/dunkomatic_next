@@ -36,7 +36,7 @@ class GenerateRegionReportTest extends TestCase
     {
         $region = $this->testleague->region;
 
-        $folder = $region->league_folder;
+        $folder = $region->region_folder;
         if (Storage::exists($folder)){
             Storage::assertExists($folder);
             $files = Storage::allFiles($folder);
@@ -44,12 +44,15 @@ class GenerateRegionReportTest extends TestCase
         }
 
         $report = $folder . '/' . $this->region->code;
+        $report2 = $report.'_Rundenbuch.pdf';
         $report .= '_Gesamtplan.pdf';
+
 
         $job_instance = resolve(GenerateRegionGamesReport::class, ['region' => $region, 'rtype' => ReportFileType::PDF()]);
         app()->call([$job_instance, 'handle']);
 
         Storage::assertExists($report);
+        Storage::assertMissing($report2);
 
     }
 
@@ -64,7 +67,7 @@ class GenerateRegionReportTest extends TestCase
     public function run_xlsx_reports_job()
     {
         $region = $this->testleague->region;
-        $folder = $region->league_folder;
+        $folder = $region->region_folder;
 
         Storage::assertExists($folder);
         $files = Storage::allFiles($folder);
@@ -72,12 +75,15 @@ class GenerateRegionReportTest extends TestCase
 
 
         $report = $folder . '/' . $this->region->code;
+        $report2 = $report. '_Rundenbuch.xlsx';
         $report .= '_Gesamtplan.xlsx';
+
 
         $job_instance = resolve(GenerateRegionGamesReport::class, ['region' => $region, 'rtype' => ReportFileType::XLSX()]);
         app()->call([$job_instance, 'handle']);
 
         Storage::assertExists($report);
+        // Storage::assertExists($report2);
 
     }
 
@@ -92,7 +98,7 @@ class GenerateRegionReportTest extends TestCase
     public function run_ics_reports_job()
     {
         $region = $this->testleague->region;
-        $folder = $region->league_folder;
+        $folder = $region->region_folder;
         // update gaems referee with $club, so we get some referee report entries
         Game::whereNull('referee_1')->update(['referee_1'=>'****']);
 
@@ -101,11 +107,13 @@ class GenerateRegionReportTest extends TestCase
         Storage::delete($files);
 
         $report = $folder . '/' . $this->region->code;
+        $report2 = $report. '_Rundebuch.ics';
         $report .= '_Gesamtplan.ics';
 
         $job_instance = resolve(GenerateRegionGamesReport::class, ['region' => $region, 'rtype' => ReportFileType::ICS()]);
         app()->call([$job_instance, 'handle']);
 
         Storage::assertExists($report);
+        Storage::assertMissing($report2);
     }
 }

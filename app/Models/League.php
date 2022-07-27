@@ -260,46 +260,42 @@ class League extends Model implements Auditable
                     'size' => $this->loadMissing('league_size')->league_size->size ?? 0 ];
     }
 
-    public function getFilecountAttribute(): int
+    public function filecount(ReportFileType $format=null ): int
     {
         $directory = $this->region->league_folder;
         $shortname = $this->shortname;
-        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname) {
-            return (preg_match('(' . $shortname . ')', $value) === 1);
-            //return (strpos($value,$llist[0]) !== false);
+        if ($format == null){
+            $format = ReportFileType::coerce(ReportFileType::None);
+        } else {
+            $format = ReportFileType::coerce($format);
+        }
+
+        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname, $format) {
+            if ($format->value == ReportFileType::None){
+                return Str::contains($value, $shortname);
+            } else {
+                return Str::contains($value, $shortname) and Str::contains($value, '.'.Str::lower($format->key) );
+            };
         });
         return count($reports);
     }
-    public function filecount_for_type(ReportFileType $format): int
-    {
-        $directory = $this->region->league_folder;
-        $shortname = $this->shortname;
-        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname, $format) {
-            $sstr = "/(" . $shortname . ")(.*)(" . Str::lower($format->key) . ")/";
-            return (preg_match($sstr, $value) === 1);
-            //return (strpos($value,$llist[0]) !== false);
-        });
-        return count($reports);
-    }
-    public function getFilenamesAttribute(): Collection
-    {
-        $directory = $this->region->league_folder;
-        $shortname = $this->shortname;
 
-        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname) {
-            return (preg_match('(' . $shortname . ')', $value) === 1);
-            //return (strpos($value,$llist[0]) !== false);
-        });
-        return $reports;
-    }
-    public function filenames_for_type(ReportFileType $format): Collection
+    public function filenames(ReportFileType $format=null): Collection
     {
         $directory = $this->region->league_folder;
         $shortname = $this->shortname;
+        if ($format == null){
+            $format = ReportFileType::coerce(ReportFileType::None);
+        } else {
+            $format = ReportFileType::coerce($format);
+        }
 
         $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname, $format) {
-            return (preg_match('/(' . $shortname . ')(.*)('. Str::lower($format->key).')/', $value) === 1);
-            //return (strpos($value,$llist[0]) !== false);
+            if ($format->value == ReportFileType::None){
+                return Str::contains($value, $shortname);
+            } else {
+                return Str::contains($value, $shortname) and Str::contains($value, '.'.Str::lower($format->key) );
+            };
         });
         return $reports;
     }
