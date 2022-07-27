@@ -335,5 +335,5 @@ Route::middleware(['auth',
     Route::get('archive/region/{region}/user/{user}', [FileDownloadController::class, 'get_user_archive'])->name('user_archive.get');
     Route::get('archive/club/{club}/{format?}', [FileDownloadController::class, 'get_club_archive'])->name('club_archive.get');
     Route::get('archive/region/{region}/{format}', [FileDownloadController::class, 'get_region_archive'])->name('region_archive.get');
-    Route::get('archive/league/{league}/{format}', [FileDownloadController::class, 'get_league_archive'])->name('league_archive.get');
+    Route::get('archive/league/{league}/{format?}', [FileDownloadController::class, 'get_league_archive'])->name('league_archive.get');
 });
