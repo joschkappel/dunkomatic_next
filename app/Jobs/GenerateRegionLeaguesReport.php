@@ -66,14 +66,7 @@ class GenerateRegionLeaguesReport implements ShouldQueue
             'format' => $this->rtype->key,
             'path' => $this->rpt_name]);
 
-        if ($this->rtype->hasFlag(ReportFileType::PDF)) {
-            Excel::store(new RegionLeagueGamesExport($this->region->id ), $this->rpt_name, null, \Maatwebsite\Excel\Excel::MPDF);
-        } elseif ($this->rtype->hasFlag(ReportFileType::ICS)) {
-            return true;
-        } else {
-            Excel::store(new RegionLeagueGamesExport($this->region->id), $this->rpt_name);
-        }
-
+        Excel::store(new RegionLeagueGamesExport($this->region->id), $this->rpt_name);
 
     }
 }

@@ -52,7 +52,7 @@ class GenerateRegionReportTest extends TestCase
         app()->call([$job_instance, 'handle']);
 
         Storage::assertExists($report);
-        Storage::assertExists($report2);
+        Storage::assertMissing($report2);
 
     }
 
@@ -107,7 +107,7 @@ class GenerateRegionReportTest extends TestCase
         Storage::delete($files);
 
         $report = $folder . '/' . $this->region->code;
-        $report2 = $reeport. '_Rundebuch.ics';
+        $report2 = $report. '_Rundebuch.ics';
         $report .= '_Gesamtplan.ics';
 
         $job_instance = resolve(GenerateRegionGamesReport::class, ['region' => $region, 'rtype' => ReportFileType::ICS()]);

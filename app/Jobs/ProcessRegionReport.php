@@ -63,7 +63,9 @@ class ProcessRegionReport implements ShouldQueue
         $rpt_jobs = array();
         foreach ($rtypes as $rtype) {
             $rpt_jobs[] = new GenerateRegionGamesReport($this->region, $rtype);
-            $rpt_jobs[] = new GenerateRegionLeaguesReport($this->region, $rtype);
+            if ( ($rtype != ReportFileType::ICS()) and ($rtype != ReportFileType::PDF())){
+                $rpt_jobs[] = new GenerateRegionLeaguesReport($this->region, $rtype);
+            }
         };
 
         $batch = Bus::batch($rpt_jobs)
