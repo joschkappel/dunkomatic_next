@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Enums\ReportFileType;
 use App\Models\Region;
 use App\Jobs\GenerateRegionGamesReport;
+use App\Jobs\GenerateRegionLeaguesReport;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Bus;
@@ -62,6 +63,7 @@ class ProcessRegionReport implements ShouldQueue
         $rpt_jobs = array();
         foreach ($rtypes as $rtype) {
             $rpt_jobs[] = new GenerateRegionGamesReport($this->region, $rtype);
+            $rpt_jobs[] = new GenerateRegionLeaguesReport($this->region, $rtype);
         };
 
         $batch = Bus::batch($rpt_jobs)

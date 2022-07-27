@@ -10,7 +10,7 @@ use App\Enums\ReportScope;
 use App\Exports\Sheets\ClubGames;
 use App\Exports\Sheets\ClubLeagueGames;
 
-use App\Exports\Sheets\Title;
+use App\Exports\Sheets\ClubTitle;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Illuminate\Support\Facades\Log;
@@ -42,7 +42,7 @@ class ClubGamesExport implements WithMultipleSheets
         $sheets = array();
 
         if ($this->scope == ReportScope::ms_all()) {
-            $sheets[] = new Title($this->club, 'Spielpläne');
+            $sheets[] = new ClubTitle($this->club, 'Spielpläne');
             $sheets[] = new ClubGames($this->club, ReportScope::ss_club_all());
             $sheets[] = new ClubGames($this->club, ReportScope::ss_club_home());
             $sheets[] = new ClubGames($this->club, ReportScope::ss_club_referee());

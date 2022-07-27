@@ -117,6 +117,7 @@ class FileDownloadController extends Controller
 
         if ($club->filecount($format) > 0) {
             $files = $club->filenames($format);
+            $files = $files->concat($club->region->filenames($format));
         } else {
             Log::error('no files found for club.', ['club-id' => $club->id]);
             return Redirect::back()->withErrors(['format' => 'all']);
@@ -209,9 +210,16 @@ class FileDownloadController extends Controller
         } else {
             $format = ReportFileType::coerce($format);
         }
+        if ($region->filecount($format) > 0) {
+            $files = $region->filenames($format);
+        } else {
+            Log::error('no files found for region.', ['region-id' => $region->id]);
+            return Redirect::back()->withErrors(['format' => 'all']);
+        }
+
         Log::info('region file archive download.', ['region-id' => $region->id,'format'=>$format]);
 
-        if ($region->filecount_for_type($format) > 0) {
+        if ($region->filecount($format) > 0) {
             $zip = new ZipArchive;
             $filename = $region->code . '-reports.zip';
             Storage::disk('public')->delete($filename);
@@ -219,7 +227,6 @@ class FileDownloadController extends Controller
             Log::info('archive location.', ['path' => $pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
-                $files = $region->filenames_for_type($format);
 
                 foreach ($files as $f) {
                     $check = $zip->addFromString(basename($f), Storage::get($f));
