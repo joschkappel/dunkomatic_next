@@ -106,69 +106,42 @@ class FileDownloadController extends Controller
      * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\RedirectResponse
      *
      */
-    public function get_club_archive(Club $club, int $format=ReportFileType::None)
+    public function get_club_archive(Club $club, int $format=null)
     {
-        if ($format == ReportFileType::None){
-            Log::info('club file archive download.', ['club-id' => $club->id,'format'=>'all']);
-
-
-            if ($club->filecount > 0) {
-                $zip = new ZipArchive;
-                $filename = $club->region->code . '-reports-' . Str::slug($club->shortname, '-') . '.zip';
-                Storage::disk('public')->delete($filename);
-                $pf = Storage::disk('public')->path($filename);
-                Log::info('archive location.', ['path' => $pf]);
-
-                if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
-                    $files = $club->filenames;
-
-                    foreach ($files as $f) {
-                        $check = $zip->addFromString(basename($f), Storage::get($f));
-                    }
-
-                    $zip->close();
-                    Log::notice('downloading ZIP archive for club', ['club-id' => $club->id, 'filecount' => count($files)]);
-
-                    return Storage::disk('public')->download( $filename);
-                } else {
-                    Log::error('archive corrupt.', ['club-id' => $club->id]);
-                    return abort(500);
-                }
-            } else {
-                Log::error('no files found for club.', ['club-id' => $club->id]);
-                return Redirect::back()->withErrors(['format' => 'all']);
-            }
+        if ($format == null){
+            $format = ReportFileType::coerce(ReportFileType::None);
         } else {
             $format = ReportFileType::coerce($format);
-            Log::info('club file archive download.', ['club-id' => $club->id,'format'=>$format]);
+        }
+        Log::info('club file archive download.', ['club-id' => $club->id,'format'=>$format]);
+
+        if ($club->filecount($format) > 0) {
+            $files = $club->filenames($format);
+        } else {
+            Log::error('no files found for club.', ['club-id' => $club->id]);
+            return Redirect::back()->withErrors(['format' => 'all']);
+        }
 
 
-            if ($club->filecount_for_type($format) > 0) {
-                $zip = new ZipArchive;
-                $filename = $club->region->code . '-reports-' . Str::slug($club->shortname, '-') . '.zip';
-                Storage::disk('public')->delete($filename);
-                $pf = Storage::disk('public')->path($filename);
-                Log::info('archive location.', ['path' => $pf]);
+        $zip = new ZipArchive;
+        $filename = $club->region->code . '-reports-' . Str::slug($club->shortname, '-') . '.zip';
+        Storage::disk('public')->delete($filename);
+        $pf = Storage::disk('public')->path($filename);
+        Log::info('archive location.', ['path' => $pf]);
 
-                if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
-                    $files = $club->filenames_for_type($format);
+        if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
 
-                    foreach ($files as $f) {
-                        $check = $zip->addFromString(basename($f), Storage::get($f));
-                    }
-
-                    $zip->close();
-                    Log::notice('downloading ZIP archive for club', ['club-id' => $club->id, 'filecount' => count($files)]);
-
-                    return Storage::disk('public')->download( $filename);
-                } else {
-                    Log::error('archive corrupt.', ['club-id' => $club->id]);
-                    return abort(500);
-                }
-            } else {
-                Log::error('no files found for club.', ['club-id' => $club->id]);
-                return Redirect::back()->withErrors(['format' => $format->key]);
+            foreach ($files as $f) {
+                $check = $zip->addFromString(basename($f), Storage::get($f));
             }
+
+            $zip->close();
+            Log::notice('downloading ZIP archive for club', ['club-id' => $club->id, 'filecount' => count($files)]);
+
+            return Storage::disk('public')->download( $filename);
+        } else {
+            Log::error('archive corrupt.', ['club-id' => $club->id]);
+            return abort(500);
         }
     }
 
@@ -181,69 +154,43 @@ class FileDownloadController extends Controller
      *
      */
 
-    public function get_league_archive(League $league, int $format=ReportFileType::None)
+    public function get_league_archive(League $league, int $format=null)
     {
-        if ($format == ReportFileType::None){
-            Log::info('league file archive download.', ['league-id' => $league->id,'format'=>'all']);
-
-            if ($league->filecount > 0) {
-                $zip = new ZipArchive;
-                $filename = $league->region->code . '-reports-' . Str::slug($league->shortname, '-') . '.zip';
-                Storage::disk('public')->delete($filename);
-                $pf = Storage::disk('public')->path($filename);
-                Log::info('archive location.', ['path' => $pf]);
-
-                if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
-                    $files = $league->filenames;
-
-                    foreach ($files as $f) {
-                        $check = $zip->addFromString(basename($f), Storage::get($f));
-                    }
-
-                    $zip->close();
-                    //  Storage::move(public_path($fileName), 'public/'.$fileName);
-                    Log::notice('downloading ZIP archive for league', ['league-id' => $league->id, 'filecount' => count($files)]);
-
-                    return Storage::disk('public')->download( $filename);
-                } else {
-                    Log::error('archive corrupt.', ['league-id' => $league->id]);
-                    return abort(500);
-                }
-            } else {
-                Log::error('no files found for league.', ['league-id' => $league->id]);
-                return Redirect::back()->withErrors(['format' => 'all']);
-            }
+        if ($format == null){
+            $format = ReportFileType::coerce(ReportFileType::None);
         } else {
             $format = ReportFileType::coerce($format);
-            Log::info('league file archive download.', ['league-id' => $league->id,'format'=>$format]);
+        }
 
-            if ($league->filecount_for_type($format) > 0) {
-                $zip = new ZipArchive;
-                $filename = $league->region->code . '-reports-' . Str::slug($league->shortname, '-') . '.zip';
-                Storage::disk('public')->delete($filename);
-                $pf = Storage::disk('public')->path($filename);
-                Log::info('archive location.', ['path' => $pf]);
+        if ($league->filecount($format) > 0) {
+            $files = $league->filenames($format);
+        } else {
+            Log::error('no files found for league.', ['league-id' => $league->id]);
+            return Redirect::back()->withErrors(['format' => 'all']);
+        }
 
-                if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
-                    $files = $league->filenames_for_type($format);
+        Log::info('league file archive download.', ['league-id' => $league->id,'format'=>$format]);
 
-                    foreach ($files as $f) {
-                        $check = $zip->addFromString(basename($f), Storage::get($f));
-                    }
+        $zip = new ZipArchive;
+        $filename = $league->region->code . '-reports-' . Str::slug($league->shortname, '-') . '.zip';
+        Storage::disk('public')->delete($filename);
+        $pf = Storage::disk('public')->path($filename);
+        Log::info('archive location.', ['path' => $pf]);
 
-                    $zip->close();
-                    //  Storage::move(public_path($fileName), 'public/'.$fileName);
-                    Log::notice('downloading ZIP archive for league', ['league-id' => $league->id, 'filecount' => count($files)]);
+        if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
 
-                    return Storage::disk('public')->download( $filename);
-                } else {
-                    Log::error('archive corrupt.', ['league-id' => $league->id]);
-                    return abort(500);
-                }
-            } else {
-                Log::error('no files found for league.', ['league-id' => $league->id]);
-                return Redirect::back()->withErrors(['format' => $format->key]); //abort(404);
+            foreach ($files as $f) {
+                $check = $zip->addFromString(basename($f), Storage::get($f));
             }
+
+            $zip->close();
+            //  Storage::move(public_path($fileName), 'public/'.$fileName);
+            Log::notice('downloading ZIP archive for league', ['league-id' => $league->id, 'filecount' => count($files)]);
+
+            return Storage::disk('public')->download( $filename);
+        } else {
+            Log::error('archive corrupt.', ['league-id' => $league->id]);
+            return abort(500);
         }
     }
     /**
@@ -255,9 +202,13 @@ class FileDownloadController extends Controller
      *
      */
 
-    public function get_region_archive(Region $region, int $format)
+    public function get_region_archive(Region $region, int $format=null)
     {
-        $format = ReportFileType::coerce($format);
+        if ($format == null){
+            $format = ReportFileType::coerce(ReportFileType::None);
+        } else {
+            $format = ReportFileType::coerce($format);
+        }
         Log::info('region file archive download.', ['region-id' => $region->id,'format'=>$format]);
 
         if ($region->filecount_for_type($format) > 0) {

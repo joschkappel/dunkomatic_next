@@ -39,14 +39,6 @@ class ProcessClubReports implements ShouldQueue
     {
         // set report scope
         $this->region = $region;
-
-        if (Storage::exists($region->club_folder)) {
-            // remove old reports
-            //Storage::deleteDirectory($region->club_folder, false);
-        } else {
-            // make sure folders are there
-            Storage::makeDirectory($region->club_folder);
-        };
     }
 
     /**
@@ -56,6 +48,14 @@ class ProcessClubReports implements ShouldQueue
      */
     public function handle()
     {
+
+        if (Storage::exists($this->region->club_folder)) {
+            // remove old reports
+            Storage::deleteDirectory($this->region->club_folder);
+        };
+        // and recreate
+        Storage::makeDirectory($this->region->club_folder);
+
         // get all clubs with games
         $clubs = $this->region->clubs()->active()->get();
         $rtypes = $this->region->fmt_club_reports->getFlags();

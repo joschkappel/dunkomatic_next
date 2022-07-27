@@ -15,6 +15,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class ProcessRegionReport implements ShouldQueue
 {
@@ -34,11 +35,6 @@ class ProcessRegionReport implements ShouldQueue
         // set report scope
         $this->region = Region::find($region);
 
-        if (! Storage::exists($this->region->league_folder)) {
-            // make sure folders are there
-            Storage::makeDirectory($this->region->league_folder);
-        };
-
     }
 
     /**
@@ -48,6 +44,14 @@ class ProcessRegionReport implements ShouldQueue
      */
     public function handle()
     {
+
+        // remove old files
+        Storage::delete(
+            collect(Storage::allFiles($this->region->region_folder))
+            ->filter( function ($v, $k){
+                return Str::contains($v, 'Gesamtplan') and Str::contains($v, $this->region->code);
+             })->toArray()
+        );
 
         $rtypes = $this->region->fmt_league_reports->getFlags();
         // add ICS format as default

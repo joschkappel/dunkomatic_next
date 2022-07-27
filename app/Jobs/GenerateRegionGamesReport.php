@@ -40,7 +40,7 @@ class GenerateRegionGamesReport implements ShouldQueue
         $this->rtype = $rtype;
 
         // make sure folders are there
-        $this->export_folder = $region->league_folder;
+        $this->export_folder = $region->region_folder;
         $this->rpt_name = $this->export_folder . '/' . $this->region->code;
         $this->rpt_name .= '_Gesamtplan.';
         $this->rpt_name .= $this->rtype->description;
@@ -56,7 +56,6 @@ class GenerateRegionGamesReport implements ShouldQueue
     {
         if ($this->batch() !== null) {
             if ($this->batch()->cancelled()) {
-                // Detected cancelled batch...
                 return;
             }
         }
