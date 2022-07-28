@@ -49,7 +49,7 @@ class ProcessReportsTest extends SysTestCase
             Bus::assertBatched(function (PendingBatch $batch) use ($c, $leagues) {
                 // $batch->dispatch();
                 return ( $batch->name == 'Club Reports ' . $c->shortname ) and ( $batch->jobs->count() == $leagues )
-                       and ($batch->queue() =='region_'.Str::lower($c->region->code));
+                       and ($batch->queue() =='region_'.$c->region->id));
             });
         }
     }
@@ -83,7 +83,7 @@ class ProcessReportsTest extends SysTestCase
             Bus::assertBatched(function (PendingBatch $batch) use ($c, $leagues) {
                 //$batch->dispatch();
                 return ( $batch->name == 'Club Reports ' . $c->shortname ) and
-                    ( $batch->jobs->count() == $leagues ) and ($batch->queue() == 'region_'.Str::lower($c->region->code));
+                    ( $batch->jobs->count() == $leagues ) and ($batch->queue() == 'region_'.$c->region->id);
             });
         }
     }
@@ -116,7 +116,7 @@ class ProcessReportsTest extends SysTestCase
             $leagues = Game::where('club_id_home', $c->id)->with('league')->get()->pluck('league.id')->unique()->count() * 2 + 6;
             Bus::assertBatched(function (PendingBatch $batch) use ($c, $leagues) {
                 return ($batch->name == 'Club Reports ' . $c->shortname) and
-                    ($batch->jobs->count() == $leagues) and ($batch->queue() == 'region_'.Str::lower($c->region->code));
+                    ($batch->jobs->count() == $leagues) and ($batch->queue() == 'region_'.$c->region->id);
             });
         }
     }
@@ -148,7 +148,7 @@ class ProcessReportsTest extends SysTestCase
         foreach ($leagues as $l) {
             Bus::assertBatched(function (PendingBatch $batch) use ($l) {
                 return ($batch->name == 'League Reports ' . $l->shortname) &&
-                    ($batch->jobs->count() == 3) && ($batch->queue() == 'region_'.Str::lower($l->region->code));
+                    ($batch->jobs->count() == 3) && ($batch->queue() == 'region_'.$l->region->id);
             });
         }
     }
@@ -180,7 +180,7 @@ class ProcessReportsTest extends SysTestCase
         foreach ($leagues as $l) {
             Bus::assertBatched(function (PendingBatch $batch) use ($l) {
                 return ($batch->name == 'League Reports ' . $l->shortname) &&
-                    ($batch->jobs->count() == 4) && ($batch->queue() == 'region_'.Str::lower($l->region->code));
+                    ($batch->jobs->count() == 4) && ($batch->queue() == 'region_'.$l->region->id);
             });
         }
     }
