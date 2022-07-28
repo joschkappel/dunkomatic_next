@@ -22,7 +22,8 @@ class ProcessRegionReport implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected Region $region;
+    public Region $region;
+    public $queuename;
 
     /**
      * Create a new job instance.
@@ -34,7 +35,8 @@ class ProcessRegionReport implements ShouldQueue
     public function __construct($region)
     {
         // set report scope
-        $this->region = Region::find($region);
+        $this->region = $region;
+        $this->queuename = 'region_'.Str::lower($region->code);
 
     }
 
@@ -71,7 +73,7 @@ class ProcessRegionReport implements ShouldQueue
         $batch = Bus::batch($rpt_jobs)
             ->name('Region Reports ' . $this->region->code)
             ->onConnection('redis')
-            ->onQueue('exports')
+            ->onQueue($this->queuename)
             ->dispatch();
 
     }

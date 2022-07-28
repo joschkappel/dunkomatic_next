@@ -13,7 +13,7 @@ class RegionGamesExport implements WithMultipleSheets
 
     use Exportable;
 
-    protected Region $region;
+    public Region $region;
 
     public function __construct(int $region_id)
     {

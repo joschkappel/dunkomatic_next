@@ -22,6 +22,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class ProcessClubReports implements ShouldQueue
 {
@@ -99,7 +100,7 @@ class ProcessClubReports implements ShouldQueue
                     }
                 })->name('Club Reports ' . $c->shortname)
                 ->onConnection('redis')
-                ->onQueue('exports')
+                ->onQueue('region_'.Str::lower($this->region->code))
                 ->dispatch();
         }
     }

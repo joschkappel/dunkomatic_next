@@ -19,12 +19,13 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class ProcessLeagueReports implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private Region $region;
+    protected Region $region;
 
     /**
      * Create a new job instance.
@@ -37,6 +38,7 @@ class ProcessLeagueReports implements ShouldQueue
     {
         // set report scope
         $this->region = $region;
+
     }
 
     /**
@@ -46,6 +48,7 @@ class ProcessLeagueReports implements ShouldQueue
      */
     public function handle()
     {
+
         if ( Storage::exists($this->region->league_folder)) {
             // clean folder
             Storage::deleteDirectory($this->region->league_folder);
@@ -95,7 +98,7 @@ class ProcessLeagueReports implements ShouldQueue
                     }
                 })->name('League Reports ' . $l->shortname)
                 ->onConnection('redis')
-                ->onQueue('exports')
+                ->onQueue('region_'.Str::lower($this->region->code))
                 ->dispatch();
         }
     }

@@ -15,10 +15,11 @@ use App\Enums\LeagueState;
 use App\Enums\ReportFileType;
 use App\Enums\Role;
 use App\Models\LeagueSize;
+use App\Traits\ReportFinder;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
-use Illuminate\Support\Str;
+
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -26,7 +27,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Illuminate\Support\Facades\Storage;
+
 
 /**
  * App\Models\League
@@ -115,7 +116,7 @@ use Illuminate\Support\Facades\Storage;
 class League extends Model implements Auditable
 {
 
-    use \OwenIt\Auditing\Auditable, hasFactory;
+    use \OwenIt\Auditing\Auditable, hasFactory, ReportFinder;
 
     protected $with = ['region'];
 
@@ -262,41 +263,21 @@ class League extends Model implements Auditable
 
     public function filecount(ReportFileType $format=null ): int
     {
-        $directory = $this->region->league_folder;
-        $shortname = $this->shortname;
-        if ($format == null){
-            $format = ReportFileType::coerce(ReportFileType::None);
-        } else {
-            $format = ReportFileType::coerce($format);
-        }
-
-        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname, $format) {
-            if ($format->value == ReportFileType::None){
-                return Str::contains($value, $shortname);
-            } else {
-                return Str::contains($value, $shortname) and Str::contains($value, '.'.Str::lower($format->key) );
-            };
-        });
+        $reports = $this->filenames($format);
         return count($reports);
     }
 
     public function filenames(ReportFileType $format=null): Collection
     {
-        $directory = $this->region->league_folder;
-        $shortname = $this->shortname;
         if ($format == null){
             $format = ReportFileType::coerce(ReportFileType::None);
         } else {
             $format = ReportFileType::coerce($format);
         }
 
-        $reports = collect(Storage::allFiles($directory))->filter(function ($value, $key) use ($shortname, $format) {
-            if ($format->value == ReportFileType::None){
-                return Str::contains($value, $shortname);
-            } else {
-                return Str::contains($value, $shortname) and Str::contains($value, '.'.Str::lower($format->key) );
-            };
-        });
+        // get league reports
+        $reports = $this->get_reports( $this->region->league_folder,$this->shortname, $format );
+
         return $reports;
     }
 }
