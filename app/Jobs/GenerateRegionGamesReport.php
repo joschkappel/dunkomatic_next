@@ -55,7 +55,7 @@ class GenerateRegionGamesReport implements ShouldQueue
      */
     public function handle()
     {
-        ini_set('memory_limit','2048M');
+
         if ($this->batch() !== null) {
             if ($this->batch()->cancelled()) {
                 return;
@@ -79,7 +79,6 @@ class GenerateRegionGamesReport implements ShouldQueue
             Excel::store(new RegionGamesExport($this->region->id), $this->rpt_name);
         }
 
-        ini_set('memory_limit','128M');
 
     }
 }

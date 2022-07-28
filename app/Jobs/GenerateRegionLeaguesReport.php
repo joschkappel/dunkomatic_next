@@ -60,13 +60,13 @@ class GenerateRegionLeaguesReport implements ShouldQueue
                 return;
             }
         }
-        ini_set('memory_limit','2048M');
+        // ini_set('memory_limit','2048M');
         Log::info('[JOB][REGION LEAGUE GAMES REPORTS] started.', [
             'region-id' => $this->region->id,
             'format' => $this->rtype->key,
             'path' => $this->rpt_name]);
 
         Excel::store(new RegionLeagueGamesExport($this->region->id), $this->rpt_name);
-        ini_set('memory_limit','128M');
+
     }
 }
