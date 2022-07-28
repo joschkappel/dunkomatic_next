@@ -49,7 +49,7 @@ class ProcessReportsTest extends SysTestCase
             Bus::assertBatched(function (PendingBatch $batch) use ($c, $leagues) {
                 // $batch->dispatch();
                 return ( $batch->name == 'Club Reports ' . $c->shortname ) and ( $batch->jobs->count() == $leagues )
-                       and ($batch->queue() =='region_'.$c->region->id));
+                       and ($batch->queue() =='region_'.$c->region->id);
             });
         }
     }
