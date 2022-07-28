@@ -118,8 +118,8 @@ class Kernel extends ConsoleKernel
     protected function scheduleRegionTask(Region $region, Schedule $schedule, ShouldQueue $job, int $frequency, string $startAt)
     {
         // uncomment for easy testing of jobs
-        $schedule->job($job,'janitor')->everyFiveMinutes();
-        return true;
+        // $schedule->job($job,'janitor')->everyFiveMinutes();
+        // return true;
         switch ($frequency) {
             case JobFrequencyType::daily:
                 $schedule->job($job, 'region_'.Str::lower($region->code), 'redis')->dailyAt($startAt);
