@@ -122,18 +122,18 @@ class Kernel extends ConsoleKernel
         // return true;
         switch ($frequency) {
             case JobFrequencyType::daily:
-                $schedule->job($job, 'region_'.Str::lower($region->code), 'redis')->dailyAt($startAt);
+                $schedule->job($job, 'region_'.$region->id, 'redis')->dailyAt($startAt);
                 //$schedule->job($job,'janitor')->hourly();
                 //$schedule->job($job,'janitor')->everyFiveMinutes();
                 break;
             case JobFrequencyType::weekly:
-                $schedule->job($job,  'region_'.Str::lower($region->code), 'redis')->weeklyOn(1, $startAt);
+                $schedule->job($job,  'region_'.$region->id, 'redis')->weeklyOn(1, $startAt);
                 break;
             case JobFrequencyType::biweekly:
-                $schedule->job($job,  'region_'.Str::lower($region->code), 'redis')->twiceMonthlyOn(1,16,$startAt);
+                $schedule->job($job,  'region_'.$region->id, 'redis')->twiceMonthlyOn(1,16,$startAt);
                 break;
             case JobFrequencyType::monthly:
-                $schedule->job($job,  'region_'.Str::lower($region->code), 'redis')->monthlyOn(1, $startAt);
+                $schedule->job($job,  'region_'.$region->id, 'redis')->monthlyOn(1, $startAt);
                 break;
         }
         return true;

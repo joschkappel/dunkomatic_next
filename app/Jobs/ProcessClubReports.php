@@ -100,7 +100,7 @@ class ProcessClubReports implements ShouldQueue
                     }
                 })->name('Club Reports ' . $c->shortname)
                 ->onConnection('redis')
-                ->onQueue('region_'.Str::lower($this->region->code))
+                ->onQueue('region_'.$this->region->id)
                 ->dispatch();
         }
     }

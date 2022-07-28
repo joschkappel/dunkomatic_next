@@ -36,7 +36,7 @@ class ProcessRegionReport implements ShouldQueue
     {
         // set report scope
         $this->region = $region;
-        $this->queuename = 'region_'.Str::lower($region->code);
+        $this->queuename = 'region_'.$region->id;
 
     }
 

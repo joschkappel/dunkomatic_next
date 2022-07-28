@@ -98,7 +98,7 @@ class ProcessLeagueReports implements ShouldQueue
                     }
                 })->name('League Reports ' . $l->shortname)
                 ->onConnection('redis')
-                ->onQueue('region_'.Str::lower($this->region->code))
+                ->onQueue('region_'.$this->region->id)
                 ->dispatch();
         }
     }
