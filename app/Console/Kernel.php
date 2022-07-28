@@ -19,7 +19,7 @@ use App\Jobs\GameNotScheduled;
 
 use App\Models\Region;
 use App\Enums\JobFrequencyType;
-use App\Jobs\ExportStatistics;
+
 use App\Jobs\OpenLeagueState;
 use App\Jobs\CloseLeagueState;
 use App\Jobs\ProcessFilesCleanup;
@@ -29,6 +29,7 @@ use Monolog\Handler\SendGridHandler;
 use Spatie\Health\Commands\RunHealthChecksCommand;
 use Spatie\Health\Commands\ScheduleCheckHeartbeatCommand;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class Kernel extends ConsoleKernel
 {
@@ -65,13 +66,13 @@ class Kernel extends ConsoleKernel
 
         foreach ($regions as $region) {
             if ($region->regionadmins()->exists()) {
-                $this->scheduleRegionTask($schedule, new GameOverlaps($region), $region->job_game_overlaps, '00:01');
-                $this->scheduleRegionTask($schedule, new GameNotScheduled($region), $region->job_game_notime, '00:02');
-                $this->scheduleRegionTask($schedule, new MissingLeadCheck($region), $region->job_noleads,'00:03');
-                $this->scheduleRegionTask($schedule, new EmailValidation($region), $region->job_email_valid, '00:04');
-                $this->scheduleRegionTask($schedule, new ProcessLeagueReports($region), $region->job_league_reports, '00:'.($region->id*10) );
-                $this->scheduleRegionTask($schedule, new ProcessClubReports($region), $region->job_club_reports, '00:'.($region->id*10+3));
-                $this->scheduleRegionTask($schedule, new ProcessRegionReport($region->id), $region->job_league_reports, '00:'.($region->id*10+6));
+                $this->scheduleRegionTask($region, $schedule, new GameOverlaps($region), $region->job_game_overlaps, '00:01');
+                $this->scheduleRegionTask($region, $schedule, new GameNotScheduled($region), $region->job_game_notime, '00:02');
+                $this->scheduleRegionTask($region, $schedule, new MissingLeadCheck($region), $region->job_noleads,'00:03');
+                $this->scheduleRegionTask($region, $schedule, new EmailValidation($region), $region->job_email_valid, '00:04');
+                $this->scheduleRegionTask($region, $schedule, new ProcessLeagueReports($region), $region->job_league_reports, '00:'.($region->id*10) );
+                $this->scheduleRegionTask($region, $schedule, new ProcessClubReports($region), $region->job_club_reports, '00:'.($region->id*10+3));
+                $this->scheduleRegionTask($region, $schedule, new ProcessRegionReport($region), $region->job_league_reports, '00:'.($region->id*10+6));
 
                 // $this->scheduleRegionTask($schedule, new ProcessLeagueStateChanges($r), JobFrequencyType::daily);
             }
@@ -114,25 +115,25 @@ class Kernel extends ConsoleKernel
      * @return bool
      *
      */
-    protected function scheduleRegionTask(Schedule $schedule, ShouldQueue $job, int $frequency, string $startAt)
+    protected function scheduleRegionTask(Region $region, Schedule $schedule, ShouldQueue $job, int $frequency, string $startAt)
     {
         // uncomment for easy testing of jobs
         // $schedule->job($job,'janitor')->everyFiveMinutes();
         // return true;
         switch ($frequency) {
             case JobFrequencyType::daily:
-                $schedule->job($job, 'janitor')->dailyAt($startAt);
+                $schedule->job($job, 'region_'.Str::lower($region->code), 'redis')->dailyAt($startAt);
                 //$schedule->job($job,'janitor')->hourly();
                 //$schedule->job($job,'janitor')->everyFiveMinutes();
                 break;
             case JobFrequencyType::weekly:
-                $schedule->job($job, 'janitor')->weeklyOn(1, $startAt);
+                $schedule->job($job,  'region_'.Str::lower($region->code), 'redis')->weeklyOn(1, $startAt);
                 break;
             case JobFrequencyType::biweekly:
-                $schedule->job($job, 'janitor')->twiceMonthlyOn(1,16,$startAt);
+                $schedule->job($job,  'region_'.Str::lower($region->code), 'redis')->twiceMonthlyOn(1,16,$startAt);
                 break;
             case JobFrequencyType::monthly:
-                $schedule->job($job, 'janitor')->monthlyOn(1, $startAt);
+                $schedule->job($job,  'region_'.Str::lower($region->code), 'redis')->monthlyOn(1, $startAt);
                 break;
         }
         return true;

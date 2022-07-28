@@ -23,11 +23,11 @@ class GenerateRegionLeaguesReport implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected string $export_folder;
-    protected string $rpt_name;
-    protected Region $region;
-    protected ReportScope $scope;
-    protected ReportFileType $rtype;
+    public string $export_folder;
+    public string $rpt_name;
+    public Region $region;
+    public ReportScope $scope;
+    public ReportFileType $rtype;
 
     /**
      * Create a new job instance.
@@ -37,11 +37,11 @@ class GenerateRegionLeaguesReport implements ShouldQueue
     public function __construct(Region $region, ReportFileType $rtype)
     {
         // set report scope
-        $this->region = $region;
+        $this->region = $region->withoutRelations();
         $this->rtype = $rtype;
 
         // make sure folders are there
-        $this->export_folder = $region->region_folder;
+        $this->export_folder = $this->region->region_folder;
         $this->rpt_name = $this->export_folder . '/' . $this->region->code;
         $this->rpt_name .= '_Rundenbuch.';
         $this->rpt_name .= $this->rtype->description;
@@ -60,7 +60,7 @@ class GenerateRegionLeaguesReport implements ShouldQueue
                 return;
             }
         }
-
+        // ini_set('memory_limit','2048M');
         Log::info('[JOB][REGION LEAGUE GAMES REPORTS] started.', [
             'region-id' => $this->region->id,
             'format' => $this->rtype->key,

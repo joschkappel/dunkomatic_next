@@ -12,6 +12,7 @@ use App\Exports\RegionGamesExport;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Bus\Batchable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -23,10 +24,10 @@ class GenerateRegionGamesReport implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected string $export_folder;
-    protected string $rpt_name;
-    protected Region $region;
-    protected ReportFileType $rtype;
+    public string $export_folder;
+    public string $rpt_name;
+    public Region $region;
+    public ReportFileType $rtype;
 
     /**
      * Create a new job instance.
@@ -36,11 +37,11 @@ class GenerateRegionGamesReport implements ShouldQueue
     public function __construct(Region $region, ReportFileType $rtype)
     {
         // set report scope
-        $this->region = $region;
+        $this->region = $region->withoutRelations();
         $this->rtype = $rtype;
 
         // make sure folders are there
-        $this->export_folder = $region->region_folder;
+        $this->export_folder = $this->region->region_folder;
         $this->rpt_name = $this->export_folder . '/' . $this->region->code;
         $this->rpt_name .= '_Gesamtplan.';
         $this->rpt_name .= $this->rtype->description;
@@ -54,6 +55,7 @@ class GenerateRegionGamesReport implements ShouldQueue
      */
     public function handle()
     {
+
         if ($this->batch() !== null) {
             if ($this->batch()->cancelled()) {
                 return;
@@ -76,6 +78,7 @@ class GenerateRegionGamesReport implements ShouldQueue
         } else {
             Excel::store(new RegionGamesExport($this->region->id), $this->rpt_name);
         }
+
 
     }
 }
