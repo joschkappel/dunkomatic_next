@@ -67,8 +67,18 @@ class RegionController extends Controller
         if ($region->is_top_level){
             $data['games_count'] = Game::where('region', $region->code)->count();
         } else {
-            $data['games_count'] = $region->clubs()->with('games_home')->get()->pluck('games_home.*.id')->flatten()->count();
-            $data['games_count'] += $region->clubs()->with('games_guest')->get()->pluck('games_guest.*.id')->flatten()->count();
+            $clubs = $region->clubs->pluck('id');
+            // all games of this region
+            // now add top level region games
+            $games = Game::where( function ($query) use($clubs){
+                                                $query->whereIn('club_id_home', $clubs)
+                                                ->whereIn('club_id_guest', $clubs,  'or');
+                                          })
+                                         ->get();
+            $games = $games->concat(
+                Game::whereIn('club_id_guest',$clubs)->whereIn('club_id_home',$clubs,'and')->get()
+            );
+            $data['games_count'] =  $games->unique()->count();
 
         };
         $data['games_noref_count'] = $region->clubs()->with('games_noreferee')->get()->pluck('games_noreferee.*.id')->flatten()->count();

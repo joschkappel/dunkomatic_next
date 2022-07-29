@@ -42,14 +42,19 @@ class GameController extends Controller
         if ($region->is_base_level){
             $clubs = $region->clubs()->pluck('id');
             //$games = Game::whereIn('club_id_home', $clubs)->orWhereIn('club_id_guest',$clubs)->orderBy('game_date')->get();
-            $games = Game::whereIn('club_id_home', $clubs)->with(['league', 'gym'])->orderBy('game_date')->get();
-            $games = $games->concat(Game::whereIn('club_id_guest', $clubs)->with(['league', 'gym'])->orderBy('game_date')->get());
+            $games = Game::whereIn('club_id_home', $clubs)->whereIn('club_id_guest', $clubs,'and')->with(['league', 'gym'])->orderBy('game_date')->get();
+            $games = $games->concat(
+                Game::where( function ($query) use($clubs){
+                    $query->whereIn('club_id_home', $clubs)
+                            ->whereIn('club_id_guest', $clubs,  'or');
+                })->with(['league', 'gym'])->orderBy('game_date')->get()
+            );
         } else {
             $games = Game::where('region', $region->code)->with(['league', 'gym'])->orderBy('game_date')->get();
         }
 
         Log::info('preparing game list');
-        $glist = datatables()::of($games);
+        $glist = datatables()::of($games->unique());
 
         $glist =  $glist
             ->editColumn('game_time', function ($game) {
