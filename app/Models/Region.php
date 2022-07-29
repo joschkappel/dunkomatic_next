@@ -252,7 +252,7 @@ class Region extends Model
 
         // add teamware folder files
         $reports = $reports->concat(
-            $this->get_reports($this->region_folder.'/'.config('dunkomatic.export_folders.teamware'), $this->code, $format )
+            $this->get_reports($this->region_folder.'/'.config('dunkomatic.export_folders.teamware'), $this->code,  ReportFileType::coerce(ReportFileType::CSV() ) )
         );
 
         return $reports;
