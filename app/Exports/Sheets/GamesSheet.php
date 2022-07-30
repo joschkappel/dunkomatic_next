@@ -18,7 +18,7 @@ class GamesSheet implements FromView, WithTitle, ShouldAutoSize
 
     protected ?Date $gdate = null;
     public Region $region;
-    public League $league;
+    public ?League $league;
 
     public function __construct(Region $region, League $league=null)
     {

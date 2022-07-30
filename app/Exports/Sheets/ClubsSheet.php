@@ -22,7 +22,7 @@ class ClubsSheet implements FromView, WithTitle, ShouldAutoSize
 
     public $gdate;
     public Region $region;
-    public League $league;
+    public ?League $league;
 
     public function __construct(Region $region, League $league=null)
     {
