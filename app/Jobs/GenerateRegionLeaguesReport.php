@@ -69,7 +69,7 @@ class GenerateRegionLeaguesReport implements ShouldQueue
         if ($this->rtype->hasFlag(ReportFileType::PDF)) {
             Excel::store(new RegionLeagueGamesReport($this->region ), $this->rpt_name, null, \Maatwebsite\Excel\Excel::MPDF);
         } elseif ($this->rtype->hasFlag(ReportFileType::XLSX)) {
-            Excel::store( (new RegionLeagueGamesReport($this->region))->queue($this->rpt_name)->onQueue('region_'.$this->region->id), $this->rpt_name);
+            Excel::store( new RegionLeagueGamesReport($this->region), $this->rpt_name);
         } else {
             Excel::store( new RegionLeagueGamesReport($this->region), $this->rpt_name);
         }

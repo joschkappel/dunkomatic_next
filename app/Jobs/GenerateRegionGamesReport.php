@@ -76,7 +76,8 @@ class GenerateRegionGamesReport implements ShouldQueue
                 Storage::put($this->rpt_name, $calendar->get());
             }
         } elseif ($this->rtype->hasFlag(ReportFileType::XLSX)) {
-            Excel::store( (new RegionGamesReport($this->region))->queue($this->rpt_name)->onQueue('region_'.$this->region->id), $this->rpt_name);
+            //Excel::store( (new RegionGamesReport($this->region))->queue($this->rpt_name)->onQueue('region_'.$this->region->id), $this->rpt_name);
+            Excel::store( new RegionGamesReport($this->region), $this->rpt_name);
         } else {
             Excel::store( new RegionGamesReport($this->region), $this->rpt_name);
         }
