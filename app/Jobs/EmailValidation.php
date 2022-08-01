@@ -9,12 +9,12 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
 use App\Models\Region;
+use App\Models\Member;
 
 use App\Notifications\InvalidEmail;
 use Illuminate\Support\Facades\Notification;
 use App\Enums\Role;
-use App\Models\Member;
-
+use Illuminate\Support\Collection;
 use Validator;
 use Illuminate\Support\Facades\Log;
 
@@ -23,7 +23,7 @@ class EmailValidation implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected Region $region;
-    protected ?Member $region_admin;
+    protected Collection $region_admins;
 
     /**
      * Create a new job instance.
@@ -112,7 +112,7 @@ class EmailValidation implements ShouldQueue
                     Notification::send($this->region_admins, new InvalidEmail($c, null, $msgs));
                     Log::info('[NOTIFICATION][MEMBER] invalid email.', ['member-id' => $this->region_admins->pluck('id')]);
                 } else {
-                    Notification::send($lead_member, new InvalidEmail($c, $this->region_admins->first(), $msgs));
+                    Notification::send($lead_member, new InvalidEmail($c, Member::find($this->region_admins->first()->id), $msgs));
                     Log::info('[NOTIFICATION][MEMBER] invalid email.', ['member-id' => $lead_member->id]);
                 }
             }
