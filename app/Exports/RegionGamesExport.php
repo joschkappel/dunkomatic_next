@@ -4,7 +4,7 @@ namespace App\Exports;
 
 use App\Models\Region;
 use App\Exports\Sheets\RegionGames;
-
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 

@@ -7,7 +7,7 @@ use App\Enums\ReportFileType;
 use App\Enums\ReportScope;
 use Maatwebsite\Excel\Facades\Excel;
 
-use App\Exports\RegionLeagueGamesExport;
+use App\Exports\RegionLeagueGamesReport;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -66,7 +66,13 @@ class GenerateRegionLeaguesReport implements ShouldQueue
             'format' => $this->rtype->key,
             'path' => $this->rpt_name]);
 
-        Excel::store(new RegionLeagueGamesExport($this->region->id), $this->rpt_name);
+        if ($this->rtype->hasFlag(ReportFileType::PDF)) {
+            Excel::store(new RegionLeagueGamesReport($this->region ), $this->rpt_name, null, \Maatwebsite\Excel\Excel::MPDF);
+        } elseif ($this->rtype->hasFlag(ReportFileType::XLSX)) {
+            Excel::store( new RegionLeagueGamesReport($this->region), $this->rpt_name);
+        } else {
+            Excel::store( new RegionLeagueGamesReport($this->region), $this->rpt_name);
+        }
 
     }
 }

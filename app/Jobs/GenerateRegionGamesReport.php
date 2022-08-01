@@ -8,7 +8,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use App\Helpers\CalendarComposer;
 
-use App\Exports\RegionGamesExport;
+use App\Exports\RegionGamesReport;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Bus\Batchable;
@@ -68,15 +68,18 @@ class GenerateRegionGamesReport implements ShouldQueue
             'path' => $this->rpt_name]);
 
         if ($this->rtype->hasFlag(ReportFileType::PDF)) {
-            Excel::store(new RegionGamesExport($this->region->id ), $this->rpt_name, null, \Maatwebsite\Excel\Excel::MPDF);
+            Excel::store(new RegionGamesReport($this->region ), $this->rpt_name, null, \Maatwebsite\Excel\Excel::MPDF);
         } elseif ($this->rtype->hasFlag(ReportFileType::ICS)) {
             // do calendar files
             $calendar = CalendarComposer::createRegionCalendar($this->region);
             if ($calendar != null) {
                 Storage::put($this->rpt_name, $calendar->get());
             }
+        } elseif ($this->rtype->hasFlag(ReportFileType::XLSX)) {
+            //Excel::store( (new RegionGamesReport($this->region))->queue($this->rpt_name)->onQueue('region_'.$this->region->id), $this->rpt_name);
+            Excel::store( new RegionGamesReport($this->region), $this->rpt_name);
         } else {
-            Excel::store(new RegionGamesExport($this->region->id), $this->rpt_name);
+            Excel::store( new RegionGamesReport($this->region), $this->rpt_name);
         }
 
 

@@ -44,7 +44,6 @@ class GenerateRegionReportTest extends TestCase
         }
 
         $report = $folder . '/' . $this->region->code;
-        $report2 = $report.'_Rundenbuch.pdf';
         $report .= '_Gesamtplan.pdf';
 
 
@@ -52,7 +51,6 @@ class GenerateRegionReportTest extends TestCase
         app()->call([$job_instance, 'handle']);
 
         Storage::assertExists($report);
-        Storage::assertMissing($report2);
 
     }
 
@@ -75,7 +73,6 @@ class GenerateRegionReportTest extends TestCase
 
 
         $report = $folder . '/' . $this->region->code;
-        $report2 = $report. '_Rundenbuch.xlsx';
         $report .= '_Gesamtplan.xlsx';
 
 
@@ -83,7 +80,6 @@ class GenerateRegionReportTest extends TestCase
         app()->call([$job_instance, 'handle']);
 
         Storage::assertExists($report);
-        // Storage::assertExists($report2);
 
     }
 
@@ -107,13 +103,11 @@ class GenerateRegionReportTest extends TestCase
         Storage::delete($files);
 
         $report = $folder . '/' . $this->region->code;
-        $report2 = $report. '_Rundebuch.ics';
         $report .= '_Gesamtplan.ics';
 
         $job_instance = resolve(GenerateRegionGamesReport::class, ['region' => $region, 'rtype' => ReportFileType::ICS()]);
         app()->call([$job_instance, 'handle']);
 
         Storage::assertExists($report);
-        Storage::assertMissing($report2);
     }
 }
