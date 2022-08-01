@@ -47,12 +47,6 @@ class CloseLeagueState implements ShouldQueue
     public function handle()
     {
         Log::info('[JOB][CLOSE LEAGUE STATES] started.');
-        $freeze_opened = collect();
-        $freeze_not_opened = collect();
-        $referees_opened = collect();
-        $referees_not_opened = collect();
-        $live_opened = collect();
-        $live_not_opened = collect();
 
         $users = User::whereIs('regionadmin')->get();
 
@@ -60,6 +54,13 @@ class CloseLeagueState implements ShouldQueue
         foreach ( Region::with('leagues')->get() as $r){
             // get regionadmins for notifications
             $radmins = collect();
+            $freeze_opened = collect();
+            $freeze_not_opened = collect();
+            $referees_opened = collect();
+            $referees_not_opened = collect();
+            $live_opened = collect();
+            $live_not_opened = collect();
+
             foreach($users as $u) {
                 if ($u->can('access',$r)){
                     $radmins->push($u);
