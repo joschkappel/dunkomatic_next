@@ -256,12 +256,12 @@ class Region extends Model
 
         // add league folder files
         $reports = $reports->concat(
-            $this->get_reports($this->region_folder.'/'.config('dunkomatic.export_folders.leagues'), $this->code, $format )
+            $this->get_reports($this->region_folder.'/'.config('dunkomatic.export_folders.leagues'), null, $format )
         );
 
         // add teamware folder files
         $reports = $reports->concat(
-            $this->get_reports($this->region_folder.'/'.config('dunkomatic.export_folders.teamware'), $this->code,  ReportFileType::coerce(ReportFileType::CSV() ) )
+            $this->get_reports($this->region_folder.'/'.config('dunkomatic.export_folders.teamware'), null,  ReportFileType::coerce(ReportFileType::CSV() ) )
         );
 
         return $reports;

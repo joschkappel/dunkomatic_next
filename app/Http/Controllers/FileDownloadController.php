@@ -117,7 +117,6 @@ class FileDownloadController extends Controller
 
         if ($club->filecount($format) > 0) {
             $files = $club->filenames($format);
-            $files = $files->concat($club->region->filenames($format));
         } else {
             Log::error('no files found for club.', ['club-id' => $club->id]);
             return Redirect::back()->withErrors(['format' => 'all']);
