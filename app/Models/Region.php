@@ -125,6 +125,7 @@ class Region extends Model
         'close_selection_at', 'close_scheduling_at', 'close_referees_at',
         'auto_state_change',
         'job_club_reports_lastrun_at', 'job_league_reports_lastrun_at',
+        'job_club_reports_lastrun_ok', 'job_league_reports_lastrun_ok',
         'job_club_reports_running', 'job_league_reports_running'
     ];
 
@@ -140,8 +141,9 @@ class Region extends Model
         'job_club_reports_lastrun_at' => 'datetime',
         'job_league_reports_lastrun_at' => 'datetime',
         'job_club_reports_running' => 'boolean',
-        'job_league_reports_running' => 'boolean'
-
+        'job_league_reports_running' => 'boolean',
+        'job_club_reports_lastrun_ok' => 'boolean',
+        'job_league_reports_lastrun_ok' => 'boolean'
     ];
 
     public function clubs(): HasMany

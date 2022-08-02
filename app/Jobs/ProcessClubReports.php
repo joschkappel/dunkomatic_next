@@ -104,7 +104,15 @@ class ProcessClubReports implements ShouldQueue
                         'job_club_reports_running' => false,
                         'job_club_reports_lastrun_at' => now()
                     ]);
-                })->name('Club Reports ' . $c->shortname)
+                })
+                ->finally(function (Batch $batch) use ($region){
+                    if ($batch->failedJobs >  0){
+                        $region->update(['job_club_reports_lastrun_ok' => false]);
+                    } else {
+                        $region->update(['job_club_reports_lastrun_ok' => true]);
+                    }
+                })
+                ->name('Club Reports ' . $c->shortname)
                 ->onConnection('redis')
                 ->onQueue('region_'.$this->region->id)
                 ->dispatch();

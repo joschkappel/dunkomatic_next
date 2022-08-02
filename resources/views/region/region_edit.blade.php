@@ -139,7 +139,7 @@
             <div class="form-row m-2">
                 <label for="job_league_reports_lastrun_at" class="col-sm-6 col-form-label">@lang('reports.last_run_at')</label>
                 <div class="col-sm-4">
-                    <input type="text" readonly class="form-control" id="job_league_reports_lastrun_at" name="job_league_reports_lastrun_at"
+                    <input type="text" readonly class="form-control @if($region->job_league_reports_lastrun_ok) text-success @else text-danger @endif" id="job_league_reports_lastrun_at" name="job_league_reports_lastrun_at"
                     value="@isset($region->job_league_reports_lastrun_at) {{Carbon\Carbon::parse($region->job_league_reports_lastrun_at)->locale(app()->getLocale())->isoFormat('LLL')}} @endisset">
                 </div>
             </div>
@@ -180,7 +180,7 @@
             <div class="form-row m-2">
                 <label for="job_club_reports_lastrun_at" class="col-sm-6 col-form-label">@lang('reports.last_run_at')</label>
                 <div class="col-sm-4">
-                    <input type="text" readonly class="form-control" id="job_club_reports_lastrun_at" name="job_club_reports_lastrun_at"
+                    <input type="text" readonly class="form-control @if($region->job_club_reports_lastrun_ok) text-success @else text-danger @endif" id="job_club_reports_lastrun_at" name="job_club_reports_lastrun_at"
                         value="@isset($region->job_club_reports_lastrun_at) {{ Carbon\Carbon::parse($region->job_club_reports_lastrun_at)->locale(app()->getLocale())->isoFormat('LLL')}} @endisset">
                 </div>
             </div>

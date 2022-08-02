@@ -103,7 +103,15 @@ class ProcessLeagueReports implements ShouldQueue
                         'job_league_reports_lastrun_at' => now()
                     ]);
 
-                })->name('League Reports ' . $l->shortname)
+                })
+                ->finally(function (Batch $batch) use ($region){
+                    if ($batch->failedJobs >  0){
+                        $region->update(['job_league_reports_lastrun_ok' => false]);
+                    } else {
+                        $region->update(['job_league_reports_lastrun_ok' => true]);
+                    }
+                })
+                ->name('League Reports ' . $l->shortname)
                 ->onConnection('redis')
                 ->onQueue('region_'.$this->region->id)
                 ->dispatch();

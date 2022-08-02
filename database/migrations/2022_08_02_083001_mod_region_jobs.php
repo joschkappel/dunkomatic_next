@@ -18,6 +18,8 @@ return new class extends Migration
             $table->dateTime('job_league_reports_lastrun_at')->nullable();
             $table->boolean('job_club_reports_running')->default(false);
             $table->boolean('job_league_reports_running')->default(false);
+            $table->boolean('job_club_reports_lastrun_ok')->default(true);
+            $table->boolean('job_league_reports_lastrun_ok')->default(true);
         });
     }
 
@@ -33,7 +35,9 @@ return new class extends Migration
                 'job_club_reports_lastrun_at',
                 'job_league_reports_lastrun_at',
                 'job_club_reports_running',
-                'job_league_reports_running'
+                'job_league_reports_running',
+                'job_club_reports_lastrun_ok',
+                'job_league_reports_lastrun_ok'
             ]);
         });
     }

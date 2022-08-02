@@ -80,7 +80,13 @@ class ProcessRegionReport implements ShouldQueue
                     'job_league_reports_running' => false,
                     'job_league_reports_lastrun_at' => now()
                 ]);
-
+            })
+            ->finally(function (Batch $batch) use ($region){
+                if ($batch->failedJobs >  0){
+                    $region->update(['job_league_reports_lastrun_ok' => false]);
+                } else {
+                    $region->update(['job_league_reports_lastrun_ok' => true]);
+                }
             })
             ->name('Region Reports ' . $this->region->code)
             ->onConnection('redis')
