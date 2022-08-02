@@ -89,16 +89,30 @@ class ProcessClubReports implements ShouldQueue
             };
 
             $note = new ClubReportsAvailable($c);
+            $region = $this->region;
 
             $batch = Bus::batch($rpt_jobs)
-                ->then(function (Batch $batch) use ($c, $note) {
+                ->then(function (Batch $batch) use ($c, $note, $region) {
                     // All jobs completed successfully...
                     if ($c->memberIsA(Role::ClubLead())) {
                         $clead = $c->members()->wherePivot('role_id', Role::ClubLead)->first();
                         // $clead->notify( $note);
                         Log::info('[NOTIFICATION] club reports available.', ['member-id' => $clead->id]);
                     }
-                })->name('Club Reports ' . $c->shortname)
+                    // update region
+                    $region->update([
+                        'job_club_reports_running' => false,
+                        'job_club_reports_lastrun_at' => now()
+                    ]);
+                })
+                ->finally(function (Batch $batch) use ($region){
+                    if ($batch->failedJobs >  0){
+                        $region->update(['job_club_reports_lastrun_ok' => false]);
+                    } else {
+                        $region->update(['job_club_reports_lastrun_ok' => true]);
+                    }
+                })
+                ->name('Club Reports ' . $c->shortname)
                 ->onConnection('redis')
                 ->onQueue('region_'.$this->region->id)
                 ->dispatch();

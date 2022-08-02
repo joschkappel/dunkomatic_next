@@ -87,7 +87,7 @@ class ProcessLeagueReports implements ShouldQueue
             $note = new LeagueReportsAvailable($l);
 
             $batch = Bus::batch($rpt_jobs)
-                ->then(function (Batch $batch) use ($l, $note) {
+                ->then(function (Batch $batch) use ($l, $note, $region) {
                     // All jobs completed successfully...
                     if ($l->state->is(LeagueState::Live())){
                         if ($l->memberIsA(Role::LeagueLead())) {
@@ -96,7 +96,22 @@ class ProcessLeagueReports implements ShouldQueue
                             Log::info('[NOTIFICATION] league reports available.', ['member-id' => $llead->id]);
                         }
                     }
-                })->name('League Reports ' . $l->shortname)
+
+                    // update region
+                    $region->update([
+                        'job_league_reports_running' => false,
+                        'job_league_reports_lastrun_at' => now()
+                    ]);
+
+                })
+                ->finally(function (Batch $batch) use ($region){
+                    if ($batch->failedJobs >  0){
+                        $region->update(['job_league_reports_lastrun_ok' => false]);
+                    } else {
+                        $region->update(['job_league_reports_lastrun_ok' => true]);
+                    }
+                })
+                ->name('League Reports ' . $l->shortname)
                 ->onConnection('redis')
                 ->onQueue('region_'.$this->region->id)
                 ->dispatch();
