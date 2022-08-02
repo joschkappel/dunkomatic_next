@@ -79,6 +79,7 @@ class FileDownloadController extends Controller
                 $files = $files->concat($user->ClubFilenames($region));
                 $files = $files->concat($user->TeamwareFilenames($region));
 
+                /**  @var string $f */
                 foreach ($files as $f) {
                     $check = $zip->addFromString(basename($f), Storage::get($f));
                 }
@@ -131,6 +132,7 @@ class FileDownloadController extends Controller
 
         if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
 
+            /**  @var string $f */
             foreach ($files as $f) {
                 $check = $zip->addFromString(basename($f), Storage::get($f));
             }
@@ -179,6 +181,7 @@ class FileDownloadController extends Controller
 
         if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
 
+            /**  @var string $f */
             foreach ($files as $f) {
                 $check = $zip->addFromString(basename($f), Storage::get($f));
             }
@@ -227,6 +230,7 @@ class FileDownloadController extends Controller
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
 
+                /**  @var string $f */
                 foreach ($files as $f) {
                     $check = $zip->addFromString(basename($f), Storage::get($f));
                 }
@@ -266,6 +270,7 @@ class FileDownloadController extends Controller
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
                 $files = $region->league_filenames();
 
+                /**  @var string $f */
                 foreach ($files as $f) {
                     $check = $zip->addFromString(basename($f), Storage::get($f));
                 }
@@ -306,6 +311,7 @@ class FileDownloadController extends Controller
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
                 $files = $region->teamware_filenames();
 
+                /**  @var string $f */
                 foreach ($files as $f) {
                     $check = $zip->addFromString(basename($f), Storage::get($f));
                 }

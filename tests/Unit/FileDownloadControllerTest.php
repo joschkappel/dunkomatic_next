@@ -223,7 +223,7 @@ class FileDownloadControllerTest extends TestCase
         $response = $this->authenticated()
             ->get(route('region_league_archive.get', ['region' => $this->testleague->region]));
 
-        $response->assertStatus(404);
+        $response->assertSessionHasErrors();
 
         // now create files
         $folder = $this->testleague->region->league_folder;
@@ -254,7 +254,7 @@ class FileDownloadControllerTest extends TestCase
         $response = $this->authenticated()
             ->get(route('region_teamware_archive.get', ['region' => $this->testleague->region]));
 
-        $response->assertStatus(404);
+        $response->assertSessionHasErrors();
 
         // now create a fil
         $folder = $this->testleague->region->teamware_folder;
