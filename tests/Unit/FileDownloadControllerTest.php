@@ -219,7 +219,6 @@ class FileDownloadControllerTest extends TestCase
      */
     public function get_region_league_archive()
     {
-
         // now create files
         $folder = $this->testleague->region->league_folder;
         $filename = $this->testleague->shortname . '.test';
@@ -245,9 +244,15 @@ class FileDownloadControllerTest extends TestCase
      */
     public function get_region_teamware_archive()
     {
+        // check no file found
+        $response = $this->authenticated()
+            ->get(route('region_teamware_archive.get', ['region' => $this->testleague->region]));
+
+        $response->assertSessionHasErrors();
+
         // now create a fil
         $folder = $this->testleague->region->teamware_folder;
-        $filename = $this->testleague->shortname . '.test';
+        $filename = $this->testleague->shortname . '.csv';
         $archive = $this->testleague->region->code . '-teamware-reports.zip';
 
         UploadedFile::fake()->create($filename)
