@@ -13,4 +13,7 @@ return [
     'ical.club.referee' => 'Schiri',
     'filtered' => 'Suchkriterium: ',
     'not_specified' => 'Nicht angegeben',
+    'last_run_at' => 'Letzter Lauf am',
+    'run.league' => 'Rundenpläne Jetzt Erzeugen',
+    'run.club' => 'Vereinspläne Jetzt Erzeugen'
 ];

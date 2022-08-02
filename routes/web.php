@@ -13,6 +13,7 @@ use App\Http\Controllers\ClubController;
 use App\Http\Controllers\ClubGameController;
 use App\Http\Controllers\ClubTeamController;
 use App\Http\Controllers\AuditController;
+use App\Http\Controllers\JobController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\ScheduleEventController;
 use App\Http\Controllers\MessageController;
@@ -260,6 +261,8 @@ Route::middleware(['auth',
         Route::get('game/noreferee', [RegionController::class, 'game_noreferee_chart'])->name('region.game.noreferee.chart')->middleware('can:view-games');
         Route::get('region/club', [RegionController::class, 'region_club_chart'])->name('region.region.club.chart')->middleware('can:view-regions');
         Route::get('region/league', [RegionController::class, 'region_league_chart'])->name('region.region.league.chart')->middleware('can:view-regions');
+
+        Route::post('job/{job}', [JobController::class, 'run_job'])->name('region.run.job')->middleware('can:update-regions');
     });
 
     Route::post('league/{league}/club', [LeagueTeamController::class, 'assign_clubs'])->name('league.assign-clubs')->middleware('can:update-leagues');
@@ -336,4 +339,5 @@ Route::middleware(['auth',
     Route::get('archive/club/{club}/{format?}', [FileDownloadController::class, 'get_club_archive'])->name('club_archive.get');
     Route::get('archive/region/{region}/{format}', [FileDownloadController::class, 'get_region_archive'])->name('region_archive.get');
     Route::get('archive/league/{league}/{format?}', [FileDownloadController::class, 'get_league_archive'])->name('league_archive.get');
+
 });

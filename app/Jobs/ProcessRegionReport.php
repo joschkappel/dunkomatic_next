@@ -16,6 +16,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Bus\Batch;
 use Illuminate\Support\Str;
 
 class ProcessRegionReport implements ShouldQueue
@@ -70,7 +71,17 @@ class ProcessRegionReport implements ShouldQueue
             }
         };
 
+        $region = $this->region;
+
         $batch = Bus::batch($rpt_jobs)
+            ->then(function (Batch $batch) use ($region) {
+                // update region
+                $region->update([
+                    'job_league_reports_running' => false,
+                    'job_league_reports_lastrun_at' => now()
+                ]);
+
+            })
             ->name('Region Reports ' . $this->region->code)
             ->onConnection('redis')
             ->onQueue($this->queuename)
