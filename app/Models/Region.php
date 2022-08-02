@@ -267,63 +267,30 @@ class Region extends Model
         return $reports;
     }
 
-    public function getLeagueFilecountAttribute(): int
+    public function league_filecount(): int
     {
-        $directory = $this->league_folder;
-        $reports = collect();
-
-        foreach ($this->loadMissing('leagues')->leagues as $league) {
-            $shortname = $league->shortname;
-            $reports = $reports->concat(collect(Storage::files($directory))->filter(function ($value, $key) use ($shortname) {
-                return (preg_match('(' . $shortname . ')', $value) === 1);
-                // return Str::contains($shortname, $value);
-            }));
-        }
+        $reports = $this->league_filenames();
         return count($reports);
     }
 
-    public function getLeagueFilenamesAttribute(): Collection
+    public function league_filenames(): Collection
     {
         $directory = $this->league_folder;
-        $reports = collect();
-
-        foreach ($this->loadMissing('leagues')->leagues as $league) {
-            $shortname = $league->shortname;
-            $reports = $reports->concat(collect(Storage::files($directory))->filter(function ($value, $key) use ($shortname) {
-                return (preg_match('(' . $shortname . ')', $value) === 1);
-                // return Str::contains($shortname, $value);
-            }));
-        }
+        $reports = $this->get_reports( $directory, null, ReportFileType::coerce( ReportFileType::None ));
         return $reports;
     }
 
-    public function getTeamwareFilecountAttribute(): int
+    public function teamware_filecount(): int
     {
-        $directory = $this->teamware_folder;
-
-        $reports = collect();
-        foreach ($this->leagues as $league) {
-            $shortname = $league->shortname;
-            $reports = $reports->concat(collect(Storage::files($directory))->filter(function ($value, $key) use ($shortname) {
-                return (preg_match('(' . $shortname . ')', $value) === 1);
-                // return Str::contains($shortname, $value);
-            }));
-        }
+        $reports = $this->teamware_filenames();
         return count($reports);
     }
 
-    public function getTeamwareFilenamesAttribute(): Collection
+    public function teamware_filenames(): Collection
     {
         $directory = $this->teamware_folder;
+        $reports = $this->get_reports($directory, null,  ReportFileType::coerce(ReportFileType::CSV() ) );
 
-        $reports = collect();
-        foreach ($this->leagues as $league) {
-            $shortname = $league->shortname;
-            $reports = $reports->concat(collect(Storage::files($directory))->filter(function ($value, $key) use ($shortname) {
-                return (preg_match('(' . $shortname . ')', $value) === 1);
-                // return Str::contains($shortname, $value);
-            }));
-        }
         return $reports;
     }
 }

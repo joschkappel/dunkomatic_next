@@ -256,7 +256,7 @@ class FileDownloadController extends Controller
     {
         Log::info('region league file archive download.', ['region-id' => $region->id]);
 
-        if ($region->league_filecount > 0) {
+        if ($region->league_filecount() > 0) {
             $zip = new ZipArchive;
             $filename = $region->code . '-runden-reports.zip';
             Storage::disk('public')->delete($filename);
@@ -264,7 +264,7 @@ class FileDownloadController extends Controller
             Log::info('archive location.', ['path' => $pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
-                $files = $region->league_filenames;
+                $files = $region->league_filenames();
 
                 foreach ($files as $f) {
                     $check = $zip->addFromString(basename($f), Storage::get($f));
@@ -296,7 +296,7 @@ class FileDownloadController extends Controller
     {
         Log::info('region teamware file archive download.', ['region-id' => $region->id]);
 
-        if ($region->teamware_filecount > 0) {
+        if ($region->teamware_filecount() > 0) {
             $zip = new ZipArchive;
             $filename = $region->code . '-teamware-reports.zip';
             Storage::disk('public')->delete($filename);
@@ -304,7 +304,7 @@ class FileDownloadController extends Controller
             Log::info('archive location.', ['path' => $pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
-                $files = $region->teamware_filenames;
+                $files = $region->teamware_filenames();
 
                 foreach ($files as $f) {
                     $check = $zip->addFromString(basename($f), Storage::get($f));

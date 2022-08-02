@@ -190,17 +190,17 @@ class HomeController extends Controller
             }
 
             if ($user_can_view_regions) {
-                if ($region->league_filecount > 0) {
+                if ($region->league_filecount() > 0) {
                     $msg = [];
-                    $msg['msg'] =  __('message.reminder.download.region.leagues', ['region' => $region->code, 'count' => $region->league_filecount]);
+                    $msg['msg'] =  __('message.reminder.download.region.leagues', ['region' => $region->code, 'count' => $region->league_filecount()]);
                     $msg['action_msg'] =  __('message.reminder.download.action');
                     $msg['action_color'] = 'info';
                     $msg['action'] = route('region_league_archive.get', ['region'=>$region]);
                     $reminders[] = $msg;
                 }
-                if ($region->teamware_filecount > 0) {
+                if ($region->teamware_filecount() > 0) {
                     $msg = [];
-                    $msg['msg'] =  __('message.reminder.download.region.teamware', ['region' => $region->code, 'count' => $region->teamware_filecount]);
+                    $msg['msg'] =  __('message.reminder.download.region.teamware', ['region' => $region->code, 'count' => $region->teamware_filecount()]);
                     $msg['action_msg'] =  __('message.reminder.download.action');
                     $msg['action'] = route('region_teamware_archive.get', ['region'=>$region]);
                     $msg['action_color'] = 'info';
