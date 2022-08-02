@@ -49,6 +49,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('queue:prune-batches --hours=48')->daily();
         $schedule->command('db:backup -c')->daily()->emailOutputOnFailure('dmatic.master@gmail.com');
         $schedule->command('authentication-log:purge')->monthlyOn(2,'00:05')->emailOutputOnFailure('dmatic.master@gmail.com');
         $schedule->command('telescope:prune')->dailyAt('00:10')->environments(['staging', 'local','dev']);
