@@ -219,11 +219,6 @@ class FileDownloadControllerTest extends TestCase
      */
     public function get_region_league_archive()
     {
-        // check no files found
-        $response = $this->authenticated()
-            ->get(route('region_league_archive.get', ['region' => $this->testleague->region]));
-
-        $response->assertSessionHasErrors();
 
         // now create files
         $folder = $this->testleague->region->league_folder;
@@ -250,12 +245,6 @@ class FileDownloadControllerTest extends TestCase
      */
     public function get_region_teamware_archive()
     {
-        // check no file found
-        $response = $this->authenticated()
-            ->get(route('region_teamware_archive.get', ['region' => $this->testleague->region]));
-
-        $response->assertSessionHasErrors();
-
         // now create a fil
         $folder = $this->testleague->region->teamware_folder;
         $filename = $this->testleague->shortname . '.test';
