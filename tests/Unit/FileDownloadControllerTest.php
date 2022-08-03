@@ -244,11 +244,6 @@ class FileDownloadControllerTest extends TestCase
      */
     public function get_region_teamware_archive()
     {
-        // check no file found
-        $response = $this->authenticated()
-            ->get(route('region_teamware_archive.get', ['region' => $this->testleague->region]));
-
-        $response->assertSessionHasErrors();
 
         // now create a fil
         $folder = $this->testleague->region->teamware_folder;
