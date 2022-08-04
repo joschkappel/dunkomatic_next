@@ -54,7 +54,9 @@ class RefereesImport implements ToCollection, WithStartRow, WithValidation
     public function rules(): array
     {
         return [
-            '0' => ['integer', 'exists:games,id'],
+            '0' => ['required','integer', 'exists:games,id'],
+            '8' => ['nullable','string','max:4'],
+            '9' => ['nullable','string','max:4'],
             '5' => ['integer', 'between:1,240'],  // support 16-team leagues
         ];
     }
@@ -66,7 +68,9 @@ class RefereesImport implements ToCollection, WithStartRow, WithValidation
     {
         return [
             '0' => 'ID',
-            '5' => __('game.game_no')
+            '5' => __('game.game_no'),
+            '8' => __('game.referee').' 1',
+            '9' => __('game.referee').' 2'
         ];
     }
 }
