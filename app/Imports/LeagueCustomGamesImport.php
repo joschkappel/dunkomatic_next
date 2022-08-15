@@ -100,9 +100,9 @@ class LeagueCustomGamesImport implements ToCollection, WithStartRow, WithValidat
     {
         $data['league_id'] = $this->league->id;
         $data['club_id_home'] = Club::where('shortname', Str::substr($data[3],0,4) )->first()->id ?? null;
-        $data['team_id_home'] = Team::where('club_id', $data['club_id_home'])->where('team_no', Str::substr($data[3],-1,1) )->first()->id ?? null;
+        $data['team_id_home'] = Team::where('club_id', $data['club_id_home'])->where('team_no', Str::substr($data[3],-1,1) )->where('league_id', $data['league_id'])->first()->id ?? null;
         $data['club_id_guest'] = Club::where('shortname', Str::substr($data[4],0,4) )->first()->id ?? null;
-        $data['team_id_guest'] = Team::where('club_id', $data['club_id_guest'])->where('team_no', Str::substr($data[4],-1,1) )->first()->id ?? null;
+        $data['team_id_guest'] = Team::where('club_id', $data['club_id_guest'])->where('team_no', Str::substr($data[4],-1,1) )->where('league_id', $data['league_id'])->first()->id ?? null;
         $data['game_id'] = Game::where('game_no', $data[0])
                                ->where('league_id', $data['league_id'])
                                ->where('club_id_home', $data['club_id_home'])->first()->id ?? null;

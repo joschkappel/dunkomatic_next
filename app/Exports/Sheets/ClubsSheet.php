@@ -52,7 +52,9 @@ class ClubsSheet implements FromView, WithTitle, ShouldAutoSize
     public function view(): View
     {
         if ($this->league == null){
-            $games =  Game::where('region',$this->region->code)
+            $rclubs = $this->region->clubs->pluck('id');
+            $games =  Game::whereIn('club_id_home', $rclubs)
+                        ->orWhereIn('club_id_guest', $rclubs)
                         ->with('league')
                         ->orderBy('game_date','asc')
                         ->orderBy('game_time','asc')
