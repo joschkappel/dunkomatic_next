@@ -123,6 +123,10 @@ class Member extends Model
   {
     return ( $this->email1 == '' ? $this->email2 : $this->email1);
   }
+  public function getAddressAttribute(): string
+  {
+     return "{$this->street}, {$this->zipcode} {$this->city}";
+  }
   public function getIsRegionAdminAttribute(): bool
   {
     return $this->region()->wherePivot('role_id', Role::RegionLead)->exists();

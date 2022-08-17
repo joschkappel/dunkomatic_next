@@ -6,6 +6,7 @@ use App\Enums\ReportFileType;
 use App\Models\Region;
 use App\Jobs\GenerateRegionGamesReport;
 use App\Jobs\GenerateRegionLeaguesReport;
+use App\Jobs\GenerateRegionContactsReport;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Bus;
@@ -68,6 +69,9 @@ class ProcessRegionReport implements ShouldQueue
             $rpt_jobs[] = new GenerateRegionGamesReport($this->region, $rtype);
             if ( ($rtype != ReportFileType::ICS()) and ($rtype != ReportFileType::PDF())){
                 $rpt_jobs[] = new GenerateRegionLeaguesReport($this->region, $rtype);
+                if ($this->region->is_top_level){
+                    $rpt_jobs[] = new GenerateRegionContactsReport($this->region, $rtype);
+                }
             }
         };
 
