@@ -96,9 +96,7 @@ class OpenLeagueState implements ShouldQueue
                 if (count($scheduling_opened)>0){
                     $r->update([
                         'job_game_overlaps' => true,
-                        'job_game_notime' => true,
-                        'job_club_reports' => JobFrequencyType::daily(),
-                        'fmt_club_reports' => ReportFileType::XLSX()
+                        'job_game_notime' => true
                     ]);
                 };
 

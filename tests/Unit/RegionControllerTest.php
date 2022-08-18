@@ -316,8 +316,6 @@ class RegionControllerTest extends TestCase
                 'job_game_notime' => JobFrequencyType::getRandomValue(),
                 'job_game_overlaps' => JobFrequencyType::getRandomValue(),
                 'job_email_valid' => JobFrequencyType::getRandomValue(),
-                'job_league_reports' => JobFrequencyType::getRandomValue(),
-                'job_club_reports' => JobFrequencyType::getRandomValue(),
                 'fmt_club_reports' => [ReportFileType::getRandomValue()],
                 'fmt_league_reports' => [ReportFileType::getRandomValue(), ReportFileType::getRandomValue()],
             ]);

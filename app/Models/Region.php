@@ -15,7 +15,7 @@ use App\Models\Message;
 use App\Models\Invitation;
 use App\Traits\ReportFinder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -39,11 +39,8 @@ use Illuminate\Support\Str;
  * @property int $job_game_notime
  * @property int $job_noleads
  * @property int $job_email_valid
- * @property int $job_league_reports
  * @property mixed $fmt_league_reports
- * @property int $job_club_reports
  * @property mixed $fmt_club_reports
- * @property int $job_exports
  * @property \Illuminate\Support\Carbon|null $open_scheduling_at
  * @property \Illuminate\Support\Carbon|null $open_selection_at
  * @property \Illuminate\Support\Carbon|null $close_selection_at
@@ -99,12 +96,9 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder|Region whereGameSlot($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Region whereHq($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Region whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Region whereJobClubReports($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Region whereJobEmailValid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Region whereJobExports($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Region whereJobGameNotime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Region whereJobGameOverlaps($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Region whereJobLeagueReports($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Region whereJobNoleads($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Region whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Region whereUpdatedAt($value)
@@ -119,7 +113,6 @@ class Region extends Model
     protected $fillable = [
         'id', 'code', 'name', 'hq', 'job_game_overlaps', 'game_slot',
         'job_game_notime', 'job_noleads', 'job_email_valid',
-        'job_league_reports', 'job_club_reports', 'job_exports',
         'fmt_league_reports', 'fmt_club_reports',
         'open_scheduling_at', 'open_selection_at',
         'close_selection_at', 'close_scheduling_at', 'close_referees_at',

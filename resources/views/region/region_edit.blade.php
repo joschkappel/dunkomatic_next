@@ -109,22 +109,7 @@
         <div class="tab-pane fade" id="reports" role="tabpanel" aria-labelledby="reports-tab">
 
             <div class="form-row m-2">
-                <label for="selLeagueReport"
-                    class="col-sm-6 col-form-label">@lang('region.job.league_reports')</label>
-                <div class="col-sm-4">
-                <div class="input-group ">
-                    <select class='js-sel-league-reports js-states form-control select2'
-                        id='selLeagueReport' name="job_league_reports">
-                        @foreach ($frequencytype as $ft)
-                            <option @if ($ft->value == $region->job_league_reports) selected @endif value="{{ $ft->value }}">
-                                {{ $ft->description }}</option>
-                        @endforeach
-                    </select>
-                        </div>
-                </div>
-            </div>
-            <div class="form-row m-2">
-                <label for="selLeagueReportFmt" class="col-sm-6 col-form-label"></label>
+                <label for="selLeagueReportFmt" class="col-sm-6 col-form-label">@lang('region.job.league_reports.fmt')</label>
                 <div class="col-sm-4">
                     <div class="input-group">
                         <select class='js-sel-league-reports-fmt js-states form-control select2'
@@ -150,22 +135,7 @@
                 </div>
             </div>
             <div class="form-row m-2">
-                <label for="selClubReport"
-                    class="col-sm-6 col-form-label">@lang('region.job.club_reports')</label>
-                <div class="col-sm-4">
-                <div class="input-group ">
-                    <select class='js-sel-league-reports js-states form-control select2'
-                        id='selClubReport' name="job_club_reports">
-                        @foreach ($frequencytype as $ft)
-                            <option @if ($ft->value == $region->job_club_reports) selected @endif value="{{ $ft->value }}">
-                                {{ $ft->description }}</option>
-                        @endforeach
-                    </select>
-                    </div>
-                </div>
-            </div>
-            <div class="form-row m-2">
-                <label for="selClubReportFmt" class="col-sm-6 col-form-label"></label>
+                <label for="selClubReportFmt" class="col-sm-6 col-form-label">@lang('region.job.club_reports.fmt')</label>
                 <div class="col-sm-4">
                 <div class="input-group ">
                     <select class='js-sel-club-reports-fmt js-states form-control select2'
@@ -434,12 +404,6 @@
                 minimumResultsForSearch: Infinity,
                 width: '100%',
             });
-            $("#selLeagueReport").select2({
-                multiple: false,
-                allowClear: false,
-                minimumResultsForSearch: Infinity,
-                width: '100%',
-            });
             $("#selLeagueReportFmt").select2({
                 multiple: true,
                 maximumSelectionLength: 2,
@@ -451,12 +415,6 @@
             $("#selLeagueReportFmt").val({{ collect($region->fmt_league_reports->getFlags())->pluck('value') }})
                 .change();
 
-            $("#selClubReport").select2({
-                multiple: false,
-                allowClear: false,
-                minimumResultsForSearch: Infinity,
-                width: '100%',
-            });
             $("#selClubReportFmt").select2({
                 multiple: true,
                 maximumSelectionLength: 2,

@@ -19,6 +19,8 @@ return [
   'job.notime' => 'Check for un-scheduled games',
   'job.league_reports' => 'Generate league reports',
   'job.club_reports' => 'Generate club reports',
+  'job.league_reports.fmt' => 'Addtl formats for league reports',
+  'job.club_reports.fmt' => 'Addtl formats for club reports',
   'name' =>  'Name',
   'code' => 'Code',
   'hq' => 'Part of',

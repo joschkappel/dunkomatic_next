@@ -71,9 +71,9 @@ class Kernel extends ConsoleKernel
                 $this->scheduleRegionTask($region, $schedule, new GameNotScheduled($region), $region->job_game_notime, '00:02');
                 $this->scheduleRegionTask($region, $schedule, new MissingLeadCheck($region), $region->job_noleads,'00:03');
                 $this->scheduleRegionTask($region, $schedule, new EmailValidation($region), $region->job_email_valid, '00:04');
-                $this->scheduleRegionTask($region, $schedule, new ProcessLeagueReports($region), $region->job_league_reports, '00:'.($region->id*10) );
-                $this->scheduleRegionTask($region, $schedule, new ProcessClubReports($region), $region->job_club_reports, '00:'.($region->id*10+3));
-                $this->scheduleRegionTask($region, $schedule, new ProcessRegionReport($region), $region->job_league_reports, '00:'.($region->id*10+6));
+                // $this->scheduleRegionTask($region, $schedule, new ProcessLeagueReports($region), $region->job_league_reports, '00:'.($region->id*10) );
+                // $this->scheduleRegionTask($region, $schedule, new ProcessClubReports($region), $region->job_club_reports, '00:'.($region->id*10+3));
+                // $this->scheduleRegionTask($region, $schedule, new ProcessRegionReport($region), $region->job_league_reports, '00:'.($region->id*10+6));
 
                 // $this->scheduleRegionTask($schedule, new ProcessLeagueStateChanges($r), JobFrequencyType::daily);
             }

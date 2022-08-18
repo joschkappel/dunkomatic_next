@@ -147,9 +147,7 @@ class CloseLeagueState implements ShouldQueue
                 if (count($live_not_opened)==0){
                     $r->update([
                         'job_game_overlaps' => false,
-                        'job_game_notime' => false,
-                        'job_club_reports' => JobFrequencyType::never(),
-                        'job_league_reports' => JobFrequencyType::never()
+                        'job_game_notime' => false
                     ]);
                 };
                 Notification::send($radmins, new LeagueStateClosed( __('league.action.close.referees') , $live_opened, $live_not_opened));
