@@ -18,6 +18,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Str;
 
 use Illuminate\Support\Facades\Log;
 
@@ -49,6 +50,7 @@ class GenerateLeagueGamesReport implements ShouldQueue
         $this->rpt_name = $this->export_folder . '/' . $this->league->shortname;
         $this->rpt_name .= '_Rundenplan.';
         $this->rpt_name .= $this->rtype->description;
+        $this->rpt_name = Str::replace(' ','-', $this->rpt_name );
 
     }
 

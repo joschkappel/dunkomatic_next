@@ -18,6 +18,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Bus\Batchable;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class GenerateRegionLeaguesReport implements ShouldQueue
 {
@@ -45,6 +46,7 @@ class GenerateRegionLeaguesReport implements ShouldQueue
         $this->rpt_name = $this->export_folder . '/' . $this->region->code;
         $this->rpt_name .= '_Rundenbuch.';
         $this->rpt_name .= $this->rtype->description;
+        $this->rpt_name = Str::replace(' ','-', $this->rpt_name );
     }
 
     /**

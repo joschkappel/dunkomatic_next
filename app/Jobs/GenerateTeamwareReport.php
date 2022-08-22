@@ -17,6 +17,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class GenerateTeamwareReport implements ShouldQueue
 {
@@ -43,8 +44,8 @@ class GenerateTeamwareReport implements ShouldQueue
         $this->export_folder = $league->region->teamware_folder;
 
         // teamware filenames
-        $this->tw_teams = $this->export_folder . '/' . $this->league->shortname . '_Teams.csv';
-        $this->tw_games = $this->export_folder . '/' . $this->league->shortname . '_Games.csv';
+        $this->tw_teams = $this->export_folder . '/' . Str::replace(' ','-', $this->league->shortname) . '_Teams.csv';
+        $this->tw_games = $this->export_folder . '/' . Str::replace(' ','-', $this->league->shortname) . '_Games.csv';
     }
 
     /**
