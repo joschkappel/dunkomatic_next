@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\LeagueState;
 use App\Models\Gym;
 use App\Models\Club;
 use App\Models\League;
@@ -12,12 +13,13 @@ use App\Models\Member;
 use App\Models\ReportClass;
 use App\Enums\Report;
 use App\Enums\ReportFileType;
+use App\Models\ReportJob;
 
 use App\Jobs\GenerateRegionContactsReport;
 use App\Jobs\GenerateRegionGamesReport;
 use App\Jobs\GenerateLeagueGamesReport;
 use App\Jobs\GenerateRegionLeaguesReport;
-
+use App\Models\Game;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Bus\Batch;
@@ -34,14 +36,18 @@ class ReportProcessor implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    protected Collection $run_rpts;
+    protected Collection $run_regions;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Collection $run_rpts, Collection $run_regions)
     {
-
+        $this->run_regions = $run_regions;
+        $this->run_rpts = $run_rpts;
     }
 
     /**
@@ -51,12 +57,24 @@ class ReportProcessor implements ShouldQueue
      */
     public function handle()
     {
-        list($modified_instances, $modified_classes, $impacted_reports) = $this->getImpactedReports();
-        Log::info('[JOB] kicking off process rports job',['modified_classes'=>$modified_classes, 'impcated_reports'=>$impacted_reports]);
-        Log::debug('[JOB] base audits',[$modified_instances]);
+        // get list of reports to run
+        if ($this->run_rpts->count() > 0){
+            $impacted_reports = $this->run_rpts;
+            $modified_instances = collect();
+            $modified_classes = collect();
+            Log::info('[JOB] kicking off process reports job',['impacted_reports'=>$impacted_reports]);
+        } else {
+            list($modified_instances, $modified_classes, $impacted_reports) = $this->getImpactedReports();
+            Log::info('[JOB] kicking off process reports job',['modified_classes'=>$modified_classes, 'impcated_reports'=>$impacted_reports]);
+            Log::debug('[JOB] base audits',[$modified_instances]);
+        }
 
         // now get all impacted regions
-        $impacted_regions = $this->getImpactedRegions($modified_instances);
+        if ($this->run_regions->count() > 0){
+            $impacted_regions = $this->run_regions;
+        } else {
+            $impacted_regions = $this->getImpactedRegions($modified_instances);
+        }
         Log::debug('[JOB] impacted regions',[$impacted_regions->pluck('code')]);
 
         // loop thru all impacted regions
@@ -64,42 +82,52 @@ class ReportProcessor implements ShouldQueue
 
             // loop through all impacted reports types
             foreach( $impacted_reports as $irpt ){
+                // collect jobs to run
+                $rpt_jobs = array();
                 switch ($irpt) {
                     case Report::AddressBook():
                         if ($ireg->is_top_level){
-                            $rpt_jobs = array();
                             $rpt_jobs[] = new GenerateRegionContactsReport($ireg, ReportFileType::HTML());
                             $rpt_jobs[] = new GenerateRegionContactsReport($ireg, ReportFileType::XLSX());
                             Log::notice('add job for ',['rpt'=>$irpt->description, 'region'=>$ireg->code]);
-                            $this->dispatchRegionBatch($irpt, $ireg, $rpt_jobs);
                         }
                         break;
                     case Report::RegionGames():
-                        $rpt_jobs = array();
                         $rpt_jobs[] = new GenerateRegionGamesReport($ireg, ReportFileType::HTML());
                         $rpt_jobs[] = new GenerateRegionGamesReport($ireg, ReportFileType::XLSX());
+                        $rpt_jobs[] = new GenerateRegionGamesReport($ireg,  ReportFileType::ICS() );
                         Log::notice('add job for ',['rpt'=>$irpt->description, 'region'=>$ireg->code]);
-                        $this->dispatchRegionBatch($irpt, $ireg, $rpt_jobs);
                         break;
                     case Report::LeagueBook():
-                        $rpt_jobs = array();
                         $rpt_jobs[] = new GenerateRegionLeaguesReport($ireg, ReportFileType::HTML());
                         $rpt_jobs[] = new GenerateRegionLeaguesReport($ireg, ReportFileType::XLSX());
                         Log::notice('add job for ',['rpt'=>$irpt->description, 'region'=>$ireg->code]);
-                        $this->dispatchRegionBatch($irpt, $ireg, $rpt_jobs);
                         break;
                     case Report::LeagueGames():
+                        $ileague = $this->getImpactedLeagues($ireg, $modified_instances);
+                        foreach($ileague as $l){
+                            $rpt_jobs[] = new GenerateLeagueGamesReport($ireg, $l, ReportFileType::HTML() );
+                            $rpt_jobs[] = new GenerateLeagueGamesReport($ireg, $l, ReportFileType::XLSX() );
+                            $rpt_jobs[] = new GenerateLeagueGamesReport($ireg, $l, ReportFileType::ICS() );
+                        }
                         Log::notice('add job for ',['rpt'=>$irpt->description, 'region'=>$ireg->code]);
                         break;
                     case Report::ClubGames():
                         Log::notice('add job for ',['rpt'=>$irpt->description, 'region'=>$ireg->code]);
                         break;
                     case Report::Teamware():
+                        $ileague = $this->getImpactedLeagues($ireg, $modified_instances);
+                        foreach($ileague as $l){
+                            $rpt_jobs[] = new GenerateTeamwareReport( $l );
+                        }
                         Log::notice('add job for ',['rpt'=>$irpt->description, 'region'=>$ireg->code]);
                         break;
                     default:
                         Log::error('no job added for ',['rpt'=>$irpt->description, 'region'=>$ireg->code]);
                         break;
+                }
+                if (count($rpt_jobs)>0){
+                    $this->dispatchReportBatch($irpt, $ireg, $rpt_jobs);
                 }
 
             }
@@ -121,47 +149,70 @@ class ReportProcessor implements ShouldQueue
     private function getImpactedReports(): Array
     {
         // get all models that have been modified yesterday
-        //$mod_classes = Audit::whereDate('created_at', now()->subDays(1))->pluck('auditable_type')->unique();
-        $mod_instances = Audit::whereDate('created_at', now())->select('auditable_type', 'auditable_id')->get();
+        $mod_instances = Audit::whereDate('created_at', now()->subDays(1))->select('auditable_type', 'auditable_id')->get();
         $mod_classes = $mod_instances->pluck('auditable_type')->unique();
         $impacted_reports = ReportClass::whereIn('report_class', $mod_classes )->pluck('report_id')->unique();
-        return array($mod_instances,$mod_classes, $impacted_reports);
+
+            return array($mod_instances,$mod_classes, $impacted_reports);
 
     }
-
     private function getImpactedRegions( Collection $audits): Collection
     {
         $regions = collect();
         // region for clubs:
         $clubs = $audits->where('auditable_type', Club::class)->pluck('auditable_id')->unique();
-        $regions = $regions->concat( Club::whereIn('id', $clubs)->pluck('region_id'));
+        if ($clubs->count()>0){
+            $regions = $regions->concat( Club::whereIn('id', $clubs)->pluck('region_id'));
+        }
 
         // region for gyms:
         $gyms = $audits->where('auditable_type', Gym::class)->pluck('auditable_id')->unique();
-        $clubs = Gym::whereIn('id', $gyms)->select('club_id')->get();
-        $regions = $regions->concat( Club::whereIn('id', $clubs)->pluck('region_id'));
+        if ($gyms->count()>0){
+            $clubs = Gym::whereIn('id', $gyms)->select('club_id')->get();
+            $regions = $regions->concat( Club::whereIn('id', $clubs)->pluck('region_id'));
+        }
 
         // region for teams:
         $teams = $audits->where('auditable_type', Team::class)->pluck('auditable_id')->unique();
-        $clubs = Gym::whereIn('id', $teams)->select('club_id')->get();
-        $regions = $regions->concat( Club::whereIn('id', $clubs)->pluck('region_id'));
+        if ($teams->count()>0){
+            $clubs = Team::whereIn('id', $teams)->select('club_id')->get();
+            $regions = $regions->concat( Club::whereIn('id', $clubs)->pluck('region_id'));
+        }
 
         // region for leagues:
         $leagues = $audits->where('auditable_type', League::class)->pluck('auditable_id')->unique();
-        $regions = $regions->concat( League::whereIn('id', $leagues)->pluck('region_id'));
+        if ($leagues->count()>0){
+            $regions = $regions->concat( League::whereIn('id', $leagues)->pluck('region_id'));
+        }
 
         // region for memberships and members:
         $mships = $audits->where('auditable_type', Membership::class)->pluck('auditable_id')->unique();
         $members = $audits->where('auditable_type', Member::class)->pluck('auditable_id')->unique();
-        $mships = $mships->concat( Membership::whereIn('member_id', $members)->pluck('id')  )->unique();
+        if ($members->count()>0){
+            $mships = $mships->concat( Membership::whereIn('member_id', $members)->pluck('id')  )->unique();
+        }
 
-        $clubs = Membership::whereIn('id', $mships)->where('membership_type', Club::class)->select('membership_id')->get();
-        $regions = $regions->concat( Club::whereIn('id', $clubs)->pluck('region_id'));
+        if ($mships->count()>0){
+            $clubs = Membership::whereIn('id', $mships)->where('membership_type', Club::class)->select('membership_id')->get();
+            if ($clubs->count()>0){
+                $regions = $regions->concat( Club::whereIn('id', $clubs)->pluck('region_id'));
+            }
 
-        $leagues = Membership::whereIn('id', $mships)->where('membership_type', League::class)->select('membership_id')->get();
-        $regions = $regions->concat( League::whereIn('id', $leagues)->pluck('region_id'));
+            $leagues = Membership::whereIn('id', $mships)->where('membership_type', League::class)->select('membership_id')->get();
+            if ($leagues->count()>0){
+                $regions = $regions->concat( League::whereIn('id', $leagues)->pluck('region_id'));
+            }
 
-        $regions = $regions->concat( Membership::whereIn('id', $mships)->where('membership_type', Region::class)->select('membership_id')->get());
+            $regions = $regions->concat( Membership::whereIn('id', $mships)->where('membership_type', Region::class)->select('membership_id')->get());
+        }
+
+        // region for games:
+        $games = $audits->where('auditable_type', Game::class)->pluck('auditable_id')->unique();
+        if ($games->count()>0){
+            $gregions = Game::whereIn('id', $games)->pluck('region');
+            $regions = $regions->concat( Region::whereIn('code', $gregions)->pluck('id'));
+        }
+
 
         // get unique regions
         $regions = Region::whereIn('id',$regions->unique())->get();
@@ -170,83 +221,62 @@ class ReportProcessor implements ShouldQueue
     }
     private function getImpactedLeagues( Region $region, Collection $audits): Collection
     {
-        $leagues = collect();
-        // region for leagues:
-        $mod_leagues = $audits->where('auditable_type', League::class)->pluck('auditable_id')->unique();
-        $leagues = $leagues->concat( League::whereIn('id', $mod_leagues)->where('region_id',$region->id)->pluck('id'));
+        if ($this->run_regions->count() > 0){
+            $leagues = $region->leagues->whereIn('state',[LeagueState::Scheduling(), LeagueState::Referees(), LeagueState::Live()]);
+        } else {
+            $leagues = collect();
+            // leagues from league:
+            $mod_leagues = $audits->where('auditable_type', League::class)->pluck('auditable_id')->unique();
+            if ($mod_leagues->count() > 0){
+                $leagues = $leagues->concat( League::whereIn('id', $mod_leagues)->where('region_id',$region->id)->pluck('id'));
+            }
 
-        // region for teams:
-        $teams = $audits->where('auditable_type', Team::class)->pluck('auditable_id')->unique();
-        $leagues = $leagues->concat( Team::whereIn('id', $teams)->with('club')->get()->groupBy('club.region.id')[$region->id]->pluck('league_id'));
+            // leagues from teams:
+            $teams = $audits->where('auditable_type', Team::class)->pluck('auditable_id')->unique();
+            if ($teams->count() > 0){
+                $leagues = $leagues->concat( Team::whereIn('id', $teams)->with('club')->get()->groupBy('club.region.id')[$region->id]->pluck('league_id'));
+            }
 
+            // leagues from games:
+            $games = $audits->where('auditable_type', Game::class)->pluck('auditable_id')->unique();
+            if ($games->count() > 0){
+                $leagues = $leagues->concat( Game::whereIn('id', $games)->get()->pluck('league_id'));
+            }
 
+            // leagues from gyms:
+            $gyms = $audits->where('auditable_type', Gym::class)->pluck('auditable_id')->unique();
+            if ($gyms->count()>0){
+                $leagues = $leagues->concat( Game::whereIn('gym_id', $gyms)->get()->pluck('league_id'));
+            }
 
-        // get unique leagues
-        $leagues = League::whereIn('id',$leagues->unique())->get();
+            // get unique leagues
+            $leagues = League::whereIn('id',$leagues->unique())->whereIn('state',[LeagueState::Scheduling(), LeagueState::Referees(), LeagueState::Live()])->get();
+        }
 
         return $leagues;
     }
 
-    private function dispatchRegionBatch($report, $region, $joblist): void
+    private function dispatchReportBatch($report, $region, $joblist): void
     {
-        $batch = Bus::batch($joblist)
-        ->then(function (Batch $batch) use ($region) {
-            // update region
-            $region->update([
-                'job_league_reports_running' => false,
-                'job_league_reports_lastrun_at' => now()
-            ]);
+        $batch = Bus::batch([$joblist])
+        ->then(function (Batch $batch) use ($region, $report) {
+            // update region job status
+            $rj = ReportJob::updateOrCreate(
+                ['report_id' => $report, 'region_id' => $region->id],
+                ['lastrun_at' => now(), 'running' => false]
+            );
         })
-        ->finally(function (Batch $batch) use ($region){
+        ->finally(function (Batch $batch) use ($region, $report){
             if ($batch->failedJobs >  0){
-                $region->update(['job_league_reports_lastrun_ok' => false]);
+                $lastrun = false;
             } else {
-                $region->update(['job_league_reports_lastrun_ok' => true]);
+                $lastrun = true;
             }
-        })
-        ->name('Region-'.$region->code.'-Reports-' . $report->key)
-        ->onConnection('redis')
-        ->onQueue('region_'.$region->id)
-        ->dispatch();
-    }
-    private function dispatchLeagueBatch($report, $region, $joblist): void
-    {
-        $batch = Bus::batch($joblist)
-        ->then(function (Batch $batch) use ($region) {
-            // update region
-            $region->update([
-                'job_league_reports_running' => false,
-                'job_league_reports_lastrun_at' => now()
-            ]);
-        })
-        ->finally(function (Batch $batch) use ($region){
-            if ($batch->failedJobs >  0){
-                $region->update(['job_league_reports_lastrun_ok' => false]);
-            } else {
-                $region->update(['job_league_reports_lastrun_ok' => true]);
-            }
-        })
-        ->name('Region-'.$region->code.'-Reports-' . $report->key)
-        ->onConnection('redis')
-        ->onQueue('region_'.$region->id)
-        ->dispatch();
-    }
-    private function dispatchClubBatch($report, $region, $joblist): void
-    {
-        $batch = Bus::batch($joblist)
-        ->then(function (Batch $batch) use ($region) {
-            // update region
-            $region->update([
-                'job_club_reports_running' => false,
-                'job_club_reports_lastrun_at' => now()
-            ]);
-        })
-        ->finally(function (Batch $batch) use ($region){
-            if ($batch->failedJobs >  0){
-                $region->update(['job_club_reports_lastrun_ok' => false]);
-            } else {
-                $region->update(['job_club_reports_lastrun_ok' => true]);
-            }
+            $rj = ReportJob::updateOrCreate(
+                ['report_id' => $report, 'region_id' => $region->id],
+                ['lastrun' => $lastrun]
+            );
+
         })
         ->name('Region-'.$region->code.'-Reports-' . $report->key)
         ->onConnection('redis')

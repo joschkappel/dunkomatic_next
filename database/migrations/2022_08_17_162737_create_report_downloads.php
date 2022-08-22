@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('report_downloads', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->unsignedInteger('report_id');
             $table->unsignedBigInteger('user_id')->nullable;
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();

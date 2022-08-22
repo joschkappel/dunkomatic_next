@@ -108,8 +108,26 @@
         </div>
         <div class="tab-pane fade" id="reports" role="tabpanel" aria-labelledby="reports-tab">
 
+            @foreach( App\Enums\Report::getInstances() as $rpt)
+            @php
+            $report = $region->report_jobs()->where('report_id', $rpt )->first();
+            if (!$report){
+                $report = new App\Models\ReportJob(['lastrun'=>null,'running'=>false,'lastrun_ok'=>true]);
+            }
+            @endphp
             <div class="form-row m-2">
-                <label for="selLeagueReportFmt" class="col-sm-6 col-form-label">@lang('region.job.league_reports.fmt')</label>
+                <label class="col-sm col-form-label">{{ $rpt->getReportTitle() }}</label>
+                <div class="col-sm-4">
+                    <input type="text" readonly class="form-control @if( $report->lastrun_ok) text-success @else text-danger @endif" id="lastrun_at"
+                    value="@isset(  $report->lastrun_at) {{Carbon\Carbon::parse($report->lastrun_at)->locale(app()->getLocale())->isoFormat('LLL')}} @endisset">
+                </div>
+                <div class="col-sm-4">
+                    <button id="btnRunJob" onclick="run_job({{$rpt->value}});" class="btn btn-secondary" @if ($report->running) disabled  @endif>Create {{$rpt->getReportTitle()}}</button>
+                </div>
+            </div>
+            @endforeach
+            <div class="form-row m-2">
+                <label for="selLeagueReportFmt" class="col-sm col-form-label">@lang('region.job.league_reports.fmt')</label>
                 <div class="col-sm-4">
                     <div class="input-group">
                         <select class='js-sel-league-reports-fmt js-states form-control select2'
@@ -120,44 +138,22 @@
                         </select>
                     </div>
                 </div>
-            </div>
-            <div class="form-row m-2">
-                <label for="job_league_reports_lastrun_at" class="col-sm-6 col-form-label">@lang('reports.last_run_at')</label>
                 <div class="col-sm-4">
-                    <input type="text" readonly class="form-control @if($region->job_league_reports_lastrun_ok) text-success @else text-danger @endif" id="job_league_reports_lastrun_at" name="job_league_reports_lastrun_at"
-                    value="@isset($region->job_league_reports_lastrun_at) {{Carbon\Carbon::parse($region->job_league_reports_lastrun_at)->locale(app()->getLocale())->isoFormat('LLL')}} @endisset">
                 </div>
             </div>
             <div class="form-row m-2">
-                <label for="runleaguereport" class="col-sm-6 col-form-label"></label>
+                <label for="selClubReportFmt" class="col-sm col-form-label">@lang('region.job.club_reports.fmt')</label>
                 <div class="col-sm-4">
-                    <button id="btnRunJob" onclick="run_job('league_reports');" class="btn btn-secondary" @if ($region->job_league_reports_running) disabled  @endif>@lang('reports.run.league')</button>
-                </div>
-            </div>
-            <div class="form-row m-2">
-                <label for="selClubReportFmt" class="col-sm-6 col-form-label">@lang('region.job.club_reports.fmt')</label>
-                <div class="col-sm-4">
-                <div class="input-group ">
-                    <select class='js-sel-club-reports-fmt js-states form-control select2'
-                        id='selClubReportFmt' name="fmt_club_reports[]">
-                        @foreach ($filetype as $ft)
-                            <option value="{{ $ft->value }}">{{ $ft->description }}</option>
-                        @endforeach
-                    </select>
+                    <div class="input-group ">
+                        <select class='js-sel-club-reports-fmt js-states form-control select2'
+                            id='selClubReportFmt' name="fmt_club_reports[]">
+                            @foreach ($filetype as $ft)
+                                <option value="{{ $ft->value }}">{{ $ft->description }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
-            </div>
-            <div class="form-row m-2">
-                <label for="job_club_reports_lastrun_at" class="col-sm-6 col-form-label">@lang('reports.last_run_at')</label>
                 <div class="col-sm-4">
-                    <input type="text" readonly class="form-control @if($region->job_club_reports_lastrun_ok) text-success @else text-danger @endif" id="job_club_reports_lastrun_at" name="job_club_reports_lastrun_at"
-                        value="@isset($region->job_club_reports_lastrun_at) {{ Carbon\Carbon::parse($region->job_club_reports_lastrun_at)->locale(app()->getLocale())->isoFormat('LLL')}} @endisset">
-                </div>
-            </div>
-            <div class="form-row m-2">
-                <label for="runclubreport" class="col-sm-6 col-form-label"></label>
-                <div class="col-sm-4">
-                    <button id="btnRunJob" onclick="run_job('club_reports');" class="btn btn-secondary" @if ($region->job_club_reports_running) disabled  @endif>@lang('reports.run.club')</button>
                 </div>
             </div>
         </div>

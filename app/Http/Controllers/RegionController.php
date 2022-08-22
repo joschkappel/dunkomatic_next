@@ -244,8 +244,10 @@ class RegionController extends Controller
         Log::info('editing region.', ['region-id' => $region->id]);
         $filetypes = ReportFileType::getInstances();
         unset($filetypes[ReportFileType::ICS()->key]);
+        unset($filetypes[ReportFileType::HTML()->key]);
+        unset($filetypes[ReportFileType::XLSX()->key]);
 
-        return view('region/region_edit', ['region' => $region, 'frequencytype' => JobFrequencyType::getInstances(), 'filetype' => $filetypes]);
+        return view('region/region_edit', ['region' => $region->load('report_jobs'), 'frequencytype' => JobFrequencyType::getInstances(), 'filetype' => $filetypes]);
     }
 
     /**
@@ -344,10 +346,10 @@ class RegionController extends Controller
             'job_game_notime' => ['required', new EnumValue(JobFrequencyType::class, false)],
             'job_game_overlaps' => ['required', new EnumValue(JobFrequencyType::class, false)],
             'job_email_valid' => ['required', new EnumValue(JobFrequencyType::class, false)],
-            'fmt_club_reports' => 'required|array|min:1',
-            'fmt_club_reports.*' => ['required', new EnumValue(ReportFileType::class, false)],
-            'fmt_league_reports' => 'required|array|min:1',
-            'fmt_league_reports.*' => ['required', new EnumValue(ReportFileType::class, false)],
+            'fmt_club_reports' => 'nullable|array',
+            'fmt_club_reports.*' => ['nullable', new EnumValue(ReportFileType::class, false)],
+            'fmt_league_reports' => 'nullable|array|',
+            'fmt_league_reports.*' => ['nullable', new EnumValue(ReportFileType::class, false)],
             'open_selection_at' => $openselectionrule,
             'close_selection_at' => $closeselectionrule,
             'open_scheduling_at' => $openschedulingrule,

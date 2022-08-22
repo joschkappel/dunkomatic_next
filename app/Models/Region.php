@@ -116,10 +116,7 @@ class Region extends Model
         'fmt_league_reports', 'fmt_club_reports',
         'open_scheduling_at', 'open_selection_at',
         'close_selection_at', 'close_scheduling_at', 'close_referees_at',
-        'auto_state_change',
-        'job_club_reports_lastrun_at', 'job_league_reports_lastrun_at',
-        'job_club_reports_lastrun_ok', 'job_league_reports_lastrun_ok',
-        'job_club_reports_running', 'job_league_reports_running'
+        'auto_state_change'
     ];
 
     protected $casts = [
@@ -130,13 +127,7 @@ class Region extends Model
         'close_selection_at' => 'date',
         'close_scheduling_at' => 'date',
         'close_referees_at' => 'date',
-        'auto_state_change' => 'boolean',
-        'job_club_reports_lastrun_at' => 'datetime',
-        'job_league_reports_lastrun_at' => 'datetime',
-        'job_club_reports_running' => 'boolean',
-        'job_league_reports_running' => 'boolean',
-        'job_club_reports_lastrun_ok' => 'boolean',
-        'job_league_reports_lastrun_ok' => 'boolean'
+        'auto_state_change' => 'boolean'
     ];
 
     public function clubs(): HasMany
@@ -162,7 +153,10 @@ class Region extends Model
     {
         return $this->hasMany(Invitation::class);
     }
-
+    public function report_jobs(): HasMany
+    {
+        return $this->hasMany(ReportJob::class);
+    }
 
     public function users(): Collection
     {

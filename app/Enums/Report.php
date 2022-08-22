@@ -25,7 +25,7 @@ final class Report extends Enum
     function getReportTitle(){
         switch ($this->value) {
             case 0:
-                return 'teamware_import';
+                return 'Teamware Dateien';
                 break;
             case 1:
                 return 'Rundenbuch';
@@ -39,7 +39,7 @@ final class Report extends Enum
             case 4:
                 return 'Vereinsplan';
                 break;
-            case 4:
+            case 5:
                 return 'Rundenplan';
                 break;
             default:
