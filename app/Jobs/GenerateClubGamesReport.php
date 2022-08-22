@@ -20,6 +20,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Str;
 
 use Illuminate\Support\Facades\Log;
 
@@ -72,6 +73,7 @@ class GenerateClubGamesReport implements ShouldQueue
                 break;
         }
         $this->rpt_name .= $this->rtype->description;
+        $this->rpt_name = Str::slug($this->rpt_name,'-');
     }
 
     /**

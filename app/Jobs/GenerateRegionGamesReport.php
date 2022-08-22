@@ -19,6 +19,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class GenerateRegionGamesReport implements ShouldQueue
 {
@@ -45,6 +46,7 @@ class GenerateRegionGamesReport implements ShouldQueue
         $this->rpt_name = $this->export_folder . '/' . $this->region->code;
         $this->rpt_name .= '_Gesamtplan.';
         $this->rpt_name .= $this->rtype->description;
+        $this->rpt_name = Str::slug($this->rpt_name,'-');
 
     }
 
