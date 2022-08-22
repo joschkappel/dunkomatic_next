@@ -257,6 +257,13 @@ class Region extends Model
             );
         }
 
+        // add top level region reports
+        if ($this->is_base_level){
+            $reports = $reports->concat(
+                $this->get_reports($this->parentRegion->region_folder, null, $format )
+            );
+        }
+
         return $reports;
     }
 
