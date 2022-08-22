@@ -69,7 +69,7 @@ class FileDownloadController extends Controller
 
         if ($user->LeagueFilecount($region) + $user->ClubFilecount($region) + $user->TeamwareFilecount($region) > 0) {
             $zip = new ZipArchive;
-            $fileName = $region->code . '-reports-' . Str::slug($user->name, '-') . '.zip';
+            $fileName = $region->code . '-reports-' . Str::replace(' ','-', $user->name) . '.zip';
             Storage::disk('public')->delete($fileName);
             $pf = Storage::disk('public')->path($fileName);
             Log::info('archive location.', ['path' => $pf]);
@@ -125,7 +125,7 @@ class FileDownloadController extends Controller
 
 
         $zip = new ZipArchive;
-        $filename = $club->region->code . '-reports-' . Str::slug($club->shortname, '-') . '.zip';
+        $filename = $club->region->code . '-reports-' . Str::replace(' ','-', $club->shortname) . '.zip';
         Storage::disk('public')->delete($filename);
         $pf = Storage::disk('public')->path($filename);
         Log::info('archive location.', ['path' => $pf]);
@@ -174,7 +174,7 @@ class FileDownloadController extends Controller
         Log::info('league file archive download.', ['league-id' => $league->id,'format'=>$format]);
 
         $zip = new ZipArchive;
-        $filename = $league->region->code . '-reports-' . Str::slug($league->shortname, '-') . '.zip';
+        $filename = $league->region->code . '-reports-' . Str::replace(' ','-', $league->shortname) . '.zip';
         Storage::disk('public')->delete($filename);
         $pf = Storage::disk('public')->path($filename);
         Log::info('archive location.', ['path' => $pf]);
