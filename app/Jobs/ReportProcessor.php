@@ -90,6 +90,10 @@ class ReportProcessor implements ShouldQueue
                             $rpt_jobs[] = new GenerateRegionContactsReport($ireg, ReportFileType::HTML());
                             $rpt_jobs[] = new GenerateRegionContactsReport($ireg, ReportFileType::XLSX());
                             Log::notice('add job for ',['rpt'=>$irpt->description, 'region'=>$ireg->code]);
+                        } else {
+                            $rpt_jobs[] = new GenerateRegionContactsReport($ireg->parentRegion, ReportFileType::HTML());
+                            $rpt_jobs[] = new GenerateRegionContactsReport($ireg->parentRegion, ReportFileType::XLSX());
+                            Log::notice('add job for ',['rpt'=>$irpt->description, 'region'=>$ireg->code]);
                         }
                         break;
                     case Report::RegionGames():
