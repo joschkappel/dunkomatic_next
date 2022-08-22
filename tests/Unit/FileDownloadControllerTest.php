@@ -99,7 +99,7 @@ class FileDownloadControllerTest extends TestCase
         $response->assertStatus(404);
 
         // no create files
-        $archive = $this->region->code . '-reports-' . Str::slug($this->region_user->name, '-') . '.zip';
+        $archive = $this->region->code . '-reports-' . Str::replace(' ','-', $this->region_user->name) . '.zip';
         $folder = $this->testclub_assigned->region->club_folder;
         $filename = $this->testclub_assigned->shortname . '.test';
         UploadedFile::fake()->create($filename)
@@ -135,7 +135,7 @@ class FileDownloadControllerTest extends TestCase
         // now create files
         $folder = $this->testclub_assigned->region->club_folder;
         $filename = $this->testclub_assigned->shortname . '.test.html';
-        $archive = $this->testclub_assigned->region->code . '-reports-' . Str::slug($this->testclub_assigned->shortname, '-') . '.zip';
+        $archive = $this->testclub_assigned->region->code . '-reports-' . Str::replace(' ', '-', $this->testclub_assigned->shortname) . '.zip';
 
         UploadedFile::fake()->create($filename)
             ->storeAs($folder, $filename);
@@ -166,7 +166,7 @@ class FileDownloadControllerTest extends TestCase
         // now create files
         $folder = $this->testleague->region->league_folder;
         $filename = $this->testleague->shortname . '.test.html';
-        $archive = $this->testleague->region->code . '-reports-' . Str::slug($this->testleague->shortname, '-') . '.zip';
+        $archive = $this->testleague->region->code . '-reports-' . Str::replace(' ','-', $this->testleague->shortname) . '.zip';
 
         UploadedFile::fake()->create($filename)
             ->storeAs($folder, $filename);
