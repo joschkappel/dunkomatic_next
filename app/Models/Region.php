@@ -264,6 +264,13 @@ class Region extends Model
             $this->get_reports($this->region_folder.'/'.config('dunkomatic.export_folders.teamware'), null,  ReportFileType::coerce(ReportFileType::CSV() ) )
         );
 
+        // add top level region reports
+        if ($this->is_base_level){
+            $reports = $reports->concat(
+                $this->get_reports($this->parentRegion->region_folder, null, $format )
+            );
+        }
+
         return $reports;
     }
 
