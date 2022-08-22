@@ -73,7 +73,7 @@ class GenerateClubGamesReport implements ShouldQueue
                 break;
         }
         $this->rpt_name .= $this->rtype->description;
-        $this->rpt_name = Str::slug($this->rpt_name,'-');
+        $this->rpt_name = Str::replace(' ','-', $this->rpt_name );
     }
 
     /**

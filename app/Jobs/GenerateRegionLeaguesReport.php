@@ -46,7 +46,7 @@ class GenerateRegionLeaguesReport implements ShouldQueue
         $this->rpt_name = $this->export_folder . '/' . $this->region->code;
         $this->rpt_name .= '_Rundenbuch.';
         $this->rpt_name .= $this->rtype->description;
-        $this->rpt_name = Str::slug($this->rpt_name,'-');
+        $this->rpt_name = Str::replace(' ','-', $this->rpt_name );
     }
 
     /**
