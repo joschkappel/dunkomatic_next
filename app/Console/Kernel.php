@@ -5,13 +5,8 @@ namespace App\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
-use App\Jobs\ProcessLeagueReports;
-use App\Jobs\ProcessClubReports;
 use App\Jobs\ProcessNewSeason;
 use App\Jobs\ProcessDbCleanup;
-use App\Jobs\ProcessLeagueStateChanges;
-use App\Jobs\ProcessRegionReport;
-
 use App\Jobs\EmailValidation;
 use App\Jobs\MissingLeadCheck;
 use App\Jobs\GameOverlaps;
@@ -24,6 +19,7 @@ use App\Jobs\OpenLeagueState;
 use App\Jobs\CloseLeagueState;
 use App\Jobs\ProcessFilesCleanup;
 use App\Jobs\ProcessCustomMessages;
+use App\Jobs\ReportProcessor;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Monolog\Handler\SendGridHandler;
 use Spatie\Health\Commands\RunHealthChecksCommand;
@@ -61,6 +57,7 @@ class Kernel extends ConsoleKernel
         // $schedule->job(new ExportStatistics(), 'janitor')->everyMinute();
         $schedule->job(new OpenLeagueState(), 'janitor')->dailyAt('07:45')->emailOutputOnFailure('dmatic.master@gmail.com');
         $schedule->job(new CloseLeagueState(), 'janitor')->dailyAt('20:00')->emailOutputOnFailure('dmatic.master@gmail.com');
+        $schedule->job(new ReportProcessor(collect(), collect()), 'janitor')->dailyAt('00:10')->emailOutputOnFailure('dmatic.master@gmail.com');
 
         // schedule region specific jobs
         $regions = Region::with('regionadmins')->get();
@@ -71,11 +68,6 @@ class Kernel extends ConsoleKernel
                 $this->scheduleRegionTask($region, $schedule, new GameNotScheduled($region), $region->job_game_notime, '00:02');
                 $this->scheduleRegionTask($region, $schedule, new MissingLeadCheck($region), $region->job_noleads,'00:03');
                 $this->scheduleRegionTask($region, $schedule, new EmailValidation($region), $region->job_email_valid, '00:04');
-                // $this->scheduleRegionTask($region, $schedule, new ProcessLeagueReports($region), $region->job_league_reports, '00:'.($region->id*10) );
-                // $this->scheduleRegionTask($region, $schedule, new ProcessClubReports($region), $region->job_club_reports, '00:'.($region->id*10+3));
-                // $this->scheduleRegionTask($region, $schedule, new ProcessRegionReport($region), $region->job_league_reports, '00:'.($region->id*10+6));
-
-                // $this->scheduleRegionTask($schedule, new ProcessLeagueStateChanges($r), JobFrequencyType::daily);
             }
         }
 

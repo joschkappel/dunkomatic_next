@@ -15,8 +15,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Bus\PendingBatch;
 
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
+
 
 class ProcessReportsTest extends SysTestCase
 {

@@ -76,6 +76,9 @@ class ReportProcessor implements ShouldQueue
 
         // loop thru all impacted regions
         foreach( $impacted_regions as $ireg ){
+            // get extra formats:
+            $extra_formats_league = $ireg->fmt_league_reports->getFlags();
+            $extra_formats_club = $ireg->fmt_club_reports->getFlags();
 
             // loop through all impacted reports types
             foreach( $impacted_reports as $irpt ){
@@ -86,10 +89,16 @@ class ReportProcessor implements ShouldQueue
                         if ($ireg->is_top_level){
                             $rpt_jobs[] = new GenerateRegionContactsReport($ireg, ReportFileType::HTML());
                             $rpt_jobs[] = new GenerateRegionContactsReport($ireg, ReportFileType::XLSX());
+                            foreach ($extra_formats_club as $fmt_c){
+                                $rpt_jobs[] = new GenerateRegionContactsReport($ireg, $fmt_c);
+                            }
                             Log::notice('add job for ',['rpt'=>$irpt->description, 'region'=>$ireg->code]);
                         } else {
                             $rpt_jobs[] = new GenerateRegionContactsReport($ireg->parentRegion, ReportFileType::HTML());
                             $rpt_jobs[] = new GenerateRegionContactsReport($ireg->parentRegion, ReportFileType::XLSX());
+                            foreach ($extra_formats_club as $fmt_c){
+                                $rpt_jobs[] = new GenerateRegionContactsReport($ireg->parentRegion, $fmt_c);
+                            }
                             Log::notice('add job for ',['rpt'=>$irpt->description, 'region'=>$ireg->code]);
                         }
                         break;
@@ -97,12 +106,18 @@ class ReportProcessor implements ShouldQueue
                         $rpt_jobs[] = new GenerateRegionGamesReport($ireg, ReportFileType::HTML());
                         $rpt_jobs[] = new GenerateRegionGamesReport($ireg, ReportFileType::XLSX());
                         $rpt_jobs[] = new GenerateRegionGamesReport($ireg,  ReportFileType::ICS() );
+                        foreach ($extra_formats_league as $fmt_l){
+                            $rpt_jobs[] = new GenerateRegionGamesReport($ireg, $fmt_l);
+                        }
                         Log::notice('add job for ',['rpt'=>$irpt->description, 'region'=>$ireg->code]);
                         break;
                     case Report::LeagueBook():
                         $rpt_jobs[] = new GenerateRegionLeaguesReport($ireg, ReportFileType::HTML());
                         $rpt_jobs[] = new GenerateRegionLeaguesReport($ireg, ReportFileType::XLSX());
                         Log::notice('add job for ',['rpt'=>$irpt->description, 'region'=>$ireg->code]);
+                        foreach ($extra_formats_league as $fmt_l){
+                            $rpt_jobs[] = new GenerateRegionLeaguesReport($ireg, $fmt_l);
+                        }
                         break;
                     case Report::LeagueGames():
                         $ileague = $this->getImpactedLeagues($ireg, $modified_instances);
@@ -110,6 +125,9 @@ class ReportProcessor implements ShouldQueue
                             $rpt_jobs[] = new GenerateLeagueGamesReport($ireg, $l, ReportFileType::HTML() );
                             $rpt_jobs[] = new GenerateLeagueGamesReport($ireg, $l, ReportFileType::XLSX() );
                             $rpt_jobs[] = new GenerateLeagueGamesReport($ireg, $l, ReportFileType::ICS() );
+                            foreach ($extra_formats_league as $fmt_l){
+                                $rpt_jobs[] = new GenerateLeagueGamesReport($ireg, $l, $fmt_l);
+                            }
                         }
                         Log::notice('add job for ',['rpt'=>$irpt->description, 'region'=>$ireg->code]);
                         break;
@@ -118,6 +136,15 @@ class ReportProcessor implements ShouldQueue
                         foreach($iclub as $c){
                             $rpt_jobs[] = new GenerateClubGamesReport($ireg, $c, ReportFileType::XLSX(), ReportScope::ms_all());
                             $rpt_jobs[] = new GenerateClubGamesReport($ireg, $c, ReportFileType::HTML(), ReportScope::ms_all());
+                            foreach ($extra_formats_club as $fmt_c){
+                                if ($fmt_c->hasFlag(ReportFileType::CSV())){
+                                    $rpt_jobs[] = new GenerateClubGamesReport($ireg, $c, ReportFileType::CSV(), ReportScope::ss_club_all());
+                                    $rpt_jobs[] = new GenerateClubGamesReport($ireg, $c, ReportFileType::CSV(), ReportScope::ss_club_home());
+                                    $rpt_jobs[] = new GenerateClubGamesReport($ireg, $c, ReportFileType::CSV(), ReportScope::ss_club_referee());
+                                } else {
+                                    $rpt_jobs[] = new GenerateClubGamesReport($ireg, $c, $fmt_c, ReportScope::ms_all());
+                                }
+                            }
                             $rpt_jobs[] = new GenerateClubGamesReport($ireg, $c, ReportFileType::ICS(), ReportScope::ss_club_all());
                             $rpt_jobs[] = new GenerateClubGamesReport($ireg, $c, ReportFileType::ICS(), ReportScope::ss_club_home());
                             $rpt_jobs[] = new GenerateClubGamesReport($ireg, $c, ReportFileType::ICS(), ReportScope::ss_club_referee());
