@@ -5,7 +5,7 @@ namespace App\Exports;
 use App\Models\Region;
 use App\Exports\Sheets\GamesSheet;
 use App\Exports\Sheets\ClubsSheet;
-use App\Exports\Sheets\RegionTitle;
+use App\Exports\Sheets\Title;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithCustomChunkSize;
@@ -32,7 +32,7 @@ class RegionGamesReport implements WithMultipleSheets
 
         $sheets = [];
 
-        $sheets[] = new RegionTitle($this->region,'Gesamtspielplan');
+        $sheets[] = new Title('Gesamtspielplan', $this->region, null, null);
         $sheets[] = new GamesSheet($this->region);
         $sheets[] = new ClubsSheet($this->region);
 

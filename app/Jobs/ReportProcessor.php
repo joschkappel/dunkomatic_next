@@ -13,12 +13,9 @@ use App\Models\Member;
 use App\Models\ReportClass;
 use App\Enums\Report;
 use App\Enums\ReportFileType;
+use App\Enums\ReportScope;
 use App\Models\ReportJob;
 
-use App\Jobs\GenerateRegionContactsReport;
-use App\Jobs\GenerateRegionGamesReport;
-use App\Jobs\GenerateLeagueGamesReport;
-use App\Jobs\GenerateRegionLeaguesReport;
 use App\Models\Game;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Bus;
@@ -117,6 +114,18 @@ class ReportProcessor implements ShouldQueue
                         Log::notice('add job for ',['rpt'=>$irpt->description, 'region'=>$ireg->code]);
                         break;
                     case Report::ClubGames():
+                        $iclub = $this->getImpactedClubs($ireg, $modified_instances);
+                        foreach($iclub as $c){
+                            $rpt_jobs[] = new GenerateClubGamesReport($ireg, $c, ReportFileType::XLSX(), ReportScope::ms_all());
+                            $rpt_jobs[] = new GenerateClubGamesReport($ireg, $c, ReportFileType::HTML(), ReportScope::ms_all());
+                            $rpt_jobs[] = new GenerateClubGamesReport($ireg, $c, ReportFileType::ICS(), ReportScope::ss_club_all());
+                            $rpt_jobs[] = new GenerateClubGamesReport($ireg, $c, ReportFileType::ICS(), ReportScope::ss_club_home());
+                            $rpt_jobs[] = new GenerateClubGamesReport($ireg, $c, ReportFileType::ICS(), ReportScope::ss_club_referee());
+                            $leagues = Game::where('club_id_home', $c->id)->with('league')->get()->pluck('league.id')->unique();
+                            foreach ($leagues as $l) {
+                                $rpt_jobs[] = new GenerateClubGamesReport($ireg, $c, ReportFileType::ICS(), ReportScope::ss_club_league(), League::find($l));
+                            }
+                        }
                         Log::notice('add job for ',['rpt'=>$irpt->description, 'region'=>$ireg->code]);
                         break;
                     case Report::Teamware():
@@ -232,32 +241,60 @@ class ReportProcessor implements ShouldQueue
             // leagues from league:
             $mod_leagues = $audits->where('auditable_type', League::class)->pluck('auditable_id')->unique();
             if ($mod_leagues->count() > 0){
-                $leagues = $leagues->concat( League::whereIn('id', $mod_leagues)->where('region_id',$region->id)->pluck('id'));
+                $leagues = $leagues->concat( League::whereIn('id', $mod_leagues)->pluck('id'));
             }
 
             // leagues from teams:
             $teams = $audits->where('auditable_type', Team::class)->pluck('auditable_id')->unique();
             if ($teams->count() > 0){
-                $leagues = $leagues->concat( Team::whereIn('id', $teams)->with('club')->get()->groupBy('club.region.id')[$region->id]->pluck('league_id'));
+                $leagues = $leagues->concat( Team::whereIn('id', $teams)->pluck('league_id'));
             }
 
             // leagues from games:
             $games = $audits->where('auditable_type', Game::class)->pluck('auditable_id')->unique();
             if ($games->count() > 0){
-                $leagues = $leagues->concat( Game::whereIn('id', $games)->get()->pluck('league_id'));
+                $leagues = $leagues->concat( Game::whereIn('id', $games)->pluck('league_id'));
             }
 
             // leagues from gyms:
             $gyms = $audits->where('auditable_type', Gym::class)->pluck('auditable_id')->unique();
             if ($gyms->count()>0){
-                $leagues = $leagues->concat( Game::whereIn('gym_id', $gyms)->get()->pluck('league_id'));
+                $leagues = $leagues->concat( Game::whereIn('gym_id', $gyms)->pluck('league_id'));
             }
 
             // get unique leagues
-            $leagues = League::whereIn('id',$leagues->unique())->whereIn('state',[LeagueState::Scheduling(), LeagueState::Referees(), LeagueState::Live()])->get();
+            $leagues = League::where('region_id', $region->id )->whereIn('id',$leagues->unique())->whereIn('state',[LeagueState::Scheduling(), LeagueState::Referees(), LeagueState::Live()])->get();
         }
 
         return $leagues;
+    }
+    private function getImpactedClubs( Region $region, Collection $audits): Collection
+    {
+        if ($this->run_regions->count() > 0){
+            $clubs = $region->clubs()->active()->get();
+        } else {
+            $clubs = collect();
+            // clubs from teams:
+            $teams = $audits->where('auditable_type', Team::class)->pluck('auditable_id')->unique();
+            if ($teams->count() > 0){
+                $clubs = $clubs->concat( Team::whereIn('id', $teams)->pluck('club_id'));
+            }
+            // clubs from games:
+            $games = $audits->where('auditable_type', Game::class)->pluck('auditable_id')->unique();
+            if ($games->count() > 0){
+                $clubs = $clubs->concat( Game::whereIn('id', $games)->pluck('club_id_home'));
+                $clubs = $clubs->concat( Game::whereIn('id', $games)->pluck('club_id_guest'));
+            }
+            // leagues from gyms:
+            $gyms = $audits->where('auditable_type', Gym::class)->pluck('auditable_id')->unique();
+            if ($gyms->count()>0){
+                $clubs = $clubs->concat( Gym::whereIn('id', $gyms)->pluck('club_id'));
+            }
+            // get unique clubs
+            $clubs = Club::where('region_id', $region->id )->whereIn('id',$clubs->unique())->active()->get();
+
+        }
+        return $clubs;
     }
 
     private function dispatchReportBatch($report, $region, $joblist): void

@@ -56,6 +56,7 @@ class GamesSheet implements FromView, WithTitle, ShouldAutoSize
                         ->orderBy('game_time','asc')
                         ->orderBy('game_no','asc')
                         ->get();
+            $with_league = true;
         } else {
             $games =  Game::where('league_id',$this->league->id)
                         ->with('league')
@@ -63,10 +64,11 @@ class GamesSheet implements FromView, WithTitle, ShouldAutoSize
                         ->orderBy('game_time','asc')
                         ->orderBy('game_no','asc')
                         ->get();
+            $with_league = false;
         }
 
 
-        return view('reports.games_sheet', ['games'=>$games, 'gdate'=>$this->gdate, 'gtime'=>null]);
+        return view('reports.games_sheet', ['games'=>$games, 'gdate'=>$this->gdate, 'gtime'=>null, 'with_league'=>$with_league]);
     }
 
 

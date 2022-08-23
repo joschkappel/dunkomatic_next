@@ -3,9 +3,8 @@
 namespace App\Exports;
 
 use App\Models\Region;
-use App\Models\League;
 
-use App\Exports\Sheets\RegionTitle;
+use App\Exports\Sheets\Title;
 use App\Exports\Sheets\GamesSheet;
 use App\Exports\Sheets\ClubsSheet;
 
@@ -33,7 +32,7 @@ class RegionLeagueGamesReport implements WithMultipleSheets
 
         $sheets = [];
 
-        $sheets[] = new RegionTitle($this->region, 'Runden-Spielpläne');
+        $sheets[] = new Title('Runden-Spielpläne', $this->region, null, null);
         foreach($this->region->leagues as $l){
             $sheets[] = new GamesSheet($this->region, $l);
             $sheets[] = new ClubsSheet($this->region, $l);

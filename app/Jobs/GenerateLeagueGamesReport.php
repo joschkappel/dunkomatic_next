@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Helpers\CalendarComposer;
 use Illuminate\Support\Facades\Storage;
 
-use App\Exports\LeagueGamesExport;
+use App\Exports\LeagueGamesReport;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Bus\Batchable;
@@ -75,7 +75,7 @@ class GenerateLeagueGamesReport implements ShouldQueue
             'path' => $this->rpt_name]);
 
         if ($this->rtype->hasFlag(ReportFileType::PDF)) {
-            Excel::store(new LeagueGamesExport($this->league->id ), $this->rpt_name, null, \Maatwebsite\Excel\Excel::MPDF);
+            Excel::store(new LeagueGamesReport($this->league->id ), $this->rpt_name, null, \Maatwebsite\Excel\Excel::MPDF);
         } elseif ($this->rtype->hasFlag(ReportFileType::ICS)) {
             // do calendar files
             $calendar = CalendarComposer::createLeagueCalendar($this->league);
@@ -83,7 +83,7 @@ class GenerateLeagueGamesReport implements ShouldQueue
                 Storage::put($this->rpt_name, $calendar->get());
             }
         } else {
-            Excel::store(new LeagueGamesExport($this->league->id), $this->rpt_name);
+            Excel::store(new LeagueGamesReport($this->league->id), $this->rpt_name);
         }
 
     }

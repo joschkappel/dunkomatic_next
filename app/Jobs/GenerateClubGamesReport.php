@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Helpers\CalendarComposer;
 use Illuminate\Support\Facades\Storage;
 
-use App\Exports\ClubGamesExport;
+use App\Exports\ClubGamesReport;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Bus\Batchable;
@@ -98,7 +98,7 @@ class GenerateClubGamesReport implements ShouldQueue
             'path' => $this->rpt_name]);
 
         if ($this->rtype->hasFlag(ReportFileType::PDF)) {
-            Excel::store( new ClubGamesExport($this->club->id, $this->scope, (isset($this->league->id)) ? $this->league->id : NULL),
+            Excel::store( new ClubGamesReport($this->club->id, $this->scope, (isset($this->league->id)) ? $this->league->id : NULL),
                           $this->rpt_name,
                           null,
                           \Maatwebsite\Excel\Excel::MPDF);
@@ -123,7 +123,7 @@ class GenerateClubGamesReport implements ShouldQueue
                 Storage::put($this->rpt_name, $calendar->get());
             }
         } else {
-            Excel::store(new ClubGamesExport($this->club->id, $this->scope, (isset($this->league->id)) ? $this->league->id : NULL), $this->rpt_name);
+            Excel::store(new ClubGamesReport($this->club->id, $this->scope, (isset($this->league->id)) ? $this->league->id : NULL), $this->rpt_name);
         }
     }
 }
