@@ -28,9 +28,9 @@
                         {!! $m->data['salutation'] !!}
                     </div>
                 </div>
-                @if ($m->data['tag'] != null)
+                @if ($m->data['tag'] == null)
                 <div class="card-footer">
-                <button type="button" class="btn btn-danger" id="btnMarkUnread">{{__('message.delete')}}</button>
+                <button type="button" class="btn btn-danger" id="btnMarkUnread" data-msg-id="{{$m->id}}">{{__('message.delete')}}</button>
                 </div>
                 @endif
             </div>

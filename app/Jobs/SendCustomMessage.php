@@ -139,6 +139,7 @@ class SendCustomMessage implements ShouldQueue
         //  get users
         if ($this->message->notify_users){
             $to_users = $this->message->region->users();
+            $to_users = $to_users->concat(User::whereIs('superadmin')->get());
 
             if ($this->message->region->is_top_level){
                 foreach( $this->message->region->childRegions() as $cr ){
