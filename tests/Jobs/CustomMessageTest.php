@@ -34,12 +34,12 @@ class CustomMessageTest extends SysTestCase
         Notification::assertNothingSent();
 
         $msg = Region::where('code','HBVDA')->first()->messages->first();
-        $msg->to_users = ['1'];
+        $msg->notify_users = true;
         $job_instance = resolve(SendCustomMessage::class, ['message'=>$msg]);
         app()->call([$job_instance, 'handle']);
 
         // check that message has beeen sent to users
-        Notification::assertSentTo( User::whereIs('superadmin')->get(), CustomDbMessage::class);
+        Notification::assertSentTo( User::whereIs('clubadmin')->get(), CustomDbMessage::class);
         // check that autor is informed
         Notification::assertSentTo( $msg->user, AppActionMessage::class);
         // check that message is marked as SENT

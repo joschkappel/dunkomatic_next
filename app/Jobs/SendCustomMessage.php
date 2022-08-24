@@ -136,20 +136,25 @@ class SendCustomMessage implements ShouldQueue
             }
         }
 
-        $user_region = $this->message->region;
-        $user_roles = UserRole::whereIn('id', $this->message->to_users ?? [])->pluck('name');
+        //  get users
+        if ($this->message->notify_users){
+            $to_users = $this->message->region->users();
 
-        foreach ($user_roles as $ur){
-            $to_users = $to_users->concat( User::whereIs($ur)->get()->filter(function ($value, $key) use ($user_region) { return $value->can('access',$user_region);}) );
-        }
-        if (count($to_users) > 0){
-            Notification::sendNow($to_users, new CustomDbMessage($this->message));
-            Log::notice('[JOB][NOTIFICATION] custom note sent.', ['message-id' => $this->message->id, 'to_count' => count($to_users)]);
+            if ($this->message->region->is_top_level){
+                foreach( $this->message->region->childRegions() as $cr ){
+                    $to_users = $to_users->concat( $cr->users());
+                }
+            }
         }
 
         $this->message->update(['sent_at' => Carbon::today()]);
         $author = $this->message->user;
         $msg = '';
+
+        if (count($to_users) > 0){
+            Notification::sendNow($to_users, new CustomDbMessage($this->message));
+            Log::notice('[JOB][NOTIFICATION] custom notification sent.', ['message-id' => $this->message->id, 'to_count' => count($to_users)]);
+        }
 
         if (count($to_member_roles) > 0) {
             $msg .= __('Mail to') . ' ' . implode(', ', $to_member_roles);
