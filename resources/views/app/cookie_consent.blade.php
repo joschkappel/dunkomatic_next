@@ -50,27 +50,27 @@
 @push('js')
 <script>
     (function () {
-        "use strict";
+        // "use strict";
 
         var cookieAlert = document.querySelector(".cookiealert");
         var acceptCookies = document.querySelector(".acceptcookies");
 
-        if (!cookieAlert) {
-            return;
-        }
-
-        cookieAlert.offsetHeight; // Force browser to trigger reflow (https://stackoverflow.com/a/39451131)
-
         // Show the alert if we cant find the "dunkomatic_next_cookie_consent" cookie
         if (!getCookie("dunkomatic_next_cookie_consent")) {
             cookieAlert.classList.add("show");
+        } else {
+            $(".cookiealert").hide();
+            $(".cookiealert").addClass('d-none');
         }
+        // cookieAlert.offsetHeight; // Force browser to trigger reflow (https://stackoverflow.com/a/39451131)
 
         // When clicking on the agree button, create a 1 year
         // cookie to remember user's choice and close the banner
         acceptCookies.addEventListener("click", function () {
             setCookie("dunkomatic_next_cookie_consent", true, 365);
             cookieAlert.classList.remove("show");
+            $(".cookiealert").hide();
+            $(".cookiealert").addClass('d-none');
 
             // dispatch the accept event
             window.dispatchEvent(new Event("cookieAlertAccept"))
