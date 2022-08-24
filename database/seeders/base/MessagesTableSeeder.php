@@ -29,7 +29,8 @@ class MessagesTableSeeder extends Seeder
             $msg->body = 'Welcome to a new release of Dunkomatic !';
             $msg->salutation = 'Have Fun !';
             $msg->send_at = now();
-            $msg->to_users = [ strval(Role::where('name','guest')->first()->id) ];
+            $msg->delete_at = now()->addWeek();
+            $msg->notify_users = true;
 
             $msg->user()->associate($user);
             $msg->region()->associate($r);
