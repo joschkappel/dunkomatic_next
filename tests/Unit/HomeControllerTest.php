@@ -71,7 +71,8 @@ class HomeControllerTest extends TestCase
         $msg->salutation = 'Bye';
         $msg->body = 'just testing here';
         $msg->send_at = now();
-        $msg->to_users = [ $this->region_user->id ];
+        $msg->delete_at = now()->addDays(7);
+        $msg->notify_users = true;
         $msg->user()->associate($this->region_user);
         $msg->region()->associate($this->region);
         $msg->save();
