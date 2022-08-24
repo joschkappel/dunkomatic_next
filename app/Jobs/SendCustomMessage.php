@@ -162,8 +162,8 @@ class SendCustomMessage implements ShouldQueue
                 $msg .= ', ' . __('with copy to') . ' ' . implode(', ', $cc_member_roles) . ' '.__('has been sent.');
             }
         }
-        if (count($user_roles) > 0) {
-            $msg .= __('Notification to') . ' ' . $user_roles->implode(', '). ' '.__('has been posted.');
+        if ($this->message->notify_users) {
+            $msg .= __('Notification to region users has been posted.');
         }
         $author->notify(new AppActionMessage(__('Message') . ' "' . $this->message->title . '" ' . __('sent'), $msg));
         Log::info('[JOB][NOTIFICATION][MEMBER] custom message sent.', ['member-id' => $author->id]);
