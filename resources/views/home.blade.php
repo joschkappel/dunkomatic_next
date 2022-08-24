@@ -32,7 +32,7 @@
 @section('js')
     <script> console.log('Hi there! going Dunkomatic now'); </script>
     <script>
-        function btnShowMessage(msg_id){
+/*         function btnShowMessage(msg_id){
             console.log(msg_id);
             var url = '{{ route("notification.show",["notification"=>":notificationid:"]) }}';
             url = url.replace(':notificationid:', msg_id);
@@ -51,7 +51,7 @@
                 }
             });
 
-        };
+        }; */
         $('#btnMarkUnread').on('click', function(data){
             console.log($(this).data('msg-id'));
             var url = "{{ route('message.mark_as_read', ['message'=>':msgid:'])}}";

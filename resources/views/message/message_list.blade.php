@@ -8,7 +8,7 @@
                   <th>@lang('message.body')</th>
                   <th>@lang('message.send_at')</th>
                   <th>@lang('message.sent_at')</th>
-                  <th>{{__('Updated at')}}</th>
+                  <th>{{__('message.delete_at')}}</th>
                   <th>{{__('Action')}}</th>
 </x-card-list>
 
@@ -36,7 +36,7 @@
                           { data: 'body', name: 'body' },
                           { data: 'send_at', name: 'send_at' },
                           { data: 'sent_at', name: 'sent_at'},
-                          { data: 'updated_at', name: 'updated_at'},
+                          { data: 'delete_at', name: 'delete_at'},
                           { data: 'action', name: 'action', orderable: false, searchable: false},
                        ]
               });

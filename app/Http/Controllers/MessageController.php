@@ -81,8 +81,8 @@ class MessageController extends Controller
                     return '<a href="' . route('message.edit', ['language' => $language, 'message' => $msg->id]) . '">' . $msg->title . ' <i class="fas fa-arrow-circle-right"></i></a>';
                 }
             })
-            ->editColumn('updated_at', function ($msg) use ($language) {
-                return Carbon::parse($msg->updated_at)->locale($language)->isoFormat('LLL');
+            ->editColumn('delete_at', function ($msg) use ($language) {
+                return ($msg->delete_at == null) ? null : Carbon::parse($msg->delete_at)->locale($language)->isoFormat('L');
             })
             ->editColumn('send_at', function ($msg) use ($language) {
                 return ($msg->send_at == null) ? null : Carbon::parse($msg->send_at)->locale($language)->isoFormat('L');
@@ -142,14 +142,19 @@ class MessageController extends Controller
             'greeting' => 'required|string|max:40',
             'salutation' => 'required|string|max:40',
             'send_at' => 'required|date|after:today',
-            'to_members' => 'required_without:to_users',
+            'delete_at' => 'required|date|after:send_at',
+            'to_members' => 'required_without:notify_users',
             'to_members.*' => [new EnumValue(EnumRole::class, false)],
             'cc_members.*' => [new EnumValue(EnumRole::class, false)],
-            'to_users' => 'required_without:to_members|nullable',
-            'to_users.*' => 'required|exists:roles,id',
-
+            'notify_users' => 'sometimes'
         ]);
         Log::info('message form data validated OK.');
+        $notify_users = $request->input('notify_users');
+        if (isset($notify_users) and ($notify_users === 'on')) {
+            $data['notify_users'] = True;
+        } else {
+            $data['notify_users'] = False;
+        }
 
         $msg = new Message($data);
         $msg->user()->associate($user);
@@ -194,21 +199,24 @@ class MessageController extends Controller
             'greeting' => 'required|string|max:40',
             'salutation' => 'required|string|max:40',
             'send_at' => 'date|after:today',
-            'to_members' => 'required_without:to_users',
+            'delete_at' => 'date|after:send_at',
+            'to_members' => 'required_without:notify_users',
             'to_members.*' => [new EnumValue(EnumRole::class, false)],
             'cc_members.*' => [new EnumValue(EnumRole::class, false)],
-            'to_users' => 'required_without:to_members|nullable',
-            'to_users.*' => 'sometimes|exists:roles,id',
+            'notify_users' => 'sometimes'
         ]);
         Log::info('message form data validated OK.');
+        $notify_users = $request->input('notify_users');
+        if (isset($notify_users) and ($notify_users === 'on')) {
+            $data['notify_users'] = True;
+        } else {
+            $data['notify_users'] = False;
+        }
         if ( ! isset($data['to_members']) ){
             $data['to_members'] = null;
         }
         if ( ! isset($data['cc_members']) ){
             $data['cc_members'] = null;
-        }
-        if ( ! isset($data['to_users']) ){
-            $data['to_users'] = null;
         }
 
         $message->update( $data );
