@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Log;
  * @property string $salutation
  * @property array|null $to_members
  * @property array|null $cc_members
- * @property array|null $to_users
+ * @property boolean|null $notify_users
  * @property \Illuminate\Support\Carbon|null $send_at
  * @property \Illuminate\Support\Carbon|null $sent_at
  * @property-read Region $region
@@ -54,16 +54,15 @@ class Message extends Model
     use HasFactory, Prunable;
 
     protected $fillable = [
-        'id','title','body', 'greeting', 'salutation', 'send_at', 'sent_at', 'user_id', 'region_id',
-        'to_members', 'cc_members', 'to_users'
+        'id','title','body', 'greeting', 'salutation', 'send_at', 'sent_at','delete_at', 'user_id', 'region_id',
+        'to_members', 'cc_members', 'notify_users'
     ];
 
-    protected $dates = ['send_at', 'sent_at'];
+    protected $dates = ['send_at', 'sent_at','delete_at'];
 
     protected $casts = [
         'to_members' => 'array',
-        'cc_members' => 'array',
-        'to_users' => 'array',
+        'cc_members' => 'array'
     ];
 
     public function user(): BelongsTo
@@ -83,7 +82,7 @@ class Message extends Model
     public function prunable()
     {
         Log::notice('[JOB][DB CLEANUP] pruning messages.');
-        return static::where('sent_at', '<', now()->subWeek());
+        return static::where('delete_at', '<', now()->subWeek());
     }
 
 }

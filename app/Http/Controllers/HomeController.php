@@ -36,7 +36,7 @@ class HomeController extends Controller
     {
         $user = Auth::user();
 
-        $msglist = array();
+/*         $msglist = array();
         $vf = null;
         $mi = array();
 
@@ -57,7 +57,8 @@ class HomeController extends Controller
         }
 
         $msglist[] = $mi;
-        array_shift($msglist);
+        array_shift($msglist); */
+        $msglist = $user->unreadNotifications;
         Log::info('preparing unread message list.', ['count' => count($msglist)]);
 
         $reminders  = [];

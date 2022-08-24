@@ -5,36 +5,36 @@
     <!-- /.card-header -->
     <div class="card-body">
 <!-- Main node for this component -->
-  <div class="timeline">
-    @empty ($msglist)
-    <div class="time-label">
-        <span class="bg-info">{{__('message.message.empty')}}</span>
-    </div>
-    @endempty
-    @foreach ( $msglist as $msgdate)
-    <!-- Timeline time label -->
-    <div class="time-label">
-      <span class="bg-green text-xs">{{ \Carbon\CarbonImmutable::parse($msgdate['valid_from'])->locale( app()->getLocale() )->isoFormat('ll') }}</span>
-    </div>
-        @foreach ( $msgdate['items'] as $msg )
-            <div>
-                <!-- Before each timeline item corresponds to one icon on the left scale -->
-                <i class="fas fa-envelope bg-blue "></i>
-                <!-- Timeline item -->
-                <div class="timeline-item">
-                <!-- Time -->
-                    <span class="time"><i class="fas fa-clock"></i> {{ \Carbon\CarbonImmutable::parse($msg->created_at)->locale( app()->getLocale() )->isoFormat('HH:mm:ss') }}</span>
-                    <!-- Header. Optional -->
-                    <div class="timeline-header text-sm">{{ isset($msg->data['sender']) ?  $msg->data['sender'].': ' : '' }}<a href="#" class="text-sm" onClick="btnShowMessage('{{$msg->id}}')">{!! Str::title($msg->data['subject']) !!}</a></div>
 
+        <div id="accordion">
+            @empty ($msglist)
+            <div class="card-text">
+                <span class="bg-info">{{__('message.message.empty')}}</span>
+            </div>
+            @endempty
+            @foreach ( $msglist as $m)
+            <div class="card">
+                <div class="card-header" id="heading{{$m->id}}">
+                    <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{$m->id}}" aria-expanded="true" aria-controls="collapse{{$m->id}}">
+                        {{ \Carbon\Carbon::parse($m->created_at)->locale( app()->getLocale() )->isoFormat('L, LT') }} {{ isset($m->data['sender']) ? '('.$m->data['sender'].'): ' : ': ' }} {!! Str::title($m->data['subject']) !!}
+                    </button>
+                    </h5>
                 </div>
+                <div id="collapse{{$m->id}}" class="collapse show" aria-labelledby="heading{{$m->id}}" data-parent="#accordion">
+                    <div class="card-body">
+                        {!! $m->data['greeting'] !!}
+                        {!! $m->data['lines'] !!}
+                        {!! $m->data['salutation'] !!}
+                    </div>
                 </div>
-        @endforeach
-    @endforeach
-    <!-- The last icon means the story is complete -->
-    <div>
-      <i class="fas fa-clock bg-gray"></i>
+                @if ($m->data['tag'] == null)
+                <div class="card-footer">
+                <button type="button" class="btn btn-danger" id="btnMarkUnread" data-msg-id="{{$m->id}}">{{__('message.delete')}}</button>
+                </div>
+                @endif
+            </div>
+            @endforeach
+        </div>
     </div>
-  </div>
-</div>
 </div>

@@ -96,6 +96,7 @@ class MessageControllerTest extends TestCase
                 'greeting' => 'hello',
                 'salutation' => 'all',
                 'send_at' => now(),
+                'delete_at' => now()->addDays(3),
                 'to_members' => [Role::getRandomValue()],
                 'cc_members' => [Role::getRandomValue()],
             ]);

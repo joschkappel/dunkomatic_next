@@ -73,5 +73,5 @@ return [
   'prev.state' => 'zur vorherigen Phase',
   'member.action.create' => 'Neue:r Staffelleiter:in',
   'preferred' => 'Bevorzugte Runden',
-  'pickchar.closed' => 'Ziffernwahl beendet',
+  'pickchar.closed' => 'Ziffernwahl beendet'
 ];
