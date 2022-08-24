@@ -44,8 +44,8 @@ class ProcessDbCleanup implements ShouldQueue
         // drop all users (incl messages and members) that havent verfied their email since a week;
 
         // drop all read notifications
-        $old_notifs = DatabaseNotification::whereDate('read_at', '<',now()->subWeek())->delete();
-        Log::notice('[JOB][DB CLEANUP] deleting read notifications.', ['count' => $old_notifs]);
+        // $old_notifs = DatabaseNotification::whereDate('read_at', '<',now()->subWeek())->delete();
+        // Log::notice('[JOB][DB CLEANUP] deleting read notifications.', ['count' => $old_notifs]);
         // drop old invitations
         $old_invites = Invitation::whereDate('created_at', '<',now()->subWeek())->delete();
         Log::notice('[JOB][DB CLEANUP] deleting old invitations.', ['count' => $old_invites]);

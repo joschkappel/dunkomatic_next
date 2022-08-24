@@ -53,6 +53,20 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label for="delete_at" class="col-sm-2 col-form-label">@lang('message.delete_at')</label>
+                            <div class="col-sm-10">
+                                <div class="input-group date" id="delete_at" data-target-input="nearest">
+                                    <input type="text" name='delete_at' id='delete_at' class="form-control datetimepicker-input @error('delete_at') is-invalid @enderror" data-target="#delete_at" />
+                                    <div class="input-group-append" data-target="#delete_at" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                    @error('delete_at')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label for="selDestTo" class="col-sm-2 col-form-label">@lang('message.dest_to')</label>
                             <div class="col-sm-10">
                             <div class="input-group mb-3">
@@ -83,18 +97,15 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="selDestUserTo" class="col-sm-2 col-form-label">@lang('message.dest_user_to')</label>
-                            <div class="col-sm-10">
-                            <div class="input-group mb-3">
-                              <select class='js-sel-to-user form-control select2 @error("to_users") is-invalid @enderror' id='selDestUserTo' name="to_users[]">
-                                 @foreach ( $user_scopetype as $k => $st )
-                                   <option value="{{ $k }}" >{{ __( $st ) }}</option>
-                                 @endforeach
-                              </select>
-                              @error("to_users")
-                              <div class="invalid-feedback">{{ $message }}</div>
-                              @enderror
-                              </div>
+                            <div class="col-md-2">
+                            </div>
+                            <div class="col-md-10">
+                                <div class="form-group  clearfix">
+                                    <div class="icheck-info d-inline">
+                                        <input type="checkbox" id="notify_users" name="notify_users" checked>
+                                        <label for="notify_users">@lang('message.notify_users')</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -139,15 +150,16 @@
             multiple: true,
             allowClear: false,
         });
-        $("#selDestUserTo").select2({
-            width: '100%',
-            multiple: true,
-            allowClear: false,
-        });
 
         moment.locale('{{ app()->getLocale() }}');
 
         $('#send_at').datetimepicker({
+            format: 'L',
+            locale: '{{ app()->getLocale()}}',
+            useCurrent: true,
+            minDate: moment().add(1, 'd'),
+        });
+        $('#delete_at').datetimepicker({
             format: 'L',
             locale: '{{ app()->getLocale()}}',
             useCurrent: true,

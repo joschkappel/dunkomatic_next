@@ -53,6 +53,20 @@
         </div>
     </div>
     <div class="form-group row">
+        <label for="deleteat" class="col-sm-2 col-form-label">@lang('message.delete_at')</label>
+        <div class="col-sm-10">
+            <div class="input-group date" id="deleteat" data-target-input="nearest">
+                <input type="text" name='delete_at' id='delete_at' class="form-control datetimepicker-input @error('delete_at') is-invalid @enderror" data-target="#deleteat" />
+                <div class="input-group-append" data-target="#deleteat" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+                @error('delete_at')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
         <label for="selDestTo" class="col-sm-2 col-form-label">@lang('message.dest_to')</label>
         <div class="col-sm-10">
         <div class="input-group mb-3">
@@ -83,17 +97,14 @@
         </div>
     </div>
     <div class="form-group row">
-        <label for="selDestToUser" class="col-sm-2 col-form-label">@lang('message.dest_user_to')</label>
-        <div class="col-sm-10">
-        <div class="input-group mb-3">
-            <select class='js-sel-user-to form-control select2 @error("to_users") is-invalid @enderror' id='selDestToUser' name="to_users[]">
-                @foreach ( $user_scopetype as $k => $st )
-                <option value="{{ $k }}">{{  __( $st )  }}</option>
-                @endforeach
-            </select>
-            @error("to_users")
-            <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-10">
+            <div class="form-group  clearfix">
+                <div class="icheck-info d-inline">
+                    <input type="checkbox" id="notify_users" name="notify_users" @if($message->notify_users) checked @endif>
+                    <label for="notify_users">@lang('message.notify_users')</label>
+                </div>
             </div>
         </div>
     </div>
@@ -140,12 +151,6 @@
             allowClear: true,
         });
         $("#selDestCc").val({!! json_encode($message->cc_members) !!} ).trigger('change');
-        $("#selDestToUser").select2({
-            width: '100%',
-            multiple: true,
-            allowClear: false,
-        });
-        $("#selDestToUser").val({!! json_encode($message->to_users) !!} ).trigger('change');
 
         moment.locale('{{ app()->getLocale() }}');
 
@@ -154,6 +159,11 @@
             locale: '{{ app()->getLocale()}}',
             defaultDate: moment('{{ $message->send_at }}'),
             // minDate: moment().add(1, 'd')
+        });
+        $('#deleteat').datetimepicker({
+            format: 'L',
+            locale: '{{ app()->getLocale()}}',
+            useCurrent: true,
         });
 
       });

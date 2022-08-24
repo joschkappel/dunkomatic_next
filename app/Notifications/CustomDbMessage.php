@@ -51,7 +51,8 @@ class CustomDbMessage extends Notification
             'subject' => $this->message['title'],
             'lines' => $this->message['body'],
             'salutation' => $this->message['salutation'],
-            'sender' => $this->message->user->name
+            'sender' => $this->message->user->name,
+            'tag' => $this->message->id
         ];
     }
 }
