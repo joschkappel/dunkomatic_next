@@ -27,12 +27,12 @@
                         {!! $m->data['lines'] !!}
                         {!! $m->data['salutation'] !!}
                     </div>
-                </div>
-                @if ($m->data['tag'] == null)
+                @empty ($m->data['tag'])
                 <div class="card-footer">
                 <button type="button" class="btn btn-danger" id="btnMarkUnread" data-msg-id="{{$m->id}}">{{__('message.delete')}}</button>
                 </div>
-                @endif
+                @endempty
+                </div>
             </div>
             @endforeach
         </div>
