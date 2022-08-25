@@ -18,12 +18,8 @@ return new class extends Migration
             $table->unsignedInteger('report_id');
             $table->unsignedBigInteger('user_id')->nullable;
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
-            $table->unsignedInteger('region_id')->nullable();
-            $table->foreign('region_id')->references('id')->on('regions');
-            $table->unsignedInteger('club_id')->nullable();
-            $table->foreign('club_id')->references('id')->on('clubs');
-            $table->unsignedInteger('league_id')->nullable();
-            $table->foreign('league_id')->references('id')->on('leagues');
+            $table->unsignedInteger('model_id');
+            $table->text('model_class',40);
             $table->timestamps();
         });
     }

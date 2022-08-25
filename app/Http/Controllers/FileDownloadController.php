@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Report;
 use App\Enums\ReportFileType;
+use App\Models\User;
+use App\Models\Club;
+use App\Models\League;
+use App\Models\Region;
+use App\Models\ReportDownload;
+
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use ZipArchive;
-
-use App\Models\User;
-use App\Models\Club;
-use App\Models\League;
-use App\Models\Region;
-
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Response;
+
 
 class FileDownloadController extends Controller
 {
@@ -138,6 +140,13 @@ class FileDownloadController extends Controller
             }
 
             $zip->close();
+
+            ReportDownload::updateOrCreate(
+                ['user_id'=>Auth::user()->id, 'report_id'=>Report::ClubGames(),
+                'model_class'=> Club::class, 'model_id'=>$club->id],
+                ['updated_at'=>now()]
+            );
+
             Log::notice('downloading ZIP archive for club', ['club-id' => $club->id, 'filecount' => count($files)]);
 
             return Storage::disk('public')->download( $filename);
@@ -187,7 +196,14 @@ class FileDownloadController extends Controller
             }
 
             $zip->close();
-            //  Storage::move(public_path($fileName), 'public/'.$fileName);
+
+            ReportDownload::updateOrCreate(
+                ['user_id'=>Auth::user()->id, 'report_id'=>Report::LeagueGames(),
+                'model_class'=> League::class, 'model_id'=>$league->id],
+                ['updated_at'=>now()]
+            );
+
+
             Log::notice('downloading ZIP archive for league', ['league-id' => $league->id, 'filecount' => count($files)]);
 
             return Storage::disk('public')->download( $filename);
@@ -236,7 +252,18 @@ class FileDownloadController extends Controller
                 }
 
                 $zip->close();
-                //  Storage::move(public_path($fileName), 'public/'.$fileName);
+
+                ReportDownload::updateOrCreate(
+                    ['user_id'=>Auth::user()->id, 'report_id'=>Report::RegionGames(),
+                    'model_class'=> Region::class, 'model_id'=>$region->id],
+                    ['updated_at'=>now()]
+                );
+                ReportDownload::updateOrCreate(
+                    ['user_id'=>Auth::user()->id, 'report_id'=>Report::AddressBook(),
+                    'model_class'=> Region::class, 'model_id'=>$region->id],
+                    ['updated_at'=>now()]
+                );
+
                 Log::notice('downloading ZIP archive for region', ['region-id' => $region->id, 'filecount' => count($files)]);
 
                 return Storage::disk('public')->download( $filename);
@@ -276,7 +303,13 @@ class FileDownloadController extends Controller
                 }
 
                 $zip->close();
-                //  Storage::move(public_path($fileName), 'public/'.$fileName);
+
+                ReportDownload::updateOrCreate(
+                    ['user_id'=>Auth::user()->id, 'report_id'=>Report::LeagueBook(),
+                    'model_class'=> Region::class, 'model_id'=>$region->id],
+                    ['updated_at'=>now()]
+                );
+
                 Log::notice('downloading ZIP archive for region leagues', ['region-id' => $region->id, 'filecount' => count($files)]);
 
                 return Storage::disk('public')->download($filename);
@@ -317,7 +350,12 @@ class FileDownloadController extends Controller
                 }
 
                 $zip->close();
-                //  Storage::move(public_path($fileName), 'public/'.$fileName);
+                ReportDownload::updateOrCreate(
+                    ['user_id'=>Auth::user()->id, 'report_id'=>Report::Teamware(),
+                    'model_class'=> Region::class, 'model_id'=>$region->id],
+                    ['updated_at'=>now()]
+                );
+
                 Log::notice('downloading ZIP archive for region teamware', ['region-id' => $region->id, 'filecount' => count($files)]);
 
                 return Storage::disk('public')->download($filename);
