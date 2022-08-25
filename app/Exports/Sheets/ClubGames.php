@@ -12,11 +12,10 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Events\AfterSheet;
 
-use Illuminate\Support\Carbon;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Illuminate\Support\Facades\Log;
 
-class ClubGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
+class ClubGames implements FromView, WithTitle, ShouldAutoSize
 {
 
     protected ?Date $gdate = null;
@@ -89,7 +88,7 @@ class ClubGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
       return view('reports.games_sheet', ['games'=>$games, 'gdate'=>$this->gdate,'gtime'=>null, 'with_league'=>true]);
     }
 
-    public function registerEvents(): array
+/*     public function registerEvents(): array
     {
         return [
             // Handle by a closure.
@@ -99,6 +98,6 @@ class ClubGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
 
             },
         ];
-    }
+    } */
 
 }

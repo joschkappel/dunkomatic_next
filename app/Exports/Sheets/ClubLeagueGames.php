@@ -5,8 +5,6 @@ namespace App\Exports\Sheets;
 use App\Models\Game;
 use App\Models\Club;
 use App\Models\League;
-use App\Models\Team;
-use App\Models\Gym;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithTitle;
@@ -17,7 +15,7 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 use Illuminate\Support\Facades\Log;
 
-class ClubLeagueGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
+class ClubLeagueGames implements FromView, WithTitle, ShouldAutoSize
 {
 
     protected ?Date $gdate = null;
@@ -54,25 +52,10 @@ class ClubLeagueGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
                       ->orderBy('game_no','asc')
                       ->get();
 
-        $guests = $games->pluck('club_id_guest')->unique();
-
-        $clubs = Club::whereIn('id', $guests)
-                ->orderBy('shortname')
-                ->get();
-        $g = 0;
-        $t = 0;
-
-        foreach ($clubs as $c){
-          $c['teams'] = Team::whereIn('id', $games->where('club_id_home',$c->id)->pluck('team_id_home')->unique())->orderBy('team_no')->get();
-          $t += $c['teams']->count();
-          $c['gyms'] = Gym::whereIn('id', $games->where('club_id_home',$c->id)->pluck('gym_id')->unique())->orderBy('gym_no')->get();
-          $g += $c['gyms']->count();
-        }
-
         return view('reports.games_sheet', ['games'=>$games, 'gdate'=>$this->gdate,'gtime'=>null, 'with_league'=>false]);
     }
 
-    public function registerEvents(): array
+/*     public function registerEvents(): array
     {
         return [
             // Handle by a closure.
@@ -82,6 +65,6 @@ class ClubLeagueGames implements FromView, WithTitle, ShouldAutoSize, WithEvents
 
               }
         ];
-    }
+    } */
 
 }

@@ -11,7 +11,9 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
+use Maatwebsite\Excel\Events\AfterSheet;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Concerns\WithEvents;
 
 class GamesSheet implements FromView, WithTitle, ShouldAutoSize
 {
@@ -71,6 +73,15 @@ class GamesSheet implements FromView, WithTitle, ShouldAutoSize
         return view('reports.games_sheet', ['games'=>$games, 'gdate'=>$this->gdate, 'gtime'=>null, 'with_league'=>$with_league]);
     }
 
-
+/*     public function registerEvents(): array
+    {
+        return [
+            // Handle by a closure.
+            AfterSheet::class => function(AfterSheet $event) {
+                $event->sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+                $event->sheet->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
+              }
+        ];
+    } */
 
 }
