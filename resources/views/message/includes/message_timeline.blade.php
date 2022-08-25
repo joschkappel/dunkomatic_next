@@ -14,14 +14,14 @@
             @endempty
             @foreach ( $msglist as $m)
             <div class="card">
-                <div class="card-header" id="heading{{$m->id}}">
+                <div class="card-header" id="heading{{$loop->index}}">
                     <h5 class="mb-0">
-                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{$m->id}}" aria-expanded="true" aria-controls="collapse{{$m->id}}">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{$loop->index}}" aria-expanded="true" aria-controls="collapse{{$loop->index}}">
                         {{ \Carbon\Carbon::parse($m->created_at)->locale( app()->getLocale() )->isoFormat('L, LT') }} {{ isset($m->data['sender']) ? '('.$m->data['sender'].'): ' : ': ' }} {!! Str::title($m->data['subject']) !!}
                     </button>
                     </h5>
                 </div>
-                <div id="collapse{{$m->id}}" class="collapse show" aria-labelledby="heading{{$m->id}}" data-parent="#accordion">
+                <div id="collapse{{$loop->index}}" class="collapse @if ($loop->first) show @endif" aria-labelledby="heading{{$loop->index}}" data-parent="#accordion">
                     <div class="card-body">
                         {!! $m->data['greeting'] !!}
                         {!! $m->data['lines'] !!}
