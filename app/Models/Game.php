@@ -80,7 +80,7 @@ class Game extends Model implements Auditable
     }
     protected $fillable = [
         'id', 'league_id', 'region', 'game_no', 'game_plandate', 'game_date', 'game_time',
-        'club_id_home', 'team_id_home', 'team_char_home',
+        'club_id_home', 'team_id_home', 'team_home', 'team_char_home',
         'club_id_guest', 'team_id_guest', 'team_guest', 'team_char_guest',
         'gym_no', 'gym_id', 'referee_1', 'referee_2'
     ];
