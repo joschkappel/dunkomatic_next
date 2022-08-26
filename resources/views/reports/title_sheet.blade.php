@@ -1,4 +1,4 @@
-<table>
+<table style="font-family: Tahoma, Geneva, sans-serif;border-collapse: collapse">
     <thead>
     </thead>
     <tbody>

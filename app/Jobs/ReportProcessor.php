@@ -72,7 +72,7 @@ class ReportProcessor implements ShouldQueue
         foreach ($impacted_reports as $irpt) {
             // collect jobs to run per region
             $rpt_jobs = collect();
-            foreach( Region::all() as $r){
+            foreach (Region::all() as $r) {
                 $rpt_jobs[$r->id]  = collect();
             }
 
@@ -182,7 +182,7 @@ class ReportProcessor implements ShouldQueue
     private function getImpactedModels(Collection $regions, Collection $audits): array
     {
         if ($regions->count() > 0) {
-            $leagues = League::whereIn('region_id', $regions->pluck('id'))->whereIn('state', [LeagueState::Scheduling(), LeagueState::Referees(), LeagueState::Live()]);
+            $leagues = League::whereIn('region_id', $regions->pluck('id'))->whereIn('state', [LeagueState::Scheduling(), LeagueState::Referees(), LeagueState::Live()])->get();
             $clubs = Club::whereIn('region_id', $regions->pluck('id'))->active()->get();
         } else {
             $games = collect();
@@ -254,20 +254,22 @@ class ReportProcessor implements ShouldQueue
 
             // get unique regions from games
             $games = Game::whereIn('id', $games)->get();
-            $regions = Region::whereIn('code', $games->pluck('region'))->get()->unique();
+            $regions = Region::whereIn('code', $games->pluck('region'))->get();
             // get unique leagues from games
-            $leagues = League::whereIn('id', $games->pluck('league_id'))->get()->unique();
+            $leagues = League::whereIn('id', $games->pluck('league_id'))->get();
             // get unique leagues from games
-            $clubs = Club::whereIn('id', $games->pluck('club_id_home'))->get()->unique();
+            $clubs = Club::whereIn('id', $games->pluck('club_id_home'))->get();
         }
+
+        Log::debug('found impacts on ',['regions'=>$regions->count(),'leagues'=>$leagues->count(),'clubs'=>$clubs->count() ]);
 
         return array($regions, $leagues, $clubs);
     }
     private function dispatchReportBatch(Report $report, Collection $joblist): void
     {
-        foreach( $joblist as $rid => $j){
-            if ($j->count() > 0){
-                $batch = Bus::batch( $j->chunk(5)->toArray())
+        foreach ($joblist as $rid => $j) {
+            if ($j->count() > 0) {
+                $batch = Bus::batch($j->chunk(5)->toArray())
                     ->then(function (Batch $batch) use ($report, $rid) {
                         Log::info('[JOB] finished', ['jobs' => $batch->processedJobs()]);
                         // update region job status
@@ -286,13 +288,12 @@ class ReportProcessor implements ShouldQueue
                             ['report_id' => $report, 'region_id' => $rid],
                             ['lastrun' => $lastrun]
                         );
-
                     })
-                    ->name('Report Generator Jobs ' . Region::find($rid)->code .' '. $report->key)
+                    ->name('Report Generator Jobs ' . Region::find($rid)->code . ' ' . $report->key)
                     ->onConnection('redis')
                     ->onQueue('region_' . $rid)
                     ->dispatch();
-                }
+            }
         }
     }
 }

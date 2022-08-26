@@ -1,3 +1,35 @@
+@isset ($league)
+<table style="font-family: Tahoma, Geneva, sans-serif;border-collapse: collapse">
+    <thead>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="border: 1px solid #FFFFFF;padding: 3px 2px;background: #0B6FA4;border-bottom: 5px solid #FFFFFF; font-size: 14px;color: #FFFFFF;border-left: 2px solid #FFFFFF;"><strong>{{ $league->shortname}}</strong></td>
+            <td style="border: 1px solid #FFFFFF;padding: 3px 2px;background: #0B6FA4;border-bottom: 5px solid #FFFFFF; font-size: 14px;color: #FFFFFF;border-left: 2px solid #FFFFFF;"></td>
+            <td style="border: 1px solid #FFFFFF;padding: 3px 2px;background: #0B6FA4;border-bottom: 5px solid #FFFFFF; font-size: 14px;color: #FFFFFF;border-left: 2px solid #FFFFFF;"><strong>{{ $league->name}}</strong></td>
+            <td style="border: 1px solid #FFFFFF;padding: 3px 2px;background: #0B6FA4;border-bottom: 5px solid #FFFFFF; font-size: 14px;color: #FFFFFF;border-left: 2px solid #FFFFFF;"></td>
+        </tr>
+        @foreach($league->members as $m)
+          <tr>
+            <td style="text-align:right; font-size: 12px;"><strong>{{ App\Enums\Role::coerce($m->pivot->role_id)->description}}</strong></td>
+            <td style="text-align:right; font-size: 12px;">{{ $m->name }}</td>
+            <td style="font-size: 12px;">{{ $m->email1 }}</td>
+            <td style="font-size: 12px;">{{ $m->address }}</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td style="font-size: 12px;">{{ $m->email2 }}</td>
+            <td style="font-size: 12px;">{{ ( $m->phone == '') ? $m->mobile : $m->mobile.' / '.$m->phone }}</td>
+          </tr>
+         @endforeach
+         <tr></tr>
+        <tr></tr>
+        <tr></tr>
+    </tbody>
+</table>
+
+@endisset
 <table style="font-family: Tahoma, Geneva, sans-serif;border-collapse: collapse">
   <thead>
      <tr>
@@ -18,7 +50,7 @@
    @foreach($games as $game)
          @if ( $gdate != $game->game_date )
          <tr>
-           @php $gdate = $game->game_date; @endphp
+           @php $gdate = $game->game_date; $toggle = true; @endphp
            <td style="background-color: #D0E4F5;border: 1px solid #FFFFFF;padding: 3px 2px;font-size: 12px;">{{ $game->game_date->locale( app()->getLocale())->isoFormat('ddd L') }}</td>
            <td style="background-color: #D0E4F5;border: 1px solid #FFFFFF;padding: 3px 2px;"></td>
            @if( $with_league )
@@ -35,9 +67,9 @@
                 @php $toggle = ! $toggle; $gtime = $game->game_time; @endphp
             @endif
             @if ( $toggle )
-                @php $rstyle='background: #ffbaba;'; @endphp
+                @php $rstyle='background: #cacaca;'; @endphp
             @else
-                @php $rstyle='background: #ede9e9;'; @endphp
+                @php $rstyle='background: #ffffff;'; @endphp
             @endif
 
            <td style="border: 1px solid #ffffff;padding: 3px 2px;"></td>

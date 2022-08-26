@@ -51,8 +51,9 @@ class ClubLeagueGames implements FromView, WithTitle, ShouldAutoSize
                       ->orderBy('game_time','asc')
                       ->orderBy('game_no','asc')
                       ->get();
+        $league = $this->league->load('members');
 
-        return view('reports.games_sheet', ['games'=>$games, 'gdate'=>$this->gdate,'gtime'=>null, 'with_league'=>false]);
+        return view('reports.games_sheet', ['games'=>$games, 'gdate'=>$this->gdate,'gtime'=>null, 'with_league'=>false, 'league'=>$league]);
     }
 
 /*     public function registerEvents(): array

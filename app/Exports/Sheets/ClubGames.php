@@ -85,7 +85,7 @@ class ClubGames implements FromView, WithTitle, ShouldAutoSize
       }
 
 
-      return view('reports.games_sheet', ['games'=>$games, 'gdate'=>$this->gdate,'gtime'=>null, 'with_league'=>true]);
+      return view('reports.games_sheet', ['games'=>$games, 'gdate'=>$this->gdate,'gtime'=>null, 'with_league'=>true, 'league'=>null]);
     }
 
 /*     public function registerEvents(): array
