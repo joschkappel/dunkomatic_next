@@ -246,7 +246,7 @@ class ReportProcessor implements ShouldQueue
 
             // games:
             $audit_games = $audits->where('auditable_type', Game::class)->pluck('auditable_id')->unique();
-            if ($games->count() > 0) {
+            if ($audit_games->count() > 0) {
                 $games = $games->concat($audit_games);
                 Log::debug('[JOB] REPORT PROCESSOR impacted games', ['by games' => $games->count()]);
             }
@@ -269,7 +269,8 @@ class ReportProcessor implements ShouldQueue
     {
         foreach ($joblist as $rid => $j) {
             if ($j->count() > 0) {
-                $batch = Bus::batch($j->chunk(5)->toArray())
+                Log::notice('[JOB] diaptching batch', ['name'=>'Report Generator Jobs ' . Region::find($rid)->code . ' ' . $report->key, 'jobs' => $j->count()]);
+                $batch = Bus::batch($j->toArray())
                     ->then(function (Batch $batch) use ($report, $rid) {
                         Log::info('[JOB] finished', ['jobs' => $batch->processedJobs()]);
                         // update region job status
