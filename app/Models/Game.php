@@ -119,7 +119,7 @@ class Game extends Model implements Auditable
     {
         return $this->belongsTo(Team::class, 'team_id_guest');
     }
-    public function getTeamHomeAttribute(): string
+/*     public function getTeamHomeAttribute(): string
     {
 
         if(!isset($this->relations['team_home'])) {
@@ -127,5 +127,5 @@ class Game extends Model implements Auditable
             $this->load('team_home');
         }
        return $this->relations['team_home']->name;
-    }
+    } */
 }
