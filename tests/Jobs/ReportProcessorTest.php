@@ -39,7 +39,7 @@ class ReportProcessorTest extends SysTestCase
 
         // Storage::assertExists($region->club_folder);
         Bus::assertBatchCount(1);
-        $this->checkBatch($region, $report, 4);
+        $this->checkBatch($region, $report, 1);
 
     }
     /**
@@ -65,8 +65,8 @@ class ReportProcessorTest extends SysTestCase
 
         // Storage::assertExists($region->club_folder);
         Bus::assertBatchCount(2);
-        $this->checkBatch($region, Report::RegionGames(), 4);
-        $this->checkBatch($region, Report::LeagueBook(), 3);
+        $this->checkBatch($region, Report::RegionGames(), 1);
+        $this->checkBatch($region, Report::LeagueBook(), 1);
 
     }
 
@@ -103,7 +103,7 @@ class ReportProcessorTest extends SysTestCase
         $job_instance = resolve( ReportProcessor::class, [ 'run_rpts'=>collect(), 'run_regions'=> collect() ]);
         app()->call([$job_instance, 'handle']);
         Bus::assertBatchCount(1);
-        $this->checkBatch($club->region->parentRegion, Report::AddressBook(), 3);
+        $this->checkBatch($club->region->parentRegion, Report::AddressBook(), 1);
 
     }
     /**
@@ -140,11 +140,11 @@ class ReportProcessorTest extends SysTestCase
         app()->call([$job_instance, 'handle']);
 
         Bus::assertBatchCount(5);
-        $this->checkBatch($league->region->parentRegion, Report::AddressBook(), 3);
-        $this->checkBatch($league->region, Report::LeagueBook(), 3);
-        $this->checkBatch($league->region, Report::RegionGames(), 4);
-        $this->checkBatch($league->region, Report::ClubGames(), 70);
-        $this->checkBatch($league->region, Report::LeagueGames(), 4);
+        $this->checkBatch($league->region->parentRegion, Report::AddressBook(), 1);
+        $this->checkBatch($league->region, Report::LeagueBook(), 1);
+        $this->checkBatch($league->region, Report::RegionGames(), 1);
+        $this->checkBatch($league->region, Report::ClubGames(), $league->teams->pluck('club_id')->count());
+        $this->checkBatch($league->region, Report::LeagueGames(), 1);
 
     }
     /**
@@ -181,11 +181,11 @@ class ReportProcessorTest extends SysTestCase
         app()->call([$job_instance, 'handle']);
 
         Bus::assertBatchCount(6);
-        $this->checkBatch($team->league->region->parentRegion, Report::AddressBook(), 3);
-        $this->checkBatch($team->league->region, Report::LeagueBook(), 3);
-        $this->checkBatch($team->league->region, Report::RegionGames(), 4);
-        $this->checkBatch($team->league->region, Report::ClubGames(), 70);
-        $this->checkBatch($team->league->region, Report::LeagueGames(), 4);
+        $this->checkBatch($team->league->region->parentRegion, Report::AddressBook(), 1);
+        $this->checkBatch($team->league->region, Report::LeagueBook(), 1);
+        $this->checkBatch($team->league->region, Report::RegionGames(), 1);
+        $this->checkBatch($team->league->region, Report::ClubGames(), $team->league->teams->pluck('club_id')->count());
+        $this->checkBatch($team->league->region, Report::LeagueGames(), 1);
         $this->checkBatch($team->league->region, Report::Teamware(), 1);
     }
     /**
@@ -222,10 +222,10 @@ class ReportProcessorTest extends SysTestCase
         app()->call([$job_instance, 'handle']);
 
         Bus::assertBatchCount(5);
-        $this->checkBatch($game->league->region, Report::LeagueBook(), 3);
-        $this->checkBatch($game->league->region, Report::RegionGames(), 4);
-        $this->checkBatch($game->league->region, Report::ClubGames(), 7);
-        $this->checkBatch($game->league->region, Report::LeagueGames(), 4);
+        $this->checkBatch($game->league->region, Report::LeagueBook(), 1);
+        $this->checkBatch($game->league->region, Report::RegionGames(), 1);
+        $this->checkBatch($game->league->region, Report::ClubGames(), 1);
+        $this->checkBatch($game->league->region, Report::LeagueGames(), 1);
         $this->checkBatch($game->league->region, Report::Teamware(), 1);
     }
     /**
@@ -264,11 +264,11 @@ class ReportProcessorTest extends SysTestCase
         app()->call([$job_instance, 'handle']);
 
         Bus::assertBatchCount(5);
-        $this->checkBatch($gym->club->region->parentRegion, Report::AddressBook(), 3);
-        $this->checkBatch($gym->club->region, Report::LeagueBook(), 3);
-        $this->checkBatch($gym->club->region, Report::RegionGames(), 4);
-        $this->checkBatch($gym->club->region, Report::ClubGames(), 6+$impacted_leagues);
-        $this->checkBatch($gym->club->region, Report::LeagueGames(), 4*$impacted_leagues);
+        $this->checkBatch($gym->club->region->parentRegion, Report::AddressBook(), 1);
+        $this->checkBatch($gym->club->region, Report::LeagueBook(), 1);
+        $this->checkBatch($gym->club->region, Report::RegionGames(), 1);
+        $this->checkBatch($gym->club->region, Report::ClubGames(), 1);
+        $this->checkBatch($gym->club->region, Report::LeagueGames(), $impacted_leagues);
     }
 
 

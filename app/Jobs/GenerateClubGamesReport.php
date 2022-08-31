@@ -7,13 +7,18 @@ use App\Models\Region;
 use App\Models\League;
 use App\Enums\ReportFileType;
 use App\Enums\ReportScope;
+use App\Enums\Report;
+use App\Models\ReportDownload;
+use App\Models\User;
+
 
 use Maatwebsite\Excel\Facades\Excel;
 use App\Helpers\CalendarComposer;
 use Illuminate\Support\Facades\Storage;
 
 use App\Exports\ClubGamesReport;
-
+use App\Notifications\ClubReportsAvailable;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -42,38 +47,18 @@ class GenerateClubGamesReport implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Region $region, Club $club, ReportFileType $rtype, ReportScope $scope, League $league = null)
+    public function __construct(Region $region, Club $club, ReportFileType $rtype, League $league = null)
     {
         // set report scope
         $this->region = $region;
         $this->club = $club;
         $this->league = $league;
-        $this->scope = $scope;
         $this->rtype = $rtype;
 
         // make sure folders are there
         $this->export_folder = $region->club_folder;
         $this->rpt_name = $this->export_folder . '/' . $this->club->shortname;
 
-        switch ($this->scope->value) {
-            case ReportScope::ms_all:
-                $this->rpt_name .= '_Gesamtplan.';
-                break;
-            case ReportScope::ss_club_all:
-                $this->rpt_name .= '_Vereinsplan.';
-                break;
-            case ReportScope::ss_club_home:
-                $this->rpt_name .= '_Heimspielplan.';
-                break;
-            case ReportScope::ss_club_referee:
-                $this->rpt_name .= '_Schiriplan.';
-                break;
-            case ReportScope::ss_club_league:
-                $this->rpt_name .= '_' . $this->league->shortname . '_Rundenplan.';
-                break;
-        }
-        $this->rpt_name .= $this->rtype->description;
-        $this->rpt_name = Str::replace(' ','-', $this->rpt_name );
     }
 
     /**
@@ -89,41 +74,98 @@ class GenerateClubGamesReport implements ShouldQueue
                 return;
             }
         }
-        Log::info('[JOB][CLUB GAMES REPORTS] started.', [
-            'region-id' => $this->region->id,
-            'club-id' => $this->club->id,
-            'league-id' => $this->league->id ?? '',
-            'format' => $this->rtype->key,
-            'scope' => ReportScope::coerce($this->scope)->key,
-            'path' => $this->rpt_name]);
+        foreach ($this->rtype->getFlags() as $rtype){
+            if  ( ($rtype->hasFlag(ReportFileType::PDF)) or
+                  ($rtype->hasFlag(ReportFileType::CSV))) {
+                $rpt_name = $this->rpt_name . '_Vereinsplan.' . $rtype->description;
+                $rpt_name = Str::replace(' ','-', $rpt_name );
+                Excel::store( new ClubGamesReport($this->club->id, ReportScope::ss_club_all(), (isset($this->league->id)) ? $this->league->id : NULL),
+                            $rpt_name, null, \Maatwebsite\Excel\Excel::MPDF);
+                Log::info('[JOB][CLUB GAMES REPORTS] started.', [
+                    'region-id' => $this->region->id,
+                    'club-id' => $this->club->id,
+                    'league-id' => $this->league->id ?? '',
+                    'format' => $rtype->key,
+                    'path' => $rpt_name
+                ]);
+            } elseif ($rtype->hasFlag(ReportFileType::ICS)) {
+                // do calendar files
+                $calendar = CalendarComposer::createClubCalendar($this->club);
+                if ($calendar != null) {
+                    $rpt_name = $this->rpt_name . '_Vereinsplan.' . $rtype->description;
+                    $rpt_name = Str::replace(' ','-', $rpt_name );
+                    Storage::put($rpt_name, $calendar->get());
+                    Log::info('[JOB][CLUB GAMES REPORTS] started.', [
+                        'region-id' => $this->region->id,
+                        'club-id' => $this->club->id,
+                        'league-id' => $this->league->id ?? '',
+                        'format' => $rtype->key,
+                        'path' => $rpt_name
+                    ]);
+                }
 
-        if ($this->rtype->hasFlag(ReportFileType::PDF)) {
-            Excel::store( new ClubGamesReport($this->club->id, $this->scope, (isset($this->league->id)) ? $this->league->id : NULL),
-                          $this->rpt_name,
-                          null,
-                          \Maatwebsite\Excel\Excel::MPDF);
-        } elseif ($this->rtype->hasFlag(ReportFileType::ICS)) {
-            // do calendar files
-            $calendar = null;
-            switch ($this->scope->value) {
-                case ReportScope::ss_club_all:
-                    $calendar = CalendarComposer::createClubCalendar($this->club);
-                    break;
-                case ReportScope::ss_club_home:
-                    $calendar = CalendarComposer::createClubHomeCalendar($this->club);
-                    break;
-                case ReportScope::ss_club_league:
-                    $calendar = CalendarComposer::createClubLeagueCalendar($this->club, $this->league);
-                    break;
-                case ReportScope::ss_club_referee:
-                    $calendar = CalendarComposer::createClubRefereeCalendar($this->club);
-                    break;
+                $calendar = CalendarComposer::createClubHomeCalendar($this->club);
+                if ($calendar != null) {
+                    $rpt_name = $this->rpt_name . '_Heimspielplan.' . $rtype->description;
+                    $rpt_name = Str::replace(' ','-', $rpt_name );
+                    Storage::put($rpt_name, $calendar->get());
+                    Log::info('[JOB][CLUB GAMES REPORTS] started.', [
+                        'region-id' => $this->region->id,
+                        'club-id' => $this->club->id,
+                        'league-id' => $this->league->id ?? '',
+                        'format' => $rtype->key,
+                        'path' => $rpt_name
+                    ]);
+                }
+
+                $calendar = CalendarComposer::createClubLeagueCalendar($this->club, $this->league);
+                if ($calendar != null) {
+                    $rpt_name = $this->rpt_name . '_' . $this->league->shortname . '_Rundenplan.' . $rtype->description;
+                    $rpt_name = Str::replace(' ','-', $rpt_name );
+                    Storage::put($rpt_name, $calendar->get());
+                    Log::info('[JOB][CLUB GAMES REPORTS] started.', [
+                        'region-id' => $this->region->id,
+                        'club-id' => $this->club->id,
+                        'league-id' => $this->league->id ?? '',
+                        'format' => $rtype->key,
+                        'path' => $rpt_name
+                    ]);
+                }
+
+                $calendar = CalendarComposer::createClubRefereeCalendar($this->club);
+                                if ($calendar != null) {
+                    $rpt_name = $this->rpt_name . '_Schiriplan.' . $rtype->description;
+                    $rpt_name = Str::replace(' ','-', $rpt_name );
+                    Storage::put($rpt_name, $calendar->get());
+                    Log::info('[JOB][CLUB GAMES REPORTS] started.', [
+                        'region-id' => $this->region->id,
+                        'club-id' => $this->club->id,
+                        'league-id' => $this->league->id ?? '',
+                        'format' => $rtype->key,
+                        'path' => $rpt_name
+                    ]);
+                }
+            } else {
+                $rpt_name = $this->rpt_name . '_Gesamtplan.' . $rtype->description;
+                $rpt_name = Str::replace(' ','-', $rpt_name );
+                Excel::store(new ClubGamesReport($this->club->id, ReportScope::ms_all(), (isset($this->league->id)) ? $this->league->id : NULL), $rpt_name);
+                Log::info('[JOB][CLUB GAMES REPORTS] started.', [
+                    'region-id' => $this->region->id,
+                    'club-id' => $this->club->id,
+                    'league-id' => $this->league->id ?? '',
+                    'format' => $rtype->key,
+                    'path' => $rpt_name
+                ]);
             }
-            if ($calendar != null) {
-                Storage::put($this->rpt_name, $calendar->get());
+
+                    // get interested users
+            $to_notify = ReportDownload::where('report_id', Report::ClubGames() )->where('model_class', Club::class)->where('model_id', $this->club->id)->pluck('user_id');
+            $users = User::whereIn('id', $to_notify)->get();
+
+            if ($users->count()>0){
+                // send notification
+                Notification::send($users, new ClubReportsAvailable($this->club));
             }
-        } else {
-            Excel::store(new ClubGamesReport($this->club->id, $this->scope, (isset($this->league->id)) ? $this->league->id : NULL), $this->rpt_name);
         }
     }
 }
