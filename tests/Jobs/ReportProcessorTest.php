@@ -3,6 +3,7 @@
 namespace Tests\Jobs;
 
 use App\Models\Region;
+use App\Models\Game;
 use App\Enums\Report;
 use App\Jobs\ReportProcessor;
 use Tests\SysTestCase;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Bus\PendingBatch;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ReportProcessorTest extends SysTestCase
 {
@@ -241,7 +243,9 @@ class ReportProcessorTest extends SysTestCase
         Bus::assertNothingDispatched();
 
         $region = Region::where('code', 'HBVDA')->first();
-        $gym = $region->clubs->first()->gyms->first();
+        $gym = $region->clubs->first()->load('gyms')->gyms->first();
+        $impacted_leagues = Game::where('gym_id',$gym->id)->pluck('league_id')->unique()->count();
+        // Log::debug('impacted leagues',['cnt'=> Game::where('gym_id',$gym->id)->pluck('league_id')->unique()  ]);
 
         // remove audits
         DB::table('audits')->truncate();
@@ -263,8 +267,8 @@ class ReportProcessorTest extends SysTestCase
         $this->checkBatch($gym->club->region->parentRegion, Report::AddressBook(), 3);
         $this->checkBatch($gym->club->region, Report::LeagueBook(), 3);
         $this->checkBatch($gym->club->region, Report::RegionGames(), 4);
-        $this->checkBatch($gym->club->region, Report::ClubGames(), 12);
-        $this->checkBatch($gym->club->region, Report::LeagueGames(), 24);
+        $this->checkBatch($gym->club->region, Report::ClubGames(), 6+$impacted_leagues);
+        $this->checkBatch($gym->club->region, Report::LeagueGames(), 4*$impacted_leagues);
     }
 
 
