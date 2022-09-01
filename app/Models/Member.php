@@ -10,6 +10,8 @@ use App\Enums\Role;
 use App\Models\Membership;
 use App\Models\Invitation;
 
+use OwenIt\Auditing\Contracts\Auditable;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -71,10 +73,10 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @mixin \Eloquent
  */
 
-class Member extends Model
+class Member extends Model implements Auditable
 {
 
-  use Notifiable, HasFactory;
+  use \OwenIt\Auditing\Auditable, Notifiable, HasFactory;
 
   protected $fillable = [
         'id','club_id','firstname','lastname','city','street', 'zipcode', 'phone',

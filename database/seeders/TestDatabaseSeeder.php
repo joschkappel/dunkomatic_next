@@ -21,6 +21,7 @@ class TestDatabaseSeeder extends Seeder
             base\LeagueSizesTableSeeder::class,
             base\LeagueSizeCharsTableSeeder::class,
             base\LeagueSizeSchemesTableSeeder::class,
+            base\ReportClassesTableSeeder::class,
             dev\UsersTableSeeder::class,
             test\UserSeeder::class,
             base\MessagesTableSeeder::class,

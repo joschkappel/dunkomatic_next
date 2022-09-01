@@ -15,7 +15,7 @@ use App\Models\Message;
 use App\Models\Invitation;
 use App\Traits\ReportFinder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -39,11 +39,8 @@ use Illuminate\Support\Str;
  * @property int $job_game_notime
  * @property int $job_noleads
  * @property int $job_email_valid
- * @property int $job_league_reports
  * @property mixed $fmt_league_reports
- * @property int $job_club_reports
  * @property mixed $fmt_club_reports
- * @property int $job_exports
  * @property \Illuminate\Support\Carbon|null $open_scheduling_at
  * @property \Illuminate\Support\Carbon|null $open_selection_at
  * @property \Illuminate\Support\Carbon|null $close_selection_at
@@ -99,12 +96,9 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder|Region whereGameSlot($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Region whereHq($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Region whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Region whereJobClubReports($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Region whereJobEmailValid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Region whereJobExports($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Region whereJobGameNotime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Region whereJobGameOverlaps($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Region whereJobLeagueReports($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Region whereJobNoleads($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Region whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Region whereUpdatedAt($value)
@@ -119,14 +113,10 @@ class Region extends Model
     protected $fillable = [
         'id', 'code', 'name', 'hq', 'job_game_overlaps', 'game_slot',
         'job_game_notime', 'job_noleads', 'job_email_valid',
-        'job_league_reports', 'job_club_reports', 'job_exports',
         'fmt_league_reports', 'fmt_club_reports',
         'open_scheduling_at', 'open_selection_at',
         'close_selection_at', 'close_scheduling_at', 'close_referees_at',
-        'auto_state_change',
-        'job_club_reports_lastrun_at', 'job_league_reports_lastrun_at',
-        'job_club_reports_lastrun_ok', 'job_league_reports_lastrun_ok',
-        'job_club_reports_running', 'job_league_reports_running'
+        'auto_state_change'
     ];
 
     protected $casts = [
@@ -137,13 +127,7 @@ class Region extends Model
         'close_selection_at' => 'date',
         'close_scheduling_at' => 'date',
         'close_referees_at' => 'date',
-        'auto_state_change' => 'boolean',
-        'job_club_reports_lastrun_at' => 'datetime',
-        'job_league_reports_lastrun_at' => 'datetime',
-        'job_club_reports_running' => 'boolean',
-        'job_league_reports_running' => 'boolean',
-        'job_club_reports_lastrun_ok' => 'boolean',
-        'job_league_reports_lastrun_ok' => 'boolean'
+        'auto_state_change' => 'boolean'
     ];
 
     public function clubs(): HasMany
@@ -169,7 +153,10 @@ class Region extends Model
     {
         return $this->hasMany(Invitation::class);
     }
-
+    public function report_jobs(): HasMany
+    {
+        return $this->hasMany(ReportJob::class);
+    }
 
     public function users(): Collection
     {
@@ -263,6 +250,12 @@ class Region extends Model
         $reports = $reports->concat(
             $this->get_reports($this->region_folder.'/'.config('dunkomatic.export_folders.teamware'), null,  ReportFileType::coerce(ReportFileType::CSV() ) )
         );
+        // add top level region reports
+        if ($this->is_base_level){
+            $reports = $reports->concat(
+                $this->get_reports($this->parentRegion->region_folder, null, $format )
+            );
+        }
 
         // add top level region reports
         if ($this->is_base_level){

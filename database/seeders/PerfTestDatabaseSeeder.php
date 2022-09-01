@@ -17,6 +17,7 @@ class PerfTestDatabaseSeeder extends Seeder
           base\BouncerSeeder::class,
           base\SettingsTableSeeder::class,
           base\RegionsTableSeeder::class,
+          base\ReportClassesTableSeeder::class,
           dev\UsersTableSeeder::class,
           test\UserSeeder::class,
           base\LeagueSizesTableSeeder::class,

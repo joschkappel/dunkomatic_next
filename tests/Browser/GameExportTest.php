@@ -144,7 +144,7 @@ class GameExportTest extends DuskTestCase
 
             $browser->loginAs($user)
                     ->visitRoute('club.dashboard',['language'=>'de', 'club'=>$club])
-                    ->screenshot('club_game_export_club_dashboard');
+                    ->screenshot('club_game_export_club_dashboard2');
 
             $browser->with('#gamesCard', function ($gamesCard)  {
                 $gamesCard->click('.btn-tool')

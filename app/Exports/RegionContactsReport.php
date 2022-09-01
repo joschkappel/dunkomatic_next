@@ -4,7 +4,7 @@ namespace App\Exports;
 
 use App\Models\Region;
 
-use App\Exports\Sheets\RegionTitle;
+use App\Exports\Sheets\Title;
 use App\Exports\Sheets\RegionContactsSheet;
 use App\Exports\Sheets\ClubContactsSheet;
 use App\Exports\Sheets\LeagueContactsSheet;
@@ -34,7 +34,7 @@ class RegionContactsReport implements WithMultipleSheets, ShouldAutoSize
 
         $sheets = [];
 
-        $sheets[] = new RegionTitle($this->region, 'Adressbuch');
+        $sheets[] = new Title('Adressbuch', $this->region, null, null);
         $sheets[] = new RegionContactsSheet($this->region);
         $sheets[] = new LeagueContactsSheet($this->region);
 

@@ -19,6 +19,8 @@ return [
   'job.notime' => 'Prüfung auf nicht angesetzte Spiele',
   'job.league_reports' => 'Erzeuge Rundenlisten',
   'job.club_reports' => 'Erzeuge Vereinslisten',
+  'job.league_reports.fmt' => 'Zusätzliche Formate für Rundenlisten',
+  'job.club_reports.fmt' => 'Zusätzliche Formate für Vereinslisten',
   'name' =>  'Name',
   'code' => 'Abkürzung',
   'hq' => 'Gehört zu',

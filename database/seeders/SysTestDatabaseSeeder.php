@@ -23,6 +23,7 @@ class SysTestDatabaseSeeder extends Seeder
             base\LeagueSizesTableSeeder::class,
             base\LeagueSizeCharsTableSeeder::class,
             base\LeagueSizeSchemesTableSeeder::class,
+            base\ReportClassesTableSeeder::class,
             dev\UsersTableSeeder::class,
             base\MessagesTableSeeder::class,
         ]);

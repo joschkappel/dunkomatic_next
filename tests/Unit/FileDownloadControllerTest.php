@@ -5,8 +5,12 @@ namespace Tests\Unit;
 use App\Enums\ReportFileType;
 use App\Models\Club;
 use App\Models\League;
+use App\Models\Region;
+use App\Enums\Report;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
@@ -27,6 +31,15 @@ class FileDownloadControllerTest extends TestCase
         $this->testleague = League::factory()->registered(4, 4)->create();
         $this->testclub_assigned = $this->testleague->clubs()->first();
         $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
+
+        // clean download folders
+        $folder = $this->testclub_assigned->region->club_folder;
+        File::cleanDirectory(Storage::disk('local')->path($folder));
+        $folder = $this->testclub_assigned->region->league_folder;
+        File::cleanDirectory(Storage::disk('local')->path($folder));
+        $folder = $this->testclub_assigned->region->region_folder;
+        File::cleanDirectory(Storage::disk('local')->path($folder));
+
     }
 
     /**
@@ -126,7 +139,7 @@ class FileDownloadControllerTest extends TestCase
      */
     public function get_club_archive()
     {
-        // check no file found
+        // check no file found()
         $response = $this->authenticated()
             ->get(route('club_archive.get', ['club' => $this->testclub_assigned, 'format' => ReportFileType::HTML]));
 
@@ -145,6 +158,12 @@ class FileDownloadControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertDownload($archive);
+        $this->assertDatabaseHas('report_downloads',[
+            'user_id'=>$this->region_user->id,
+            'report_id'=>Report::ClubGames(),
+            'model_id'=>$this->testclub_assigned->id,
+            'model_class'=>Club::class
+        ]);
     }
     /**
      * get_league_archve
@@ -176,6 +195,12 @@ class FileDownloadControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertDownload($archive);
+        $this->assertDatabaseHas('report_downloads',[
+            'user_id'=>$this->region_user->id,
+            'report_id'=>Report::LeagueGames(),
+            'model_id'=>$this->testleague->id,
+            'model_class'=>League::class
+        ]);
     }
     /**
      * get_region_archve
@@ -207,6 +232,12 @@ class FileDownloadControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertDownload($archive);
+        $this->assertDatabaseHas('report_downloads',[
+            'user_id'=>$this->region_user->id,
+            'report_id'=>Report::RegionGames(),
+            'model_id'=>$this->testleague->region->id,
+            'model_class'=>Region::class
+        ]);
     }
     /**
      * get_region_league_archve

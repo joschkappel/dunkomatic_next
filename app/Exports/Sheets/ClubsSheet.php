@@ -14,8 +14,9 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
 
-use Illuminate\Support\Carbon;
+use Maatwebsite\Excel\Events\AfterSheet;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Concerns\WithEvents;
 
 class ClubsSheet implements FromView, WithTitle, ShouldAutoSize
 {
@@ -43,9 +44,9 @@ class ClubsSheet implements FromView, WithTitle, ShouldAutoSize
     public function title(): string
     {
         if ($this->league == null){
-            return __('Gegner und Hallen').' '.$this->region->code;
+            return __('Kontakte und Adressen').' '.$this->region->code;
         } else {
-            return __('Gegner und Hallen').' '.$this->league->shortname;
+            return __('Kontake und Adressen').' '.$this->league->shortname;
         }
     }
 
@@ -70,25 +71,32 @@ class ClubsSheet implements FromView, WithTitle, ShouldAutoSize
         }
 
         $guests = $games->pluck('club_id_guest')->unique();
-
         $clubs = Club::whereIn('id', $guests)
                 ->orderBy('shortname')
                 ->get();
-        $g = 0;
-        $t = 0;
 
         foreach ($clubs as $c){
           $c['teams'] = Team::whereIn('id', $games->where('club_id_home',$c->id)->pluck('team_id_home')->unique())->orderBy('team_no')->get();
-          $t += $c['teams']->count();
           $c['gyms'] = Gym::whereIn('id', $games->where('club_id_home',$c->id)->pluck('gym_id')->unique())->orderBy('gym_no')->get();
-          $g += $c['gyms']->count();
         }
 
+        $league_ids = $games->pluck('league_id')->unique();
+        $leagues = League::whereIn('id', $league_ids)->with('members')->get();
 
-        return view('reports.clubs_sheet', ['clubs'=>$clubs]);
+
+        return view('reports.clubs_sheet', ['clubs'=>$clubs, 'leagues'=>$leagues]);
     }
 
-
+/*     public function registerEvents(): array
+    {
+        return [
+            // Handle by a closure.
+            AfterSheet::class => function(AfterSheet $event) {
+                $event->sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+                $event->sheet->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
+              }
+        ];
+    } */
 
 
 }

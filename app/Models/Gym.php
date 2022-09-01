@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Models\Club;
 use App\Models\Game;
 
+use OwenIt\Auditing\Contracts\Auditable;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -43,9 +45,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Gym whereZip($value)
  * @mixin \Eloquent
  */
-class Gym extends Model
+class Gym extends Model implements Auditable
 {
-  use HasFactory;
+  use \OwenIt\Auditing\Auditable, HasFactory;
+
+  public function generateTags(): array
+  {
+      return [
+          $this->club->shortname,
+          '('.$this->club->region->code.')'
+      ];
+  }
 
   protected $fillable = [
         'id','name','gym_no','club_id','zip','street','city','directions'

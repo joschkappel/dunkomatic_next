@@ -8,6 +8,8 @@ use App\Models\League;
 use App\Models\Team;
 use App\Models\Region;
 
+use OwenIt\Auditing\Contracts\Auditable;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -67,8 +69,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|Game whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Game extends Model
+class Game extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+    public function generateTags(): array
+    {
+        return [
+            '('.$this->region.')'
+        ];
+    }
     protected $fillable = [
         'id', 'league_id', 'region', 'game_no', 'game_plandate', 'game_date', 'game_time',
         'club_id_home', 'team_id_home', 'team_home', 'team_char_home',
@@ -110,4 +119,13 @@ class Game extends Model
     {
         return $this->belongsTo(Team::class, 'team_id_guest');
     }
+/*     public function getTeamHomeAttribute(): string
+    {
+
+        if(!isset($this->relations['team_home'])) {
+
+            $this->load('team_home');
+        }
+       return $this->relations['team_home']->name;
+    } */
 }

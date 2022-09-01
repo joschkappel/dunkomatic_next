@@ -46,35 +46,16 @@ class GenerateClubReportsTest extends TestCase
         }
 
 
-        foreach (ReportScope::getInstances() as $rscope) {
-            $report = $folder . '/' . $club->shortname;
-            switch ($rscope->value) {
-                case ReportScope::ms_all:
-                    $report .= '_Gesamtplan.pdf';
-                    break;
-                case ReportScope::ss_club_all:
-                    $report .= '_Vereinsplan.pdf';
-                    break;
-                case ReportScope::ss_club_home:
-                    $report .= '_Heimspielplan.pdf';
-                    break;
-                case ReportScope::ss_club_referee:
-                    $report .= '_Schiriplan.pdf';
-                    break;
-                case ReportScope::ss_club_league:
-                    $report .= '_' . $league->shortname . '_Rundenplan.pdf';
-                    break;
-            }
+        $report = $folder . '/' . $club->shortname;
+        $report .= '_Vereinsplan.pdf';
+        $files = Storage::allFiles($folder);
+        Storage::delete($files);
 
-            $files = Storage::allFiles($folder);
-            Storage::delete($files);
+        $job_instance = resolve(GenerateClubGamesReport::class, ['region' => $region, 'club' => $club, 'rtype' => ReportFileType::PDF(),  'league'=>$league]);
+        app()->call([$job_instance, 'handle']);
 
-            $job_instance = resolve(GenerateClubGamesReport::class, ['region' => $region, 'club' => $club, 'rtype' => ReportFileType::PDF(), 'scope' => $rscope, 'league'=>$league]);
-            app()->call([$job_instance, 'handle']);
-
-            // Excel::assertStored($report);
-            Storage::assertExists($report);
-        }
+        // Excel::assertStored($report);
+        Storage::assertExists($report);
     }
 
     /**
@@ -96,35 +77,18 @@ class GenerateClubReportsTest extends TestCase
         // Excel::fake();
         Storage::assertExists($folder);
 
-        foreach (ReportScope::getInstances() as $rscope) {
-            $report = $folder . '/' . $club->shortname;
-            switch ($rscope->value) {
-                case ReportScope::ms_all:
-                    $report .= '_Gesamtplan.xlsx';
-                    break;
-                case ReportScope::ss_club_all:
-                    $report .= '_Vereinsplan.xlsx';
-                    break;
-                case ReportScope::ss_club_home:
-                    $report .= '_Heimspielplan.xlsx';
-                    break;
-                case ReportScope::ss_club_referee:
-                    $report .= '_Schiriplan.xlsx';
-                    break;
-                case ReportScope::ss_club_league:
-                    $report .= '_' . $league->shortname . '_Rundenplan.xlsx';
-                    break;
-            }
+        $report = $folder . '/' . $club->shortname;
+        $report .= '_Gesamtplan.xlsx';
 
-            $files = Storage::allFiles($folder);
-            Storage::delete($files);
 
-            $job_instance = resolve(GenerateClubGamesReport::class, ['region' => $region, 'club' => $club, 'rtype' => ReportFileType::XLSX(), 'scope' => $rscope, 'league'=>$league]);
-            app()->call([$job_instance, 'handle']);
+        $files = Storage::allFiles($folder);
+        Storage::delete($files);
 
-            // Excel::assertStored($report);
-            Storage::assertExists($report);
-        }
+        $job_instance = resolve(GenerateClubGamesReport::class, ['region' => $region, 'club' => $club, 'rtype' => ReportFileType::XLSX(), 'league'=>$league]);
+        app()->call([$job_instance, 'handle']);
+
+        // Excel::assertStored($report);
+        Storage::assertExists($report);
     }
 
     /**
@@ -147,35 +111,16 @@ class GenerateClubReportsTest extends TestCase
         $folder = $region->club_folder;
         Storage::assertExists($folder);
 
-        foreach (ReportScope::getInstances() as $rscope) {
-            $report = $folder . '/' . $club->shortname;
-            switch ($rscope->value) {
-                case ReportScope::ms_all:
-                    $report .= '_Gesamtplan.ics';
-                    break;
-                case ReportScope::ss_club_all:
-                    $report .= '_Vereinsplan.ics';
-                    break;
-                case ReportScope::ss_club_home:
-                    $report .= '_Heimspielplan.ics';
-                    break;
-                case ReportScope::ss_club_referee:
-                    $report .= '_Schiriplan.ics';
-                    break;
-                case ReportScope::ss_club_league:
-                    $report .= '_' . $league->shortname . '_Rundenplan.ics';
-                    break;
-            }
+        $report = $folder . '/' . $club->shortname;
 
-            if ($rscope->value != ReportScope::ms_all ){
-                $files = Storage::allFiles($folder);
-                Storage::delete($files);
+        $files = Storage::allFiles($folder);
+        Storage::delete($files);
 
-                $job_instance = resolve(GenerateClubGamesReport::class, ['region' => $region, 'club' => $club, 'rtype' => ReportFileType::ICS(), 'scope' => $rscope, 'league'=>$league]);
-                app()->call([$job_instance, 'handle']);
+        $job_instance = resolve(GenerateClubGamesReport::class, ['region' => $region, 'club' => $club, 'rtype' => ReportFileType::ICS(),  'league'=>$league]);
+        app()->call([$job_instance, 'handle']);
 
-                Storage::assertExists($report);
-            }
-        }
+        Storage::assertExists($report.'_Vereinsplan.ics');
+        Storage::assertExists($report.'_Heimspielplan.ics');
+        Storage::assertExists($report.'_Schiriplan.ics');
     }
 }
