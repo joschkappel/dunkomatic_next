@@ -51,36 +51,6 @@ return [
   |--------------------------------------------------------------------------
   */
     'allowed_gym_nos' => array("1", "2", "3", "4", "5", "6", "7", "8", "9", "10"),
-    /*
-
-  |--------------------------------------------------------------------------
-  | define coloring for leagues
-  | color => [  above_region ( 0=false, 1=true),
-  |             gender (0=male, 1=female, 2=mixed),
-  |             agetype (0=senior, 1=junior, 2=mini)
-  |           ]
-  |--------------------------------------------------------------------------
-  */
-    'league_colors' => array(
-        '000' => 'red',
-        '010' => 'pink',
-        '020' => 'purple',
-        '001' => 'deep purple',
-        '011' => 'indigo',
-        '021' => 'blue',
-        '002' => 'light blue',
-        '012' => 'cyan',
-        '022' => 'teal',
-        '100' => 'green',
-        '110' => 'light green',
-        '120' => 'lime',
-        '101' => 'yellow',
-        '111' => 'amber',
-        '121' => 'orange',
-        '102' => 'deep orange',
-        '112' => 'brown',
-        '122' => 'gray',
-    ),
 
     'folders' => [
         'export' => 'exports',

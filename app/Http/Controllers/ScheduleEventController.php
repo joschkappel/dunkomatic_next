@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Rules\SliderRange;
 
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 
 class ScheduleEventController extends Controller
@@ -112,7 +112,7 @@ class ScheduleEventController extends Controller
             $schedule_ids = $schedule_ids->concat($region->parentRegion->schedules()->pluck('id'));
         }
 
-        $data = ScheduleEvent::whereIn('schedule_id', $schedule_ids)->get();
+        $data = ScheduleEvent::whereIn('schedule_id', $schedule_ids)->with('schedule','schedule.league_size')->get();
         Log::info('found schedule events.', ['count' => count($data)]);
 
         $eventlist = array();

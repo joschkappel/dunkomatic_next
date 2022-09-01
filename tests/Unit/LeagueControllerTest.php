@@ -68,8 +68,7 @@ class LeagueControllerTest extends TestCase
                 'shortname' => 'testtoolong',
                 'name' => 'testleague',
                 'age_type' => LeagueAgeType::getRandomValue(),
-                'gender_type' => LeagueGenderType::getRandomValue(),
-                'above_region' => False
+                'gender_type' => LeagueGenderType::getRandomValue()
             ]);
         $response
             ->assertStatus(302)
@@ -98,8 +97,7 @@ class LeagueControllerTest extends TestCase
                 'schedule_id' => $schedule->id,
                 'league_size_id' => $schedule->league_size->id,
                 'age_type' => LeagueAgeType::getRandomValue(),
-                'gender_type' => LeagueGenderType::getRandomValue(),
-                'above_region' => False
+                'gender_type' => LeagueGenderType::getRandomValue()
             ]);
         $response->assertRedirect(route('league.index', ['language' => 'de', 'region' => $this->region]))
             ->assertSessionHasNoErrors();
@@ -147,8 +145,7 @@ class LeagueControllerTest extends TestCase
                 'region_id' => $this->testleague->region_id,
                 'schedule_id' => 100,
                 'age_type' => $this->testleague->age_type,
-                'gender_type' => 200,
-                'above_region' => False
+                'gender_type' => 200
             ]);
 
         $response->assertStatus(302)
@@ -175,8 +172,7 @@ class LeagueControllerTest extends TestCase
                 'schedule_id' => $this->testleague->schedule_id,
                 'league_size_id' => $this->testleague->league_size_id,
                 'age_type' => $this->testleague->age_type,
-                'gender_type' => $this->testleague->gender_type,
-                'above_region' => False
+                'gender_type' => $this->testleague->gender_type
             ]);
 
         $response->assertStatus(302)
