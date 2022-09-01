@@ -8,11 +8,13 @@ use App\Models\Region;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Log;
 
 class Invitation extends Model
 {
-    use HasFactory;
+    use HasFactory, Prunable;
 
     protected $with = ['region','user','member'];
 
@@ -34,5 +36,15 @@ class Invitation extends Model
     public function region(): BelongsTo
     {
         return $this->belongsTo(Region::class);
+    }
+    /**
+     * Get the prunable model query.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function prunable()
+    {
+        Log::notice('[JOB][DB CLEANUP] pruning invitations older than a week.');
+        return static::where('created_at', '<', now()->subWeek());
     }
 }

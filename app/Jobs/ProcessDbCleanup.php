@@ -12,6 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
+use OwenIt\Auditing\Models\Audit;
 
 class ProcessDbCleanup implements ShouldQueue
 {
@@ -38,17 +39,20 @@ class ProcessDbCleanup implements ShouldQueue
         Artisan::call('db:backup -c');
         Log::notice('[JOB][DB CLEANUP] creating DB backup.');
 
+        // use the model prune for:
         Artisan::call('model:prune');
         // drop all outdated (one week) messages;
         // drop all users (incl messages and members) that have been rejected four weeks ago;
-        // drop all users (incl messages and members) that havent verfied their email since a week;
+        // drop all users (incl messages and members) that havent verfied their email since a month;
+        // drop all inviations that are older than a week
+
+        // drop audits older than 2 months
+        $old_audits = Audit::whereDate('created_at', '<',now()->subMonths(2))->delete();
+        Log::notice('[JOB][DB CLEANUP] deleting old audits.', ['count' => $old_audits]);
 
         // drop all read notifications
         // $old_notifs = DatabaseNotification::whereDate('read_at', '<',now()->subWeek())->delete();
         // Log::notice('[JOB][DB CLEANUP] deleting read notifications.', ['count' => $old_notifs]);
-        // drop old invitations
-        $old_invites = Invitation::whereDate('created_at', '<',now()->subWeek())->delete();
-        Log::notice('[JOB][DB CLEANUP] deleting old invitations.', ['count' => $old_invites]);
 
     }
 }
