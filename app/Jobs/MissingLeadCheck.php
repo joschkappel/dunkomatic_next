@@ -10,7 +10,8 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
 use App\Models\Region;
-use App\Models\Member;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Notification;
 use App\Enums\Role;
 
 use App\Notifications\MissingLead;
@@ -20,7 +21,7 @@ class MissingLeadCheck implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected Region $region;
-    protected ?Member $region_admin;
+    protected Collection $region_admins;
 
     /**
      * Create a new job instance.
@@ -64,12 +65,9 @@ class MissingLeadCheck implements ShouldQueue
       }
 
       if ( (count($clubs_nolead) > 0 ) or (count($leagues_nolead)>0 )){
-        foreach( $this->region_admins as $ra ){
-            $ra->notify( new MissingLead($clubs_nolead, $leagues_nolead) );
-            Log::warning('[JOB][MISSING ADMINS] clubs without clublead/admin.', ['region-id' => $this->region->id, 'club-ids'=>$clubs_nolead ]);
-            Log::warning('[JOB][MISSING ADMINS] leagues without leaguelead/admin.', ['region-id' => $this->region->id, 'league-ids'=>$leagues_nolead ]);
-            Log::info('[NOTIFICATION][MEMBER] missing admins.', ['member-id' => $ra->id]);
-        }
+        Notification::send( $this->region_admins, new MissingLead($clubs_nolead, $leagues_nolead) );
+        Log::warning('[JOB][MISSING ADMINS] clubs without clublead/admin.', ['region-id' => $this->region->id, 'club-ids'=>$clubs_nolead ]);
+        Log::warning('[JOB][MISSING ADMINS] leagues without leaguelead/admin.', ['region-id' => $this->region->id, 'league-ids'=>$leagues_nolead ]);
       }
     }
 }
