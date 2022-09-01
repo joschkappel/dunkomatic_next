@@ -37,7 +37,16 @@ class ProcessDbCleanup implements ShouldQueue
     {
         // first dump the DB
         Artisan::call('db:backup -c');
-        Log::notice('[JOB][DB CLEANUP] creating DB backup.');
+        Log::info('[JOB][DB CLEANUP] creating DB backup.');
+
+        Artisan::call('queue:prune-failed');
+        Log::notice('[JOB][DB CLEANUP] pruning failed jobs.');
+
+        Artisan::call('queue:prune-batches');
+        Log::notice('[JOB][DB CLEANUP] pruning failed batches.');
+
+        Artisan::call('authentication-log:purge');
+        Log::notice('[JOB][DB CLEANUP] pruning authentication logs.');
 
         // use the model prune for:
         Artisan::call('model:prune');
@@ -53,6 +62,5 @@ class ProcessDbCleanup implements ShouldQueue
         // drop all read notifications
         // $old_notifs = DatabaseNotification::whereDate('read_at', '<',now()->subWeek())->delete();
         // Log::notice('[JOB][DB CLEANUP] deleting read notifications.', ['count' => $old_notifs]);
-
     }
 }
