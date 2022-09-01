@@ -368,7 +368,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
      */
     public function prunable()
     {
-        Log::notice('[JOB][DB CLEANUP] pruning users.');
+        Log::notice('[JOB][DB CLEANUP] pruning users that have been rejected more than a week ago or not valid their email since a month.');
         return static::where('rejected_at', '<', now()->subWeek())
             ->orWhere(function ($query) {
                 $query->whereNull('email_verified_at')

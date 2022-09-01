@@ -45,19 +45,17 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('queue:prune-batches --hours=48')->daily();
         $schedule->command('db:backup -c')->daily()->emailOutputOnFailure('dmatic.master@gmail.com');
-        $schedule->command('authentication-log:purge')->monthlyOn(2,'00:05')->emailOutputOnFailure('dmatic.master@gmail.com');
         $schedule->command('telescope:prune')->dailyAt('00:10')->environments(['staging', 'local','dev']);
-        $schedule->job(new ProcessDbCleanup(), 'janitor')->weeklyOn(1,'00:15')->emailOutputTo('dmatic.master@gmail.com');
-        $schedule->job(new ProcessFilesCleanup(), 'janitor')->weeklyOn(1,'00:20')->emailOutputOnFailure('dmatic.master@gmail.com');
-        $schedule->job(new ProcessCustomMessages(), 'janitor')->dailyAt('03:00')->emailOutputOnFailure('dmatic.master@gmail.com');
+        $schedule->job(new ProcessDbCleanup(), 'janitor')->weeklyOn(1,'00:15');
+        $schedule->job(new ProcessFilesCleanup(), 'janitor')->weeklyOn(1,'00:20');
+        $schedule->job(new ProcessCustomMessages(), 'janitor')->dailyAt('03:00');
         $schedule->job(new ProcessNewSeason(), 'janitor')->yearly();
         // $schedule->exec('php artisan db:backup -c')->everyMinute()->emailOutputTo('dmatic.master@gmail.com');
         // $schedule->job(new ExportStatistics(), 'janitor')->everyMinute();
-        $schedule->job(new OpenLeagueState(), 'janitor')->dailyAt('07:45')->emailOutputOnFailure('dmatic.master@gmail.com');
-        $schedule->job(new CloseLeagueState(), 'janitor')->dailyAt('20:00')->emailOutputOnFailure('dmatic.master@gmail.com');
-        $schedule->job(new ReportProcessor(collect(), collect()), 'janitor')->dailyAt('00:10')->emailOutputOnFailure('dmatic.master@gmail.com');
+        $schedule->job(new OpenLeagueState(), 'janitor')->dailyAt('07:45');
+        $schedule->job(new CloseLeagueState(), 'janitor')->dailyAt('20:00');
+        $schedule->job(new ReportProcessor(collect(), collect()), 'janitor')->dailyAt('00:10');
 
         // schedule region specific jobs
         $regions = Region::with('regionadmins')->get();
