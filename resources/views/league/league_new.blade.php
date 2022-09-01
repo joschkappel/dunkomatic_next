@@ -89,18 +89,6 @@
             </div>
         </div>
     </div>
-    <div class="form-group row ">
-        <div class="col-md-4">
-        </div>
-        <div class="col-md-6">
-            <div class="form-group  clearfix">
-                <div class="icheck-info d-inline">
-                    <input type="checkbox" id="above_region" name="above_region">
-                    <label for="above_region">@lang('league.above-region')</label>
-                </div>
-            </div>
-        </div>
-    </div>
 </x-card-slot>
 @endsection
 

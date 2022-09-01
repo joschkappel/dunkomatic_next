@@ -42,7 +42,6 @@ class LeagueFactory extends Factory
             'name' => $this->faker->words(2,true),
             'shortname' => $this->faker->regexify('[A-Z]{3}'),
             'region_id' => Region::where('code','HBVDA')->first()->id,
-            'above_region' => False,
             'league_size_id' => $size->id,
             'schedule_id' => $schedule->id,
             'state' => LeagueState::Setup(),

@@ -323,14 +323,6 @@ class LeagueController extends Controller
         ]);
         Log::info('league form data validated OK.');
 
-        $above_region = $request->input('above_region');
-        if (isset($above_region) and ($above_region === 'on')) {
-            $data['above_region'] = True;
-        } else {
-            $data['above_region'] = False;
-        }
-
-
         $league = new League($data);
         $region->leagues()->save($league);
         Log::notice('new league created.', ['league-id' => $league->id]);
@@ -388,17 +380,10 @@ class LeagueController extends Controller
         ]);
         Log::info('league form data validated OK');
 
-        $above_region = $request->input('above_region');
-        if (isset($above_region) and ($above_region == 'on')) {
-            $data['above_region'] = true;
-        } else {
-            $data['above_region'] = false;
-        }
-
-        if ($request->input('schedule_id') == null) {
+        if ( !$request->has('schedule_id')) {
             $data['schedule_id'] = null;
         }
-        if ($request->input('league_size_id') == null) {
+        if ( !$request->has('league_size_id')) {
             $data['league_size_id'] = null;
         }
 

@@ -128,7 +128,7 @@ class League extends Model implements Auditable
         ];
     }
     protected $fillable = [
-        'id', 'name', 'shortname', 'region_id', 'above_region', 'schedule_id', 'league_size_id',
+        'id', 'name', 'shortname', 'region_id', 'schedule_id', 'league_size_id',
         'generated_at', 'age_type', 'gender_type', 'state',
         'assignment_closed_at', 'registration_closed_at', 'selection_opened_at',
         'selection_closed_at', 'scheduling_closed_at', 'referees_closed_at'
@@ -232,6 +232,10 @@ class League extends Model implements Auditable
     public function memberIsA(Role $role): bool
     {
         return $this->members()->wherePivot('role_id', $role->value)->exists();
+    }
+    public function getAboveRegionAttribute(): bool
+    {
+        return $this->loadMissing('region')->region->is_top_level;
     }
     public function getColorAttribute(): string
     {
