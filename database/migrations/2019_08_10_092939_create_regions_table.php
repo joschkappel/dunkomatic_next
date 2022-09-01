@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 use App\Enums\JobFrequencyType;
 use App\Enums\ReportFileType;
+use Illuminate\Support\Facades\Artisan;
 
 class CreateRegionsTable extends Migration
 {
@@ -39,6 +40,11 @@ class CreateRegionsTable extends Migration
             $table->date('close_referees_at')->nullable();
             $table->boolean('auto_state_change')->default(False);
         });
+
+        Artisan::call('db:seed', [
+            '--class' => 'RegionsSeeder',
+            '--force' => true
+        ]);
     }
 
     /**

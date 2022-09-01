@@ -24,6 +24,11 @@ class CreateLeagueSizeSchemeTable extends Migration
             $table->timestamps();
             $table->unique(['league_size_id','game_no']);
         });
+
+        Artisan::call('db:seed', [
+            '--class' => 'LeagueSizeSchemesSeeder',
+            '--force' => true
+        ]);
     }
 
     /**

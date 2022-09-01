@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders\base;
+namespace Database\Seeders;
 
 use App\Models\Club;
 use App\Models\League;

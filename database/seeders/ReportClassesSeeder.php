@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders\base;
+namespace Database\Seeders;
 
 use App\Enums\Report;
 use App\Models\Game;
@@ -15,7 +15,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 
-class ReportClassesTableSeeder extends Seeder
+class ReportClassesSeeder extends Seeder
 {
     /**
      * Run the database seeds.

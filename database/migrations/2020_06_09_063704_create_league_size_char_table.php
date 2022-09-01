@@ -20,6 +20,11 @@ class CreateLeagueSizeCharTable extends Migration
             $table->string('team_char',2);
             $table->timestamps();
         });
+
+        Artisan::call('db:seed', [
+            '--class' => 'LeagueSizeCharsSeeder',
+            '--force' => true
+        ]);
     }
 
     /**

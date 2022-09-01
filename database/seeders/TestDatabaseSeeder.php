@@ -15,13 +15,7 @@ class TestDatabaseSeeder extends Seeder
     {
         // load base tables
         $this->call([
-            base\BouncerSeeder::class,
             base\SettingsTableSeeder::class,
-            base\RegionsTableSeeder::class,
-            base\LeagueSizesTableSeeder::class,
-            base\LeagueSizeCharsTableSeeder::class,
-            base\LeagueSizeSchemesTableSeeder::class,
-            base\ReportClassesTableSeeder::class,
             dev\UsersTableSeeder::class,
             test\UserSeeder::class,
             base\MessagesTableSeeder::class,

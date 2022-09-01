@@ -18,6 +18,11 @@ return new class extends Migration
             $table->unsignedInteger('report_id');
             $table->string('report_class');
         });
+
+        Artisan::call('db:seed', [
+            '--class' => 'ReportClassesSeeder',
+            '--force' => true
+        ]);
     }
 
     /**

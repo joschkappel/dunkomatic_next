@@ -1,11 +1,11 @@
 <?php
-namespace Database\Seeders\base;
+namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\LeagueSize;
 
-class LeagueSizesTableSeeder extends Seeder
+class LeagueSizesSeeder extends Seeder
 {
     /**
      * Run the database seeds.

@@ -1,11 +1,11 @@
 <?php
-namespace Database\Seeders\base;
+namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 
-class RegionsTableSeeder extends Seeder
+class RegionsSeeder extends Seeder
 {
     /**
      * Run the database seeds.

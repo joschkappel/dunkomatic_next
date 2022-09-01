@@ -1,10 +1,10 @@
 <?php
-namespace Database\Seeders\base;
+namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class LeagueSizeSchemesTableSeeder extends Seeder
+class LeagueSizeSchemesSeeder extends Seeder
 {
 
   /**

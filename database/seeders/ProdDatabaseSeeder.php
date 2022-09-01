@@ -16,13 +16,7 @@ class ProdDatabaseSeeder extends Seeder
 
         // load base tables
         $this->call([
-          base\BouncerSeeder::class,
           base\SettingsTableSeeder::class,
-          base\RegionsTableSeeder::class,
-          base\LeagueSizesTableSeeder::class,
-          base\LeagueSizeCharsTableSeeder::class,
-          base\LeagueSizeSchemesTableSeeder::class,
-          base\ReportClassesTableSeeder::class,
         ]);
 
         // migrate tables from v1

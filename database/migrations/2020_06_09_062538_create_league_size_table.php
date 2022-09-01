@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Artisan;
 
 class CreateLeagueSizeTable extends Migration
 {
@@ -19,6 +20,10 @@ class CreateLeagueSizeTable extends Migration
             $table->string('description',40);
             $table->unique(['size']);
         });
+        Artisan::call('db:seed', [
+            '--class' => 'LeagueSizesSeeder',
+            '--force' => true
+        ]);
     }
 
     /**
