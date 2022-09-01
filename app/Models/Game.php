@@ -119,6 +119,18 @@ class Game extends Model implements Auditable
     {
         return $this->belongsTo(Team::class, 'team_id_guest');
     }
+    public function getRefereeAttribute(): string
+    {
+        $referee = '';
+        if ( $this->referee_1 != null ) {
+            $referee = $this->referee_1;
+        }
+        if ( $this->referee_2 != null ) {
+            $referee .= $referee == '' ? $this->referee_2 : ' / '.$this->referee_2;
+        }
+
+       return $referee;
+    }
 /*     public function getTeamHomeAttribute(): string
     {
 

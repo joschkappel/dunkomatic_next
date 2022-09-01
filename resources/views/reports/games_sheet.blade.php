@@ -5,27 +5,30 @@
     <tbody>
         <tr>
             <td style="border: 1px solid #FFFFFF;padding: 3px 2px;background: #0B6FA4;border-bottom: 5px solid #FFFFFF; font-size: 14px;color: #FFFFFF;border-left: 2px solid #FFFFFF;"><strong>{{ $league->shortname}}</strong></td>
-            <td style="border: 1px solid #FFFFFF;padding: 3px 2px;background: #0B6FA4;border-bottom: 5px solid #FFFFFF; font-size: 14px;color: #FFFFFF;border-left: 2px solid #FFFFFF;"></td>
-            <td style="border: 1px solid #FFFFFF;padding: 3px 2px;background: #0B6FA4;border-bottom: 5px solid #FFFFFF; font-size: 14px;color: #FFFFFF;border-left: 2px solid #FFFFFF;"><strong>{{ $league->name}}</strong></td>
-            <td style="border: 1px solid #FFFFFF;padding: 3px 2px;background: #0B6FA4;border-bottom: 5px solid #FFFFFF; font-size: 14px;color: #FFFFFF;border-left: 2px solid #FFFFFF;"></td>
+            <td colspan="6" style="border: 1px solid #FFFFFF;padding: 3px 2px;background: #0B6FA4;border-bottom: 5px solid #FFFFFF; font-size: 14px;color: #FFFFFF;border-left: 2px solid #FFFFFF;"><strong>{{ $league->name}}</strong></td>
         </tr>
         @foreach($league->members as $m)
           <tr>
-            <td style="text-align:right; font-size: 12px;"><strong>{{ App\Enums\Role::coerce($m->pivot->role_id)->description}}</strong></td>
-            <td style="text-align:right; font-size: 12px;">{{ $m->name }}</td>
-            <td style="font-size: 12px;">{{ $m->email1 }}</td>
-            <td style="font-size: 12px;">{{ $m->address }}</td>
+            <td style="text-align:right;padding: 3px 2px; font-size: 12px;"><strong>{{ App\Enums\Role::coerce($m->pivot->role_id)->description}}</strong></td>
+            <td colspan="6" style="text-align:left;padding: 3px 2px; font-size: 12px;">{{ $m->name }}</td>
           </tr>
           <tr>
             <td></td>
+            <td colspan="6" style="font-size: 12px;padding: 3px 2px;">{{ $m->email1 }}</td>
+          </tr>
+          <tr>
             <td></td>
-            <td style="font-size: 12px;">{{ $m->email2 }}</td>
-            <td style="font-size: 12px;">{{ ( $m->phone == '') ? $m->mobile : $m->mobile.' / '.$m->phone }}</td>
+            <td colspan="6" style="font-size: 12px;padding: 3px 2px;">{{ $m->email2 }}</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td colspan="6" style="font-size: 12px;padding: 3px 2px;">{{ $m->address }}</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td colspan="6" style="font-size: 12px;padding: 3px 2px;">{{ ( $m->phone == '') ? $m->mobile : $m->mobile.' / '.$m->phone }}</td>
           </tr>
          @endforeach
-         <tr></tr>
-        <tr></tr>
-        <tr></tr>
     </tbody>
 </table>
 
@@ -82,10 +85,10 @@
            <td style="border: 1px solid #ffffff;padding: 3px 2px;font-size: 12px;{{$rstyle}}">{{ $game->league->shortname }}</td>
            @endif
            <td style="text-align: right;border: 1px solid #FFFFFF;padding: 3px 2px;font-size: 12px;{{$rstyle}}">{{ $game->game_no }}</td>
-           <td style="border: 1px solid #FFFFFF;padding: 3px 2px;font-size: 14px;{{$rstyle}}">{{ $game->team_home}}</td>
-           <td style="border: 1px solid #FFFFFF;padding: 3px 2px;font-size: 14px;{{$rstyle}}">{{ $game->team_guest}}</td>
-           <td style="border: 1px solid #FFFFFF;padding: 3px 2px;font-size: 14px;{{$rstyle}}">{{ $game->gym_no}}</td>
-           <td style="border: 1px solid #FFFFFF;padding: 3px 2px;font-size: 14px;{{$rstyle}}">{{ ($game->referee_1 == '' or $game->referee_1 == '****') ? $game->referee_1 : $game->referee_1." / ".$game->referee_2}}</td>
+           <td style="border: 1px solid #FFFFFF;padding: 3px 2px;font-size: 12px;{{$rstyle}}">{{ $game->team_home}}</td>
+           <td style="border: 1px solid #FFFFFF;padding: 3px 2px;font-size: 12px;{{$rstyle}}">{{ $game->team_guest}}</td>
+           <td style="border: 1px solid #FFFFFF;padding: 3px 2px;font-size: 12px;{{$rstyle}}">{{ $game->gym_no}}</td>
+           <td style="border: 1px solid #FFFFFF;padding: 3px 2px;font-size: 12px;{{$rstyle}}">{{ $game->referee }}</td>
         </tr>
    @endforeach
    </tbody>
