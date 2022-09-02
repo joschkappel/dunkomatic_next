@@ -62,7 +62,8 @@ class Message extends Model
 
     protected $casts = [
         'to_members' => 'array',
-        'cc_members' => 'array'
+        'cc_members' => 'array',
+        'notify_users' => 'boolean'
     ];
 
     public function user(): BelongsTo

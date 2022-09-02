@@ -146,13 +146,10 @@ class MessageController extends Controller
             'to_members' => 'required_without:notify_users',
             'to_members.*' => [new EnumValue(EnumRole::class, false)],
             'cc_members.*' => [new EnumValue(EnumRole::class, false)],
-            'notify_users' => 'sometimes'
+            'notify_users' => 'sometimes|required|boolean'
         ]);
         Log::info('message form data validated OK.');
-        $notify_users = $request->input('notify_users');
-        if (isset($notify_users) and ($notify_users === 'on')) {
-            $data['notify_users'] = True;
-        } else {
+        if ( ! $request->has('notify_users')) {
             $data['notify_users'] = False;
         }
 
@@ -203,19 +200,16 @@ class MessageController extends Controller
             'to_members' => 'required_without:notify_users',
             'to_members.*' => [new EnumValue(EnumRole::class, false)],
             'cc_members.*' => [new EnumValue(EnumRole::class, false)],
-            'notify_users' => 'sometimes'
+            'notify_users' => 'sometimes|required|boolean'
         ]);
         Log::info('message form data validated OK.');
-        $notify_users = $request->input('notify_users');
-        if (isset($notify_users) and ($notify_users === 'on')) {
-            $data['notify_users'] = True;
-        } else {
+        if ( ! $request->has('notify_users')) {
             $data['notify_users'] = False;
         }
-        if ( ! isset($data['to_members']) ){
+        if ( ! $request->has('to_members') ){
             $data['to_members'] = null;
         }
-        if ( ! isset($data['cc_members']) ){
+        if ( ! $request->has('cc_members') ){
             $data['cc_members'] = null;
         }
 

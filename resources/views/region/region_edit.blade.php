@@ -158,20 +158,6 @@
             </div>
         </div>
         <div class="tab-pane fade " id="leaguestates" role="tabpanel" aria-labelledby="leaguestates-tab">
-
-{{--             <div class="form-row m-2">
-                <div class="col-sm-6">
-                </div>
-                <div class="col-sm-4">
-                    <div class="form-group  clearfix">
-                        <div class="icheck-info d-inline">
-                            <input type="checkbox" id="auto_state_change" name="auto_state_change" @if ($region->auto_state_change) checked @endif>
-                            <label for="auto_state_change">@lang('league.auto_state_change') ?</label>
-                        </div>
-                    </div>
-                </div>
-            </div> --}}
-
             <div class="form-row m-2">
                 <label for="openselection"
                     class="col-sm-6 col-form-label">@lang('region.open_char_selection')</label>

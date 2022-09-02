@@ -50,7 +50,7 @@
         <div class="col-md-6">
             <div class="form-group  clearfix">
                 <div class="icheck-info d-inline">
-                    <input type="checkbox" id="inactive" name="inactive" @if ($club->inactive) checked @endif>
+                    <input type="checkbox" id="inactive" name="inactive" @if ($club->inactive) checked @endif value="1">
                     <label for="inactive">@lang('Inactive') ?</label>
                 </div>
             </div>

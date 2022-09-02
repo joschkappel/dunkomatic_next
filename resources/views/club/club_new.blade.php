@@ -55,7 +55,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group  clearfix">
                                         <div class="icheck-info d-inline">
-                                            <input type="checkbox" id="inactive" name="inactive">
+                                            <input type="checkbox" id="inactive" name="inactive" value="1">
                                             <label for="inactive">@lang('Inactive')</label>
                                         </div>
                                     </div>

@@ -102,7 +102,7 @@
         <div class="col-md-10">
             <div class="form-group  clearfix">
                 <div class="icheck-info d-inline">
-                    <input type="checkbox" id="notify_users" name="notify_users" @if($message->notify_users) checked @endif>
+                    <input type="checkbox" id="notify_users" name="notify_users" @if($message->notify_users) checked @endif value="1">
                     <label for="notify_users">@lang('message.notify_users')</label>
                 </div>
             </div>
@@ -163,7 +163,7 @@
         $('#deleteat').datetimepicker({
             format: 'L',
             locale: '{{ app()->getLocale()}}',
-            useCurrent: true,
+            defaultDate: moment('{{ $message->delete_at }}')
         });
 
       });
