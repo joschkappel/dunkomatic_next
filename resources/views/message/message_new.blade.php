@@ -102,7 +102,7 @@
                             <div class="col-md-10">
                                 <div class="form-group  clearfix">
                                     <div class="icheck-info d-inline">
-                                        <input type="checkbox" id="notify_users" name="notify_users" checked>
+                                        <input type="checkbox" id="notify_users" name="notify_users" checked value="1">
                                         <label for="notify_users">@lang('message.notify_users')</label>
                                     </div>
                                 </div>

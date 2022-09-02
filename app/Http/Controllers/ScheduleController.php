@@ -338,12 +338,12 @@ class ScheduleController extends Controller
             'name' => 'required',
             'region_id' => 'required|exists:regions,id',
             'league_size_id' => 'required_without:custom_events|exists:league_sizes,id',
-            'iterations' => 'required|integer|min:1|max:3'
+            'iterations' => 'required|integer|min:1|max:3',
+            'custom_events' => 'sometimes|required|boolean'
         ]);
         Log::info('schedule form data validated OK.');
 
-        if ($request['custom_events'] == 'on') {
-            $data['custom_events'] = true;
+        if ( $request->has('custom_events')) {
             $data['league_size_id'] = LeagueSize::UNDEFINED;
         } else {
             $data['custom_events'] = false;
@@ -383,11 +383,11 @@ class ScheduleController extends Controller
             'name' => 'required',
             'league_size_id' => 'required_without:custom_events|exists:league_sizes,id',
             'iterations' => 'required_without:custom_events|integer|min:1|max:3',
+            'custom_events' => 'sometimes|required|boolean'
         ]);
         Log::info('schedule form data validated OK.');
 
-        if ($request['custom_events'] == 'on') {
-            $data['custom_events'] = true;
+        if ($request->has('custom_events')) {
             $data['league_size_id'] = LeagueSize::UNDEFINED;
         } else {
             $data['custom_events'] = false;

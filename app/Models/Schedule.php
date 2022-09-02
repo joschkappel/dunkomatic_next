@@ -54,59 +54,66 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Schedule extends Model
 {
-  use HasFactory;
+    use HasFactory;
 
-  protected $with = ['region'];
+    protected $with = ['region'];
 
-  protected $fillable = [
-        'id','name','region_id','league_size_id','custom_events','iterations'
+    protected $fillable = [
+        'id', 'name', 'region_id', 'league_size_id', 'custom_events', 'iterations'
     ];
-
-  public function region(): BelongsTo
-  {
-      return $this->belongsTo(Region::class);
-  }
-
-  public function leagues(): HasMany
-  {
-      return $this->hasMany(League::class);
-  }
-
-  public function events(): HasMany
-  {
-      return $this->hasMany(ScheduleEvent::class);
-  }
-
-  public function league_size(): BelongsTo
-  {
-      return $this->belongsTo(LeagueSize::class);
-  }
-
-  public function schemes(): HasMany
-  {
-    return $this->hasMany(LeagueSizeScheme::class, 'league_size_id','league_size_id' );
-  }
-  public function chars(): HasMany
-  {
-    return $this->hasMany(LeagueSizeChar::class, 'league_size_id','league_size_id' );
-  }
-  public function getColorAttribute(): string
-  {
-      Log::debug('Searching schedule color key', ['key'=>[ $this->region->is_top_level, $this->league_size->size, $this->iterations ]]);
-      if ( $this->league_size->size == 0 ){
-        return ScheduleColor::coerce([ $this->region->is_top_level, 0, '*' ])->key;
-      } else {
-        return ScheduleColor::coerce([ $this->region->is_top_level, $this->league_size->size, $this->iterations ])->key;
-      }
-  }
-  public function getMaxEventsAttribute(): int
-  {
-    $size = $this->league_size->size ?? 0;
-    if ($size == 0){
-        return 0;
-    } else {
-        $repeat = $this->iterations ?? 0;
-        return (($size - 1) * 2 * $repeat);
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'custom_evens' => 'boolean',
+    ];
+    public function region(): BelongsTo
+    {
+        return $this->belongsTo(Region::class);
     }
-  }
+
+    public function leagues(): HasMany
+    {
+        return $this->hasMany(League::class);
+    }
+
+    public function events(): HasMany
+    {
+        return $this->hasMany(ScheduleEvent::class);
+    }
+
+    public function league_size(): BelongsTo
+    {
+        return $this->belongsTo(LeagueSize::class);
+    }
+
+    public function schemes(): HasMany
+    {
+        return $this->hasMany(LeagueSizeScheme::class, 'league_size_id', 'league_size_id');
+    }
+    public function chars(): HasMany
+    {
+        return $this->hasMany(LeagueSizeChar::class, 'league_size_id', 'league_size_id');
+    }
+    public function getColorAttribute(): string
+    {
+        Log::debug('Searching schedule color key', ['key' => [$this->region->is_top_level, $this->league_size->size, $this->iterations]]);
+        if ($this->league_size->size == 0) {
+            return ScheduleColor::coerce([$this->region->is_top_level, 0, '*'])->key;
+        } else {
+            return ScheduleColor::coerce([$this->region->is_top_level, $this->league_size->size, $this->iterations])->key;
+        }
+    }
+    public function getMaxEventsAttribute(): int
+    {
+        $size = $this->league_size->size ?? 0;
+        if ($size == 0) {
+            return 0;
+        } else {
+            $repeat = $this->iterations ?? 0;
+            return (($size - 1) * 2 * $repeat);
+        }
+    }
 }

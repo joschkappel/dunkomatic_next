@@ -19,7 +19,7 @@
         <div class="col-sm-6">
             <div class="form-group  clearfix">
                 <div class="icheck-primary d-inline">
-                    <input type="checkbox" id="custom_events" name="custom_events" @if ($schedule->custom_events) checked @endif>
+                    <input type="checkbox" id="custom_events" name="custom_events" @if ($schedule->custom_events) checked @endif value="1">
                     <label for="custom_events">@lang('schedule.custom_events')</label>
                 </div>
             </div>

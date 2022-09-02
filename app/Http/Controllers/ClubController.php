@@ -415,12 +415,10 @@ class ClubController extends Controller
             'name' => 'required|max:255',
             'url' => 'nullable|url|max:255',
             'club_no' => 'required|unique:clubs|max:7',
-            'inactive' => 'sometimes|required|accepted',
+            'inactive' => 'sometimes|required|boolean',
         ]);
         Log::info('club form data validated OK.');
-        if (isset($data['inactive']) and ($data['inactive'] === 'on')) {
-            $data['inactive'] = True;
-        } else {
+        if ( ! $request->has('inactive') ) {
             $data['inactive'] = False;
         }
 
@@ -474,12 +472,10 @@ class ClubController extends Controller
             'name' => 'required|max:255',
             'url' => 'nullable|url|max:255',
             'club_no' => array('required', Rule::unique('clubs')->ignore($club->id), 'max:7'),
-            'inactive' => 'sometimes|required|accepted'
+            'inactive' => 'sometimes|required|boolean'
         ]);
         Log::info('club form data validated OK.');
-        if (isset($data['inactive']) and ($data['inactive'] === 'on')) {
-            $data['inactive'] = True;
-        } else {
+        if ( ! $request->has('inactive')) {
             $data['inactive'] = False;
         }
 

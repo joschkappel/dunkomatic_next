@@ -20,7 +20,7 @@
         <div class="col-sm-6">
             <div class="form-group  clearfix">
                 <div class="icheck-primary d-inline">
-                    <input type="checkbox" id="custom_events" name="custom_events">
+                    <input type="checkbox" id="custom_events" name="custom_events" value="1">
                     <label for="custom_events">@lang('schedule.custom_events')</label>
                 </div>
             </div>

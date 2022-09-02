@@ -98,7 +98,14 @@ class Club extends Model implements Auditable
     protected $fillable = [
         'id', 'name', 'shortname', 'region_id', 'url', 'club_no', 'inactive'
     ];
-
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'inactive' => 'boolean',
+    ];
 
     public function gyms(): HasMany
     {
