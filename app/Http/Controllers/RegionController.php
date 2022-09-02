@@ -64,23 +64,7 @@ class RegionController extends Controller
             $region->members->pluck('id')->flatten()
         )->unique()->count();
 
-        if ($region->is_top_level){
-            $data['games_count'] = Game::where('region', $region->code)->count();
-        } else {
-            $clubs = $region->clubs->pluck('id');
-            // all games of this region
-            // now add top level region games
-            $games = Game::where( function ($query) use($clubs){
-                                                $query->whereIn('club_id_home', $clubs)
-                                                ->whereIn('club_id_guest', $clubs,  'or');
-                                          })
-                                         ->get();
-            $games = $games->concat(
-                Game::whereIn('club_id_guest',$clubs)->whereIn('club_id_home',$clubs,'and')->get()
-            );
-            $data['games_count'] =  $games->unique()->count();
-
-        };
+        $data['games_count'] = Game::where('region_id_league', $region->id)->count();
         $data['games_noref_count'] = $region->clubs()->with('games_noreferee')->get()->pluck('games_noreferee.*.id')->flatten()->count();
 
         Log::info('showing region dashboard', ['region-id' => $region->id]);
@@ -610,14 +594,13 @@ class RegionController extends Controller
         $datasets[1]['label'] = __('region.chart.label.referees.missing');
         $datasets[1]['data'] = [];
 
-        $clubs = $region->clubs()->pluck('id');
-        $rs = Game::whereIn('club_id_home', $clubs)->whereNull('referee_1')->orderBy('game_date')->selectRaw('game_date, count(*) as gcnt')->groupBy('game_date')->get();
+        $rs = Game::where('region_id_home', $region->id)->whereNull('referee_1')->orderBy('game_date')->selectRaw('game_date, count(*) as gcnt')->groupBy('game_date')->get();
         $rsbydate = $rs->keyBy('game_date');
 
-        $rs1 = Game::whereIn('club_id_home', $clubs)->whereNotNull('referee_1')->orderBy('game_date')->selectRaw('game_date, count(*) as gcnt')->groupBy('game_date')->get();
+        $rs1 = Game::where('region_id_home', $region->id)->whereNotNull('referee_1')->orderBy('game_date')->selectRaw('game_date, count(*) as gcnt')->groupBy('game_date')->get();
         $rs1bydate = $rs1->keyBy('game_date');
         // get all game date
-        $alldates = Game::whereIn('club_id_home', $clubs)->orderBy('game_date')->pluck('game_date')->unique();
+        $alldates = Game::where('region_id_home', $region->id)->orderBy('game_date')->pluck('game_date')->unique();
 
         // initialize dataset 0
         foreach ($alldates as $gday) {
