@@ -98,7 +98,7 @@ class ScheduleControllerTest extends TestCase
                 'region_id' => $this->region->id,
                 'league_size_id' => 2,
                 'iterations' => 1,
-                'custom_events' => 'on'
+                'custom_events' => 1
             ]);
         $response->assertSessionHasNoErrors()
             ->assertRedirect(route('schedule.index', ['language' => 'de', 'region' => $this->region]));
@@ -177,7 +177,7 @@ class ScheduleControllerTest extends TestCase
                 'name' => 'testscheduley',
                 'league_size_id' => 2,
                 'iterations' => 1,
-                'custom_events' => 'on'
+                'custom_events' => 1
             ]);
 
         $schedule->refresh();
