@@ -263,6 +263,7 @@ Route::middleware(['auth',
         Route::get('region/league', [RegionController::class, 'region_league_chart'])->name('region.region.league.chart')->middleware('can:view-regions');
 
         Route::post('job/{job}', [JobController::class, 'run_job'])->name('region.run.job')->middleware('can:update-regions');
+        Route::delete('reports/{job}', [JobController::class, 'remove_reports'])->name('region.remove.reports')->middleware('can:update-regions');
     });
 
     Route::post('league/{league}/club', [LeagueTeamController::class, 'assign_clubs'])->name('league.assign-clubs')->middleware('can:update-leagues');

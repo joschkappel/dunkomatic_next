@@ -15,5 +15,7 @@ return [
     'not_specified' => 'Not specified',
     'last_run_at' => 'Last Run At',
     'run.league' => 'Run League Reports Now',
-    'run.club' => 'Run Club Reports Now'
+    'run.club' => 'Run Club Reports Now',
+    'files.removed' => 'Files deleted',
+    'jobs.started' => 'Jobs started'
 ];
