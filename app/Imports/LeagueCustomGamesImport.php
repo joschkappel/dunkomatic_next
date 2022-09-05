@@ -50,15 +50,18 @@ class LeagueCustomGamesImport implements ToCollection, WithStartRow, WithValidat
                 Game::create([
                     'game_no' => $row[0],
                     'league_id' => $this->league->id,
-                    'region' => $this->league->region->code,
+                    'region_id_league' => $this->league->region->id,
                     'game_date' => $row[1],
                     'game_plandate' => $row[1],
                     'game_time' => $row[2],
                     'club_id_home' => $row['club_id_home'],
+                    'region_id_home' => $row['region_id_home'],
                     'team_id_home' => $row['team_id_home'],
+                    'region_league_id' => $this->league->region->id,
                     'team_home'    => $row[3],
                     'team_char_home' => $this->league->teams()->where('id', $row['team_id_home'])->first()->league_no ?? 1,
                     'club_id_guest' => $row['club_id_guest'],
+                    'region_id_guest' => $row['region_id_guest'],
                     'team_id_guest' => $row['team_id_guest'],
                     'team_guest'    => $row[4],
                     'team_char_guest' => $this->league->teams()->where('id', $row['team_id_guest'])->first()->league_no ?? 2,
@@ -100,8 +103,10 @@ class LeagueCustomGamesImport implements ToCollection, WithStartRow, WithValidat
     {
         $data['league_id'] = $this->league->id;
         $data['club_id_home'] = Club::where('shortname', Str::substr($data[3],0,4) )->first()->id ?? null;
+        $data['region_id_home'] = Club::where('shortname', Str::substr($data[3],0,4) )->first()->region->id ?? null;
         $data['team_id_home'] = Team::where('club_id', $data['club_id_home'])->where('team_no', Str::substr($data[3],-1,1) )->where('league_id', $data['league_id'])->first()->id ?? null;
         $data['club_id_guest'] = Club::where('shortname', Str::substr($data[4],0,4) )->first()->id ?? null;
+        $data['region_id_guest'] = Club::where('shortname', Str::substr($data[4],0,4) )->first()->region->id ?? null;
         $data['team_id_guest'] = Team::where('club_id', $data['club_id_guest'])->where('team_no', Str::substr($data[4],-1,1) )->where('league_id', $data['league_id'])->first()->id ?? null;
         $data['game_id'] = Game::where('game_no', $data[0])
                                ->where('league_id', $data['league_id'])

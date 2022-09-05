@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Spatie\IcalendarGenerator\Components\Calendar;
 use Spatie\IcalendarGenerator\Components\Event;
 
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 
 class CalendarComposer
 {
@@ -21,7 +21,7 @@ class CalendarComposer
     {
         Log::notice('[CALENDAR EXPORT] creating calendar events.',['region-id'=>$region->id]);
         // get games
-        $games =  Game::where('region', $region->code)
+        $games =  Game::where('region_id_league', $region->id)
             ->whereNotNull('game_date')
             ->whereNotNull('game_time')
             ->whereNotNull('team_home')

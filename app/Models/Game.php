@@ -41,7 +41,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read Club|null $club_home
  * @property-read Gym|null $gym
  * @property-read League $league
- * @property-read Region $region
  * @property-read int $gcnt
  * @method static \Illuminate\Database\Eloquent\Builder|Game newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Game newQuery()
@@ -75,21 +74,22 @@ class Game extends Model implements Auditable
     public function generateTags(): array
     {
         return [
-            '('.$this->region.')'
+            '('.$this->league->region->code.')'
         ];
     }
     protected $fillable = [
-        'id', 'league_id', 'region', 'game_no', 'game_plandate', 'game_date', 'game_time',
+        'id', 'league_id', 'game_no', 'game_plandate', 'game_date', 'game_time',
         'club_id_home', 'team_id_home', 'team_home', 'team_char_home',
         'club_id_guest', 'team_id_guest', 'team_guest', 'team_char_guest',
-        'gym_no', 'gym_id', 'referee_1', 'referee_2'
+        'gym_no', 'gym_id', 'referee_1', 'referee_2',
+        'region_id_league', 'region_id_home', 'region_id_guest'
     ];
     protected $dates = ['game_date', 'game_plandate'];
 
-    public function region(): BelongsTo
+/*     public function region(): BelongsTo
     {
         return $this->belongsTo('App\Models\Region', 'region', 'code');
-    }
+    } */
 
     public function club_home(): BelongsTo
     {

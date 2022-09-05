@@ -71,7 +71,7 @@ trait GameManager
                     $gteam = $teams->firstWhere('league_no', $s->team_guest);
 
                     $g = array();
-                    $g['region'] = $league->region->code;
+                    $g['region_id_league'] = $league->region->id;
                     $g['game_plandate'] = $gday;
 
                     if ($full_weekend){
@@ -97,6 +97,7 @@ trait GameManager
                         $g['gym_no'] = $hteam->gym()->exists() ? $hteam->gym->gym_no : $hteam->club->gyms()->first()->gym_no;
                         $g['gym_id'] = $hteam->gym()->exists() ? $hteam->gym->id : $hteam->club->gyms()->first()->id;
                         $g['club_id_home'] = $hteam['club']['id'];
+                        $g['region_id_home'] = $hteam->club->region->id;
                         $g['team_id_home'] = $hteam['id'];
                         $g['team_home'] = $hteam['club']['shortname'] . $hteam['team_no'];
                     };
@@ -104,6 +105,7 @@ trait GameManager
                     if (isset($gteam)) {
                         $g['club_id_guest'] = $gteam['club']['id'];
                         $g['team_id_guest'] = $gteam['id'];
+                        $g['region_id_guest'] = $gteam->club->region->id;
                         $g['team_guest'] = $gteam['club']['shortname'] . $gteam['team_no'];
                     }
 
@@ -211,6 +213,7 @@ trait GameManager
                                     $game = $league->games()->where('game_no', $i_game_no)->where('team_char_home', $league_no)->first();
                                     if (isset($game)) {
                                         $game->club_id_home = $team->club->id;
+                                        $game->region_id_home = $team->club->region->id;
                                         $game->team_id_home = $team->id;
                                         $game->team_home = $team->name;
                                         $game->game_time = $team->preferred_game_time;
@@ -235,6 +238,7 @@ trait GameManager
 
                                     $league->games()->where('game_no', $i_game_no)->where('team_char_guest', $league_no)->update([
                                         'club_id_guest' => $team->club->id,
+                                        'region_id_guest' => $team->club->region->id,
                                         'team_id_guest' => $team->id,
                                         'team_guest' => $team->club->shortname . $team->team_no
                                     ]);
@@ -265,6 +269,7 @@ trait GameManager
         $league->games()->where('team_id_home', $team->id)->update([
             'team_id_home' => null,
             'club_id_home' => null,
+            'region_id_home' => null,
             'team_home' => null,
             'gym_no' => null,
             'gym_id' => null
@@ -274,6 +279,7 @@ trait GameManager
         $league->games()->where('team_id_guest', $team->id)->update([
             'team_id_guest' => null,
             'club_id_guest' => null,
+            'region_id_guest' => null,
             'team_guest' => null,
         ]);
     }

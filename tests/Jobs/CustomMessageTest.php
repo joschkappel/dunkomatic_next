@@ -14,7 +14,6 @@ use App\Notifications\AppActionMessage;
 use App\Notifications\CustomDbMessage;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Mail;
-use Bouncer;
 
 class CustomMessageTest extends SysTestCase
 {

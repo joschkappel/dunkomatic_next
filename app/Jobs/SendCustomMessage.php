@@ -19,7 +19,7 @@ use App\Mail\CustomMailMessage;
 use App\Enums\Role as EnumRole;
 use Silber\Bouncer\Database\Role as UserRole;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
 
 class SendCustomMessage implements ShouldQueue
@@ -129,8 +129,8 @@ class SendCustomMessage implements ShouldQueue
             $cc_chunks = $cc_members->chunk(60);
             $to_chunks = $to_members->split($cc_chunks->count());
             foreach ($cc_chunks as $i => $chunk){
-                Mail::cc($chunk ?? [])
-                    ->to($to_chunks[$i] ?? [])
+                Mail::to($to_chunks[$i] ?? [])
+                    ->cc($chunk ?? [])
                     ->send(new CustomMailMessage($this->message));
                 Log::notice('[JOB][EMAIL] custom email sent.', ['message-id' => $this->message->id, 'cc_count' => ($chunk ?? collect())->count(),'to_count' => ($to_chunks[$i] ?? collect())->count() ]);
             }
