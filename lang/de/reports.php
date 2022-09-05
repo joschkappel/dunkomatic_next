@@ -15,5 +15,7 @@ return [
     'not_specified' => 'Nicht angegeben',
     'last_run_at' => 'Letzter Lauf am',
     'run.league' => 'Rundenpläne Jetzt Erzeugen',
-    'run.club' => 'Vereinspläne Jetzt Erzeugen'
+    'run.club' => 'Vereinspläne Jetzt Erzeugen',
+    'files.removed' => 'Datein sind gelöscht',
+    'jobs.started' => 'Dateien werden erzeugt'
 ];

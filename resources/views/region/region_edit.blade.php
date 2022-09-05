@@ -117,12 +117,15 @@
             @endphp
             <div class="form-row m-2">
                 <label class="col-sm col-form-label">{{ $rpt->getReportTitle() }}</label>
-                <div class="col-sm-4">
+                <div class="col-sm-2">
                     <input type="text" readonly class="form-control @if( $report->lastrun_ok) text-success @else text-danger @endif" id="lastrun_at"
                     value="@isset(  $report->lastrun_at) {{Carbon\Carbon::parse($report->lastrun_at)->locale(app()->getLocale())->isoFormat('LLL')}} @endisset">
                 </div>
                 <div class="col-sm-4">
-                    <button id="btnRunJob" onclick="run_job({{$rpt->value}});" class="btn btn-secondary" @if ($report->running) disabled  @endif>Create {{$rpt->getReportTitle()}}</button>
+                    <button id="btnRunJob" type="button" data-job-id="{{$rpt->value}}" class="btn btn-secondary" @if ($report->running) disabled  @endif>{{$rpt->getReportTitle().' '.__('Create')}}</button>
+                </div>
+                <div class="col-sm-4">
+                    <button id="btnRemoveReports" type="button" data-job-id="{{$rpt->value}}" class="btn btn-danger" @if ($report->running) disabled  @endif>{{$rpt->getReportTitle().' '.__('Delete')}}</button>
                 </div>
             </div>
             @endforeach
@@ -257,27 +260,50 @@
 @push('js')
 
     <script>
-        function run_job( jobclass ){
-            console.log(jobclass);
-            var url = "{{ route('region.run.job',['region'=>$region, 'job'=>':job:'])}}";
-            url = url.replace(':job:', jobclass);
-
-            $.ajax({
-                type: 'POST',
-                url: url,
-                dataType: 'json',
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    _method: 'POST'
-                },
-            });
-        };
-
         $(function() {
             $('#frmClose').click(function(e){
                 history.back();
             });
+            $(document).on('click', '#btnRunJob', function (e) {
+                var job = $(this).data("job-id");
+                var url = "{{ route('region.run.job',['region'=>$region, 'job'=>':job:'])}}";
+                url = url.replace(':job:', jobclass);
 
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    dataType: 'json',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        _method: 'POST'
+                    },
+                    success: function (response) {
+                        toastr.success('{{__('reports.jobs.started')}}');
+                    },
+                    cache: false
+                });
+
+            });
+
+            $(document).on('click', '#btnRemoveReports', function (e) {
+                var job = $(this).data("job-id");
+                var url = "{{ route('region.remove.reports',['region'=>$region, 'job'=>':job:'])}}";
+                url = url.replace(':job:', job);
+
+                $.ajax({
+                    type: 'DELETE',
+                    url: url,
+                    dataType: 'json',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        _method: 'DELETE'
+                    },
+                    success: function (response) {
+                        toastr.success('{{__('reports.files.removed')}}');
+                    },
+                    cache: false
+                });
+            })
 
 
             var custom_values = [60, 75, 90, 105, 120, 135, 150];
