@@ -2,8 +2,12 @@
 
 namespace Tests\Jobs;
 
+use App\Enums\LeagueState;
 use App\Models\Region;
 use App\Models\Game;
+use App\Models\Club;
+use App\Models\Team;
+use App\Models\League;
 use App\Enums\Report;
 use App\Jobs\ReportProcessor;
 use Tests\SysTestCase;
@@ -32,6 +36,8 @@ class ReportProcessorTest extends SysTestCase
 
         $region = Region::where('code', 'HBVDA')->first();
         $report = Report::RegionGames();
+        // se leagues to schedulng
+        League::whereNot('state', LeagueState::Scheduling)->update(['state'=>LeagueState::Scheduling]);
 
         //
         $job_instance = resolve( ReportProcessor::class, [ 'run_rpts'=>collect([$report]), 'run_regions'=> collect([$region]) ]);
@@ -58,6 +64,7 @@ class ReportProcessorTest extends SysTestCase
 
         $region = Region::where('code', 'HBVDA')->first();
         $report = collect([Report::RegionGames(), Report::LeagueBook()]);
+        League::whereNot('state', LeagueState::Scheduling)->update(['state'=>LeagueState::Scheduling]);
 
         //
         $job_instance = resolve( ReportProcessor::class, [ 'run_rpts'=>$report, 'run_regions'=> collect([$region]) ]);
@@ -85,7 +92,12 @@ class ReportProcessorTest extends SysTestCase
         Bus::assertNothingDispatched();
 
         $region = Region::where('code', 'HBVDA')->first();
-        $club = $region->clubs->first();
+        League::whereNot('state', LeagueState::Scheduling)->update(['state'=>LeagueState::Scheduling]);
+
+        $clubs = $region->clubs->pluck('id');
+        $leagues = $region->leagues()->where('state', LeagueState::Scheduling)->pluck('id');
+        $club = Club::find( Game::whereIn('club_id_home', $clubs)->whereIn('league_id',$leagues)->first()->club_id_home );
+        Log::info('[EXPECT] run reports for ',['club-id'=>$club->id]);
 
         // remove audits
         DB::table('audits')->truncate();
@@ -121,7 +133,10 @@ class ReportProcessorTest extends SysTestCase
         Bus::assertNothingDispatched();
 
         $region = Region::where('code', 'HBVDA')->first();
-        $league = $region->leagues->first();
+        League::where('state', LeagueState::Freeze)->update(['state'=>LeagueState::Scheduling]);
+
+        $leagues = Game::whereNotNull('club_id_home')->pluck('league_id');
+        $league = League::find( Game::whereIn('league_id', $leagues)->first()->league_id );
 
         // remove audits
         DB::table('audits')->truncate();
@@ -162,7 +177,12 @@ class ReportProcessorTest extends SysTestCase
         Bus::assertNothingDispatched();
 
         $region = Region::where('code', 'HBVDA')->first();
-        $team = $region->leagues->first()->teams->first();
+        League::whereNot('state', LeagueState::Scheduling)->update(['state'=>LeagueState::Scheduling]);
+
+        $clubs = $region->clubs->pluck('id');
+        $leagues = $region->leagues()->where('state', LeagueState::Scheduling)->pluck('id');
+        $team = Team::find( Game::whereIn('club_id_home', $clubs)->whereIn('league_id',$leagues)->first()->team_id_home );
+
 
         // remove audits
         DB::table('audits')->truncate();
@@ -203,7 +223,11 @@ class ReportProcessorTest extends SysTestCase
         Bus::assertNothingDispatched();
 
         $region = Region::where('code', 'HBVDA')->first();
-        $game = $region->leagues->first()->games->first();
+        League::whereNot('state', LeagueState::Scheduling)->update(['state'=>LeagueState::Scheduling]);
+
+        $clubs = $region->clubs->pluck('id');
+        $leagues = $region->leagues()->where('state', LeagueState::Scheduling)->pluck('id');
+        $game = Game::whereIn('club_id_home', $clubs)->whereIn('league_id',$leagues)->first();
 
         // remove audits
         DB::table('audits')->truncate();
@@ -243,7 +267,13 @@ class ReportProcessorTest extends SysTestCase
         Bus::assertNothingDispatched();
 
         $region = Region::where('code', 'HBVDA')->first();
-        $gym = $region->clubs->first()->load('gyms')->gyms->first();
+        League::whereNot('state', LeagueState::Scheduling)->update(['state'=>LeagueState::Scheduling]);
+
+        $clubs = $region->clubs->pluck('id');
+        $leagues = $region->leagues()->where('state', LeagueState::Scheduling)->pluck('id');
+        $club = Club::find( Game::whereIn('club_id_home', $clubs)->whereIn('league_id',$leagues)->first()->club_id_home );
+
+        $gym = $club->load('gyms')->gyms->first();
         $impacted_leagues = Game::where('gym_id',$gym->id)->pluck('league_id')->unique()->count();
         // Log::debug('impacted leagues',['cnt'=> Game::where('gym_id',$gym->id)->pluck('league_id')->unique()  ]);
 

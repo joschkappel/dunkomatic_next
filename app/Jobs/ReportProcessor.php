@@ -228,20 +228,23 @@ class ReportProcessor implements ShouldQueue
             }
 
             // get all impacted games (only for leagues that are in scheduling or referees)
-            $games = Game::whereIn('id', $games)->get();
+            $all_games = Game::whereIn('id', $games)->get();
+            Log::debug('[JOB] REPORT PROCESSOR all impacted games', ['cnt' => $all_games->count()]);
+
             // get impacted leagues
-            $leagues = $games->pluck('league_id')->unique();
+            $leagues = $all_games->pluck('league_id')->unique();
             // ilter only leagues in state scheduling or referee
             $leagues = League::whereIn('id', $leagues)->whereIn('state', [LeagueState::Scheduling, LeagueState::Referees])->pluck('id');
             // filter games
-            $games = $games->whereIn('league_id', $leagues);
+            $filtered_games = $all_games->whereIn('league_id', $leagues);
+            Log::debug('[JOB] REPORT PROCESSOR filtered impacted games', ['cnt' => $filtered_games->count()]);
 
             // get regions
-            $regions = Region::whereIn('code', $games->pluck('region'))->get();
+            $regions = Region::whereIn('id', $filtered_games->pluck('region_id_league'))->orWhereIn('id', $filtered_games->pluck('region_home_id'))->get();
             // get unique leagues from games
-            $leagues = League::whereIn('id', $games->pluck('league_id'))->get();
+            $leagues = League::whereIn('id', $filtered_games->pluck('league_id'))->get();
             // get unique leagues from games
-            $clubs = Club::whereIn('id', $games->pluck('club_id_home'))->get();
+            $clubs = Club::whereIn('id', $filtered_games->pluck('club_id_home'))->get();
         }
 
         Log::debug('found impacts on ',['regions'=>$regions->count(),'leagues'=>$leagues->count(),'clubs'=>$clubs->count() ]);
