@@ -7,7 +7,7 @@ use App\Models\League;
 use App\Models\Club;
 use App\Traits\LeagueFSM;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 
 use Tests\TestCase;
 use Tests\Support\Authentication;

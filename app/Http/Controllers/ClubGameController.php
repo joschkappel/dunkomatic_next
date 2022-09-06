@@ -314,10 +314,10 @@ class ClubGameController extends Controller
     public function chart_home(Club $club)
     {
         $select = "select date_format(g.game_date, '%b-%d-%Y') AS 't', ";
-        $select .= " time_format(g.game_time, '%H') AS 'ghour', time_format(g.game_time, '%i') AS 'gmin', g.gym_no AS 'gym', gy.name AS 'gymname' ";
+        $select .= " time_format(g.game_time, '%H') AS 'ghour', time_format(g.game_time, '%i') AS 'gmin', gy.gym_no AS 'gym', gy.name AS 'gymname' ";
         $select .= ' FROM games g, gyms gy ';
         $select .= ' WHERE g.gym_id=gy.id AND g.club_id_home=' . $club->id;
-        $select .= " ORDER BY g.gym_no, date_format(g.game_date, '%b-%d-%Y') ASC, g.game_time ASC";
+        $select .= " ORDER BY gy.gym_no, date_format(g.game_date, '%b-%d-%Y') ASC, g.game_time ASC";
 
         // Log::debug($select);
         $hgames = collect(DB::select($select));

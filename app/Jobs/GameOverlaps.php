@@ -51,7 +51,7 @@ class GameOverlaps implements ShouldQueue
                FROM games ga
                JOIN games gb on ga.game_time <= date_add(gb.game_time, INTERVAL ' . $min_slot . ' minute)
                    and date_add(ga.game_time,interval ' . $min_slot . ' minute) >= gb.game_time
-                   and ga.club_id_home=gb.club_id_home and ga.gym_no = gb.gym_no and ga.game_date = gb.game_date
+                   and ga.club_id_home=gb.club_id_home and ga.gym_id = gb.gym_id and ga.game_date = gb.game_date
                    and ga.id != gb.id
                WHERE ga.club_id_home=' . $c->id . ' ORDER BY ga.game_date DESC, ga.club_id_home ASC';
 

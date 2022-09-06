@@ -46,7 +46,7 @@ class ClubLeagueGames implements FromView, WithTitle, ShouldAutoSize
                         $q->where('club_id_home',$this->club->id)
                           ->orWhere('club_id_guest',$this->club->id);
                         })
-                      ->with('league')
+                      ->with(['league','gym','team_home.club', 'team_guest.club'])
                       ->orderBy('game_date','asc')
                       ->orderBy('game_time','asc')
                       ->orderBy('game_no','asc')

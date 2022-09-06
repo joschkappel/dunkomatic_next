@@ -136,9 +136,9 @@ class LeagueGameController extends Controller
      */
     public function update(Request $request, Game $game)
     {
-        if ($game->league->schedule->custom_events) {
+        if ($game->load('league.schedule')->league()->first()->schedule->custom_events) {
             Log::info('update game - custom schedule.', ['game-id' => $game->id]);
-            $maxgames = $game->league->size * ($game->league->size - 1);
+            $maxgames = $game->league()->first()->size * ($game->league()->first()->size - 1);
 
             $data = Validator::make($request->all(), [
                 'gym_id' => 'required|exists:gyms,id',
@@ -148,7 +148,7 @@ class LeagueGameController extends Controller
                 'team_id_guest' => 'exists:teams,id|different:team_id_home',
                 //     'game_no' => 'integer|between:1,12',
                 'game_no' => [Rule::unique('games')->where(function ($query) use ($game) {
-                    return $query->where('league_id', $game->league->id)->where('game_no', '!=', $game->game_no);
+                    return $query->where('league_id', $game->league_id)->where('game_no', '!=', $game->game_no);
                 }), 'integer', 'between:1,' . $maxgames]
             ])->validate();
             Log::info('game form data validate OK.', ['game-id' => $game->id]);
@@ -156,8 +156,7 @@ class LeagueGameController extends Controller
             // handle new home team
             if ($data['team_id_home'] != $game->team_id_home) {
                 $team_home = Team::find($data['team_id_home']);
-                $data['club_id_home'] = $team_home->club->id;
-                $data['team_home'] = $team_home->club->shortname . $team_home->team_no;
+                $data['club_id_home'] = $team_home->club_id;
             } else {
                 unset($data['team_id_home']);
             }
@@ -165,8 +164,7 @@ class LeagueGameController extends Controller
             // handle new guest team
             if ($data['team_id_guest'] != $game->team_id_guest) {
                 $team_guest = Team::find($data['team_id_guest']);
-                $data['club_id_guest'] = $team_guest->club->id;
-                $data['team_guest'] = $team_guest->club->shortname . $team_guest->team_no;
+                $data['club_id_guest'] = $team_guest->club_id;
             } else {
                 unset($data['team_id_guest']);
             }
@@ -180,9 +178,6 @@ class LeagueGameController extends Controller
         }
 
         $data['game_time'] = Carbon::parse($data['game_time'])->format('H:i');
-
-        // Get GYM NO
-        $data['gym_no'] = Gym::findOrFail($data['gym_id'])->gym_no;
 
         $game->update($data);
         Log::notice('game updated.', ['game-id' => $game->id]);

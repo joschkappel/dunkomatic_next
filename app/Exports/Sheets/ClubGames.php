@@ -50,7 +50,7 @@ class ClubGames implements FromView, WithTitle, ShouldAutoSize
     {
       if ($this->scope == ReportScope::ss_club_home()){
          $games =  Game::where('club_id_home',$this->club->id)
-                      ->with('league','gym')
+                      ->with(['league','gym','team_home.club', 'team_guest.club'])
                       ->orderBy('game_date','asc')
                       ->orderBy('game_time','asc')
                       ->orderBy('game_no','asc')
@@ -58,7 +58,7 @@ class ClubGames implements FromView, WithTitle, ShouldAutoSize
       } elseif ($this->scope == ReportScope::ss_club_all()) {
         $games =  Game::where('club_id_home',$this->club->id)
                      ->orWhere('club_id_guest',$this->club->id)
-                     ->with('league','gym')
+                     ->with(['league','gym','team_home.club', 'team_guest.club'])
                      ->orderBy('game_date','asc')
                      ->orderBy('game_time','asc')
                      ->orderBy('game_no','asc')
@@ -74,7 +74,7 @@ class ClubGames implements FromView, WithTitle, ShouldAutoSize
                        $query->where('referee_1',$shortname)
                              ->orWhere('referee_2',$shortname);
                      })
-                     ->with('league','gym')
+                     ->with(['league','gym','team_home.club', 'team_guest.club'])
                      ->orderBy('game_date','asc')
                      ->orderBy('game_time','asc')
                      ->orderBy('game_no','asc')

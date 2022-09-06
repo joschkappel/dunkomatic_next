@@ -32,7 +32,6 @@ class HomeGamesImport implements ToCollection, WithStartRow, WithValidation, Wit
                 $g->game_date = $row[1];
                 $g->game_time = $row[2];
                 $g->gym_id = $row['gym_id'];
-                $g->gym_no = $row[6];
                 $g->save();
                 Log::debug('[IMPORT][CLUB] importing row',['row'=>$row]);
             } else {
@@ -110,7 +109,7 @@ class HomeGamesImport implements ToCollection, WithStartRow, WithValidation, Wit
     }
 
     /**
-     * 
+     *
      * @param string $error_code
      * @param array $values
      * @param string $attribute

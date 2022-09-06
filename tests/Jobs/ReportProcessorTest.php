@@ -246,11 +246,11 @@ class ReportProcessorTest extends SysTestCase
         app()->call([$job_instance, 'handle']);
 
         Bus::assertBatchCount(5);
-        $this->checkBatch($game->league->region, Report::LeagueBook(), 1);
-        $this->checkBatch($game->league->region, Report::RegionGames(), 1);
-        $this->checkBatch($game->league->region, Report::ClubGames(), 1);
-        $this->checkBatch($game->league->region, Report::LeagueGames(), 1);
-        $this->checkBatch($game->league->region, Report::Teamware(), 1);
+        $this->checkBatch($game->league()->first()->region, Report::LeagueBook(), 1);
+        $this->checkBatch($game->league()->first()->region, Report::RegionGames(), 1);
+        $this->checkBatch($game->league()->first()->region, Report::ClubGames(), 1);
+        $this->checkBatch($game->league()->first()->region, Report::LeagueGames(), 1);
+        $this->checkBatch($game->league()->first()->region, Report::Teamware(), 1);
     }
     /**
      * run job
