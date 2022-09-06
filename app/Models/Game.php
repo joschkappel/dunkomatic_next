@@ -73,8 +73,12 @@ class Game extends Model implements Auditable
     use \OwenIt\Auditing\Auditable;
     public function generateTags(): array
     {
+        if(!isset($this->relations['league'])) {
+
+            $this->load('league');
+        }
         return [
-            '('.$this->league->region->code.')'
+            '('.$this->relations['league']->region->code.')'
         ];
     }
     protected $appends = ['team_home','team_guest','gym_no','league'];
