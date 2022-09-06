@@ -77,11 +77,12 @@ class Game extends Model implements Auditable
             '('.$this->league->region->code.')'
         ];
     }
+    protected $appends = ['team_home','team_guest','gym_no','league'];
     protected $fillable = [
         'id', 'league_id', 'game_no', 'game_plandate', 'game_date', 'game_time',
-        'club_id_home', 'team_id_home', 'team_home', 'team_char_home',
-        'club_id_guest', 'team_id_guest', 'team_guest', 'team_char_guest',
-        'gym_no', 'gym_id', 'referee_1', 'referee_2',
+        'club_id_home', 'team_id_home', 'team_char_home',
+        'club_id_guest', 'team_id_guest', 'team_char_guest',
+        'gym_id', 'referee_1', 'referee_2',
         'region_id_league', 'region_id_home', 'region_id_guest'
     ];
     protected $dates = ['game_date', 'game_plandate'];
@@ -93,7 +94,7 @@ class Game extends Model implements Auditable
 
     public function club_home(): BelongsTo
     {
-        return $this->belongsTo(Club::class, 'club_id_home');
+        return $this->belongsTo(Club::class, 'club_id_home','id');
     }
     public function gym(): BelongsTo
     {
@@ -102,7 +103,7 @@ class Game extends Model implements Auditable
 
     public function club_guest():BelongsTo
     {
-        return $this->belongsTo(Club::class, 'club_id_guest');
+        return $this->belongsTo(Club::class, 'club_id_guest', 'id');
     }
 
     public function league():BelongsTo
@@ -112,12 +113,12 @@ class Game extends Model implements Auditable
 
     public function team_home(): BelongsTo
     {
-        return $this->belongsTo(Team::class, 'team_id_home');
+        return $this->belongsTo(Team::class, 'team_id_home','id');
     }
 
     public function team_guest(): BelongsTo
     {
-        return $this->belongsTo(Team::class, 'team_id_guest');
+        return $this->belongsTo(Team::class, 'team_id_guest','id');
     }
     public function getRefereeAttribute(): string
     {
@@ -131,7 +132,7 @@ class Game extends Model implements Auditable
 
        return $referee;
     }
-/*     public function getTeamHomeAttribute(): string
+    public function getTeamHomeAttribute(): string
     {
 
         if(!isset($this->relations['team_home'])) {
@@ -139,5 +140,32 @@ class Game extends Model implements Auditable
             $this->load('team_home');
         }
        return $this->relations['team_home']->name;
-    } */
+    }
+    public function getTeamGuestAttribute(): string
+    {
+
+        if(!isset($this->relations['team_guest'])) {
+
+            $this->load('team_guest');
+        }
+       return $this->relations['team_guest']->name;
+    }
+    public function getGymNoAttribute(): string
+    {
+
+        if(!isset($this->relations['gym'])) {
+
+            $this->load('gym');
+        }
+       return $this->relations['gym']->gym_no;
+    }
+    public function getLeagueAttribute(): string
+    {
+
+        if(!isset($this->relations['league'])) {
+
+            $this->load('league');
+        }
+       return $this->relations['league']->shortname;
+    }
 }

@@ -23,7 +23,7 @@ trait LeagueTeamManager
         $c_keys = collect(range(1, $league->size));
         $t_keys = collect(range(1, $league->size));
 
-        $clubs = $league->clubs()->get()->sortBy('pivot.league_no');
+        $clubs = $league->clubs()->with(['region'])->get()->sortBy('pivot.league_no');
         foreach ($clubs as $c) {
             $clubteam[] = array(
                 'club_shortname' => $c->shortname,
@@ -40,7 +40,7 @@ trait LeagueTeamManager
                 $c_keys->pull($c->pivot->league_no - 1);
             };
         }
-        $teams = $league->teams;
+        $teams = $league->teams()->with(['club.region'])->get();
 
         $clubteam->transform(function ($item) use (&$teams, &$t_keys) {
             $k = $teams->search(function ($t) use ($item) {

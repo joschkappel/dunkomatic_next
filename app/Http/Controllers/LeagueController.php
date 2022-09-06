@@ -59,7 +59,7 @@ class LeagueController extends Controller
 
         if ($region->is_base_level) {
             Log::notice('getting leagues for top level region');
-            $leagues = League::whereIn('region_id', [$region->id, $region->parentRegion->id])->with('schedule.league_size','clubs','teams')
+            $leagues = League::whereIn('region_id', [$region->id, $region->parentRegion->id])->with(['league_sie','schedule.league_size','clubs.region','teams.club.region'])
                 ->withCount([
                     'clubs', 'teams', 'registered_teams', 'selected_teams', 'games',
                     'games_notime', 'games_noshow'
@@ -68,7 +68,7 @@ class LeagueController extends Controller
                 ->get();
         } else {
             Log::notice('getting leagues for base level region');
-            $leagues = League::where('region_id', $region->id)->with('schedule.league_size','clubs','teams')
+            $leagues = League::where('region_id', $region->id)->with(['league_size', 'schedule.league_size','clubs.region','teams.club.region'])
                 ->withCount([
                     'clubs', 'teams', 'registered_teams', 'selected_teams', 'games',
                     'games_notime', 'games_noshow'
@@ -102,7 +102,7 @@ class LeagueController extends Controller
                 return array('display' => LeagueGenderType::getDescription($l->gender_type), 'sort' => $l->gender_type);
             })
             ->addColumn('size', function ($l) {
-                if ($l->schedule()->exists()) {
+                if ($l->schedule != null ) {
                     return ($l->size == null) ? array('display' => null, 'sort' => 0) : array('display' => $l->size, 'sort' => $l->size);
                 } else {
                     return array('display' => null, 'sort' => 0);

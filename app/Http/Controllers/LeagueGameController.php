@@ -11,7 +11,7 @@ use App\Imports\LeagueGamesImport;
 use App\Imports\LeagueCustomGamesImport;
 use App\Traits\GameManager;
 use Datatables;
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 
 use Illuminate\Http\Request;
@@ -69,7 +69,7 @@ class LeagueGameController extends Controller
     {
         Log::info('preparing game list', ['league-id' => $league->id]);
 
-        $games = $league->games()->with('league','gym')->get();
+        $games = $league->games()->with(['league.region','gym','team_home.club','team_guest.club'])->get();
         $glist = datatables()::of($games);
 
         $glist =  $glist
@@ -80,7 +80,7 @@ class LeagueGameController extends Controller
             ->editColumn('game_no', function ($game) {
                 $link = '<a href="#" id="gameEditLink" data-id="' . $game->id .
                     '" data-game-date="' . $game->game_date . '" data-game-time="' . $game->game_time . '" data-club-id-home="' . $game->club_id_home .
-                    '" data-gym-no="' . $game->gym_no . '" data-gym-id="' . $game->gym_id . '" data-league="' . $game->league['shortname'] .
+                    '" data-gym-no="' . $game->gym_no . '" data-gym-id="' . $game->gym_id . '" data-league="' . $game->league .
                     '" data-team-home="' . $game->team_home . '" data-team-id-home="' . $game->team_id_home . '" data-team-guest="' . $game->team_guest . '" data-team-id-guest="' . $game->team_id_guest .
                     '" data-game-no="' . $game->game_no . '" data-league-id="' . $game->league_id .
                     '">' . $game->game_no . ' <i class="fas fa-arrow-circle-right"></i></a>';
@@ -99,6 +99,12 @@ class LeagueGameController extends Controller
                     'display' => ($game->gym_no ?? '').' - '.($game['gym']->name ?? ''),
                     'default' => $game->gym_no ?? ''
                 );
+            })
+            ->addColumn('team_home', function ($game) {
+                return $game->team_home;
+            })
+            ->addColumn('team_guest', function ($game) {
+                return $game->team_guest;
             })
             ->make(true);
         //Log::debug(print_r($glist,true));
