@@ -94,19 +94,16 @@ trait GameManager
 
                     if (isset($hteam)) {
                         $g['game_time'] = $hteam['preferred_game_time'];
-                        $g['gym_no'] = $hteam->gym()->exists() ? $hteam->gym->gym_no : $hteam->club->gyms()->first()->gym_no;
                         $g['gym_id'] = $hteam->gym()->exists() ? $hteam->gym->id : $hteam->club->gyms()->first()->id;
                         $g['club_id_home'] = $hteam['club']['id'];
                         $g['region_id_home'] = $hteam->club->region->id;
                         $g['team_id_home'] = $hteam['id'];
-                        $g['team_home'] = $hteam['club']['shortname'] . $hteam['team_no'];
                     };
 
                     if (isset($gteam)) {
                         $g['club_id_guest'] = $gteam['club']['id'];
                         $g['team_id_guest'] = $gteam['id'];
                         $g['region_id_guest'] = $gteam->club->region->id;
-                        $g['team_guest'] = $gteam['club']['shortname'] . $gteam['team_no'];
                     }
 
                     //Log::debug(print_r($g, true));
@@ -194,17 +191,14 @@ trait GameManager
 
                                     if (isset($hteam)) {
                                         $g['game_time'] = $hteam['preferred_game_time'];
-                                        $g['gym_no'] = $hteam->gym()->exists() ? $hteam->gym->gym_no : $hteam->club->gyms()->first()->gym_no;
                                         $g['gym_id'] = $hteam->gym()->exists() ? $hteam->gym->id : $hteam->club->gyms()->first()->id;
                                         $g['club_id_home'] = $hteam['club']['id'];
                                         $g['team_id_home'] = $hteam['id'];
-                                        $g['team_home'] = $hteam['club']['shortname'] . $hteam['team_no'];
                                     };
 
                                     if (isset($gteam)) {
                                         $g['club_id_guest'] = $gteam['club']['id'];
                                         $g['team_id_guest'] = $gteam['id'];
-                                        $g['team_guest'] = $gteam['club']['shortname'] . $gteam['team_no'];
                                     }
 
                                     Log::debug('creating game no.', ['game-no' => $g['game_no']]);
@@ -215,7 +209,6 @@ trait GameManager
                                         $game->club_id_home = $team->club->id;
                                         $game->region_id_home = $team->club->region->id;
                                         $game->team_id_home = $team->id;
-                                        $game->team_home = $team->name;
                                         $game->game_time = $team->preferred_game_time;
 
                                         if ($full_weekend){
@@ -230,7 +223,6 @@ trait GameManager
                                         };
 
                                         $team->load('gym');
-                                        $game->gym_no  = $team->gym()->exists() ? $team->gym->gym_no : $team->club->gyms()->first()->gym_no;
                                         $game->gym_id = $team->gym()->exists() ? $team->gym->id : $team->club->gyms()->first()->id;
                                         $game->save();
                                         Log::debug('updating game no.', ['game-no' => $game->game_no]);
@@ -239,8 +231,7 @@ trait GameManager
                                     $league->games()->where('game_no', $i_game_no)->where('team_char_guest', $league_no)->update([
                                         'club_id_guest' => $team->club->id,
                                         'region_id_guest' => $team->club->region->id,
-                                        'team_id_guest' => $team->id,
-                                        'team_guest' => $team->club->shortname . $team->team_no
+                                        'team_id_guest' => $team->id
                                     ]);
                                 }
                             } else {
@@ -270,8 +261,6 @@ trait GameManager
             'team_id_home' => null,
             'club_id_home' => null,
             'region_id_home' => null,
-            'team_home' => null,
-            'gym_no' => null,
             'gym_id' => null
         ]);
 
@@ -279,8 +268,7 @@ trait GameManager
         $league->games()->where('team_id_guest', $team->id)->update([
             'team_id_guest' => null,
             'club_id_guest' => null,
-            'region_id_guest' => null,
-            'team_guest' => null,
+            'region_id_guest' => null
         ]);
     }
 

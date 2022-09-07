@@ -45,7 +45,6 @@ class LeagueGamesImport implements ToCollection, WithStartRow, WithValidation, W
                 $g->game_date = $row[1];
                 $g->game_time = $row[2];
                 $g->gym_id = $row['gym_id'];
-                $g->gym_no = $row[6];
                 $g->save();
                 Log::debug('[IMPORT][CLUB] importing row',['row'=>$row]);
             } else {

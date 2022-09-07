@@ -25,6 +25,7 @@ return new class extends Migration
             $table->foreign('region_id_home')->references('id')->on('regions');
             $table->unsignedInteger('region_id_guest')->nullable();
             $table->foreign('region_id_guest')->references('id')->on('regions');
+            $table->dropColumn(['team_home', 'team_guest', 'gym_no']);
         });
 
         // migrate data
@@ -48,8 +49,14 @@ return new class extends Migration
             $table->dropColumn(['region_id_league', 'region_id_home', 'region_id_guest']);
             $table->string('region',5)->nullable();
             $table->foreign('region')->references('code')->on('regions');
+            $table->string('team_home',5)->nullable();
+            $table->string('team_guest',5)->nullable();
+            $table->string('gym_no',2)->nullable();
         });
         // migrate data
         DB::update('update games set region = (select r.code from regions r, leagues l where l.id=league_id and r.id = l.region_id )');
+        DB::update('update games set team_home = (select concat(c.shortname, t.team_no) from clubs c, teams t where c.id=club_id_home and t.id = team_id_home )');
+        DB::update('update games set team_guest = (select concat(c.shortname, t.team_no) from clubs c, teams t where c.id=club_id_guest and t.id = team_id_guest )');
+        DB::update('update games set gym_no = (select g.gym_no from gyms g where g.id=gym_id )');
     }
 };

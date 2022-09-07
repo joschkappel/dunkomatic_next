@@ -14,7 +14,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 use Datatables;
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -74,7 +74,7 @@ class ClubGameController extends Controller
                 FROM games ga
                 JOIN games gb on ga.game_time <= date_add(gb.game_time, INTERVAL ' . $min_slot . ' minute)
                     and date_add(ga.game_time,interval ' . $min_slot . ' minute) >= gb.game_time
-                    and ga.club_id_home=gb.club_id_home and ga.gym_no = gb.gym_no and ga.game_date = gb.game_date
+                    and ga.club_id_home=gb.club_id_home and ga.gym_id = gb.gym_id and ga.game_date = gb.game_date
                     and ga.id != gb.id
                 WHERE ga.club_id_home=' . $club->id . ' ORDER BY ga.game_date DESC, ga.club_id_home ASC';
 
@@ -131,6 +131,7 @@ class ClubGameController extends Controller
                     $query->where('club_id_home', $club->id)
                         ->orWhere('club_id_guest',$club->id);
                 })
+                ->with('league.region','gym','team_home.club.region','team_guest.club.region')
                 ->get();
 
         Log::info('found some games for date',['club'=>$club->id,'count'=>$games->count()]);
@@ -144,7 +145,7 @@ class ClubGameController extends Controller
                 FROM games ga
                 JOIN games gb on ga.game_time <= date_add(gb.game_time, INTERVAL ' . $min_slot . ' minute)
                     and date_add(ga.game_time,interval ' . $min_slot . ' minute) >= gb.game_time
-                    and ga.club_id_home=gb.club_id_home and ga.gym_no = gb.gym_no and ga.game_date = gb.game_date
+                    and ga.club_id_home=gb.club_id_home and ga.gym_id = gb.gym_id and ga.game_date = gb.game_date
                     and ga.id != gb.id
                 WHERE ga.club_id_home=' . $club->id . ' ORDER BY ga.game_date DESC, ga.club_id_home ASC';
 
@@ -163,22 +164,21 @@ class ClubGameController extends Controller
                 $gym_row_list->push('gym_'.$g->gym_no);
             }
             foreach ($gtime->values() as $g){
-                $g->load('league');
                 if ($g->club_id_home == $club->id){
                     $btndata = ' data-id="' . $g->id .
                         '" data-game-date="' . $g->game_date . '" data-game-time="' . $g->game_time . '" data-club-id-home"' . $g->club_id_home .
-                        '" data-gym-no="' . $g->gym_no . '" data-gym-id="' . $g->gym_id . '" data-league="' . $g->league['shortname'] . '"';
+                        '" data-gym-no="' . $g->gym_no . '" data-gym-id="' . $g->gym_id . '" data-league="' . $g->league . '"';
                     if ($g->game_time == ''){
                         $new_row['gym_'.$g->gym_no] .= '<button id="gameEditLink" class="btn btn-warning btn-sm text-sm" '.$btndata.'>('.$g->league->shortname.')<br>'.$g->team_home.' - '.$g->team_guest.'</button>';
                     } else {
                         if ($ogames->contains($g->id)){
-                            $new_row['gym_'.$g->gym_no] .= '<button id="gameEditLink" class="btn btn-danger btn-sm text-sm" '.$btndata.'>('.$g->league->shortname.')<br>'.$g->team_home.' - '.$g->team_guest.'</button>';
+                            $new_row['gym_'.$g->gym_no] .= '<button id="gameEditLink" class="btn btn-danger btn-sm text-sm" '.$btndata.'>('.$g->league.')<br>'.$g->team_home.' - '.$g->team_guest.'</button>';
                         } else {
-                            $new_row['gym_'.$g->gym_no] .= '<button id="gameEditLink" class="btn btn-success btn-sm text-sm" '.$btndata.'>('.$g->league->shortname.')<br>'.$g->team_home.' - '.$g->team_guest.'</button>';
+                            $new_row['gym_'.$g->gym_no] .= '<button id="gameEditLink" class="btn btn-success btn-sm text-sm" '.$btndata.'>('.$g->league.')<br>'.$g->team_home.' - '.$g->team_guest.'</button>';
                         }
                     }
                 } else {
-                    $new_row['guest'] .= '<button class="btn btn-secondary btn-sm text-sm" disabled>('.$g->league->shortname.')<br>'.$g->team_home.' - '.$g->team_guest.'</button>';
+                    $new_row['guest'] .= '<button class="btn btn-secondary btn-sm text-sm" disabled>('.$g->league.')<br>'.$g->team_home.' - '.$g->team_guest.'</button>';
                 }
             }
             $gameslist->push($new_row);
@@ -239,14 +239,14 @@ class ClubGameController extends Controller
                 FROM games ga
                 JOIN games gb on ga.game_time <= date_add(gb.game_time, INTERVAL ' . $min_slot . ' minute)
                     and date_add(ga.game_time,interval ' . $min_slot . ' minute) >= gb.game_time
-                    and ga.club_id_home=gb.club_id_home and ga.gym_no = gb.gym_no and ga.game_date = gb.game_date
+                    and ga.club_id_home=gb.club_id_home and ga.gym_id = gb.gym_id and ga.game_date = gb.game_date
                     and ga.id != gb.id
                 WHERE ga.club_id_home=' . $club->id . ' ORDER BY ga.game_date DESC, ga.club_id_home ASC';
 
         $ogames = collect(DB::select($select))->pluck('id')->unique();
 
-        $games = $club->games_home()->with('league', 'gym')->get();
-        $games = $games->concat($club->games_guest()->with('league', 'gym')->get());
+        $games = $club->games_home()->with(['league.region', 'gym','team_home.club.region','team_guest.club.region'])->get();
+        $games = $games->concat($club->games_guest()->with(['league.region', 'gym', 'team_home.club.region','team_guest.club.region'])->get());
         $games = $games->sortBy([['game_date','asc'],['gym_no','asc'],['game_time','asc']]);
         Log::info('got home games for club.', ['club-id' => $club->id, 'count' => $games->count()]);
 
@@ -262,7 +262,7 @@ class ClubGameController extends Controller
                     // this is a home game, can be edited
                     $link = '<a href="#" id="gameEditLink" data-id="' . $game->id .
                         '" data-game-date="' . $game->game_date . '" data-game-time="' . $game->game_time . '" data-club-id-home"' . $game->club_id_home .
-                        '" data-gym-no="' . $game->gym_no . '" data-gym-id="' . $game->gym_id . '" data-league="' . $game->league['shortname'] .
+                        '" data-gym-no="' . $game->gym_no . '" data-gym-id="' . $game->gym_id . '" data-league="' . $game->league .
                         '">' . $game->game_no . ' <i class="fas fa-arrow-circle-right"></i></a>';
                     return array('display' => $link, 'sort' => $game->game_no, 'filter'=>'Heim');
                 } else {
@@ -290,6 +290,15 @@ class ClubGameController extends Controller
                     'default' => ($game->gym_no ?? '?' )
                 );
             })
+            ->addColumn('league', function ($game) {
+                return $game->league;
+            })
+            ->addColumn('team_home', function ($game) {
+                return $game->team_home;
+            })
+            ->addColumn('team_guest', function ($game) {
+                return $game->team_guest;
+            })
             ->make(true);
         //Log::debug(print_r($glist,true));
         return $glist;
@@ -305,10 +314,10 @@ class ClubGameController extends Controller
     public function chart_home(Club $club)
     {
         $select = "select date_format(g.game_date, '%b-%d-%Y') AS 't', ";
-        $select .= " time_format(g.game_time, '%H') AS 'ghour', time_format(g.game_time, '%i') AS 'gmin', g.gym_no AS 'gym', gy.name AS 'gymname' ";
+        $select .= " time_format(g.game_time, '%H') AS 'ghour', time_format(g.game_time, '%i') AS 'gmin', gy.gym_no AS 'gym', gy.name AS 'gymname' ";
         $select .= ' FROM games g, gyms gy ';
         $select .= ' WHERE g.gym_id=gy.id AND g.club_id_home=' . $club->id;
-        $select .= " ORDER BY g.gym_no, date_format(g.game_date, '%b-%d-%Y') ASC, g.game_time ASC";
+        $select .= " ORDER BY gy.gym_no, date_format(g.game_date, '%b-%d-%Y') ASC, g.game_time ASC";
 
         // Log::debug($select);
         $hgames = collect(DB::select($select));

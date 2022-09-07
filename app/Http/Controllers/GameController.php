@@ -41,9 +41,9 @@ class GameController extends Controller
 
         if ($region->is_base_level){
             //$games = Game::whereIn('club_id_home', $clubs)->orWhereIn('club_id_guest',$clubs)->orderBy('game_date')->get();
-            $games = Game::where('region_id_home', $region->id)->orWhere('region_id_guest', $region->id)->with(['league', 'gym'])->orderBy('game_date')->get();
+            $games = Game::where('region_id_home', $region->id)->orWhere('region_id_guest', $region->id)->with(['league.region', 'gym','team_home.club.region','team_guest.club.region'])->orderBy('game_date')->get();
         } else {
-            $games = Game::where('region_id_league', $region->id)->with(['league', 'gym'])->orderBy('game_date')->get();
+            $games = Game::where('region_id_league', $region->id)->with(['league', 'gym','team_home.club.region','team_guest.club.region'])->orderBy('game_date')->get();
         }
 
         Log::info('preparing game list');
@@ -70,7 +70,13 @@ class GameController extends Controller
                 );
             })
             ->addColumn('game_league', function ($game) {
-                return $game->league->shortname;
+                return $game->league;
+            })
+            ->addColumn('team_home', function ($game) {
+                return $game->team_home;
+            })
+            ->addColumn('team_guest', function ($game) {
+                return $game->team_guest;
             })
             ->make(true);
         //Log::debug(print_r($glist,true));

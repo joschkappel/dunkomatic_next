@@ -24,9 +24,9 @@ class CalendarComposer
         $games =  Game::where('region_id_league', $region->id)
             ->whereNotNull('game_date')
             ->whereNotNull('game_time')
-            ->whereNotNull('team_home')
-            ->whereNotNull('team_guest')
-            ->with('league', 'gym')
+            ->whereNotNull('team_id_home')
+            ->whereNotNull('team_id_guest')
+            ->with(['league', 'gym', 'team_home.club', 'team_guest.club'])
             ->orderBy('game_date', 'asc')
             ->orderBy('game_time', 'asc')
             ->orderBy('game_no', 'asc')
@@ -42,16 +42,16 @@ class CalendarComposer
             // add games as calendar events
             foreach ($games as $g) {
                 $eventlist[] = Event::create()
-                    ->name($g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest)
-                    ->description( $g->league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 )
-                    ->uniqueIdentifier($g->league->shortname . $g->game_no)
+                    ->name($g->league . ': ' . $g->team_home . ' - ' . $g->team_guest)
+                    ->description( $g->league()->first()->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 )
+                    ->uniqueIdentifier($g->league . $g->game_no)
                     ->createdAt(Carbon::now())
                     ->startsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT')))
                     ->endsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT'))->addHours(2))
                     ->address( ($g->gym->street ?? '') . ', ' . ( $g->gym->zip ?? '') . ' ' . ( $g->gym->city ?? ''))
                     ->addressName($g->gym->name ?? '')
                     ->organizer( config('app.contact'), config('app.name') )
-                    ->alertMinutesBefore(120, $g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
+                    ->alertMinutesBefore(120, $g->league . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
             }
 
             $calendar = $calendar->event($eventlist);
@@ -69,9 +69,9 @@ class CalendarComposer
         $games =  Game::where('league_id', $league->id)
             ->whereNotNull('game_date')
             ->whereNotNull('game_time')
-            ->whereNotNull('team_home')
-            ->whereNotNull('team_guest')
-            ->with('league', 'gym')
+            ->whereNotNull('team_id_home')
+            ->whereNotNull('team_id_guest')
+            ->with(['league', 'gym','team_home.club.region','team_guest.club.region'])
             ->orderBy('game_date', 'asc')
             ->orderBy('game_time', 'asc')
             ->orderBy('game_no', 'asc')
@@ -87,16 +87,16 @@ class CalendarComposer
             // add games as calendar events
             foreach ($games as $g) {
                 $eventlist[] = Event::create()
-                    ->name($g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest)
-                    ->description( $g->league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 )
-                    ->uniqueIdentifier($g->league->shortname . $g->game_no)
+                    ->name($g->league . ': ' . $g->team_home . ' - ' . $g->team_guest)
+                    ->description( $league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 )
+                    ->uniqueIdentifier($g->league . $g->game_no)
                     ->createdAt(Carbon::now())
                     ->startsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT')))
                     ->endsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT'))->addHours(2))
                     ->address( ($g->gym->street ?? '') . ', ' . ( $g->gym->zip ?? '') . ' ' . ( $g->gym->city ?? ''))
                     ->addressName($g->gym->name ?? '')
                     ->organizer( config('app.contact'), config('app.name') )
-                    ->alertMinutesBefore(120, $g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
+                    ->alertMinutesBefore(120, $g->league . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
             }
 
             $calendar = $calendar->event($eventlist);
@@ -119,9 +119,9 @@ class CalendarComposer
         })
             ->whereNotNull('game_date')
             ->whereNotNull('game_time')
-            ->whereNotNull('team_home')
-            ->whereNotNull('team_guest')
-            ->with('league', 'gym')
+            ->whereNotNull('team_id_home')
+            ->whereNotNull('team_id_guest')
+            ->with(['league', 'gym','team_home.club.region','team_guest.club.region'])
             ->orderBy('game_date', 'asc')
             ->orderBy('game_time', 'asc')
             ->orderBy('game_no', 'asc')
@@ -138,16 +138,16 @@ class CalendarComposer
             // add games as calendar events
             foreach ($games as $g) {
                 $eventlist[] = Event::create()
-                    ->name($g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest)
-                    ->description($g->league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 )
-                    ->uniqueIdentifier($g->league->shortname . $g->game_no)
+                    ->name($g->league . ': ' . $g->team_home . ' - ' . $g->team_guest)
+                    ->description($g->league()->first()->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 )
+                    ->uniqueIdentifier($g->league . $g->game_no)
                     ->createdAt(Carbon::now())
                     ->startsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT')))
                     ->endsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT'))->addHours(2))
                     ->address( ($g->gym->street ?? '') . ', ' . ( $g->gym->zip ?? '') . ' ' . ( $g->gym->city ?? ''))
                     ->addressName($g->gym->name ?? '')
                     ->organizer(config('app.contact'), config('app.name') )
-                    ->alertMinutesBefore(120, $g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
+                    ->alertMinutesBefore(120, $g->league . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
             }
 
             $calendar = $calendar->event($eventlist);
@@ -166,9 +166,9 @@ class CalendarComposer
         $games =  Game::where('club_id_home', $club->id)
             ->whereNotNull('game_date')
             ->whereNotNull('game_time')
-            ->whereNotNull('team_home')
-            ->whereNotNull('team_guest')
-            ->with('league', 'gym')
+            ->whereNotNull('team_id_home')
+            ->whereNotNull('team_id_guest')
+            ->with(['league', 'gym','team_home.club.region','team_guest.club.region'])
             ->orderBy('game_date', 'asc')
             ->orderBy('game_time', 'asc')
             ->orderBy('game_no', 'asc')
@@ -185,16 +185,16 @@ class CalendarComposer
             // add games as calendar events
             foreach ($games as $g) {
                 $eventlist[] = Event::create()
-                    ->name($g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest)
-                    ->description($g->league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 )
-                    ->uniqueIdentifier($g->league->shortname . $g->game_no)
+                    ->name($g->league . ': ' . $g->team_home . ' - ' . $g->team_guest)
+                    ->description($g->league()->first()->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 )
+                    ->uniqueIdentifier($g->league . $g->game_no)
                     ->createdAt(Carbon::now())
                     ->startsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT')))
                     ->endsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT'))->addHours(2))
                     ->address( ($g->gym->street ?? '') . ', ' . ( $g->gym->zip ?? '') . ' ' . ( $g->gym->city ?? ''))
                     ->addressName($g->gym->name ?? '')
                     ->organizer(config('app.contact'), config('app.name') )
-                    ->alertMinutesBefore(120, $g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
+                    ->alertMinutesBefore(120, $g->league . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
             }
 
             $calendar = $calendar->event($eventlist);
@@ -219,9 +219,9 @@ class CalendarComposer
             })
             ->whereNotNull('game_date')
             ->whereNotNull('game_time')
-            ->whereNotNull('team_home')
-            ->whereNotNull('team_guest')
-            ->with('league', 'gym')
+            ->whereNotNull('team_id_home')
+            ->whereNotNull('team_id_guest')
+            ->with(['league', 'gym','team_home.club.region','team_guest.club.region'])
             ->orderBy('game_date', 'asc')
             ->orderBy('game_time', 'asc')
             ->orderBy('game_no', 'asc')
@@ -238,16 +238,16 @@ class CalendarComposer
             // add games as calendar events
             foreach ($games as $g) {
                 $eventlist[] = Event::create()
-                    ->name($g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest)
-                    ->description($g->league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 )
-                    ->uniqueIdentifier($g->league->shortname . $g->game_no)
+                    ->name($g->league . ': ' . $g->team_home . ' - ' . $g->team_guest)
+                    ->description($g->league()->first()->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 )
+                    ->uniqueIdentifier($g->league . $g->game_no)
                     ->createdAt(Carbon::now())
                     ->startsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT')))
                     ->endsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT'))->addHours(2))
                     ->address( ($g->gym->street ?? '') . ', ' . ( $g->gym->zip ?? '') . ' ' . ( $g->gym->city ?? ''))
                     ->addressName($g->gym->name ?? '')
                     ->organizer(config('app.contact'), config('app.name') )
-                    ->alertMinutesBefore(120, $g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
+                    ->alertMinutesBefore(120, $g->league . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
             }
 
             $calendar = $calendar->event($eventlist);
@@ -275,9 +275,9 @@ class CalendarComposer
             })
             ->whereNotNull('game_date')
             ->whereNotNull('game_time')
-            ->whereNotNull('team_home')
-            ->whereNotNull('team_guest')
-            ->with('league', 'gym')
+            ->whereNotNull('team_id_home')
+            ->whereNotNull('team_id_guest')
+            ->with(['league', 'gym','team_home.club.region','team_guest.club.region'])
             ->orderBy('game_date', 'asc')
             ->orderBy('game_time', 'asc')
             ->orderBy('game_no', 'asc')
@@ -294,16 +294,16 @@ class CalendarComposer
             // add games as calendar events
             foreach ($games as $g) {
                 $eventlist[] = Event::create()
-                    ->name($g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest)
-                    ->description($g->league->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 )
-                    ->uniqueIdentifier($g->league->shortname . $g->game_no)
+                    ->name($g->league . ': ' . $g->team_home . ' - ' . $g->team_guest)
+                    ->description($g->league()->first()->name.' '.__('game.game_no').' '.$g->game_no.' '.__('game.referee').' '.$g->referee_1 )
+                    ->uniqueIdentifier($g->league . $g->game_no)
                     ->createdAt(Carbon::now())
                     ->startsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT')))
                     ->endsAt(Carbon::parse(Carbon::parse($g->game_date)->isoFormat('L') . ' ' . Carbon::parse($g->game_time)->isoFormat('LT'))->addHours(2))
                     ->address( ($g->gym->street ?? '') . ', ' . ( $g->gym->zip ?? '') . ' ' . ( $g->gym->city ?? ''))
                     ->addressName($g->gym->name ?? '')
                     ->organizer(config('app.contact'), config('app.name') )
-                    ->alertMinutesBefore(120, $g->league->shortname . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
+                    ->alertMinutesBefore(120, $g->league . ': ' . $g->team_home . ' - ' . $g->team_guest . ' ' . __('game.starts_in', ['hours'=>2]));
             }
 
             $calendar = $calendar->event($eventlist);

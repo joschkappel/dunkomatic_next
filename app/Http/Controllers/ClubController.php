@@ -194,7 +194,7 @@ class ClubController extends Controller
      */
     public function team_dt(Request $request, string $language, Club $club): JsonResponse
     {
-        $clubteam = $club->teams->load('gym');
+        $clubteam = $club->teams->load('gym','league','club');
 
         // get leagues where club is assigned
         $clubleagues = $club->leagues;

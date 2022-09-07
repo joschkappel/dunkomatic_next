@@ -97,7 +97,7 @@ $(function() {
                     sort: 'game_date.ts'
                   }, name: 'game_date.ts' },
                  { data: 'game_time', name: 'game_time' },
-                 { data: 'league.shortname', name: 'league.shortname' },
+                 { data: 'league', name: 'league' },
                  { data: 'team_home', name: 'team_home'},
                  { data: 'team_guest', name: 'team_guest'},
                  { data: {

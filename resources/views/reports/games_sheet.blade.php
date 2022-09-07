@@ -82,7 +82,7 @@
              <td style="border: 1px solid #ffffff;padding: 3px 2px;font-size: 12px;"></td>
            @endif
            @if( $with_league )
-           <td style="border: 1px solid #ffffff;padding: 3px 2px;font-size: 12px;{{$rstyle}}">{{ $game->league->shortname }}</td>
+           <td style="border: 1px solid #ffffff;padding: 3px 2px;font-size: 12px;{{$rstyle}}">{{ $game->league }}</td>
            @endif
            <td style="text-align: right;border: 1px solid #FFFFFF;padding: 3px 2px;font-size: 12px;{{$rstyle}}">{{ $game->game_no }}</td>
            <td style="border: 1px solid #FFFFFF;padding: 3px 2px;font-size: 12px;{{$rstyle}}">{{ $game->team_home}}</td>

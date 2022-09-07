@@ -53,7 +53,7 @@ class GamesSheet implements FromView, WithTitle, ShouldAutoSize
             $rclubs = $this->region->clubs->pluck('id');
             $games =  Game::whereIn('club_id_home', $rclubs)
                         ->orWhereIn('club_id_guest', $rclubs)
-                        ->with('league')
+                        ->with(['league','gym','team_home.club', 'team_guest.club'])
                         ->orderBy('game_date','asc')
                         ->orderBy('game_time','asc')
                         ->orderBy('game_no','asc')
@@ -62,7 +62,7 @@ class GamesSheet implements FromView, WithTitle, ShouldAutoSize
             $league = null;
         } else {
             $games =  Game::where('league_id',$this->league->id)
-                        ->with('league')
+                        ->with(['league','gym','team_home.club', 'team_guest.club'])
                         ->orderBy('game_date','asc')
                         ->orderBy('game_time','asc')
                         ->orderBy('game_no','asc')

@@ -43,7 +43,6 @@ class LeagueCustomGamesImport implements ToCollection, WithStartRow, WithValidat
                 $g->game_date = $row[1];
                 $g->game_time = $row[2];
                 $g->gym_id = $row['gym_id'];
-                $g->gym_no = $row[5];
                 $g->save();
                 Log::debug('[IMPORT][CLUB] importing row - game updated',['row'=>$row]);
             } else {
@@ -58,15 +57,12 @@ class LeagueCustomGamesImport implements ToCollection, WithStartRow, WithValidat
                     'region_id_home' => $row['region_id_home'],
                     'team_id_home' => $row['team_id_home'],
                     'region_league_id' => $this->league->region->id,
-                    'team_home'    => $row[3],
                     'team_char_home' => $this->league->teams()->where('id', $row['team_id_home'])->first()->league_no ?? 1,
                     'club_id_guest' => $row['club_id_guest'],
                     'region_id_guest' => $row['region_id_guest'],
                     'team_id_guest' => $row['team_id_guest'],
-                    'team_guest'    => $row[4],
                     'team_char_guest' => $this->league->teams()->where('id', $row['team_id_guest'])->first()->league_no ?? 2,
-                    'gym_id' => $row['gym_id'],
-                    'gym_no' => $row[5]
+                    'gym_id' => $row['gym_id']
                 ]);
                 Log::debug('[IMPORT][CLUB] importing row - game inserted',['row'=>$row]);
             }

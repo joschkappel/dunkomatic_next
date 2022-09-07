@@ -40,7 +40,7 @@ class LeagueGamesSheet implements FromView, WithTitle, ShouldAutoSize
     public function view(): View
     {
         $games =  Game::where('league_id',$this->league->id)
-                      ->with('league')
+                        ->with(['league','gym','team_home.club', 'team_guest.club'])
                       ->orderBy('game_date','asc')
                       ->orderBy('game_time','asc')
                       ->orderBy('game_no','asc')
