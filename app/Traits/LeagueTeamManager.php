@@ -40,7 +40,7 @@ trait LeagueTeamManager
                 $c_keys->pull($c->pivot->league_no - 1);
             };
         }
-        $teams = $league->teams()->with(['club.region'])->get();
+        $teams = $league->teams()->with(['club', 'club.region'])->get();
 
         $clubteam->transform(function ($item) use (&$teams, &$t_keys) {
             $k = $teams->search(function ($t) use ($item) {

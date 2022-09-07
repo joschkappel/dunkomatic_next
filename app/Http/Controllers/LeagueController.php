@@ -767,7 +767,7 @@ class LeagueController extends Controller
                         $btn .= 'data-team-id="' . $ct['team_id'] . '">' . $ct['team_name'] . '</button>';
                     } else {
                         if ($ct['club_id'] != null) {
-                            $unregistered_teams = Club::find($ct['club_id'])->teams->whereNull('league_id');
+                            $unregistered_teams = Club::find($ct['club_id'])->teams->whereNull('league_id')->load('club');
                             if ($unregistered_teams->count() > 0) {
                                 $btn = '<div class="btn-group btn-group-sm"><button type="button" class="btn btn-sm btn-secondary dropdpwn-toggle" data-toggle="dropdown">' . __('team.action.select') . '</button>';
                                 $btn .= '<div class="dropdown-menu">';
