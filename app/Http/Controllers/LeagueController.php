@@ -471,10 +471,10 @@ class LeagueController extends Controller
         }
 
         if ($region->is_base_level) {
-            $leagues = League::whereIn('region_id', [$region->id, $region->parentRegion->id])->with('clubs', 'teams','schedule','schedule.league_size')->get();
+            $leagues = League::whereIn('region_id', [$region->id, $region->parentRegion->id])->with('clubs', 'teams.club','schedule','schedule.league_size')->get();
             Log::notice('getting leagues for base level region',['count'=>count($leagues)]);
         } else {
-            $leagues = League::whereIn('region_id', [$region->id])->with('clubs', 'teams','schedule','schedule.league_size')->get();
+            $leagues = League::whereIn('region_id', [$region->id])->with('clubs', 'teams.club','schedule','schedule.league_size')->get();
             Log::notice('getting leagues for top level region',['count'=>count($leagues)]);
         }
 

@@ -138,30 +138,40 @@ class Game extends Model implements Auditable
     }
     public function getTeamHomeAttribute(): string
     {
+        if ( $this->team_id_home == null){
+            return '';
+        } else {
+            if(!isset($this->relations['team_home'])) {
 
-        if(!isset($this->relations['team_home'])) {
-
-            $this->load('team_home');
+                $this->load('team_home');
+            }
+        return $this->relations['team_home']->name ?? '';
         }
-       return $this->relations['team_home']->name;
     }
     public function getTeamGuestAttribute(): string
     {
+        if ( $this->team_id_guest == null){
+            return '';
+        } else {
+            if(!isset($this->relations['team_guest'])) {
 
-        if(!isset($this->relations['team_guest'])) {
-
-            $this->load('team_guest');
+                $this->load('team_guest');
+            }
+        return $this->relations['team_guest']->name ?? '';
         }
-       return $this->relations['team_guest']->name;
     }
     public function getGymNoAttribute(): string
     {
 
-        if(!isset($this->relations['gym'])) {
+        if ($this->gym_id == null){
+            return '';
+        } else {
+            if(!isset($this->relations['gym'])) {
 
-            $this->load('gym');
+                $this->load('gym');
+            }
+        return $this->relations['gym']->gym_no ?? '';
         }
-       return $this->relations['gym']->gym_no;
     }
     public function getLeagueAttribute(): string
     {
@@ -170,6 +180,6 @@ class Game extends Model implements Auditable
 
             $this->load('league');
         }
-       return $this->relations['league']->shortname;
+       return $this->relations['league']->shortname ?? '';
     }
 }
