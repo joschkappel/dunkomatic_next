@@ -228,10 +228,10 @@ class FileDownloadController extends Controller
         } else {
             $format = ReportFileType::coerce($format);
         }
-        if ($region->filecount($format) > 0) {
-            $files = $region->filenames($format);
+        if ($region->filecount($format, 'Gesamtplan') > 0) {
+            $files = $region->filenames($format, 'Gesamtplan');
         } else {
-            Log::error('no files found for region.', ['region-id' => $region->id]);
+            Log::error('no Gesamtplan files found for region.', ['region-id' => $region->id]);
             return Redirect::back()->withErrors(['format' => 'all']);
         }
 
@@ -283,11 +283,24 @@ class FileDownloadController extends Controller
      * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\RedirectResponse
      *
      */
-    public function get_region_league_archive(Region $region)
+    public function get_region_league_archive(Region $region, int $format=null)
     {
-        Log::info('region league file archive download.', ['region-id' => $region->id]);
+        if ($format == null){
+            $format = ReportFileType::coerce(ReportFileType::None);
+        } else {
+            $format = ReportFileType::coerce($format);
+        }
+        if (  ($region->league_filecount($format) + ($region->filecount($format,'Rundenbuch'))) > 0) {
+            $files = $region->league_filenames($format);
+            $files = $files->concat($region->filenames($format,'Rundenbuch') );
+        } else {
+            Log::error('no league files found for region.', ['region-id' => $region->id]);
+            return Redirect::back()->withErrors(['format' => 'all']);
+        }
 
-        if ($region->league_filecount() > 0) {
+        Log::info('region file archive download.', ['region-id' => $region->id,'format'=>$format]);
+
+        if ($region->league_filecount($format) > 0) {
             $zip = new ZipArchive;
             $filename = $region->code . '-runden-reports.zip';
             Storage::disk('public')->delete($filename);
@@ -295,7 +308,6 @@ class FileDownloadController extends Controller
             Log::info('archive location.', ['path' => $pf]);
 
             if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
-                $files = $region->league_filenames();
 
                 /**  @var string $f */
                 foreach ($files as $f) {
@@ -311,6 +323,64 @@ class FileDownloadController extends Controller
                 );
 
                 Log::notice('downloading ZIP archive for region leagues', ['region-id' => $region->id, 'filecount' => count($files)]);
+
+                return Storage::disk('public')->download($filename);
+            } else {
+                Log::error('archive corrupt.', ['region-id' => $region->id]);
+                return abort(500);
+            }
+        } else {
+            Log::error('no files found for region.', ['region-id' => $region->id]);
+            return abort(404);
+        }
+    }
+    /**
+     * download archive with region address report
+     *
+     * @param \App\Models\Region $region
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\RedirectResponse
+     *
+     */
+    public function get_region_members_archive(Region $region, int $format=null)
+    {
+        if ($format == null){
+            $format = ReportFileType::coerce(ReportFileType::None);
+        } else {
+            $format = ReportFileType::coerce($format);
+        }
+        if ($region->filecount($format, 'Addressbuch') > 0) {
+            $files = $region->filenames($format, 'Addressbuch');
+        } else {
+            Log::error('no member files found for region.', ['region-id' => $region->id]);
+            return Redirect::back()->withErrors(['format' => 'all']);
+        }
+
+        Log::info('region file archive download.', ['region-id' => $region->id,'format'=>$format]);
+
+
+        if ($region->league_filecount() > 0) {
+            $zip = new ZipArchive;
+            $filename = $region->code . '-runden-reports.zip';
+            Storage::disk('public')->delete($filename);
+            $pf = Storage::disk('public')->path($filename);
+            Log::info('archive location.', ['path' => $pf]);
+
+            if ($zip->open($pf, ZipArchive::CREATE) === TRUE) {
+
+                /**  @var string $f */
+                foreach ($files as $f) {
+                    $check = $zip->addFromString(basename($f), Storage::get($f));
+                }
+
+                $zip->close();
+
+                ReportDownload::updateOrCreate(
+                    ['user_id'=>Auth::user()->id, 'report_id'=>Report::AddressBook(),
+                    'model_class'=> Region::class, 'model_id'=>$region->id],
+                    ['updated_at'=>now()]
+                );
+
+                Log::notice('downloading ZIP archive for region members', ['region-id' => $region->id, 'filecount' => count($files)]);
 
                 return Storage::disk('public')->download($filename);
             } else {

@@ -225,38 +225,32 @@ class Region extends Model
     {
         return   config('dunkomatic.folders.export').'/'.Str::of(config('global.season'))->replace('/', '_') . '/' . $this->code ;
     }
-    public function filecount(ReportFileType $format=null): int
+    public function filecount(ReportFileType $format=null, string $fnprefix=null): int
     {
-        $reports = $this->filenames($format);
+        $reports = $this->filenames($format, $fnprefix);
         return count($reports);
     }
-    public function filenames(ReportFileType $format=null): Collection
+    public function filenames(ReportFileType $format=null, string $fnprefix=null): Collection
     {
         if ($format == null){
             $format = ReportFileType::coerce(ReportFileType::None);
         } else {
             $format = ReportFileType::coerce($format);
         }
+        $fname = ($fnprefix==null) ? $this->code : $this->code.'_'.$fnprefix;
 
         // get main region folder files
-        $reports = $this->get_reports($this->region_folder, $this->code, $format);
+        $reports = $this->get_reports($this->region_folder, $fname, $format);
 
         // add league folder files
-        $reports = $reports->concat(
+/*         $reports = $reports->concat(
             $this->get_reports($this->region_folder.'/'.config('dunkomatic.export_folders.leagues'), null, $format )
-        );
+        ); */
 
         // add teamware folder files
-        $reports = $reports->concat(
+/*         $reports = $reports->concat(
             $this->get_reports($this->region_folder.'/'.config('dunkomatic.export_folders.teamware'), null,  ReportFileType::coerce(ReportFileType::CSV() ) )
-        );
-        // add top level region reports
-        if ($this->is_base_level){
-            $reports = $reports->concat(
-                $this->get_reports($this->parentRegion->region_folder, null, $format )
-            );
-        }
-
+        ); */
         // add top level region reports
         if ($this->is_base_level){
             $reports = $reports->concat(
@@ -267,16 +261,22 @@ class Region extends Model
         return $reports;
     }
 
-    public function league_filecount(): int
+    public function league_filecount(ReportFileType $format=null): int
     {
-        $reports = $this->league_filenames();
+        $reports = $this->league_filenames($format);
         return count($reports);
     }
 
-    public function league_filenames(): Collection
+    public function league_filenames(ReportFileType $format=null): Collection
     {
+        if ($format == null){
+            $format = ReportFileType::coerce(ReportFileType::None);
+        } else {
+            $format = ReportFileType::coerce($format);
+        }
+
         $directory = $this->league_folder;
-        $reports = $this->get_reports( $directory, null, ReportFileType::coerce( ReportFileType::None ));
+        $reports = $this->get_reports( $directory, null, $format );
         return $reports;
     }
 

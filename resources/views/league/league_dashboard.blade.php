@@ -57,20 +57,8 @@
                     @endif
                     @endcan
                     @endcan
-                    @if ($league->filecount() > 0)
-                    <div class="small-box-footer bg-secondary">@lang('club.action.download')
-                    @foreach ( $league->region->fmt_league_reports->getFlags() as $format )
-                        <a href="{{ route('league_archive.get', ['league' => $league, 'format'=>$format->value]) }}">
-                            {{ $format->description }}<i class="fas fa-file-download p-2"></i>
-                        </a>
-                    @endforeach
-                    @error('format')
-                    <div class="alert alert-danger">
-                            no {{ $message }} files found
-                    </div>
-                    @enderror
-                    </div>
-                    @endif
+                    <a href="#" data-toggle="modal"  class="small-box-footer" data-target="#modalDownloadZone">Zur Download Zone
+                        <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <div class="col-sm ">
@@ -94,7 +82,7 @@
                             @else
                                 <span class="info-box-icon bg-warning"><i class="fas fa-basketball-ball"></i></span>
                                 <div class="info-box-content">
-                                    <span class="info-box-text text-lg">@lang('club.entitled.some', [ 'entitled' =>
+                                    <span class="info-box-text text-md">@lang('club.entitled.some', [ 'entitled' =>
                                         $league->state_count['assigned'], 'total' => $league->state_count['size']] )</span>
                     @endif
                 </div>
@@ -115,7 +103,7 @@
                 @else
                     <span class="info-box-icon bg-warning"><i class="fas fa-users"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text text-lg">@lang('team.registered.some',
+                        <span class="info-box-text text-md">@lang('team.registered.some',
                             ['registered'=>$league->state_count['registered'],
                             'total'=>$league->state_count['assigned']])</span>
                     </div>
@@ -213,6 +201,7 @@
                 @include('league/includes/inject_team')
                 @include('member/includes/membership_add')
                 @include('member/includes/membership_modify')
+                @include('reports/includes/download_zone')
                 <!-- all modals above -->
             </div>
 

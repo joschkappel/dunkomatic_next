@@ -29,5 +29,10 @@ class ReportDownload extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function scopeByUserAndType($query, User $user, $type, $type_id)
+    {
+        return $query->where('user_id', $user->id)->where('model_class', $type)->where('model_id', $type_id);
+    }
+
 
 }

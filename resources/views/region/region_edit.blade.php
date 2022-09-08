@@ -119,7 +119,7 @@
                 <label class="col-sm col-form-label">{{ $rpt->getReportTitle() }}</label>
                 <div class="col-sm-2">
                     <input type="text" readonly class="form-control @if( $report->lastrun_ok) text-success @else text-danger @endif" id="lastrun_at"
-                    value="@isset(  $report->lastrun_at) {{Carbon\Carbon::parse($report->lastrun_at)->locale(app()->getLocale())->isoFormat('LLL')}} @endisset">
+                    value="@isset(  $report->lastrun_at) {{Carbon\Carbon::parse($report->lastrun_at)->locale(app()->getLocale())->isoFormat('L LT')}} @endisset">
                 </div>
                 <div class="col-sm-4">
                     <button id="btnRunJob" type="button" data-job-id="{{$rpt->value}}" class="btn btn-secondary" @if ($report->running) disabled  @endif>{{$rpt->getReportTitle().' '.__('Create')}}</button>
@@ -267,7 +267,7 @@
             $(document).on('click', '#btnRunJob', function (e) {
                 var job = $(this).data("job-id");
                 var url = "{{ route('region.run.job',['region'=>$region, 'job'=>':job:'])}}";
-                url = url.replace(':job:', jobclass);
+                url = url.replace(':job:', job);
 
                 $.ajax({
                     type: 'POST',

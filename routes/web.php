@@ -334,11 +334,13 @@ Route::middleware(['auth',
     Route::get('message/{notification}', [MessageController::class, 'show'])->name('notification.show');
 
     Route::get('file/exports', [FileDownloadController::class, 'get_file'])->name('file.get');
-    Route::get('archive/region/{region}/league', [FileDownloadController::class, 'get_region_league_archive'])->name('region_league_archive.get');
-    Route::get('archive/region/{region}/teamware', [FileDownloadController::class, 'get_region_teamware_archive'])->name('region_teamware_archive.get');
-    Route::get('archive/region/{region}/user/{user}', [FileDownloadController::class, 'get_user_archive'])->name('user_archive.get');
     Route::get('archive/club/{club}/{format?}', [FileDownloadController::class, 'get_club_archive'])->name('club_archive.get');
-    Route::get('archive/region/{region}/{format}', [FileDownloadController::class, 'get_region_archive'])->name('region_archive.get');
     Route::get('archive/league/{league}/{format?}', [FileDownloadController::class, 'get_league_archive'])->name('league_archive.get');
+
+    Route::get('archive/region/{region}/user/{user}', [FileDownloadController::class, 'get_user_archive'])->name('user_archive.get');
+    Route::get('archive/region/{region}/reports/{format?}', [FileDownloadController::class, 'get_region_archive'])->name('region_archive.get');
+    Route::get('archive/region/{region}/league/{format?}', [FileDownloadController::class, 'get_region_league_archive'])->name('region_league_archive.get');
+    Route::get('archive/region/{region}/members/{format?}', [FileDownloadController::class, 'get_region_members_archive'])->name('region_members_archive.get');
+    Route::get('archive/region/{region}/teamware', [FileDownloadController::class, 'get_region_teamware_archive'])->name('region_teamware_archive.get');
 
 });

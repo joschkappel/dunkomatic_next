@@ -56,14 +56,14 @@ class ClubsSheet implements FromView, WithTitle, ShouldAutoSize
             $rclubs = $this->region->clubs->pluck('id');
             $games =  Game::whereIn('club_id_home', $rclubs)
                         ->orWhereIn('club_id_guest', $rclubs)
-                        ->with('league')
+                        ->with(['league','team_home.club','team_guest.club'])
                         ->orderBy('game_date','asc')
                         ->orderBy('game_time','asc')
                         ->orderBy('game_no','asc')
                         ->get();
         } else {
             $games =  Game::where('league_id',$this->league->id)
-                ->with('league')
+                ->with(['league','team_home.club','team_guest.club'])
                 ->orderBy('game_date','asc')
                 ->orderBy('game_time','asc')
                 ->orderBy('game_no','asc')
@@ -76,7 +76,7 @@ class ClubsSheet implements FromView, WithTitle, ShouldAutoSize
                 ->get();
 
         foreach ($clubs as $c){
-          $c['teams'] = Team::whereIn('id', $games->where('club_id_home',$c->id)->pluck('team_id_home')->unique())->orderBy('team_no')->get();
+          $c['teams'] = Team::whereIn('id', $games->where('club_id_home',$c->id)->pluck('team_id_home')->unique())->with(['league','club'])->orderBy('team_no')->get();
           $c['gyms'] = Gym::whereIn('id', $games->where('club_id_home',$c->id)->pluck('gym_id')->unique())->orderBy('gym_no')->get();
         }
 

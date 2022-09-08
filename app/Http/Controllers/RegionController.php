@@ -66,6 +66,7 @@ class RegionController extends Controller
 
         $data['games_count'] = Game::where('region_id_league', $region->id)->count();
         $data['games_noref_count'] = $region->clubs()->with('games_noreferee')->get()->pluck('games_noreferee.*.id')->flatten()->count();
+        $data['scope'] = 'region';
 
         Log::info('showing region dashboard', ['region-id' => $region->id]);
         return view('region.region_dashboard', $data);
