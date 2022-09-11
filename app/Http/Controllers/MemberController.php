@@ -8,6 +8,7 @@ use App\Models\Region;
 use App\Models\League;
 use App\Models\Club;
 use App\Models\User;
+use App\Models\Team;
 use BenSampo\Enum\Rules\EnumValue;
 use App\Enums\Role;
 use App\Models\Invitation;
@@ -50,14 +51,42 @@ class MemberController extends Controller
      */
     public function datatable(Region $region)
     {
+        // rgional members of lcub, leagues and region
         $members = $region->clubs()->with('members')->get()->pluck('members.*.id')->flatten()->concat(
             $region->leagues()->with('members')->get()->pluck('members.*.id')->flatten()
         )->concat(
             $region->members->pluck('id')->flatten()
         )->unique();
+        // add clubs and leagues that are top level leagues from other regions
+        $leagues = $region->teams()->whereNotNull('league_id')->pluck('league_id')->unique();
+        $toplevel_teams = Team::whereIn('league_id', $leagues)->whereRelation('club.region','id', '!=', $region->id)->with('club','league')->get();
 
-        Log::info('preparing member list');
-        $mlist = datatables()::of(Member::whereIn('id', $members)->with('user', 'memberships')->get());
+        $members = $members->concat( League::whereIn('id', $leagues)->with('members')->get()->pluck('members.*.id')->flatten());
+        $members = $members->concat( Club::whereIn('id', $toplevel_teams->pluck('club_id'))->with('members')->get()->pluck('members.*.id')->flatten() );
+
+        $members = Member::whereIn('id', $members)->with('user', 'memberships')->get();
+        // add coaches
+        $coaches = Team::whereIn('league_id',$leagues)->with('club','league')->get()->concat($toplevel_teams)->unique();
+        foreach ( $coaches as $co ){
+            $m = new Member([
+                'lastname' => $co->coach_name,
+                'firstname' => '',
+                'mobile' => $co->coach_phone1,
+                'phone' => $co->coach_phone2,
+                'email1' => $co->coach_email,
+                'id' => mt_rand(100000, 999999)
+            ]);
+            $ms = $m->memberships()->make();
+            $ms->membership_type = Team::class;
+            $ms->membership_id = $co->id;
+            $m->memberships->push($ms);
+
+            $members->push($m);
+        }
+
+
+        Log::info('preparing member list',['cnt'=>$members->count()]);
+        $mlist = datatables()::of($members);
 
         return $mlist
             ->rawColumns(['user_account', 'email1', 'email2','phone', 'name'])
