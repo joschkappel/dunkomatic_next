@@ -18,6 +18,7 @@ use Illuminate\Queue\SerializesModels;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class GenerateTeamwareReport implements ShouldQueue
 {
@@ -41,6 +42,10 @@ class GenerateTeamwareReport implements ShouldQueue
         $this->league = $league->load('region');
 
         // make sure folders are there
+        if ( ! Storage::exists($this->region->teamware_folder)) {
+            // clean folder
+            Storage::makeDirectory($this->region->teamware_folder);
+        } ;
         $this->export_folder = $league->region->teamware_folder;
 
         // teamware filenames

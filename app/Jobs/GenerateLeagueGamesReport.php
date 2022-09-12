@@ -26,6 +26,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 
+
 class GenerateLeagueGamesReport implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -50,6 +51,12 @@ class GenerateLeagueGamesReport implements ShouldQueue
         $this->rtype = $rtype;
 
         // make sure folders are there
+        if ( ! Storage::exists($this->region->league_folder)) {
+            // clean folder
+            Storage::makeDirectory($this->region->league_folder);
+        } ;
+
+
         $this->export_folder = $region->league_folder;
         $this->rpt_name = $this->export_folder . '/' . $this->league->shortname;
         $this->rpt_name .= '_Rundenplan.';

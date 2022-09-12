@@ -17,6 +17,7 @@ use Illuminate\Queue\SerializesModels;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class GenerateRegionContactsReport implements ShouldQueue
 {
@@ -40,6 +41,11 @@ class GenerateRegionContactsReport implements ShouldQueue
         $this->rtype = $rtype;
 
         // make sure folders are there
+        if ( ! Storage::exists($this->region->region_folder)) {
+            // clean folder
+            Storage::makeDirectory($this->region->region_folder);
+        } ;
+
         $this->export_folder = $this->region->region_folder;
         $this->rpt_name = $this->export_folder . '/' . $this->region->code;
         $this->rpt_name .= '_Addressbuch.';
