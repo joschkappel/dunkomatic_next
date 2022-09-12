@@ -125,6 +125,7 @@ class Team extends Model implements Auditable
 
     public function getNameAttribute(): string
     {
+        $this->loadMissing('club');
         return $this->club->shortname . $this->team_no;
     }
     public function getNameDescAttribute(): string

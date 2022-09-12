@@ -51,23 +51,22 @@ class MemberController extends Controller
      */
     public function datatable(Region $region)
     {
-        // rgional members of lcub, leagues and region
-        $members = $region->clubs()->with('members')->get()->pluck('members.*.id')->flatten()->concat(
-            $region->leagues()->with('members')->get()->pluck('members.*.id')->flatten()
-        )->concat(
-            $region->members->pluck('id')->flatten()
-        )->unique();
-        // add clubs and leagues that are top level leagues from other regions
-        $leagues = $region->teams()->whereNotNull('league_id')->pluck('league_id')->unique();
-        $toplevel_teams = Team::whereIn('league_id', $leagues)->whereRelation('club.region','id', '!=', $region->id)->with('club','league')->get();
+        // get all leagues for all teams in thsi region
+        $all_leagues = League::whereIn('id', $region->clubs()->with('teams')->without('region')->get()->pluck('teams.*.league_id')->flatten()->whereNotNull()->values())->with('teams')->get();
+        $all_region_ids = $all_leagues->pluck('region_id')->unique();
+        $all_league_ids = $all_leagues->pluck('id')->unique();
+        $all_team_ids = $all_leagues->pluck('teams.*.id')->flatten()->values();
+        $all_teams = Team::whereIn('id', $all_team_ids)->with('club','league')->get();
+        $all_club_ids = $all_teams->pluck('club_id')->unique();
 
-        $members = $members->concat( League::whereIn('id', $leagues)->with('members')->get()->pluck('members.*.id')->flatten());
-        $members = $members->concat( Club::whereIn('id', $toplevel_teams->pluck('club_id'))->with('members')->get()->pluck('members.*.id')->flatten() );
+        // get members for all concerned regions, leagues and clubs
+        $members = Membership::where('membership_type',Region::class)->whereIn('membership_id', $all_region_ids)->pluck('member_id');
+        $members = $members->concat( Membership::where('membership_type',League::class)->whereIn('membership_id', $all_league_ids)->pluck('member_id') );
+        $members = $members->concat( Membership::where('membership_type',Club::class)->whereIn('membership_id', $all_club_ids)->pluck('member_id') )->unique();
+        $members = Member::whereIn('id', $members)->withonly('user', 'clubs','leagues')->get();
 
-        $members = Member::whereIn('id', $members)->with('user', 'memberships')->get();
         // add coaches
-        $coaches = Team::whereIn('league_id',$leagues)->with('club','league')->get()->concat($toplevel_teams)->unique();
-        foreach ( $coaches as $co ){
+        foreach ( $all_teams as $co ){
             $m = new Member([
                 'lastname' => $co->coach_name,
                 'firstname' => '',
@@ -95,26 +94,38 @@ class MemberController extends Controller
                 ><i class="far fa-clipboard"></i></button>';
             })
             ->addColumn('name', function ($data) {
-                 //return $data->lastname . ', ' . $data->firstname;
                  return '<a href="#copyAddress" id="copyAddress" name="copyAddress" data-member-id="' . $data->id . '">'.$data->lastname.', '.$data->firstname.'</a>';
             })
             ->addColumn('clubs', function ($data) {
-                return $data->memberofclubs;
+                if ($data->id >= 100000){
+                    return '';
+                } else {
+                    return $data->member_of_clubs;
+                }
             })
             ->addColumn('leagues', function ($data) {
-                return $data->memberofleagues;
+                if ($data->id >= 100000){
+                    return '';
+                } else {
+                    return $data->member_of_leagues;
+                }
             })
             ->addColumn('roles', function ($data) {
-                $roles = $data->memberships->pluck('role_title');
-                return $roles->implode(', ');
+                if ($data->id >= 100000){
+                    return $data->team_memberships;
+                }
+
+                return $ms = $data->club_memberships.' '.$data->league_memberships;
             })
             ->addColumn('user_account', function ($data) {
-                if ($data->isuser) {
+                if ($data->user != null ) {
                     if (Bouncer::can('update-users')) {
                         return '<a href="' . route('admin.user.edit', ['language' => app()->getLocale(), 'user' => $data->user->id]) . '"><i class="fas fa-user text-info"></i></a>';
                     } else {
                         return '<i class="fas fa-user text-info"></i>';
                     }
+                } else {
+                    return '';
                 };
             })
             ->editColumn('email1', function ($m) {

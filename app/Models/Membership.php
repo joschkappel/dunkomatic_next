@@ -63,30 +63,4 @@ class Membership extends Model implements Auditable
         return $query->where('role_id', '!=', $role_id);
     }
 
-    public function getRoleTitleAttribute(): string
-    {
-        if ($this->membership_type == Club::class) {
-            $club = Club::find($this->membership_id);
-            $member_of = $club->shortname ??  '?';
-            $title = Role::coerce($this->role_id)->description . ' ' . $member_of;
-            if ($this->role_id == Role::ClubLead){
-                $leagues = $club->load('teams.league')->teams->whereNotNull('league_id')->pluck('league.shortname')->implode(', ');
-                if ($leagues != ''){
-                    $title .= '('.$leagues.')';
-                }
-            }
-        } elseif ($this->membership_type == League::class) {
-            $member_of = League::find($this->membership_id)->shortname ?? '?';
-            $title = Role::coerce($this->role_id)->description . ' ' . $member_of;
-        } elseif ($this->membership_type == Region::class) {
-            $member_of = Region::find($this->membership_id)->code ?? '?';
-            $title = Role::coerce($this->role_id)->description . ' ' . $member_of;
-        } elseif ($this->membership_type == Team::class) {
-            $team = Team::find($this->membership_id);
-            $title = $team->league->shortname .' MV '.($team->name ?? '?' );
-
-        }
-
-        return $title;
-    }
 }
