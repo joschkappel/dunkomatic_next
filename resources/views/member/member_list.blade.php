@@ -24,9 +24,10 @@
 
 
               var memtable = $('#table').DataTable({
-                 processing: false,
+                 processing: true,
                  responsive: true,
                  stateSave: true,
+                 retrieve: true,
                  pageLength: {{ config('dunkomatic.table_page_length', 50)}},
                  language: { "url": "{{URL::asset('lang/vendor/datatables.net/'.app()->getLocale().'.json')}}" },
                  order: [[1,'asc']],
@@ -90,7 +91,7 @@
                     },
                     { extend: 'colvis',
                         postfixButtons: [ 'colvisRestore' ],
-                        columns: [1,2,3,4,5,6,7],
+                        columns: [1,2,3,4,5,6,7,8],
                     },
                     { extend: 'spacer',
                         style: 'bar'

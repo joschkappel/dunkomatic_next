@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Club;
 use App\Models\League;
 use App\Models\Region;
+use App\Models\Team;
 use App\Enums\Role;
 use App\Models\Membership;
 use App\Models\Invitation;
@@ -82,6 +83,8 @@ class Member extends Model implements Auditable
         'id','club_id','firstname','lastname','city','street', 'zipcode', 'phone',
         'fax', 'mobile', 'email1', 'email2'
     ];
+  protected $appends = [ 'name', 'email','address', 'member_of_clubs','member_of_leagues','club_memberships','league_memberships','is_user'];
+  protected $with = ['memberships'];
 
   public function getNameAttribute(): string
   {
@@ -106,13 +109,13 @@ class Member extends Model implements Auditable
   }
   public function clubs(): MorphToMany
   {
-      return $this->morphedByMany(Club::class, 'membership' )->withPivot('role_id','function');
+      return $this->morphedByMany(Club::class, 'membership' )->withPivot('role_id','function')->without('region');
       // test: Member::find(261)->clubs()->get();
   }
 
   public function leagues(): MorphToMany
   {
-      return $this->morphedByMany(League::class, 'membership' )->withPivot('role_id','function');
+      return $this->morphedByMany(League::class, 'membership' )->withPivot('role_id','function')->without('region');
 
   }
 
@@ -123,7 +126,7 @@ class Member extends Model implements Auditable
   }
   public function getEmailAttribute(): string
   {
-    return ( $this->email1 == '' ? $this->email2 : $this->email1);
+    return (( $this->email1 == '' ? $this->email2 : $this->email1) ?? '');
   }
   public function getAddressAttribute(): string
   {
@@ -135,15 +138,48 @@ class Member extends Model implements Auditable
   }
   public function getMemberOfClubsAttribute(): string
   {
-    return $this->clubs()->wherePivotIn('role_id', [Role::ClubLead, Role::RefereeLead, Role::GirlsLead, Role::JuniorsLead])->pluck('shortname')->unique()->implode(', ');
+    return $this->clubs()->pluck('shortname')->unique()->implode(', ');
+  }
+  public function getClubMembershipsAttribute(): string
+  {
+    $club = $this->load('clubs')->clubs;
+    $title = collect();
+    foreach ($club as $c){
+        $title->push(Role::coerce($c->pivot->role_id)->description.' '.$c->shortname);
+        if ($c->pivot->role_id == Role::ClubLead){
+            $leagues = $c->load('teams.league')->teams->whereNotNull('league_id')->pluck('league.shortname')->implode(', ');
+            if ($leagues != ''){
+                $title->push( '('.$leagues.')');
+            }
+        }
+    }
+    return $title->implode(', ');
+  }
+  public function getLeagueMembershipsAttribute(): string
+  {
+    $leagues = $this->load('leagues')->leagues;
+    $title = collect();
+    foreach ($leagues as $l){
+        $title->push(Role::coerce($l->pivot->role_id)->description.' '.$l->shortname);
+    }
+    return $title->implode(', ');
+  }
+  public function getTeamMembershipsAttribute(): string
+  {
+    $teams = Team::whereIn('id', $this->memberships->pluck('membership_id'))->with(['league','club'])->without(['league.region','club.region'])->get();
+    $title = collect();
+    foreach ($teams as $t){
+        $title->push($t->league->shortname .' MV '.($t->name ?? '?' ) );
+    }
+    return $title->implode(', ');
   }
   public function getMemberOfLeaguesAttribute(): string
   {
-    return $this->leagues()->wherePivotIn('role_id', [Role::LeagueLead])->pluck('shortname')->unique()->implode(', ');
+    return $this->leagues()->pluck('shortname')->unique()->implode(', ');
   }
   public function getMemberOfRegionAttribute(): string
   {
-    return $this->region()->wherePivotIn('role_id', [Role::RegionLead, Role::RegionTeam])->pluck('code')->unique()->implode('-');
+    return $this->region()->pluck('code')->unique()->implode('-');
   }
   public function getIsUserAttribute(): bool
   {
