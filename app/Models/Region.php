@@ -46,7 +46,6 @@ use Illuminate\Support\Str;
  * @property \Illuminate\Support\Carbon|null $close_selection_at
  * @property \Illuminate\Support\Carbon|null $close_scheduling_at
  * @property \Illuminate\Support\Carbon|null $close_referees_at
- * @property bool $auto_state_change
  * @property-read \Illuminate\Database\Eloquent\Collection|Region[] $childRegions
  * @property-read int|null $child_regions_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Club[] $clubs
@@ -115,8 +114,7 @@ class Region extends Model
         'job_game_notime', 'job_noleads', 'job_email_valid',
         'fmt_league_reports', 'fmt_club_reports',
         'open_scheduling_at', 'open_selection_at',
-        'close_selection_at', 'close_scheduling_at', 'close_referees_at',
-        'auto_state_change'
+        'close_selection_at', 'close_scheduling_at', 'close_referees_at'
     ];
 
     protected $casts = [
@@ -126,8 +124,7 @@ class Region extends Model
         'open_selection_at' => 'date',
         'close_selection_at' => 'date',
         'close_scheduling_at' => 'date',
-        'close_referees_at' => 'date',
-        'auto_state_change' => 'boolean'
+        'close_referees_at' => 'date'
     ];
 
     public function clubs(): HasMany

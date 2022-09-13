@@ -342,12 +342,6 @@ class RegionController extends Controller
             'close_referees_at' => $closerefereesrule
         ]);
         Log::info('region details form data validated OK.');
-        $auto_state_change = $request->input('auto_state_change');
-        if (isset($auto_state_change) and ($auto_state_change == 'on')) {
-            $data['auto_state_change'] = true;
-        } else {
-            $data['auto_state_change'] = false;
-        }
 
         $check = $region->update($data);
         $region->refresh();
