@@ -51,7 +51,6 @@ class Kernel extends ConsoleKernel
         $schedule->job(new ProcessFilesCleanup(), 'janitor')->weeklyOn(1,'00:20');
         $schedule->job(new ProcessCustomMessages(), 'janitor')->dailyAt('03:00');
         $schedule->job(new ProcessNewSeason(), 'janitor')->yearly();
-        // $schedule->exec('php artisan db:backup -c')->everyMinute()->emailOutputTo('dmatic.master@gmail.com');
         // $schedule->job(new ExportStatistics(), 'janitor')->everyMinute();
         $schedule->job(new OpenLeagueState(), 'janitor')->dailyAt('07:45');
         $schedule->job(new CloseLeagueState(), 'janitor')->dailyAt('20:00');

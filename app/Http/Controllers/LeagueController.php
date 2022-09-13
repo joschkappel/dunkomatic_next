@@ -246,6 +246,7 @@ class LeagueController extends Controller
 
         //Log::debug(print_r($reports,true));
         $data['files'] = $reports;
+        $data['scope'] = 'league';
 
         Log::info('showing league dashboard', ['league-id' => $league->id]);
         return view('league/league_dashboard', $data);

@@ -1,7 +1,7 @@
 <div>
     <div class="modal fade" id="{{ $modalId }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
         aria-hidden="true" >
-        <div class="modal-dialog modal-md" role="document">
+        <div class="modal-dialog modal-{{ $modalSize ?? 'md' }}" role="document">
             <!--Content-->
             <div class="modal-content ">
                 <!--Header-->

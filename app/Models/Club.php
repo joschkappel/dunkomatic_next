@@ -229,7 +229,7 @@ class Club extends Model implements Auditable
         $reports = $this->get_reports( $this->region->club_folder,$this->shortname, $format );
 
         // add region reports
-        $reports = $reports->concat(
+/*         $reports = $reports->concat(
             $this->get_reports($this->region->region_folder, $this->region->code, $format)
         );
         // add above region reports
@@ -237,7 +237,7 @@ class Club extends Model implements Auditable
             $reports = $reports->concat(
                 $this->get_reports($this->region->parentRegion->region_folder, $this->region->parentRegion->code, $format)
             );
-        }
+        } */
 
         return $reports;
     }

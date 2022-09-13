@@ -56,6 +56,12 @@ class GenerateClubGamesReport implements ShouldQueue
         $this->rtype = $rtype;
 
         // make sure folders are there
+
+        if ( ! Storage::exists($this->region->club_folder)) {
+            // clean folder
+            Storage::makeDirectory($this->region->club_folder);
+        } ;
+
         $this->export_folder = $region->club_folder;
         $this->rpt_name = $this->export_folder . '/' . $this->club->shortname;
 

@@ -25,13 +25,13 @@
         <div class="progress-bar bg-primary" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">{{ $league_kpis['scheduled'].'/'.$league_kpis['generated'] }}</div>
         <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">{{ $league_kpis['referees'].'/'.$league_kpis['generated'] }}</div>
     @elseif ($currentState->is( App\Enums\LeagueState::Live  ) )
-        <div class="progress-bar bg-info" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">{{ $league_kpis['assigned'].'/'.$league_kpis['size'] }}</div>
-        <div class="progress-bar bg-info" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">{{ $league_kpis['registered'].'/'.$league_kpis['assigned'] }}</div>
-        <div class="progress-bar bg-info" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">{{ $league_kpis['charspicked'].'/'.$league_kpis['registered'] }}</div>
-        <div class="progress-bar bg-warning" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
-        <div class="progress-bar bg-primary" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">{{ $league_kpis['scheduled'].'/'.$league_kpis['generated'] }}</div>
-        <div class="progress-bar bg-primary" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">{{ $league_kpis['referees'].'/'.$league_kpis['generated'] }}</div>
-        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">LIVE</div>
+        <div class="progress-bar bg-info" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">{{ $league_kpis['assigned'].'/'.$league_kpis['size'] }}</div>
+        <div class="progress-bar bg-info" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">{{ $league_kpis['registered'].'/'.$league_kpis['assigned'] }}</div>
+        <div class="progress-bar bg-info" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">{{ $league_kpis['charspicked'].'/'.$league_kpis['registered'] }}</div>
+        <div class="progress-bar bg-warning" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+        <div class="progress-bar bg-primary" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">{{ $league_kpis['scheduled'].'/'.$league_kpis['generated'] }}</div>
+        <div class="progress-bar bg-primary" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">{{ $league_kpis['referees'].'/'.$league_kpis['generated'] }}</div>
+        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">LIVE</div>
     @else
         <div class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
     @endif

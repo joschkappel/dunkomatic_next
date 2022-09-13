@@ -42,20 +42,8 @@
                         </a>
                     @endif
                     @endcan
-                    @if ($club->filecount() > 0)
-                    <div class="small-box-footer bg-secondary">@lang('club.action.download')
-                        @foreach ( $club->region->fmt_club_reports->getFlags() as $format )
-                            <a href="{{ route('club_archive.get', ['club' => $club, 'format'=>$format->value]) }}">
-                                {{ $format->description }}<i class="fas fa-file-download p-2"></i>
-                            </a>
-                        @endforeach
-                        @error('format')
-                        <div class="alert alert-danger">
-                                no {{ $message }} files found
-                        </div>
-                        @enderror
-                    </div>
-                    @endif
+                    <a href="#" data-toggle="modal"  class="small-box-footer" data-target="#modalDownloadZone">Zur Download Zone
+                        <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <div class="col-sm ">
@@ -313,6 +301,7 @@
     <x-confirm-deletion modalId="modalDeleteTeam" modalTitle="{{ __('team.title.delete') }}" modalConfirm="{{ __('team.confirm.delete') }}" deleteType="{{ trans_choice('team.team',1) }}" />
     @include('member/includes/membership_add')
     @include('member/includes/membership_modify')
+    @include('reports/includes/download_zone')
     <!-- all modals above -->
 @stop
 

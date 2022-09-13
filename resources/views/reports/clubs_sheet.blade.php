@@ -58,7 +58,7 @@
        @foreach($c['teams'] as $t)
          <tr>
            <td style="text-align:right; font-size: 12px;"><strong>{{$t->league->shortname}}</strong></td>
-           <td style="text-align:right; font-size: 12px;"><strong>{{ $c->shortname}} {{ $t->team_no }}</strong></td>
+           <td style="text-align:right; font-size: 12px;"><strong>{{ $t->name }}</strong></td>
            <td style="font-size: 12px;">{{ $t->coach_name }}</td>
            <td style="font-size: 12px;">@lang('team.shirtcolor'): {{ $t->shirt_color }}</td>
          </tr>

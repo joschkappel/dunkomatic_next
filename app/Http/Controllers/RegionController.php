@@ -66,6 +66,7 @@ class RegionController extends Controller
 
         $data['games_count'] = Game::where('region_id_league', $region->id)->count();
         $data['games_noref_count'] = $region->clubs()->with('games_noreferee')->get()->pluck('games_noreferee.*.id')->flatten()->count();
+        $data['scope'] = 'region';
 
         Log::info('showing region dashboard', ['region-id' => $region->id]);
         return view('region.region_dashboard', $data);
@@ -341,12 +342,6 @@ class RegionController extends Controller
             'close_referees_at' => $closerefereesrule
         ]);
         Log::info('region details form data validated OK.');
-        $auto_state_change = $request->input('auto_state_change');
-        if (isset($auto_state_change) and ($auto_state_change == 'on')) {
-            $data['auto_state_change'] = true;
-        } else {
-            $data['auto_state_change'] = false;
-        }
 
         $check = $region->update($data);
         $region->refresh();

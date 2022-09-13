@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 
 class ClubController extends Controller
 {
@@ -177,6 +177,7 @@ class ClubController extends Controller
 
         //Log::debug(print_r($reports,true));
         $data['files'] = $reports;
+        $data['scope'] = 'club';
 
         Log::info('showing club dashboard',['club-id'=>$club->id]);
         return view('club/club_dashboard', $data);

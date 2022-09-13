@@ -33,7 +33,6 @@ return [
   'size'  => '# Teams',
   'state' => 'Status',
   'above-region' => 'above region',
-  'auto_state_change' => 'Automated phase transitions',
   'generated' => 'CLOSED',
   'agetype' => 'Age class',
   'gendertype' => 'Gender class',
