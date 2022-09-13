@@ -253,8 +253,9 @@ class Region extends Model
         ); */
         // add top level region reports
         if ($this->is_base_level){
+            $fname = ($fnprefix==null) ? $this->parentRegion->code : $this->parentRegion->code.'_'.$fnprefix;
             $reports = $reports->concat(
-                $this->get_reports($this->parentRegion->region_folder, null, $format )
+                $this->get_reports($this->parentRegion->region_folder, $fname, $format )
             );
         }
 

@@ -237,7 +237,7 @@ class FileDownloadController extends Controller
 
         Log::info('region file archive download.', ['region-id' => $region->id,'format'=>$format]);
 
-        if ($region->filecount($format) > 0) {
+        if ($files->count() > 0) {
             $zip = new ZipArchive;
             $filename = $region->code . '-reports.zip';
             Storage::disk('public')->delete($filename);
@@ -300,7 +300,7 @@ class FileDownloadController extends Controller
 
         Log::info('region file archive download.', ['region-id' => $region->id,'format'=>$format]);
 
-        if ($region->league_filecount($format) > 0) {
+        if ($$files->count() > 0) {
             $zip = new ZipArchive;
             $filename = $region->code . '-runden-reports.zip';
             Storage::disk('public')->delete($filename);
@@ -358,7 +358,7 @@ class FileDownloadController extends Controller
         Log::info('region file archive download.', ['region-id' => $region->id,'format'=>$format]);
 
 
-        if ($region->league_filecount() > 0) {
+        if ($files->count() > 0) {
             $zip = new ZipArchive;
             $filename = $region->code . '-runden-reports.zip';
             Storage::disk('public')->delete($filename);

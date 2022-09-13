@@ -17,16 +17,16 @@
     <div class="card-deck">
         @if ($scope=='club')
             <div class="card border-info my-3">
-                <div class="card-header">Vereinsspielpläne</div>
+                <div class="card-header">{{ __('reports.games.club') }}</div>
                 <div class="card-body text-info">
                     <ul>
-                        <li class="card-text">Gesamtplan</li>
-                        <li class="card-text">Heimspielplan</li>
-                        <li class="card-text">Schiedsrichterplan</li>
-                        <li class="card-text">Vereinsrundenpläne</li>
+                        <li class="card-text">{{ __('reports.games.all') }}</li>
+                        <li class="card-text">{{ __('reports.games.home') }}</li>
+                        <li class="card-text">{{ __('reports.games.referee') }}</li>
+                        <li class="card-text">{{ __('reports.games.club.league') }}</li>
                     </ul>
                     <p class="card-text"> für {{$entity->shortname}}</p>
-                    <p class="card-text">Wähle Dein Format...</p>
+                    <p class="card-text">{{ __('reports.pick.format')}}...</p>
                     <div >
                         @if ($entity->filecount(App\Enums\ReportFileType::XLSX()) > 0)
                         <a type="button" class="btn btn-outline-primary" href="{{ route('club_archive.get', ['club' => $entity, 'format'=>App\Enums\ReportFileType::XLSX]) }}">
@@ -52,10 +52,10 @@
         @endif
         @if ($scope=='league')
             <div class="card border-info my-3">
-                <div class="card-header">Rundenspielplan</div>
+                <div class="card-header">{{ __('reports.games.league') }}</div>
                 <div class="card-body text-info">
-                    <p class="card-text">Rundenspielplan für {{$entity->shortname}}</p>
-                    <p class="card-text">Wähle Dein Format...</p>
+                    <p class="card-text">{{ __('reports.games.club.league') }} {{__('for') }} {{$entity->shortname}}</p>
+                    <p class="card-text">{{ __('reports.pick.format') }}</p>
                     <div>
                         @if ($entity->filecount(App\Enums\ReportFileType::XLSX()) > 0)
                         <a type="button" class="btn btn-outline-primary" href="{{ route('league_archive.get', ['league' => $entity, 'format'=>App\Enums\ReportFileType::XLSX]) }}">
@@ -80,10 +80,10 @@
             </div>
         @endif
         <div class="card border-info my-3">
-            <div class="card-header">Addresslisten</div>
+            <div class="card-header">{{ __('reports.contacts') }}</div>
             <div class="card-body text-info">
                 <p class="card-text">Kontaktdaten der Bezirke (Vereine, Runden)</p>
-                <p class="card-text"> für {{$region->code}}</p>
+                <p class="card-text"> {{__('for')}} {{$region->code}}</p>
                 <div >
                     @if ($region->filecount(App\Enums\ReportFileType::XLSX(), 'Addressbuch') > 0)
                     <a type="button" class="btn btn-outline-primary" href="{{ route('region_members_archive.get', ['region' => $region, 'format'=>App\Enums\ReportFileType::XLSX]) }}">
@@ -108,10 +108,10 @@
         </div>
         @if ($scope=='region')
         <div class="card border-info my-3">
-            <div class="card-header">Bezirksplan</div>
+            <div class="card-header">{{ __('reports.games.region') }}</div>
             <div class="card-body text-info">
-                <p class="card-text">Gesamtplan</p>
-                <p class="card-text"> für {{$region->code}}</p>
+                <p class="card-text">{{ __('reports.games.all') }}</p>
+                <p class="card-text"> {{__('for')}} {{$region->code}}</p>
                 <div >
                     @if ($region->filecount(App\Enums\ReportFileType::XLSX(), 'Gesamtplan') > 0)
                     <a type="button" class="btn btn-outline-primary" href="{{ route('region_archive.get', ['region' => $region, 'format'=>App\Enums\ReportFileType::XLSX]) }}">
@@ -136,10 +136,10 @@
         </div>
         @endif
         <div class="card border-info my-3">
-            <div class="card-header">Bezirks-Rundenpläne</div>
+            <div class="card-header">{{ __('reports.games.region.league') }}</div>
             <div class="card-body text-info">
                 <p class="card-text">Alle Rundenpläne mit MVen</p>
-                <p class="card-text"> für {{$region->code}}</p>
+                <p class="card-text"> {{__('for')}} {{$region->code}}</p>
                 <div>
                     @if ( ($region->filecount(App\Enums\ReportFileType::XLSX(), 'Rundenbuch') + ($region->league_filecount(App\Enums\ReportFileType::XLSX()))) > 0)
                     <a type="button" class="btn btn-outline-primary" href="{{ route('region_league_archive.get', ['region' => $region, 'format'=>App\Enums\ReportFileType::XLSX]) }}">
@@ -164,7 +164,7 @@
         </div>
         @if ($scope=='region')
             <div class="card border-info my-3">
-                <div class="card-header">TeamSL</div>
+                <div class="card-header">{{__('reports.games.teamsl')}}</div>
                 <div class="card-body text-info">
                     <h5 class="card-title">Import Dateien</h5>
                     <ul>

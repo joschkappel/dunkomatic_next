@@ -2,11 +2,15 @@
 
 return [
     'games.home' => 'Heimspielplan',
+    'contacts' => 'Adressenliste',
     'games.all' => 'Gesamtspielplan',
     'games.club' => 'Vereinsspielplan',
+    'games.club.league' => 'Vereinsrudenplan',
     'games.region' => 'Bezirksspielplan',
+    'games.region.league' => 'Bezirks-Rundenplan',
     'games.referee' => 'Schiedsrichterplan',
-    'games.league' => 'Spielplan',
+    'games.league' => 'Rundenspielplan',
+    'games.teamsl' => 'TeamSL',
     'ical.league' => 'Kalender Download',
     'ical.club.all' => 'Alle',
     'ical.club.home' => 'Heim',
@@ -17,5 +21,6 @@ return [
     'run.league' => 'Rundenpläne Jetzt Erzeugen',
     'run.club' => 'Vereinspläne Jetzt Erzeugen',
     'files.removed' => 'Datein sind gelöscht',
-    'jobs.started' => 'Dateien werden erzeugt'
+    'jobs.started' => 'Dateien werden erzeugt',
+    'pick.format' => 'Wähle ein Format'
 ];
