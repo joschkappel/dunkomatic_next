@@ -116,7 +116,10 @@ class Member extends Model implements Auditable
   public function leagues(): MorphToMany
   {
       return $this->morphedByMany(League::class, 'membership' )->withPivot('role_id','function')->without('region');
-
+  }
+  public function teams(): MorphToMany
+  {
+      return $this->morphedByMany(Team::class, 'membership' )->withPivot('role_id','function');
   }
 
   public function region(): MorphToMany

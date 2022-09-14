@@ -111,42 +111,6 @@
         </div>
     </div>
 
-    <div class="form-group row ">
-        <label for="coach_name" class="col-sm-4 col-form-label">@lang('team.coach')</label>
-        <div class="col-sm-4">
-            <input type="text" class="form-control @error('coach_name') is-invalid @enderror" id="coach_name" name="coach_name" placeholder="@lang('team.coach')" value="{{ old('coach_name') }}">
-            @error('coach_name')
-            <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
-    </div>
-    <div class="form-group row ">
-        <label for="coach_email" class="col-sm-4 col-form-label">@lang('team.email')</label>
-        <div class="col-sm-6">
-            <input type="text" class="form-control @error('coach_email') is-invalid @enderror" id="coach_email" name="coach_email" placeholder="@lang('team.email')" value="{{ old('coach_email') }}">
-            @error('coach_email')
-            <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
-    </div>
-    <div class="form-group row ">
-        <label for="coach_phone1" class="col-sm-4 col-form-label">@lang('team.phone1')</label>
-        <div class="col-sm-6">
-            <input type="text" class="form-control @error('coach_phone1') is-invalid @enderror" id="coach_phone1" name="coach_phone1" placeholder="@lang('team.phone1')" value="{{ old('coach_phone1') }}">
-            @error('coach_phone1')
-            <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
-    </div>
-    <div class="form-group row ">
-        <label for="coach_phone2" class="col-sm-4 col-form-label">@lang('team.phone2')</label>
-        <div class="col-sm-6">
-            <input type="text" class="form-control @error('coach_phone2') is-invalid @enderror" id="coach_phone2" name="coach_phone2" placeholder="@lang('team.phone2')" value="{{ old('coach_phone2') }}">
-            @error('coach_phone2')
-            <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
-    </div>
 </x-card-form>
 @endsection
 

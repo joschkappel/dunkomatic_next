@@ -9,9 +9,11 @@ use App\Models\Club;
 use App\Models\League;
 use App\Models\Game;
 use App\Models\Gym;
+use App\Models\Member;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use OwenIt\Auditing\Contracts\Auditable;
 
 /**
@@ -32,11 +34,6 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property int|null $preferred_game_day
  * @property string|null $preferred_game_time
  * @property string|null $shirt_color
- * @property string|null $coach_name
- * @property string|null $coach_phone1
- * @property string|null $coach_phone2
- * @property string|null $coach_email
- * @property int $changeable
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
@@ -52,12 +49,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static \Illuminate\Database\Eloquent\Builder|Team newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Team newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Team query()
- * @method static \Illuminate\Database\Eloquent\Builder|Team whereChangeable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Team whereClubId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Team whereCoachEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Team whereCoachName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Team whereCoachPhone1($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Team whereCoachPhone2($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Team whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Team whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Team whereLeagueChar($value)
@@ -93,10 +85,9 @@ class Team extends Model implements Auditable
     }
 
     protected $fillable = [
-        'id', 'league_char', 'league_no', 'team_no', 'league_id', 'club_id', 'gym_id',  'changeable', 'league_prev',
+        'id', 'league_char', 'league_no', 'team_no', 'league_id', 'club_id', 'gym_id', 'league_prev',
         'training_day', 'training_time', 'preferred_game_day', 'preferred_game_time',
-        'coach_name', 'coach_phone1', 'coach_phone2', 'coach_email', 'shirt_color',
-        'preferred_league_char', 'preferred_league_no',
+        'shirt_color', 'preferred_league_char', 'preferred_league_no',
     ];
 
     public function club(): BelongsTo
@@ -111,6 +102,11 @@ class Team extends Model implements Auditable
     public function gym(): BelongsTo
     {
         return $this->belongsTo(Gym::class);
+    }
+
+    public function members(): MorphToMany
+    {
+        return $this->morphToMany(Member::class, 'membership')->withPivot('role_id', 'function');
     }
 
     public function games_home(): HasMany
@@ -132,7 +128,7 @@ class Team extends Model implements Auditable
     {
         $name = $this->club->shortname . $this->team_no .' (';
         $league = $this->league()->exists() ? $this->league->shortname : $this->league_prev;
-        $name .= ($league == null) ? $this->coach_name : $league;
+        $name .= ($league == null) ? $this->members->pluck('name')->implode(', ') : $league;
         $name .= ') ';
         return $name;
     }

@@ -13,26 +13,6 @@ use Illuminate\Support\Facades\Log;
 
 class MembershipObserver
 {
-    /**
-     * Handle the Membership "created" event.
-     *
-     * @param  \App\Models\Membership  $membership
-     * @return void
-     */
-    public function created(Membership $membership)
-    {
-
-    }
-
-    /**
-     * Handle the Membership "updated" event.
-     *
-     * @param  \App\Models\Membership  $membership
-     * @return void
-     */
-    public function updated(Membership $membership)
-    {
-    }
 
     /**
      * Handle the Membership "deleted" event.

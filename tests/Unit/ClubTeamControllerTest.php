@@ -62,16 +62,13 @@ class ClubTeamControllerTest extends TestCase
                           'training_time'  => '11:00',
                           'preferred_game_day' => 10,
                           'preferred_game_time' => '12:001',
-                          'coach_name'  => 'testteam',
-                          'coach_email' => 'teamcoach@gmail.com',
-                          'coach_phone1' => '0123',
                           'shirt_color' => 'red'
                       ]);
       $response
           ->assertStatus(302)
           ->assertSessionHasErrors(['team_no','preferred_game_time','preferred_game_day']);
 
-      $this->assertDatabaseMissing('teams', ['coach_name' => 'testteam']);
+      $this->assertDatabaseMissing('teams', ['team_no' => 28]);
 
     }
 
@@ -94,9 +91,6 @@ class ClubTeamControllerTest extends TestCase
                           'training_time'  => '11:00',
                           'preferred_game_day' => 2,
                           'preferred_game_time' => '12:00',
-                          'coach_name'  => 'testteam',
-                          'coach_email' => 'teamcoach@gmail.com',
-                          'coach_phone1' => '0123',
                           'shirt_color' => 'red',
                           'gym_id' => $this->testclub_assigned->gyms()->first()->id
                         ]);
@@ -105,7 +99,7 @@ class ClubTeamControllerTest extends TestCase
           ->assertSessionHasNoErrors()
           ->assertHeader('Location', route('club.dashboard', ['language'=>'de','club'=>$this->testclub_assigned]));
 
-      $this->assertDatabaseHas('teams', ['coach_name' => 'testteam']);
+      $this->assertDatabaseHas('teams', ['team_no' => '1']);
 
     }
     /**
@@ -146,17 +140,14 @@ class ClubTeamControllerTest extends TestCase
                           'training_day'   => $team->training_day,
                           'training_time'  => '11:00',
                           'preferred_game_day' => $team->preferred_game_day,
-                          'preferred_game_time' => '12:00',
-                          'coach_name'  => 'testteam2',
-                          'coach_email' => 'noemail',
-                          'coach_phone1' => $team->coach_phone1,
+                          'preferred_game_time' => 'aaa',
                           'shirt_color' => $team->shirt_color
                         ]);
 
       $response->assertStatus(302)
-               ->assertSessionHasErrors(['coach_email']);;
+               ->assertSessionHasErrors(['preferred_game_time']);;
       //$response->dumpSession();
-      $this->assertDatabaseMissing('teams', ['coach_name'=>'testteam2']);
+      $this->assertDatabaseMissing('teams', ['preferred_game_time'=>'aaa']);
     }
     /**
      * update OK
@@ -177,9 +168,6 @@ class ClubTeamControllerTest extends TestCase
                           'training_time'  => '11:00',
                           'preferred_game_day' => $team->preferred_game_day,
                           'preferred_game_time' => '12:00',
-                          'coach_name'  => 'testteam2',
-                          'coach_email' => 'coach@gmail.com',
-                          'coach_phone1' => $team->coach_phone1,
                           'shirt_color' => $team->shirt_color,
                           'gym_id' => $team->club->gyms()->first()->id
                         ]);
@@ -188,7 +176,7 @@ class ClubTeamControllerTest extends TestCase
                ->assertSessionHasNoErrors()
                ->assertHeader('Location', route('club.dashboard',['language'=>'de', 'club'=>$this->testclub_assigned]));
 
-      $this->assertDatabaseHas('teams', ['coach_name'=>$team->coach_name]);
+      $this->assertDatabaseHas('teams', ['preferred_game_time'=>'12:00']);
     }
     /**
      * pickchar
