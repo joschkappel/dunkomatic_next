@@ -52,13 +52,18 @@ return new class extends Migration
             }
 
             foreach ( $mname as $mn){
-                $m = Member::create([
-                    'firstname' => $mn['f'],
-                    'lastname' => $mn['l'],
-                    'email1' => $t->coach_email ?? 'missing',
-                    'mobile' => $t->coach_phone1,
-                    'phone' => $t->coach_phone2
-                ]);
+                $m = Member::where('lastname',$mn['l'])->where('email1',$t->coach_email )->get();
+                if ( $m->count() > 0 ){
+                    $m = $m->first();
+                } else {
+                    $m = Member::create([
+                        'firstname' => $mn['f'],
+                        'lastname' => $mn['l'],
+                        'email1' => $t->coach_email ?? 'missing',
+                        'mobile' => $t->coach_phone1,
+                        'phone' => $t->coach_phone2
+                    ]);
+                }
 
                 $t->members()->attach($m->id, ['role_id'=>Role::TeamCoach()]);
             }

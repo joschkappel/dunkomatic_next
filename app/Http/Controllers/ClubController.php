@@ -195,7 +195,7 @@ class ClubController extends Controller
      */
     public function team_dt(Request $request, string $language, Club $club): JsonResponse
     {
-        $clubteam = $club->teams->load('gym','league','club');
+        $clubteam = $club->teams->load('gym','league','club','members');
 
         // get leagues where club is assigned
         $clubleagues = $club->leagues;
@@ -235,7 +235,11 @@ class ClubController extends Controller
                 }
             })
             ->addColumn('coach', function ($ct) {
-                return '<a href="mailto:'.$ct->coach_email .'" >'.$ct->coach_name . '</a><i class="fas fa-phone m-2"></i>'. $ct->coach_phone1 ;
+                $coach = '';
+                foreach ($ct->members as $m){
+                    $coach .= '<a href="mailto:'.$m->email .'" >'.$m->name . '</a><i class="fas fa-phone m-2"></i>'. $m->mobile ;
+                }
+                return $coach;
             })
             ->addColumn('action', function ($ct) use ($club) {
                 if ( ! ( ($ct->league_id != null ) and ($ct->league->state->in([ LeagueState::Selection, LeagueState::Scheduling, LeagueState::Freeze, LeagueState::Live, LeagueState::Referees ])) )) {

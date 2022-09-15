@@ -87,7 +87,7 @@ class Team extends Model implements Auditable
     protected $fillable = [
         'id', 'league_char', 'league_no', 'team_no', 'league_id', 'club_id', 'gym_id', 'league_prev',
         'training_day', 'training_time', 'preferred_game_day', 'preferred_game_time',
-        'shirt_color', 'preferred_league_char', 'preferred_league_no',
+        'shirt_color', 'preferred_league_char', 'preferred_league_no'
     ];
 
     public function club(): BelongsTo

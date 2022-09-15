@@ -62,27 +62,9 @@ class MemberController extends Controller
         // get members for all concerned regions, leagues and clubs
         $members = Membership::where('membership_type',Region::class)->whereIn('membership_id', $all_region_ids)->pluck('member_id');
         $members = $members->concat( Membership::where('membership_type',League::class)->whereIn('membership_id', $all_league_ids)->pluck('member_id') );
+        $members = $members->concat( Membership::where('membership_type',Team::class)->whereIn('membership_id', $all_team_ids)->pluck('member_id') );
         $members = $members->concat( Membership::where('membership_type',Club::class)->whereIn('membership_id', $all_club_ids)->pluck('member_id') )->unique();
         $members = Member::whereIn('id', $members)->withonly('user', 'clubs','leagues')->get();
-
-        // add coaches
-        foreach ( $all_teams as $co ){
-            $m = new Member([
-                'lastname' => $co->coach_name,
-                'firstname' => '',
-                'mobile' => $co->coach_phone1,
-                'phone' => $co->coach_phone2,
-                'email1' => $co->coach_email,
-                'id' => mt_rand(100000, 999999)
-            ]);
-            $ms = $m->memberships()->make();
-            $ms->membership_type = Team::class;
-            $ms->membership_id = $co->id;
-            $m->memberships->push($ms);
-
-            $members->push($m);
-        }
-
 
         Log::info('preparing member list',['cnt'=>$members->count()]);
         $mlist = datatables()::of($members);
@@ -97,25 +79,13 @@ class MemberController extends Controller
                  return '<a href="#copyAddress" id="copyAddress" name="copyAddress" data-member-id="' . $data->id . '">'.$data->lastname.', '.$data->firstname.'</a>';
             })
             ->addColumn('clubs', function ($data) {
-                if ($data->id >= 100000){
-                    return '';
-                } else {
-                    return $data->member_of_clubs;
-                }
+                return $data->member_of_clubs;
             })
             ->addColumn('leagues', function ($data) {
-                if ($data->id >= 100000){
-                    return '';
-                } else {
-                    return $data->member_of_leagues;
-                }
+                return $data->member_of_leagues;
             })
             ->addColumn('roles', function ($data) {
-                if ($data->id >= 100000){
-                    return $data->team_memberships;
-                }
-
-                return $ms = $data->club_memberships.' '.$data->league_memberships;
+                return $data->role_in_clubs.' '.$data->role_in_leagues.' '.$data->role_in_teams.' '.$data->role_in_regions;
             })
             ->addColumn('user_account', function ($data) {
                 if ($data->user != null ) {
