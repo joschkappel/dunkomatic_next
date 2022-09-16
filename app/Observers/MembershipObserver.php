@@ -50,8 +50,8 @@ class MembershipObserver
         $region = $member->region;
         $teams = $member->teams;
 
-        $member->member_of_clubs = $clubs->pluck('shortname')->implode(', ');
-        $member->member_of_leagues = $leagues->pluck('shortname')->implode(', ');
+        $member->member_of_clubs = $clubs->pluck('shortname')->unique()->implode(', ');
+        $member->member_of_leagues = $leagues->pluck('shortname')->unique()->implode(', ');
         $member->member_of_regions = $region->pluck('code')->implode(', ');
         $member->member_of_teams = $teams->pluck('name')->implode(', ');
 

@@ -22,13 +22,12 @@ return new class extends Migration
             $table->string('member_of_regions')->nullable();
             $table->text('role_in_clubs')->nullable();
             $table->text('role_in_leagues')->nullable();
-            $table->string('role_in_teams')->nullable();
-            $table->string('role_in_regions')->nullable();
+            $table->text('role_in_teams')->nullable();
+            $table->text('role_in_regions')->nullable();
         });
 
         foreach( Membership::all()  as $ms){
-            $ms->function = $ms->function;
-            $ms->save();
+            $ms->touch();
         }
     }
 

@@ -21,9 +21,10 @@ return new class extends Migration
     public function up()
     {
         // migrate data -move from teams to member
-        foreach (Team::all()->unique('coach_name') as $t){
+        foreach (Team::all() as $t){
             // try to avoid duplicates
             // try to split name in fiorstname and lastname
+
             $name = Str::of($t->coach_name)->squish()->explode(' ');
             $mname = collect();
             if ( $name->count() == 1 ){
@@ -50,11 +51,13 @@ return new class extends Migration
                 $mname->push(['f'=>$name[0], 'l'=>$name[1]]);
                 $mname->push(['f'=>$name[3], 'l'=>$name[4]]);
             }
+            Log::info('migrate coaches. working on ',['team'=>$t->name,'coaches'=>$mname]);
 
             foreach ( $mname as $mn){
                 $m = Member::where('lastname',$mn['l'])->where('email1',$t->coach_email )->get();
                 if ( $m->count() > 0 ){
                     $m = $m->first();
+                    Log::notice('migrate coaches. member exists ',['team'=>$t->name,'coaches'=>$mn,'member'=>$m->name,'member-id'=>$m->id]);
                 } else {
                     $m = Member::create([
                         'firstname' => $mn['f'],
@@ -63,9 +66,18 @@ return new class extends Migration
                         'mobile' => $t->coach_phone1,
                         'phone' => $t->coach_phone2
                     ]);
+                    Log::notice('migrate coaches. member created ',['team'=>$t->name,'coaches'=>$mn,'member'=>$m->name,'member-id'=>$m->id]);
                 }
+                $mship = [];
+                $mship['member_id'] = $m->id;
+                $mship['role_id'] = Role::TeamCoach();
 
-                $t->members()->attach($m->id, ['role_id'=>Role::TeamCoach()]);
+                $ms = Membership::withoutEvents(function () use ($t, $mship){
+                    $ms = $t->memberships()->create($mship);
+                    return $ms;
+                });
+                Log::notice('migrate coaches. membership attached',['team'=>$t->name,'member-id'=>$ms->member_id,'team-id'=>$ms->membership_id,'mship-id'=>$m->id]);
+
             }
         }
 
