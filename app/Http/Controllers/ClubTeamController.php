@@ -305,8 +305,9 @@ class ClubTeamController extends Controller
     {
         Log::info('editing team.', ['team-id' => $team->id]);
         $team->load('club', 'league','gym');
+        $members = $team->members()->with('memberships')->get();
 
-        return view('team/team_edit', ['team' => $team]);
+        return view('team/team_edit', ['team' => $team, 'members'=>$members]);
     }
 
     /**

@@ -27,14 +27,14 @@
           <tr>
             <td></td>
             <td style="text-align:right"><strong>{{ $t->name }}</strong></td>
-            <td>{{ $t->coach_name }}</td>
-            <td>{{ $t->coach_email }}</td>
+            <td>{{ $t->load('members')->members->pluck('name')->implode(', ') }}</td>
+            <td>{{$t->load('members')->members->pluck('email')->implode(', ') }}</td>
           </tr>
           <tr>
             <td></td>
             <td></td>
             <td></td>
-            <td>{{ $t->coach_phone1 }}</td>
+            <td>{{ $t->load('members')->members->pluck('mobile')->implode(', ') }}</td>
           </tr>
          @endforeach
    @endforeach

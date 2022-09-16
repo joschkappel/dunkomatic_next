@@ -14,6 +14,7 @@ use App\Models\Member;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use OwenIt\Auditing\Contracts\Auditable;
 
 /**
@@ -108,7 +109,10 @@ class Team extends Model implements Auditable
     {
         return $this->morphToMany(Member::class, 'membership')->withPivot('role_id', 'function');
     }
-
+    public function memberships(): MorphMany
+    {
+        return $this->morphMany(Membership::class, 'membership');
+    }
     public function games_home(): HasMany
     {
         return $this->hasMany(Game::class, 'team_id_home');

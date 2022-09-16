@@ -161,8 +161,8 @@ class ClubController extends Controller
         $data['gyms'] = $data['club']->gyms()->get();
         $data['teams'] = $data['club']->teams->count();
         $data['leagues'] = $data['club']->leagues->count();
-        //$data['members'] = $data['club']->members()->get();
-        $data['members'] = Member::whereIn('id', Club::find($club->id)->members()->pluck('member_id'))->with('memberships')->get();
+        $data['members'] = $data['club']->members()->with('memberships')->get();
+        //$data['members'] = Member::whereIn('id', Club::find($club->id)->members()->pluck('member_id'))->with('memberships')->get();
         $data['games_home'] = $data['club']->games_home()->get();
         $data['registered_teams'] = $data['club']->registered_teams->pluck('league_id')->count();
         $data['selected_teams'] = $data['club']->selected_teams->pluck('league_id')->count();

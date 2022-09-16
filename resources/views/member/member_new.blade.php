@@ -8,6 +8,8 @@
     $title = __('role.title.new', ['unittype'=> trans_choice('league.league',1), 'unitname' => $entity->shortname ]);
   } elseif ($entity_type == 'App\Models\Region'){
     $title = __('role.title.new', ['unittype'=> trans_choice('region.region',1), 'unitname' => $entity->code ]);
+  } elseif ($entity_type == 'App\Models\Team'){
+    $title = __('role.title.new', ['unittype'=> trans_choice('team.team',1), 'unitname' => $entity->name ]);
   }
 @endphp
 
@@ -214,8 +216,10 @@
           ajax: {
                   @if ($entity_type == 'App\Models\Region')
                     url: "{{ route('member.sb.region', ['region' => $entity->id]) }}",
+                  @elseif ($entity_type == 'App\Models\Team')
+                    url: "{{ route('member.sb.club', ['club' => $entity->club->id]) }}",
                   @else
-                    url: "{{ route('member.sb.region', ['region' => $entity->region()->first()->id]) }}",
+                    url: "{{ route('member.sb.region', ['region' => $entity->region->id]) }}",
                   @endif
                   type: "get",
                   delay: 250,

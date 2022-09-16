@@ -15,6 +15,8 @@ return [
     'action.showon-chart' => 'Create Combinations',
     'assigned' => ' assigned ',
     'coach' => 'Coach Name',
+    'coaches' => 'Team Coach|Team Coaches',
+    'member.action.create' => 'New Coach',
     'confirm.delete' => 'Do you really want to delete this team ?',
     'email' => 'Coach eMail',
     'entitled' => 'Entitled Teams',

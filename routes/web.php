@@ -22,6 +22,7 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\ClubGymController;
 use App\Http\Controllers\ClubMembershipController;
+use App\Http\Controllers\TeamMembershipController;
 use App\Http\Controllers\LeagueMembershipController;
 use App\Http\Controllers\RegionMembershipController;
 use App\Http\Controllers\MembershipController;
@@ -169,6 +170,7 @@ Route::group([
         Route::get('membership/club/{club}/member', [ClubMembershipController::class, 'create'])->name('membership.club.create');
         Route::get('membership/league/{league}/member', [LeagueMembershipController::class, 'create'])->name('membership.league.create');
         Route::get('membership/region/{region}/member', [RegionMembershipController::class, 'create'])->name('membership.region.create');
+        Route::get('membership/team/{team}/member', [TeamMembershipController::class, 'create'])->name('membership.team.create');
 
         Route::get('scheme/index', [LeagueSizeSchemeController::class, 'index'])->name('scheme.index');
 
@@ -232,6 +234,7 @@ Route::middleware(['auth',
     Route::get('gym/{gym}/list', [ClubGymController::class, 'sb_gym'])->name('gym.sb.gym');
     Route::get('club/{club}/list/gym', [ClubGymController::class, 'sb_club'])->name('gym.sb.club');
     Route::get('team/{team}/list/gym', [ClubGymController::class, 'sb_team'])->name('gym.sb.team');
+    Route::get('club/{club}/member/sb', [MemberController::class, 'sb_club'])->name('member.sb.club');
     Route::resource('club.gym', ClubGymController::class)->shallow()->only('store', 'update', 'destroy');
 
     Route::group(['prefix' => 'region/{region}'], function () {
@@ -290,6 +293,8 @@ Route::middleware(['auth',
     Route::delete('membership/league/{league}/member/{member}', [LeagueMembershipController::class, 'destroy'])->name('membership.league.destroy');
     Route::post('membership/region/{region}/member/{member}', [RegionMembershipController::class, 'add'])->name('membership.region.add');
     Route::delete('membership/region/{region}/member/{member}', [RegionMembershipController::class, 'destroy'])->name('membership.region.destroy');
+    Route::post('membership/team/{team}/member/{member}', [TeamMembershipController::class, 'add'])->name('membership.team.add');
+    Route::delete('membership/team/{team}/member/{member}', [TeamMembershipController::class, 'destroy'])->name('membership.team.destroy');
     Route::put('membership/{membership}', [MembershipController::class, 'update'])->name('membership.update');
     Route::delete('membership/{membership}', [MembershipController::class, 'destroy'])->name('membership.destroy');
 

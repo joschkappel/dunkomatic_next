@@ -6,6 +6,7 @@ use App\Models\Club;
 use App\Models\League;
 use App\Models\Region;
 use App\Models\Member;
+use App\Models\Team;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
@@ -18,6 +19,9 @@ class MemberCard extends Component
     public string $entityClass;
     public string $entityType;
     public Model $entity;
+    public bool $detail;
+    public bool $collapse;
+    public string $title='';
 
 
     /**
@@ -29,11 +33,13 @@ class MemberCard extends Component
      * @return void
      *
      */
-    public function __construct($members, $entity, $entityClass )
+    public function __construct($members, $entity, $entityClass, $detail=false, $collapse=true )
     {
         $this->members = $members;
         $this->entity = $entity;
         $this->entityClass = $entityClass;
+        $this->detail = $detail;
+        $this->collapse = $collapse;
 
         if ($entityClass == Club::class ){
             $this->entityType = 'club';
@@ -44,6 +50,10 @@ class MemberCard extends Component
         } ;
         if ($entityClass == Region::class ){
             $this->entityType = 'region';
+        };
+        if ($entityClass == Team::class ){
+            $this->entityType = 'team';
+            $this->title = trans_choice('team.coaches', $members->count());
         };
 
     }
@@ -59,6 +69,10 @@ class MemberCard extends Component
 
         // <x-member-card :members="$members" :entity="$club" entity-class="App\Models\Club" />
 
-        return view('components.member-card');
+        if ($this->detail){
+            return view('components.member-card-detail');
+        } else {
+            return view('components.member-card');
+        }
     }
 }

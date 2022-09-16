@@ -165,6 +165,34 @@ class MemberController extends Controller
 
         return Response::json($response);
     }
+    /**
+     * Display a listing of the resource.
+     *
+     * @param \App\Models\Club $club
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
+    public function sb_club(Club $club)
+    {
+        Log::notice('getting members for club',['club-id'=>$club->id]);
+
+        $members = $club->members->pluck('name', 'id')
+            ->sortBy('name');
+
+        //Log::debug('got members '.count($members));
+
+        Log::info('preparing select2 member list.', ['count' => count($members)]);
+        $response = array();
+
+        foreach ($members as $k => $v) {
+            $response[] = array(
+                "id" => $k,
+                "text" => $v
+            );
+        }
+
+        return Response::json($response);
+    }
 
     /**
      * Display the specified resource.
@@ -240,6 +268,10 @@ class MemberController extends Controller
             $club = Club::findOrFail($entity_id);
             $club->memberships()->create($mship);
             return redirect()->route('club.dashboard', ['language' => app()->getLocale(), 'club' => $club]);
+        } elseif ($entity_type == Team::class) {
+            $team = Team::findOrFail($entity_id);
+            $team->memberships()->create($mship);
+            return redirect()->route('club.dashboard', ['language' => app()->getLocale(), 'club' => $team->club]);
         } elseif ($entity_type == League::class) {
             $league = League::findOrFail($entity_id);
             $league->memberships()->create($mship);
