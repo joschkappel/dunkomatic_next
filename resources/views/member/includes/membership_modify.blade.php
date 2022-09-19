@@ -3,25 +3,25 @@
     <x-slot name="addbuttons">
         <button id="btnDelMembership" class="btn btn-danger">{{ __('Delete') }}</a>
     </x-slot>
-    
+
     <input type="hidden" id="hidDelUrl" name="hidDelUrl" value="">
     <div class="form-group row">
         <div class="col-sm-8">
-            <input type="text" class="form-control @error('function') is-invalid @enderror"
-                id="modmemfunction" name="function" placeholder="@lang('role.function')"
-                value="">
-            @error('function')
+            <input type="text"
+                class="form-control @error('email', 'err_member') is-invalid @enderror"
+                id="modmememail" name="email" placeholder="@lang('role.role.email')"
+                value="{{ old('email') }}"></input>
+            @error('email')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
     </div>
     <div class="form-group row">
         <div class="col-sm-8">
-            <input type="text"
-                class="form-control @error('email', 'err_member') is-invalid @enderror"
-                id="modmememail" name="email" placeholder="@lang('role.email1')"
-                value="{{ old('email') }}"></input>
-            @error('email')
+            <input type="text" class="form-control @error('function') is-invalid @enderror"
+                id="modmemfunction" name="function" placeholder="@lang('role.function')"
+                value="">
+            @error('function')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>

@@ -7,11 +7,11 @@ return [
   'action.create' => 'Neue Funktion',
   'action.edit' => 'Funktion Ändern',
   'action.delete' => 'Funktion Löschen',
-  'action.select' => 'Wähle eine Funktion aus',
+  'action.select' => 'Wähle eine Funktion für den Mitarbeitenden aus',
   'member.action.select' => 'Wähle Mitarbeitende aus',
   'member.action.create' => 'Lege Mitarbeitende für diese Funktion fest',
   'member.title.list' => 'Liste der Mitarbeitenden für :REGION',
-  'title.new' => 'Lege Mitarbeitende für :unittype :unitname an',
+  'title.new' => 'Lege Mitarbeitende und Ihre Rolle für :unittype :unitname an',
   'title.delete' => 'Mitarbeitende löschen',
   'title.edit' => 'Ändere die Daten von :member',
   'title.show' => 'Verknüpfte Mitarbeitende :member',
@@ -24,7 +24,8 @@ return [
   'city' => 'Stadt',
   'mobile' => 'Mobil-Nr.',
   'phone' => 'Telefon-Nr.',
-  'email1' => 'eMail Addresse',
+  'role.email' => 'eMail Addresse für diese Funktion',
+  'email1' => 'Default eMail Addresse',
   'email2' => 'Alternative eMail',
   'send.invite' => 'Einladen',
   'fax' => 'Fax-Nr.',
@@ -42,6 +43,6 @@ return [
   'tooltip.delete' => 'Du willst :Name löschen',
   'tooltip.invite' => 'Du willst :Name eine Einladung zur Registrierung senden',
   'tooltip.edit' => 'Du willst die Daten für :Name ändern',
-  'tooltip.newrole' => 'Du willst eine neue Rolle für :Name aufnehmen',
-  'tooltip.editrole' => 'Du willst die Rolle :role von :Name ändern oder löschen'
+  'tooltip.newrole' => 'Du willst eine neue Funktion für :Name aufnehmen',
+  'tooltip.editrole' => 'Du willst die Funktion :role von :Name ändern oder löschen'
 ];

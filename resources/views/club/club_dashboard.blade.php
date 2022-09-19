@@ -414,6 +414,7 @@
                 $('#modmemfunction').val($(this).data('function'));
                 $('#modmememail').val($(this).data('email'));
                 $('#modmemrole').val($(this).data('role'));
+                $('.modal-title').html("{{ __('club.title.membership.mod').' für ' }}"+$(this).data('role'));
                 $('#modalMembershipMod_Form').attr('action', url);
                 $('#modalMembershipMod').modal('show');
             });
