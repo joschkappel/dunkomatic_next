@@ -64,13 +64,13 @@ class MemberController extends Controller
         $members = $members->concat( Membership::where('membership_type',League::class)->whereIn('membership_id', $all_league_ids)->pluck('member_id') );
         $members = $members->concat( Membership::where('membership_type',Team::class)->whereIn('membership_id', $all_team_ids)->pluck('member_id') );
         $members = $members->concat( Membership::where('membership_type',Club::class)->whereIn('membership_id', $all_club_ids)->pluck('member_id') )->unique();
-        $members = Member::whereIn('id', $members)->withonly('user', 'clubs','leagues')->get();
+        $members = Member::whereIn('id', $members)->with('user', 'clubs','leagues','memberships')->get();
 
         Log::info('preparing member list',['cnt'=>$members->count()]);
         $mlist = datatables()::of($members);
 
         return $mlist
-            ->rawColumns(['user_account', 'email1', 'email2','phone', 'name'])
+            ->rawColumns(['user_account', 'emails', 'email2','phone', 'name'])
             ->addColumn('action', function ($data) {
                 return '<button type="button" id="copyAddress" name="copyAddress" class="btn btn-outline-primary btn-sm m-2" data-member-id="' . $data->id . '"
                 ><i class="far fa-clipboard"></i></button>';
@@ -98,12 +98,13 @@ class MemberController extends Controller
                     return '';
                 };
             })
-            ->editColumn('email1', function ($m) {
-                if (isset($m->email1)) {
+            ->editColumn('emails', function ($m) {
+                /* if (isset($m->email1)) {
                     return '<a href="mailto:' . $m->email1 . '" target="_blank">' . $m->email1 . '</a>';
                 } else {
                     return "";
-                }
+                } */
+                return $m->emails;
             })
             ->editColumn('email2', function ($m) {
                 if (isset($m->email2)) {

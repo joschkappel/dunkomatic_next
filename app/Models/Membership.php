@@ -47,6 +47,7 @@ class Membership extends Model implements Auditable
     protected $fillable = [
         'id', 'member_id', 'role_id', 'function', 'email', 'membership_id', 'membership_type'
     ];
+    protected $appends = ['role_email'];
 
     public function member(): BelongsTo
     {
@@ -61,6 +62,28 @@ class Membership extends Model implements Auditable
     public function scopeIsNotRole(Builder $query, Role $role_id): Builder
     {
         return $query->where('role_id', '!=', $role_id);
+    }
+
+    public function getMasterEmailAttribute(): string
+    {
+        if ($this->email != ''){
+            return $this->email;
+        } elseif ($this->load('member')->member->email1 != ''){
+            return $this->member->email1;
+        } elseif ($this->member->email2 != ''){
+            return $this->member->email2;
+        } else {
+            return 'fehlt';
+        }
+    }
+    public function getRoleEmailAttribute(): string
+    {
+
+        if ($this->email != '')  {
+            return '('.Role::coerce($this->role_id)->description.': '.$this->email.')';
+        } else {
+            return '';
+        }
     }
 
 }

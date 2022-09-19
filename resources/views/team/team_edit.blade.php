@@ -140,7 +140,7 @@
 </div>
 <!-- all modals here -->
 <x-confirm-deletion modalId="modalDeleteMember" modalTitle="{{ __('role.title.delete') }}" modalConfirm="{{ __('role.confirm.delete') }}" deleteType="{{ trans_choice('role.member', 1) }}" />
-@include('member/includes/membership_add')
+
 @include('member/includes/membership_modify')
 <!-- all modals above -->
 @endsection

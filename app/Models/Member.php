@@ -87,7 +87,7 @@ class Member extends Model implements Auditable
         'member_of_clubs','member_of_leagues','member_of_regions','member_of_teams',
         'role_in_clubs','role_in_leagues','role_in_regions','role_in_teams'
     ];
-    protected $appends = ['name', 'email', 'address', 'is_user'];
+    protected $appends = ['name', 'email', 'emails', 'address', 'is_user'];
     protected $with = ['memberships'];
 
     public function getNameAttribute(): string
@@ -133,6 +133,12 @@ class Member extends Model implements Auditable
     public function getEmailAttribute(): string
     {
         return (($this->email1 == '' ? $this->email2 : $this->email1) ?? '');
+    }
+    public function getEmailsAttribute(): string
+    {
+
+        $master = (($this->email1 == '' ? $this->email2 : $this->email1) ?? '');
+        return $master .= '  '.$this->memberships->pluck('role_email')->unique()->implode(', <br>');
     }
     public function getAddressAttribute(): string
     {

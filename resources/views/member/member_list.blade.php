@@ -104,7 +104,7 @@
                  columns: [
                           { data: 'id', name: 'id', visible: false },
                           { data: 'name', name: 'name' },
-                          { data: 'email1', name: 'email1' },
+                          { data: 'emails', name: 'email1' },
                           { data: 'email2', name: 'email2' },
                           { data: 'phone', name: 'phone' },
                           { data: 'clubs', name: 'clubs' },

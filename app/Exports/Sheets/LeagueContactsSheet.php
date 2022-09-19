@@ -43,7 +43,7 @@ class LeagueContactsSheet implements FromView, WithTitle, ShouldAutoSize, WithCo
 
     public function view(): View
     {
-        $leagues = $this->region->leagues()->with('memberships.member','teams.club')->get()->sortBy('shortname');
+        $leagues = $this->region->leagues()->with(['memberships.member','teams.club','teams.members','teams.memberships'])->get()->sortBy('shortname');
 
         return view('reports.league_contacts_sheet', ['leagues'=>$leagues]);
     }

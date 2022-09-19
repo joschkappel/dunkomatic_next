@@ -13,7 +13,7 @@
          <tr>
            <td style="text-align:left"><strong>{{ App\Enums\Role::coerce($m->role_id)->description }}</strong></td>
            <td style="text-align:left"><strong>{{ $m->member->name }}</strong></td>
-           <td>{{ ($m->email != '') ?  $m->email : $m->member->email }}</td>
+           <td>{{ $m->master_email }}</td>
            <td>{{ $m->member->address }}</td>
          </tr>
          <tr>
@@ -27,14 +27,14 @@
           <tr>
             <td></td>
             <td style="text-align:right"><strong>{{ $t->name }}</strong></td>
-            <td>{{ $t->load('members')->members->pluck('name')->implode(', ') }}</td>
-            <td>{{$t->load('members')->members->pluck('email')->implode(', ') }}</td>
+            <td>{{ $t->members->pluck('name')->implode(', ') }}</td>
+            <td>{{$t->memberships->pluck('master_email')->implode(', ') }}</td>
           </tr>
           <tr>
             <td></td>
             <td></td>
             <td></td>
-            <td>{{ $t->load('members')->members->pluck('mobile')->implode(', ') }}</td>
+            <td>{{ $t->members->pluck('mobile')->implode(', ') }}</td>
           </tr>
          @endforeach
    @endforeach

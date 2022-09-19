@@ -25,6 +25,19 @@
                     <li class="list-group-item ">
                         <i class="fas fa-envelope m-2"></i> {{ $member->email}} <i class="fas fa-phone m-2"></i> {{ $member->mobile}}
                     </li>
+                    @foreach ($member['memberships'] as $membership)
+                        @if ($membership->membership_type == $entityClass and $membership->membership_id == $entity->id)
+                        <li class="list-group-item ">
+                            <button type="button" id="modMembership" class="btn btn-secondary btn-sm"
+                                data-membership-id="{{ $membership->id }}"
+                                data-function="{{ $membership->function }}"
+                                data-email="{{ $membership->email }}"
+                                data-role="{{ App\Enums\Role::getDescription($membership->role_id) }}"
+                                data-toggle="modal"
+                                data-target="#modalMembershipMod" @cannot('update-members') disabled @endcannot>{{ App\Enums\Role::getDescription($membership->role_id) }} eMail: {{$membership->email ?? '?'}}</button>
+                        </li>
+                        @endif
+                    @endforeach
                     <li class="list-group-item ">
                         <i class="fas fa-address-card m-2"></i> {{ $member->address}}
                     </li>
