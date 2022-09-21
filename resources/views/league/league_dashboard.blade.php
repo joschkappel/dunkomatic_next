@@ -199,8 +199,6 @@
                 <x-confirm-deletion modalId="modalDeleteLeague" modalTitle="{{ __('league.title.delete') }}" modalConfirm="{{ __('league.confirm.delete') }}" deleteType="{{ trans_choice('league.league',1) }}" />
                 <x-confirm-deletion modalId="modalDeleteMember" modalTitle="{{ __('role.title.delete') }}" modalConfirm="{{ __('role.confirm.delete') }}" deleteType="{{ trans_choice('role.member', 1) }}" />
                 @include('league/includes/inject_team')
-                @include('member/includes/membership_add')
-                @include('member/includes/membership_modify')
                 @include('reports/includes/download_zone')
                 <!-- all modals above -->
             </div>
@@ -378,26 +376,6 @@
                         sort: 'team_league_no.sort'
                         }, name: 'team_league_no'}
                     ]
-            });
-            $("button#addMembership").click(function() {
-                var url =
-                    "{{ route('membership.league.add', ['league' => ':leagueid:', 'member' => ':memberid:']) }}";
-                url = url.replace(':memberid:', $(this).data('member-id'));
-                url = url.replace(':leagueid:', $(this).data('league-id'));
-                $('#modalAddMembership_Form').attr('action', url);
-                $('#modalAddMembership').modal('show');
-            });
-            $("button#modMembership").click(function() {
-                var url = "{{ route('membership.update', ['membership' => ':membershipid:']) }}";
-                url = url.replace(':membershipid:', $(this).data('membership-id'));
-                var url2 = "{{ route('membership.destroy', ['membership' => ':membershipid:']) }}";
-                url2 = url2.replace(':membershipid:', $(this).data('membership-id'));
-                $('#hidDelUrl').val(url2);
-                $('#modmemfunction').val($(this).data('function'));
-                $('#modmememail').val($(this).data('email'));
-                $('#modmemrole').val($(this).data('role'));
-                $('#modalMembershipMod_Form').attr('action', url);
-                $('#modalMembershipMod').modal('show');
             });
             $("button#deleteMember").click(function() {
                 $('#modalDeleteMember_Instance').html($(this).data('member-name'));

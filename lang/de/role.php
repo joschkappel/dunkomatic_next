@@ -14,6 +14,8 @@ return [
   'title.new' => 'Lege Mitarbeitende und Ihre Rolle für :unittype :unitname an',
   'title.delete' => 'Mitarbeitende löschen',
   'title.edit' => 'Ändere die Daten von :member',
+  'title.role.edit' => 'Ändere die Daten von :member als :role',
+  'title.role.show' => 'Weitere Funktion von :member als :role',
   'title.show' => 'Verknüpfte Mitarbeitende :member',
   'member.title.select' => 'Wähle einen Mitarbeitenden ',
   'confirm.delete' => 'Willst Du dieses Mitglied wirklich löschen ?',

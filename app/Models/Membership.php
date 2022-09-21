@@ -4,6 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Member;
+use App\Models\Club;
+use App\Models\League;
+use App\Models\Team;
+use App\Models\Region;
 use App\Enums\Role;
 
 use OwenIt\Auditing\Contracts\Auditable;
@@ -84,6 +88,22 @@ class Membership extends Model implements Auditable
         } else {
             return '';
         }
+    }
+    public function getDescriptionAttribute(): string
+    {
+
+        $desc = Role::coerce($this->role_id)->description.' '.__('von').' ';
+        if ($this->membership_type == Club::class){
+            $desc .= Club::find($this->membership_id)->shortname;
+        } elseif ($this->membership_type == League::class){
+            $desc .= League::find($this->membership_id)->shortname;
+        } elseif ($this->membership_type == Region::class){
+            $desc .= Region::find($this->membership_id)->code;
+        } elseif ($this->membership_type == Team::class){
+            $desc .= Team::find($this->membership_id)->name_desc;
+        }
+        return $desc;
+
     }
 
 }

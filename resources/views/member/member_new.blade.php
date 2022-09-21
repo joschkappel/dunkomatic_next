@@ -54,9 +54,9 @@
             </div>
           </div>
           <div class="d-flex py-4">
-            <hr class="my-auto flex-grow-1 border-dark">
+            <hr class="my-auto flex-grow-1 border-info">
             <div class="px-4 text-info text-strong">Diese Funktion wird folgendem Mitarbeitenden zugeordnet:</div>
-            <hr class="my-auto flex-grow-1 border-dark">
+            <hr class="my-auto flex-grow-1 border-info">
           </div>
 
         <div class="form-group row">
@@ -67,8 +67,13 @@
                 </div>
             </div>
         </div>
-        <div class="form-group row">
+        <div class="d-flex py-4">
+            <hr class="my-auto flex-grow-1 border-dark">
+            <div class="px-4 text-secondary text-strong">... oder gib die Daten eines neuen Mitarbeitenden ein:</div>
+            <hr class="my-auto flex-grow-1 border-dark">
+          </div>
 
+        <div class="form-group row">
         <div class="col-sm-6">
             <input type="text" class="form-control @error('firstname') is-invalid @enderror"
               id="firstname" name="firstname" placeholder="@lang('role.firstname')" value="{{ old('firstname') }}"></input>

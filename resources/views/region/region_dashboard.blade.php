@@ -194,8 +194,6 @@
     </div>
     <!-- all modals here -->
     <x-confirm-deletion modalId="modalDeleteRegion" modalTitle="{{ __('region.title.delete')}}" modalConfirm="{{ __('region.confirm.delete') }}" deleteType="{{ trans_choice('region.region',1) }}" />
-    @include('member/includes/membership_add')
-    @include('member/includes/membership_modify')
     <x-confirm-deletion modalId="modalDeleteMember" modalTitle="{{ __('role.title.delete')}}" modalConfirm="{{ __('role.confirm.delete') }}" deleteType="{{ trans_choice('role.member', 1) }}" />
     @include('reports/includes/download_zone')
     <!-- all modals above -->
@@ -210,25 +208,6 @@
        var url = "{{ route('region.destroy', ['region'=>$region])}}";
        $('#modalDeleteRegion_Form').attr('action', url);
        $('#modalDeleteRegion').modal('show');
-    });
-    $("button#addMembership").click( function(){
-       var url = "{{ route('membership.region.add', ['region'=>':regionid:', 'member'=>':memberid:'])}}";
-       url = url.replace(':memberid:', $(this).data('member-id'));
-       url = url.replace(':regionid:', $(this).data('region-id'));
-       $('#modalAddMembership_Form').attr('action', url);
-       $('#modalAddMembership').modal('show');
-    });
-    $("button#modMembership").click( function(){
-       var url = "{{ route('membership.update', ['membership'=>':membershipid:'])}}";
-       url = url.replace(':membershipid:', $(this).data('membership-id'));
-       var url2 = "{{ route('membership.destroy', ['membership'=>':membershipid:'])}}";
-       url2= url2.replace(':membershipid:', $(this).data('membership-id'));
-       $('#hidDelUrl').val( url2);
-       $('#modmemfunction').val($(this).data('function'));
-       $('#modmememail').val($(this).data('email'));
-       $('#modmemrole').val($(this).data('role'));
-       $('#modalMembershipMod_Form').attr('action', url);
-       $('#modalMembershipMod').modal('show');
     });
     $("button#deleteMember").click( function(){
        $('#modalDeleteMember_Instance').html($(this).data('member-name'));

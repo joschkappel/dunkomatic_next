@@ -133,7 +133,7 @@
         </div>
         <div class="col-sm-6">
             <!-- card MEMBERS -->
-            <x-member-card :members="$members" :entity="$team" entity-class="App\Models\Team" :detail="true" :collapse="false" />
+            <x-member-card :members="$members" :entity="$team" entity-class="App\Models\Team" />
             <!-- /.card -->
         </div>
     </div>
@@ -141,7 +141,6 @@
 <!-- all modals here -->
 <x-confirm-deletion modalId="modalDeleteMember" modalTitle="{{ __('role.title.delete') }}" modalConfirm="{{ __('role.confirm.delete') }}" deleteType="{{ trans_choice('role.member', 1) }}" />
 
-@include('member/includes/membership_modify')
 <!-- all modals above -->
 @endsection
 
@@ -213,26 +212,7 @@
                 cache: true
             }
         });
-        $("button#addMembership").click(function() {
-            var url =
-                "{{ route('membership.team.add', ['team' => ':teamid:', 'member' => ':memberid:']) }}";
-            url = url.replace(':memberid:', $(this).data('member-id'));
-            url = url.replace(':teamid:', $(this).data('team-id'));
-            $('#modalAddMembership_Form').attr('action', url);
-            $('#modalAddMembership').modal('show');
-        });
-        $("button#modMembership").click(function() {
-            var url = "{{ route('membership.update', ['membership' => ':membershipid:']) }}";
-            url = url.replace(':membershipid:', $(this).data('membership-id'));
-            var url2 = "{{ route('membership.destroy', ['membership' => ':membershipid:']) }}";
-            url2 = url2.replace(':membershipid:', $(this).data('membership-id'));
-            $('#hidDelUrl').val(url2);
-            $('#modmemfunction').val($(this).data('function'));
-            $('#modmememail').val($(this).data('email'));
-            $('#modmemrole').val($(this).data('role'));
-            $('#modalMembershipMod_Form').attr('action', url);
-            $('#modalMembershipMod').modal('show');
-        });
+
         $("button#deleteMember").click(function() {
             $('#modalDeleteMember_Instance').html($(this).data('member-name'));
             var url =

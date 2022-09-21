@@ -19,7 +19,6 @@ class MemberCard extends Component
     public string $entityClass;
     public string $entityType;
     public Model $entity;
-    public bool $detail;
     public bool $collapse;
     public string $title='';
 
@@ -33,12 +32,11 @@ class MemberCard extends Component
      * @return void
      *
      */
-    public function __construct($members, $entity, $entityClass, $detail=false, $collapse=true )
+    public function __construct($members, $entity, $entityClass, $collapse=true )
     {
         $this->members = $members;
         $this->entity = $entity;
         $this->entityClass = $entityClass;
-        $this->detail = $detail;
         $this->collapse = $collapse;
 
         if ($entityClass == Club::class ){
@@ -69,10 +67,6 @@ class MemberCard extends Component
 
         // <x-member-card :members="$members" :entity="$club" entity-class="App\Models\Club" />
 
-        if ($this->detail){
-            return view('components.member-card-detail');
-        } else {
-            return view('components.member-card');
-        }
+        return view('components.member-card');
     }
 }

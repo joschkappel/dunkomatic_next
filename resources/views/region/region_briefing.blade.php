@@ -18,6 +18,8 @@
                     <div class="icon">
                         <i class="fas fa-globe-europe"></i>
                     </div>
+                    <a href="#" data-toggle="modal"  class="small-box-footer" data-target="#modalDownloadZone">Zur Download Zone
+                        <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
         </div>
@@ -128,6 +130,9 @@
             </div>
         </div>
     </div>
+    <!-- all modals here -->
+    @include('reports/includes/download_zone')
+    <!-- all modals above -->
 @stop
 
 @section('js')

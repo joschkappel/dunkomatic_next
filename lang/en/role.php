@@ -12,6 +12,8 @@ return [
   'member.action.create' => 'Define the member who runs this function',
   'title.new' => 'Create a new member for :unittype :unitname',
   'title.edit' => 'Modify Details of member :member',
+  'title.role.edit' => 'Modify Details of :member as :role',
+  'title.role.show' => 'Other roles of :member as :role',
   'title.delete' => 'Delete a role from ',
   'title.show' => 'Linked member :member',
   'member.title.select' => 'Select an existing Member ',

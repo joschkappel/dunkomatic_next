@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Arr;
 
 use App\Notifications\InviteUser;
 
@@ -294,10 +295,32 @@ class MemberController extends Controller
      * @return \Illuminate\View\View
      *
      */
-    public function edit($language, Member $member)
+    public function edit(Request $request, $language, Member $member)
     {
-        Log::info('editing member.', ['member-id' => $member->id]);
-        return view('member/member_edit', ['member' => $member, 'backto' => URL::previous()]);
+        if (Arr::has($request->input(), 'member-club')){
+            $entity_type = Club::class;
+            $entity_id = $request->input('member-club');
+            $memberships = $member->memberships->where('membership_type',Club::class)->where('membership_id',$entity_id);
+            $add_url = route('membership.club.add', ['club' => $entity_id, 'member' => $member]);
+        } elseif (Arr::has($request->input(), 'member-league')){
+            $entity_type = League::class;
+            $entity_id = $request->input('member-league');
+            $memberships = $member->memberships->where('membership_type',League::class)->where('membership_id',$entity_id);
+            $add_url = route('membership.league.add', ['league' => $entity_id, 'member' => $member]);
+        } elseif (Arr::has($request->input(), 'member-region')){
+            $entity_type = Region::class;
+            $entity_id = $request->input('member-region');
+            $memberships = $member->memberships->where('membership_type',Region::class)->where('membership_id',$entity_id);
+            $add_url = route('membership.region.add', ['region' => $entity_id, 'member' => $member]);
+        } elseif (Arr::has($request->input(), 'member-team')){
+            $entity_type = Team::class;
+            $entity_id = $request->input('member-team');
+            $memberships = $member->memberships->where('membership_type',Team::class)->where('membership_id',$entity_id);
+            $add_url = route('membership.team.add', ['team' => $entity_id, 'member' => $member]);
+        }
+
+        Log::info('editing member.', ['member-id' => $member->id]); // ], 'entity'=> , 'id'=>]);
+        return view('member/member_edit', ['member' => $member, 'memberships'=>$memberships, 'add_url'=>$add_url, 'entity_type'=>$entity_type, 'entity_id'=>$entity_id, 'backto' => URL::previous()]);
     }
 
     /**

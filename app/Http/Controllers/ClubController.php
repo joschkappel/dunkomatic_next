@@ -161,7 +161,7 @@ class ClubController extends Controller
         $data['gyms'] = $data['club']->gyms()->get();
         $data['teams'] = $data['club']->teams->count();
         $data['leagues'] = $data['club']->leagues->count();
-        $data['members'] = $data['club']->members()->with('memberships')->get();
+        $data['members'] = $data['club']->members->unique();
         //$data['members'] = Member::whereIn('id', Club::find($club->id)->members()->pluck('member_id'))->with('memberships')->get();
         $data['games_home'] = $data['club']->games_home()->get();
         $data['registered_teams'] = $data['club']->registered_teams->pluck('league_id')->count();
@@ -322,6 +322,7 @@ class ClubController extends Controller
         $data['gyms'] = $data['club']->gyms()->get();
         $data['teams'] = $data['club']->teams()->with('league')->get()->sortBy('league.shortname');
         $data['memberships'] = $data['club']->memberships()->with('member')->get();
+        $data['scope'] = 'club';
 
         Log::info('showing club briefing',['club-id'=>$club->id]);
         return view('club/club_briefing', $data);

@@ -13,6 +13,7 @@ const mix = require('laravel-mix');
 
 mix.js('resources/js/app.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css')
+    .sourceMaps()
     .combine([
         'node_modules/fullcalendar/main.min.css',
         // 'node_modules/datatables.net-searchpanes-bs4/css/searchPanes.bootstrap4.min.css',

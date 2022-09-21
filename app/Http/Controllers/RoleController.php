@@ -33,6 +33,8 @@ class RoleController extends Controller
         } elseif (isset($request->scope) and ($request->scope == Region::class)) {
             $roles[] = Role::coerce('RegionLead');
             $roles[] = Role::coerce('RegionTeam');
+        } elseif (isset($request->scope) and ($request->scope == Team::class)) {
+            $roles[] = Role::coerce('TeamCoach');
         } else {
             $roles = Role::getInstances();
         };

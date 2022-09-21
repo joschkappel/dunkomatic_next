@@ -1,6 +1,6 @@
 /*!
-  * Bootstrap v4.6.1 (https://getbootstrap.com/)
-  * Copyright 2011-2021 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
+  * Bootstrap v4.6.2 (https://getbootstrap.com/)
+  * Copyright 2011-2022 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
   */
 
@@ -60,13 +60,13 @@
  * OverlayScrollbars
  * https://github.com/KingSora/OverlayScrollbars
  *
- * Version: 1.13.2
+ * Version: 1.13.3
  *
  * Copyright KingSora | Rene Haas.
  * https://github.com/KingSora
  *
  * Released under the MIT license.
- * Date: 01.06.2022
+ * Date: 20.07.2022
  */
 
 /*!
@@ -133,7 +133,7 @@
  */
 
 /*!
- * jQuery JavaScript Library v3.6.0
+ * jQuery JavaScript Library v3.6.1
  * https://jquery.com/
  *
  * Includes Sizzle.js
@@ -143,7 +143,7 @@
  * Released under the MIT license
  * https://jquery.org/license
  *
- * Date: 2021-03-02T17:08Z
+ * Date: 2022-08-26T17:52Z
  */
 
 /*! Bootstrap 4 integration for DataTables' FixedColumns
@@ -311,4 +311,4 @@
 
 //! moment.js locale configuration
 
-//! version : 0.5.34
+//! version : 0.5.37
