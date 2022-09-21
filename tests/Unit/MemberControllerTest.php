@@ -80,7 +80,7 @@ class MemberControllerTest extends TestCase
         $member = $this->testleague->region->members->first();
 
         $response = $this->authenticated()
-            ->get(route('member.edit', ['language' => 'de', 'member' => $member]));
+            ->get(route('member.edit', ['language' => 'de', 'member' => $member, 'member-region'=>$this->testleague->region->id]));
 
         $response->assertStatus(200)
             ->assertSessionHasNoErrors()
