@@ -13,6 +13,7 @@ use BenSampo\Enum\Contracts\LocalizedEnum;
  * @method static static RegionTeam()
  * @method static static JuniorsLead()
  * @method static static GirlsLead()
+ * @method static static TeamCoach()
  */
 final class Role extends Enum implements LocalizedEnum
 {
@@ -23,6 +24,7 @@ final class Role extends Enum implements LocalizedEnum
     const GirlsLead = 4;
     const JuniorsLead = 5;
     const RegionLead = 6;
+    const TeamCoach = 7;
 }
 
 // OLD dunkomatic

@@ -76,7 +76,7 @@ class ClubsSheet implements FromView, WithTitle, ShouldAutoSize
                 ->get();
 
         foreach ($clubs as $c){
-          $c['teams'] = Team::whereIn('id', $games->where('club_id_home',$c->id)->pluck('team_id_home')->unique())->with(['league','club'])->orderBy('team_no')->get();
+          $c['teams'] = Team::whereIn('id', $games->where('club_id_home',$c->id)->pluck('team_id_home')->unique())->with(['league','club','members','memberships'])->orderBy('team_no')->get();
           $c['gyms'] = Gym::whereIn('id', $games->where('club_id_home',$c->id)->pluck('gym_id')->unique())->orderBy('gym_no')->get();
         }
 

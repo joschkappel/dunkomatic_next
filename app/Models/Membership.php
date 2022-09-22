@@ -4,6 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Member;
+use App\Models\Club;
+use App\Models\League;
+use App\Models\Team;
+use App\Models\Region;
 use App\Enums\Role;
 
 use OwenIt\Auditing\Contracts\Auditable;
@@ -47,6 +51,7 @@ class Membership extends Model implements Auditable
     protected $fillable = [
         'id', 'member_id', 'role_id', 'function', 'email', 'membership_id', 'membership_type'
     ];
+    protected $appends = ['role_email'];
 
     public function member(): BelongsTo
     {
@@ -61,6 +66,44 @@ class Membership extends Model implements Auditable
     public function scopeIsNotRole(Builder $query, Role $role_id): Builder
     {
         return $query->where('role_id', '!=', $role_id);
+    }
+
+    public function getMasterEmailAttribute(): string
+    {
+        if ($this->email != ''){
+            return $this->email;
+        } elseif ($this->load('member')->member->email1 != ''){
+            return $this->member->email1;
+        } elseif ($this->member->email2 != ''){
+            return $this->member->email2;
+        } else {
+            return 'fehlt';
+        }
+    }
+    public function getRoleEmailAttribute(): string
+    {
+
+        if ($this->email != '')  {
+            return '('.Role::coerce($this->role_id)->description.': '.$this->email.')';
+        } else {
+            return '';
+        }
+    }
+    public function getDescriptionAttribute(): string
+    {
+
+        $desc = Role::coerce($this->role_id)->description.' '.__('von').' ';
+        if ($this->membership_type == Club::class){
+            $desc .= Club::find($this->membership_id)->shortname;
+        } elseif ($this->membership_type == League::class){
+            $desc .= League::find($this->membership_id)->shortname;
+        } elseif ($this->membership_type == Region::class){
+            $desc .= Region::find($this->membership_id)->code;
+        } elseif ($this->membership_type == Team::class){
+            $desc .= Team::find($this->membership_id)->name_desc;
+        }
+        return $desc;
+
     }
 
 }

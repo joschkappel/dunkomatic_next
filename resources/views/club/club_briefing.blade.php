@@ -18,6 +18,8 @@
                     <div class="icon">
                         <i class="fas fa-basketball-ball"></i>
                     </div>
+                    <a href="#" data-toggle="modal"  class="small-box-footer" data-target="#modalDownloadZone">Zur Download Zone
+                        <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
         </div>
@@ -93,9 +95,11 @@
                             <div class="info-box">
                                 <span class="info-box-icon @if ( isset($t->league->region) ? $t->league->region->is_top_level : false ) bg-indigo @else bg-gray @endif text-xs p-1"><i class="">{{ $t->namedesc}}</i></span>
                                 <div class="info-box-content">
-                                    <span class="info-box-number">{{ $t->coach_name }}</span>
-                                    <span class="info-box-text"><i class="fas fa-phone"></i><a href="tel:{{ $t->coach_phone1 }}" target="_blank"> {{ $t->coach_phone1}}</a></span>
-                                    <span class="info-box-text"><i class="fas fa-at"></i><a href="mailto:{{ $t->coach_email }}" target="_blank"> {{ $t->coach_email }}</a></span>
+                                    @foreach($t->load('members')->members as $m)
+                                    <span class="info-box-number">{{ $m->name }}</span>
+                                    <span class="info-box-text"><i class="fas fa-phone"></i><a href="tel:{{ $m->mobile }}" target="_blank"> {{ $m->mobile}}</a></span>
+                                    <span class="info-box-text"><i class="fas fa-at"></i><a href="mailto:{{ $m->email }}" target="_blank"> {{ $m->email }}</a></span>
+                                    @endforeach
                                 </div>
                             </div>
                         @empty
@@ -140,6 +144,9 @@
             </div>
         </div>
     </div>
+    <!-- all modals here -->
+    @include('reports/includes/download_zone')
+    <!-- all modals above -->
 @stop
 
 @section('js')

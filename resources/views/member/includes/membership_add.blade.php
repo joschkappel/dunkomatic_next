@@ -2,7 +2,7 @@
         <div class="form-group row">
             <div class="col-sm-8">
             <div class="input-group mb-3">
-                <select class='js-role-single js-states form-control select2 @error('selRole') is-invalid @enderror' id='selRole'
+                <select class='form-control select2 @error('selRole') is-invalid @enderror' id='selRole'
                     name='selRole'></select>
                 @error('selRole')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -36,8 +36,8 @@
 @push('js')
 
     <script>
-        $(function() {
-            $(".js-role-single").select2({
+        $('#modalAddMembership').on('show.bs.modal', function (e) {
+            $("#selRole").select2({
                 placeholder: "@lang('role.action.select')...",
                 width: '100%',
                 multiple: false,
@@ -49,7 +49,7 @@
                     dataType: "json",
                     data: {
                         "_token": "{{ csrf_token() }}",
-                        "scope": $('#entitytype').val()
+                        "scope": {!! json_encode($entity_type) !!}
                     },
                     processResults: function(response) {
                         return {

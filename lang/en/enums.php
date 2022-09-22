@@ -27,7 +27,8 @@ return [
       Role::RegionTeam => 'Region team',
       Role::GirlsLead => 'Girls lead',
       Role::JuniorsLead => 'Juniors lead',
-      Role::RegionLead => 'Region lead'
+      Role::RegionLead => 'Region lead',
+      Role::TeamCoach => 'Team Coach',
     ],
     JobFrequencyType::class => [
       JobFrequencyType::never => 'never',

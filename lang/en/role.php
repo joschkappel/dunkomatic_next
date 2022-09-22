@@ -12,6 +12,8 @@ return [
   'member.action.create' => 'Define the member who runs this function',
   'title.new' => 'Create a new member for :unittype :unitname',
   'title.edit' => 'Modify Details of member :member',
+  'title.role.edit' => 'Modify Details of :member as :role',
+  'title.role.show' => 'Other roles of :member as :role',
   'title.delete' => 'Delete a role from ',
   'title.show' => 'Linked member :member',
   'member.title.select' => 'Select an existing Member ',
@@ -24,7 +26,8 @@ return [
   'city' => 'City',
   'mobile' => 'Mobile phone no',
   'phone' => 'Fixed line no',
-  'email1' => 'eMail address',
+  'role.email' => 'eMail address for this function',
+  'email1' => 'Default eMail address',
   'email2' => 'Alternative eMail',
   'fax' => 'Fax no',
   'user.account' => 'User account',
@@ -42,6 +45,6 @@ return [
   'tooltip.delete' => 'You want to delete member :Name',
   'tooltip.invite' => 'You want to invite member :Name to become a user',
   'tooltip.edit' => 'You want to edit member :Name',
-  'tooltip.newrole' => 'You want to add a new role for :Name',
-  'tooltip.editrole' => 'You want to modify or delete the role :role of :Name'
+  'tooltip.newrole' => 'You want to add a new function for :Name',
+  'tooltip.editrole' => 'You want to modify or delete the function :role of :Name'
 ];

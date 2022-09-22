@@ -29,11 +29,11 @@
                         </span>
                         @can('update-members')
                         <span data-toggle="tooltip" title="{{__('role.tooltip.edit',['name'=> $member->name])}}">
-                            <a href="{{ route('member.edit', ['language' => app()->getLocale(), 'member' => $member]) }}"
+                            <a href="{{ route('member.edit', ['language' => app()->getLocale(), 'member' => $member, 'member-'.$entityType => $entity]) }}"
                                 class=" px-2">{{ $member->name }} <i class="fas fa-arrow-circle-right"></i></a>
                         </span>
                         @else
-                        {{ $member->name }}
+                        {{ $member->name }} {{ $member->email }}
                         @endcan
                         @if ( (!$member->is_user) and (!$member->invitation()->exists()))
                             @can('update-members')
@@ -43,14 +43,14 @@
                             </span>
                             @endcan
                         @endif
-                        <span data-toggle="tooltip" title="{{__('role.tooltip.newrole',['name'=> $member->name])}}">
+{{--                         <span data-toggle="tooltip" title="{{__('role.tooltip.newrole',['name'=> $member->name])}}">
                             <button type="button" id="addMembership" class="btn btn-outline-primary btn-sm"
                                 data-member-id="{{ $member->id }}" data-{{$entityType}}-id="{{ $entity->id }}"
                                 data-toggle="modal" data-target="#modalMembershipAdd"  @cannot('update-members') disabled @endcannot><i class="fas fa-user-tag"></i></button>
-                        </span>
+                        </span> --}}
                         @foreach ($member['memberships'] as $membership)
                             @if ($membership->membership_type == $entityClass and $membership->membership_id == $entity->id)
-                                <span data-toggle="tooltip" title="{{__('role.tooltip.editrole',['name'=> $member->name, 'role'=>App\Enums\Role::getDescription($membership->role_id)])}}">
+{{--                                 <span data-toggle="tooltip" title="{{__('role.tooltip.editrole',['name'=> $member->name, 'role'=>App\Enums\Role::getDescription($membership->role_id)])}}">
                                     <button type="button" id="modMembership" class="btn btn-outline-primary btn-sm"
                                         data-membership-id="{{ $membership->id }}"
                                         data-function="{{ $membership->function }}"
@@ -58,10 +58,10 @@
                                         data-role="{{ App\Enums\Role::getDescription($membership->role_id) }}"
                                         data-toggle="modal"
                                         data-target="#modalMembershipMod" @cannot('update-members') disabled @endcannot>{{ App\Enums\Role::getDescription($membership->role_id) }}</button>
-                                </span>
+                                </span> --}}
+                                <span class="badge badge-primary">{{ App\Enums\Role::getDescription($membership->role_id) }}</span>
                             @else
-                                <span
-                                    class="badge badge-secondary">{{ App\Enums\Role::getDescription($membership->role_id) }}</span>
+                                <span class="badge badge-secondary">{{ App\Enums\Role::getDescription($membership->role_id) }}</span>
                             @endif
                         @endforeach
                     </li>

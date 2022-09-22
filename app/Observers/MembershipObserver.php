@@ -3,37 +3,19 @@
 namespace App\Observers;
 
 use App\Models\Membership;
-use App\Models\Club;
-use App\Models\League;
-use App\Models\Region;
 use App\Enums\Role;
-use Silber\Bouncer\BouncerFacade as Bouncer;
+use App\Models\Member;
 
 use Illuminate\Support\Facades\Log;
 
 class MembershipObserver
 {
-    /**
-     * Handle the Membership "created" event.
-     *
-     * @param  \App\Models\Membership  $membership
-     * @return void
-     */
-    public function created(Membership $membership)
+
+    public function saved(Membership $membership)
     {
-
+        $member = $membership->load('member')->member;
+        $this->set_roles_for_member($member);
     }
-
-    /**
-     * Handle the Membership "updated" event.
-     *
-     * @param  \App\Models\Membership  $membership
-     * @return void
-     */
-    public function updated(Membership $membership)
-    {
-    }
-
     /**
      * Handle the Membership "deleted" event.
      *
@@ -43,7 +25,7 @@ class MembershipObserver
     public function deleted(Membership $membership)
     {
 
-        $member = $membership->member;
+        $member = $membership->load('member')->member;
 
         if ($member->memberships->count() == 0) {
             // none, delete member as well
@@ -55,6 +37,55 @@ class MembershipObserver
             }
             $member->delete();
             Log::info('member with no memberships deleted.', ['member-id' => $member->id]);
+        } else {
+            $this->set_roles_for_member($member);
         }
+    }
+
+    private function set_roles_for_member(Member $member)
+    {
+        $member->loadMissing(['clubs','leagues','teams','region']);
+        $clubs = $member->clubs;
+        $leagues = $member->leagues;
+        $region = $member->region;
+        $teams = $member->teams;
+
+        $member->member_of_clubs = $clubs->pluck('shortname')->unique()->implode(', ');
+        $member->member_of_leagues = $leagues->pluck('shortname')->unique()->implode(', ');
+        $member->member_of_regions = $region->pluck('code')->implode(', ');
+        $member->member_of_teams = $teams->pluck('name')->implode(', ');
+
+        $title = collect();
+        foreach ($leagues as $l) {
+            $title->push(Role::coerce($l->pivot->role_id)->description . ' ' . $l->shortname);
+        }
+        $member->role_in_leagues = $title->implode(', ');
+
+        $title = collect();
+        foreach ($teams as $t) {
+            $t->load('league','club');
+            $title->push( ( $t->league->shortname ?? '') . ' ' .  Role::coerce($t->pivot->role_id)->description . ' ' . $t->name);
+        }
+        $member->role_in_teams = $title->implode(', ');
+
+        $title = collect();
+        foreach ($region as $r) {
+            $title->push( Role::coerce($r->pivot->role_id)->description . ' ' . $r->code);
+        }
+        $member->role_in_regions = $title->implode(', ');
+
+        $title = collect();
+        foreach ($clubs as $c) {
+            $title->push(Role::coerce($c->pivot->role_id)->description . ' ' . $c->shortname);
+            if ($c->pivot->role_id == Role::ClubLead) {
+                $leagues = $c->load('teams.league')->teams->whereNotNull('league_id')->pluck('league.shortname')->implode(', ');
+                if ($leagues != '') {
+                    $title->push('(' . $leagues . ')');
+                }
+            }
+        }
+        $member->role_in_clubs = $title->implode(', ');
+        $member->save();
+
     }
 }

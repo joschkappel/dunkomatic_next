@@ -1,5 +1,11 @@
 @extends('layouts.page')
 
+@section('css')
+<style>
+
+</style>
+@endsection
+
 @section('content')
 @php
   if ($entity_type == 'App\Models\Club'){
@@ -8,6 +14,8 @@
     $title = __('role.title.new', ['unittype'=> trans_choice('league.league',1), 'unitname' => $entity->shortname ]);
   } elseif ($entity_type == 'App\Models\Region'){
     $title = __('role.title.new', ['unittype'=> trans_choice('region.region',1), 'unitname' => $entity->code ]);
+  } elseif ($entity_type == 'App\Models\Team'){
+    $title = __('role.title.new', ['unittype'=> trans_choice('team.team',1), 'unitname' => $entity->name ]);
   }
 @endphp
 
@@ -20,15 +28,52 @@
           {{ __('member.confirm.created') }}: {{ session('member')->name }}
         </div>
     @endif
-    <div class="form-group row">
-      <div class="col-sm-10">
-      <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-        <button type="button" id="btnSelectMember" class="btn btn-secondary">@lang('role.member.action.select')</button>
-        <button type="button" id="btnClear" class="btn btn-secondary">@lang('Clear')</button>
-      </div>
-      </div>
-    </div>
-    <div class="form-group row">
+        <div class="form-group row">
+            <div class="col-sm-12">
+            <div class="input-group mb-3">
+              <select class="js-sel-role js-states form-control select2  @error('role_id') is-invalid @enderror" name="role_id" id='role_id'></select>
+              @error('role_id')
+              <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+              <div class="col-sm-6">
+                  <input type="text" class="form-control @error('email') is-invalid @enderror"
+                    id="email" name="email" placeholder="@lang('role.role.email')" value="{{ old('email') }}"></input>
+                  @error('email')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+              </div>
+              <div class="col-sm-6">
+                <input type="text" class="form-control @error('function') is-invalid @enderror" id="function" name="function" placeholder="@lang('role.function')" value="{{ old('function') }}">
+                @error('function')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+          </div>
+          <div class="d-flex py-4">
+            <hr class="my-auto flex-grow-1 border-info">
+            <div class="px-4 text-info text-strong">Diese Funktion wird folgendem Mitarbeitenden zugeordnet:</div>
+            <hr class="my-auto flex-grow-1 border-info">
+          </div>
+
+        <div class="form-group row">
+            <div class="col-sm-10">
+                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <button type="button" id="btnSelectMember" class="btn btn-secondary">@lang('role.member.action.select')</button>
+                <button type="button" id="btnClear" class="btn btn-secondary">@lang('Clear')</button>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex py-4">
+            <hr class="my-auto flex-grow-1 border-dark">
+            <div class="px-4 text-secondary text-strong">... oder gib die Daten eines neuen Mitarbeitenden ein:</div>
+            <hr class="my-auto flex-grow-1 border-dark">
+          </div>
+
+        <div class="form-group row">
         <div class="col-sm-6">
             <input type="text" class="form-control @error('firstname') is-invalid @enderror"
               id="firstname" name="firstname" placeholder="@lang('role.firstname')" value="{{ old('firstname') }}"></input>
@@ -111,31 +156,6 @@
             @enderror
         </div>
     </div>
-    <div class="form-group row">
-      <div class="col-sm-6">
-      <div class="input-group mb-3">
-        <select class="js-sel-role js-states form-control select2  @error('role_id') is-invalid @enderror" name="role_id" id='role_id'></select>
-        @error('role_id')
-        <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-        </div>
-      </div>
-    </div>
-    <div class="form-group row">
-      <div class="col-sm-6">
-          <input type="text" class="form-control @error('function') is-invalid @enderror" id="function" name="function" placeholder="@lang('role.function')" value="{{ old('function') }}">
-          @error('function')
-          <div class="invalid-feedback">{{ $message }}</div>
-          @enderror
-      </div>
-        <div class="col-sm-6">
-            <input type="text" class="form-control @error('email') is-invalid @enderror"
-              id="email" name="email" placeholder="@lang('role.email1')" value="{{ old('email') }}"></input>
-            @error('email')
-            <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
-    </div>
 </x-card-form>
 @include('member.includes.member_select')
 @endsection
@@ -214,8 +234,10 @@
           ajax: {
                   @if ($entity_type == 'App\Models\Region')
                     url: "{{ route('member.sb.region', ['region' => $entity->id]) }}",
+                  @elseif ($entity_type == 'App\Models\Team')
+                    url: "{{ route('member.sb.club', ['club' => $entity->club->id]) }}",
                   @else
-                    url: "{{ route('member.sb.region', ['region' => $entity->region()->first()->id]) }}",
+                    url: "{{ route('member.sb.region', ['region' => $entity->region->id]) }}",
                   @endif
                   type: "get",
                   delay: 250,

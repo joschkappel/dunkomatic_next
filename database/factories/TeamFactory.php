@@ -30,9 +30,6 @@ class TeamFactory extends Factory
             'training_time'  => $this->faker->time('H:').'30',
             'preferred_game_day' => $this->faker->numberBetween(1,7),
             'preferred_game_time' => $this->faker->time('H:').'00',
-            'coach_name'  => $this->faker->name(),
-            'coach_email' => $this->faker->email(),
-            'coach_phone1' => $this->faker->phoneNumber(),
             'shirt_color' => $this->faker->colorName(),
         ];
     }

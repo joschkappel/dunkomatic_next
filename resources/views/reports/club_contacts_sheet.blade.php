@@ -13,7 +13,7 @@
          <tr>
            <td style="text-align:left; font-size: 12px;"><strong>{{ App\Enums\Role::coerce($m->role_id)->description }}</strong></td>
            <td style="text-align:left; font-size: 12px;"><strong>{{ $m->member->name }}</strong></td>
-           <td style="font-size: 12px;">{{ ($m->email != '') ?  $m->email : $m->member->email }}</td>
+           <td style="font-size: 12px;">{{ $m->master_email }}</td>
            <td style="font-size: 12px;">{{ $m->member->address }}</td>
          </tr>
          <tr>

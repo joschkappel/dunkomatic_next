@@ -187,7 +187,7 @@ class ReportProcessorTest extends SysTestCase
         // remove audits
         DB::table('audits')->truncate();
         // modify club
-        $team->update(['coach_name'=>'modified Team']);
+        $team->update(['team_no'=>'10']);
         $this->assertDatabaseCount('audits',1);
 
         // run job

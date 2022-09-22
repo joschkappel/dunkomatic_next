@@ -15,6 +15,8 @@ return [
     'action.showon-chart' => 'Zifferkombinationen erzeugen',
     'assigned' => ' zugelassen ',
     'coach' => 'Trainer:in Name',
+    'coaches' => 'Mannschaftsverantwortlicher|Mannschaftsverantwortliche',
+    'member.action.create' => 'Neue:r MV',
     'confirm.delete' => 'Willst Du diese Mannschaft wirklich löschen ?',
     'email' => 'Trainer:in eMail',
     'entitled' => 'Zugelassene ',

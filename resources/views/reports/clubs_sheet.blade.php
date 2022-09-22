@@ -59,14 +59,14 @@
          <tr>
            <td style="text-align:right; font-size: 12px;"><strong>{{$t->league->shortname}}</strong></td>
            <td style="text-align:right; font-size: 12px;"><strong>{{ $t->name }}</strong></td>
-           <td style="font-size: 12px;">{{ $t->coach_name }}</td>
+           <td style="font-size: 12px;">{{ $t->members->pluck('name')->implode(', ') }}</td>
            <td style="font-size: 12px;">@lang('team.shirtcolor'): {{ $t->shirt_color }}</td>
          </tr>
          <tr>
            <td></td>
            <td></td>
-           <td style="font-size: 12px;">{{ $t->coach_email }}</td>
-           <td style="font-size: 12px;">{{ ( $t->coach_phone2 == '') ? $t->coach_phone1 : $t->coach_phone1.' / '.$t->coach_phone2 }}</td>
+           <td style="font-size: 12px;">{{ $t->memberships->pluck('master_email')->implode(', ') }}</td>
+           <td style="font-size: 12px;">{{$t->members->pluck('mobile')->implode(', ') }}</td>
          </tr>
         @endforeach
         @foreach($c['gyms'] as $g)

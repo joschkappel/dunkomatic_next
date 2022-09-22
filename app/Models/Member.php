@@ -14,9 +14,11 @@ use App\Models\Invitation;
 use OwenIt\Auditing\Contracts\Auditable;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -77,126 +79,115 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 class Member extends Model implements Auditable
 {
 
-  use \OwenIt\Auditing\Auditable, Notifiable, HasFactory;
+    use \OwenIt\Auditing\Auditable, Notifiable, HasFactory, Prunable;
 
-  protected $fillable = [
-        'id','club_id','firstname','lastname','city','street', 'zipcode', 'phone',
-        'fax', 'mobile', 'email1', 'email2'
+    protected $fillable = [
+        'id', 'club_id', 'firstname', 'lastname', 'city', 'street', 'zipcode', 'phone',
+        'fax', 'mobile', 'email1', 'email2',
+        'member_of_clubs','member_of_leagues','member_of_regions','member_of_teams',
+        'role_in_clubs','role_in_leagues','role_in_regions','role_in_teams'
     ];
-  protected $appends = [ 'name', 'email','address', 'member_of_clubs','member_of_leagues','club_memberships','league_memberships','is_user'];
-  protected $with = ['memberships'];
+    protected $appends = ['name', 'email', 'emails', 'address', 'is_user'];
+    protected $with = ['memberships'];
 
-  public function getNameAttribute(): string
-  {
-    return $this->firstname.' '.$this->lastname;
-  }
+    public function getNameAttribute(): string
+    {
+        return $this->firstname . ' ' . $this->lastname;
+    }
 
-  public function memberships(): HasMany
-  {
-      return $this->hasMany(Membership::class);
-  }
-  public function invitation(): HasOne
-  {
-      return $this->hasOne(Invitation::class);
-  }
+    public function memberships(): HasMany
+    {
+        return $this->hasMany(Membership::class);
+    }
+    public function invitation(): HasOne
+    {
+        return $this->hasOne(Invitation::class);
+    }
 
-  /**
-   * Get the related user
-   */
-  public function user(): HasOne
-  {
-      return $this->hasOne(User::class);
-  }
-  public function clubs(): MorphToMany
-  {
-      return $this->morphedByMany(Club::class, 'membership' )->withPivot('role_id','function')->without('region');
-      // test: Member::find(261)->clubs()->get();
-  }
+    /**
+     * Get the related user
+     */
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class);
+    }
+    public function clubs(): MorphToMany
+    {
+        return $this->morphedByMany(Club::class, 'membership')->withPivot('role_id', 'function')->without('region');
+        // test: Member::find(261)->clubs()->get();
+    }
 
-  public function leagues(): MorphToMany
-  {
-      return $this->morphedByMany(League::class, 'membership' )->withPivot('role_id','function')->without('region');
+    public function leagues(): MorphToMany
+    {
+        return $this->morphedByMany(League::class, 'membership')->withPivot('role_id', 'function')->without('region');
+    }
+    public function teams(): MorphToMany
+    {
+        return $this->morphedByMany(Team::class, 'membership')->withPivot('role_id', 'function');
+    }
 
-  }
+    public function region(): MorphToMany
+    {
+        return $this->morphedByMany(Region::class, 'membership')->withPivot('role_id', 'function');
+    }
+    public function getEmailAttribute(): string
+    {
+        return (($this->email1 == '' ? $this->email2 : $this->email1) ?? '');
+    }
+    public function getEmailsAttribute(): string
+    {
 
-  public function region(): MorphToMany
-  {
-      return $this->morphedByMany(Region::class, 'membership' )->withPivot('role_id','function');
+        $master = (($this->email1 == '' ? $this->email2 : $this->email1) ?? '');
+        return $master .= '  '.$this->memberships->pluck('role_email')->unique()->implode(', <br>');
+    }
+    public function getAddressAttribute(): string
+    {
+        return "{$this->street}, {$this->zipcode} {$this->city}";
+    }
+    public function getIsRegionAdminAttribute(): bool
+    {
+        return $this->region()->wherePivot('role_id', Role::RegionLead)->exists();
+    }
+    public function getIsUserAttribute(): bool
+    {
+        return $this->user()->exists();
+    }
+    /**
+     * Route notifications for the mail channel.
+     *
+     * @param  \Illuminate\Notifications\Notification  $notification
+     * @return array|string
+     */
+    public function routeNotificationForMail($notification)
+    {
+        // Return name and email address...
+        return [$this->email1 => $this->firstname . ' ' . $this->lastname];
+    }
+    /**
+     * Prepare the model for pruning.
+     *
+     * @return void
+     */
+    protected function pruning()
+    {
+        $this->load('user');
+        if ($this->user()->exists()){
 
-  }
-  public function getEmailAttribute(): string
-  {
-    return (( $this->email1 == '' ? $this->email2 : $this->email1) ?? '');
-  }
-  public function getAddressAttribute(): string
-  {
-     return "{$this->street}, {$this->zipcode} {$this->city}";
-  }
-  public function getIsRegionAdminAttribute(): bool
-  {
-    return $this->region()->wherePivot('role_id', Role::RegionLead)->exists();
-  }
-  public function getMemberOfClubsAttribute(): string
-  {
-    return $this->clubs()->pluck('shortname')->unique()->implode(', ');
-  }
-  public function getClubMembershipsAttribute(): string
-  {
-    $club = $this->load('clubs')->clubs;
-    $title = collect();
-    foreach ($club as $c){
-        $title->push(Role::coerce($c->pivot->role_id)->description.' '.$c->shortname);
-        if ($c->pivot->role_id == Role::ClubLead){
-            $leagues = $c->load('teams.league')->teams->whereNotNull('league_id')->pluck('league.shortname')->implode(', ');
-            if ($leagues != ''){
-                $title->push( '('.$leagues.')');
-            }
+            $u = $this->user;
+            Log::debug('[JOB][DB CLEANUP] pruning member.',[$u]);
+            $u->member()->dissociate();
+            $u->save();
         }
     }
-    return $title->implode(', ');
-  }
-  public function getLeagueMembershipsAttribute(): string
-  {
-    $leagues = $this->load('leagues')->leagues;
-    $title = collect();
-    foreach ($leagues as $l){
-        $title->push(Role::coerce($l->pivot->role_id)->description.' '.$l->shortname);
+    /**
+     * Get the prunable model query.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function prunable()
+    {
+        Log::notice('[JOB][DB CLEANUP] pruning members without any membership.');
+
+        return static::doesntHave('memberships');
     }
-    return $title->implode(', ');
-  }
-  public function getTeamMembershipsAttribute(): string
-  {
-    $teams = Team::whereIn('id', $this->memberships->pluck('membership_id'))->with(['league','club'])->without(['league.region','club.region'])->get();
-    $title = collect();
-    foreach ($teams as $t){
-        $title->push($t->league->shortname .' MV '.($t->name ?? '?' ) );
-    }
-    return $title->implode(', ');
-  }
-  public function getMemberOfLeaguesAttribute(): string
-  {
-    return $this->leagues()->pluck('shortname')->unique()->implode(', ');
-  }
-  public function getMemberOfRegionAttribute(): string
-  {
-    return $this->region()->pluck('code')->unique()->implode('-');
-  }
-  public function getIsUserAttribute(): bool
-  {
-    return $this->user()->exists();
-  }
-  /**
-   * Route notifications for the mail channel.
-   *
-   * @param  \Illuminate\Notifications\Notification  $notification
-   * @return array|string
-   */
-  public function routeNotificationForMail($notification)
-  {
-      // Return name and email address...
-      return [$this->email1 => $this->firstname.' '.$this->lastname];
-  }
-
-
-
 }

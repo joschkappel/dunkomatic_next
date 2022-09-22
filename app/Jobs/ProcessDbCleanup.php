@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Models\Invitation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -54,6 +53,7 @@ class ProcessDbCleanup implements ShouldQueue
         // drop all users (incl messages and members) that have been rejected four weeks ago;
         // drop all users (incl messages and members) that havent verfied their email since a month;
         // drop all inviations that are older than a week
+        // delete all members that dont have any memberships
 
         // drop audits older than 2 months
         $old_audits = Audit::whereDate('created_at', '<',now()->subMonths(2))->delete();
@@ -62,5 +62,6 @@ class ProcessDbCleanup implements ShouldQueue
         // drop all read notifications
         // $old_notifs = DatabaseNotification::whereDate('read_at', '<',now()->subWeek())->delete();
         // Log::notice('[JOB][DB CLEANUP] deleting read notifications.', ['count' => $old_notifs]);
+
     }
 }

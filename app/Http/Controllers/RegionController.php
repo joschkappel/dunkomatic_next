@@ -57,7 +57,7 @@ class RegionController extends Controller
             abort(403);
         }
         $data['region'] = Region::withCount('clubs', 'gyms', 'teams', 'leagues', 'childRegions')->find($region->id);
-        $data['members'] = Member::whereIn('id', $region->members()->pluck('member_id'))->with('memberships')->get();
+        $data['members'] = $data['region']->members->unique();
         $data['member_count'] = $region->clubs()->with('members')->get()->pluck('members.*.id')->flatten()->concat(
             $region->leagues()->with('members')->get()->pluck('members.*.id')->flatten()
         )->concat(
@@ -90,6 +90,7 @@ class RegionController extends Controller
         $data['clubs'] = $region->clubs()->with('members')->orderBy('shortname')->get();
 
         $data['leagues'] = $region->leagues()->with('members')->orderBy('shortname')->get();
+        $data['scope'] = 'region';
 
         Log::info('showing region briefing', ['region-id' => $region->id]);
         return view('region/region_briefing', $data);

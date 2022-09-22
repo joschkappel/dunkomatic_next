@@ -278,10 +278,6 @@ class ClubTeamController extends Controller
             'preferred_game_day' => 'present|integer|min:1|max:7',
             'preferred_game_time' => array('required','date_format:H:i', new GameMinute, new GameHour),
             'gym_id' => 'sometimes|required|exists:gyms,id',
-            'coach_name'  => 'required|string|max:40',
-            'coach_email' => 'nullable|email:rfc,dns',
-            'coach_phone1' => 'nullable|string|max:20',
-            'coach_phone2' => 'nullable|string|max:20',
             'league_prev' => 'nullable|string|max:20',
             'shirt_color' => 'required|string|max:20'
             ]);
@@ -309,8 +305,9 @@ class ClubTeamController extends Controller
     {
         Log::info('editing team.', ['team-id' => $team->id]);
         $team->load('club', 'league','gym');
+        $members = $team->members()->with('memberships')->get();
 
-        return view('team/team_edit', ['team' => $team]);
+        return view('team/team_edit', ['team' => $team, 'members'=>$members]);
     }
 
     /**
@@ -336,10 +333,6 @@ class ClubTeamController extends Controller
             'preferred_game_day' => 'present|integer|min:1|max:7',
             'preferred_game_time' => array('required','date_format:H:i', new GameMinute, new GameHour),
             'gym_id' => 'sometimes|required|exists:gyms,id',
-            'coach_name'  => 'required|string|max:40',
-            'coach_email' => 'nullable|email:rfc,dns',
-            'coach_phone1' => 'nullable|string|max:20',
-            'coach_phone2' => 'nullable|string|max:20',
             'league_prev' => 'nullable|string|max:20',
             'shirt_color' => 'required|string|max:20'
             ]);

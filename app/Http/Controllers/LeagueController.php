@@ -234,8 +234,7 @@ class LeagueController extends Controller
             abort(403);
         }
         $data['league'] = $league;
-
-        $data['members'] = Member::whereIn('id', League::find($league->id)->members()->pluck('member_id'))->with('memberships')->get();
+        $data['members'] = $data['league']->members->unique();
 
         $data['games'] = $data['league']->games()->get();
         //Log::debug(print_r($assigned_team,true));
@@ -272,6 +271,7 @@ class LeagueController extends Controller
         $data['clubs'] = $clubs;
         $data['memberships'] = $league->memberships()->with('member')->get();
         $data['teams'] = $teams;
+        $data['scope'] = 'league';
 
         Log::info('showing league briefing', ['league-id' => $league->id]);
         return view('league/league_briefing', $data);
@@ -768,7 +768,7 @@ class LeagueController extends Controller
                         $btn .= 'data-team-id="' . $ct['team_id'] . '">' . $ct['team_name'] . '</button>';
                     } else {
                         if ($ct['club_id'] != null) {
-                            $unregistered_teams = Club::find($ct['club_id'])->teams->whereNull('league_id')->load('club');
+                            $unregistered_teams = Club::find($ct['club_id'])->teams->whereNull('league_id')->load('club','members');
                             if ($unregistered_teams->count() > 0) {
                                 $btn = '<div class="btn-group btn-group-sm"><button type="button" class="btn btn-sm btn-secondary dropdpwn-toggle" data-toggle="dropdown">' . __('team.action.select') . '</button>';
                                 $btn .= '<div class="dropdown-menu">';

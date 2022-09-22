@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Arr;
 
 use App\Notifications\InviteUser;
 
@@ -62,33 +63,15 @@ class MemberController extends Controller
         // get members for all concerned regions, leagues and clubs
         $members = Membership::where('membership_type',Region::class)->whereIn('membership_id', $all_region_ids)->pluck('member_id');
         $members = $members->concat( Membership::where('membership_type',League::class)->whereIn('membership_id', $all_league_ids)->pluck('member_id') );
+        $members = $members->concat( Membership::where('membership_type',Team::class)->whereIn('membership_id', $all_team_ids)->pluck('member_id') );
         $members = $members->concat( Membership::where('membership_type',Club::class)->whereIn('membership_id', $all_club_ids)->pluck('member_id') )->unique();
-        $members = Member::whereIn('id', $members)->withonly('user', 'clubs','leagues')->get();
-
-        // add coaches
-        foreach ( $all_teams as $co ){
-            $m = new Member([
-                'lastname' => $co->coach_name,
-                'firstname' => '',
-                'mobile' => $co->coach_phone1,
-                'phone' => $co->coach_phone2,
-                'email1' => $co->coach_email,
-                'id' => mt_rand(100000, 999999)
-            ]);
-            $ms = $m->memberships()->make();
-            $ms->membership_type = Team::class;
-            $ms->membership_id = $co->id;
-            $m->memberships->push($ms);
-
-            $members->push($m);
-        }
-
+        $members = Member::whereIn('id', $members)->with('user', 'clubs','leagues','memberships')->get();
 
         Log::info('preparing member list',['cnt'=>$members->count()]);
         $mlist = datatables()::of($members);
 
         return $mlist
-            ->rawColumns(['user_account', 'email1', 'email2','phone', 'name'])
+            ->rawColumns(['user_account', 'emails', 'email2','phone', 'name'])
             ->addColumn('action', function ($data) {
                 return '<button type="button" id="copyAddress" name="copyAddress" class="btn btn-outline-primary btn-sm m-2" data-member-id="' . $data->id . '"
                 ><i class="far fa-clipboard"></i></button>';
@@ -97,25 +80,13 @@ class MemberController extends Controller
                  return '<a href="#copyAddress" id="copyAddress" name="copyAddress" data-member-id="' . $data->id . '">'.$data->lastname.', '.$data->firstname.'</a>';
             })
             ->addColumn('clubs', function ($data) {
-                if ($data->id >= 100000){
-                    return '';
-                } else {
-                    return $data->member_of_clubs;
-                }
+                return $data->member_of_clubs;
             })
             ->addColumn('leagues', function ($data) {
-                if ($data->id >= 100000){
-                    return '';
-                } else {
-                    return $data->member_of_leagues;
-                }
+                return $data->member_of_leagues;
             })
             ->addColumn('roles', function ($data) {
-                if ($data->id >= 100000){
-                    return $data->team_memberships;
-                }
-
-                return $ms = $data->club_memberships.' '.$data->league_memberships;
+                return $data->role_in_clubs.' '.$data->role_in_leagues.' '.$data->role_in_teams.' '.$data->role_in_regions;
             })
             ->addColumn('user_account', function ($data) {
                 if ($data->user != null ) {
@@ -128,12 +99,13 @@ class MemberController extends Controller
                     return '';
                 };
             })
-            ->editColumn('email1', function ($m) {
-                if (isset($m->email1)) {
+            ->editColumn('emails', function ($m) {
+                /* if (isset($m->email1)) {
                     return '<a href="mailto:' . $m->email1 . '" target="_blank">' . $m->email1 . '</a>';
                 } else {
                     return "";
-                }
+                } */
+                return $m->emails;
             })
             ->editColumn('email2', function ($m) {
                 if (isset($m->email2)) {
@@ -181,6 +153,34 @@ class MemberController extends Controller
             ->get()
             ->sortBy('member.lastname')
             ->pluck('member.name', 'member.id');
+        //Log::debug('got members '.count($members));
+
+        Log::info('preparing select2 member list.', ['count' => count($members)]);
+        $response = array();
+
+        foreach ($members as $k => $v) {
+            $response[] = array(
+                "id" => $k,
+                "text" => $v
+            );
+        }
+
+        return Response::json($response);
+    }
+    /**
+     * Display a listing of the resource.
+     *
+     * @param \App\Models\Club $club
+     * @return \Illuminate\Http\JsonResponse
+     *
+     */
+    public function sb_club(Club $club)
+    {
+        Log::notice('getting members for club',['club-id'=>$club->id]);
+
+        $members = $club->members->pluck('name', 'id')
+            ->sortBy('name');
+
         //Log::debug('got members '.count($members));
 
         Log::info('preparing select2 member list.', ['count' => count($members)]);
@@ -270,6 +270,10 @@ class MemberController extends Controller
             $club = Club::findOrFail($entity_id);
             $club->memberships()->create($mship);
             return redirect()->route('club.dashboard', ['language' => app()->getLocale(), 'club' => $club]);
+        } elseif ($entity_type == Team::class) {
+            $team = Team::findOrFail($entity_id);
+            $team->memberships()->create($mship);
+            return redirect()->route('club.dashboard', ['language' => app()->getLocale(), 'club' => $team->club]);
         } elseif ($entity_type == League::class) {
             $league = League::findOrFail($entity_id);
             $league->memberships()->create($mship);
@@ -291,10 +295,32 @@ class MemberController extends Controller
      * @return \Illuminate\View\View
      *
      */
-    public function edit($language, Member $member)
+    public function edit(Request $request, $language, Member $member)
     {
-        Log::info('editing member.', ['member-id' => $member->id]);
-        return view('member/member_edit', ['member' => $member, 'backto' => URL::previous()]);
+        if (Arr::has($request->input(), 'member-club')){
+            $entity_type = Club::class;
+            $entity_id = $request->input('member-club');
+            $memberships = $member->memberships->where('membership_type',Club::class)->where('membership_id',$entity_id);
+            $add_url = route('membership.club.add', ['club' => $entity_id, 'member' => $member]);
+        } elseif (Arr::has($request->input(), 'member-league')){
+            $entity_type = League::class;
+            $entity_id = $request->input('member-league');
+            $memberships = $member->memberships->where('membership_type',League::class)->where('membership_id',$entity_id);
+            $add_url = route('membership.league.add', ['league' => $entity_id, 'member' => $member]);
+        } elseif (Arr::has($request->input(), 'member-region')){
+            $entity_type = Region::class;
+            $entity_id = $request->input('member-region');
+            $memberships = $member->memberships->where('membership_type',Region::class)->where('membership_id',$entity_id);
+            $add_url = route('membership.region.add', ['region' => $entity_id, 'member' => $member]);
+        } elseif (Arr::has($request->input(), 'member-team')){
+            $entity_type = Team::class;
+            $entity_id = $request->input('member-team');
+            $memberships = $member->memberships->where('membership_type',Team::class)->where('membership_id',$entity_id);
+            $add_url = route('membership.team.add', ['team' => $entity_id, 'member' => $member]);
+        }
+
+        Log::info('editing member.', ['member-id' => $member->id]); // ], 'entity'=> , 'id'=>]);
+        return view('member/member_edit', ['member' => $member, 'memberships'=>$memberships, 'add_url'=>$add_url, 'entity_type'=>$entity_type, 'entity_id'=>$entity_id, 'backto' => URL::previous()]);
     }
 
     /**
