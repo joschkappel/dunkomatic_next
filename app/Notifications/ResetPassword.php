@@ -4,7 +4,6 @@ namespace App\Notifications;
 
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Lang;
 
 class ResetPassword extends Notification
 {
@@ -74,11 +73,11 @@ class ResetPassword extends Notification
         }
 
         return (new MailMessage)
-            ->subject( __('notifications.resetpassword.subject') )
-            ->line( __('notifications.resetpassword.line1') )
-            ->action( __('notifications.resetpassword.action'), $url)
-            ->line( __('notifications.resetpassword.line2', ['count' => config('auth.passwords.'.config('auth.defaults.passwords').'.expire')]))
-            ->line( __('notifications.resetpassword.line3') );
+            ->subject(__('notifications.resetpassword.subject'))
+            ->line(__('notifications.resetpassword.line1'))
+            ->action(__('notifications.resetpassword.action'), $url)
+            ->line(__('notifications.resetpassword.line2', ['count' => config('auth.passwords.'.config('auth.defaults.passwords').'.expire')]))
+            ->line(__('notifications.resetpassword.line3'));
     }
 
     /**

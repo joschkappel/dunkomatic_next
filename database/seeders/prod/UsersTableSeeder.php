@@ -2,15 +2,12 @@
 
 namespace Database\Seeders\prod;
 
-use Illuminate\Database\Seeder;
-
-use App\Models\User;
-use App\Models\Region;
 use App\Enums\Role;
-
+use App\Models\Region;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 // use Illuminate\Support\Facades\Hash;   Hash::make('HBVXX-2022', ['rounds'=>12])
 use Silber\Bouncer\BouncerFacade as Bouncer;
-
 
 class UsersTableSeeder extends Seeder
 {
@@ -21,15 +18,14 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-
         // createa superadmin
 
-        $u =  User::create([
+        $u = User::create([
             'name' => 'admin',
             'email' => 'joschkappel@gmail.com',
             'email_verified_at' => now(),
             'approved_at' => now(),
-            'password' => '$2y$12$HOF0RNK6nYIu/tV12sUg5eMOFjFqSRwkf.6gUJadUX.VtFOBbBMRK'
+            'password' => '$2y$12$HOF0RNK6nYIu/tV12sUg5eMOFjFqSRwkf.6gUJadUX.VtFOBbBMRK',
         ]);
         Bouncer::assign('superadmin')->to($u);
         Bouncer::allow($u)->to('manage', $u);
@@ -58,7 +54,7 @@ class UsersTableSeeder extends Seeder
         ]);
         $this->approveAndSetAcls($u, $r);
         // top level region, also allow for children
-        foreach($r->childRegions as $child){
+        foreach ($r->childRegions as $child) {
             $u->allow('coaccess', $child);
         }
 
@@ -94,12 +90,10 @@ class UsersTableSeeder extends Seeder
             'locale' => 'de',
         ]);
         $this->approveAndSetAcls($u, $r);
-
-
     }
 
-
-    public function approveAndSetAcls(User $u, Region $r){
+    public function approveAndSetAcls(User $u, Region $r)
+    {
         // approve and kick off observer to assigne mebmer
         $u->update(['approved_at' => now()]);
 

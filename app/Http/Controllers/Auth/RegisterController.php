@@ -3,25 +3,22 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
-
-use App\Models\User;
-use App\Models\Region;
-use App\Models\Member;
 use App\Models\Invitation;
+use App\Models\Region;
+use App\Models\User;
 use App\Notifications\ApproveUser;
-
-use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Log;
 use App\Notifications\NewUser;
+use App\Providers\RouteServiceProvider;
 use App\Traits\UserAccessManager;
+use Captcha;
+use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Cookie;
-use Captcha;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class RegisterController extends Controller
 {
@@ -63,14 +60,14 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        if ($data['captcha']=='mockcaptcha=12345'){
+        if ($data['captcha'] == 'mockcaptcha=12345') {
             // dirtzy hack to enable dusk testing
             return Validator::make($data, [
                 'name' => ['required', 'string', 'max:255'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
                 'password' => ['required', 'string', 'min:8', 'confirmed'],
                 'region_id' => ['required', 'exists:regions,id'],
-                'reason_join' => ['required', 'string']
+                'reason_join' => ['required', 'string'],
             ]);
         } else {
             return Validator::make($data, [
@@ -79,7 +76,7 @@ class RegisterController extends Controller
                 'password' => ['required', 'string', 'min:8', 'confirmed'],
                 'region_id' => ['required', 'exists:regions,id'],
                 'reason_join' => ['required', 'string'],
-                'captcha' => ['required','captcha']
+                'captcha' => ['required', 'captcha'],
             ]);
         }
     }
@@ -118,7 +115,7 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration based on an invitation.
      *
-     * @param  Request $request
+     * @param  Request  $request
      * @return
      */
     protected function register_invitee(Request $request)
@@ -130,7 +127,7 @@ class RegisterController extends Controller
             'reason_join' => 'required|string',
         ]);
 
-        if ( $request->cookie('_i') == null){
+        if ($request->cookie('_i') == null) {
             abort(404);
         } else {
             $user = User::create([
@@ -150,7 +147,7 @@ class RegisterController extends Controller
             $member = $invitation->member;
             $member->user()->save($user);
             $invitation->delete();
-            Cookie::queue( Cookie::forget('_i'));
+            Cookie::queue(Cookie::forget('_i'));
 
             $this->approveUser($user);
             $this->cloneMemberAccessRights($user);
@@ -162,30 +159,30 @@ class RegisterController extends Controller
         return redirect($this->redirectPath());
     }
 
-
     /**
      * Show the application registration form for invited users.
      *
-     * @param string $language
-     * @param \App\Models\Invitation $invitation
+     * @param  string  $language
+     * @param  \App\Models\Invitation  $invitation
      * @return \Illuminate\View\View
      */
     public function showRegistrationFormInvited(string $language, Invitation $invitation): View
     {
         Cookie::queue('_i', $invitation->id ?? null, 60);
+
         return view('auth.register_invited', [
             'language' => $language,
-            'invitation' => $invitation
+            'invitation' => $invitation,
         ]);
     }
 
-        /**
+    /**
      * Show the application registration form for invited users.
      *
      * @return \Illuminate\Http\JsonResponse
      */
     public function reloadCaptcha(): JsonResponse
     {
-        return response()->json(['captcha'=> Captcha::img('math')]);
+        return response()->json(['captcha' => Captcha::img('math')]);
     }
 }

@@ -17,12 +17,12 @@ class BuildingMenu
     /**
      * Create a new event instance.
      *
-     * @param Builder $menu
+     * @param  Builder  $menu
      */
     public function __construct(Builder $menu)
     {
-        if ( Auth::check() ){
-          $this->menu = $menu;
+        if (Auth::check()) {
+            $this->menu = $menu;
         }
     }
 }

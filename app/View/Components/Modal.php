@@ -27,13 +27,12 @@ class Modal extends Component
      */
     public $modalMethod;
 
-
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct(string $modalId, string $modalTitle, string $modalMethod='POST')
+    public function __construct(string $modalId, string $modalTitle, string $modalMethod = 'POST')
     {
         $this->modalId = $modalId;
         $this->modalTitle = $modalTitle;

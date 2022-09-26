@@ -2,11 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Region;
+use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
-use App\Models\Region;
 use Illuminate\Support\Facades\Auth;
-use App\Providers\RouteServiceProvider;
 
 class SetRegion
 {
@@ -19,17 +19,16 @@ class SetRegion
      */
     public function handle(Request $request, Closure $next)
     {
-
-        if ( $request->new_region !== null) {
-            $request->session()->put('cur_region', Region::find($request->new_region) );
+        if ($request->new_region !== null) {
+            $request->session()->put('cur_region', Region::find($request->new_region));
         } else {
             if (($request->region != session('cur_region')) and ($request->region !== null)) {
-                $region = Region::find($request->region->id) ;
+                $region = Region::find($request->region->id);
                 $request->session()->put('cur_region', $region);
-                session()->put('cur_region', $region );
+                session()->put('cur_region', $region);
             }
-            if ( (session('cur_region') == null) and (Auth::check()) ){
-                session()->put('cur_region', Auth::user()->regions()->first() );
+            if ((session('cur_region') == null) and (Auth::check())) {
+                session()->put('cur_region', Auth::user()->regions()->first());
             }
         }
         /* else {

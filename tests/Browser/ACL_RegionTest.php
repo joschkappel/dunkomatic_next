@@ -2,24 +2,22 @@
 
 namespace Tests\Browser;
 
-use App\Models\Region;
 use App\Models\Member;
+use App\Models\Region;
 use App\Models\User;
-
-use Silber\Bouncer\BouncerFacade as Bouncer;
-
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-
-use Tests\DuskTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
-
+use Silber\Bouncer\BouncerFacade as Bouncer;
+use Tests\DuskTestCase;
 
 class ACL_RegionTest extends DuskTestCase
 {
     use DatabaseMigrations;
 
     protected static $region;
+
     protected static $member;
+
     protected static $user;
 
     public function setUp(): void
@@ -34,7 +32,7 @@ class ACL_RegionTest extends DuskTestCase
 
         $member = Member::factory()->create();
         static::$user = User::factory()->approved()->for($member)->create();
-        Bouncer::allow(static::$user)->to('access',static::$region);
+        Bouncer::allow(static::$user)->to('access', static::$region);
     }
 
     use withFaker;
@@ -123,6 +121,7 @@ class ACL_RegionTest extends DuskTestCase
         $this->access_regionlist($user);
         $this->access_regiondashboard($user);
     }
+
     /**
      * @test
      * @group region
@@ -137,9 +136,8 @@ class ACL_RegionTest extends DuskTestCase
         Bouncer::refreshFor($user);
 
         $this->access_regionlist($user);
-        $this->access_regiondashboard($user);;
+        $this->access_regiondashboard($user);
     }
-
 
     private function access_regionlist($user)
     {
@@ -175,15 +173,15 @@ class ACL_RegionTest extends DuskTestCase
             $member = static::$member;
             $region = static::$region;
 
-            if ( $user->can('access', $region)){
-                if ( $user->canAny(['create-regions', 'update-regions'])) {
+            if ($user->can('access', $region)) {
+                if ($user->canAny(['create-regions', 'update-regions'])) {
                     ($user->can('update-regions')) ? $browser->assertSee(__('region.action.edit', $locale = ['de'])) : $browser->assertDontSee(__('region.action.edit', $locale = ['de']));
                     ($user->can('create-regions')) ? $browser->assertSee(__('region.action.delete', $locale = ['de'])) : $browser->assertDontSee(__('region.action.delete', $locale = ['de']));
                     ($user->can('create-members')) ? $browser->assertSee(__('region.member.action.create', $locale = ['de'])) : $browser->assertDontSee(__('region.member.action.create', $locale = ['de']));
 
                     $browser->with('#membersCard', function ($memberCard) use ($user, $member) {
                         $memberCard->click('.btn-tool')->waitFor('.btn-tool');
-                        ($user->can('create-members')) ? $memberCard->assertButtonEnabled('#deleteMember') :  $memberCard->assertButtonDisabled('#deleteMember');
+                        ($user->can('create-members')) ? $memberCard->assertButtonEnabled('#deleteMember') : $memberCard->assertButtonDisabled('#deleteMember');
                         ($user->can('update-members')) ? $memberCard->assertSeeLink($member->name) : $memberCard->assertDontSeeLink($member->name);
                         ($user->can('update-members')) ? $memberCard->assertSeeLink(__('role.send.invite')) : $memberCard->assertDontSeeLink(__('role.send.invite'));
                     });

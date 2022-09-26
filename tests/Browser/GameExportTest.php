@@ -3,38 +3,36 @@
 namespace Tests\Browser;
 
 use App\Models\League;
-use App\Traits\LeagueFSM;
-use App\Models\User;
 use App\Models\Region;
-
-use Silber\Bouncer\BouncerFacade as Bouncer;
-
+use App\Models\User;
+use App\Traits\LeagueFSM;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-
-use Tests\DuskTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
-
+use Silber\Bouncer\BouncerFacade as Bouncer;
+use Tests\DuskTestCase;
 
 class GameExportTest extends DuskTestCase
 {
     use DatabaseMigrations;
 
     protected static $league;
+
     protected static $user;
+
     protected static $region;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->artisan('db:seed', ['--class' => 'TestDatabaseSeeder']);
-        static::$league = League::factory()->selected(4,4)->create();
-        $this->refreeze_league( static::$league );
-        $this->open_game_scheduling( static::$league );
+        static::$league = League::factory()->selected(4, 4)->create();
+        $this->refreeze_league(static::$league);
+        $this->open_game_scheduling(static::$league);
 
-        static::$region = Region::where('code','HBVDA')->first();
+        static::$region = Region::where('code', 'HBVDA')->first();
         static::$user = User::factory()->approved()->create();
-        Bouncer::retract( static::$user->getRoles()  )->from(static::$user);
-        Bouncer::assign( 'superadmin')->to(static::$user);
+        Bouncer::retract(static::$user->getRoles())->from(static::$user);
+        Bouncer::assign('superadmin')->to(static::$user);
         Bouncer::refresh();
     }
 
@@ -48,7 +46,6 @@ class GameExportTest extends DuskTestCase
      */
     public function export_leaguegame_csv()
     {
-
         $this->assertDatabaseCount('leagues', 1);
         $this->assertDatabaseCount('clubs', 4);
         $this->assertDatabaseCount('teams', 4);
@@ -58,12 +55,11 @@ class GameExportTest extends DuskTestCase
         $league = static::$league;
 
         $this->browse(function ($browser) use ($user, $league) {
-
             $browser->loginAs($user)
-                    ->visitRoute('league.dashboard',['language'=>'de', 'league'=>$league])
+                    ->visitRoute('league.dashboard', ['language' => 'de', 'league' => $league])
                     ->screenshot('league_game_export_league_dashboard');
 
-            $browser->with('#gamesCard', function ($gamesCard)  {
+            $browser->with('#gamesCard', function ($gamesCard) {
                 $gamesCard->click('.btn-tool')
                           ->waitFor('.btn-tool')
                           ->assertSeeLink(__('league.action.game.list'))
@@ -85,9 +81,8 @@ class GameExportTest extends DuskTestCase
         $this->assertFileExists(__DIR__.'/Exportfiles/'.$league->shortname.'_Heimspiele.xlsx');
 
         // remove downloaded files
-        unlink( __DIR__.'/Exportfiles/'.$league->shortname.'_Heimspiele.csv');
-        unlink( __DIR__.'/Exportfiles/'.$league->shortname.'_Heimspiele.xlsx');
-
+        unlink(__DIR__.'/Exportfiles/'.$league->shortname.'_Heimspiele.csv');
+        unlink(__DIR__.'/Exportfiles/'.$league->shortname.'_Heimspiele.xlsx');
     }
 
     /**
@@ -98,7 +93,6 @@ class GameExportTest extends DuskTestCase
      */
     public function eximport_clubgame()
     {
-
         $this->assertDatabaseCount('leagues', 1);
         $this->assertDatabaseCount('clubs', 4);
         $this->assertDatabaseCount('teams', 4);
@@ -109,12 +103,11 @@ class GameExportTest extends DuskTestCase
         $club = $league->clubs->first();
 
         $this->browse(function ($browser) use ($user, $club) {
-
             $browser->loginAs($user)
-                    ->visitRoute('club.dashboard',['language'=>'de', 'club'=>$club])
+                    ->visitRoute('club.dashboard', ['language' => 'de', 'club' => $club])
                     ->screenshot('club_game_export_club_dashboard');
 
-            $browser->with('#gamesCard', function ($gamesCard)  {
+            $browser->with('#gamesCard', function ($gamesCard) {
                 $gamesCard->click('.btn-tool')
                           ->waitFor('.btn-tool')
                           ->assertSeeLink(__('club.action.edit-homegame'))
@@ -141,12 +134,11 @@ class GameExportTest extends DuskTestCase
         $this->assertFileExists(__DIR__.'/Exportfiles/'.$club->shortname.'_Heimspiele.xlsx');
 
         $this->browse(function ($browser) use ($user, $club) {
-
             $browser->loginAs($user)
-                    ->visitRoute('club.dashboard',['language'=>'de', 'club'=>$club])
+                    ->visitRoute('club.dashboard', ['language' => 'de', 'club' => $club])
                     ->screenshot('club_game_export_club_dashboard2');
 
-            $browser->with('#gamesCard', function ($gamesCard)  {
+            $browser->with('#gamesCard', function ($gamesCard) {
                 $gamesCard->click('.btn-tool')
                           ->waitFor('.btn-tool')
                           ->assertSeeLink(__('club.action.edit-homegame'))
@@ -173,12 +165,11 @@ class GameExportTest extends DuskTestCase
                     ->press('Senden')
                     ->waitFor('.alert-success')
                     ->screenshot('club_game_import_club_game_list5');
-
         });
 
         // remove downloaded files
-        unlink( __DIR__.'/Exportfiles/'.$club->shortname.'_Heimspiele.csv');
-        unlink( __DIR__.'/Exportfiles/'.$club->shortname.'_Heimspiele.xlsx');
+        unlink(__DIR__.'/Exportfiles/'.$club->shortname.'_Heimspiele.csv');
+        unlink(__DIR__.'/Exportfiles/'.$club->shortname.'_Heimspiele.xlsx');
     }
 
     /**
@@ -189,7 +180,6 @@ class GameExportTest extends DuskTestCase
      */
     public function eximport_regiongame()
     {
-
         $this->assertDatabaseCount('leagues', 1);
         $this->assertDatabaseCount('clubs', 4);
         $this->assertDatabaseCount('teams', 4);
@@ -200,12 +190,11 @@ class GameExportTest extends DuskTestCase
         $region = $league->region;
 
         $this->browse(function ($browser) use ($user, $region) {
-
             $browser->loginAs($user)
-                    ->visitRoute('region.dashboard',['language'=>'de', 'region'=>$region])
+                    ->visitRoute('region.dashboard', ['language' => 'de', 'region' => $region])
                     ->screenshot('region_game_export_region_dashboard');
 
-            $browser->with('#refereeCard', function ($refCard)  {
+            $browser->with('#refereeCard', function ($refCard) {
                 $refCard->click('.btn-tool')
                           ->waitFor('.btn-tool')
                           ->assertSeeLink(__('game.action.assign-referees'))
@@ -225,12 +214,11 @@ class GameExportTest extends DuskTestCase
         $this->assertFileExists(__DIR__.'/Exportfiles/'.$region->code.'_Bezirksspielplan.csv');
         $this->assertFileExists(__DIR__.'/Exportfiles/'.$region->code.'_Bezirksspielplan.xlsx');
         $this->browse(function ($browser) use ($user, $region) {
-
             $browser->loginAs($user)
-                    ->visitRoute('region.dashboard',['language'=>'de', 'region'=>$region])
+                    ->visitRoute('region.dashboard', ['language' => 'de', 'region' => $region])
                     ->screenshot('region_game_export_region_dashboard');
 
-            $browser->with('#refereeCard', function ($refCard)  {
+            $browser->with('#refereeCard', function ($refCard) {
                 $refCard->click('.btn-tool')
                           ->waitFor('.btn-tool')
                           ->assertSeeLink(__('game.action.assign-referees'))
@@ -251,13 +239,11 @@ class GameExportTest extends DuskTestCase
                     ->screenshot('region_game_import_region_game_list4')
                     ->press('Senden')
                     ->waitFor('.alert-success')
-                    ->screenshot('region_game_import_region_game_list5');;
-
+                    ->screenshot('region_game_import_region_game_list5');
         });
 
-
         // remove downloaded files
-        unlink( __DIR__.'/Exportfiles/'.$region->code.'_Bezirksspielplan.csv');
-        unlink( __DIR__.'/Exportfiles/'.$region->code.'_Bezirksspielplan.xlsx');
+        unlink(__DIR__.'/Exportfiles/'.$region->code.'_Bezirksspielplan.csv');
+        unlink(__DIR__.'/Exportfiles/'.$region->code.'_Bezirksspielplan.xlsx');
     }
 }

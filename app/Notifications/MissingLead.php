@@ -3,16 +3,15 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Collection;
 
 class MissingLead extends Notification
 {
     use Queueable;
 
     protected array $clubs;
+
     protected array $leagues;
 
     /**
@@ -47,26 +46,24 @@ class MissingLead extends Notification
     {
         $mail = (new MailMessage)
                     ->level('error')
-                    ->subject( __('notifications.missinglead.subject'))
-                    ->greeting( __('notifications.user.greeting', ['username' => $notifiable->name]) );
+                    ->subject(__('notifications.missinglead.subject'))
+                    ->greeting(__('notifications.user.greeting', ['username' => $notifiable->name]));
 
-        if (count($this->clubs) > 0){
-          $mail = $mail->line( __('notifications.missinglead.line1'));
-          foreach ($this->clubs as $c){
-            $mail = $mail->line($c);
-          }
+        if (count($this->clubs) > 0) {
+            $mail = $mail->line(__('notifications.missinglead.line1'));
+            foreach ($this->clubs as $c) {
+                $mail = $mail->line($c);
+            }
         }
 
-        if (count($this->leagues)>0){
-          $mail = $mail->line('')
-                       ->line(__('notifications.missinglead.line2'));
-          foreach ($this->leagues as $l){
-            $mail = $mail->line($l);
-          }
+        if (count($this->leagues) > 0) {
+            $mail = $mail->line('')
+                         ->line(__('notifications.missinglead.line2'));
+            foreach ($this->leagues as $l) {
+                $mail = $mail->line($l);
+            }
         }
-
 
         return $mail;
     }
-
 }

@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Rule;
 
 class GameHour implements Rule
 {
-    private array $ok_hours = array();
+    private array $ok_hours = [];
 
     /**
      * Create a new rule instance.
@@ -15,7 +15,7 @@ class GameHour implements Rule
      */
     public function __construct()
     {
-      $this->ok_hours = array('08','09','10','11','12','13','14','15','16','17','18','19','20');
+        $this->ok_hours = ['08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'];
     }
 
     /**
@@ -27,12 +27,12 @@ class GameHour implements Rule
      */
     public function passes($attribute, $value)
     {
-      $hour_val = explode(":",$value);
-      if (count($hour_val) != 2){
-        return false;
-      } else {
-        return in_array($hour_val[0], $this->ok_hours);
-      }
+        $hour_val = explode(':', $value);
+        if (count($hour_val) != 2) {
+            return false;
+        } else {
+            return in_array($hour_val[0], $this->ok_hours);
+        }
     }
 
     /**
@@ -42,6 +42,6 @@ class GameHour implements Rule
      */
     public function message()
     {
-          return trans('validation.gameminute');
+        return trans('validation.gameminute');
     }
 }

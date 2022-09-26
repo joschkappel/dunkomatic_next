@@ -3,13 +3,10 @@
 namespace App\Notifications;
 
 use App\Enums\ReportFileType;
+use App\Models\Club;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Log;
-
-use App\Models\Club;
 
 class ClubReportsAvailable extends Notification
 {
@@ -24,7 +21,7 @@ class ClubReportsAvailable extends Notification
      */
     public function __construct(Club $club)
     {
-      $this->club = $club;
+        $this->club = $club;
     }
 
     /**
@@ -35,7 +32,7 @@ class ClubReportsAvailable extends Notification
      */
     public function via($notifiable)
     {
-      return ['mail'];
+        return ['mail'];
     }
 
     /**
@@ -48,10 +45,9 @@ class ClubReportsAvailable extends Notification
     {
         return (new MailMessage)
                     ->level('info')
-                    ->subject( __('notifications.clubrptavail.subject', ['club'=>$this->club->shortname]) )
-                    ->greeting( __('notifications.user.greeting', ['username'=>$notifiable->name]) )
-                    ->line( __('notifications.clubrptavail.line', ['club'=>$this->club->name]) )
-                    ->action( __('notifications.clubrptavail.action'), route('club_archive.get',[ 'club' => $this->club, 'format'=> ReportFileType::None] ) );
+                    ->subject(__('notifications.clubrptavail.subject', ['club' => $this->club->shortname]))
+                    ->greeting(__('notifications.user.greeting', ['username' => $notifiable->name]))
+                    ->line(__('notifications.clubrptavail.line', ['club' => $this->club->name]))
+                    ->action(__('notifications.clubrptavail.action'), route('club_archive.get', ['club' => $this->club, 'format' => ReportFileType::None]));
     }
-
 }

@@ -3,10 +3,9 @@
 namespace Database\Factories;
 
 use App\Models\Club;
-use App\Models\Region;
 use App\Models\League;
+use App\Models\Region;
 use Illuminate\Database\Eloquent\Factories\Factory;
-
 
 class ClubFactory extends Factory
 {
@@ -29,18 +28,19 @@ class ClubFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->words(2,true),
+            'name' => $this->faker->words(2, true),
             'shortname' => $this->faker->regexify('[A-Z]{4}'),
             'url' => $this->faker->url(),
             'club_no' => $this->faker->randomNumber(7, true),
-            'region_id' => Region::where('code','HBVDA')->first()->id,
+            'region_id' => Region::where('code', 'HBVDA')->first()->id,
         ];
     }
+
     public function configure()
     {
         return $this->afterCreating(function (Club $club) {
             $gym = $club->gyms()->first();
-            foreach ($club->teams as $t){
+            foreach ($club->teams as $t) {
                 $t->gym()->associate($gym);
                 $t->save();
             }
@@ -49,9 +49,8 @@ class ClubFactory extends Factory
 
     public function assigned(League $league, $lchar, $lno)
     {
-        return $this->afterCreating( function (Club $club) use ($league, $lchar, $lno) {
-            $league->clubs()->attach([ $club->id =>  ['league_no' => $lno, 'league_char' => $lchar]]);
-                    });
-
+        return $this->afterCreating(function (Club $club) use ($league, $lchar, $lno) {
+            $league->clubs()->attach([$club->id => ['league_no' => $lno, 'league_char' => $lchar]]);
+        });
     }
 }

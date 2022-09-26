@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Rule;
 
 class GameMinute implements Rule
 {
-    private array $ok_minutes = array();
+    private array $ok_minutes = [];
 
     /**
      * Create a new rule instance.
@@ -15,7 +15,7 @@ class GameMinute implements Rule
      */
     public function __construct()
     {
-        $this->ok_minutes = array('00','15','30','45');
+        $this->ok_minutes = ['00', '15', '30', '45'];
     }
 
     /**
@@ -27,8 +27,8 @@ class GameMinute implements Rule
      */
     public function passes($attribute, $value)
     {
-        $min_val = explode(":",$value);
-        if (count($min_val) != 2){
+        $min_val = explode(':', $value);
+        if (count($min_val) != 2) {
             return false;
         } else {
             return in_array($min_val[1], $this->ok_minutes);

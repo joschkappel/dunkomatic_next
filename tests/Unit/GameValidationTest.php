@@ -2,26 +2,29 @@
 
 namespace Tests\Unit;
 
+use App\Models\Club;
 use App\Models\Game;
 use App\Models\League;
-use App\Models\Club;
 use App\Traits\LeagueFSM;
-use Illuminate\Support\Facades\Notification;
 use Carbon\Carbon;
-
-use Tests\TestCase;
+use Illuminate\Support\Facades\Notification;
 use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class GameValidationTest extends TestCase
 {
     use Authentication, LeagueFSM;
 
     protected static $game;
+
     protected static $guest;
+
     protected static $home;
 
     private $testleague;
+
     private $testclub_assigned;
+
     private $testclub_free;
 
     public function setUp(): void
@@ -31,7 +34,6 @@ class GameValidationTest extends TestCase
         $this->testclub_assigned = $this->testleague->clubs()->first();
         $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
     }
-
 
     /**
      * custom game validation
@@ -47,7 +49,7 @@ class GameValidationTest extends TestCase
     {
         Notification::fake();
         $schedule = $this->testleague->schedule;
-        $schedule->update(['custom_events' =>  true]);
+        $schedule->update(['custom_events' => true]);
 
         $game = Game::whereNotNull('team_id_guest')->whereNotNull('team_id_home')->first();
 
@@ -60,6 +62,7 @@ class GameValidationTest extends TestCase
 
         $response->assertSessionHasErrors($formInput);
     }
+
     /**
      * game validation
      *
@@ -106,6 +109,7 @@ class GameValidationTest extends TestCase
             'team id guest same as home' => ['team_id_guest', static::$home],
         ];
     }
+
     public function gameForm(): array
     {
         return [

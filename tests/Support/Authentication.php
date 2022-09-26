@@ -2,19 +2,17 @@
 
 namespace Tests\Support;
 
-use App\Models\User;
 use App\Models\Region;
+use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Tests\TestCase;
-
 use Silber\Bouncer\BouncerFacade as Bouncer;
-
 
 trait Authentication
 {
-    /** @var User $region_user **/
+    /** @var User * */
     protected $region_user;
-    /** @var Region $region **/
+
+    /** @var Region * */
     protected $region;
 
     /**
@@ -24,14 +22,14 @@ trait Authentication
     {
         $this->afterApplicationCreated(function () {
             $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
-            $this->region = Region::where('code','HBVDA')->first();
+            $this->region = Region::where('code', 'HBVDA')->first();
             $this->region_user = $this->region->regionadmins()->first()->user()->first();
 
             Bouncer::sync($this->region_user)->roles([]);
-            Bouncer::assign( 'superadmin')->to($this->region_user);
-            Bouncer::assign( 'regionadmin')->to($this->region_user);
-            Bouncer::allow($this->region_user)->to('access',$this->region);
-            Bouncer::allow($this->region_user)->to('manage',$this->region_user);
+            Bouncer::assign('superadmin')->to($this->region_user);
+            Bouncer::assign('regionadmin')->to($this->region_user);
+            Bouncer::allow($this->region_user)->to('access', $this->region);
+            Bouncer::allow($this->region_user)->to('manage', $this->region_user);
             Bouncer::refreshFor($this->region_user);
         });
     }

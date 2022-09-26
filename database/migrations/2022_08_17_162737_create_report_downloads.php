@@ -19,7 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable;
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->unsignedInteger('model_id');
-            $table->text('model_class',40);
+            $table->text('model_class', 40);
             $table->timestamps();
         });
     }

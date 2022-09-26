@@ -4,7 +4,6 @@ namespace App\Notifications;
 
 use App\Models\Club;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -13,7 +12,9 @@ class CharPickingEnabled extends Notification
     use Queueable;
 
     protected Club $club;
+
     protected string $mode;
+
     protected string $season;
 
     /**
@@ -47,7 +48,7 @@ class CharPickingEnabled extends Notification
      */
     public function toMail($notifiable)
     {
-        if ($this->mode){
+        if ($this->mode) {
             $mode = __('notifications.charpickenabled.open');
         } else {
             $mode = __('notifications.charpickenabled.closed');
@@ -55,15 +56,15 @@ class CharPickingEnabled extends Notification
 
         return (new MailMessage)
                     ->level('info')
-                    ->subject( __('notifications.charpickenabled.subject', ['region'=>$this->club->region->code,
-                                                                            'season'=>$this->season,
-                                                                            'mode'=>$mode ]) )
-                    ->greeting( __('notifications.user.greeting', ['username'=>$notifiable->name]))
-                    ->line(__('notifications.charpickenabled.line1', ['region'=>$this->club->region->name,
-                                                                      'season'=>$this->season,
-                                                                      'mode'=>$mode]))
+                    ->subject(__('notifications.charpickenabled.subject', ['region' => $this->club->region->code,
+                        'season' => $this->season,
+                        'mode' => $mode, ]))
+                    ->greeting(__('notifications.user.greeting', ['username' => $notifiable->name]))
+                    ->line(__('notifications.charpickenabled.line1', ['region' => $this->club->region->name,
+                        'season' => $this->season,
+                        'mode' => $mode, ]))
                     ->line(__('notifications.charpickenabled.line2'))
-                    ->action( __('notifications.charpickenabled.action'), route('club.team.pickchar', ['language'=>app()->getLocale(), 'club' => $this->club] ));
+                    ->action(__('notifications.charpickenabled.action'), route('club.team.pickchar', ['language' => app()->getLocale(), 'club' => $this->club]));
     }
 
     /**

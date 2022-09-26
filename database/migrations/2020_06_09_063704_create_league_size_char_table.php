@@ -17,13 +17,13 @@ class CreateLeagueSizeCharTable extends Migration
             $table->id();
             $table->unsignedInteger('league_size_id');
             $table->foreign('league_size_id')->references('id')->on('league_sizes');
-            $table->string('team_char',2);
+            $table->string('team_char', 2);
             $table->timestamps();
         });
 
         Artisan::call('db:seed', [
             '--class' => 'LeagueSizeCharsSeeder',
-            '--force' => true
+            '--force' => true,
         ]);
     }
 

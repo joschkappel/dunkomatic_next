@@ -1,7 +1,7 @@
 <?php
+
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -17,23 +17,23 @@ class DatabaseSeeder extends Seeder
 
         // load base tables
         $this->call([
-          base\SettingsTableSeeder::class,
-          dev\UsersTableSeeder::class,
-          base\MessagesTableSeeder::class,
+            base\SettingsTableSeeder::class,
+            dev\UsersTableSeeder::class,
+            base\MessagesTableSeeder::class,
         ]);
 
         // migrate tables from v1
         $this->call([
-          dev\ClubsTableSeeder::class,
-          dev\GymsTableSeeder::class,
-          prod\SchedulesTableSeeder::class,
-          prod\ScheduleEventsTableSeeder::class,
-          prod\LeaguesTableSeeder::class,
-          prod\ClubLeagueTableSeeder::class,
-          prod\TeamsTableSeeder::class,
-          dev\MembersTableSeeder::class,
-          dev\GamesTableSeeder::class,
-          base\LeagueStateTableSeeder::class,
+            dev\ClubsTableSeeder::class,
+            dev\GymsTableSeeder::class,
+            prod\SchedulesTableSeeder::class,
+            prod\ScheduleEventsTableSeeder::class,
+            prod\LeaguesTableSeeder::class,
+            prod\ClubLeagueTableSeeder::class,
+            prod\TeamsTableSeeder::class,
+            dev\MembersTableSeeder::class,
+            dev\GamesTableSeeder::class,
+            base\LeagueStateTableSeeder::class,
         ]);
     }
 }

@@ -2,18 +2,17 @@
 
 namespace App\Checks;
 
+use Illuminate\Support\Carbon;
 use Rappasoft\LaravelAuthenticationLog\Models\AuthenticationLog;
 use Spatie\Health\Checks\Check;
 use Spatie\Health\Checks\Result;
 
-
-use Illuminate\Support\Carbon;
-
 class ConcurrentUsersCheck extends Check
 {
-
     protected ?float $failWhenFailedLoginsIsHigherInTheLastMinute = null;
+
     protected ?float $failWhenFailedLoginsIsHigherInTheLast5Minutes = null;
+
     protected ?float $failWhenFailedLoginsIsHigherInTheLast15Minutes = null;
 
     public function failWhenFailedLoginsIsHigherInTheLastMinute(float $failed_logins): self
@@ -41,25 +40,25 @@ class ConcurrentUsersCheck extends Check
     {
         $last1min = Carbon::now()->subMinutes(1);
         $last5min = Carbon::now()->subMinutes(5);
-        $last15min =  Carbon::now()->subMinutes(15);
+        $last15min = Carbon::now()->subMinutes(15);
 
         // total logged in users last 1min
-        $last1min_tot_cnt = AuthenticationLog::where('login_at','>=', $last1min)->count();
+        $last1min_tot_cnt = AuthenticationLog::where('login_at', '>=', $last1min)->count();
         // total logged in users last 5mins
-        $last5min_tot_cnt = AuthenticationLog::where('login_at','>=', $last5min)->count();
+        $last5min_tot_cnt = AuthenticationLog::where('login_at', '>=', $last5min)->count();
         // total logged in users last 15mins
-        $last15min_tot_cnt = AuthenticationLog::where('login_at','>=', $last15min)->count();
+        $last15min_tot_cnt = AuthenticationLog::where('login_at', '>=', $last15min)->count();
 
         // failed logins last 1 min
-        $last1min_fail_cnt = AuthenticationLog::where('login_at','>=', $last1min)->where('login_successful',0)->count();
+        $last1min_fail_cnt = AuthenticationLog::where('login_at', '>=', $last1min)->where('login_successful', 0)->count();
         // failed logins last 5 min
-        $last5min_fail_cnt = AuthenticationLog::where('login_at','>=', $last5min)->where('login_successful',0)->count();
+        $last5min_fail_cnt = AuthenticationLog::where('login_at', '>=', $last5min)->where('login_successful', 0)->count();
         // failed logins last 15 min
-        $last15min_fail_cnt = AuthenticationLog::where('login_at','>=', $last15min)->where('login_successful',0)->count();
+        $last15min_fail_cnt = AuthenticationLog::where('login_at', '>=', $last15min)->where('login_successful', 0)->count();
 
-        $last1min_fail_pct =   $last1min_tot_cnt > 0 ? round( ($last1min_fail_cnt * 100) / $last1min_tot_cnt ,2) : 0;
-        $last5min_fail_pct =   $last5min_tot_cnt > 0 ? round( ($last5min_fail_cnt * 100) / $last5min_tot_cnt ,2) : 0;
-        $last15min_fail_pct =   $last15min_tot_cnt > 0 ? round( ($last15min_fail_cnt * 100) / $last15min_tot_cnt ,2) : 0;
+        $last1min_fail_pct = $last1min_tot_cnt > 0 ? round(($last1min_fail_cnt * 100) / $last1min_tot_cnt, 2) : 0;
+        $last5min_fail_pct = $last5min_tot_cnt > 0 ? round(($last5min_fail_cnt * 100) / $last5min_tot_cnt, 2) : 0;
+        $last15min_fail_pct = $last15min_tot_cnt > 0 ? round(($last15min_fail_cnt * 100) / $last15min_tot_cnt, 2) : 0;
 
         $result = Result::make()
             ->ok()
@@ -75,27 +74,24 @@ class ConcurrentUsersCheck extends Check
                 'last_15_minutes_failed' => $last15min_fail_pct,
             ]);
 
-            if ($this->failWhenFailedLoginsIsHigherInTheLastMinute) {
-                if ($last1min_fail_pct > ($this->failWhenFailedLoginsIsHigherInTheLastMinute)) {
-                    return $result->failed("The failed login attempts of the last minute is {$last1min_fail_pct}% which is higher than the allowed {$this->failWhenFailedLoginsIsHigherInTheLastMinute}");
-                }
+        if ($this->failWhenFailedLoginsIsHigherInTheLastMinute) {
+            if ($last1min_fail_pct > ($this->failWhenFailedLoginsIsHigherInTheLastMinute)) {
+                return $result->failed("The failed login attempts of the last minute is {$last1min_fail_pct}% which is higher than the allowed {$this->failWhenFailedLoginsIsHigherInTheLastMinute}");
             }
+        }
 
-            if ($this->failWhenFailedLoginsIsHigherInTheLast5Minutes) {
-                if ($last5min_fail_pct > ($this->failWhenFailedLoginsIsHigherInTheLast5Minutes)) {
-                    return $result->failed("The failed login attempts of the last five minutes is {$last5min_fail_pct}% which is higher than the allowed {$this->failWhenFailedLoginsIsHigherInTheLast5Minutes}");
-                }
+        if ($this->failWhenFailedLoginsIsHigherInTheLast5Minutes) {
+            if ($last5min_fail_pct > ($this->failWhenFailedLoginsIsHigherInTheLast5Minutes)) {
+                return $result->failed("The failed login attempts of the last five minutes is {$last5min_fail_pct}% which is higher than the allowed {$this->failWhenFailedLoginsIsHigherInTheLast5Minutes}");
             }
+        }
 
-            if ($this->failWhenFailedLoginsIsHigherInTheLast15Minutes) {
-                if ($last15min_fail_pct > ($this->failWhenFailedLoginsIsHigherInTheLast15Minutes)) {
-                    return $result->failed("The failed login attempts of the last fifteen minutes is {$last15min_fail_pct}% which is higher than the allowed {$this->failWhenFailedLoginsIsHigherInTheLast15Minutes}");
-                }
+        if ($this->failWhenFailedLoginsIsHigherInTheLast15Minutes) {
+            if ($last15min_fail_pct > ($this->failWhenFailedLoginsIsHigherInTheLast15Minutes)) {
+                return $result->failed("The failed login attempts of the last fifteen minutes is {$last15min_fail_pct}% which is higher than the allowed {$this->failWhenFailedLoginsIsHigherInTheLast15Minutes}");
             }
+        }
 
-            return $result;
-
+        return $result;
     }
-
-
 }

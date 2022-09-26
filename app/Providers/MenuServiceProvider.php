@@ -2,14 +2,13 @@
 
 namespace App\Providers;
 
+use App\Helpers\ViewComposer;
+use App\Menu;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
-use App\Events\BuildingMenu;
-use App\Helpers\ViewComposer;
-use App\Menu;
 
 class MenuServiceProvider extends BaseServiceProvider
 {
@@ -42,12 +41,10 @@ class MenuServiceProvider extends BaseServiceProvider
         $this->loadViews();
         // $this->loadTranslations();
 
-
         $this->loadConfig();
         // $this->registerCommands();
         $this->registerViewComposers($view);
         //$this->registerMenu($events, $config);
-
     }
 
     /**
@@ -71,7 +68,6 @@ class MenuServiceProvider extends BaseServiceProvider
         $this->mergeConfigFrom(config_path('menu.php'), 'menu');
     }
 
-
     /**
      * Register the package's view composers.
      *
@@ -81,6 +77,4 @@ class MenuServiceProvider extends BaseServiceProvider
     {
         $view->composer('\App\Menu', ViewComposer::class);
     }
-
-
 }

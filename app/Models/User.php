@@ -2,32 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Rappasoft\LaravelAuthenticationLog\Traits\AuthenticationLoggable;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\CanResetPassword;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Log;
-use Silber\Bouncer\Database\HasRolesAndAbilities;
-use Illuminate\Support\Facades\DB;
-
-use App\Models\Member;
-use App\Models\Region;
-use App\Models\Message;
-use App\Models\Club;
-use App\Models\League;
-use App\Notifications\VerifyEmail;
-use App\Models\Invitation;
-
 use App\Notifications\ResetPassword as ResetPasswordNotification;
+use App\Notifications\VerifyEmail;
+use Illuminate\Contracts\Auth\CanResetPassword;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Translation\HasLocalePreference;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Rappasoft\LaravelAuthenticationLog\Traits\AuthenticationLoggable;
+use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 /**
  * App\Models\User
@@ -61,6 +52,7 @@ use Illuminate\Support\Collection;
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\Silber\Bouncer\Database\Role[] $roles
  * @property-read int|null $roles_count
+ *
  * @method static \Database\Factories\UserFactory factory(...$parameters)
  * @method static bool isRole($role)
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
@@ -125,7 +117,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
 
     protected $fillable = [
         'id', 'name', 'email', 'password', 'approved_at', 'rejected_at', 'reason_join', 'reason_reject',
-        'email_verified_at', 'locale', 'provider', 'provider_id', 'avatar'
+        'email_verified_at', 'locale', 'provider', 'provider_id', 'avatar',
     ];
 
     protected $hidden = [
@@ -145,20 +137,23 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
         parent::boot();
 
         static::deleting(function ($user) { // before delete() method call this
-            $user->messages()->delete();
+        $user->messages()->delete();
         });
     }
+
     public function getInitialsAttribute(): string
     {
         $nameParts = explode(' ', trim($this->name));
         $firstName = array_shift($nameParts);
         $lastName = array_pop($nameParts);
         $initials = (
-            mb_substr($firstName,0,1) .
-            mb_substr($lastName,0,1)
+            mb_substr($firstName, 0, 1).
+            mb_substr($lastName, 0, 1)
         );
-      return strtoupper($initials);
+
+        return strtoupper($initials);
     }
+
     /**
      * Get the related member
      */
@@ -170,54 +165,59 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
     public function regions(): Collection
     {
         // get all regions this user can access
-        if ($this->isAn('superadmin')){
+        if ($this->isAn('superadmin')) {
             return Region::all();
         } else {
             $regions = DB::table('abilities')
             ->join('permissions', 'abilities.id', '=', 'permissions.ability_id')
-            ->where(function($query) {
-                $query->where('abilities.name','access')
-                      ->orWhere('abilities.name','coaccess');
+            ->where(function ($query) {
+                $query->where('abilities.name', 'access')
+                      ->orWhere('abilities.name', 'coaccess');
             })
             ->where('abilities.entity_type', Region::class)
             ->where('permissions.entity_id', $this->id)
             ->where('permissions.entity_type', User::class)
             ->select('abilities.entity_id')
             ->get();
+
             return Region::whereIn('id', $regions->pluck('entity_id'))->get();
         }
     }
+
     public function clubs(): Collection
     {
-        if ($this->isAn('superadmin')){
+        if ($this->isAn('superadmin')) {
             return Club::all();
         } else {
             // get all clubs this user can access
             $clubs = DB::table('abilities')
             ->join('permissions', 'abilities.id', '=', 'permissions.ability_id')
-            ->where('abilities.name','access')
+            ->where('abilities.name', 'access')
             ->where('abilities.entity_type', Club::class)
             ->where('permissions.entity_id', $this->id)
             ->where('permissions.entity_type', User::class)
             ->select('abilities.entity_id')
             ->get();
+
             return Club::whereIn('id', $clubs->pluck('entity_id'))->get();
         }
     }
+
     public function leagues(): Collection
     {
-        if ($this->isAn('superadmin')){
+        if ($this->isAn('superadmin')) {
             return League::all();
         } else {
             // get all leagues this user can access
             $leagues = DB::table('abilities')
             ->join('permissions', 'abilities.id', '=', 'permissions.ability_id')
-            ->where('abilities.name','access')
+            ->where('abilities.name', 'access')
             ->where('abilities.entity_type', League::class)
             ->where('permissions.entity_id', $this->id)
             ->where('permissions.entity_type', User::class)
             ->select('abilities.entity_id')
             ->get();
+
             return League::whereIn('id', $leagues->pluck('entity_id'))->get();
         }
     }
@@ -232,7 +232,6 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
         return $this->hasMany(Invitation::class);
     }
 
-
     public function region_messages(int $region_id): HasMany
     {
         return $this->messages()->where('region_id', $region_id);
@@ -241,35 +240,38 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
     public function LeagueFilecount(Region $region): int
     {
         $directory = $region->league_folder;
-        $llist = "";
+        $llist = '';
 
         if ($this->can('access', $region)) {
             $llist = $this->leagues()->pluck('shortname')->implode('|');
         }
 
-        if ($llist !=  "") {
+        if ($llist != '') {
             $reports = collect(Storage::files($directory))->filter(function ($value, $key) use ($llist) {
-                return (preg_match('(' . $llist . ')', $value) === 1);
+                return preg_match('('.$llist.')', $value) === 1;
                 // return Str::contains($llist, $value);
             });
+
             return count($reports);
         } else {
             return 0;
         }
     }
+
     public function LeagueFilenames(Region $region): Collection
     {
         $directory = $region->league_folder;
-        $llist = "";
+        $llist = '';
 
         if ($this->can('access', $region)) {
             $llist = $this->leagues()->pluck('shortname')->implode('|');
         }
-        if ($llist != "") {
+        if ($llist != '') {
             $reports = collect(Storage::files($directory))->filter(function ($value, $key) use ($llist) {
-                return (preg_match('(' . $llist . ')', $value) === 1);
+                return preg_match('('.$llist.')', $value) === 1;
                 // return Str::contains($llist, $value);
             });
+
             return $reports;
         } else {
             return collect();
@@ -279,17 +281,18 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
     public function TeamwareFilecount(Region $region): int
     {
         $directory = $region->teamware_folder;
-        $llist= "";
+        $llist = '';
 
         if ($this->can('access', $region)) {
             $llist = $this->leagues()->pluck('shortname')->implode('|');
         }
 
-        if ($llist !=  "") {
+        if ($llist != '') {
             $reports = collect(Storage::files($directory))->filter(function ($value, $key) use ($llist) {
-                return (preg_match('(' . $llist . ')', $value) === 1);
+                return preg_match('('.$llist.')', $value) === 1;
                 // return Str::contains($llist, $value);
             });
+
             return count($reports);
         } else {
             return 0;
@@ -299,17 +302,18 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
     public function TeamwareFilenames(Region $region): Collection
     {
         $directory = $region->teamware_folder;
-        $llist = "";
+        $llist = '';
 
         if ($this->can('access', $region)) {
             $llist = $this->leagues()->pluck('shortname')->implode('|');
         }
 
-        if ($llist != "") {
+        if ($llist != '') {
             $reports = collect(Storage::files($directory))->filter(function ($value, $key) use ($llist) {
-                return (preg_match('(' . $llist . ')', $value) === 1);
+                return preg_match('('.$llist.')', $value) === 1;
                 // return Str::contains($llist, $value);
             });
+
             return $reports;
         } else {
             return collect();
@@ -319,17 +323,18 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
     public function ClubFilecount(Region $region): int
     {
         $directory = $region->club_folder;
-        $llist = "";
+        $llist = '';
 
         if ($this->can('access', $region)) {
             $llist = $this->clubs()->pluck('shortname')->implode('|');
         }
 
-        if ($llist != "") {
+        if ($llist != '') {
             $reports = collect(Storage::files($directory))->filter(function ($value, $key) use ($llist) {
-                return (preg_match('(' . $llist . ')', $value) === 1);
+                return preg_match('('.$llist.')', $value) === 1;
                 // return Str::contains($llist, $value);
             });
+
             return count($reports);
         } else {
             return 0;
@@ -339,17 +344,18 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
     public function ClubFilenames(Region $region): Collection
     {
         $directory = $region->club_folder;
-        $llist = "";
+        $llist = '';
 
         if ($this->can('access', $region)) {
             $llist = $this->clubs()->pluck('shortname')->implode('|');
         }
 
-        if ($llist != "") {
+        if ($llist != '') {
             $reports = collect(Storage::files($directory))->filter(function ($value, $key) use ($llist) {
-                return (preg_match('(' . $llist . ')', $value) === 1);
+                return preg_match('('.$llist.')', $value) === 1;
                 // return Str::contains($llist, $value);
             });
+
             return $reports;
         } else {
             return collect();
@@ -369,6 +375,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
     public function prunable()
     {
         Log::notice('[JOB][DB CLEANUP] pruning users that have been rejected more than a week ago or not valid their email since a month.');
+
         return static::where('rejected_at', '<', now()->subWeek())
             ->orWhere(function ($query) {
                 $query->whereNull('email_verified_at')

@@ -55,11 +55,11 @@ return [
     'tooltip.deassign' => 'De-register team :Name from a league',
     'training' => 'Training Day/Time',
     'unassigned' => 'unassigned',
-    'register.ok' =>  'The team is registered',
+    'register.ok' => 'The team is registered',
     'register.notok' => 'Registration failed, the team is NOT registered',
     'unregister.ok' => 'The team is de-registered',
     'unregister.notok' => 'Registration failed, the team is NOT de-registered',
     'plan.saved.ok' => 'Preferred league numbers saved',
-    'plan.saved.notok' => 'There is a problem! Your preferred league numbers could not be saved'
+    'plan.saved.notok' => 'There is a problem! Your preferred league numbers could not be saved',
 
 ];

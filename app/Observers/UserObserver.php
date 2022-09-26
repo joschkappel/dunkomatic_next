@@ -2,11 +2,9 @@
 
 namespace App\Observers;
 
-use App\Models\User;
-use App\Models\Club;
-use App\Models\League;
 use App\Enums\Role;
 use App\Models\Member;
+use App\Models\User;
 use App\Traits\UserAccessManager;
 use Illuminate\Support\Facades\Log;
 
@@ -24,17 +22,16 @@ class UserObserver
     {
         Log::info('[OBSERVER] user created - check for members', ['user-id' => $user->id]);
 
-        $member = Member::with('memberships')->where('email1', $user->email)->orWhere('email2', $user->email)->orWhereHas('memberships', function ($q) use($user) { $q->where('email',$user->email);} )->first();
+        $member = Member::with('memberships')->where('email1', $user->email)->orWhere('email2', $user->email)->orWhereHas('memberships', function ($q) use ($user) {
+        $q->where('email', $user->email);
+        })->first();
         if (isset($member)) {
             // link user and member
             $member->user()->save($user);
             $this->cloneMemberAccessRights($user);
             Log::info('[OBSERVER] user created - member found and linked', ['user-id' => $user->id, 'member-id' => $member->id]);
         }
-
     }
-
-
 
     /**
      * Handle the User "updated" event.
@@ -44,10 +41,9 @@ class UserObserver
      */
     public function updated(User $user)
     {
-
         if (($user->isDirty('approved_at')) and ($user->approved_at != null)) {
             Log::info('[OBSERVER] user updated - approved', ['user-id' => $user->id]);
-            if (!$user->member()->exists()) {
+            if (! $user->member()->exists()) {
                 // else create the member witha  role = user
                 $member = new Member(['lastname' => $user->name, 'email1' => $user->email]);
                 $member->save();

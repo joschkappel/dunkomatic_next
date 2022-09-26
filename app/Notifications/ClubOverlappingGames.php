@@ -4,9 +4,7 @@ namespace App\Notifications;
 
 use App\Models\Club;
 use App\Models\User;
-
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -15,6 +13,7 @@ class ClubOverlappingGames extends Notification
     use Queueable;
 
     protected Club $club;
+
     protected int $games_count;
 
     /**
@@ -57,7 +56,7 @@ class ClubOverlappingGames extends Notification
             ->greeting(__('notifications.user.greeting', ['username' => $notifiable->name]))
             ->line(__('notifications.overlappinggames.line1', ['club' => $this->club->shortname, 'games_count' => $this->games_count]))
             ->action(__('notifications.overlappinggames.action'), route('club.list.homegame', ['language' => app()->getLocale(), 'club' => $this->club]))
-            ->line(__('notifications.overlappinggames.line2', ['overlapcolumn'=> __('game.overlap') ]))
+            ->line(__('notifications.overlappinggames.line2', ['overlapcolumn' => __('game.overlap')]))
             ->salutation(__('notifications.app.salutation'));
     }
 
@@ -69,9 +68,9 @@ class ClubOverlappingGames extends Notification
      */
     public function toArray($notifiable)
     {
-        $lines =  '<p>' . __('notifications.overlappinggames.line1', ['club' => $this->club->shortname, 'games_count' => $this->games_count]) . '</p>';
-        $lines .= '<p><a href="'.url(route('club.list.homegame', ['language'=>app()->getLocale(), 'club'=>$this->club->id])).'">'.__('notifications.overlappinggames.action').'</a></p>';
-        $lines .= '<p>' . __('notifications.overlappinggames.line2', ['overlapcolumn'=> __('game.overlap') ]) . '</p>';
+        $lines = '<p>'.__('notifications.overlappinggames.line1', ['club' => $this->club->shortname, 'games_count' => $this->games_count]).'</p>';
+        $lines .= '<p><a href="'.url(route('club.list.homegame', ['language' => app()->getLocale(), 'club' => $this->club->id])).'">'.__('notifications.overlappinggames.action').'</a></p>';
+        $lines .= '<p>'.__('notifications.overlappinggames.line2', ['overlapcolumn' => __('game.overlap')]).'</p>';
 
         return [
             'subject' => __('notifications.overlappinggames.subject'),

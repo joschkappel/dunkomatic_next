@@ -4,19 +4,9 @@ namespace App\Models;
 
 use App\Enums\ReportFileType;
 use App\Enums\Role;
-use App\Models\Club;
-use App\Models\League;
-use App\Models\Member;
-use App\Models\Membership;
-use App\Models\Schedule;
-use App\Models\Team;
-use App\Models\Gym;
-use App\Models\Message;
-use App\Models\Invitation;
 use App\Traits\ReportFinder;
-use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -78,6 +68,7 @@ use Illuminate\Support\Str;
  * @property-read int|null $schedules_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Team[] $teams
  * @property-read int|null $teams_count
+ *
  * @method static \Database\Factories\RegionFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Region newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Region newQuery()
@@ -114,7 +105,7 @@ class Region extends Model
         'job_game_notime', 'job_noleads', 'job_email_valid',
         'fmt_league_reports', 'fmt_club_reports',
         'open_scheduling_at', 'open_selection_at',
-        'close_selection_at', 'close_scheduling_at', 'close_referees_at'
+        'close_selection_at', 'close_scheduling_at', 'close_referees_at',
     ];
 
     protected $casts = [
@@ -124,7 +115,7 @@ class Region extends Model
         'open_selection_at' => 'date',
         'close_selection_at' => 'date',
         'close_scheduling_at' => 'date',
-        'close_referees_at' => 'date'
+        'close_referees_at' => 'date',
     ];
 
     public function clubs(): HasMany
@@ -136,6 +127,7 @@ class Region extends Model
     {
         return $this->hasManyThrough(Team::class, Club::class);
     }
+
     public function gyms(): HasManyThrough
     {
         return $this->hasManyThrough(Gym::class, Club::class);
@@ -150,6 +142,7 @@ class Region extends Model
     {
         return $this->hasMany(Invitation::class);
     }
+
     public function report_jobs(): HasMany
     {
         return $this->hasMany(ReportJob::class);
@@ -159,8 +152,9 @@ class Region extends Model
     {
         // return $this->hasMany(User::class);
         $region = $this;
+
         return User::all()->filter(function ($user) use ($region) {
-            return ($user->isNotAn('superadmin')) and (($user->can('access', $region)) or ($user->can('coaccess', $region)) );
+            return $user->isNotAn('superadmin') and (($user->can('access', $region)) or ($user->can('coaccess', $region)));
         });
     }
 
@@ -173,18 +167,22 @@ class Region extends Model
     {
         return $this->hasMany('App\Models\Region', 'hq', 'code');
     }
+
     public function parentRegion(): BelongsTo
     {
         return $this->belongsTo('App\Models\Region', 'hq', 'code');
     }
+
     public function getIsTopLevelAttribute(): bool
     {
-        return ($this->childRegions->count() > 0);
+        return $this->childRegions->count() > 0;
     }
+
     public function getIsBaseLevelAttribute(): bool
     {
-        return ($this->childRegions->count() == 0);
+        return $this->childRegions->count() == 0;
     }
+
     public function messages(): HasMany
     {
         return $this->hasMany(Message::class);
@@ -208,86 +206,95 @@ class Region extends Model
 
     public function getClubFolderAttribute(): string
     {
-        return  config('dunkomatic.folders.export').'/'.Str::of(config('global.season'))->replace('/', '_') . '/' . $this->code . '/' . config('dunkomatic.export_folders.clubs');
+        return  config('dunkomatic.folders.export').'/'.Str::of(config('global.season'))->replace('/', '_').'/'.$this->code.'/'.config('dunkomatic.export_folders.clubs');
     }
+
     public function getLeagueFolderAttribute(): string
     {
-        return   config('dunkomatic.folders.export').'/'.Str::of(config('global.season'))->replace('/', '_') . '/' . $this->code . '/' . config('dunkomatic.export_folders.leagues');
+        return   config('dunkomatic.folders.export').'/'.Str::of(config('global.season'))->replace('/', '_').'/'.$this->code.'/'.config('dunkomatic.export_folders.leagues');
     }
+
     public function getTeamwareFolderAttribute(): string
     {
-        return   config('dunkomatic.folders.export').'/'.Str::of(config('global.season'))->replace('/', '_') . '/' . $this->code . '/' . config('dunkomatic.export_folders.teamware');
+        return   config('dunkomatic.folders.export').'/'.Str::of(config('global.season'))->replace('/', '_').'/'.$this->code.'/'.config('dunkomatic.export_folders.teamware');
     }
+
     public function getRegionFolderAttribute(): string
     {
-        return   config('dunkomatic.folders.export').'/'.Str::of(config('global.season'))->replace('/', '_') . '/' . $this->code ;
+        return   config('dunkomatic.folders.export').'/'.Str::of(config('global.season'))->replace('/', '_').'/'.$this->code;
     }
-    public function filecount(ReportFileType $format=null, string $fnprefix=null): int
+
+    public function filecount(ReportFileType $format = null, string $fnprefix = null): int
     {
         $reports = $this->filenames($format, $fnprefix);
+
         return count($reports);
     }
-    public function filenames(ReportFileType $format=null, string $fnprefix=null): Collection
+
+    public function filenames(ReportFileType $format = null, string $fnprefix = null): Collection
     {
-        if ($format == null){
+        if ($format == null) {
             $format = ReportFileType::coerce(ReportFileType::None);
         } else {
             $format = ReportFileType::coerce($format);
         }
-        $fname = ($fnprefix==null) ? $this->code : $this->code.'_'.$fnprefix;
+        $fname = ($fnprefix == null) ? $this->code : $this->code.'_'.$fnprefix;
 
         // get main region folder files
         $reports = $this->get_reports($this->region_folder, $fname, $format);
 
         // add league folder files
-/*         $reports = $reports->concat(
-            $this->get_reports($this->region_folder.'/'.config('dunkomatic.export_folders.leagues'), null, $format )
-        ); */
+        /*         $reports = $reports->concat(
+                    $this->get_reports($this->region_folder.'/'.config('dunkomatic.export_folders.leagues'), null, $format )
+                ); */
 
         // add teamware folder files
-/*         $reports = $reports->concat(
-            $this->get_reports($this->region_folder.'/'.config('dunkomatic.export_folders.teamware'), null,  ReportFileType::coerce(ReportFileType::CSV() ) )
-        ); */
+        /*         $reports = $reports->concat(
+                    $this->get_reports($this->region_folder.'/'.config('dunkomatic.export_folders.teamware'), null,  ReportFileType::coerce(ReportFileType::CSV() ) )
+                ); */
         // add top level region reports
-        if ($this->is_base_level){
-            $fname = ($fnprefix==null) ? $this->parentRegion->code : $this->parentRegion->code.'_'.$fnprefix;
+        if ($this->is_base_level) {
+            $fname = ($fnprefix == null) ? $this->parentRegion->code : $this->parentRegion->code.'_'.$fnprefix;
             $reports = $reports->concat(
-                $this->get_reports($this->parentRegion->region_folder, $fname, $format )
+                $this->get_reports($this->parentRegion->region_folder, $fname, $format)
             );
         }
 
         return $reports;
     }
 
-    public function league_filecount(ReportFileType $format=null): int
+    public function league_filecount(ReportFileType $format = null): int
     {
         $reports = $this->league_filenames($format);
+
         return count($reports);
     }
 
-    public function league_filenames(ReportFileType $format=null): Collection
+    public function league_filenames(ReportFileType $format = null): Collection
     {
-        if ($format == null){
+        if ($format == null) {
             $format = ReportFileType::coerce(ReportFileType::None);
         } else {
             $format = ReportFileType::coerce($format);
         }
 
         $directory = $this->league_folder;
-        $reports = $this->get_reports( $directory, null, $format );
+        $reports = $this->get_reports($directory, null, $format);
+
         return $reports;
     }
 
     public function teamware_filecount(): int
     {
         $reports = $this->teamware_filenames();
+
         return count($reports);
     }
 
     public function teamware_filenames(): Collection
     {
         $directory = $this->teamware_folder;
-        $reports = $this->get_reports($directory, null,  ReportFileType::coerce(ReportFileType::CSV() ) );
+        $reports = $this->get_reports($directory, null, ReportFileType::coerce(ReportFileType::CSV()));
 
         return $reports;
     }

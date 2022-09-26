@@ -4,13 +4,12 @@ namespace Tests\Unit;
 
 use App\Enums\JobFrequencyType;
 use App\Enums\ReportFileType;
-use Tests\TestCase;
-use Tests\Support\Authentication;
-use Illuminate\Support\Facades\Notification;
-use App\Models\User;
 use App\Models\Region;
-
+use App\Models\User;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Testing\Fluent\AssertableJson;
+use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class RegionControllerTest extends TestCase
 {
@@ -27,7 +26,6 @@ class RegionControllerTest extends TestCase
      */
     public function set_region()
     {
-
         $r1 = Region::find(1);
         $r2 = Region::find(2);
 
@@ -43,6 +41,7 @@ class RegionControllerTest extends TestCase
 
         $response->assertSessionHas('cur_region.code', $r1->code);
     }
+
     /**
      * dashboard
      *
@@ -119,7 +118,7 @@ class RegionControllerTest extends TestCase
     {
         $response = $this->authenticated()
             ->post(route('region.store'), [
-                'name' => 'testregion'
+                'name' => 'testregion',
             ]);
         $response
             ->assertStatus(302)
@@ -127,6 +126,7 @@ class RegionControllerTest extends TestCase
 
         $this->assertDatabaseMissing('regions', ['name' => 'testregion']);
     }
+
     /**
      * store OK
      *
@@ -138,11 +138,10 @@ class RegionControllerTest extends TestCase
      */
     public function store_ok()
     {
-
         $response = $this->authenticated()
             ->post(route('region.store'), [
                 'name' => 'testregion',
-                'code' => 'TEST'
+                'code' => 'TEST',
             ]);
         $response
             ->assertStatus(302)
@@ -151,6 +150,7 @@ class RegionControllerTest extends TestCase
 
         $this->assertDatabaseHas('regions', ['name' => 'testregion']);
     }
+
     /**
      * store HQ NOT OK
      *
@@ -165,7 +165,7 @@ class RegionControllerTest extends TestCase
         $response = $this->authenticated()
             ->post(route('region.store'), [
                 'region_id' => 99,
-                'name' => 'testregion2'
+                'name' => 'testregion2',
             ]);
         $response
             ->assertStatus(302)
@@ -173,6 +173,7 @@ class RegionControllerTest extends TestCase
 
         $this->assertDatabaseMissing('regions', ['name' => 'testregion2']);
     }
+
     /**
      * store HQ OK
      *
@@ -184,12 +185,11 @@ class RegionControllerTest extends TestCase
      */
     public function store_hq_ok()
     {
-
         $response = $this->authenticated()
             ->post(route('region.store'), [
                 'name' => 'testregion2',
                 'code' => 'TEST2',
-                'region_id' => $this->region->parentRegion->id
+                'region_id' => $this->region->parentRegion->id,
             ]);
         $response
             ->assertStatus(302)
@@ -217,6 +217,7 @@ class RegionControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonFragment(['code' => '<a href="'.config('app.url').'/de/region/'.$this->region->id.'/dashboard">'.$this->region->code.'</a>']);
     }
+
     /**
      * admin_sb.
      *
@@ -234,6 +235,7 @@ class RegionControllerTest extends TestCase
             ->assertStatus(200)
             ->assertJson([['id' => $this->region->id, 'text' => $this->region->name]]);
     }
+
     /**
      * hq_sb.
      *
@@ -272,6 +274,7 @@ class RegionControllerTest extends TestCase
         $response->assertViewIs('region.region_edit')
             ->assertViewHas('region', $this->region);
     }
+
     /**
      * update NOT OK.
      *
@@ -336,7 +339,6 @@ class RegionControllerTest extends TestCase
      */
     public function index()
     {
-
         $sadmin = User::where('name', 'admin')->first();
         $response = $this->authenticated($sadmin)
             ->get(route('region.index', ['language' => 'de']));
@@ -371,7 +373,7 @@ class RegionControllerTest extends TestCase
                 'job_club_reports' => JobFrequencyType::getRandomValue(),
                 'fmt_club_reports' => [ReportFileType::getRandomValue()],
                 'fmt_league_reports' => [ReportFileType::getRandomValue(), ReportFileType::getRandomValue()],
-                'pickchar_enabled' => 'on'
+                'pickchar_enabled' => 'on',
             ]);
 
         // $response->dumpHeaders();
@@ -392,10 +394,9 @@ class RegionControllerTest extends TestCase
                 'job_club_reports' => JobFrequencyType::getRandomValue(),
                 'fmt_club_reports' => [ReportFileType::getRandomValue()],
                 'fmt_league_reports' => [ReportFileType::getRandomValue(), ReportFileType::getRandomValue()],
-                'pickchar_enabled' => 'on'
+                'pickchar_enabled' => 'on',
             ]);
         Notification::assertNothingSent();
-
     }
 
     /**
@@ -409,17 +410,16 @@ class RegionControllerTest extends TestCase
      */
     public function league_state_chart()
     {
-
         $response = $this->authenticated()
             ->get(route('region.league.state.chart', ['region' => $this->region]));
 
         $response->assertSessionHasNoErrors()
             ->assertStatus(200)
             ->assertJson(
-                fn (AssertableJson $json) =>
-                $json->hasAll('labels', 'datasets')
+                fn (AssertableJson $json) => $json->hasAll('labels', 'datasets')
             );
     }
+
     /**
      * league_socio_chart
      *
@@ -431,17 +431,16 @@ class RegionControllerTest extends TestCase
      */
     public function league_socio_chart()
     {
-
         $response = $this->authenticated()
             ->get(route('region.league.socio.chart', ['region' => $this->region]));
 
         $response->assertSessionHasNoErrors()
             ->assertStatus(200)
             ->assertJson(
-                fn (AssertableJson $json) =>
-                $json->hasAll('labels', 'datasets')
+                fn (AssertableJson $json) => $json->hasAll('labels', 'datasets')
             );
     }
+
     /**
      * club_team_chart
      *
@@ -453,17 +452,16 @@ class RegionControllerTest extends TestCase
      */
     public function club_team_chart()
     {
-
         $response = $this->authenticated()
             ->get(route('region.club.team.chart', ['region' => $this->region]));
 
         $response->assertSessionHasNoErrors()
             ->assertStatus(200)
             ->assertJson(
-                fn (AssertableJson $json) =>
-                $json->hasAll('labels', 'datasets')
+                fn (AssertableJson $json) => $json->hasAll('labels', 'datasets')
             );
     }
+
     /**
      * club_member_chart
      *
@@ -475,17 +473,16 @@ class RegionControllerTest extends TestCase
      */
     public function club_member_chart()
     {
-
         $response = $this->authenticated()
             ->get(route('region.club.member.chart', ['region' => $this->region]));
 
         $response->assertSessionHasNoErrors()
             ->assertStatus(200)
             ->assertJson(
-                fn (AssertableJson $json) =>
-                $json->hasAll('labels', 'datasets')
+                fn (AssertableJson $json) => $json->hasAll('labels', 'datasets')
             );
     }
+
     /**
      * game_noreferee_chart
      *
@@ -497,17 +494,16 @@ class RegionControllerTest extends TestCase
      */
     public function game_noreferee_chart()
     {
-
         $response = $this->authenticated()
             ->get(route('region.game.noreferee.chart', ['region' => $this->region]));
 
         $response->assertSessionHasNoErrors()
             ->assertStatus(200)
             ->assertJson(
-                fn (AssertableJson $json) =>
-                $json->hasAll('labels', 'datasets')
+                fn (AssertableJson $json) => $json->hasAll('labels', 'datasets')
             );
     }
+
     /**
      * region_club_chart
      *
@@ -519,17 +515,16 @@ class RegionControllerTest extends TestCase
      */
     public function region_club_chart()
     {
-
         $response = $this->authenticated()
             ->get(route('region.region.club.chart', ['region' => $this->region->parentRegion]));
 
         $response->assertSessionHasNoErrors()
             ->assertStatus(200)
             ->assertJson(
-                fn (AssertableJson $json) =>
-                $json->hasAll('labels', 'datasets')
+                fn (AssertableJson $json) => $json->hasAll('labels', 'datasets')
             );
     }
+
     /**
      * region_league_chart
      *
@@ -541,17 +536,16 @@ class RegionControllerTest extends TestCase
      */
     public function region_league_chart()
     {
-
         $response = $this->authenticated()
             ->get(route('region.region.league.chart', ['region' => $this->region->parentRegion]));
 
         $response->assertSessionHasNoErrors()
             ->assertStatus(200)
             ->assertJson(
-                fn (AssertableJson $json) =>
-                $json->hasAll('labels', 'datasets')
+                fn (AssertableJson $json) => $json->hasAll('labels', 'datasets')
             );
     }
+
     /**
      * destroy
      *

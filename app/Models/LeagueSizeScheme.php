@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\LeagueSize;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -19,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read LeagueSize $league_size
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|LeagueSizeScheme newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|LeagueSizeScheme newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|LeagueSizeScheme query()
@@ -34,13 +33,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class LeagueSizeScheme extends Model
 {
-  /**
-  * The table associated with the model.
-  *
-  */
-
-  public function league_size(): BelongsTo
-  {
-      return $this->belongsTo(LeagueSize::class);
-  }
+    /**
+     * The table associated with the model.
+     */
+    public function league_size(): BelongsTo
+    {
+        return $this->belongsTo(LeagueSize::class);
+    }
 }

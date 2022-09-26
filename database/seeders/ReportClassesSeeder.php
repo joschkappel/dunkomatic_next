@@ -3,17 +3,15 @@
 namespace Database\Seeders;
 
 use App\Enums\Report;
-use App\Models\Game;
 use App\Models\Club;
+use App\Models\Game;
 use App\Models\Gym;
-use App\Models\Team;
 use App\Models\League;
 use App\Models\Member;
 use App\Models\Membership;
-
+use App\Models\Team;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-
 
 class ReportClassesSeeder extends Seeder
 {
@@ -44,7 +42,6 @@ class ReportClassesSeeder extends Seeder
             ['report_id' => Report::RegionGames, 'report_class' => League::class],
             ['report_id' => Report::RegionGames, 'report_class' => Team::class],
             ['report_id' => Report::RegionGames, 'report_class' => Gym::class],
-
 
             ['report_id' => Report::ClubGames, 'report_class' => Game::class],
             ['report_id' => Report::ClubGames, 'report_class' => League::class],

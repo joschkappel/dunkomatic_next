@@ -2,21 +2,19 @@
 
 namespace App\Providers;
 
-use Illuminate\Auth\Events\Registered;
+use App\Listeners\LogNotification;
+use App\Listeners\SetInitialRegion;
+use App\Models\League;
+use App\Models\Membership;
+use App\Models\User;
+use App\Observers\LeagueObserver;
+use App\Observers\MembershipObserver;
+use App\Observers\UserObserver;
 use Illuminate\Auth\Events\Authenticated;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Notifications\Events\NotificationSent;
-
-use App\Models\Membership;
-use App\Observers\MembershipObserver;
-
-use App\Listeners\SetInitialRegion;
-use App\Listeners\LogNotification;
-use App\Models\User;
-use App\Observers\UserObserver;
-use App\Models\League;
-use App\Observers\LeagueObserver;
 
 class EventServiceProvider extends ServiceProvider
 {

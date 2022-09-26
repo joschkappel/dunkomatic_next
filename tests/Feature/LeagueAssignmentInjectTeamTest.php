@@ -2,10 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Enums\LeagueState;
 use App\Models\Club;
 use App\Models\League;
-
-use App\Enums\LeagueState;
 use Tests\Support\Authentication;
 use Tests\TestCase;
 
@@ -14,7 +13,9 @@ class LeagueAssignmentInjectTeamTest extends TestCase
     use Authentication;
 
     private $testleague;
+
     private $testclub_assigned;
+
     private $testclub_free;
 
     public function setUp(): void
@@ -147,6 +148,7 @@ class LeagueAssignmentInjectTeamTest extends TestCase
         $this->assertEquals(0, $this->testleague->state_count['charspicked']);
         $this->assertEquals(0, $this->testleague->state_count['generated']);
     }
+
     /**
      * assign duplicate club
      *

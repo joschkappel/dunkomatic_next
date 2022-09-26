@@ -2,20 +2,21 @@
 
 namespace Tests\Unit;
 
-use App\Models\Member;
+use App\Enums\Role;
 use App\Models\Club;
 use App\Models\League;
-use App\Enums\Role;
-
-use Tests\TestCase;
+use App\Models\Member;
 use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class ClubMembershipControllerTest extends TestCase
 {
     use Authentication;
 
     private $testleague;
+
     private $testclub_assigned;
+
     private $testclub_free;
 
     public function setUp(): void
@@ -45,6 +46,7 @@ class ClubMembershipControllerTest extends TestCase
             ->assertViewHas('entity', $this->testclub_assigned)
             ->assertViewHas('entity_type', Club::class);
     }
+
     /**
      * store NOT OK
      *
@@ -78,6 +80,7 @@ class ClubMembershipControllerTest extends TestCase
 
         $this->assertDatabaseMissing('members', ['lastname' => 'testmember']);
     }
+
     /**
      * store OK
      *
@@ -116,6 +119,7 @@ class ClubMembershipControllerTest extends TestCase
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
             ->assertDatabaseCount('memberships', 6);
     }
+
     /**
      * update NOT OK
      *
@@ -147,6 +151,7 @@ class ClubMembershipControllerTest extends TestCase
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
             ->assertDatabaseCount('memberships', 5);
     }
+
     /**
      * update OK
      *
@@ -197,7 +202,7 @@ class ClubMembershipControllerTest extends TestCase
         $response = $this->authenticated()
             ->post(route('membership.club.add', ['club' => $this->testclub_assigned, 'member' => $member]), [
                 'function' => 'function',
-                'email' => 'email'
+                'email' => 'email',
             ]);
         $response
             ->assertStatus(302)
@@ -225,7 +230,7 @@ class ClubMembershipControllerTest extends TestCase
             ->post(route('membership.club.add', ['club' => $this->testclub_assigned, 'member' => $member]), [
                 'selRole' => Role::getRandomValue(),
                 'function' => 'function',
-                'email' => 'email@gmail.com'
+                'email' => 'email@gmail.com',
             ]);
         $response
             ->assertStatus(302)
@@ -235,6 +240,7 @@ class ClubMembershipControllerTest extends TestCase
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
             ->assertDatabaseCount('memberships', 6);
     }
+
     /**
      * update mship NOT OK
      *
@@ -261,6 +267,7 @@ class ClubMembershipControllerTest extends TestCase
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
             ->assertDatabaseCount('memberships', 5);
     }
+
     /**
      * update mship OK
      *
@@ -287,6 +294,7 @@ class ClubMembershipControllerTest extends TestCase
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
             ->assertDatabaseCount('memberships', 5);
     }
+
     /**
      * destroy
      *
@@ -309,6 +317,7 @@ class ClubMembershipControllerTest extends TestCase
             ->assertDatabaseMissing('memberships', ['member_id' => $member2->id])
             ->assertDatabaseCount('memberships', 4);
     }
+
     /**
      * destroy mship
      *
@@ -330,7 +339,7 @@ class ClubMembershipControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertSessionHasNoErrors()
-            ->assertJson(['success'=>'all good']);
+            ->assertJson(['success' => 'all good']);
 
         $this->assertDatabaseMissing('members', ['id' => $member->id])
             ->assertDatabaseMissing('memberships', ['id' => $membership->id])

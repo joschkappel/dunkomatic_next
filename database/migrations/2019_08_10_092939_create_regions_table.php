@@ -1,12 +1,11 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
-
 use App\Enums\JobFrequencyType;
 use App\Enums\ReportFileType;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schema;
 
 class CreateRegionsTable extends Migration
 {
@@ -38,12 +37,12 @@ class CreateRegionsTable extends Migration
             $table->date('close_selection_at')->nullable();
             $table->date('close_scheduling_at')->nullable();
             $table->date('close_referees_at')->nullable();
-            $table->boolean('auto_state_change')->default(False);
+            $table->boolean('auto_state_change')->default(false);
         });
 
         Artisan::call('db:seed', [
             '--class' => 'RegionsSeeder',
-            '--force' => true
+            '--force' => true,
         ]);
     }
 

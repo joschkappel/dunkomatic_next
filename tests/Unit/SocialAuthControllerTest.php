@@ -6,18 +6,16 @@ use App\Models\Invitation;
 use App\Models\User;
 use App\Notifications\NewUser;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Event;
-
-use Mockery;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\User as TwoUser;
+use Mockery;
 use Tests\TestCase;
 
 class SocialAuthControllerTest extends TestCase
 {
-
     /**
      * redirect_to_oauth
      *
@@ -43,7 +41,7 @@ class SocialAuthControllerTest extends TestCase
             'email_invitee' => 'test@gmail.com',
             'member_id' => $this->region->members->first()->id,
             'user_id' => $this->region_user->id,
-            'region_id' => $this->region->id
+            'region_id' => $this->region->id,
         ]);
         $response = $this->authenticated()
             ->get(route('oauth.redirect', ['provider' => 'google', 'invitation' => $invite]));
@@ -55,6 +53,7 @@ class SocialAuthControllerTest extends TestCase
         $this->assertDatabaseHas('invitations', ['provider' => 'google']);
         Invitation::truncate();
     }
+
     /**
      * showApplyForm
      *
@@ -74,6 +73,7 @@ class SocialAuthControllerTest extends TestCase
             ->assertViewIs('auth.apply')
             ->assertViewHas('user', $this->region_user);
     }
+
     /**
      * apply not ok
      *
@@ -96,6 +96,7 @@ class SocialAuthControllerTest extends TestCase
         Notification::assertNothingSent();
         Event::assertNotDispatched(Registered::class);
     }
+
     /**
      * apply ok
      *
@@ -114,7 +115,7 @@ class SocialAuthControllerTest extends TestCase
         $user = User::where('name', 'notapproved')->first();
         $response = $this->post(route('show.apply', ['language' => 'de', 'user' => $user]), [
             'region_id' => $this->region->id,
-            'reason_join' => 'testing'
+            'reason_join' => 'testing',
         ]);
 
         $response->assertStatus(302)
@@ -126,6 +127,7 @@ class SocialAuthControllerTest extends TestCase
         );
         Event::assertDispatched(Registered::class);
     }
+
     /**
      * registerFromOauth
      *
@@ -144,7 +146,7 @@ class SocialAuthControllerTest extends TestCase
             ->shouldReceive('getName')
             ->andReturn(Str::random(10))
             ->shouldReceive('getEmail')
-            ->andReturn(Str::random(10) . '@gmail.com')
+            ->andReturn(Str::random(10).'@gmail.com')
             ->shouldReceive('getAvatar')
             ->andReturn('https://i.pravatar.cc/100');
         Socialite::shouldReceive('driver->user')->andReturn($abstractUser);
@@ -152,12 +154,13 @@ class SocialAuthControllerTest extends TestCase
 
         $response = $this->get(route('oauth.callback', ['provider' => 'google']), [
             'region_id' => $this->region->id,
-            'reason_join' => 'testing'
+            'reason_join' => 'testing',
         ]);
 
         $response->assertStatus(302)
             ->assertSessionHasNoErrors();
     }
+
     /**
      * registerFromOauth with invite
      *
@@ -177,7 +180,7 @@ class SocialAuthControllerTest extends TestCase
             ->shouldReceive('getName')
             ->andReturn(Str::random(10))
             ->shouldReceive('getEmail')
-            ->andReturn(Str::random(10) . '@gmail.com')
+            ->andReturn(Str::random(10).'@gmail.com')
             ->shouldReceive('getAvatar')
             ->andReturn('https://i.pravatar.cc/100');
         Socialite::shouldReceive('driver->user')->andReturn($abstractUser);
@@ -187,14 +190,14 @@ class SocialAuthControllerTest extends TestCase
             'email_invitee' => 'test@gmail.com',
             'member_id' => $this->region->members->first()->id,
             'user_id' => $this->region_user->id,
-            'region_id' => $this->region->id
+            'region_id' => $this->region->id,
         ]);
         $this->assertDatabaseHas('invitations', ['id' => $invite->id]);
 
         $response = $this->withCookies(['_i' => $invite->id])
             ->get(route('oauth.callback', ['provider' => 'google']), [
                 'region_id' => $this->region->id,
-                'reason_join' => 'testing'
+                'reason_join' => 'testing',
             ]);
 
         $response->assertStatus(302)
@@ -202,6 +205,7 @@ class SocialAuthControllerTest extends TestCase
         $this->assertDatabaseMissing('invitations', ['id' => $invite->id]);
         Invitation::truncate();
     }
+
     /**
      * loginFromOauth
      *

@@ -26,5 +26,5 @@ return [
     'unknown.type' => 'unbekanntes Objekt 🤨',
     'unknown.instance' => 'Objekt wurde inzwischen gelöscht 😞',
     'last' => 'Letzte Änderung am :audit_created_at, von :user_name.',
-    'unavailable' => 'Es liegen keine Änderungen vor'
+    'unavailable' => 'Es liegen keine Änderungen vor',
 ];

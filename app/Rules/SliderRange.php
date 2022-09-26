@@ -7,15 +7,15 @@ use Illuminate\Contracts\Validation\Rule;
 class SliderRange implements Rule
 {
     public int $min;
+
     public int $max;
 
     /**
      * Create a new rule instance.
      *
-     * @param int $min
-     * @param int $max
+     * @param  int  $min
+     * @param  int  $max
      * @return void
-     *
      */
     public function __construct(int $min, int $max)
     {
@@ -32,11 +32,11 @@ class SliderRange implements Rule
      */
     public function passes($attribute, $value)
     {
-        $slider_vals = explode(";", $value);
-        if ($slider_vals[0] < $this->min){
+        $slider_vals = explode(';', $value);
+        if ($slider_vals[0] < $this->min) {
             return false;
         }
-        if ($slider_vals[1] > $this->max){
+        if ($slider_vals[1] > $this->max) {
             return false;
         }
 

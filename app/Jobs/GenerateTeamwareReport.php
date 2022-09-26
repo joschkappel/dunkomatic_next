@@ -2,39 +2,37 @@
 
 namespace App\Jobs;
 
-use App\Models\League;
-
-use Maatwebsite\Excel\Facades\Excel;
-
-use App\Exports\TeamwareTeamsExport;
 use App\Exports\TeamwareGamesExport;
-
-use Illuminate\Bus\Queueable;
+use App\Exports\TeamwareTeamsExport;
+use App\Models\League;
 use Illuminate\Bus\Batchable;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class GenerateTeamwareReport implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected string $export_folder;
+
     protected League $league;
+
     protected string $tw_teams;
+
     protected string $tw_games;
 
     /**
      * Create a new job instance.
      *
-     * @param League $league
+     * @param  League  $league
      * @return void
-     *
      */
     public function __construct(League $league)
     {
@@ -42,15 +40,15 @@ class GenerateTeamwareReport implements ShouldQueue
         $this->league = $league->load('region');
 
         // make sure folders are there
-        if ( ! Storage::exists($this->league->region->teamware_folder)) {
+        if (! Storage::exists($this->league->region->teamware_folder)) {
             // clean folder
             Storage::makeDirectory($this->league->region->teamware_folder);
-        } ;
+        }
         $this->export_folder = $this->league->region->teamware_folder;
 
         // teamware filenames
-        $this->tw_teams = $this->export_folder . '/' . Str::replace(' ','-', $this->league->shortname) . '_Teams.csv';
-        $this->tw_games = $this->export_folder . '/' . Str::replace(' ','-', $this->league->shortname) . '_Games.csv';
+        $this->tw_teams = $this->export_folder.'/'.Str::replace(' ', '-', $this->league->shortname).'_Teams.csv';
+        $this->tw_games = $this->export_folder.'/'.Str::replace(' ', '-', $this->league->shortname).'_Games.csv';
     }
 
     /**
@@ -69,10 +67,9 @@ class GenerateTeamwareReport implements ShouldQueue
 
         Log::info('[JOB][TEAMWARE REPORTS] started.', [
             'league-id' => $this->league->id,
-            'path' => $this->tw_games]);
+            'path' => $this->tw_games, ]);
 
-        Excel::store(new TeamwareTeamsExport($this->league ), $this->tw_teams, null, \Maatwebsite\Excel\Excel::CSV);
-        Excel::store(new TeamwareGamesExport($this->league ), $this->tw_games, null, \Maatwebsite\Excel\Excel::CSV);
-
+        Excel::store(new TeamwareTeamsExport($this->league), $this->tw_teams, null, \Maatwebsite\Excel\Excel::CSV);
+        Excel::store(new TeamwareGamesExport($this->league), $this->tw_games, null, \Maatwebsite\Excel\Excel::CSV);
     }
 }

@@ -21,8 +21,8 @@ class CreateClubLeagueTable extends Migration
             $table->char('league_char');
             $table->smallInteger('league_no');
             $table->timestamps();
-            $table->unique(['league_id','league_char']);
-            $table->unique(['league_id','league_no']);
+            $table->unique(['league_id', 'league_char']);
+            $table->unique(['league_id', 'league_no']);
         });
     }
 

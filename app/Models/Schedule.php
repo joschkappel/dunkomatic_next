@@ -3,18 +3,11 @@
 namespace App\Models;
 
 use App\Enums\ScheduleColor;
-use App\Models\Region;
-use App\Models\League;
-use App\Models\ScheduleEvent;
-use App\Models\LeagueSize;
-use App\Models\LeagueSizeScheme;
-use App\Models\LeagueSizeChar;
-
-use Illuminate\Support\Facades\Log;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Log;
 
 /**
  * App\Models\Schedule
@@ -38,6 +31,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read Region $region
  * @property-read \Illuminate\Database\Eloquent\Collection|LeagueSizeScheme[] $schemes
  * @property-read int|null $schemes_count
+ *
  * @method static \Database\Factories\ScheduleFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Schedule newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Schedule newQuery()
@@ -59,8 +53,9 @@ class Schedule extends Model
     protected $with = ['region'];
 
     protected $fillable = [
-        'id', 'name', 'region_id', 'league_size_id', 'custom_events', 'iterations'
+        'id', 'name', 'region_id', 'league_size_id', 'custom_events', 'iterations',
     ];
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -69,6 +64,7 @@ class Schedule extends Model
     protected $casts = [
         'custom_evens' => 'boolean',
     ];
+
     public function region(): BelongsTo
     {
         return $this->belongsTo(Region::class);
@@ -93,10 +89,12 @@ class Schedule extends Model
     {
         return $this->hasMany(LeagueSizeScheme::class, 'league_size_id', 'league_size_id');
     }
+
     public function chars(): HasMany
     {
         return $this->hasMany(LeagueSizeChar::class, 'league_size_id', 'league_size_id');
     }
+
     public function getColorAttribute(): string
     {
         Log::debug('Searching schedule color key', ['key' => [$this->region->is_top_level, $this->league_size->size, $this->iterations]]);
@@ -106,6 +104,7 @@ class Schedule extends Model
             return ScheduleColor::coerce([$this->region->is_top_level, $this->league_size->size, $this->iterations])->key;
         }
     }
+
     public function getMaxEventsAttribute(): int
     {
         $size = $this->league_size->size ?? 0;
@@ -113,7 +112,8 @@ class Schedule extends Model
             return 0;
         } else {
             $repeat = $this->iterations ?? 0;
-            return (($size - 1) * 2 * $repeat);
+
+            return ($size - 1) * 2 * $repeat;
         }
     }
 }

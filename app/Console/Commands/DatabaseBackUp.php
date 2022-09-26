@@ -2,12 +2,10 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Log;
 use Exception;
+use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class DatabaseBackUp extends Command
 {
@@ -50,24 +48,24 @@ class DatabaseBackUp extends Command
         $backup_folder = config('dunkomatic.folders.backup');
         $env = config('app.env') ?? 'unknown';
 
-        $filename = 'backup-' . $db .'-'.$env.'-'.Carbon::now()->format('Y-m-d-His') . '.gz';
-        $filepath = storage_path( 'app/'.$backup_folder.'/'.$filename);
+        $filename = 'backup-'.$db.'-'.$env.'-'.Carbon::now()->format('Y-m-d-His').'.gz';
+        $filepath = storage_path('app/'.$backup_folder.'/'.$filename);
         $columnstats = $this->option('colstat');
 
-        if (! $columnstats){
-            $command = 'mysqldump --column-statistics=0 --user='.$db_usr.' --password='.$db_pwd.' --host='.$db_host.' '.$db.' | gzip > '. $filepath;
+        if (! $columnstats) {
+            $command = 'mysqldump --column-statistics=0 --user='.$db_usr.' --password='.$db_pwd.' --host='.$db_host.' '.$db.' | gzip > '.$filepath;
         } else {
-            $command = 'mysqldump --user='.$db_usr.' --password='.$db_pwd.' --host='.$db_host.' '.$db.' | gzip > '. $filepath;
+            $command = 'mysqldump --user='.$db_usr.' --password='.$db_pwd.' --host='.$db_host.' '.$db.' | gzip > '.$filepath;
         }
         // $command = 'which mysqldump';
-        $returnVar = NULL;
-        $output = NULL;
+        $returnVar = null;
+        $output = null;
 
         try {
             exec($command, $output, $returnVar);
 
-            if ($returnVar == COMMAND::SUCCESS){
-                Log::notice('[CMD] db backup ran successfull',['file'=>$filepath]);
+            if ($returnVar == COMMAND::SUCCESS) {
+                Log::notice('[CMD] db backup ran successfull', ['file' => $filepath]);
                 $this->info('db backup ran successfull: '.$filepath);
                 Log::info($output);
             } else {

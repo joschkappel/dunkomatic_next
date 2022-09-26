@@ -2,10 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Enums\LeagueState;
 use App\Models\Club;
 use App\Models\League;
-
-use App\Enums\LeagueState;
 use App\Traits\LeagueFSM;
 use Tests\Support\Authentication;
 use Tests\TestCase;
@@ -15,13 +14,15 @@ class LeagueSchedulingInjectTeamTest extends TestCase
     use Authentication, LeagueFSM;
 
     private $testleague;
+
     private $testclub_assigned;
+
     private $testclub_free;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->testleague = League::factory()->frozen(3,3)->create();
+        $this->testleague = League::factory()->frozen(3, 3)->create();
         $this->testclub_assigned = $this->testleague->clubs()->first();
         $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
     }
@@ -36,7 +37,7 @@ class LeagueSchedulingInjectTeamTest extends TestCase
      */
     public function inject_team()
     {
-        $c_toadd =$this->testclub_free;
+        $c_toadd = $this->testclub_free;
         $this->reopen_game_scheduling($this->testleague);
 
         $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Scheduling()])
@@ -155,5 +156,4 @@ class LeagueSchedulingInjectTeamTest extends TestCase
         $this->assertEquals(4, $this->testleague->state_count['charspicked']);
         $this->assertEquals(12, $this->testleague->state_count['generated']);
     }
-
 }

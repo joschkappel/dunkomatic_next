@@ -1,7 +1,7 @@
 <?php
+
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class FixesDatabaseSeeder extends Seeder
@@ -17,10 +17,9 @@ class FixesDatabaseSeeder extends Seeder
 
         // load base tables
         $this->call([
-          // fixes\InactiveClubs::class
-          // fixes\CustomLeagues::class
-          fixes\TeamGym::class
+            // fixes\InactiveClubs::class
+            // fixes\CustomLeagues::class
+            fixes\TeamGym::class,
         ]);
-
     }
 }

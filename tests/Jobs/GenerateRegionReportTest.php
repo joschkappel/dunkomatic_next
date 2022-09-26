@@ -2,19 +2,17 @@
 
 namespace Tests\Jobs;
 
-use App\Jobs\GenerateRegionGamesReport;
-use App\Models\League;
-use App\Models\Game;
-
-use Tests\TestCase;
 use App\Enums\ReportFileType;
-
-
+use App\Jobs\GenerateRegionGamesReport;
+use App\Models\Game;
+use App\Models\League;
 use Illuminate\Support\Facades\Storage;
+use Tests\TestCase;
 
 class GenerateRegionReportTest extends TestCase
 {
     private $testleague;
+
     private $testclub_assigned;
 
     public function setUp(): void
@@ -37,21 +35,19 @@ class GenerateRegionReportTest extends TestCase
         $region = $this->testleague->region;
 
         $folder = $region->region_folder;
-        if (Storage::exists($folder)){
+        if (Storage::exists($folder)) {
             Storage::assertExists($folder);
             $files = Storage::allFiles($folder);
             Storage::delete($files);
         }
 
-        $report = $folder . '/' . $this->region->code;
+        $report = $folder.'/'.$this->region->code;
         $report .= '_Gesamtplan.pdf';
-
 
         $job_instance = resolve(GenerateRegionGamesReport::class, ['region' => $region, 'rtype' => ReportFileType::PDF()]);
         app()->call([$job_instance, 'handle']);
 
         Storage::assertExists($report);
-
     }
 
     /**
@@ -71,16 +67,13 @@ class GenerateRegionReportTest extends TestCase
         $files = Storage::allFiles($folder);
         Storage::delete($files);
 
-
-        $report = $folder . '/' . $this->region->code;
+        $report = $folder.'/'.$this->region->code;
         $report .= '_Gesamtplan.xlsx';
-
 
         $job_instance = resolve(GenerateRegionGamesReport::class, ['region' => $region, 'rtype' => ReportFileType::XLSX()]);
         app()->call([$job_instance, 'handle']);
 
         Storage::assertExists($report);
-
     }
 
     /**
@@ -96,13 +89,13 @@ class GenerateRegionReportTest extends TestCase
         $region = $this->testleague->region;
         $folder = $region->region_folder;
         // update gaems referee with $club, so we get some referee report entries
-        Game::whereNull('referee_1')->update(['referee_1'=>'****']);
+        Game::whereNull('referee_1')->update(['referee_1' => '****']);
 
         Storage::assertExists($folder);
         $files = Storage::allFiles($folder);
         Storage::delete($files);
 
-        $report = $folder . '/' . $this->region->code;
+        $report = $folder.'/'.$this->region->code;
         $report .= '_Gesamtplan.ics';
 
         $job_instance = resolve(GenerateRegionGamesReport::class, ['region' => $region, 'rtype' => ReportFileType::ICS()]);

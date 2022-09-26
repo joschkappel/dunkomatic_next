@@ -1,7 +1,7 @@
 <?php
 
-use Monolog\Handler\NullHandler;
 use Monolog\Handler\GelfHandler;
+use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
 
@@ -108,8 +108,8 @@ return [
                 'host' => 'graylog',
                 'port' => 514,
             ],
-       ],
-/*        'gelf' => [
+        ],
+        /*        'gelf' => [
            'driver' => 'monolog',
            'level' => 'error',
            'handler' => GelfHandler::class,

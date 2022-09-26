@@ -50,10 +50,10 @@ class VerifyEmail extends Notification
         }
 
         return (new MailMessage)
-            ->subject( __('notifications.verifyemail.subject') )
-            ->line( __('notifications.verifyemail.line1'))
-            ->action( __('notifications.verifyemail.action'), $verificationUrl)
-            ->line( __('notifications.verifyemail.line2'));
+            ->subject(__('notifications.verifyemail.subject'))
+            ->line(__('notifications.verifyemail.line1'))
+            ->action(__('notifications.verifyemail.action'), $verificationUrl)
+            ->line(__('notifications.verifyemail.line2'));
     }
 
     /**

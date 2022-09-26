@@ -2,8 +2,8 @@
 
 namespace App\Enums;
 
-use BenSampo\Enum\Enum;
 use BenSampo\Enum\Contracts\LocalizedEnum;
+use BenSampo\Enum\Enum;
 
 /**
  * @method static static Male()
@@ -12,8 +12,9 @@ use BenSampo\Enum\Contracts\LocalizedEnum;
  */
 final class LeagueGenderType extends Enum implements LocalizedEnum
 {
-    const Male =   0;
-    const Female =   1;
-    const Mixed = 2;
+    const Male = 0;
 
+    const Female = 1;
+
+    const Mixed = 2;
 }

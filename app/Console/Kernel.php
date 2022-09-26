@@ -2,30 +2,24 @@
 
 namespace App\Console;
 
-use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-
-use App\Jobs\ProcessNewSeason;
-use App\Jobs\ProcessDbCleanup;
-use App\Jobs\EmailValidation;
-use App\Jobs\MissingLeadCheck;
-use App\Jobs\GameOverlaps;
-use App\Jobs\GameNotScheduled;
-
-use App\Models\Region;
 use App\Enums\JobFrequencyType;
-
-use App\Jobs\OpenLeagueState;
 use App\Jobs\CloseLeagueState;
-use App\Jobs\ProcessFilesCleanup;
+use App\Jobs\EmailValidation;
+use App\Jobs\GameNotScheduled;
+use App\Jobs\GameOverlaps;
+use App\Jobs\MissingLeadCheck;
+use App\Jobs\OpenLeagueState;
 use App\Jobs\ProcessCustomMessages;
+use App\Jobs\ProcessDbCleanup;
+use App\Jobs\ProcessFilesCleanup;
+use App\Jobs\ProcessNewSeason;
 use App\Jobs\ReportProcessor;
+use App\Models\Region;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Monolog\Handler\SendGridHandler;
+use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Spatie\Health\Commands\RunHealthChecksCommand;
 use Spatie\Health\Commands\ScheduleCheckHeartbeatCommand;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class Kernel extends ConsoleKernel
 {
@@ -41,14 +35,13 @@ class Kernel extends ConsoleKernel
      *
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
-     *
      */
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('db:backup -c')->daily()->emailOutputOnFailure('dmatic.master@gmail.com');
-        $schedule->command('telescope:prune')->dailyAt('00:10')->environments(['staging', 'local','dev']);
-        $schedule->job(new ProcessDbCleanup(), 'janitor')->weeklyOn(1,'00:15');
-        $schedule->job(new ProcessFilesCleanup(), 'janitor')->weeklyOn(1,'00:20');
+        $schedule->command('telescope:prune')->dailyAt('00:10')->environments(['staging', 'local', 'dev']);
+        $schedule->job(new ProcessDbCleanup(), 'janitor')->weeklyOn(1, '00:15');
+        $schedule->job(new ProcessFilesCleanup(), 'janitor')->weeklyOn(1, '00:20');
         $schedule->job(new ProcessCustomMessages(), 'janitor')->dailyAt('03:00');
         $schedule->job(new ProcessNewSeason(), 'janitor')->yearly();
         // $schedule->job(new ExportStatistics(), 'janitor')->everyMinute();
@@ -63,7 +56,7 @@ class Kernel extends ConsoleKernel
             if ($region->regionadmins()->exists()) {
                 $this->scheduleRegionTask($region, $schedule, new GameOverlaps($region), $region->job_game_overlaps, '00:01');
                 $this->scheduleRegionTask($region, $schedule, new GameNotScheduled($region), $region->job_game_notime, '00:02');
-                $this->scheduleRegionTask($region, $schedule, new MissingLeadCheck($region), $region->job_noleads,'00:03');
+                $this->scheduleRegionTask($region, $schedule, new MissingLeadCheck($region), $region->job_noleads, '00:03');
                 $this->scheduleRegionTask($region, $schedule, new EmailValidation($region), $region->job_email_valid, '00:04');
             }
         }
@@ -80,7 +73,6 @@ class Kernel extends ConsoleKernel
             $schedule->command(RunHealthChecksCommand::class)->everyFifteenMinutes();
         }
 
-
         // $schedule->command(ScheduleCheckHeartbeatCommand::class)->everyFifteenMinutes();
     }
 
@@ -88,11 +80,10 @@ class Kernel extends ConsoleKernel
      * Register the commands for the application.
      *
      * @return void
-     *
      */
     protected function commands()
     {
-        $this->load(__DIR__ . '/Commands');
+        $this->load(__DIR__.'/Commands');
 
         require base_path('routes/console.php');
     }
@@ -100,10 +91,9 @@ class Kernel extends ConsoleKernel
     /** schedule tasks
      *
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
-     * @param \Illuminate\Contracts\Queue\ShouldQueue $job
-     * @param  int $frequency
+     * @param  \Illuminate\Contracts\Queue\ShouldQueue  $job
+     * @param  int  $frequency
      * @return bool
-     *
      */
     protected function scheduleRegionTask(Region $region, Schedule $schedule, ShouldQueue $job, int $frequency, string $startAt)
     {
@@ -117,15 +107,16 @@ class Kernel extends ConsoleKernel
                 //$schedule->job($job,'janitor')->everyFiveMinutes();
                 break;
             case JobFrequencyType::weekly:
-                $schedule->job($job,  'region_'.$region->id, 'redis')->weeklyOn(1, $startAt);
+                $schedule->job($job, 'region_'.$region->id, 'redis')->weeklyOn(1, $startAt);
                 break;
             case JobFrequencyType::biweekly:
-                $schedule->job($job,  'region_'.$region->id, 'redis')->twiceMonthlyOn(1,16,$startAt);
+                $schedule->job($job, 'region_'.$region->id, 'redis')->twiceMonthlyOn(1, 16, $startAt);
                 break;
             case JobFrequencyType::monthly:
-                $schedule->job($job,  'region_'.$region->id, 'redis')->monthlyOn(1, $startAt);
+                $schedule->job($job, 'region_'.$region->id, 'redis')->monthlyOn(1, $startAt);
                 break;
         }
+
         return true;
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Collection;
@@ -13,7 +12,9 @@ class LeagueStateOpened extends Notification
     use Queueable;
 
     protected string $league_state;
+
     protected Collection $opened;
+
     protected Collection $not_opened;
 
     /**
@@ -21,12 +22,11 @@ class LeagueStateOpened extends Notification
      *
      * @return void
      */
-    public function __construct( string $league_state, Collection $opened, Collection $not_opened)
+    public function __construct(string $league_state, Collection $opened, Collection $not_opened)
     {
         $this->league_state = $league_state;
         $this->opened = $opened;
         $this->not_opened = $not_opened;
-
     }
 
     /**
@@ -37,7 +37,7 @@ class LeagueStateOpened extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail','database'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -49,14 +49,14 @@ class LeagueStateOpened extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject(__('notifications.league.state.opened.subject',['phase'=>$this->league_state]))
-                    ->greeting( __('notifications.user.greeting', ['username' => $notifiable->name]) )
-                    ->line(__('notifications.league.state.opened.line1',['phase'=>$this->league_state]))
-                    ->line( $this->opened->pluck('shortname')->implode(', ') ?? 'Keine')
-                    ->line(__('notifications.league.state.opened.line2',['phase'=>$this->league_state]))
-                    ->line( $this->not_opened->pluck('shortname')->implode(', ') ?? 'Keine')
+                    ->subject(__('notifications.league.state.opened.subject', ['phase' => $this->league_state]))
+                    ->greeting(__('notifications.user.greeting', ['username' => $notifiable->name]))
+                    ->line(__('notifications.league.state.opened.line1', ['phase' => $this->league_state]))
+                    ->line($this->opened->pluck('shortname')->implode(', ') ?? 'Keine')
+                    ->line(__('notifications.league.state.opened.line2', ['phase' => $this->league_state]))
+                    ->line($this->not_opened->pluck('shortname')->implode(', ') ?? 'Keine')
                     ->line(__('notifications.league.state.opened.line3'))
-                    ->salutation( __('notifications.app.salutation') );
+                    ->salutation(__('notifications.app.salutation'));
     }
 
     /**
@@ -67,18 +67,17 @@ class LeagueStateOpened extends Notification
      */
     public function toArray($notifiable)
     {
-        $lines =  '<p>'.__('notifications.league.state.opened.line1',['phase'=>$this->league_state]).'</p>';
+        $lines = '<p>'.__('notifications.league.state.opened.line1', ['phase' => $this->league_state]).'</p>';
         $lines .= '<p>'.($this->opened->pluck('shortname')->implode(', ') ?? 'Keine').'</p>';
-        $lines .= '<p>'.__('notifications.league.state.opened.line2',['phase'=>$this->league_state]).'</p>';
-        $lines .= '<p>'.( $this->not_opened->pluck('shortname')->implode(', ') ?? 'Keine').'</p>';
+        $lines .= '<p>'.__('notifications.league.state.opened.line2', ['phase' => $this->league_state]).'</p>';
+        $lines .= '<p>'.($this->not_opened->pluck('shortname')->implode(', ') ?? 'Keine').'</p>';
         $lines .= '<p>'.__('notifications.league.state.opened.line3').'</p>';
 
-
         return [
-            'subject' => __('notifications.league.state.opened.subject',['phase'=>$this->league_state]),
+            'subject' => __('notifications.league.state.opened.subject', ['phase' => $this->league_state]),
             'greeting' => __('notifications.user.greeting', ['username' => $notifiable->name]),
             'lines' => $lines,
-            'salutation' => __('notifications.app.salutation')
+            'salutation' => __('notifications.app.salutation'),
         ];
     }
 }

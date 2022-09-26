@@ -6,7 +6,6 @@ use Illuminate\View\Component;
 
 class ConfirmDeletion extends Component
 {
-
     /**
      * The modal ID.
      *
@@ -42,17 +41,16 @@ class ConfirmDeletion extends Component
      */
     public $deleteType;
 
-
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct( string $modalId,
+    public function __construct(string $modalId,
                                  string $modalTitle,
                                  string $modalConfirm,
                                  string $deleteType,
-                                 string $modalMethod='DELETE')
+                                 string $modalMethod = 'DELETE')
     {
         $this->modalId = $modalId;
         $this->modalTitle = $modalTitle;

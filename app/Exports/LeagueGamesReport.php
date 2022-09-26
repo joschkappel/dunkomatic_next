@@ -2,17 +2,15 @@
 
 namespace App\Exports;
 
-use App\Models\League;
+use App\Exports\Sheets\ClubsSheet;
 use App\Exports\Sheets\LeagueGamesSheet;
 use App\Exports\Sheets\Title;
-use App\Exports\Sheets\ClubsSheet;
-
+use App\Models\League;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
 class LeagueGamesReport implements WithMultipleSheets
 {
-
     use Exportable;
 
     protected League $league;
@@ -27,7 +25,6 @@ class LeagueGamesReport implements WithMultipleSheets
      */
     public function sheets(): array
     {
-
         $sheets = [];
         $sheets[] = new Title('Rundenspielplan', null, null, $this->league);
         $sheets[] = new LeagueGamesSheet($this->league);
@@ -35,5 +32,4 @@ class LeagueGamesReport implements WithMultipleSheets
 
         return $sheets;
     }
-
 }

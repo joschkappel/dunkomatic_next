@@ -2,97 +2,90 @@
 
 namespace Tests\Feature\Auth;
 
-use Illuminate\Support\Facades\Notification;
-use Tests\TestCase;
 use App\Models\Region;
+use Illuminate\Support\Facades\Notification;
 use Rappasoft\LaravelAuthenticationLog\Notifications\FailedLogin;
-
-use TestDatabaseSeeder;
+use Tests\TestCase;
 
 class LoginTest extends TestCase
 {
+    // use RefreshDatabase;
 
-     // use RefreshDatabase;
+    /**
+     * @test
+     * @group auth
+     */
+    public function test_user_can_view_a_login_form()
+    {
+        $response = $this->get('/de/login');
 
-     /**
-      * @test
-      * @group auth
-      */
+        $response->assertSuccessful();
+        $response->assertViewIs('auth.login');
+    }
 
-     public function test_user_can_view_a_login_form()
-     {
-         $response = $this->get('/de/login');
+    /**
+     * @test
+     * @group auth
+     */
+    public function test_user_cannot_view_a_login_form_when_authenticated()
+    {
+        $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
+        $region = Region::where('code', 'HBVDA')->first();
 
-         $response->assertSuccessful();
-         $response->assertViewIs('auth.login');
-     }
+        $region_user = $region->regionadmins->first()->user()->first();
 
-     /**
-      * @test
-      * @group auth
-      */
-     public function test_user_cannot_view_a_login_form_when_authenticated()
-     {
+        $response = $this->actingAs($region_user)->get('/de/login');
 
-         $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
-         $region = Region::where('code','HBVDA')->first();
+        $response->assertRedirect('/de/home');
+    }
 
-         $region_user = $region->regionadmins->first()->user()->first();
+    /**
+     * @test
+     * @group auth
+     */
+    public function test_user_can_login_with_correct_credentials()
+    {
+        $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
+        $region = Region::where('code', 'HBVDA')->first();
 
-         $response = $this->actingAs($region_user)->get('/de/login');
+        $region_user = $region->regionadmins->first()->user()->first();
 
-         $response->assertRedirect('/de/home');
-     }
+        $response = $this->post('/de/login', [
+            'email' => $region_user->email,
+            'password' => 'password',
+        ]);
 
-     /**
-      * @test
-      * @group auth
-      */
-     public function test_user_can_login_with_correct_credentials()
-     {
-       $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
-       $region = Region::where('code','HBVDA')->first();
+        $response->assertRedirect('/de/home');
+        $this->assertAuthenticatedAs($region_user);
+    }
 
-       $region_user = $region->regionadmins->first()->user()->first();
+    /**
+     * @test
+     * @group auth
+     */
+    public function test_user_cannot_login_with_incorrect_password()
+    {
+        $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
+        $region = Region::where('code', 'HBVDA')->first();
 
-         $response = $this->post('/de/login', [
-             'email' => $region_user->email,
-             'password' => 'password',
-         ]);
+        Notification::fake();
+        Notification::assertNothingSent();
 
-         $response->assertRedirect('/de/home');
-         $this->assertAuthenticatedAs($region_user);
-     }
+        $region_user = $region->regionadmins->first()->user()->first();
 
-     /**
-      * @test
-      * @group auth
-      */
-     public function test_user_cannot_login_with_incorrect_password()
-     {
-       $this->assertDatabaseHas('regions', ['code' => 'HBVDA']);
-       $region = Region::where('code','HBVDA')->first();
+        $response = $this->from('/de/login')->post('/de/login', [
+            'email' => $region_user->email,
+            'password' => 'invalid-password',
+        ]);
 
-       Notification::fake();
-       Notification::assertNothingSent();
+        $response->assertRedirect('/de/login');
+        $response->assertSessionHasErrors('email');
+        $this->assertTrue(session()->hasOldInput('email'));
+        $this->assertFalse(session()->hasOldInput('password'));
+        $this->assertGuest();
 
-       $region_user = $region->regionadmins->first()->user()->first();
-
-         $response = $this->from('/de/login')->post('/de/login', [
-             'email' => $region_user->email,
-             'password' => 'invalid-password',
-         ]);
-
-         $response->assertRedirect('/de/login');
-         $response->assertSessionHasErrors('email');
-         $this->assertTrue(session()->hasOldInput('email'));
-         $this->assertFalse(session()->hasOldInput('password'));
-         $this->assertGuest();
-
-         Notification::assertSentTo(
+        Notification::assertSentTo(
             [$region_user], FailedLogin::class
         );
-
-     }
-
+    }
 }

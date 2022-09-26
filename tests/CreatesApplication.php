@@ -3,8 +3,8 @@
 namespace Tests;
 
 use Illuminate\Contracts\Console\Kernel;
-use Mockery;
 use Mews\Captcha\Captcha;
+use Mockery;
 
 trait CreatesApplication
 {
@@ -15,7 +15,7 @@ trait CreatesApplication
      */
     public function createApplication()
     {
-        $app = require __DIR__ . '/../bootstrap/app.php';
+        $app = require __DIR__.'/../bootstrap/app.php';
 
         $app->make(Kernel::class)->bootstrap();
 
@@ -23,7 +23,7 @@ trait CreatesApplication
          * Override captcha binding with a double that always passes.
          */
         $app->bind('captcha', function ($app) {
-            $mockCaptcha = Mockery::mock( Captcha::class);
+            $mockCaptcha = Mockery::mock(Captcha::class);
 
             $mockCaptcha
                 ->allows()

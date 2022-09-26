@@ -120,7 +120,7 @@ class LayoutHelper
     /**
      * Make the set of classes related to a fixed responsive configuration.
      *
-     * @param string $section (navbar or footer)
+     * @param  string  $section (navbar or footer)
      * @return array
      */
     private static function makeFixedResponsiveClasses($section)

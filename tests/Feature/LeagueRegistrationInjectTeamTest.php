@@ -2,10 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Enums\LeagueState;
 use App\Models\Club;
 use App\Models\League;
-
-use App\Enums\LeagueState;
 use Tests\Support\Authentication;
 use Tests\TestCase;
 
@@ -14,13 +13,15 @@ class LeagueRegistrationInjectTeamTest extends TestCase
     use Authentication;
 
     private $testleague;
+
     private $testclub_assigned;
+
     private $testclub_free;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->testleague = League::factory()->registered(3,3)->create();
+        $this->testleague = League::factory()->registered(3, 3)->create();
         $this->testclub_assigned = $this->testleague->clubs()->first();
         $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
     }
@@ -45,18 +46,18 @@ class LeagueRegistrationInjectTeamTest extends TestCase
             ->assertDatabaseCount('games', 0);
 
         $this->testleague->refresh();
-        $this->assertEquals( 4 , $this->testleague->state_count['size']);
-        $this->assertEquals( 3 , $this->testleague->state_count['assigned']);
-        $this->assertEquals( 3 , $this->testleague->state_count['registered']);
-        $this->assertEquals( 0 , $this->testleague->state_count['charspicked']);
-        $this->assertEquals( 0 , $this->testleague->state_count['generated']);
+        $this->assertEquals(4, $this->testleague->state_count['size']);
+        $this->assertEquals(3, $this->testleague->state_count['assigned']);
+        $this->assertEquals(3, $this->testleague->state_count['registered']);
+        $this->assertEquals(0, $this->testleague->state_count['charspicked']);
+        $this->assertEquals(0, $this->testleague->state_count['generated']);
 
         // now add the new club/
         $response = $this->authenticated()
             ->followingRedirects()
             ->post(
                 route('league.assign-clubs', ['league' => $this->testleague->id]),
-                ['club_id' => $c_toadd->id, 'item_id'=> $this->testleague->id]
+                ['club_id' => $c_toadd->id, 'item_id' => $this->testleague->id]
             );
 
         $response->assertStatus(200);
@@ -65,15 +66,14 @@ class LeagueRegistrationInjectTeamTest extends TestCase
             ->assertDatabaseCount('clubs', 4)
             ->assertDatabaseCount('teams', 4)
             ->assertDatabaseCount('club_league', 4)
-            ->assertDatabaseCount('games',0 );
+            ->assertDatabaseCount('games', 0);
 
         $this->testleague->refresh();
-        $this->assertEquals( 4 , $this->testleague->state_count['size']);
-        $this->assertEquals( 4 , $this->testleague->state_count['assigned']);
-        $this->assertEquals( 3 , $this->testleague->state_count['registered']);
-        $this->assertEquals( 0 , $this->testleague->state_count['charspicked']);
-        $this->assertEquals( 0 , $this->testleague->state_count['generated']);
-
+        $this->assertEquals(4, $this->testleague->state_count['size']);
+        $this->assertEquals(4, $this->testleague->state_count['assigned']);
+        $this->assertEquals(3, $this->testleague->state_count['registered']);
+        $this->assertEquals(0, $this->testleague->state_count['charspicked']);
+        $this->assertEquals(0, $this->testleague->state_count['generated']);
     }
 
     /**
@@ -93,14 +93,14 @@ class LeagueRegistrationInjectTeamTest extends TestCase
             ->followingRedirects()
             ->post(
                 route('league.assign-clubs', ['league' => $this->testleague->id]),
-                ['club_id' => $c_toadd->id, 'item_id'=> $this->testleague->id]
+                ['club_id' => $c_toadd->id, 'item_id' => $this->testleague->id]
             );
 
         // now register the team
         $response = $this->authenticated()
             ->followingRedirects()
             ->put(
-                route('league.register.team', ['league'=>$this->testleague->id , 'team'=> $c_toadd->teams->first()->id ])
+                route('league.register.team', ['league' => $this->testleague->id, 'team' => $c_toadd->teams->first()->id])
             );
 
         $response->assertStatus(200);
@@ -109,15 +109,14 @@ class LeagueRegistrationInjectTeamTest extends TestCase
             ->assertDatabaseCount('clubs', 4)
             ->assertDatabaseCount('teams', 4)
             ->assertDatabaseCount('club_league', 4)
-            ->assertDatabaseCount('games',0 );
+            ->assertDatabaseCount('games', 0);
 
         $this->testleague->refresh();
-        $this->assertEquals( 4 , $this->testleague->state_count['size']);
-        $this->assertEquals( 4 , $this->testleague->state_count['assigned']);
-        $this->assertEquals( 4 , $this->testleague->state_count['registered']);
-        $this->assertEquals( 0 , $this->testleague->state_count['charspicked']);
-        $this->assertEquals( 0 , $this->testleague->state_count['generated']);
-
+        $this->assertEquals(4, $this->testleague->state_count['size']);
+        $this->assertEquals(4, $this->testleague->state_count['assigned']);
+        $this->assertEquals(4, $this->testleague->state_count['registered']);
+        $this->assertEquals(0, $this->testleague->state_count['charspicked']);
+        $this->assertEquals(0, $this->testleague->state_count['generated']);
     }
 
     /**
@@ -147,12 +146,11 @@ class LeagueRegistrationInjectTeamTest extends TestCase
             ->assertDatabaseCount('games', 0);
 
         $this->testleague->refresh();
-        $this->assertEquals( 4 , $this->testleague->state_count['size']);
-        $this->assertEquals( 2 , $this->testleague->state_count['assigned']);
-        $this->assertEquals( 2 , $this->testleague->state_count['registered']);
-        $this->assertEquals( 0 , $this->testleague->state_count['charspicked']);
-        $this->assertEquals( 0 , $this->testleague->state_count['generated']);
-
+        $this->assertEquals(4, $this->testleague->state_count['size']);
+        $this->assertEquals(2, $this->testleague->state_count['assigned']);
+        $this->assertEquals(2, $this->testleague->state_count['registered']);
+        $this->assertEquals(0, $this->testleague->state_count['charspicked']);
+        $this->assertEquals(0, $this->testleague->state_count['generated']);
     }
 
     /**
@@ -165,12 +163,11 @@ class LeagueRegistrationInjectTeamTest extends TestCase
      */
     public function assign_duplicate_club()
     {
-
         $response = $this->authenticated()
         ->followingRedirects()
         ->post(
             route('league.assign-clubs', ['league' => $this->testleague->id]),
-            ['club_id' => $this->testleague->clubs->first()->id, 'item_id'=> $this->testleague->id]
+            ['club_id' => $this->testleague->clubs->first()->id, 'item_id' => $this->testleague->id]
         );
 
         $response->assertStatus(200);
@@ -179,15 +176,13 @@ class LeagueRegistrationInjectTeamTest extends TestCase
             ->assertDatabaseCount('clubs', 4)
             ->assertDatabaseCount('teams', 4)
             ->assertDatabaseCount('club_league', 4)
-            ->assertDatabaseCount('games',0 );
+            ->assertDatabaseCount('games', 0);
 
         $this->testleague->refresh();
-        $this->assertEquals( 4 , $this->testleague->state_count['size']);
-        $this->assertEquals( 4 , $this->testleague->state_count['assigned']);
-        $this->assertEquals( 3 , $this->testleague->state_count['registered']);
-        $this->assertEquals( 0 , $this->testleague->state_count['charspicked']);
-        $this->assertEquals( 0 , $this->testleague->state_count['generated']);
+        $this->assertEquals(4, $this->testleague->state_count['size']);
+        $this->assertEquals(4, $this->testleague->state_count['assigned']);
+        $this->assertEquals(3, $this->testleague->state_count['registered']);
+        $this->assertEquals(0, $this->testleague->state_count['charspicked']);
+        $this->assertEquals(0, $this->testleague->state_count['generated']);
     }
-
-
 }

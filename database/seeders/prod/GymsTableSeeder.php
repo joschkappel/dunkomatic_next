@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders\prod;
 
 use Illuminate\Database\Seeder;
@@ -13,27 +14,24 @@ class GymsTableSeeder extends Seeder
      */
     public function run()
     {
-      $old_gym = DB::connection('dunkv1')->table('gymnasium')->get();
+        $old_gym = DB::connection('dunkv1')->table('gymnasium')->get();
 
-      foreach ($old_gym as $gym) {
+        foreach ($old_gym as $gym) {
+            // check if refrenced club exists
+            $ref_club = DB::connection('dunkv1')->table('club')->where('club_id', $gym->club_id)->get();
 
-        // check if refrenced club exists
-        $ref_club = DB::connection('dunkv1')->table('club')->where('club_id', $gym->club_id)->get();
-
-
-        if ( count($ref_club)>0){
-
-          DB::connection('dunknxt')->table('gyms')->insert([
-            'gym_no'     => $gym->shortname,
-            'name'          => $gym->name,
-            'club_id'       => $gym->club_id,
-            'zip'           => $gym->zip,
-            'street'           => $gym->street,
-            'city'           => $gym->city,
-            'directions'           => $gym->directions,
-            'created_at'    => now()
-          ]);
+            if (count($ref_club) > 0) {
+                DB::connection('dunknxt')->table('gyms')->insert([
+                    'gym_no' => $gym->shortname,
+                    'name' => $gym->name,
+                    'club_id' => $gym->club_id,
+                    'zip' => $gym->zip,
+                    'street' => $gym->street,
+                    'city' => $gym->city,
+                    'directions' => $gym->directions,
+                    'created_at' => now(),
+                ]);
+            }
         }
-      }
     }
 }

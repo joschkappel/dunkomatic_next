@@ -14,8 +14,7 @@ class MembersSeeder extends Seeder
      */
     public function run()
     {
-        DB::unprepared(file_get_contents( __dir__ . '/sql/members.sql'));
-        DB::unprepared(file_get_contents( __dir__ . '/sql/memberships.sql'));
-
+        DB::unprepared(file_get_contents(__DIR__.'/sql/members.sql'));
+        DB::unprepared(file_get_contents(__DIR__.'/sql/memberships.sql'));
     }
 }

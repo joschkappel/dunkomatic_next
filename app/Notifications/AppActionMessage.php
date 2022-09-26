@@ -3,8 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class AppActionMessage extends Notification
@@ -12,13 +10,14 @@ class AppActionMessage extends Notification
     use Queueable;
 
     protected string $msg;
+
     protected string $subject;
 
     /**
      * Create a new notification instance.
      *
-     * @param string $subject
-     * @param string $body
+     * @param  string  $subject
+     * @param  string  $body
      * @return void
      */
     public function __construct(string $subject, string $body)
@@ -47,11 +46,11 @@ class AppActionMessage extends Notification
     public function toArray($notifiable)
     {
         return [
-              'greeting' => '',
-              'subject' => $this->subject,
-              'lines' => $this->msg,
-              'salutation' => config('app.name'),
-              'sender'=>config('app.name')
+            'greeting' => '',
+            'subject' => $this->subject,
+            'lines' => $this->msg,
+            'salutation' => config('app.name'),
+            'sender' => config('app.name'),
         ];
     }
 }

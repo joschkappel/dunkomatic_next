@@ -6,34 +6,31 @@ use App\Enums\Role;
 use App\Models\Member;
 use App\Models\Region;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Log;
+use Illuminate\View\View;
 
 class AddressController extends Controller
 {
     /**
      * View for address list
      *
-     * @param string $language
-     * @param \App\Models\Region $region
-     * @param int $role
+     * @param  string  $language
+     * @param  \App\Models\Region  $region
+     * @param  int  $role
      * @return \Illuminate\View\View
-     *
      */
-
     public function index_byrole(string $language, Region $region, int $role): View
     {
         return view('address.address_role_list', ['role' => $role, 'region' => $region]);
     }
+
     /**
      * datatable for addresses by region and role (eg all clubleads for region 2)
      *
-     * @param string $language
-     * @param \App\Models\Region $region
-     * @param int $role
+     * @param  string  $language
+     * @param  \App\Models\Region  $region
+     * @param  int  $role
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function index_byrole_dt(string $language, Region $region, int $role)
     {
@@ -76,6 +73,7 @@ class AddressController extends Controller
 
         Log::notice('all members filtered', ['all' => $all->count(), 'filtered' => $filtered->count()]);
         $adrlist = datatables()::of($filtered);
+
         return $adrlist
             ->addColumn('name', function ($m) {
                 return $m->name;

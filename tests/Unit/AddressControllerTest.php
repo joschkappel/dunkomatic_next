@@ -2,18 +2,20 @@
 
 namespace Tests\Unit;
 
-use App\Models\League;
-use App\Models\Club;
 use App\Enums\Role;
-
-use Tests\TestCase;
+use App\Models\Club;
+use App\Models\League;
 use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class AddressControllerTest extends TestCase
 {
     use Authentication;
+
     private $testleague;
+
     private $testclub_assigned;
+
     private $testclub_free;
 
     public function setUp(): void
@@ -34,7 +36,6 @@ class AddressControllerTest extends TestCase
      */
     public function index_byrole()
     {
-
         $response = $this->authenticated()
             ->get(route('address.index_byrole', ['language' => 'de', 'region' => $this->region, 'role' => Role::ClubLead]));
 
@@ -43,6 +44,7 @@ class AddressControllerTest extends TestCase
             ->assertViewHas('region', $this->region)
             ->assertViewHas('role', Role::ClubLead);
     }
+
     /**
      * inde_byrole_Dtx
      *
@@ -53,7 +55,6 @@ class AddressControllerTest extends TestCase
      */
     public function index_byrole_dt()
     {
-
         $response = $this->authenticated()
             ->get(route('address.index_byrole.dt', ['language' => 'de', 'region' => $this->region, 'role' => Role::ClubLead]));
 

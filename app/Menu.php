@@ -2,12 +2,12 @@
 
 namespace App;
 
-use Illuminate\Contracts\Container\Container;
-use Illuminate\Contracts\Events\Dispatcher;
 use App\Events\BuildingMenu;
 use App\Helpers\LayoutHelper;
 use App\Helpers\MenuItemHelper;
 use App\Menu\Builder;
+use Illuminate\Contracts\Container\Container;
+use Illuminate\Contracts\Events\Dispatcher;
 
 class Menu
 {
@@ -51,9 +51,9 @@ class Menu
     /**
      * Constructor.
      *
-     * @param array $filters
-     * @param Dispatcher $events
-     * @param Container $container
+     * @param  array  $filters
+     * @param  Dispatcher  $events
+     * @param  Container  $container
      */
     public function __construct(array $filters, Dispatcher $events, Container $container)
     {
@@ -64,18 +64,17 @@ class Menu
         // Fill the map of filters methods.
 
         $this->menuFilterMap = [
-            'sidebar'      => [$this, 'sidebarFilter'],
-            'navbar-left'  => [$this, 'navbarLeftFilter'],
+            'sidebar' => [$this, 'sidebarFilter'],
+            'navbar-left' => [$this, 'navbarLeftFilter'],
             'navbar-right' => [$this, 'navbarRightFilter'],
-            'navbar-user'  => [$this, 'navbarUserMenuFilter'],
+            'navbar-user' => [$this, 'navbarUserMenuFilter'],
         ];
-
     }
 
     /**
      * Get all the menu items, or a specific set of these.
      *
-     * @param string $filterToken Token representing a subset of the menu items
+     * @param  string  $filterToken Token representing a subset of the menu items
      * @return array A set of menu items
      */
     public function menu($filterToken = null)
@@ -132,7 +131,7 @@ class Menu
     /**
      * Filter method used to get the sidebar menu items.
      *
-     * @param mixed $item A menu item
+     * @param  mixed  $item A menu item
      * @return bool
      */
     private function sidebarFilter($item)
@@ -143,7 +142,7 @@ class Menu
     /**
      * Filter method used to get the top navbar left menu items.
      *
-     * @param mixed $item A menu item
+     * @param  mixed  $item A menu item
      * @return bool
      */
     private function navbarLeftFilter($item)
@@ -158,7 +157,7 @@ class Menu
     /**
      * Filter method used to get the top navbar right menu items.
      *
-     * @param mixed $item A menu item
+     * @param  mixed  $item A menu item
      * @return bool
      */
     private function navbarRightFilter($item)
@@ -169,7 +168,7 @@ class Menu
     /**
      * Filter method used to get the navbar user menu items.
      *
-     * @param mixed $item A menu item
+     * @param  mixed  $item A menu item
      * @return bool
      */
     private function navbarUserMenuFilter($item)

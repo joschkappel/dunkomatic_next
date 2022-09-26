@@ -4,13 +4,10 @@ namespace Tests\Browser;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
-use Tests\CreatesApplication;
 use Tests\DuskTestCase;
-
 
 class RegisterTest extends DuskTestCase
 {
-
     use DatabaseMigrations;
 
     public function setUp(): void
@@ -21,6 +18,7 @@ class RegisterTest extends DuskTestCase
 
     /**
      * test registration
+     *
      * @test
      * @group authx
      *
@@ -34,26 +32,25 @@ class RegisterTest extends DuskTestCase
                     ->screenshot('start');
 
             if ($browser->seeLink('Registrieren')) {
-              $browser->clickLink('Registrieren')
-                      ->assertPathIs('/de/signup')
-                      ->assertSee('oder benutze deine eMail')
-                      ->assertSee('Anbieter registrieren')
-                      ->click('@register-button')
-                      ->assertPathIs('/de/register')
-                      ->assertSee('lege dein Zugangskonto an')
-                      ->type('name','tester')
-                      ->type('email','test@gmail.com')
-                      ->type('password','password')
-                      ->type('password_confirmation','password')
-                      ->type('reason_join','am testing')
-                      ->type('captcha','mockcaptcha=12345')
-                      ->select2('.sel-region')
-                      ->screenshot('Registered_user')
-                      ->press('Registrieren')
-                      ->assertPathIs('/de/email/verify')
-                      ->assertSee('Dein Konto muss noch bes');
+                $browser->clickLink('Registrieren')
+                        ->assertPathIs('/de/signup')
+                        ->assertSee('oder benutze deine eMail')
+                        ->assertSee('Anbieter registrieren')
+                        ->click('@register-button')
+                        ->assertPathIs('/de/register')
+                        ->assertSee('lege dein Zugangskonto an')
+                        ->type('name', 'tester')
+                        ->type('email', 'test@gmail.com')
+                        ->type('password', 'password')
+                        ->type('password_confirmation', 'password')
+                        ->type('reason_join', 'am testing')
+                        ->type('captcha', 'mockcaptcha=12345')
+                        ->select2('.sel-region')
+                        ->screenshot('Registered_user')
+                        ->press('Registrieren')
+                        ->assertPathIs('/de/email/verify')
+                        ->assertSee('Dein Konto muss noch bes');
             }
         });
-
     }
 }

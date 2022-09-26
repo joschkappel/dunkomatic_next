@@ -37,7 +37,7 @@ return new class extends Migration
                 'job_club_reports_running',
                 'job_league_reports_running',
                 'job_club_reports_lastrun_ok',
-                'job_league_reports_lastrun_ok'
+                'job_league_reports_lastrun_ok',
             ]);
         });
     }

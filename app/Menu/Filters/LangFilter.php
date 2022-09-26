@@ -23,7 +23,7 @@ class LangFilter implements FilterInterface
     /**
      * Constructor.
      *
-     * @param Translator $translator
+     * @param  Translator  $translator
      */
     public function __construct(Translator $translator)
     {
@@ -34,7 +34,7 @@ class LangFilter implements FilterInterface
     /**
      * Transforms a menu item. Makes the item translations.
      *
-     * @param array $item A menu item
+     * @param  array  $item A menu item
      * @return array The transformed menu item
      */
     public function transform($item)
@@ -53,7 +53,7 @@ class LangFilter implements FilterInterface
     /**
      * Gets the translation for a given key.
      *
-     * @param string $key The key to translate
+     * @param  string  $key The key to translate
      * @return string The translation
      */
     protected function getTranslation($key)

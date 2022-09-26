@@ -2,12 +2,9 @@
 
 namespace App\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
-
 use App\Models\Message;
+use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
 
 class CustomDbMessage extends Notification
 {
@@ -23,7 +20,6 @@ class CustomDbMessage extends Notification
     public function __construct(Message $message)
     {
         $this->message = $message;
-
     }
 
     /**
@@ -34,9 +30,8 @@ class CustomDbMessage extends Notification
      */
     public function via($notifiable)
     {
-        return [ 'database'];
+        return ['database'];
     }
-
 
     /**
      * Get the array representation of the notification.
@@ -52,7 +47,7 @@ class CustomDbMessage extends Notification
             'lines' => $this->message['body'],
             'salutation' => $this->message['salutation'],
             'sender' => $this->message->user->name,
-            'tag' => $this->message->id
+            'tag' => $this->message->id,
         ];
     }
 }

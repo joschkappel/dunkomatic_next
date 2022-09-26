@@ -3,19 +3,14 @@
 namespace Tests\Jobs;
 
 use App\Jobs\ProcessDbCleanup;
-use Illuminate\Notifications\DatabaseNotification;
 use App\Models\Message;
 use App\Models\User;
-
-use Tests\SysTestCase;
-
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Notification;
-
+use Tests\SysTestCase;
 
 class DbCleanupTest extends SysTestCase
 {
-
-
     /**
      * run job
      *
@@ -31,13 +26,12 @@ class DbCleanupTest extends SysTestCase
 
         // mark all messages as sent
         $cnt_msg_total = Message::count();
-        $cnt_msg = Message::whereNotNull('id')->update(['sent_at'=> now()]);
+        $cnt_msg = Message::whereNotNull('id')->update(['sent_at' => now()]);
         // mark all users as rejected
         $cnt_user_total = User::count();
-        $cnt_user = User::whereNotNull('id')->update(['rejected_at'=> now()]);
+        $cnt_user = User::whereNotNull('id')->update(['rejected_at' => now()]);
         // mark all notifications as read
-        DatabaseNotification::whereNotNull('id')->update(['read_at'=>now()]);
-
+        DatabaseNotification::whereNotNull('id')->update(['read_at' => now()]);
 
         $this->travel(2)->months();
         $job_instance = resolve(ProcessDbCleanup::class);

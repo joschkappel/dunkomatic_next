@@ -21,7 +21,7 @@ return new class extends Migration
 
         Artisan::call('db:seed', [
             '--class' => 'ReportClassesSeeder',
-            '--force' => true
+            '--force' => true,
         ]);
     }
 

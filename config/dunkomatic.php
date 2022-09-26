@@ -23,17 +23,17 @@ return [
     'laravel_mix_css_path' => 'css/app.css',
     'laravel_mix_js_path' => 'js/app.js',
 
-    'grafics' => array(
+    'grafics' => [
         'welcome_l' => 'welcome_landscape.jpg',
         'welcome_p' => 'welcome_portrait.jpg',
-        'club'    => 'club.jpg',
-        'league'    => 'league.jpg',
-        'region'    => 'region.jpg',
-        '403'     => '403_forbidden.jpg',
-        '404'     => '404_not_found.jpg',
-        '503'     => '503_service_unavailable.jpg',
-        '419'     => '419_timeout.jpg'
-    ),
+        'club' => 'club.jpg',
+        'league' => 'league.jpg',
+        'region' => 'region.jpg',
+        '403' => '403_forbidden.jpg',
+        '404' => '404_not_found.jpg',
+        '503' => '503_service_unavailable.jpg',
+        '419' => '419_timeout.jpg',
+    ],
 
     'maps_uri' => 'https://www.google.com/maps/place/',
 
@@ -42,7 +42,7 @@ return [
   | allowed characters for league schemes (A to Q without J) or 1-16
   |--------------------------------------------------------------------------
   */
-    'league_team_chars' => array(1 => 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'),
+    'league_team_chars' => [1 => 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'],
     /*
 
   /*
@@ -50,7 +50,7 @@ return [
   | allowed characters for gym numbering
   |--------------------------------------------------------------------------
   */
-    'allowed_gym_nos' => array("1", "2", "3", "4", "5", "6", "7", "8", "9", "10"),
+    'allowed_gym_nos' => ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
 
     'folders' => [
         'export' => 'exports',
@@ -62,6 +62,6 @@ return [
         'teamware' => 'teamware',
     ],
 
-    'db_backup_age' => 30, # keep db backups for 30 days
+    'db_backup_age' => 30, // keep db backups for 30 days
 
 ];

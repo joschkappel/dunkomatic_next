@@ -15,6 +15,7 @@ abstract class DuskTestCase extends BaseTestCase
      * Prepare for Dusk test execution.
      *
      * @beforeClass
+     *
      * @return void
      */
     public static function prepare(): void
@@ -35,25 +36,26 @@ abstract class DuskTestCase extends BaseTestCase
             '--disable-gpu',
             '--headless',
             '--window-size=1920,1080',
-            '--no-sandbox'
+            '--no-sandbox',
         ]);
 
-
         if (env('SELENIUM_ENABLED', false)) {
-            $options->setExperimentalOption('prefs', array(
-                "download.prompt_for_download" => false,
-                "download.default_directory" => "/var/www/dunkonxt/tests/Browser/Exportfiles",
-            ));
+            $options->setExperimentalOption('prefs', [
+                'download.prompt_for_download' => false,
+                'download.default_directory' => '/var/www/dunkonxt/tests/Browser/Exportfiles',
+            ]);
+
             return RemoteWebDriver::create(
                 'http://selenium:4444/wd/hub', DesiredCapabilities::chrome()->setCapability(
                     ChromeOptions::CAPABILITY, $options
                 )
             );
         } else {
-            $options->setExperimentalOption('prefs', array(
-                "download.prompt_for_download" => false,
-                "download.default_directory" => "/home/runner/work/dunkomatic_next/dunkomatic_next/tests/Browser/Exportfiles",
-            ));
+            $options->setExperimentalOption('prefs', [
+                'download.prompt_for_download' => false,
+                'download.default_directory' => '/home/runner/work/dunkomatic_next/dunkomatic_next/tests/Browser/Exportfiles',
+            ]);
+
             return RemoteWebDriver::create(
                 'http://localhost:9515', DesiredCapabilities::chrome()->setCapability(
                     ChromeOptions::CAPABILITY, $options

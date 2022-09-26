@@ -1,16 +1,11 @@
 <?php
+
 namespace Database\Seeders\base;
 
-
-use Silber\Bouncer\Database\Role;
+use App\Models\Message;
 use App\Models\Region;
 use App\Models\User;
-use App\Models\Message;
-
-
-
 use Illuminate\Database\Seeder;
-use Silber\Bouncer\Database\Role as DatabaseRole;
 
 class MessagesTableSeeder extends Seeder
 {
@@ -21,8 +16,8 @@ class MessagesTableSeeder extends Seeder
      */
     public function run()
     {
-        $user = User::where('name','admin')->first();
-        foreach (Region::all() as $r){
+        $user = User::where('name', 'admin')->first();
+        foreach (Region::all() as $r) {
             $msg = new Message();
             $msg->title = 'Welcome Message '.$r->name;
             $msg->greeting = 'Welcome';

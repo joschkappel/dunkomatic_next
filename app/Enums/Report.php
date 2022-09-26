@@ -14,15 +14,20 @@ use BenSampo\Enum\Enum;
  */
 final class Report extends Enum
 {
-    const Teamware =   0;
-    const LeagueBook =  1;
+    const Teamware = 0;
+
+    const LeagueBook = 1;
+
     const AddressBook = 2;
+
     const RegionGames = 3;
+
     const ClubGames = 4;
+
     const LeagueGames = 5;
 
-
-    function getReportTitle(){
+    public function getReportTitle()
+    {
         switch ($this->value) {
             case 0:
                 return 'Teamware Dateien';
@@ -47,7 +52,9 @@ final class Report extends Enum
                 break;
         }
     }
-    function getReportFilename(){
+
+    public function getReportFilename()
+    {
         switch ($this->value) {
             case 0:
                 return '';

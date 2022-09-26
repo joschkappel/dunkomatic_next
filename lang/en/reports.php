@@ -22,5 +22,5 @@ return [
     'run.club' => 'Run Club Reports Now',
     'files.removed' => 'Files deleted',
     'jobs.started' => 'Jobs started',
-    'pick.format' => 'Choose your format'
+    'pick.format' => 'Choose your format',
 ];

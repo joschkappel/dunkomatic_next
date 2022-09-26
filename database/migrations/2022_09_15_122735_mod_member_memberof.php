@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\Membership;
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -26,7 +25,7 @@ return new class extends Migration
             $table->text('role_in_regions')->nullable();
         });
 
-        foreach( Membership::all()  as $ms){
+        foreach (Membership::all()  as $ms) {
             $ms->touch();
         }
     }
@@ -39,8 +38,8 @@ return new class extends Migration
     public function down()
     {
         Schema::table('members', function (Blueprint $table) {
-            $table->dropColumn(['member_of_clubs','member_of_leagues','member_of_regions','member_of_teams']);
-            $table->dropColumn(['role_in_clubs','role_in_leagues','role_in_regions','role_in_teams']);
+            $table->dropColumn(['member_of_clubs', 'member_of_leagues', 'member_of_regions', 'member_of_teams']);
+            $table->dropColumn(['role_in_clubs', 'role_in_leagues', 'role_in_regions', 'role_in_teams']);
         });
     }
 };

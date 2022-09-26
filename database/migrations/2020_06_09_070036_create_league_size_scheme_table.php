@@ -19,15 +19,15 @@ class CreateLeagueSizeSchemeTable extends Migration
             $table->foreign('league_size_id')->references('id')->on('league_sizes');
             $table->smallInteger('game_day');
             $table->smallInteger('game_no');
-            $table->string('team_home',2);
-            $table->string('team_guest',2);
+            $table->string('team_home', 2);
+            $table->string('team_guest', 2);
             $table->timestamps();
-            $table->unique(['league_size_id','game_no']);
+            $table->unique(['league_size_id', 'game_no']);
         });
 
         Artisan::call('db:seed', [
             '--class' => 'LeagueSizeSchemesSeeder',
-            '--force' => true
+            '--force' => true,
         ]);
     }
 

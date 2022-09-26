@@ -22,5 +22,5 @@ return [
     'run.club' => 'Vereinspläne Jetzt Erzeugen',
     'files.removed' => 'Datein sind gelöscht',
     'jobs.started' => 'Dateien werden erzeugt',
-    'pick.format' => 'Wähle ein Format'
+    'pick.format' => 'Wähle ein Format',
 ];

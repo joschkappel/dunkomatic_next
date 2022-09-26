@@ -3,10 +3,9 @@
 namespace Tests\Unit;
 
 use App\Models\Schedule;
-
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class ScheduleControllerTest extends TestCase
 {
@@ -29,6 +28,7 @@ class ScheduleControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertViewIs('schedule.schedule_list');
     }
+
     /**
      * create
      *
@@ -40,13 +40,13 @@ class ScheduleControllerTest extends TestCase
      */
     public function create()
     {
-
         $response = $this->authenticated()
             ->get(route('schedule.create', ['language' => 'de', 'region' => $this->region]));
 
         $response->assertStatus(200)
             ->assertViewIs('schedule.schedule_new');
     }
+
     /**
      * store NOT OK
      *
@@ -61,7 +61,7 @@ class ScheduleControllerTest extends TestCase
         $response = $this->authenticated()
             ->post(route('schedule.store'), [
                 'name' => 'testschedule',
-                'region_id' => $this->region->id
+                'region_id' => $this->region->id,
             ]);
         $response
             ->assertStatus(302)
@@ -69,6 +69,7 @@ class ScheduleControllerTest extends TestCase
 
         $this->assertDatabaseMissing('schedules', ['name' => 'testschedule']);
     }
+
     /**
      * store OK
      *
@@ -85,7 +86,7 @@ class ScheduleControllerTest extends TestCase
                 'name' => 'testschedule',
                 'region_id' => $this->region->id,
                 'league_size_id' => 2,
-                'iterations' => 1
+                'iterations' => 1,
             ]);
         $response->assertSessionHasNoErrors()
             ->assertRedirect(route('schedule.index', ['language' => 'de', 'region' => $this->region]));
@@ -98,13 +99,14 @@ class ScheduleControllerTest extends TestCase
                 'region_id' => $this->region->id,
                 'league_size_id' => 2,
                 'iterations' => 1,
-                'custom_events' => 1
+                'custom_events' => 1,
             ]);
         $response->assertSessionHasNoErrors()
             ->assertRedirect(route('schedule.index', ['language' => 'de', 'region' => $this->region]));
 
         $this->assertDatabaseHas('schedules', ['name' => 'testschedule2']);
     }
+
     /**
      * edit
      *
@@ -125,6 +127,7 @@ class ScheduleControllerTest extends TestCase
             ->assertViewIs('schedule.schedule_edit')
             ->assertViewHas('schedule', $schedule);
     }
+
     /**
      * update not OK
      *
@@ -140,13 +143,14 @@ class ScheduleControllerTest extends TestCase
 
         $response = $this->authenticated()
             ->put(route('schedule.update', ['schedule' => $schedule]), [
-                'name' => 'testschedule2'
+                'name' => 'testschedule2',
             ]);
 
         $response->assertStatus(302)
             ->assertSessionHasErrors();
         $this->assertDatabaseMissing('schedules', ['name' => 'testschedule2']);
     }
+
     /**
      * update OK
      *
@@ -163,7 +167,7 @@ class ScheduleControllerTest extends TestCase
             ->put(route('schedule.update', ['schedule' => $schedule]), [
                 'name' => 'testschedulex',
                 'league_size_id' => 2,
-                'iterations' => 1
+                'iterations' => 1,
             ]);
 
         $schedule->refresh();
@@ -177,7 +181,7 @@ class ScheduleControllerTest extends TestCase
                 'name' => 'testscheduley',
                 'league_size_id' => 2,
                 'iterations' => 1,
-                'custom_events' => 1
+                'custom_events' => 1,
             ]);
 
         $schedule->refresh();
@@ -186,6 +190,7 @@ class ScheduleControllerTest extends TestCase
         //$response->dumpSession();
         $this->assertDatabaseHas('schedules', ['name' => 'testscheduley']);
     }
+
     /**
      * sb_region
      *
@@ -213,6 +218,7 @@ class ScheduleControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonFragment([]);
     }
+
     /**
      * sb_size
      *
@@ -232,8 +238,9 @@ class ScheduleControllerTest extends TestCase
 
         //$response->dump();
         $response->assertStatus(200)
-            ->assertJsonFragment([["id" => $schedule2->id, "text" => $schedule2->name]]);
+            ->assertJsonFragment([['id' => $schedule2->id, 'text' => $schedule2->name]]);
     }
+
     /**
      * sb_region_size
      *
@@ -253,8 +260,9 @@ class ScheduleControllerTest extends TestCase
 
         //$response->dump();
         $response->assertStatus(200)
-            ->assertJsonFragment([["id" => $schedule2->id, "text" => $schedule2->name]]);
+            ->assertJsonFragment([['id' => $schedule2->id, 'text' => $schedule2->name]]);
     }
+
     /**
      * list
      *
@@ -275,6 +283,7 @@ class ScheduleControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertSessionHasNoErrors();
     }
+
     /**
      * compare
      *
@@ -306,6 +315,7 @@ class ScheduleControllerTest extends TestCase
             ->assertViewHas('hq', $this->region->parentRegion)
             ->assertViewHas('language', 'de');
     }
+
     /**
      * compare_datatable
      *
@@ -334,6 +344,7 @@ class ScheduleControllerTest extends TestCase
             ->assertSessionHasNoErrors()
             ->assertJsonFragment(['data' => []]);
     }
+
     /**
      * destroy
      *

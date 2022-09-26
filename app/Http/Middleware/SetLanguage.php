@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Support\Facades\App;
 use Closure;
+use Illuminate\Support\Facades\App;
 
 class SetLanguage
 {
@@ -16,9 +16,8 @@ class SetLanguage
      */
     public function handle($request, Closure $next)
     {
-
-        if ( in_array($request->language, config('app.supported_languages'))){
-          App::setLocale($request->language);
+        if (in_array($request->language, config('app.supported_languages'))) {
+            App::setLocale($request->language);
         }
 
         return $next($request);

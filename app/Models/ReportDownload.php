@@ -3,16 +3,13 @@
 namespace App\Models;
 
 use App\Enums\Report;
-use App\Models\User;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ReportDownload extends Model
 {
-
     protected $fillable = [
-        'id', 'user_id', 'report_id', 'model_id', 'model_class'
+        'id', 'user_id', 'report_id', 'model_id', 'model_class',
     ];
 
     /**
@@ -21,7 +18,7 @@ class ReportDownload extends Model
      * @var array
      */
     protected $casts = [
-        'report_id' => Report::class
+        'report_id' => Report::class,
     ];
 
     public function user(): BelongsTo
@@ -33,6 +30,4 @@ class ReportDownload extends Model
     {
         return $query->where('user_id', $user->id)->where('model_class', $type)->where('model_id', $type_id);
     }
-
-
 }

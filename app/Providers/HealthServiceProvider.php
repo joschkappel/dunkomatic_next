@@ -2,27 +2,25 @@
 
 namespace App\Providers;
 
-use App\Checks\LaravelEchoServerCheck;
 use App\Checks\ConcurrentUsersCheck;
 use App\Checks\DbConnectionsCheck;
+use App\Checks\LaravelEchoServerCheck;
 use App\Checks\MinioHealthCheck;
 use App\Checks\QueueLoadCheck;
 use Illuminate\Support\ServiceProvider;
-use Spatie\Health\Facades\Health;
-use Spatie\Health\Checks\Checks\UsedDiskSpaceCheck;
-use Spatie\Health\Checks\Checks\DatabaseCheck;
-use Spatie\Health\Checks\Checks\RedisCheck;
-use Spatie\Health\Checks\Checks\PingCheck;
 use Spatie\CpuLoadHealthCheck\CpuLoadCheck;
 use Spatie\Health\Checks\Checks\CacheCheck;
+use Spatie\Health\Checks\Checks\DatabaseCheck;
 use Spatie\Health\Checks\Checks\DebugModeCheck;
-use Spatie\Health\Checks\Checks\ScheduleCheck;
 use Spatie\Health\Checks\Checks\EnvironmentCheck;
-
+use Spatie\Health\Checks\Checks\PingCheck;
+use Spatie\Health\Checks\Checks\RedisCheck;
+use Spatie\Health\Checks\Checks\ScheduleCheck;
+use Spatie\Health\Checks\Checks\UsedDiskSpaceCheck;
+use Spatie\Health\Facades\Health;
 
 class HealthServiceProvider extends ServiceProvider
 {
-
     /**
      * Bootstrap services.
      *
@@ -30,10 +28,9 @@ class HealthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
         $checkurl = config('app.url');
 
-        if (app()->environment('prod')){
+        if (app()->environment('prod')) {
             Health::checks([
                 UsedDiskSpaceCheck::new(),
                 CpuLoadCheck::new()
@@ -42,7 +39,7 @@ class HealthServiceProvider extends ServiceProvider
                 DbConnectionsCheck::new(),
                 DatabaseCheck::new(),
                 RedisCheck::new(),
-                PingCheck::new()->url( $checkurl .'/healthy'),
+                PingCheck::new()->url($checkurl.'/healthy'),
                 // ScheduleCheck::new(),
                 EnvironmentCheck::new()->expectEnvironment('prod'),
                 CacheCheck::new(),
@@ -57,7 +54,7 @@ class HealthServiceProvider extends ServiceProvider
                 ->failWhenQueueLengthIsHigher(10),
                 MinioHealthCheck::new(),
             ]);
-        } elseif (app()->environment('staging')){
+        } elseif (app()->environment('staging')) {
             Health::checks([
                 UsedDiskSpaceCheck::new(),
                 CpuLoadCheck::new()
@@ -66,7 +63,7 @@ class HealthServiceProvider extends ServiceProvider
                 DbConnectionsCheck::new(),
                 DatabaseCheck::new(),
                 RedisCheck::new(),
-                PingCheck::new()->url( $checkurl .'/healthy'),
+                PingCheck::new()->url($checkurl.'/healthy'),
                 // ScheduleCheck::new(),
                 EnvironmentCheck::new()->expectEnvironment('staging'),
                 CacheCheck::new(),
@@ -80,7 +77,7 @@ class HealthServiceProvider extends ServiceProvider
                 ->failWhenQueueLengthIsHigher(10),
                 MinioHealthCheck::new(),
             ]);
-        } elseif (app()->environment('local')){
+        } elseif (app()->environment('local')) {
             Health::checks([
                 UsedDiskSpaceCheck::new(),
                 CpuLoadCheck::new()
@@ -89,7 +86,7 @@ class HealthServiceProvider extends ServiceProvider
                 DbConnectionsCheck::new(),
                 DatabaseCheck::new(),
                 RedisCheck::new(),
-                PingCheck::new()->url( 'http://nginx/healthy'),
+                PingCheck::new()->url('http://nginx/healthy'),
                 EnvironmentCheck::new()->expectEnvironment('local'),
                 CacheCheck::new(),
                 LaravelEchoServerCheck::new(),

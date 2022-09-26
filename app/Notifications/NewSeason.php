@@ -3,10 +3,8 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Log;
 
 class NewSeason extends Notification
 {
@@ -32,11 +30,11 @@ class NewSeason extends Notification
      */
     public function via($notifiable)
     {
-      if ( get_class($notifiable) == 'App\Models\User') {
-        return ['database'];
-      } else {
-        return ['mail'];
-      }
+        if (get_class($notifiable) == 'App\Models\User') {
+            return ['database'];
+        } else {
+            return ['mail'];
+        }
     }
 
     /**
@@ -48,12 +46,12 @@ class NewSeason extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject( __('notifications.newseason.subject'))
-                    ->greeting( __('notifications.user.greeting', ['username' => $notifiable->name]) )
-                    ->line( __('notifications.newseason.line1', [ 'season' => $this->season ]) )
-                    ->line( __('notifications.newseason.line2') )
-                    ->line( __('notifications.newseason.line3') )
-                    ->salutation( __('notifications.app.salutation') );
+                    ->subject(__('notifications.newseason.subject'))
+                    ->greeting(__('notifications.user.greeting', ['username' => $notifiable->name]))
+                    ->line(__('notifications.newseason.line1', ['season' => $this->season]))
+                    ->line(__('notifications.newseason.line2'))
+                    ->line(__('notifications.newseason.line3'))
+                    ->salutation(__('notifications.app.salutation'));
     }
 
     /**
@@ -64,15 +62,15 @@ class NewSeason extends Notification
      */
     public function toArray($notifiable)
     {
-      $lines =  '<p>'.__('notifications.newseason.line1', [ 'season' => $this->season ]).'</p>';
-      $lines .= '<p>'.__('notifications.newseason.line2').' </p>';
-      $lines .= '<p class="text-info">'.__('notifications.newseason.line3').'</p>';
+        $lines = '<p>'.__('notifications.newseason.line1', ['season' => $this->season]).'</p>';
+        $lines .= '<p>'.__('notifications.newseason.line2').' </p>';
+        $lines .= '<p class="text-info">'.__('notifications.newseason.line3').'</p>';
 
-      return [
-          'subject' => __('notifications.newseason.subject'),
-          'greeting' => __('notifications.user.greeting', ['username' => $notifiable->name]),
-          'lines' => $lines,
-          'salutation' => __('notifications.app.salutation')
-      ];
+        return [
+            'subject' => __('notifications.newseason.subject'),
+            'greeting' => __('notifications.user.greeting', ['username' => $notifiable->name]),
+            'lines' => $lines,
+            'salutation' => __('notifications.app.salutation'),
+        ];
     }
 }

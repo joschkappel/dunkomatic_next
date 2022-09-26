@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders\prod;
 
 use Illuminate\Database\Seeder;
@@ -13,16 +14,16 @@ class ScheduleEventsTableSeeder extends Seeder
      */
     public function run()
     {
-      $old = DB::connection('dunkv1')->table('schedule')->get();
+        $old = DB::connection('dunkv1')->table('schedule')->get();
 
-      foreach ($old as $schedule) {
-        DB::connection('dunknxt')->table('schedule_events')->insert([
-          'schedule_id'   => $schedule->group_id,
-          'game_day' => $schedule->game_day,
-          'game_date' => $schedule->game_date,
-          'full_weekend' => $schedule->weekend,
-          'created_at' => now(),
-        ]);
-      }
+        foreach ($old as $schedule) {
+            DB::connection('dunknxt')->table('schedule_events')->insert([
+                'schedule_id' => $schedule->group_id,
+                'game_day' => $schedule->game_day,
+                'game_date' => $schedule->game_date,
+                'full_weekend' => $schedule->weekend,
+                'created_at' => now(),
+            ]);
+        }
     }
 }

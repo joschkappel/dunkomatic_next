@@ -10,7 +10,7 @@ return new class extends Migration
     public function up()
     {
         $tableName = EloquentHealthResultStore::getHistoryItemInstance()->getTable();
-    
+
         Schema::create($tableName, function (Blueprint $table) {
             $table->id();
 

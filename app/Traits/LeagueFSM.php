@@ -3,22 +3,18 @@
 namespace App\Traits;
 
 use App\Enums\LeagueState;
-use App\Models\League;
 use App\Enums\Role;
-
-use App\Traits\GameManager;
-
-use App\Notifications\SelectTeamLeagueNo;
+use App\Models\League;
 use App\Notifications\LeagueGamesGenerated;
+use App\Notifications\SelectTeamLeagueNo;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-
 
 trait LeagueFSM
 {
     use GameManager;
 
-    public function open_char_selection(League $league, $send_email=false): void
+    public function open_char_selection(League $league, $send_email = false): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Selection()->key]);
 
@@ -26,10 +22,10 @@ trait LeagueFSM
         $league->registration_closed_at = now();
         $league->save();
 
-        if ($league->is_custom){
+        if ($league->is_custom) {
             $this->freeze_league($league);
         } else {
-            if ($send_email){
+            if ($send_email) {
                 $teams = $league->teams;
                 foreach ($teams as $t) {
                     $member = $t->club->members()->wherePivot('role_id', Role::ClubLead)->first();
@@ -58,7 +54,7 @@ trait LeagueFSM
         $league->save();
     }
 
-    public function open_game_scheduling(League $league, $send_email=false): void
+    public function open_game_scheduling(League $league, $send_email = false): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Scheduling()->key]);
 
@@ -67,7 +63,7 @@ trait LeagueFSM
         $league->generated_at = now();
         $league->save();
 
-        if ($send_email){
+        if ($send_email) {
             $teams = $league->teams;
             foreach ($teams as $t) {
                 $member = $t->club->members()->wherePivot('role_id', Role::ClubLead)->first();
@@ -79,7 +75,7 @@ trait LeagueFSM
                     $user = $member->user;
                     if (isset($user)) {
                         $user->notify(new LeagueGamesGenerated($league, $t->club, $user->name));
-                        Log::info('[NOTIFICATION] league games generated.', ['league-id'=>$league->id, 'user-id'=>$user->id]);
+                        Log::info('[NOTIFICATION] league games generated.', ['league-id' => $league->id, 'user-id' => $user->id]);
                     }
                 }
             }
@@ -88,10 +84,11 @@ trait LeagueFSM
 
     public function get_unscheduled_games_clubs(League $league): Collection
     {
-        if ($league->state->is(LeagueState::Scheduling())){
+        if ($league->state->is(LeagueState::Scheduling())) {
             // league is in scheduling, get all clubs that still have emtpy games
             $league->load('games_notime');
             $clubs = $league->games_notime->pluck('club_id_home')->unique();
+
             return $clubs;
         } else {
             return collect();
@@ -100,7 +97,6 @@ trait LeagueFSM
 
     public function open_ref_assignment(League $league): void
     {
-
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Referees()->key]);
         $this->delete_noshow_games($league);
 
@@ -144,7 +140,7 @@ trait LeagueFSM
         $league->selection_closed_at = null;
         $league->save();
 
-        if ($league->is_custom){
+        if ($league->is_custom) {
             $this->reopen_team_registration($league);
         }
     }
@@ -175,9 +171,9 @@ trait LeagueFSM
         $league->assignment_closed_at = null;
         $league->save();
         $league->games()->delete();
-       // remove: if schedule is removed, than teams and clubs should stay
-       //  $league->teams()->update(['league_id' => null]);
-       //  $league->clubs()->detach();
+        // remove: if schedule is removed, than teams and clubs should stay
+        //  $league->teams()->update(['league_id' => null]);
+        //  $league->clubs()->detach();
     }
 
     public function restart_league(League $league): void
@@ -198,9 +194,10 @@ trait LeagueFSM
             'league_char' => null,
             'league_no' => null,
             'league_prev' => $league->shortname,
-            'league_id' => null
+            'league_id' => null,
         ]);
     }
+
     public function start_league(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key ?? 'UNSET', 'new-state' => LeagueState::Registration()->key]);

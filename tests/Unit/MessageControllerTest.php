@@ -2,15 +2,11 @@
 
 namespace Tests\Unit;
 
-use App\Models\Message;
-use App\Models\Region;
 use App\Enums\Role;
-use App\Http\Controllers\MessageController;
-
+use App\Models\Message;
 use Illuminate\Support\Carbon;
-use Tests\TestCase;
 use Tests\Support\Authentication;
-use Illuminate\Support\Facades\Log;
+use Tests\TestCase;
 
 class MessageControllerTest extends TestCase
 {
@@ -28,13 +24,13 @@ class MessageControllerTest extends TestCase
      */
     public function index()
     {
-
         $response = $this->authenticated()
             ->get(route('message.index', ['language' => 'de', 'region' => $this->region, 'user' => $this->region_user]));
 
         $response->assertStatus(200)
             ->assertViewIs('message.message_list');
     }
+
     /**
      * create
      *
@@ -46,7 +42,6 @@ class MessageControllerTest extends TestCase
      */
     public function create()
     {
-
         $response = $this->authenticated()
             ->get(route('message.create', ['language' => 'de', 'region' => $this->region, 'user' => $this->region_user]));
 
@@ -54,6 +49,7 @@ class MessageControllerTest extends TestCase
             ->assertViewIs('message.message_new')
             ->assertViewHas('scopetype', Role::getInstances());
     }
+
     /**
      * store not OK
      *
@@ -68,7 +64,7 @@ class MessageControllerTest extends TestCase
         //$this->withoutExceptionHandling();
         $response = $this->authenticated()
             ->post(route('message.store', ['region' => $this->region, 'user' => $this->region_user]), [
-                'title' => 'testmessage'
+                'title' => 'testmessage',
             ]);
 
         $response->assertStatus(302)
@@ -107,6 +103,7 @@ class MessageControllerTest extends TestCase
 
         $this->assertDatabaseHas('messages', ['title' => 'testmessage']);
     }
+
     /**
      * edit
      *
@@ -129,6 +126,7 @@ class MessageControllerTest extends TestCase
             ->assertViewHas('scopetype', Role::getInstances())
             ->assertViewHas('message', $message);
     }
+
     /**
      * update not OK
      *
@@ -145,14 +143,15 @@ class MessageControllerTest extends TestCase
         $response = $this->authenticated()
             ->put(route('message.update', ['message' => $message]), [
                 'title' => 'testmessage2',
-                'greeting' => null
+                'greeting' => null,
             ]);
 
         $response->assertStatus(302)
-            ->assertSessionHasErrors(['greeting']);;
+            ->assertSessionHasErrors(['greeting']);
         //$response->dumpSession();
         $this->assertDatabaseMissing('messages', ['title' => 'testmessage2']);
     }
+
     /**
      * update OK
      *
@@ -203,6 +202,7 @@ class MessageControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonFragment(['salutation' => $msgs->salutation]);
     }
+
     /**
      * copy
      *
@@ -227,6 +227,7 @@ class MessageControllerTest extends TestCase
         $this->assertDatabaseHas('messages', ['title' => 'testmessage2']);
         $this->assertDatabaseCount('messages', $m_count + 1);
     }
+
     /**
      * destroy
      *

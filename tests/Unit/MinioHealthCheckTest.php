@@ -3,9 +3,8 @@
 namespace Tests\Unit;
 
 use App\Checks\MinioHealthCheck;
-
-use Tests\TestCase;
 use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class MinioHealthCheckTest extends TestCase
 {
@@ -21,8 +20,7 @@ class MinioHealthCheckTest extends TestCase
      */
     public function health_check()
     {
-        if ( app()->environment('local')){
-
+        if (app()->environment('local')) {
             $check = MinioHealthCheck::new();
 
             $result = $check->run();
@@ -30,7 +28,5 @@ class MinioHealthCheckTest extends TestCase
             $this->assertEquals('ok', $result->status->value);
             $this->assertCount(1, $result->meta);
         }
-
     }
-
 }

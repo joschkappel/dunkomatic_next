@@ -5,16 +5,17 @@ namespace Tests\Unit;
 use App\Models\Club;
 use App\Models\League;
 use App\Traits\LeagueFSM;
-
-use Tests\TestCase;
 use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class ClubControllerTest extends TestCase
 {
     use Authentication, LeagueFSM;
 
     private $testleague;
+
     private $testclub_assigned;
+
     private $testclub_free;
 
     public function setUp(): void
@@ -36,7 +37,6 @@ class ClubControllerTest extends TestCase
      */
     public function create()
     {
-
         $response = $this->authenticated()
             ->get(route('club.create', ['language' => 'de', 'region' => $this->region]));
 
@@ -45,6 +45,7 @@ class ClubControllerTest extends TestCase
             ->assertViewIs('club.club_new')
             ->assertViewHas('region', $this->region);
     }
+
     /**
      * store NOT OK
      *
@@ -79,7 +80,6 @@ class ClubControllerTest extends TestCase
      */
     public function store_ok()
     {
-
         $response = $this->authenticated()
             ->post(route('club.store', ['region' => $this->region]), [
                 'shortname' => 'TEST',
@@ -94,6 +94,7 @@ class ClubControllerTest extends TestCase
 
         $this->assertDatabaseHas('clubs', ['name' => 'testclub']);
     }
+
     /**
      * edit
      *
@@ -105,7 +106,6 @@ class ClubControllerTest extends TestCase
      */
     public function edit()
     {
-
         $response = $this->authenticated()
             ->withSession(['cur_region' => $this->region])
             ->get(route('club.edit', ['language' => 'de', 'club' => $this->testclub_assigned]));
@@ -114,6 +114,7 @@ class ClubControllerTest extends TestCase
             ->assertViewIs('club.club_edit')
             ->assertViewHas('club', $this->testclub_assigned);
     }
+
     /**
      * update not OK
      *
@@ -132,14 +133,15 @@ class ClubControllerTest extends TestCase
                 'name' => 'testclub2',
                 'shortname' => 'TEST',
                 'url' => 'anyurl',
-                'club_no' => '12345'
+                'club_no' => '12345',
             ]);
 
         $response->assertStatus(302)
-            ->assertSessionHasErrors(['url']);;
+            ->assertSessionHasErrors(['url']);
         //$response->dumpSession();
         $this->assertDatabaseMissing('clubs', ['name' => 'testclub2']);
     }
+
     /**
      * update OK
      *
@@ -156,7 +158,7 @@ class ClubControllerTest extends TestCase
                 'name' => 'testclub2',
                 'shortname' => 'TEST',
                 'url' => $this->testclub_assigned->url,
-                'club_no' => $this->testclub_assigned->club_no
+                'club_no' => $this->testclub_assigned->club_no,
             ]);
         $this->testclub_assigned->refresh();
         $response->assertStatus(302)
@@ -165,6 +167,7 @@ class ClubControllerTest extends TestCase
 
         $this->assertDatabaseHas('clubs', ['name' => 'testclub2']);
     }
+
     /**
      * index
      *
@@ -176,7 +179,6 @@ class ClubControllerTest extends TestCase
      */
     public function index()
     {
-
         $response = $this->authenticated()
             ->get(route('club.index', ['language' => 'de', 'region' => $this->region]));
 
@@ -210,6 +212,7 @@ class ClubControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonPath('data.*.games_home_count', $clubs);
     }
+
     /**
      * team_dt
      *
@@ -221,7 +224,6 @@ class ClubControllerTest extends TestCase
      */
     public function team_dt()
     {
-
         // runwith league in selected state
         $response = $this->authenticated()
             ->get(route('club.team.dt', ['language' => 'de', 'club' => $this->testclub_assigned]));
@@ -237,6 +239,7 @@ class ClubControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonFragment(['team_no' => $this->testclub_assigned->teams->first()->team_no]);
     }
+
     /**
      * dashboard
      *
@@ -258,6 +261,7 @@ class ClubControllerTest extends TestCase
             ->assertViewHas('club', $club)
             ->assertViewHas('gyms', $club->gyms()->get());
     }
+
     /**
      * briefing
      *
@@ -280,6 +284,7 @@ class ClubControllerTest extends TestCase
             ->assertViewHas('gyms', $club->gyms()->get())
             ->assertViewHas('teams', $club->teams()->get());
     }
+
     /**
      * list_homegame
      *
@@ -328,8 +333,9 @@ class ClubControllerTest extends TestCase
 
         //$response->dump();
         $response->assertStatus(200)
-            ->assertJsonFragment([['id' => $club->id, 'text' => '(' . $club->region->code . ') ' . $club->shortname]]);
+            ->assertJsonFragment([['id' => $club->id, 'text' => '('.$club->region->code.') '.$club->shortname]]);
     }
+
     /**
      * sb_league
      *
@@ -357,6 +363,7 @@ class ClubControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonFragment([['id' => $this->testleague->id, 'text' => $this->testleague->shortname]]);
     }
+
     /**
      * destroy
      *

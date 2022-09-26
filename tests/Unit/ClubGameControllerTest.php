@@ -2,22 +2,23 @@
 
 namespace Tests\Unit;
 
-use App\Traits\LeagueFSM;
-use App\Models\League;
 use App\Models\Club;
-
-use Tests\TestCase;
-use Tests\Support\Authentication;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\UploadedFile;
+use App\Models\League;
+use App\Traits\LeagueFSM;
 use Illuminate\Http\File;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class ClubGameControllerTest extends TestCase
 {
     use Authentication, LeagueFSM;
 
     private $testleague;
+
     private $testclub_assigned;
+
     private $testclub_free;
 
     public function setUp(): void
@@ -39,16 +40,15 @@ class ClubGameControllerTest extends TestCase
      */
     public function chart()
     {
-
         $response = $this->authenticated()
-            ->get(route('club.game.chart', ['language'=>'de', 'club' => $this->testclub_assigned]));
+            ->get(route('club.game.chart', ['language' => 'de', 'club' => $this->testclub_assigned]));
 
         $response->assertStatus(200)
             ->assertViewIs('club.club_hgame_chart')
             ->assertViewHas('club', $this->testclub_assigned);
     }
 
-        /**
+    /**
      * list_Home
      *
      * @test
@@ -59,14 +59,13 @@ class ClubGameControllerTest extends TestCase
      */
     public function list_home()
     {
-
         $response = $this->authenticated()
-            ->get(route('club.game.list_home', ['language'=>'de', 'club' => $this->testclub_assigned]));
+            ->get(route('club.game.list_home', ['language' => 'de', 'club' => $this->testclub_assigned]));
 
         $response->assertStatus(200);
     }
 
-            /**
+    /**
      * chart_Home
      *
      * @test
@@ -77,7 +76,6 @@ class ClubGameControllerTest extends TestCase
      */
     public function chart_home()
     {
-
         $response = $this->authenticated()
             ->get(route('club.game.chart_home', ['club' => $this->testclub_assigned]));
 
@@ -95,14 +93,14 @@ class ClubGameControllerTest extends TestCase
      */
     public function upload()
     {
-
         $response = $this->authenticated()
-            ->get(route('club.upload.homegame', ['language'=>'de', 'club' => $this->testclub_assigned]));
+            ->get(route('club.upload.homegame', ['language' => 'de', 'club' => $this->testclub_assigned]));
 
         $response->assertStatus(200)
             ->assertViewIs('game.game_file_upload')
             ->assertViewHas('context', 'club');
     }
+
     /**
      * export club games csv
      *
@@ -115,9 +113,8 @@ class ClubGameControllerTest extends TestCase
      */
     public function import_csv_notok()
     {
-
-        $this->refreeze_league( $this->testleague );
-        $this->open_game_scheduling( $this->testleague );
+        $this->refreeze_league($this->testleague);
+        $this->open_game_scheduling($this->testleague);
         $club = $this->testleague->clubs->first();
 
         $name = 'CLUB_Heimspiele.csv';
@@ -129,7 +126,7 @@ class ClubGameControllerTest extends TestCase
         $file = new UploadedFile($path, $name, 'text/csv', null, true);
 
         $response = $this->authenticated()
-            ->postJson(route('club.import.homegame', ['language' => 'de', 'club' => $club]), ['gfile'=>$file]);
+            ->postJson(route('club.import.homegame', ['language' => 'de', 'club' => $club]), ['gfile' => $file]);
 
         $response
             ->assertStatus(302)
@@ -137,7 +134,6 @@ class ClubGameControllerTest extends TestCase
 
         $errs = $response->getSession()->get('errors')->getBag('default');
         $this->assertCount(15, $errs);
-
     }
 
     /**
@@ -163,7 +159,7 @@ class ClubGameControllerTest extends TestCase
         $file = new UploadedFile($path, $name, 'Excel/xlsx', null, true);
 
         $response = $this->authenticated()
-            ->postJson(route('club.import.homegame', ['language' => 'de', 'club' => $club]), ['gfile'=>$file]);
+            ->postJson(route('club.import.homegame', ['language' => 'de', 'club' => $club]), ['gfile' => $file]);
 
         $response
             ->assertStatus(302)
@@ -171,7 +167,5 @@ class ClubGameControllerTest extends TestCase
 
         $errs = $response->getSession()->get('errors')->getBag('default');
         $this->assertCount(15, $errs);
-
     }
-
 }

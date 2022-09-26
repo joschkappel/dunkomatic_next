@@ -2,22 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\League;
-use App\Models\Club;
-use App\Models\Team;
-use App\Enums\Role;
 use App\Enums\LeagueState;
-use App\Models\Game;
-
-use App\Notifications\ClubDeAssigned;
+use App\Enums\Role;
 use App\Events\LeagueTeamCharUpdated;
-
+use App\Models\Club;
+use App\Models\Game;
+use App\Models\League;
+use App\Models\Team;
+use App\Notifications\ClubDeAssigned;
 use App\Traits\GameManager;
 use App\Traits\LeagueTeamManager;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
-
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 
 class LeagueTeamController extends Controller
@@ -27,16 +24,14 @@ class LeagueTeamController extends Controller
     /**
      * Attach club to league
      *
-     * @param Request $request
+     * @param  Request  $request
      * @param  \App\Models\League  $league
      * @return \Illuminate\Http\RedirectResponse
-     *
      */
     public function assign_clubs(Request $request, League $league)
     {
-
         $data = $request->validate([
-            'assignedClubs' => 'required_without:club_id|array|min:0|max:' . $league->size,
+            'assignedClubs' => 'required_without:club_id|array|min:0|max:'.$league->size,
             'assignedClubs.*' => 'nullable|exists:clubs,id',
             'club_id' => 'required_without:assignedClubs|exists:clubs,id',
         ]);
@@ -53,13 +48,13 @@ class LeagueTeamController extends Controller
             foreach ($data['assignedClubs'] as $i => $c) {
                 $league_no = $i + 1;
                 $league_char = $upperArr[$league_no];
-                Log::debug('league_char: ' . $league_char);
+                Log::debug('league_char: '.$league_char);
 
                 $league->clubs()->attach(
                     $c,
                     [
                         'league_no' => $league_no,
-                        'league_char' => $league_char
+                        'league_char' => $league_char,
                     ]
                 );
             }
@@ -70,12 +65,13 @@ class LeagueTeamController extends Controller
                 Club::find($data['club_id']),
                 [
                     'league_no' => $league_no,
-                    'league_char' => $league_char
+                    'league_char' => $league_char,
                 ]
             );
             Log::notice('assign new club to league.', ['league-id' => $league->id, 'club-id' => $data['club_id']]);
         } else {
             Log::warning('nothind to de-assign');
+
             return redirect()->back();
         }
 
@@ -86,11 +82,10 @@ class LeagueTeamController extends Controller
     /**
      * Detach club from league
      *
-     * @param Request $request
+     * @param  Request  $request
      * @param  \App\Models\League  $league
-     * @param \App\Models\Club $club
+     * @param  \App\Models\Club  $club
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function deassign_club(Request $request, League $league, Club $club)
     {
@@ -113,7 +108,6 @@ class LeagueTeamController extends Controller
             Log::info('club deassigned from league', ['league-id' => $league->id, 'club-id' => $club->id]);
         }
 
-
         // deassign teams as well
         $team = Team::where('club_id', $club->id)->where('league_id', $league->id)->first();
         if (isset($team)) {
@@ -125,16 +119,16 @@ class LeagueTeamController extends Controller
 
             $member = $club->members()->wherePivot('role_id', Role::ClubLead)->first();
 
-/*             if (isset($member)) {
-                $member->notify(new ClubDeAssigned($league, $club, $team, Auth::user()->name, $member->name));
-                Log::info('[NOTIFICATION] club deassigned.', ['league-id' => $league->id, 'club-id' => $club->id, 'team-id' => $team->id, 'member-id' => $member->id]);
+            /*             if (isset($member)) {
+                            $member->notify(new ClubDeAssigned($league, $club, $team, Auth::user()->name, $member->name));
+                            Log::info('[NOTIFICATION] club deassigned.', ['league-id' => $league->id, 'club-id' => $club->id, 'team-id' => $team->id, 'member-id' => $member->id]);
 
-                $user = $member->user;
-                if (isset($user)) {
-                    $user->notify(new ClubDeAssigned($league, $club, $team, Auth::user()->name, $user->name));
-                    Log::info('[NOTIFICATION] club deassigned.', ['league-id' => $league->id, 'club-id' => $club->id, 'team-id' => $team->id, 'user-id' => $user->id]);
-                }
-            } */
+                            $user = $member->user;
+                            if (isset($user)) {
+                                $user->notify(new ClubDeAssigned($league, $club, $team, Auth::user()->name, $user->name));
+                                Log::info('[NOTIFICATION] club deassigned.', ['league-id' => $league->id, 'club-id' => $club->id, 'team-id' => $team->id, 'user-id' => $user->id]);
+                            }
+                        } */
         }
 
         return Response::json(['success' => 'all good'], 200);
@@ -144,13 +138,12 @@ class LeagueTeamController extends Controller
      * register team fora league
      *
      * @param  \App\Models\League  $league
-     * @param \App\Models\Team $team
+     * @param  \App\Models\Team  $team
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function league_register_team(Request $request, League $league, Team $team)
     {
-        if ($request->has('team_id')){
+        if ($request->has('team_id')) {
             // get data
             $data = $request->validate([
                 'team_id' => 'required|exists:teams,id',
@@ -158,10 +151,10 @@ class LeagueTeamController extends Controller
             $team = Team::findOrFail($data['team_id']);
             $team->league()->associate($league);
 
-            if ($league->is_custom){
+            if ($league->is_custom) {
                 // assign also league_no
-                list( $league_no, $league_char) = $this->get_custom_league_league_no($league, $team);
-                $team['league_no']  = $league_no;
+                [$league_no, $league_char] = $this->get_custom_league_league_no($league, $team);
+                $team['league_no'] = $league_no;
                 $team['league_char'] = $league_char;
             }
 
@@ -171,24 +164,24 @@ class LeagueTeamController extends Controller
 
             return redirect()->back();
         } else {
-            if ( $team->exists ){
+            if ($team->exists) {
                 $team->league()->associate($league);
-                if ($league->is_custom){
+                if ($league->is_custom) {
                     // assign also league_no
-                    list( $league_no, $league_char) = $this->get_custom_league_league_no($league, $team);
-                    $team['league_no']  = $league_no;
+                    [$league_no, $league_char] = $this->get_custom_league_league_no($league, $team);
+                    $team['league_no'] = $league_no;
                     $team['league_char'] = $league_char;
                 }
                 $team->save();
 
                 Log::notice('team registered for league.', ['team-id' => $team->id, 'league-id' => $league->id]);
+
                 return Response::json(['success' => 'all good'], 200);
             } else {
                 Log::warning('trying to register an empty team for league.', ['league-id' => $league->id]);
+
                 return redirect()->back();
-
             }
-
         }
     }
 
@@ -198,7 +191,6 @@ class LeagueTeamController extends Controller
      * @param  \App\Models\League  $league
      * @param  \App\Models\Team  $team
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function league_unregister_team(League $league, Team $team)
     {
@@ -220,10 +212,9 @@ class LeagueTeamController extends Controller
     /**
      * Attach team to league
      *
-     * @param Request $request
+     * @param  Request  $request
      * @param  \App\Models\Team  $team
      * @return \Illuminate\Http\RedirectResponse
-     *
      */
     public function team_register_league(Request $request, Team $team)
     {
@@ -236,10 +227,10 @@ class LeagueTeamController extends Controller
         $league = League::findOrFail($data['league_id']);
         $team->league()->associate($league);
 
-        if ($league->is_custom){
+        if ($league->is_custom) {
             // assign also league_no
-            list( $league_no, $league_char) = $this->get_custom_league_league_no($league, $team);
-            $team['league_no']  = $league_no;
+            [$league_no, $league_char] = $this->get_custom_league_league_no($league, $team);
+            $team['league_no'] = $league_no;
             $team['league_char'] = $league_char;
         }
 
@@ -252,16 +243,15 @@ class LeagueTeamController extends Controller
     /**
      * Add a team to league
      *
-     * @param Request $request
+     * @param  Request  $request
      * @param  \App\Models\League  $league
      * @return \Illuminate\Http\RedirectResponse
-     *
      */
     public function inject(Request $request, League $league)
     {
         $data = $request->validate([
             'league_no' => 'required|integer|between:1,16',
-            'team_id' => 'required|exists:teams,id'
+            'team_id' => 'required|exists:teams,id',
         ]);
         Log::info('team inject form data validated OK.');
 
@@ -299,10 +289,9 @@ class LeagueTeamController extends Controller
     /**
      * withdraw a team from a league
      *
-     * @param Request $request
+     * @param  Request  $request
      * @param  \App\Models\League  $league
      * @return \Illuminate\Http\RedirectResponse
-     *
      */
     public function withdraw(Request $request, League $league)
     {
@@ -346,7 +335,7 @@ class LeagueTeamController extends Controller
     /**
      * Pick a league number for a team
      *
-     * @param Request $request
+     * @param  Request  $request
      * @param  \App\Models\League  $league
      * @return \Illuminate\Http\JsonResponse
      */
@@ -359,7 +348,7 @@ class LeagueTeamController extends Controller
         ]);
         Log::info('team league no form data validated OK.');
 
-        $udata = array();
+        $udata = [];
         $udata['league_id'] = $league->id;
         $udata['league_no'] = $data['league_no'];
         $upperArr = config('dunkomatic.league_team_chars');
@@ -367,16 +356,16 @@ class LeagueTeamController extends Controller
 
         $team = Team::findOrFail($data['team_id']);
         $team->update($udata);
-        if ($league->games()->exists()){
+        if ($league->games()->exists()) {
             // games are generated, insert team into gamelist
-            $this->inject_team_games($league, $team,  $data['league_no']);
+            $this->inject_team_games($league, $team, $data['league_no']);
         }
         Log::notice('team league no set.', ['team-id' => $team->id, 'league-id' => $league->id, 'league-team-no' => $data['league_no']]);
 
         $action = __('notifications.event.char.picked', [
             'league' => $league->shortname,
             'club' => $team->club->shortname,
-            'league_no' => $udata['league_no'] . '/' . $udata['league_char']
+            'league_no' => $udata['league_no'].'/'.$udata['league_char'],
         ]);
 
         // broadcast event to all other users on this view
@@ -388,10 +377,9 @@ class LeagueTeamController extends Controller
     /**
      * un-Pick a league number for a team
      *
-     * @param Request $request
+     * @param  Request  $request
      * @param  \App\Models\League  $league
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function release_char(Request $request, League $league)
     {
@@ -402,14 +390,13 @@ class LeagueTeamController extends Controller
         ]);
         Log::info('team league no form data validated OK.');
 
-        $udata = array();
+        $udata = [];
         $udata['league_no'] = null;
         $udata['league_char'] = null;
 
         $team = Team::where('id', $data['team_id'])->where('league_id', $league->id)->where('league_no', $data['league_no'])->first();
         if ($team != null) {
-
-            if ($league->games()->exists()){
+            if ($league->games()->exists()) {
                 // games are generagted, remove/blank games of this team
                 $this->blank_team_games($league, $team);
             }
@@ -417,7 +404,7 @@ class LeagueTeamController extends Controller
             $action = __('notifications.event.char.released', [
                 'league' => $league->shortname,
                 'club' => $team->club->shortname,
-                'league_no' => $team->league_no . '/' . $team->league_char
+                'league_no' => $team->league_no.'/'.$team->league_char,
             ]);
 
             $team->update($udata);
@@ -427,7 +414,8 @@ class LeagueTeamController extends Controller
 
             return Response::json(['success' => 'all good'], 200);
         } else {
-            Log::error('release league char: team not found.', ['team-id' =>  $data['team_id'], 'league-id' => $league->id, 'league-team-no' => $data['league_no']]);
+            Log::error('release league char: team not found.', ['team-id' => $data['team_id'], 'league-id' => $league->id, 'league-team-no' => $data['league_no']]);
+
             return Response::json(['error' => 'team not found'], 404);
         }
     }

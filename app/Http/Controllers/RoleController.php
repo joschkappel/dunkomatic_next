@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Role;
+use App\Models\Club;
 use App\Models\League;
 use App\Models\Region;
-use App\Models\Club;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
@@ -16,9 +15,8 @@ class RoleController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function index(Request $request)
     {
@@ -37,16 +35,16 @@ class RoleController extends Controller
             $roles[] = Role::coerce('TeamCoach');
         } else {
             $roles = Role::getInstances();
-        };
+        }
 
         Log::info('preparing select2 role list.', ['count' => count($roles)]);
-        $response = array();
+        $response = [];
 
         foreach ($roles as $role) {
-            $response[] = array(
-                "id" => $role->value,
-                "text" => $role->description,
-            );
+            $response[] = [
+                'id' => $role->value,
+                'text' => $role->description,
+            ];
         }
 
         return Response::json($response);

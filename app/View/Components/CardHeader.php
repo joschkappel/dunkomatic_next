@@ -26,21 +26,20 @@ class CardHeader extends Component
      * @var int
      */
     public $count;
+
     /**
      * show card colleapse/expand tool
      *
-     * @var boolean
+     * @var bool
      */
     public $showtools;
 
-
-    public function __construct(string $title, string $count="0", string $icon='', bool $showtools=true )
+    public function __construct(string $title, string $count = '0', string $icon = '', bool $showtools = true)
     {
         $this->title = $title;
         $this->icon = $icon == '' ? null : $icon;
         $this->count = intval($count);
         $this->showtools = $showtools;
-
     }
 
     /**

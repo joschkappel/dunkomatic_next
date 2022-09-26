@@ -19,6 +19,7 @@ class ModalHelp extends Component
      * @var string
      */
     public $modalTitle;
+
     /**
      * The modal size (xs, md, lg,...)
      *
@@ -31,12 +32,11 @@ class ModalHelp extends Component
      *
      * @return void
      */
-    public function __construct(string $modalId, string $modalTitle, string $modalSize='md')
+    public function __construct(string $modalId, string $modalTitle, string $modalSize = 'md')
     {
         $this->modalId = $modalId;
         $this->modalTitle = $modalTitle;
         $this->modalSize = $modalSize;
-
     }
 
     /**

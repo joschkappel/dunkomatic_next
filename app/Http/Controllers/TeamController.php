@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Team;
 use App\Models\Club;
 use App\Models\League;
-use App\Models\Game;
+use App\Models\Team;
 use App\Traits\GameManager;
-use App\Enums\LeagueState;
-
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\DB;
 
 class TeamController extends Controller
 {
@@ -21,32 +18,31 @@ class TeamController extends Controller
     /**
      * select2 list with all teams of a league
      *
-     * @param League $league
+     * @param  League  $league
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function sb_league(League $league)
     {
-        $teams =  $league->teams()->with('club')->get();
+        $teams = $league->teams()->with('club')->get();
         Log::info('preparing select2 teams list for league.', ['league-id' => $league->id, 'count' => count($teams)]);
 
-        $response = array();
+        $response = [];
 
         foreach ($teams as $t) {
-            $response[] = array(
-                "id" => $t->id,
-                "text" => $t->name
-            );
+            $response[] = [
+                'id' => $t->id,
+                'text' => $t->name,
+            ];
         }
+
         return Response::json($response);
     }
 
     /**
      * select2 list with all unregistered teams of a region
      *
-     * @param League $league
+     * @param  League  $league
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function sb_freeteam(League $league)
     {
@@ -70,46 +66,47 @@ class TeamController extends Controller
             })->with('club')->get();
         }
 
-        $response = array();
+        $response = [];
         Log::info('preparing select2 unregistered team list', ['league' => $league->id, 'count' => count($free_teams)]);
 
         foreach ($free_teams as $t) {
             if ($region->is_top_level) {
-                $response[] = array(
-                    "id" => $t->id,
-                    "text" => $t->club->region->code . ' : ' . $t->namedesc
-                );
+                $response[] = [
+                    'id' => $t->id,
+                    'text' => $t->club->region->code.' : '.$t->namedesc,
+                ];
             } else {
-                $response[] = array(
-                    "id" => $t->id,
-                    "text" => $t->namedesc
-                );
+                $response[] = [
+                    'id' => $t->id,
+                    'text' => $t->namedesc,
+                ];
             }
         }
+
         return Response::json($response);
     }
 
     /**
      * select2 list with all unregistered teams of a region
      *
-     * @param League $league
+     * @param  League  $league
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function sb_freeteam_club(Club $club)
     {
-        Log::notice('getting unregistered teams for club',['club-id'=>$club->id]);
+        Log::notice('getting unregistered teams for club', ['club-id' => $club->id]);
         $free_teams = $club->teams()->whereNull('league_id')->get();
 
-        $response = array();
+        $response = [];
         Log::info('preparing select2 unregistered team list', ['club' => $club->id, 'count' => count($free_teams)]);
 
         foreach ($free_teams as $t) {
-            $response[] = array(
-                "id" => $t->id,
-                "text" => $t->namedesc
-            );
+            $response[] = [
+                'id' => $t->id,
+                'text' => $t->namedesc,
+            ];
         }
+
         return Response::json($response);
     }
 
@@ -118,7 +115,6 @@ class TeamController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function store_plan(Request $request)
     {
@@ -141,19 +137,17 @@ class TeamController extends Controller
         return Response::json([]);
     }
 
-
     /**
      * Display a dashboard
      *
-     * @param string $language
-     * @param \App\Models\Club $club
+     * @param  string  $language
+     * @param  \App\Models\Club  $club
      * @return \Illuminate\View\View
-     *
      */
     public function plan_leagues($language, Club $club)
     {
         Log::info('show league planning dashboard.', ['club-id' => $club->id]);
-        $data['club'] =  $club;
+        $data['club'] = $club;
         $teams = $data['club']->teams()->whereNotNull('league_id')->with('league')->get();
         $data['teams'] = $teams->where('league.size', '>', 0)->whereNotNull('league.schedule_id')->sortBy('league.schedule_id');
         $data['team_total_cnt'] = $teams->count();
@@ -164,36 +158,34 @@ class TeamController extends Controller
     /**
      * pivot list teams by leagues
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function list_pivot(Request $request)
     {
-
         Log::info('preparing team league pivot table.');
 
         $select = "select date_format(se.game_date, '%a %d.%b.%Y') as 'Game Date' ";
-        $where =  array();
-        $cols = array();
+        $where = [];
+        $cols = [];
 
         foreach ($request->all() as $key => $league_no) {
             if (strpos($key, 'sel') !== false) {
                 $league = explode(':', $key)[1];
 
-                $cols[] = 'max(case when (l.id = ' . $league . ' and lts.team_home = ' . $league_no . ') then se.game_day else " " end) as "l' . $league . '"';
+                $cols[] = 'max(case when (l.id = '.$league.' and lts.team_home = '.$league_no.') then se.game_day else " " end) as "l'.$league.'"';
                 $where[] = $league;
             }
         }
 
-        $select .= ', ' . implode(' ,', $cols) . ' FROM league_size_schemes lts, schedule_events se  , leagues l , schedules s ';
-        $select .= ' WHERE l.id in (' . implode(' ,', $where) . ') ';
+        $select .= ', '.implode(' ,', $cols).' FROM league_size_schemes lts, schedule_events se  , leagues l , schedules s ';
+        $select .= ' WHERE l.id in ('.implode(' ,', $where).') ';
         $select .= ' AND lts.league_size_id = s.league_size_id AND s.id = l.schedule_id AND se.schedule_id = l.schedule_id AND se.game_day = lts.game_day';
         $select .= ' GROUP BY se.game_date';
 
         $plan = collect(DB::select($select));
 
-        $returnhtml =  view("team/teamleague_pivot", ["plan" => $plan])->render();
+        $returnhtml = view('team/teamleague_pivot', ['plan' => $plan])->render();
         // Log::debug(print_r($returnhtml, true));
         return Response::json($returnhtml);
     }
@@ -201,37 +193,36 @@ class TeamController extends Controller
     /**
      * display chart
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function list_chart(Request $request)
     {
         $data = $request->validate([
-            'club_id' => 'sometimes|required|exists:clubs,id'
+            'club_id' => 'sometimes|required|exists:clubs,id',
         ]);
         Log::info('preparing team league chart.');
 
         $select = "select date_format(se.game_date, '%b-%d-%Y') AS 'gamedate', count(*) as 'homegames' ";
-        $where =  array();
+        $where = [];
 
-        if (isset($data['club_id']) and (count($request->input())<=2)) {
+        if (isset($data['club_id']) and (count($request->input()) <= 2)) {
             $teams = Club::find($data['club_id'])->teams->whereNotNull('league_id')->whereNotNull('league_no');
             foreach ($teams as $t) {
-                $where[] = '(l.id = ' . $t->league->id . ' AND lts.team_home = ' . $t->league_no . ')';
+                $where[] = '(l.id = '.$t->league->id.' AND lts.team_home = '.$t->league_no.')';
             }
         } else {
             foreach ($request->all() as $key => $league_no) {
                 if (strpos($key, 'sel') !== false) {
                     $league = explode(':', $key)[1];
 
-                    $where[] = '(l.id = ' . $league . ' AND lts.team_home = ' . $league_no . ')';
+                    $where[] = '(l.id = '.$league.' AND lts.team_home = '.$league_no.')';
                 }
             }
         }
 
         $select .= ' FROM league_size_schemes lts, schedule_events se  , leagues l , schedules s ';
-        $select .= ' WHERE (' . implode(' OR ', $where) . ') ';
+        $select .= ' WHERE ('.implode(' OR ', $where).') ';
         $select .= ' AND lts.league_size_id = s.league_size_id AND s.id = l.schedule_id AND se.schedule_id = l.schedule_id AND se.game_day = lts.game_day';
         $select .= " GROUP BY date_format(se.game_date, '%b-%d-%Y')";
 
@@ -249,7 +240,7 @@ class TeamController extends Controller
     /**
      * create cartesian product of the input array
      *
-     * @param array $data
+     * @param  array  $data
      * @return array
      */
     public function Cartesian_Product_old(array $data)
@@ -260,24 +251,24 @@ class TeamController extends Controller
         $dim = 1;
         foreach ($data as $vec) {
             $dim = $dim * count($vec);
-        };
-        Log::debug('dimension is: ' . $dim);
+        }
+        Log::debug('dimension is: '.$dim);
         // limit to less than 100.000 combinations
         while ($dim > 200000) {
             $dim = 1;
             for ($i = 0; $i < count($data); $i++) {
                 if (count($data[$i]) > 2) {
                     array_pop($data[$i]);
-                };
+                }
                 $dim = $dim * count($data[$i]);
             }
         }
-        Log::debug('dimension is now: ' . $dim);
+        Log::debug('dimension is now: '.$dim);
 
-        $result = array(array());
+        $result = [[]];
 
         foreach ($data as $key => $values) {
-            $append = array();
+            $append = [];
 
             foreach ($result as $product) {
                 foreach ($values as $item) {
@@ -288,28 +279,29 @@ class TeamController extends Controller
 
             $result = $append;
         }
+
         return $result;
     }
 
     /**
      * build k combinations of an array
      *
-     * @param array $arr
-     * @param int $k
+     * @param  array  $arr
+     * @param  int  $k
      * @return array
      */
     public function build_comb($arr, $k)
     {
         if ($k == 0) {
-            return array(array());
+            return [[]];
         }
 
         if (count($arr) == 0) {
-            return array();
+            return [];
         }
         $head = $arr[0];
 
-        $combos = array();
+        $combos = [];
         $subcombos = $this->build_comb($arr, $k - 1);
         foreach ($subcombos as $subcombo) {
             array_unshift($subcombo, $head);
@@ -317,13 +309,14 @@ class TeamController extends Controller
         }
         array_shift($arr);
         $combos = array_merge($combos, $this->build_comb($arr, $k));
+
         return $combos;
     }
 
     /**
      * buid a caretesina prodcut of an array
      *
-     * @param array $data
+     * @param  array  $data
      * @return array
      */
     public function Cartesian_Product($data)
@@ -334,22 +327,22 @@ class TeamController extends Controller
         $dim = 1;
         foreach ($data as $vec) {
             $dim = $dim * count($vec);
-        };
+        }
         // limit to less than 1000 combinations
         while ($dim > 250000) {
             $dim = 1;
             for ($i = 0; $i < count($data); $i++) {
                 if (count($data[$i]) > 2) {
                     array_pop($data[$i]);
-                };
+                }
                 $dim = $dim * count($data[$i]);
             }
         }
 
-        $result = array(array());
+        $result = [[]];
 
         foreach ($data as $key => $values) {
-            $append = array();
+            $append = [];
 
             foreach ($result as $product) {
                 foreach ($values as $item) {
@@ -379,20 +372,19 @@ class TeamController extends Controller
     /**
      * optimization for home games
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function propose_combination(Request $request)
     {
         Log::info('preparing to find possible team league no combinations');
 
-        $leagues = array();
-        $leagues['id'] = array();
-        $leagues['team_no'] = array();
-        $leagues['schedule_id'] = array();
-        $leagues['size'] = array();
-        $schedules = array();
+        $leagues = [];
+        $leagues['id'] = [];
+        $leagues['team_no'] = [];
+        $leagues['schedule_id'] = [];
+        $leagues['size'] = [];
+        $schedules = [];
 
         foreach ($request->all() as $key => $league_no) {
             if (strpos($key, 'sel') !== false) {
@@ -412,7 +404,7 @@ class TeamController extends Controller
         }
         Log::info('reference data loaded.', ['league count' => count($request->input()) - 4]);
 
-        $combos = array();
+        $combos = [];
         foreach ($schedules as $key => $sd) {
             $combos[] = $this->build_comb(range(1, $sd['size']), $sd['count']);
         }
@@ -424,19 +416,19 @@ class TeamController extends Controller
         $combinations = $this->Cartesian_Product($combos);
         Log::info('combinations defined.', ['combinations count' => count($combinations)]);
 
-        $sel = "SELECT date(se.game_date) as gdate, l.id as glid, lts.team_home as ghome ";
-        $sel .= " FROM schedule_events se, schedules s, league_size_schemes lts, leagues l ";
-        $sel .= "WHERE se.schedule_id = s.id AND lts.league_size_id = s.league_size_id AND lts.game_day = se.game_day AND l.schedule_id = s.id  ";
-        $sel .= "AND l.id in (" . implode(',', $leagues['id']) . ")";
+        $sel = 'SELECT date(se.game_date) as gdate, l.id as glid, lts.team_home as ghome ';
+        $sel .= ' FROM schedule_events se, schedules s, league_size_schemes lts, leagues l ';
+        $sel .= 'WHERE se.schedule_id = s.id AND lts.league_size_id = s.league_size_id AND lts.game_day = se.game_day AND l.schedule_id = s.id  ';
+        $sel .= 'AND l.id in ('.implode(',', $leagues['id']).')';
 
         $filtercomb = DB::select($sel);
         $num_gdays = count($filtercomb);
         Log::info('game days loaded and filtered.', ['game days count' => $num_gdays]);
 
         // holds combinations for a given number of games/day
-        $hdays_c = array();
+        $hdays_c = [];
         for ($i = 1; $i <= count($leagues['id']); $i++) {
-            $hdays_c[$i] = array();
+            $hdays_c[$i] = [];
         }
 
         foreach ($combinations as $i => $c) {
@@ -448,10 +440,10 @@ class TeamController extends Controller
                             return true;
                         } else {
                             return false;
-                        };
+                        }
                     } else {
                         return true;
-                    };
+                    }
                 });
             }
             //Log::debug(print_r($homies,true));
@@ -466,7 +458,7 @@ class TeamController extends Controller
         Log::info('statitics done.', ['home day counts' => count($hdays_c)]);
 
         //get the combinations for min/max games/day
-        $teams =  count($leagues['id']);
+        $teams = count($leagues['id']);
 
         // prepare combination to show in the UI
         $option_size = 20;

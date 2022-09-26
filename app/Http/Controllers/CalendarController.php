@@ -2,21 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\League;
 use App\Helpers\CalendarComposer;
 use App\Models\Club;
+use App\Models\League;
 use Illuminate\Support\Facades\Log;
-
 
 class CalendarController extends Controller
 {
     /**
      * Donload league games iCal
      *
-     * @param string $language
-     * @param \App\Models\League $league
+     * @param  string  $language
+     * @param  \App\Models\League  $league
      * @return \Illuminate\Http\Response
-     *
      */
     public function cal_league(string $language, League $league)
     {
@@ -26,20 +24,19 @@ class CalendarController extends Controller
         if (isset($calendar)) {
             return response($calendar->get(), 200, [
                 'Content-Type' => 'text/calendar',
-                'Content-Disposition' => 'attachment; filename="' . $league->region->code . '-' . $league->shortname . '.ics"',
+                'Content-Disposition' => 'attachment; filename="'.$league->region->code.'-'.$league->shortname.'.ics"',
                 'charset' => 'utf-8',
             ]);
         } else {
             return abort(404);
         }
-
     }
 
     /**
      * Donload club games iCal
      *
-     * @param string $language
-     * @param \App\Models\Club $club
+     * @param  string  $language
+     * @param  \App\Models\Club  $club
      * @return \Illuminate\Http\Response
      */
     public function cal_club(string $language, Club $club)
@@ -50,19 +47,19 @@ class CalendarController extends Controller
         if (isset($calendar)) {
             return response($calendar->get(), 200, [
                 'Content-Type' => 'text/calendar',
-                'Content-Disposition' => 'attachment; filename="' . $club->region->code . '-' . $club->shortname . '.ics"',
+                'Content-Disposition' => 'attachment; filename="'.$club->region->code.'-'.$club->shortname.'.ics"',
                 'charset' => 'utf-8',
             ]);
         } else {
             return abort(404);
         }
-
     }
+
     /**
      * Donload club home games iCal
      *
-     * @param string $language
-     * @param \App\Models\Club $club
+     * @param  string  $language
+     * @param  \App\Models\Club  $club
      * @return \Illuminate\Http\Response
      */
     public function cal_club_home(string $language, Club $club)
@@ -73,19 +70,19 @@ class CalendarController extends Controller
         if (isset($calendar)) {
             return response($calendar->get(), 200, [
                 'Content-Type' => 'text/calendar',
-                'Content-Disposition' => 'attachment; filename="' . $club->region->code . '-' . $club->shortname . '_home.ics"',
+                'Content-Disposition' => 'attachment; filename="'.$club->region->code.'-'.$club->shortname.'_home.ics"',
                 'charset' => 'utf-8',
             ]);
         } else {
             return abort(404);
         }
-
     }
+
     /**
      * Donload club referee games iCal
      *
-     * @param string $language
-     * @param \App\Models\Club $club
+     * @param  string  $language
+     * @param  \App\Models\Club  $club
      * @return \Illuminate\Http\Response
      */
     public function cal_club_referee(string $language, Club $club)
@@ -96,7 +93,7 @@ class CalendarController extends Controller
         if (isset($calendar)) {
             return response($calendar->get(), 200, [
                 'Content-Type' => 'text/calendar',
-                'Content-Disposition' => 'attachment; filename="' . $club->region->code . '-' . $club->shortname . '_referee.ics"',
+                'Content-Disposition' => 'attachment; filename="'.$club->region->code.'-'.$club->shortname.'_referee.ics"',
                 'charset' => 'utf-8',
             ]);
         } else {

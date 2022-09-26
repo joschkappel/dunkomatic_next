@@ -19,20 +19,31 @@ use BenSampo\Enum\Enum;
  * @method static static ReStartLeague()
  * @method static static CloseLeague()
  */
-
 final class LeagueStateChange extends Enum
 {
-    const StartLeague           =  1;
-    const ReOpenRegistration    =  2;
-    const OpenSelection         =  3;
-    const ReOpenSelection       =  4;
-    const FreezeLeague          =  5;
-    const ReOpenScheduling      =  6;
-    const OpenReferees          =  7;
-    const ReFreezeLeague        =  8;
-    const OpenScheduling        =  9;
-    const ReOpenReferees        =  10;
-    const GoLiveLeague          =  11;
-    const ReStartLeague         =  12;
-    const CloseLeague           =  13;
+    const StartLeague = 1;
+
+    const ReOpenRegistration = 2;
+
+    const OpenSelection = 3;
+
+    const ReOpenSelection = 4;
+
+    const FreezeLeague = 5;
+
+    const ReOpenScheduling = 6;
+
+    const OpenReferees = 7;
+
+    const ReFreezeLeague = 8;
+
+    const OpenScheduling = 9;
+
+    const ReOpenReferees = 10;
+
+    const GoLiveLeague = 11;
+
+    const ReStartLeague = 12;
+
+    const CloseLeague = 13;
 }
