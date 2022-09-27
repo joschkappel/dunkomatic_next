@@ -269,7 +269,7 @@ class RegistrationTest extends TestCase
 
         $response->assertStatus(200)
                  ->assertViewIs('auth.users')
-                 ->assertDontSeeText('notapproved@gmail.com')
+                 ->assertSeeText('notapproved@gmail.com')
                  ->assertDontSeeText('test1@gmail.com');
     }
 
