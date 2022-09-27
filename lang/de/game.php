@@ -6,7 +6,6 @@ return [
     'guest' => 'Auswärtsspiele',
     'action.create' => 'Spiele Erzeugen',
     'action.delete' => 'Alle Spiele Löschen',
-    'action.delete.noshow' => 'Spiele ohne Gegner Löschen',
     'action.editdate' => 'Lege das Spieldatum und Startzeit fest',
     'action.team.withdraw' => 'Mannschaft zurückziehen',
     'action.team.add' => 'Mannschaft aufnehmen',

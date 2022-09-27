@@ -45,7 +45,7 @@ class ClubController extends Controller
             Log::notice('getting clubs for top level region.');
             $clubs = Club::whereIn('region_id', $region->childRegions()->pluck('id'))->withCount([
                 'leagues', 'teams', 'registered_teams', 'selected_teams', 'games_home',
-                'games_home_notime', 'games_home_noshow',
+                'games_home_notime',
             ])
                 ->orderBy('shortname', 'ASC')
                 ->get();
@@ -53,7 +53,7 @@ class ClubController extends Controller
             Log::notice('getting clubs for base level region.');
             $clubs = Club::where('region_id', $region->id)->withCount([
                 'leagues', 'teams', 'registered_teams', 'selected_teams', 'games_home',
-                'games_home_notime', 'games_home_noshow',
+                'games_home_notime',
             ])
                 ->orderBy('shortname', 'ASC')
                 ->get();
@@ -168,7 +168,6 @@ class ClubController extends Controller
         $data['registered_teams'] = $data['club']->registered_teams->pluck('league_id')->count();
         $data['selected_teams'] = $data['club']->selected_teams->pluck('league_id')->count();
         $data['games_home_notime'] = $data['club']->games_home_notime()->count();
-        $data['games_home_noshow'] = $data['club']->games_home_noshow()->count();
         //Log::debug(print_r($data['games_home'],true ));
 
         $directory = $club->region->club_folder;

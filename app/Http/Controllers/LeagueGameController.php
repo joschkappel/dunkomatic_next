@@ -220,19 +220,6 @@ class LeagueGameController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function destroy_noshow_game(League $league)
-    {
-        $this->delete_noshow_games($league);
-
-        return Response::json(['success' => 'all good'], 200);
-    }
-
-    /**
      * Show the form for uploading game files
      *
      * @param  string  $language

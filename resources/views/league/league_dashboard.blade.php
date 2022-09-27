@@ -181,10 +181,6 @@
                                 class="btn btn-outline-primary float-right mr-2">
                                 <i class="fas fa-calendar-alt"></i> {{ __('reports.ical.league')}}</a>
                             @endcan
-                            @if( (Auth::user()->can('update-games')) and (  $league->state->in([App\Enums\LeagueState::Scheduling(), App\Enums\LeagueState::Referees()])) )
-                            <button type="button" class="btn btn-outline-danger float-right mr-2" id="deleteNoshowGames"><i class="fa fa-trash"></i> @lang('game.action.delete.noshow')
-                            </button>
-                            @endif
                         </div>
                     </div>
                     {{-- <img class="card-img-bottom"
@@ -403,24 +399,7 @@
                     }
                 });
             });
-            $("button#deleteNoshowGames").click(function() {
-                $.ajax({
-                    type: "POST",
-                    dataType: "json",
-                    data: {
-                        _method: "DELETE",
-                        _token: "{{ csrf_token() }}"
-                    },
-                    url: "{{ route('league.game.destroy_noshow', ['league' => $league]) }}",
-                    success: function(data) {
-                        toastr.success('{{__('game.deleted')}}', '{{__('game.action.delete.noshow')}}');
-                    },
-                    error: function(data) {
-                        toastr.error(data.responseText, '{{__('game.action.delete.noshow')}}');
-                        console.log('Error:', data);
-                    }
-                });
-            });
+
             $("#deleteLeague").click(function() {
                 $('#modalDeleteLeague_Info').html('{{ __('league.info.delete',['league'=>$league->shortname,'noteam'=>$league->state_count['registered'],'nomember'=>count($members)])  }}');
                 $('#modalDeleteLeague_Instance').html( '{{ $league->name }}' );

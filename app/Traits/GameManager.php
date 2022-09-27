@@ -65,44 +65,49 @@ trait GameManager
                     $hteam = $teams->firstWhere('league_no', $s->team_home);
                     $gteam = $teams->firstWhere('league_no', $s->team_guest);
 
-                    $g = [];
-                    $g['region_id_league'] = $league->region->id;
-                    $g['game_plandate'] = $gday;
+                    if ( ( isset($hteam)) and
+                         ( isset($gteam)) ) {
+                        $g = [];
+                        $g['region_id_league'] = $league->region->id;
+                        $g['game_plandate'] = $gday;
 
-                    if ($full_weekend) {
-                        if (isset($hteam['preferred_game_day'])) {
-                            $pref_gday = $hteam['preferred_game_day'] % 7;
-                            $g['game_date'] = $gday->subDay(3)->next($pref_gday);
+                        if ($full_weekend) {
+                            if (isset($hteam['preferred_game_day'])) {
+                                $pref_gday = $hteam['preferred_game_day'] % 7;
+                                $g['game_date'] = $gday->subDay(3)->next($pref_gday);
+                            } else {
+                                $g['game_date'] = $gday;
+                            }
                         } else {
                             $g['game_date'] = $gday;
                         }
+
+                        if ($league->age_type->in([LeagueAgeType::Junior(), LeagueAgeType::Mini()])) {
+                            $g['referee_1'] = '****';
+                        }
+
+                        $g['team_char_home'] = $s->team_home;
+                        $g['team_char_guest'] = $s->team_guest;
+
+                        if (isset($hteam)) {
+                            $g['game_time'] = $hteam['preferred_game_time'];
+                            $g['gym_id'] = $hteam->gym()->exists() ? $hteam->gym->id : $hteam->club->gyms()->first()->id;
+                            $g['club_id_home'] = $hteam['club']['id'];
+                            $g['region_id_home'] = $hteam->club->region->id;
+                            $g['team_id_home'] = $hteam['id'];
+                        }
+
+                        if (isset($gteam)) {
+                            $g['club_id_guest'] = $gteam['club']['id'];
+                            $g['team_id_guest'] = $gteam['id'];
+                            $g['region_id_guest'] = $gteam->club->region->id;
+                        }
+
+                        //Log::debug(print_r($g, true));
+                        Game::updateOrCreate(['league_id' => $league->id, 'game_no' => $s->game_no + ($max_gday * $i * $g_perday)], $g);
                     } else {
-                        $g['game_date'] = $gday;
+                        Log::notice('[GAME GENERATION] home or guest missing', ['league-id' => $league->id, 'game-no' => $s->game_no]);
                     }
-
-                    if ($league->age_type->in([LeagueAgeType::Junior(), LeagueAgeType::Mini()])) {
-                        $g['referee_1'] = '****';
-                    }
-
-                    $g['team_char_home'] = $s->team_home;
-                    $g['team_char_guest'] = $s->team_guest;
-
-                    if (isset($hteam)) {
-                        $g['game_time'] = $hteam['preferred_game_time'];
-                        $g['gym_id'] = $hteam->gym()->exists() ? $hteam->gym->id : $hteam->club->gyms()->first()->id;
-                        $g['club_id_home'] = $hteam['club']['id'];
-                        $g['region_id_home'] = $hteam->club->region->id;
-                        $g['team_id_home'] = $hteam['id'];
-                    }
-
-                    if (isset($gteam)) {
-                        $g['club_id_guest'] = $gteam['club']['id'];
-                        $g['team_id_guest'] = $gteam['id'];
-                        $g['region_id_guest'] = $gteam->club->region->id;
-                    }
-
-                    //Log::debug(print_r($g, true));
-                    Game::updateOrCreate(['league_id' => $league->id, 'game_no' => $s->game_no + ($max_gday * $i * $g_perday)], $g);
                 } else {
                     Log::warning('[GAME GENERATION] Gameday not set', ['league-id' => $league->id, 'game-day' => $s->game_day]);
                 }
@@ -159,44 +164,49 @@ trait GameManager
                                     $hteam = $teams->firstWhere('league_no', $s->team_home);
                                     $gteam = $teams->firstWhere('league_no', $s->team_guest);
 
-                                    $g = [];
-                                    $g['league_id'] = $league->id;
-                                    $g['game_no'] = $i_game_no;
-                                    $g['region'] = $league->region->code;
-                                    $g['game_plandate'] = $gday;
+                                    if ( (isset($hteam)) and
+                                         (isset($gteam)) ) {
+                                        $g = [];
+                                        $g['league_id'] = $league->id;
+                                        $g['game_no'] = $i_game_no;
+                                        $g['region'] = $league->region->code;
+                                        $g['game_plandate'] = $gday;
 
-                                    if ($full_weekend) {
-                                        if (isset($hteam['preferred_game_day'])) {
-                                            $pref_gday = $hteam['preferred_game_day'] % 7;
-                                            $g['game_date'] = $gday->subDay(3)->next($pref_gday);
+                                        if ($full_weekend) {
+                                            if (isset($hteam['preferred_game_day'])) {
+                                                $pref_gday = $hteam['preferred_game_day'] % 7;
+                                                $g['game_date'] = $gday->subDay(3)->next($pref_gday);
+                                            } else {
+                                                $g['game_date'] = $gday;
+                                            }
                                         } else {
                                             $g['game_date'] = $gday;
                                         }
+
+                                        if ($league->age_type->in([LeagueAgeType::Junior(), LeagueAgeType::Mini()])) {
+                                            $g['referee_1'] = '****';
+                                        }
+
+                                        $g['team_char_home'] = $s->team_home;
+                                        $g['team_char_guest'] = $s->team_guest;
+
+                                        if (isset($hteam)) {
+                                            $g['game_time'] = $hteam['preferred_game_time'];
+                                            $g['gym_id'] = $hteam->gym()->exists() ? $hteam->gym->id : $hteam->club->gyms()->first()->id;
+                                            $g['club_id_home'] = $hteam['club']['id'];
+                                            $g['team_id_home'] = $hteam['id'];
+                                        }
+
+                                        if (isset($gteam)) {
+                                            $g['club_id_guest'] = $gteam['club']['id'];
+                                            $g['team_id_guest'] = $gteam['id'];
+                                        }
+
+                                        Log::debug('creating game no.', ['game-no' => $g['game_no']]);
+                                        Game::create($g);
                                     } else {
-                                        $g['game_date'] = $gday;
+                                        Log::notice('[GAME GENERATION] home or guest missing', ['league-id' => $league->id, 'game-no' => $s->game_no]);
                                     }
-
-                                    if ($league->age_type->in([LeagueAgeType::Junior(), LeagueAgeType::Mini()])) {
-                                        $g['referee_1'] = '****';
-                                    }
-
-                                    $g['team_char_home'] = $s->team_home;
-                                    $g['team_char_guest'] = $s->team_guest;
-
-                                    if (isset($hteam)) {
-                                        $g['game_time'] = $hteam['preferred_game_time'];
-                                        $g['gym_id'] = $hteam->gym()->exists() ? $hteam->gym->id : $hteam->club->gyms()->first()->id;
-                                        $g['club_id_home'] = $hteam['club']['id'];
-                                        $g['team_id_home'] = $hteam['id'];
-                                    }
-
-                                    if (isset($gteam)) {
-                                        $g['club_id_guest'] = $gteam['club']['id'];
-                                        $g['team_id_guest'] = $gteam['id'];
-                                    }
-
-                                    Log::debug('creating game no.', ['game-no' => $g['game_no']]);
-                                    Game::create($g);
                                 } else {
                                     $game = $league->games()->where('game_no', $i_game_no)->where('team_char_home', $league_no)->first();
                                     if (isset($game)) {
@@ -249,35 +259,10 @@ trait GameManager
      */
     public function blank_team_games(League $league, Team $team): void
     {
-        Log::info('removing team from games.', ['league-id' => $league->id, 'team-id' => $team->id]);
-        // blank out home games
-        $league->games()->where('team_id_home', $team->id)->update([
-            'team_id_home' => null,
-            'club_id_home' => null,
-            'region_id_home' => null,
-            'gym_id' => null,
-        ]);
-
-        // blank out guest games
-        $league->games()->where('team_id_guest', $team->id)->update([
-            'team_id_guest' => null,
-            'club_id_guest' => null,
-            'region_id_guest' => null,
-        ]);
+        // delete home and guest games
+        $count = $league->games()->where('team_id_home', $team->id)->orWhere('team_id_guest', $team->id)->delete();
+        Log::notice('games for team deleted', ['league-id' => $league->id, 'team-id' => $team->id, 'count'=>$count]);
     }
 
-    /**
-     * delete games of a league if home or guest team are not set
-     *
-     * @param  League  $league
-     * @return void
-     */
-    public function delete_noshow_games(League $league): void
-    {
-        $count = $league->games()->where(function (Builder $query) {
-            return $query->whereNull('club_id_home')
-                ->orWhereNull('club_id_guest');
-        })->delete();
-        Log::notice('no show games deleted.', ['league-id' => $league->id, 'count' => $count]);
-    }
+
 }

@@ -57,7 +57,7 @@ class LeagueController extends Controller
             $leagues = League::whereIn('region_id', [$region->id, $region->parentRegion->id])->with(['league_size', 'schedule.league_size', 'clubs.region', 'teams.club.region'])
                 ->withCount([
                     'clubs', 'teams', 'registered_teams', 'selected_teams', 'games',
-                    'games_notime', 'games_noshow',
+                    'games_notime',
                 ])
                 ->orderBy('shortname', 'ASC')
                 ->get();
@@ -66,7 +66,7 @@ class LeagueController extends Controller
             $leagues = League::where('region_id', $region->id)->with(['league_size', 'schedule.league_size', 'clubs.region', 'teams.club.region'])
                 ->withCount([
                     'clubs', 'teams', 'registered_teams', 'selected_teams', 'games',
-                    'games_notime', 'games_noshow',
+                    'games_notime',
                 ])
                 ->orderBy('shortname', 'ASC')
                 ->get();

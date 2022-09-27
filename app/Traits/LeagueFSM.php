@@ -98,8 +98,6 @@ trait LeagueFSM
     public function open_ref_assignment(League $league): void
     {
         Log::notice('league state change.', ['league-id' => $league->id, 'old-state' => $league->state->key, 'new-state' => LeagueState::Referees()->key]);
-        $this->delete_noshow_games($league);
-
         $league->state = LeagueState::Referees();
         $league->scheduling_closed_at = now();
         $league->save();

@@ -34,8 +34,6 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property-read int|null $games_guest_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Game[] $games_home
  * @property-read int|null $games_home_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Game[] $games_home_noshow
- * @property-read int|null $games_home_noshow_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Game[] $games_home_notime
  * @property-read int|null $games_home_notime_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Game[] $games_noreferee
@@ -187,11 +185,6 @@ class Club extends Model implements Auditable
     public function games_home_notime(): HasMany
     {
         return $this->hasMany(Game::class, 'club_id_home', 'id')->whereNull('game_time');
-    }
-
-    public function games_home_noshow(): HasMany
-    {
-        return $this->hasMany(Game::class, 'club_id_home', 'id')->whereNull('team_id_guest');
     }
 
     public function games_noreferee(): HasMany

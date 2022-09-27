@@ -141,14 +141,14 @@ class ClubTeamControllerTest extends TestCase
                               'training_day' => $team->training_day,
                               'training_time' => '11:00',
                               'preferred_game_day' => $team->preferred_game_day,
-                              'preferred_game_time' => 'aaa',
+                              'preferred_game_time' => '10:10',
                               'shirt_color' => $team->shirt_color,
                           ]);
 
         $response->assertStatus(302)
                  ->assertSessionHasErrors(['preferred_game_time']);
         //$response->dumpSession();
-        $this->assertDatabaseMissing('teams', ['preferred_game_time' => 'aaa']);
+        $this->assertDatabaseMissing('teams', ['preferred_game_time' => '10:10']);
     }
 
     /**

@@ -17,7 +17,6 @@
     <th>{{ __('containing') }}@lang('team.selected')</th>
     <th>{{ __('Total Games') }}</th>
     <th>{{ __('Games No Time') }}</th>
-    <th>{{ __('Games No Teams') }}</th>
     <th>{{ __('Updated at') }}</th>
 </x-card-list>
 @endsection
@@ -130,10 +129,6 @@
                     {
                         data: 'games_home_notime_count',
                         name: 'games_home_notime_count'
-                    },
-                    {
-                        data: 'games_home_noshow_count',
-                        name: 'games_home_noshow_count'
                     },
                     {
                         data: 'updated_at',

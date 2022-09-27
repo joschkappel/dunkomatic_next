@@ -6,7 +6,6 @@ return [
     'guest' => 'Away Games',
     'action.create' => 'Create Games',
     'action.delete' => 'Delete All Games',
-    'action.delete.noshow' => 'Delete Games without Opponent',
     'action.editdate' => 'Set Home Game Date and Time',
     'action.team.withdraw' => 'Withdraw Team',
     'action.team.add' => 'Inject Team',

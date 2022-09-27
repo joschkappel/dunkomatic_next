@@ -103,27 +103,5 @@ class LeagueStateController extends Controller
         return true;
     }
 
-    /**
-     * remove games with missing teams
-     *
-     * @param  Request  $request
-     * @param  \App\Models\Region  $region
-     * @return bool
-     */
-    public function destroy_noshow_games(Request $request, Region $region)
-    {
-        $data = $request->validate([
-            'from_state' => ['required', new EnumValue(LeagueState::class, false)],
-        ]);
-        Log::info('purge game form data validated OK.', ['region-id' => $region->id]);
 
-        // get all leagues that are in from_state
-        $leagues = $region->leagues()->where('state', $data['from_state'])->get();
-        foreach ($leagues as $l) {
-            // for each league emove games with no home ro guest team
-            $this->delete_noshow_games($l);
-        }
-
-        return true;
-    }
 }

@@ -270,30 +270,5 @@ class LeagueGameControllerTest extends TestCase
         $this->assertDatabaseMissing('games', ['league_id' => $league->id]);
     }
 
-    /**
-     * destroy_noshow_game
-     *
-     * @test
-     * @group league
-     * @group game
-     * @group controller
-     *
-     * @return void
-     */
-    public function destroy_noshow_game()
-    {
-        $league = $this->testleague;
-        $this->freeze_league($league);
-        $this->open_game_scheduling($league);
-        $this->assertDatabaseHas('games', ['league_id' => $league->id]);
-        $games_remaining = $league->games->count() - $league->games_noshow->count();
 
-        $response = $this->authenticated()
-                         ->delete(route('league.game.destroy_noshow', ['league' => $league]));
-
-        $response->assertStatus(200)
-                ->assertJson(['success' => 'all good']);
-
-        $this->assertDatabaseCount('games', $games_remaining);
-    }
 }

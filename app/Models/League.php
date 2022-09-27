@@ -51,8 +51,6 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property-read \Illuminate\Database\Eloquent\Collection|Game[] $games_noreferee
  * @property-read int|null $games_noreferee_count
  * @property-read int|null $games_referee_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Game[] $games_noshow
- * @property-read int|null $games_noshow_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Game[] $games_notime
  * @property-read int|null $games_notime_count
  * @property-read int|null $games_time_count
@@ -213,11 +211,6 @@ class League extends Model implements Auditable
     public function games_noreferee(): HasMany
     {
         return $this->hasMany(Game::class)->whereNull('referee_1');
-    }
-
-    public function games_noshow(): HasMany
-    {
-        return $this->hasMany(Game::class)->whereNull('team_id_guest');
     }
 
     public function games_overlap(): HasMany

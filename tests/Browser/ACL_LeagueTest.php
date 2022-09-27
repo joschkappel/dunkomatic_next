@@ -257,7 +257,6 @@ class ACL_LeagueTest extends DuskTestCase
                 });
                 $browser->with('#gamesCard', function ($gameCard) use ($user, $league) {
                     $gameCard->click('.btn-tool')->waitFor('.btn-tool');
-                    (($user->can('update-games')) and ($league->state->is(LeagueState::Referees()))) ? $gameCard->assertPresent('deleteNoshowGames') : $gameCard->assertNotPresent('deleteNoshowGames');
                     ($user->can('view-games')) ? $gameCard->assertSeeLink(__('league.action.game.list')) : $gameCard->assertDontSeeLink(__('league.action.game.list'));
                     ($user->can('view-games')) ? $gameCard->assertSeeLink(__('reports.ical.league')) : $gameCard->assertDontSeeLink(__('reports.ical.league'));
                 });
