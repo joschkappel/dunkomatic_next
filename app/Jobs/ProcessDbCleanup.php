@@ -49,7 +49,7 @@ class ProcessDbCleanup implements ShouldQueue
         // use the model prune for:
         Artisan::call('model:prune');
         // drop all outdated (one week) messages;
-        // drop all users (incl messages and members) that have been rejected four weeks ago;
+        // drop all users (incl messages and members) that have been rejected more than two weeks ago;
         // drop all users (incl messages and members) that havent verfied their email since a month;
         // drop all inviations that are older than a week
         // delete all members that dont have any memberships

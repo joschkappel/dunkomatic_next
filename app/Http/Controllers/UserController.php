@@ -192,8 +192,8 @@ class UserController extends Controller
         //  DB::enableQueryLog(); // Enable query log
 
         $users = $region->users()
-            ->whereNull('approved_at')
-            ->whereNull('rejected_at');
+            ->whereNull('approved_at');
+            // ->whereNull('rejected_at'); // show rejected still in list for potential re-approval
         //  dd(DB::getQueryLog());
         Log::info('showing waiting new user list.');
 
