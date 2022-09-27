@@ -2,7 +2,6 @@
 
 namespace App\Enums;
 
-use BenSampo\Enum\Enum;
 use BenSampo\Enum\FlaggedEnum;
 use Illuminate\Support\Str;
 
@@ -15,16 +14,20 @@ use Illuminate\Support\Str;
  * @method static static CSV()
  * @method static static ICS()
  */
-
 final class ReportFileType extends FlaggedEnum
 {
-    const PDF =    1 << 0;
-    const HTML =    1 << 1;
-    const XLSX =    1 << 2;
+    const PDF = 1 << 0;
+
+    const HTML = 1 << 1;
+
+    const XLSX = 1 << 2;
+
 //    const XLS =     1 << 3;
-    const ODS =     1 << 4;
-    const CSV =     1 << 5;
-    const ICS =     1 << 6;
+    const ODS = 1 << 4;
+
+    const CSV = 1 << 5;
+
+    const ICS = 1 << 6;
 
     public static function getDescription($value): string
     {

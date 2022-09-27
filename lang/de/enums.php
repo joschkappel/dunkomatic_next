@@ -1,10 +1,10 @@
 <?php
 
+use App\Enums\JobFrequencyType;
 use App\Enums\LeagueAgeType;
 use App\Enums\LeagueGenderType;
-use App\Enums\Role;
-use App\Enums\JobFrequencyType;
 use App\Enums\LeagueState;
+use App\Enums\Role;
 
 return [
 
@@ -21,32 +21,32 @@ return [
     ],
 
     Role::class => [
-      Role::ClubLead => 'Abteilungsleitung',
-      Role::RefereeLead => 'Schiedsrichterwart:in',
-      Role::LeagueLead => 'Staffelleitung',
-      Role::RegionTeam => 'Bezirksmitarbeiter:in',
-      Role::GirlsLead => 'Verantwtl. Mädchenbasket',
-      Role::JuniorsLead => 'Jugendwart:in',
-      Role::RegionLead => 'Bezirksleitung',
-      Role::TeamCoach => 'MV',
+        Role::ClubLead => 'Abteilungsleitung',
+        Role::RefereeLead => 'Schiedsrichterwart:in',
+        Role::LeagueLead => 'Staffelleitung',
+        Role::RegionTeam => 'Bezirksmitarbeiter:in',
+        Role::GirlsLead => 'Verantwtl. Mädchenbasket',
+        Role::JuniorsLead => 'Jugendwart:in',
+        Role::RegionLead => 'Bezirksleitung',
+        Role::TeamCoach => 'MV',
     ],
 
     JobFrequencyType::class => [
-      JobFrequencyType::never => 'nie',
-      JobFrequencyType::daily => 'täglich',
-      JobFrequencyType::weekly => 'wöchentlich',
-      JobFrequencyType::biweekly => 'zweiwöchentlich',
-      JobFrequencyType::monthly => 'monatlich'
+        JobFrequencyType::never => 'nie',
+        JobFrequencyType::daily => 'täglich',
+        JobFrequencyType::weekly => 'wöchentlich',
+        JobFrequencyType::biweekly => 'zweiwöchentlich',
+        JobFrequencyType::monthly => 'monatlich',
     ],
 
     LeagueState::class => [
-      LeagueState::Setup =>  'Spielrunde wird definiert',
-      LeagueState::Registration =>  'Mannschaftsmeldung',
-      LeagueState::Selection =>   'Verein wählt Ziffern',
-      LeagueState::Scheduling => 'Verein legt Heimspieltermine fest',
-      LeagueState::Live => 'Live',
-      LeagueState::Freeze => 'Wartet auf Freigabe',
-      LeagueState::Referees => 'Bezirk legt Schiedsrichter fest',
-    ]
+        LeagueState::Setup => 'Spielrunde wird definiert',
+        LeagueState::Registration => 'Mannschaftsmeldung',
+        LeagueState::Selection => 'Verein wählt Ziffern',
+        LeagueState::Scheduling => 'Verein legt Heimspieltermine fest',
+        LeagueState::Live => 'Live',
+        LeagueState::Freeze => 'Wartet auf Freigabe',
+        LeagueState::Referees => 'Bezirk legt Schiedsrichter fest',
+    ],
 
 ];

@@ -1,6 +1,7 @@
 <?php
 
 namespace Tests\Browser\Pages\Club;
+
 use Laravel\Dusk\Browser;
 use Tests\Browser\Pages\Page;
 
@@ -10,7 +11,7 @@ class NewClub extends Page
 
     public function __construct($region_id)
     {
-       $this->region_id = $region_id;
+        $this->region_id = $region_id;
     }
 
     /**
@@ -50,11 +51,12 @@ class NewClub extends Page
         ];
     }
 
-    public function new_club(Browser $browser, $club_name, $club_no, $url){
-      $browser->value('@shortname','VVVV')
-              ->value('@name',$club_name)
-              ->value('@club_no',$club_no)
-              ->value('@url', $url)
-              ->press('Senden');
+    public function new_club(Browser $browser, $club_name, $club_no, $url)
+    {
+        $browser->value('@shortname', 'VVVV')
+                ->value('@name', $club_name)
+                ->value('@club_no', $club_no)
+                ->value('@url', $url)
+                ->press('Senden');
     }
 }

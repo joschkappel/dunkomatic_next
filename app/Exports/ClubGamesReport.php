@@ -2,32 +2,31 @@
 
 namespace App\Exports;
 
+use App\Enums\ReportScope;
+use App\Exports\Sheets\ClubGames;
+use App\Exports\Sheets\ClubLeagueGames;
+use App\Exports\Sheets\ClubsSheet;
+use App\Exports\Sheets\Title;
 use App\Models\Club;
 use App\Models\Game;
 use App\Models\League;
-use App\Enums\ReportScope;
-
-use App\Exports\Sheets\ClubGames;
-use App\Exports\Sheets\ClubsSheet;
-use App\Exports\Sheets\ClubLeagueGames;
-
-use App\Exports\Sheets\Title;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
-use Illuminate\Support\Facades\Log;
 
 class ClubGamesReport implements WithMultipleSheets
 {
     use Exportable;
 
     protected Club $club;
+
     protected ReportScope $scope;
+
     protected League $league;
 
-    public function __construct(int $club_id, ReportScope $scope,  int $league_id = NULL)
+    public function __construct(int $club_id, ReportScope $scope, int $league_id = null)
     {
         $this->club = Club::find($club_id);
-        if ($league_id == NULL) {
+        if ($league_id == null) {
             $this->league = new League();
         } else {
             $this->league = League::find($league_id);
@@ -40,7 +39,7 @@ class ClubGamesReport implements WithMultipleSheets
      */
     public function sheets(): array
     {
-        $sheets = array();
+        $sheets = [];
 
         if ($this->scope == ReportScope::ms_all()) {
             $sheets[] = new Title('Spielpläne', null, $this->club, null);
@@ -49,7 +48,7 @@ class ClubGamesReport implements WithMultipleSheets
             $sheets[] = new ClubGames($this->club, ReportScope::ss_club_referee());
 
             $leagues = Game::where('club_id_home', $this->club->id)->get()->pluck('league_id')->unique();
-            $leagues = League::whereIn('id',$leagues)->get();
+            $leagues = League::whereIn('id', $leagues)->get();
             foreach ($leagues as $l) {
                 $sheets[] = new ClubLeagueGames($this->club, $l);
                 $sheets[] = new ClubsSheet($l->region, $l);

@@ -2,18 +2,19 @@
 
 namespace Tests\Unit;
 
-use App\Models\League;
 use App\Models\Club;
-
-use Tests\TestCase;
+use App\Models\League;
 use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class ClubGymControllerTest extends TestCase
 {
     use Authentication;
 
     private $testleague;
+
     private $testclub_assigned;
+
     private $testclub_free;
 
     public function setUp(): void
@@ -23,6 +24,7 @@ class ClubGymControllerTest extends TestCase
         $this->testclub_assigned = $this->testleague->clubs()->first();
         $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
     }
+
     /**
      * create
      *
@@ -34,15 +36,14 @@ class ClubGymControllerTest extends TestCase
      */
     public function create()
     {
+        $response = $this->authenticated()
+                          ->get(route('club.gym.create', ['language' => 'de', 'club' => $this->testclub_assigned]));
 
-      $response = $this->authenticated()
-                        ->get(route('club.gym.create',['language'=>'de', 'club'=>$this->testclub_assigned]));
-
-      $response->assertStatus(200)
-               ->assertViewIs('club.gym.gym_new')
-               ->assertViewHas('club',$this->testclub_assigned);
-
+        $response->assertStatus(200)
+                 ->assertViewIs('club.gym.gym_new')
+                 ->assertViewHas('club', $this->testclub_assigned);
     }
+
     /**
      * store NOT OK
      *
@@ -54,17 +55,16 @@ class ClubGymControllerTest extends TestCase
      */
     public function store_notok()
     {
-      $response = $this->authenticated()
-                        ->post(route('club.gym.store',['club'=>$this->testclub_assigned]), [
-                          'gym_no' => '1',
-                          'name' => 'testgym'
-                      ]);
-      $response
-          ->assertStatus(302)
-          ->assertSessionHasErrors(['zip','city','street']);
+        $response = $this->authenticated()
+                          ->post(route('club.gym.store', ['club' => $this->testclub_assigned]), [
+                              'gym_no' => '1',
+                              'name' => 'testgym',
+                          ]);
+        $response
+            ->assertStatus(302)
+            ->assertSessionHasErrors(['zip', 'city', 'street']);
 
-      $this->assertDatabaseMissing('gyms', ['name' => 'testgym']);
-
+        $this->assertDatabaseMissing('gyms', ['name' => 'testgym']);
     }
 
     /**
@@ -78,23 +78,22 @@ class ClubGymControllerTest extends TestCase
      */
     public function store_ok()
     {
+        $response = $this->authenticated()
+                          ->post(route('club.gym.store', ['club' => $this->testclub_assigned]), [
+                              'gym_no' => '5',
+                              'name' => 'testgym',
+                              'zip' => 'gymzip',
+                              'city' => 'gymcity',
+                              'street' => 'gymstreet',
+                          ]);
+        $response
+            ->assertStatus(302)
+            ->assertSessionHasNoErrors()
+            ->assertHeader('Location', route('club.dashboard', ['language' => 'de', 'club' => $this->testclub_assigned]));
 
-      $response = $this->authenticated()
-                        ->post(route('club.gym.store',['club'=>$this->testclub_assigned]), [
-                          'gym_no' => '5',
-                          'name' => 'testgym',
-                          'zip' => 'gymzip',
-                          'city' => 'gymcity',
-                          'street' => 'gymstreet'
-                      ]);
-      $response
-          ->assertStatus(302)
-          ->assertSessionHasNoErrors()
-          ->assertHeader('Location', route('club.dashboard', ['language'=>'de','club'=>$this->testclub_assigned]));
-
-      $this->assertDatabaseHas('gyms', ['name' => 'testgym']);
-
+        $this->assertDatabaseHas('gyms', ['name' => 'testgym']);
     }
+
     /**
      * edit
      *
@@ -106,16 +105,17 @@ class ClubGymControllerTest extends TestCase
      */
     public function edit()
     {
-      //$this->withoutExceptionHandling();
-      $gym = $this->testclub_assigned->gyms->first();
+        //$this->withoutExceptionHandling();
+        $gym = $this->testclub_assigned->gyms->first();
 
-      $response = $this->authenticated()
-                        ->get(route('gym.edit',['language'=>'de', 'gym'=>$gym]));
+        $response = $this->authenticated()
+                          ->get(route('gym.edit', ['language' => 'de', 'gym' => $gym]));
 
-      $response->assertStatus(200)
-               ->assertViewIs('club.gym.gym_edit')
-               ->assertViewHas('gym',$gym);
+        $response->assertStatus(200)
+                 ->assertViewIs('club.gym.gym_edit')
+                 ->assertViewHas('gym', $gym);
     }
+
     /**
      * update not OK
      *
@@ -127,20 +127,21 @@ class ClubGymControllerTest extends TestCase
      */
     public function update_notok()
     {
-      $gym = $this->testclub_assigned->gyms->first();
-      $response = $this->authenticated()
-                        ->put(route('gym.update',['gym'=>$gym]),[
-                          'gym_no' => null,
-                          'name' => 'testgym2',
-                          'zip' => $gym->zip,
-                          'city' => $gym->city,
-                          'street' => $gym->street
-                        ]);
+        $gym = $this->testclub_assigned->gyms->first();
+        $response = $this->authenticated()
+                          ->put(route('gym.update', ['gym' => $gym]), [
+                              'gym_no' => null,
+                              'name' => 'testgym2',
+                              'zip' => $gym->zip,
+                              'city' => $gym->city,
+                              'street' => $gym->street,
+                          ]);
 
-      $response->assertSessionHasErrors(['gym_no'])
-                ->assertStatus(302);
-      $this->assertDatabaseMissing('gyms', ['name'=>'testgym2']);
+        $response->assertSessionHasErrors(['gym_no'])
+                  ->assertStatus(302);
+        $this->assertDatabaseMissing('gyms', ['name' => 'testgym2']);
     }
+
     /**
      * update OK
      *
@@ -152,22 +153,23 @@ class ClubGymControllerTest extends TestCase
      */
     public function update_ok()
     {
-      $gym = $this->testclub_assigned->gyms->first();
-      $response = $this->authenticated()
-                        ->put(route('gym.update',['gym'=>$gym]),[
-                          'gym_no' => $gym->gym_no,
-                          'name' => 'testgym2',
-                          'zip' => $gym->zip,
-                          'city' => $gym->city,
-                          'street' => $gym->street
-                        ]);
-      $gym->refresh();
-      $response->assertStatus(302)
-               ->assertSessionHasNoErrors()
-               ->assertHeader('Location', route('club.dashboard',['language'=>'de', 'club'=>$this->testclub_assigned]));
+        $gym = $this->testclub_assigned->gyms->first();
+        $response = $this->authenticated()
+                          ->put(route('gym.update', ['gym' => $gym]), [
+                              'gym_no' => $gym->gym_no,
+                              'name' => 'testgym2',
+                              'zip' => $gym->zip,
+                              'city' => $gym->city,
+                              'street' => $gym->street,
+                          ]);
+        $gym->refresh();
+        $response->assertStatus(302)
+                 ->assertSessionHasNoErrors()
+                 ->assertHeader('Location', route('club.dashboard', ['language' => 'de', 'club' => $this->testclub_assigned]));
 
-      $this->assertDatabaseHas('gyms', ['name'=>$gym->name]);
+        $this->assertDatabaseHas('gyms', ['name' => $gym->name]);
     }
+
     /**
      * show
      *
@@ -179,15 +181,14 @@ class ClubGymControllerTest extends TestCase
      */
     public function show()
     {
-      $gym = $this->testclub_assigned->gyms->first();
-      $response = $this->authenticated()
-                        ->get(route('gym.sb.gym',['club'=>$this->testclub_assigned, 'gym'=>$gym]));
+        $gym = $this->testclub_assigned->gyms->first();
+        $response = $this->authenticated()
+                          ->get(route('gym.sb.gym', ['club' => $this->testclub_assigned, 'gym' => $gym]));
 
-      //$response->dump();
-      $response->assertStatus(200)
-               ->assertJson([['id'=>$gym->id,'text'=>$gym->gym_no.' - '.$gym->name]]);
-
-     }
+        //$response->dump();
+        $response->assertStatus(200)
+                 ->assertJson([['id' => $gym->id, 'text' => $gym->gym_no.' - '.$gym->name]]);
+    }
 
      /**
       * sb_club
@@ -200,15 +201,14 @@ class ClubGymControllerTest extends TestCase
       */
      public function sb_club()
      {
-       $gym = $this->testclub_assigned->gyms->first();
-       $response = $this->authenticated()
-                         ->get(route('gym.sb.club',['club'=>$this->testclub_assigned]));
+         $gym = $this->testclub_assigned->gyms->first();
+         $response = $this->authenticated()
+                           ->get(route('gym.sb.club', ['club' => $this->testclub_assigned]));
 
-       //$response->dump();
-       $response->assertStatus(200)
-                ->assertJson([['id'=>$gym->id,'text'=>$gym->gym_no.' - '.$gym->name]]);
-
-      }
+         //$response->dump();
+         $response->assertStatus(200)
+                  ->assertJson([['id' => $gym->id, 'text' => $gym->gym_no.' - '.$gym->name]]);
+     }
 
     /**
      * destroy
@@ -222,16 +222,15 @@ class ClubGymControllerTest extends TestCase
      */
     public function destroy()
     {
-      $gym = $this->testclub_assigned->gyms()->first();
-      $this->testclub_assigned->teams()->update(['gym_id'=>null]);
-      $response = $this->authenticated()
-                        ->delete(route('gym.destroy',['gym'=>$gym]));
+        $gym = $this->testclub_assigned->gyms()->first();
+        $this->testclub_assigned->teams()->update(['gym_id' => null]);
+        $response = $this->authenticated()
+                          ->delete(route('gym.destroy', ['gym' => $gym]));
 
-      $response->assertStatus(302)
-               ->assertSessionHasNoErrors()
-               ->assertHeader('Location', route('club.dashboard',['language'=>'de', 'club'=>$this->testclub_assigned]));
+        $response->assertStatus(302)
+                 ->assertSessionHasNoErrors()
+                 ->assertHeader('Location', route('club.dashboard', ['language' => 'de', 'club' => $this->testclub_assigned]));
 
-      $this->assertDatabaseMissing('gyms', ['id'=>$gym->id]);
+        $this->assertDatabaseMissing('gyms', ['id' => $gym->id]);
     }
-
 }

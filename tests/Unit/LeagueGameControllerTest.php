@@ -2,22 +2,23 @@
 
 namespace Tests\Unit;
 
-use App\Models\League;
 use App\Models\Club;
 use App\Models\Game;
 use App\Models\Gym;
+use App\Models\League;
 use App\Traits\LeagueFSM;
 use Illuminate\Support\Carbon;
-
-use Tests\TestCase;
 use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class LeagueGameControllerTest extends TestCase
 {
     use Authentication, LeagueFSM;
 
     private $testleague;
+
     private $testclub_assigned;
+
     private $testclub_free;
 
     public function setUp(): void
@@ -47,7 +48,7 @@ class LeagueGameControllerTest extends TestCase
             ->assertViewIs('game.league_game_list');
     }
 
-        /**
+    /**
      * upload
      *
      * @test
@@ -67,7 +68,7 @@ class LeagueGameControllerTest extends TestCase
             ->assertViewHas('context', 'league');
     }
 
-        /**
+    /**
      * show_by_number
      *
      * @test
@@ -88,7 +89,8 @@ class LeagueGameControllerTest extends TestCase
         $response->assertStatus(200)
                  ->assertJson($game->toArray());
     }
-        /**
+
+    /**
      * datata ble
      *
      * @test
@@ -106,8 +108,9 @@ class LeagueGameControllerTest extends TestCase
             ->get(route('league.game.dt', ['language' => 'de', 'league' => $this->testleague]));
 
         $response->assertStatus(200)
-                 ->assertJsonFragment(['club_id_home' => $this->testleague->games->first()->club_id_home ]);
+                 ->assertJsonFragment(['club_id_home' => $this->testleague->games->first()->club_id_home]);
     }
+
     /**
      * store_ok
      *
@@ -166,10 +169,11 @@ class LeagueGameControllerTest extends TestCase
             ]);
 
         $response->assertStatus(302)
-            ->assertSessionHasErrors(['game_date']);;
+            ->assertSessionHasErrors(['game_date']);
         //$response->dumpSession();
         $this->assertDatabaseMissing('games', ['id' => $game->id, 'gym_id' => $gym->id]);
     }
+
     /**
      * update_home OK
      *
@@ -204,7 +208,8 @@ class LeagueGameControllerTest extends TestCase
 
         $this->assertDatabaseHas('games', ['id' => $game->id, 'gym_id' => $gym->id]);
     }
-        /**
+
+    /**
      * update OK
      *
      * @test
@@ -238,7 +243,8 @@ class LeagueGameControllerTest extends TestCase
 
         $this->assertDatabaseHas('games', ['id' => $game->id, 'gym_id' => $gym->id]);
     }
-        /**
+
+    /**
      * destroy_game
      *
      * @test
@@ -253,40 +259,16 @@ class LeagueGameControllerTest extends TestCase
         $league = $this->testleague;
         $this->freeze_league($league);
         $this->open_game_scheduling($league);
-        $this->assertDatabaseHas('games',['league_id' => $league->id ]);
+        $this->assertDatabaseHas('games', ['league_id' => $league->id]);
 
         $response = $this->authenticated()
                          ->delete(route('league.game.destroy', ['league' => $league]));
 
         $response->assertStatus(200)
-                ->assertJson(array('success' => 'all good'));
+                ->assertJson(['success' => 'all good']);
 
-        $this->assertDatabaseMissing('games',['league_id' => $league->id]);
+        $this->assertDatabaseMissing('games', ['league_id' => $league->id]);
     }
-        /**
-     * destroy_noshow_game
-     *
-     * @test
-     * @group league
-     * @group game
-     * @group controller
-     *
-     * @return void
-     */
-    public function destroy_noshow_game()
-    {
-        $league = $this->testleague;
-        $this->freeze_league($league);
-        $this->open_game_scheduling($league);
-        $this->assertDatabaseHas('games',['league_id' => $league->id ]);
-        $games_remaining = $league->games->count() - $league->games_noshow->count();
 
-        $response = $this->authenticated()
-                         ->delete(route('league.game.destroy_noshow', ['league' => $league]));
 
-        $response->assertStatus(200)
-                ->assertJson(array('success' => 'all good'));
-
-        $this->assertDatabaseCount('games', $games_remaining);
-    }
 }

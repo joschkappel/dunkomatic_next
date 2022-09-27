@@ -19,7 +19,7 @@ class CreateScheduleEventsTable extends Migration
             $table->foreign('schedule_id')->references('id')->on('schedules')->cascadeOnDelete();
             $table->smallInteger('game_day');
             $table->date('game_date');
-            $table->boolean('full_weekend')->default(True);
+            $table->boolean('full_weekend')->default(true);
             $table->timestamps();
         });
     }

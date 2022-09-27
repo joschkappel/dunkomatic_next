@@ -3,16 +3,14 @@
 namespace App\Models;
 
 use App\Enums\Report;
-use App\Models\Region;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ReportJob extends Model
 {
     protected $fillable = [
         'id', 'region_id', 'report_id',
-        'lastrun_at', 'lastrun_ok', 'running'
+        'lastrun_at', 'lastrun_ok', 'running',
     ];
 
     /**
@@ -24,12 +22,11 @@ class ReportJob extends Model
         'report_id' => Report::class,
         'lastrun_at' => 'datetime',
         'running' => 'boolean',
-        'lastrun_ok' => 'boolean'
+        'lastrun_ok' => 'boolean',
     ];
 
     public function region(): BelongsTo
     {
         return $this->belongsTo(Region::class);
     }
-
 }

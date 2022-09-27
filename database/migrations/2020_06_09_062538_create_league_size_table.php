@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schema;
 
 class CreateLeagueSizeTable extends Migration
 {
@@ -17,12 +17,12 @@ class CreateLeagueSizeTable extends Migration
         Schema::create('league_sizes', function (Blueprint $table) {
             $table->unsignedInteger('id')->primary();
             $table->unsignedInteger('size');
-            $table->string('description',40);
+            $table->string('description', 40);
             $table->unique(['size']);
         });
         Artisan::call('db:seed', [
             '--class' => 'LeagueSizesSeeder',
-            '--force' => true
+            '--force' => true,
         ]);
     }
 

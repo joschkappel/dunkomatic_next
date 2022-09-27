@@ -5,28 +5,25 @@ namespace App\Exports\Sheets;
 use App\Models\Game;
 use App\Models\League;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\FromView;
-use Maatwebsite\Excel\Concerns\WithTitle;
-use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
-use Illuminate\Support\Facades\Log;
-
 class LeagueGamesSheet implements FromView, WithTitle, ShouldAutoSize
 {
-
     protected ?Date $gdate = null;
-    protected League $league;
 
+    protected League $league;
 
     public function __construct(League $league)
     {
         $this->gdate = null;
         $this->league = $league;
 
-        Log::info('[EXCEL EXPORT] creating LEAGUE GAMES sheet.', ['league-id'=>$this->league->id]);
+        Log::info('[EXCEL EXPORT] creating LEAGUE GAMES sheet.', ['league-id' => $this->league->id]);
     }
 
     /**
@@ -34,23 +31,21 @@ class LeagueGamesSheet implements FromView, WithTitle, ShouldAutoSize
      */
     public function title(): string
     {
-       return __('reports.games.league').' '.$this->league->shortname;
+        return __('reports.games.league').' '.$this->league->shortname;
     }
 
     public function view(): View
     {
-        $games =  Game::where('league_id',$this->league->id)
-                        ->with(['league','gym','team_home.club', 'team_guest.club'])
-                      ->orderBy('game_date','asc')
-                      ->orderBy('game_time','asc')
-                      ->orderBy('game_no','asc')
+        $games = Game::where('league_id', $this->league->id)
+                        ->with(['league', 'gym', 'team_home.club', 'team_guest.club'])
+                      ->orderBy('game_date', 'asc')
+                      ->orderBy('game_time', 'asc')
+                      ->orderBy('game_no', 'asc')
                       ->get();
         $league = $this->league->load('members');
 
-
-        return view('reports.games_sheet', ['games'=>$games, 'gdate'=>$this->gdate, 'gtime'=>null, 'with_league'=>false, 'league'=>$league]);
+        return view('reports.games_sheet', ['games' => $games, 'gdate' => $this->gdate, 'gtime' => null, 'with_league' => false, 'league' => $league]);
     }
-
 
 /*     public function registerEvents(): array
     {
@@ -62,5 +57,4 @@ class LeagueGamesSheet implements FromView, WithTitle, ShouldAutoSize
               }
         ];
     } */
-
 }

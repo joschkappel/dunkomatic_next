@@ -43,6 +43,7 @@
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.12",
         "laravel/dusk": "^6.9",
+        "laravel/pint": "^1.2",
         "laravel/telescope": "^4.7",
         "nunomaduro/collision": "^6.1",
         "nunomaduro/larastan": "^1.0",

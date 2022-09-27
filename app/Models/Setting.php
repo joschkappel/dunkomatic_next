@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $value
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|Setting newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Setting newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Setting query()
@@ -24,7 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Setting extends Model
 {
-  protected $fillable = [
-        'name','value'
-  ];
+    protected $fillable = [
+        'name', 'value',
+    ];
 }

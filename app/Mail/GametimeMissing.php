@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -18,7 +17,7 @@ class GametimeMissing extends Mailable
      *
      * @return void
      */
-    public function __construct(int $days_to_go=0)
+    public function __construct(int $days_to_go = 0)
     {
         $this->days_to_go = $days_to_go;
     }
@@ -34,7 +33,7 @@ class GametimeMissing extends Mailable
                     ->subject(__('game.title.missingtime'))
                     ->with([
                         'days_to_go' => $this->days_to_go,
-                        'url' => route('faq', ['language' => app()->getLocale()])
+                        'url' => route('faq', ['language' => app()->getLocale()]),
                     ]);
     }
 }

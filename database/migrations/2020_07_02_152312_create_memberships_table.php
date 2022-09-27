@@ -19,8 +19,8 @@ class CreateMembershipsTable extends Migration
             $table->foreign('member_id')->references('id')->on('members')->onDelete('cascade');
             $table->morphs('membership');
             $table->unsignedInteger('role_id');
-            $table->string('function',40)->nullable();
-            $table->string('email',40)->nullable();
+            $table->string('function', 40)->nullable();
+            $table->string('email', 40)->nullable();
             $table->timestamps();
         });
     }

@@ -5,14 +5,12 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
-
 use Throwable;
 
 class Handler extends ExceptionHandler
 {
     /**
      * A list of the exception types that are not reported.
-     *
      */
     protected $dontReport = [
         //
@@ -20,12 +18,12 @@ class Handler extends ExceptionHandler
 
     /**
      * A list of the inputs that are never flashed for validation exceptions.
-     *
      */
     protected $dontFlash = [
         'password',
         'password_confirmation',
     ];
+
     /**
      * Register the exception handling callbacks for the application.
      *
@@ -49,7 +47,7 @@ class Handler extends ExceptionHandler
     public function report(Throwable $exception)
     {
         if ($exception instanceof ValidationException) {
-            Log::error('[VALIDATION ERROR]',['ip'=> request()->ip(), 'path' => request()->path(), 'errors'=>$exception->errors()]);
+            Log::error('[VALIDATION ERROR]', ['ip' => request()->ip(), 'path' => request()->path(), 'errors' => $exception->errors()]);
         }
 
         parent::report($exception);

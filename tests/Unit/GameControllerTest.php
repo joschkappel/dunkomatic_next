@@ -2,18 +2,19 @@
 
 namespace Tests\Unit;
 
-use App\Models\League;
 use App\Models\Club;
-
-use Tests\TestCase;
+use App\Models\League;
 use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class GameControllerTest extends TestCase
 {
     use Authentication;
 
     private $testleague;
+
     private $testclub_assigned;
+
     private $testclub_free;
 
     public function setUp(): void
@@ -35,7 +36,6 @@ class GameControllerTest extends TestCase
      */
     public function index()
     {
-
         $response = $this->authenticated()
             ->get(route('game.index', ['language' => 'de', 'region' => $this->region]));
 
@@ -59,7 +59,5 @@ class GameControllerTest extends TestCase
             ->get(route('game.datatable', ['language' => 'de', 'region' => $this->testleague->region]));
 
         $response->assertStatus(200);
-
     }
-
 }

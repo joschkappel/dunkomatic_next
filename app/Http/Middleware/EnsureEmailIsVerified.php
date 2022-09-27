@@ -4,9 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\Log;
 
 class EnsureEmailIsVerified
 {
@@ -21,11 +21,12 @@ class EnsureEmailIsVerified
     public function handle($request, Closure $next, $redirectToRoute = null)
     {
         if (
-            !$request->user() ||
+            ! $request->user() ||
             ($request->user() instanceof MustVerifyEmail &&
-                !$request->user()->hasVerifiedEmail())
+                ! $request->user()->hasVerifiedEmail())
         ) {
-            Log::warning('[ACCESS DENIED] user email not verified.', ['user-id'=> $request->user()->id ]);
+            Log::warning('[ACCESS DENIED] user email not verified.', ['user-id' => $request->user()->id]);
+
             return $request->expectsJson()
                 ? abort(403, 'Your email address is not verified.')
                 : Redirect::guest(URL::route($redirectToRoute ?: 'verification.notice', ['language' => app()->getLocale()]));

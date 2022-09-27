@@ -2,49 +2,44 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Message;
-use Illuminate\Notifications\DatabaseNotification;
-use App\Models\User;
-use App\Models\Region;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use App\Enums\Role as EnumRole;
-use Silber\Bouncer\Database\Role as UserRole;
-use BenSampo\Enum\Rules\EnumValue;
-use Datatables;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\DB;
-
 use App\Jobs\SendCustomMessage;
+use App\Models\Message;
+use App\Models\Region;
+use App\Models\User;
+use BenSampo\Enum\Rules\EnumValue;
+use Illuminate\Http\Request;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Silber\Bouncer\Database\Role as UserRole;
 
 class MessageController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @param string $language
-     * @param \App\Models\Region $region
-     * @param \App\Models\User $user
+     * @param  string  $language
+     * @param  \App\Models\Region  $region
+     * @param  \App\Models\User  $user
      * @return \Illuminate\View\View
-     *
      */
     public function index($language, Region $region, User $user)
     {
         Log::info('showing message list.');
+
         return view('message/message_list', ['language' => $language, 'user' => $user, 'region' => $region]);
     }
-
 
     /**
      * databales.net listing of messages for the auth user
      *
-     * @param string $language
-     * @param Region $region
-     * @param User $user
+     * @param  string  $language
+     * @param  Region  $region
+     * @param  User  $user
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function datatable_user(string $language, Region $region, User $user)
     {
@@ -57,28 +52,30 @@ class MessageController extends Controller
             ->rawColumns(['send_at', 'sent_at', 'action_send', 'action', 'title', 'body'])
             ->addIndexColumn()
             ->addColumn('action', function ($data) {
-                $btn = '<button type="button" id="deleteMessage" name="deleteMessage" class="btn btn-outline-danger btn-sm" data-msg-id="' . $data->id . '"
-                  data-msg-title="' . $data->title . '" data-toggle="modal" data-target="#modalDeleteMessage"><i class="fa fa-trash"></i></button>';
-                $btn .= '<button type="button" id="copyMessage" name="copyMessage" class="btn btn-outline-primary btn-sm m-2" data-msg-id="' . $data->id . '"
+                $btn = '<button type="button" id="deleteMessage" name="deleteMessage" class="btn btn-outline-danger btn-sm" data-msg-id="'.$data->id.'"
+                  data-msg-title="'.$data->title.'" data-toggle="modal" data-target="#modalDeleteMessage"><i class="fa fa-trash"></i></button>';
+                $btn .= '<button type="button" id="copyMessage" name="copyMessage" class="btn btn-outline-primary btn-sm m-2" data-msg-id="'.$data->id.'"
                   ><i class="fas fa-copy"></i></button>';
-                if ($data->sent_at != null){
-                    $btn .= '<button type="button" id="showMessage" name="showMessage" class="btn btn-outline-primary btn-sm m-2" data-msg-id="' . $data->id . '"
-                    data-msg-greeting="' . $data->greeting . '" data-msg-subject="' . $data->title . '"  data-msg-body="' . htmlentities($data->body) . '"><i class="far fa-eye"></i></button>';
-                };
+                if ($data->sent_at != null) {
+                    $btn .= '<button type="button" id="showMessage" name="showMessage" class="btn btn-outline-primary btn-sm m-2" data-msg-id="'.$data->id.'"
+                    data-msg-greeting="'.$data->greeting.'" data-msg-subject="'.$data->title.'"  data-msg-body="'.htmlentities($data->body).'"><i class="far fa-eye"></i></button>';
+                }
+
                 return $btn;
             })
             ->addColumn('action_send', function ($data) {
                 if ((($data->send_at == null) or ($data->send_at > now())) and ($data->sent_at == null)) {
-                    $btn = '<button type="button" id="sendMessage" name="sendMessage" class="btn btn-outline-success btn-sm" data-msg-id="' . $data->id . '"
-               data-msg-title="' . $data->title . '"><i class="far fa-paper-plane"></i></button>';
+                    $btn = '<button type="button" id="sendMessage" name="sendMessage" class="btn btn-outline-success btn-sm" data-msg-id="'.$data->id.'"
+               data-msg-title="'.$data->title.'"><i class="far fa-paper-plane"></i></button>';
+
                     return $btn;
-                };
+                }
             })
             ->editColumn('title', function ($msg) use ($language) {
                 if ((isset($msg->sent_at) and ($msg->sent_at) < now())) {
                     return $msg['title'];
                 } else {
-                    return '<a href="' . route('message.edit', ['language' => $language, 'message' => $msg->id]) . '">' . $msg->title . ' <i class="fas fa-arrow-circle-right"></i></a>';
+                    return '<a href="'.route('message.edit', ['language' => $language, 'message' => $msg->id]).'">'.$msg->title.' <i class="fas fa-arrow-circle-right"></i></a>';
                 }
             })
             ->editColumn('delete_at', function ($msg) use ($language) {
@@ -99,40 +96,39 @@ class MessageController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @param string $language
-     * @param \App\Models\Region $region
-     * @param \App\Models\User $user
+     * @param  string  $language
+     * @param  \App\Models\Region  $region
+     * @param  \App\Models\User  $user
      * @return \Illuminate\View\View
-     *
      */
     public function create($language, Region $region, User $user)
     {
         Log::info('create new message');
-        $user_scopetype = UserRole::all()->pluck('name','id');
-        return view('message/message_new', ['user_scopetype'=>$user_scopetype, 'scopetype' => EnumRole::getInstances(), 'user' => $user, 'region' => $region]);
+        $user_scopetype = UserRole::all()->pluck('name', 'id');
+
+        return view('message/message_new', ['user_scopetype' => $user_scopetype, 'scopetype' => EnumRole::getInstances(), 'user' => $user, 'region' => $region]);
     }
+
     /**
      * show resource
      *
-     * @param string $notification
+     * @param  string  $notification
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function show(string $notification)
     {
-        $raw_note = DB::table('notifications')->where('id',$notification)->first();
-        return $raw_note->data;
+        $raw_note = DB::table('notifications')->where('id', $notification)->first();
 
+        return $raw_note->data;
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param \App\Models\Region $region
-     * @param \App\Models\User $user
+     * @param  \App\Models\Region  $region
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\RedirectResponse
-     *
      */
     public function store(Request $request, Region $region, User $user)
     {
@@ -146,37 +142,35 @@ class MessageController extends Controller
             'to_members' => 'required_without:notify_users',
             'to_members.*' => [new EnumValue(EnumRole::class, false)],
             'cc_members.*' => [new EnumValue(EnumRole::class, false)],
-            'notify_users' => 'sometimes|required|boolean'
+            'notify_users' => 'sometimes|required|boolean',
         ]);
         Log::info('message form data validated OK.');
-        if ( ! $request->has('notify_users')) {
-            $data['notify_users'] = False;
+        if (! $request->has('notify_users')) {
+            $data['notify_users'] = false;
         }
 
         $msg = new Message($data);
         $msg->user()->associate($user);
         $msg->region()->associate($region);
         $msg->save();
-        Log::notice('new message created.', ['message-id'=>$msg->id]);
+        Log::notice('new message created.', ['message-id' => $msg->id]);
 
         return redirect()->route('message.index', ['language' => app()->getLocale(), 'user' => $user, 'region' => $region]);
     }
 
-
     /**
      * Show the form for editing the specified resource.
      *
-     * @param string $language
+     * @param  string  $language
      * @param  \App\Models\Message  $message
      * @return \Illuminate\View\View
-     *
      */
     public function edit($language, Message $message)
     {
         Log::debug('editing message.', ['message-id' => $message->id]);
-        $user_scopetype = UserRole::all()->pluck('name','id');
+        $user_scopetype = UserRole::all()->pluck('name', 'id');
 
-        return view('message/message_edit', ['message' => $message, 'scopetype' => EnumRole::getInstances(), 'user_scopetype'=>$user_scopetype]);
+        return view('message/message_edit', ['message' => $message, 'scopetype' => EnumRole::getInstances(), 'user_scopetype' => $user_scopetype]);
     }
 
     /**
@@ -185,11 +179,9 @@ class MessageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Message  $message
      * @return \Illuminate\Http\RedirectResponse
-     *
      */
     public function update(Request $request, Message $message)
     {
-
         $data = $request->validate([
             'title' => 'required|string|max:60',
             'body' => 'required|string',
@@ -200,22 +192,21 @@ class MessageController extends Controller
             'to_members' => 'required_without:notify_users',
             'to_members.*' => [new EnumValue(EnumRole::class, false)],
             'cc_members.*' => [new EnumValue(EnumRole::class, false)],
-            'notify_users' => 'sometimes|required|boolean'
+            'notify_users' => 'sometimes|required|boolean',
         ]);
         Log::info('message form data validated OK.');
-        if ( ! $request->has('notify_users')) {
-            $data['notify_users'] = False;
+        if (! $request->has('notify_users')) {
+            $data['notify_users'] = false;
         }
-        if ( ! $request->has('to_members') ){
+        if (! $request->has('to_members')) {
             $data['to_members'] = null;
         }
-        if ( ! $request->has('cc_members') ){
+        if (! $request->has('cc_members')) {
             $data['cc_members'] = null;
         }
 
-        $message->update( $data );
-        Log::notice('message updated.', ['message-id'=> $message->id]);
-
+        $message->update($data);
+        Log::notice('message updated.', ['message-id' => $message->id]);
 
         return redirect()->route('message.index', ['language' => app()->getLocale(), 'region' => $message->region, 'user' => $message->user]);
     }
@@ -223,24 +214,22 @@ class MessageController extends Controller
     /**
      * Mark a message as read
      *
-     * @param   DatabaseNotification $message
+     * @param  DatabaseNotification  $message
      * @return \Illuminate\Http\RedirectResponse
-     *
      */
     public function mark_as_read(DatabaseNotification $message)
     {
-       $message->markAsRead();
-       return back();
-    }
+        $message->markAsRead();
 
+        return back();
+    }
 
     /**
      * sedn notification for this message
      *
-     * @param  string $language
+     * @param  string  $language
      * @param  Message  $message
      * @return bool
-     *
      */
     public function send($language, Message $message)
     {
@@ -255,7 +244,7 @@ class MessageController extends Controller
     /**
      * duplicate a message
      *
-     * @param  string $language
+     * @param  string  $language
      * @param  Message  $message
      * @return bool
      */
@@ -270,18 +259,16 @@ class MessageController extends Controller
         return true;
     }
 
-
     /**
      * Remove the specified resource from storage.
      *
      * @param  Message  $message
      * @return \Illuminate\Http\RedirectResponse
-     *
      */
     public function destroy(Message $message)
     {
         $message->delete();
-        Log::notice('message deleted',['message-id'=>$message->id]);
+        Log::notice('message deleted', ['message-id' => $message->id]);
 
         return redirect()->route('message.index', ['language' => app()->getLocale(), 'region' => $message->region, 'user' => $message->user]);
     }

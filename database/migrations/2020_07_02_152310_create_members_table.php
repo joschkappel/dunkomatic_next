@@ -15,11 +15,11 @@ class CreateMembersTable extends Migration
     {
         Schema::create('members', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('firstname',20)->nullable();
+            $table->string('firstname', 20)->nullable();
             $table->string('lastname', 60);
-            $table->string('city', 40)->nullable();;
-            $table->string('zipcode', 10)->nullable();;
-            $table->string('street', 40)->nullable();;
+            $table->string('city', 40)->nullable();
+            $table->string('zipcode', 10)->nullable();
+            $table->string('street', 40)->nullable();
             $table->string('phone', 40)->nullable();
             $table->string('mobile', 40)->nullable();
             $table->string('email1');
@@ -27,7 +27,6 @@ class CreateMembersTable extends Migration
             $table->string('fax', 40)->nullable();
             $table->timestamps();
         });
-
     }
 
     /**
@@ -38,6 +37,5 @@ class CreateMembersTable extends Migration
     public function down()
     {
         Schema::dropIfExists('members');
-
     }
 }

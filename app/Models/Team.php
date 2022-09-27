@@ -2,19 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
-use App\Models\Club;
-use App\Models\League;
-use App\Models\Game;
-use App\Models\Gym;
-use App\Models\Member;
-
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use OwenIt\Auditing\Contracts\Auditable;
 
 /**
@@ -46,6 +39,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property-read int|null $games_home_count
  * @property-read mixed $name
  * @property-read League|null $league
+ *
  * @method static \Database\Factories\TeamFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Team newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Team newQuery()
@@ -81,14 +75,14 @@ class Team extends Model implements Auditable
             $this->id,
             $this->club->shortname,
             $this->league->shortname ?? '',
-            '(' . $this->club->region->code . ')'
+            '('.$this->club->region->code.')',
         ];
     }
 
     protected $fillable = [
         'id', 'league_char', 'league_no', 'team_no', 'league_id', 'club_id', 'gym_id', 'league_prev',
         'training_day', 'training_time', 'preferred_game_day', 'preferred_game_time',
-        'shirt_color', 'preferred_league_char', 'preferred_league_no'
+        'shirt_color', 'preferred_league_char', 'preferred_league_no',
     ];
 
     public function club(): BelongsTo
@@ -100,6 +94,7 @@ class Team extends Model implements Auditable
     {
         return $this->belongsTo(League::class);
     }
+
     public function gym(): BelongsTo
     {
         return $this->belongsTo(Gym::class);
@@ -109,10 +104,12 @@ class Team extends Model implements Auditable
     {
         return $this->morphToMany(Member::class, 'membership')->withPivot('role_id', 'function');
     }
+
     public function memberships(): MorphMany
     {
         return $this->morphMany(Membership::class, 'membership');
     }
+
     public function games_home(): HasMany
     {
         return $this->hasMany(Game::class, 'team_id_home');
@@ -126,14 +123,17 @@ class Team extends Model implements Auditable
     public function getNameAttribute(): string
     {
         $this->loadMissing('club');
-        return $this->club->shortname . $this->team_no;
+
+        return $this->club->shortname.$this->team_no;
     }
+
     public function getNameDescAttribute(): string
     {
-        $name = $this->club->shortname . $this->team_no .' (';
+        $name = $this->club->shortname.$this->team_no.' (';
         $league = $this->league()->exists() ? $this->league->shortname : $this->league_prev;
         $name .= ($league == null) ? $this->members->pluck('name')->implode(', ') : $league;
         $name .= ') ';
+
         return $name;
     }
 }

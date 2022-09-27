@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class RegionGameControllerTest extends TestCase
 {

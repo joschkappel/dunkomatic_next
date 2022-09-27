@@ -2,34 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\LeagueState;
+use App\Enums\LeagueStateChange;
 use App\Models\League;
 use App\Models\Region;
-use Illuminate\Support\Facades\Log;
-use BenSampo\Enum\Rules\EnumValue;
-use App\Enums\LeagueStateChange;
-use App\Enums\LeagueState;
 use App\Traits\GameManager;
 use App\Traits\LeagueFSM;
-
+use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 
 class LeagueStateController extends Controller
 {
-
     use LeagueFSM, GameManager;
 
     /**
      * change state by seeting state dates
      *
-     * @param Request $request
+     * @param  Request  $request
      * @param  \App\Models\League  $league
-     * @return boolean
-     *
+     * @return bool
      */
     public function change_state(Request $request, League $league)
     {
-
         $data = $request->validate([
             'action' => ['required', new EnumValue(LeagueStateChange::class, false)],
         ]);
@@ -82,56 +77,27 @@ class LeagueStateController extends Controller
 
         return true;
     }
+
     /**
      * change state by setting state dates
      *
-     * @param Request $request
+     * @param  Request  $request
      * @param  \App\Models\Region  $region
-     * @return boolean
-     *
+     * @return bool
      */
     public function change_state_region(Request $request, Region $region)
     {
-
         $data = $request->validate([
             'from_state' => ['required', new EnumValue(LeagueState::class, false)],
-            'action' => ['required', new EnumValue(LeagueStateChange::class, false)]
+            'action' => ['required', new EnumValue(LeagueStateChange::class, false)],
         ]);
         Log::info('new league state form data validated OK.', ['region-id' => $region->id]);
 
         // get all leagues that are in from_state
-        $leagues = $region->leagues()->where('state',$data['from_state'])->get();
-        foreach ($leagues as $l){
+        $leagues = $region->leagues()->where('state', $data['from_state'])->get();
+        foreach ($leagues as $l) {
             // for each league call state change
             $this->change_state($request, $l);
-        }
-
-
-
-        return true;
-    }
-
-    /**
-     * remove games with missing teams
-     *
-     * @param Request $request
-     * @param  \App\Models\Region  $region
-     * @return boolean
-     *
-     */
-    public function  destroy_noshow_games(Request $request, Region $region)
-    {
-
-        $data = $request->validate([
-            'from_state' => ['required', new EnumValue(LeagueState::class, false)],
-        ]);
-        Log::info('purge game form data validated OK.', ['region-id' => $region->id]);
-
-        // get all leagues that are in from_state
-        $leagues = $region->leagues()->where('state',$data['from_state'])->get();
-        foreach ($leagues as $l){
-            // for each league emove games with no home ro guest team
-            $this->delete_noshow_games($l);
         }
 
         return true;

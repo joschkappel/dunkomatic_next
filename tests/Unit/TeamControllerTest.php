@@ -3,18 +3,19 @@
 namespace Tests\Unit;
 
 use App\Models\Club;
-use App\Models\Team;
 use App\Models\League;
-
-use Tests\TestCase;
+use App\Models\Team;
 use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class TeamControllerTest extends TestCase
 {
     use Authentication;
 
     private $testleague;
+
     private $testclub_assigned;
+
     private $testclub_free;
 
     public function setUp(): void
@@ -36,7 +37,6 @@ class TeamControllerTest extends TestCase
      */
     public function sb_league()
     {
-
         $team = $this->testclub_assigned->teams->first();
 
         $response = $this->authenticated()
@@ -44,8 +44,9 @@ class TeamControllerTest extends TestCase
 
         //$response->dump();
         $response->assertStatus(200)
-            ->assertJsonFragment([['id' => $team->id, 'text' => $this->testclub_assigned->shortname . $team->team_no]]);
+            ->assertJsonFragment([['id' => $team->id, 'text' => $this->testclub_assigned->shortname.$team->team_no]]);
     }
+
     /**
      * sb_freeteam
      *
@@ -100,6 +101,7 @@ class TeamControllerTest extends TestCase
 
         $this->assertDatabaseHas('teams', ['league_no' => 1, 'league_id' => $this->testleague->id]);
     }
+
     /**
      * plan_leagues
      *
@@ -118,6 +120,7 @@ class TeamControllerTest extends TestCase
             ->assertViewIs('team.teamleague_dashboard')
             ->assertViewHas('club', $this->testclub_assigned);
     }
+
     /**
      * store_plan
      *
@@ -133,7 +136,7 @@ class TeamControllerTest extends TestCase
 
         $response = $this->authenticated()
             ->post(route('team.store-plan'), [
-                'selSize:' . $this->testleague->id . ':' . $team->id => 1,
+                'selSize:'.$this->testleague->id.':'.$team->id => 1,
             ]);
 
         $response
@@ -142,6 +145,7 @@ class TeamControllerTest extends TestCase
         //$response->dump();
         $this->assertDatabaseHas('teams', ['league_no' => 1, 'league_id' => $this->testleague->id]);
     }
+
     /**
      * propose_combination
      *
@@ -157,14 +161,15 @@ class TeamControllerTest extends TestCase
 
         $response = $this->authenticated()
             ->post(route('team.propose', ['language' => 'de']), [
-                'selSize:' . $this->testleague->id . ':' . $team->id => 1,
+                'selSize:'.$this->testleague->id.':'.$team->id => 1,
                 'club_id' => $this->testclub_assigned->id,
                 'gperday' => 1,
-                'optmode' => 'min'
+                'optmode' => 'min',
             ]);
         $response->assertStatus(200)
             ->assertSessionHasNoErrors();
     }
+
     /**
      * list_chart
      *
@@ -180,12 +185,13 @@ class TeamControllerTest extends TestCase
 
         $response = $this->authenticated()
             ->post(route('team.list-chart', ['language' => 'de']), [
-                'selSize:' . $this->testleague->id . ':' . $team->id => 1
+                'selSize:'.$this->testleague->id.':'.$team->id => 1,
             ]);
 
         $response->assertStatus(200)
             ->assertSessionHasNoErrors();
     }
+
     /**
      * list_pivot
      *
@@ -201,15 +207,16 @@ class TeamControllerTest extends TestCase
 
         $response = $this->authenticated()
             ->post(route('team.list-piv', ['language' => 'de']), [
-                'selSize:' . $this->testleague->id . ':' . $team->id => 1,
+                'selSize:'.$this->testleague->id.':'.$team->id => 1,
                 'club_id' => $this->testclub_assigned->id,
                 'gperday' => 1,
-                'optmode' => 'min'
+                'optmode' => 'min',
             ]);
 
         $response->assertStatus(200)
             ->assertSessionHasNoErrors();
     }
+
     /**
      * pick_char
      *

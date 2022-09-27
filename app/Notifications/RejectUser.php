@@ -2,10 +2,9 @@
 
 namespace App\Notifications;
 
-use App\Models\User;
 use App\Models\Region;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -14,7 +13,9 @@ class RejectUser extends Notification
     use Queueable;
 
     private User $radmin_user;
+
     private User $new_user;
+
     private Region $region;
 
     /**
@@ -24,9 +25,9 @@ class RejectUser extends Notification
      */
     public function __construct(User $radmin_user, User $new_user, Region $region)
     {
-      $this->radmin_user = $radmin_user;
-      $this->region = $region;
-      $this->new_user = $new_user;
+        $this->radmin_user = $radmin_user;
+        $this->region = $region;
+        $this->new_user = $new_user;
     }
 
     /**
@@ -49,12 +50,12 @@ class RejectUser extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject( __('notifications.rejectuser.subject') )
-            ->greeting( __('notifications.user.greeting', ['username' => $this->new_user->name]) )
-            ->line( __('notifications.rejectuser.line1',
+            ->subject(__('notifications.rejectuser.subject'))
+            ->greeting(__('notifications.user.greeting', ['username' => $this->new_user->name]))
+            ->line(__('notifications.rejectuser.line1',
                 ['region' => $this->region->name.' ('.$this->region->code.') ',
-                 'reason' => $this->new_user->reason_reject]) )
-            ->line( __('notifications.rejectuser.line2', ['email' => $this->radmin_user->email]) );
+                    'reason' => $this->new_user->reason_reject, ]))
+            ->line(__('notifications.rejectuser.line2', ['email' => $this->radmin_user->email]));
     }
 
     /**

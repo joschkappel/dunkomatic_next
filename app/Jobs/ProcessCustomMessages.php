@@ -2,18 +2,14 @@
 
 namespace App\Jobs;
 
-
 use App\Models\Message;
-use App\Jobs\SendCustomMessage;
-
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Log;
 
 class ProcessCustomMessages implements ShouldQueue
 {
@@ -43,12 +39,12 @@ class ProcessCustomMessages implements ShouldQueue
         // and are scheduled for today
 
         $messages = Message::whereNull('sent_at')->whereDate('send_at', now())->get();
-        Log::notice('[JOB][SEND CUSTOM MESSAGES] found messages to send.',['message_cnt'=>count($messages)]);
+        Log::notice('[JOB][SEND CUSTOM MESSAGES] found messages to send.', ['message_cnt' => count($messages)]);
 
-        if (count($messages) > 0){
+        if (count($messages) > 0) {
             // now send the messages
             $msg_jobs = collect();
-            foreach ($messages as $m){
+            foreach ($messages as $m) {
                 $msg_jobs[] = new SendCustomMessage($m);
             }
             $batch = Bus::batch($msg_jobs)
@@ -56,7 +52,7 @@ class ProcessCustomMessages implements ShouldQueue
                 ->onConnection('redis')
                 ->onQueue('exports')
                 ->dispatch();
-            Log::notice('[JOB][SEND CUSTOM MESSAGES] eMail batch job started.',['job_cnt'=>count($msg_jobs),'batch'=>$batch]);
+            Log::notice('[JOB][SEND CUSTOM MESSAGES] eMail batch job started.', ['job_cnt' => count($msg_jobs), 'batch' => $batch]);
         }
     }
 }

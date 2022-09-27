@@ -2,11 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\LeagueSizeChar;
-use App\Models\LeagueSizeScheme;
-use App\Models\Schedule;
-use App\Models\League;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -24,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read int|null $schedules_count
  * @property-read \Illuminate\Database\Eloquent\Collection|LeagueSizeScheme[] $schemes
  * @property-read int|null $schemes_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|LeagueSize newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|LeagueSize newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|LeagueSize query()
@@ -34,37 +30,38 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class LeagueSize extends Model
 {
+    const UNDEFINED = 1;
 
-  const UNDEFINED = 1;
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'id';
 
-  /**
-  * The table associated with the model.
-  *
-  * @var string
-  */
-  protected $primaryKey = 'id';
-  public $incrementing = false;
+    public $incrementing = false;
 
+    protected $fillable = [
+        'size', 'iteration', 'description',
+    ];
 
-  protected $fillable = [
-      'size', 'iteration','description'
-  ];
+    public function chars(): HasMany
+    {
+        return $this->hasMany(LeagueSizeChar::class);
+    }
 
-  public function chars(): HasMany
-  {
-      return $this->hasMany(LeagueSizeChar::class);
-  }
-  public function schemes(): HasMany
-  {
-      return $this->hasMany(LeagueSizeScheme::class);
-  }
-  public function schedules(): HasMany
-  {
-      return $this->hasMany(Schedule::class);
-  }
-  public function leagues(): HasMany
-  {
-      return $this->hasMany(League::class);
-  }
+    public function schemes(): HasMany
+    {
+        return $this->hasMany(LeagueSizeScheme::class);
+    }
 
+    public function schedules(): HasMany
+    {
+        return $this->hasMany(Schedule::class);
+    }
+
+    public function leagues(): HasMany
+    {
+        return $this->hasMany(League::class);
+    }
 }

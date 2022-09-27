@@ -4,15 +4,17 @@ namespace Tests\Unit;
 
 use App\Models\Club;
 use App\Models\League;
-
-use Tests\TestCase;
 use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class AuditControllerTest extends TestCase
 {
     use Authentication;
+
     private $testleague;
+
     private $testclub_assigned;
+
     private $testclub_free;
 
     public function setUp(): void
@@ -33,7 +35,6 @@ class AuditControllerTest extends TestCase
      */
     public function index()
     {
-
         $response = $this->authenticated()
             ->get(route('audit.index', ['language' => 'de', 'region' => $this->region]));
 
@@ -41,6 +42,7 @@ class AuditControllerTest extends TestCase
             ->assertViewIs('audit.audit_list')
             ->assertViewHas('region', $this->region);
     }
+
     /**
      * show
      *
@@ -58,8 +60,7 @@ class AuditControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertViewIs('audit.audit_show')
-            ->assertViewHas('audit', $audit);;
-
+            ->assertViewHas('audit', $audit);
     }
 
     /**
@@ -79,6 +80,5 @@ class AuditControllerTest extends TestCase
             'auditable_id' => Club::first()->id,
             'url' => 'console',
         ]);
-
     }
 }

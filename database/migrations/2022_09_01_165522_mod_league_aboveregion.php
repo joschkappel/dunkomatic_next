@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('leagues', function (Blueprint $table) {
-            $table->boolean('above_region')->default(False);
+            $table->boolean('above_region')->default(false);
         });
     }
 };

@@ -2,18 +2,15 @@
 
 namespace Tests;
 
-use App\Models\League;
 use App\Models\Club;
+use App\Models\League;
 use App\Models\Schedule;
-use App\Models\Membership;
-
-use Tests\Support\MigrateFreshSeedOnce;
-use Tests\Support\Authentication;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Tests\Support\Authentication;
+use Tests\Support\MigrateFreshSeedOnce;
 
 abstract class TestCase extends BaseTestCase
 {
-
     use CreatesApplication, Authentication, MigrateFreshSeedOnce;
 
     /**
@@ -26,9 +23,10 @@ abstract class TestCase extends BaseTestCase
         $uses = parent::setUpTraits();
         if (isset($uses[Authentication::class])) {
             $this->setUpUser();
-        };
+        }
 
-        info( '[TEST STARTING] ['.implode(' - ', $this->getGroups()).'] '.$this->getName() );
+        info('[TEST STARTING] ['.implode(' - ', $this->getGroups()).'] '.$this->getName());
+
         return [];
     }
 
@@ -39,12 +37,11 @@ abstract class TestCase extends BaseTestCase
 
     public function tearDown(): void
     {
-
         $leagues = League::all();
 
-        foreach ($leagues as $l){
+        foreach ($leagues as $l) {
             $memberships = $l->memberships;
-            foreach ($memberships as $m){
+            foreach ($memberships as $m) {
                 $m->delete();
             }
 
@@ -53,14 +50,14 @@ abstract class TestCase extends BaseTestCase
             $l->games()->delete();
             foreach ($clubs as $c) {
                 $memberships = $c->memberships;
-                foreach ($memberships as $m){
+                foreach ($memberships as $m) {
                     $m->delete();
                 }
                 $c->teams()->delete();
                 $c->gyms()->delete();
                 $c->delete();
-            };
-            foreach ($l->teams as $t){
+            }
+            foreach ($l->teams as $t) {
                 $t->delete();
             }
             $l->delete();
@@ -69,13 +66,13 @@ abstract class TestCase extends BaseTestCase
         $clubs = Club::all();
         foreach ($clubs as $c) {
             $memberships = $c->memberships;
-            foreach ($memberships as $m){
+            foreach ($memberships as $m) {
                 $m->delete();
             }
             $c->teams()->delete();
             $c->gyms()->delete();
             $c->delete();
-        };
+        }
         Schedule::whereNotNull('id')->delete();
         // Member::whereNotNull('id')->delete();
 
@@ -86,7 +83,7 @@ abstract class TestCase extends BaseTestCase
 //        ->assertDatabaseCount('members', 4)
 //        ->assertDatabaseCount('memberships', 1);
 
-        info( '[TEST STOPPING] ['.implode(' - ', $this->getGroups()).'] '.$this->getName() );
+        info('[TEST STOPPING] ['.implode(' - ', $this->getGroups()).'] '.$this->getName());
         parent::tearDown();
     }
 }

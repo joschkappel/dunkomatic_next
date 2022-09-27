@@ -3,9 +3,8 @@
 namespace Tests\Unit;
 
 use App\Checks\QueueLoadCheck;
-
-use Tests\TestCase;
 use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class QueueLoadCheckTest extends TestCase
 {
@@ -21,9 +20,7 @@ class QueueLoadCheckTest extends TestCase
      */
     public function health_check()
     {
-
-        if ( app()->environment('local')){
-
+        if (app()->environment('local')) {
             $check = QueueLoadCheck::new()
                         ->failWhenFailedJobsIsHigher(5)
                         ->failWhenQueueLengthIsHigher(10);
@@ -33,7 +30,5 @@ class QueueLoadCheckTest extends TestCase
             $this->assertEquals('ok', $result->status->value);
             $this->assertCount(7, $result->meta);
         }
-
     }
-
 }

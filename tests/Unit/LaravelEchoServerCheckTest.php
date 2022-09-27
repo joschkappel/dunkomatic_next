@@ -3,9 +3,8 @@
 namespace Tests\Unit;
 
 use App\Checks\LaravelEchoServerCheck;
-
-use Tests\TestCase;
 use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class LaravelEchoServerCheckTest extends TestCase
 {
@@ -21,8 +20,7 @@ class LaravelEchoServerCheckTest extends TestCase
      */
     public function health_check()
     {
-        if ( app()->environment('local')){
-
+        if (app()->environment('local')) {
             $check = LaravelEchoServerCheck::new();
 
             $result = $check->run();
@@ -30,7 +28,5 @@ class LaravelEchoServerCheckTest extends TestCase
             $this->assertEquals('ok', $result->status->value);
             $this->assertCount(1, $result->meta);
         }
-
     }
-
 }

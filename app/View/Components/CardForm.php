@@ -6,7 +6,6 @@ use Illuminate\View\Component;
 
 class CardForm extends Component
 {
-
     /**
      * The card header title.
      *
@@ -41,18 +40,21 @@ class CardForm extends Component
      * @var bool
      */
     public $omitCancel;
+
     /**
      * Omit the submitl button
      *
      * @var bool
      */
     public $omitSubmit;
+
     /**
      * column / form width
      *
      * @var string
      */
     public $colWidth;
+
     /**
      * for file upload form
      *
@@ -65,14 +67,14 @@ class CardForm extends Component
      *
      * @return void
      */
-    public function __construct(string $cardChangeNote='',
-                                string $cardTitle='no title',
-                                string $formAction='',
-                                string $formMethod='POST',
-                                bool $omitCancel=False,
-                                bool $omitSubmit=False,
-                                string $colWidth='6',
-                                bool $isMultipart=False)
+    public function __construct(string $cardChangeNote = '',
+                                string $cardTitle = 'no title',
+                                string $formAction = '',
+                                string $formMethod = 'POST',
+                                bool $omitCancel = false,
+                                bool $omitSubmit = false,
+                                string $colWidth = '6',
+                                bool $isMultipart = false)
     {
         $this->cardTitle = $cardTitle;
         $this->formAction = $formAction;

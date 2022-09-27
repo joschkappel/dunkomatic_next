@@ -393,28 +393,6 @@ th, td { white-space: nowrap; }
                     cache: false
                 });
             })
-            $(document).on("click", "button#btnDeleteGames", function (e) {
-                var from_state = $(this).data("from-state");
-
-                $.ajax( {
-                    url: "{{ route('region.league.game.destroy_noshow', ['region' => $region]) }}",
-                    dataType: "json",
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        _method: "DELETE",
-                        from_state: from_state,
-                    },
-                    type: "delete",
-                    delay: 250,
-                    success: function (response) {
-                        toastr.success('{{__('league.action.statechanged')}}');
-                    },
-                    error: function (xhr){
-                        toastr.error(xhr.responseText, '{{__('league.action.statechanged')}}');
-                    },
-                    cache: false
-                });
-            })
         });
     </script>
 @stop

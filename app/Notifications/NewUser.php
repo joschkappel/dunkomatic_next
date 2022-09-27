@@ -4,7 +4,6 @@ namespace App\Notifications;
 
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -21,7 +20,7 @@ class NewUser extends Notification
      */
     public function __construct(User $new_user)
     {
-      $this->new_user = $new_user;
+        $this->new_user = $new_user;
     }
 
     /**
@@ -45,10 +44,10 @@ class NewUser extends Notification
     {
         return (new MailMessage)
             ->level('info')
-            ->subject( __('notifications.newuser.subject'))
-            ->greeting( __('notifications.regionadmin.greeting'))
-            ->line( __('notifications.newuser.line', ['email' => $this->new_user->email]))
-            ->action( __('notifications.newuser.action'), route('admin.user.edit', ['language'=>app()->getLocale(), 'user'=>$this->new_user->id]));
+            ->subject(__('notifications.newuser.subject'))
+            ->greeting(__('notifications.regionadmin.greeting'))
+            ->line(__('notifications.newuser.line', ['email' => $this->new_user->email]))
+            ->action(__('notifications.newuser.action'), route('admin.user.edit', ['language' => app()->getLocale(), 'user' => $this->new_user->id]));
     }
 
     /**

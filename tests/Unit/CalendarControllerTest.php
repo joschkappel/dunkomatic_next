@@ -2,17 +2,20 @@
 
 namespace Tests\Unit;
 
-use App\Models\League;
 use App\Models\Club;
+use App\Models\League;
 use App\Traits\LeagueFSM;
-use Tests\TestCase;
 use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class CalendarControllerTest extends TestCase
 {
     use Authentication, LeagueFSM;
+
     private $testleague;
+
     private $testclub_assigned;
+
     private $testclub_free;
 
     public function setUp(): void
@@ -34,7 +37,6 @@ class CalendarControllerTest extends TestCase
      */
     public function cal_league()
     {
-
         $league = $this->testleague;
         $response = $this->authenticated()
             ->get(route('cal.league', ['language' => 'de', 'league' => $league]));
@@ -47,10 +49,9 @@ class CalendarControllerTest extends TestCase
             ->get(route('cal.league', ['language' => 'de', 'league' => $league]));
 
         $response->assertStatus(200)
-            ->assertDownload($league->region->code . '-' . $league->shortname . '.ics');
-
-
+            ->assertDownload($league->region->code.'-'.$league->shortname.'.ics');
     }
+
     /**
      * cal_club
      *
@@ -62,7 +63,6 @@ class CalendarControllerTest extends TestCase
      */
     public function cal_club()
     {
-
         $league = $this->testleague;
         $club = $league->clubs()->first();
 
@@ -78,8 +78,7 @@ class CalendarControllerTest extends TestCase
             ->get(route('cal.club', ['language' => 'de', 'club' => $club]));
 
         $response->assertStatus(200)
-            ->assertDownload($club->region->code . '-' . $club->shortname . '.ics');
-
+            ->assertDownload($club->region->code.'-'.$club->shortname.'.ics');
     }
 
     /**
@@ -93,8 +92,7 @@ class CalendarControllerTest extends TestCase
      */
     public function cal_club_home()
     {
-
-        $league  = $this->testleague;
+        $league = $this->testleague;
         $club = $league->clubs()->first();
 
         $response = $this->authenticated()
@@ -109,9 +107,9 @@ class CalendarControllerTest extends TestCase
             ->get(route('cal.club.home', ['language' => 'de', 'club' => $club]));
 
         $response->assertStatus(200)
-            ->assertDownload($club->region->code . '-' . $club->shortname . '_home.ics');
-
+            ->assertDownload($club->region->code.'-'.$club->shortname.'_home.ics');
     }
+
     /**
      * cal_club_referee
      *
@@ -123,7 +121,6 @@ class CalendarControllerTest extends TestCase
      */
     public function cal_club_referee()
     {
-
         $league = $this->testleague;
         $club = $league->clubs()->first();
 
@@ -141,9 +138,6 @@ class CalendarControllerTest extends TestCase
             ->get(route('cal.club.referee', ['language' => 'de', 'club' => $club]));
 
         $response->assertStatus(200)
-            ->assertDownload($club->region->code . '-' . $club->shortname . '_referee.ics');
-
-
+            ->assertDownload($club->region->code.'-'.$club->shortname.'_referee.ics');
     }
-
 }

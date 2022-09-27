@@ -2,8 +2,8 @@
 
 namespace App\Enums;
 
-use BenSampo\Enum\Enum;
 use BenSampo\Enum\Contracts\LocalizedEnum;
+use BenSampo\Enum\Enum;
 
 /**
  * @method static static Setup()
@@ -16,16 +16,22 @@ use BenSampo\Enum\Contracts\LocalizedEnum;
  */
 final class LeagueState extends Enum implements LocalizedEnum
 {
-    const Setup =   0;
-    const Registration =  1;
-    const Selection =   3;
+    const Setup = 0;
+
+    const Registration = 1;
+
+    const Selection = 3;
+
     const Freeze = 4;
+
     const Scheduling = 5;
+
     const Referees = 6;
+
     const Live = 7;
 
-
-    function getIcon(){
+    public function getIcon()
+    {
         switch ($this->value) {
             case 0:
                 return '<i class="fas fa-cog"></i>';
@@ -53,5 +59,4 @@ final class LeagueState extends Enum implements LocalizedEnum
                 break;
         }
     }
-
 }

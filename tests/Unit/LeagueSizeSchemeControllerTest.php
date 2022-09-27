@@ -4,37 +4,15 @@ namespace Tests\Unit;
 
 use App\Models\League;
 use App\Models\LeagueSize;
-use App\Models\LeagueSizeScheme;
-
-use Tests\TestCase;
 use Tests\Support\Authentication;
-use Illuminate\Support\Facades\Log;
+use Tests\TestCase;
 
 class LeagueSizeSchemeControllerTest extends TestCase
 {
     use Authentication;
 
-   /**
-    * index
-    *
-    * @test
-    * @group scheme
-    * @group league
-    * @group controller
-    *
-    * @return void
-    */
-   public function index()
-   {
-     $response = $this->authenticated( )
-                       ->get(route('scheme.index', ['language'=>'de']));
-
-     //$response->dump();
-     $response->assertStatus(200)
-              ->assertViewIs('league.league_scheme_list');
-    }
     /**
-     * list_piv
+     * index
      *
      * @test
      * @group scheme
@@ -43,14 +21,33 @@ class LeagueSizeSchemeControllerTest extends TestCase
      *
      * @return void
      */
-    public function list_piv()
+    public function index()
     {
-      $size = LeagueSize::where('id', '!=', LeagueSize::UNDEFINED )->orderBy('size','DESC')->first();
-      $response = $this->authenticated( )
-                        ->get(route('scheme.list_piv', ['size'=>$size]));
+        $response = $this->authenticated()
+                          ->get(route('scheme.index', ['language' => 'de']));
 
-      //$response->dump();
-      $response->assertStatus(200);
+        //$response->dump();
+        $response->assertStatus(200)
+                 ->assertViewIs('league.league_scheme_list');
+    }
+
+     /**
+      * list_piv
+      *
+      * @test
+      * @group scheme
+      * @group league
+      * @group controller
+      *
+      * @return void
+      */
+     public function list_piv()
+     {
+         $size = LeagueSize::where('id', '!=', LeagueSize::UNDEFINED)->orderBy('size', 'DESC')->first();
+         $response = $this->authenticated()
+                           ->get(route('scheme.list_piv', ['size' => $size]));
+
+         //$response->dump();
+         $response->assertStatus(200);
      }
-
 }

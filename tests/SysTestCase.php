@@ -2,16 +2,12 @@
 
 namespace Tests;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Database\Seeders\TestDatabaseSeeder;
 use Database\Seeders\SysTestDatabaseSeeder;
-
-use Illuminate\Support\Facades\Log;
+use Database\Seeders\TestDatabaseSeeder;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class SysTestCase extends BaseTestCase
 {
-
     use CreatesApplication;
 
     protected $seed = false;
@@ -24,19 +20,16 @@ abstract class SysTestCase extends BaseTestCase
         $this->artisan('migrate:fresh');
         $this->seed(SysTestDatabaseSeeder::class);
         info('[TESTING] SysTest DB seeded');
-        info('[TEST STARTING] ['.implode(' - ', $this->getGroups()).'] '.$this->getName() );
+        info('[TEST STARTING] ['.implode(' - ', $this->getGroups()).'] '.$this->getName());
     }
 
     public function tearDown(): void
     {
-
-        info( '[TEST STOPPING] ['.implode(' - ', $this->getGroups()).'] '.$this->getName() );
+        info('[TEST STOPPING] ['.implode(' - ', $this->getGroups()).'] '.$this->getName());
         $this->artisan('migrate:fresh');
         $this->seed(TestDatabaseSeeder::class);
         info('[TESTING] Test DB seeded');
 
-
         parent::tearDown();
-
     }
 }

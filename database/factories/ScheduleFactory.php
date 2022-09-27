@@ -2,12 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\Region;
 use App\Models\Schedule;
 use App\Models\ScheduleEvent;
-use App\Models\Region;
-use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
-
 
 class ScheduleFactory extends Factory
 {
@@ -26,12 +24,13 @@ class ScheduleFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->words(2,true),
+            'name' => $this->faker->words(2, true),
             'league_size_id' => 2,
             'iterations' => 1,
-            'region_id' => Region::where('code','HBVDA')->first()->id
+            'region_id' => Region::where('code', 'HBVDA')->first()->id,
         ];
     }
+
     public function custom()
     {
         return $this->state(function (array $attributes) {
@@ -42,19 +41,21 @@ class ScheduleFactory extends Factory
             ];
         });
     }
-     /**
+
+    /**
      *  create events
      *
-     * @param int $event_cnt  // number of events
+     * @param  int  $event_cnt  // number of events
      * @param $start_date
      */
-    public function events(int $event_cnt=0, $start_date=null )
+    public function events(int $event_cnt = 0, $start_date = null)
     {
-        if ($start_date == null){
+        if ($start_date == null) {
             $start_date = now();
         }
-        return $this->afterCreating( function (Schedule $schedule) use($event_cnt, $start_date){
-            for ($i=1; $i <= $event_cnt; $i++) {
+
+        return $this->afterCreating(function (Schedule $schedule) use ($event_cnt, $start_date) {
+            for ($i = 1; $i <= $event_cnt; $i++) {
                 $ev = new ScheduleEvent;
                 $ev->schedule_id = $schedule->id;
                 $ev->game_day = $i;

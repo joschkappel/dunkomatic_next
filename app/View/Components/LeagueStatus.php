@@ -2,15 +2,12 @@
 
 namespace App\View\Components;
 
-use Illuminate\View\Component;
 use App\Enums\LeagueState;
 use App\Models\League;
-
-use Illuminate\Support\Facades\Log;
+use Illuminate\View\Component;
 
 class LeagueStatus extends Component
 {
-
     /**
      * The current state
      *
@@ -37,7 +34,7 @@ class LeagueStatus extends Component
      *
      * @return void
      */
-    public function __construct( League $league, string $mode='progressbar')
+    public function __construct(League $league, string $mode = 'progressbar')
     {
         $this->currentState = $league->state;
         $this->league_kpis = $league->state_count;

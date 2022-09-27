@@ -2,23 +2,25 @@
 
 namespace Tests\Unit;
 
-use App\Models\Member;
-use App\Models\Membership;
 use App\Enums\Role;
 use App\Models\Club;
 use App\Models\Invitation;
 use App\Models\League;
+use App\Models\Member;
+use App\Models\Membership;
 use App\Notifications\InviteUser;
-use Tests\TestCase;
-use Tests\Support\Authentication;
 use Illuminate\Support\Facades\Notification;
+use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class MemberControllerTest extends TestCase
 {
     use Authentication;
 
     private $testleague;
+
     private $testclub_assigned;
+
     private $testclub_free;
 
     public function setUp(): void
@@ -40,13 +42,13 @@ class MemberControllerTest extends TestCase
      */
     public function index()
     {
-
         $response = $this->authenticated()
             ->get(route('member.index', ['language' => 'de', 'region' => $this->region]));
 
         $response->assertStatus(200)
             ->assertViewIs('member.member_list');
     }
+
     /**
      * datatable
      *
@@ -80,7 +82,7 @@ class MemberControllerTest extends TestCase
         $member = $this->testleague->region->members->first();
 
         $response = $this->authenticated()
-            ->get(route('member.edit', ['language' => 'de', 'member' => $member, 'member-region'=>$this->testleague->region->id]));
+            ->get(route('member.edit', ['language' => 'de', 'member' => $member, 'member-region' => $this->testleague->region->id]));
 
         $response->assertStatus(200)
             ->assertSessionHasNoErrors()
@@ -115,6 +117,7 @@ class MemberControllerTest extends TestCase
 
         $this->assertDatabaseMissing('members', ['lastname' => 'testmember']);
     }
+
     /**
      * store OK
      *
@@ -126,7 +129,6 @@ class MemberControllerTest extends TestCase
      */
     public function store_ok()
     {
-
         $response = $this->authenticated()
             ->post(route('member.store'), [
                 'firstname' => 'firstname',
@@ -151,6 +153,7 @@ class MemberControllerTest extends TestCase
 
         $this->assertDatabaseHas('members', ['lastname' => 'testmember']);
     }
+
     /**
      * update NOT OK
      *
@@ -181,6 +184,7 @@ class MemberControllerTest extends TestCase
         $this->assertDatabaseMissing('members', ['lastname' => 'testmember2']);
         $this->assertDatabaseHas('members', ['lastname' => $member->lastname]);
     }
+
     /**
      * update OK
      *
@@ -203,7 +207,7 @@ class MemberControllerTest extends TestCase
                 'street' => 'street',
                 'mobile' => 'mobileno',
                 'email1' => 'testmember2@gmail.com',
-                'backto' => url(route('member.index', ['language' => 'de', 'region' => $this->region]))
+                'backto' => url(route('member.index', ['language' => 'de', 'region' => $this->region])),
             ]);
         $response->assertStatus(302)
             ->assertSessionHasNoErrors();
@@ -211,6 +215,7 @@ class MemberControllerTest extends TestCase
         $this->assertDatabaseHas('members', ['lastname' => 'testmember2']);
         $this->assertDatabaseMissing('members', ['lastname' => $member->lastname]);
     }
+
     /**
      * show
      *
@@ -230,6 +235,7 @@ class MemberControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson($member->toArray());
     }
+
     /**
      * sb_region
      *
@@ -241,7 +247,6 @@ class MemberControllerTest extends TestCase
      */
     public function sb_region()
     {
-
         // run for base level region
         $mship = Membership::whereIn('membership_id', $this->region->clubs()->pluck('id'))
             ->where('membership_type', Club::class)
@@ -254,7 +259,7 @@ class MemberControllerTest extends TestCase
         $response->assertStatus(200);
 
         if ($member) {
-            $response->assertJsonFragment(["id" => $member->id, "text" => $member->name]);
+            $response->assertJsonFragment(['id' => $member->id, 'text' => $member->name]);
         } else {
             $response->assertJson([]);
         }
@@ -271,11 +276,12 @@ class MemberControllerTest extends TestCase
         $response->assertStatus(200);
 
         if ($member) {
-            $response->assertJsonFragment(["id" => $member->id, "text" => $member->name]);
+            $response->assertJsonFragment(['id' => $member->id, 'text' => $member->name]);
         } else {
             $response->assertJson([]);
         }
     }
+
     /**
      * invite
      *
@@ -298,12 +304,11 @@ class MemberControllerTest extends TestCase
         $response->assertStatus(302)
             ->assertSessionHasNoErrors();
 
-        $this->assertDatabaseHas('invitations', ['email_invitee'=>$member->email1]);
+        $this->assertDatabaseHas('invitations', ['email_invitee' => $member->email1]);
         Notification::assertSentTo($member, InviteUser::class);
 
         // clear invitataions
         Invitation::truncate();
-
     }
 
     /**

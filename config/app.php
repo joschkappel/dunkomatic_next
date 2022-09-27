@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Facade;
 
 return [
@@ -98,7 +99,7 @@ return [
     */
 
     'fallback_locale' => 'en',
-    'supported_languages' => ['en','de'],
+    'supported_languages' => ['en', 'de'],
     /*
     |--------------------------------------------------------------------------
     | Faker Locale

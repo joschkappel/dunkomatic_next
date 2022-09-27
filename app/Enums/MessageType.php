@@ -10,6 +10,7 @@ use BenSampo\Enum\Enum;
  */
 final class MessageType extends Enum
 {
-    const to =   2;
-    const cc =   1;
+    const to = 2;
+
+    const cc = 1;
 }

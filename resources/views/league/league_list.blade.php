@@ -13,7 +13,6 @@
                   <th>@lang('league.state')</th>
                   <th>{{__('Total Games')}}</th>
                   <th>{{__('Games No Time')}}</th>
-                  <th>{{__('Games No Teams')}}</th>
 
                   <x-slot:addButtons>
                     <button type="button" class="btn btn-outline-secondary mr-2" id="getHelp">{{ __('Help')}}</button>
@@ -75,8 +74,7 @@
                      }, name: 'size.sort', width: '1%'},
                   { data: 'state', name: 'state', width: '60%'},
                   { data: 'games_count', name: 'games_count', width: '1%'},
-                  { data: 'games_notime_count', name: 'games_notime_count', width: '1%'},
-                  { data: 'games_noshow_count', name: 'games_noshow_count', width: '1%'}
+                  { data: 'games_notime_count', name: 'games_notime_count', width: '1%'}
                ]
       });
    });

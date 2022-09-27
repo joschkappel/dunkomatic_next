@@ -2,15 +2,11 @@
 
 namespace App\Models;
 
-use App\Models\Club;
-use App\Models\Game;
-
-use OwenIt\Auditing\Contracts\Auditable;
-
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * App\Models\Gym
@@ -29,6 +25,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \Illuminate\Database\Eloquent\Collection|Game[] $games
  * @property-read int|null $games_count
  * @property-read mixed $address
+ *
  * @method static \Database\Factories\GymFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Gym newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Gym newQuery()
@@ -47,31 +44,32 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Gym extends Model implements Auditable
 {
-  use \OwenIt\Auditing\Auditable, HasFactory;
+    use \OwenIt\Auditing\Auditable, HasFactory;
 
-  public function generateTags(): array
-  {
-      return [
-          $this->club->shortname,
-          '('.$this->club->region->code.')'
-      ];
-  }
+    public function generateTags(): array
+    {
+        return [
+            $this->club->shortname,
+            '('.$this->club->region->code.')',
+        ];
+    }
 
-  protected $fillable = [
-        'id','name','gym_no','club_id','zip','street','city','directions'
+    protected $fillable = [
+        'id', 'name', 'gym_no', 'club_id', 'zip', 'street', 'city', 'directions',
     ];
 
-  public function club(): BelongsTo
-  {
-      return $this->belongsTo(Club::class);
-  }
+    public function club(): BelongsTo
+    {
+        return $this->belongsTo(Club::class);
+    }
 
-  public function games(): HasMany
-  {
-      return $this->hasMany(Game::class);
-  }
-  public function getAddressAttribute(): string
-  {
-     return "{$this->street}, {$this->zip} {$this->city}";
-  }
+    public function games(): HasMany
+    {
+        return $this->hasMany(Game::class);
+    }
+
+    public function getAddressAttribute(): string
+    {
+        return "{$this->street}, {$this->zip} {$this->city}";
+    }
 }

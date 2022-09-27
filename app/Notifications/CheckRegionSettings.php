@@ -1,26 +1,25 @@
 <?php
 
 namespace App\Notifications;
-use App\Models\Region;
 
+use App\Models\Region;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Log;
 
 class CheckRegionSettings extends Notification
 {
     use Queueable;
 
     protected string $season;
+
     protected Region $region;
 
     /**
      * Create a new notification instance.
      *
-     * @param string $season
-     * @param Region $region
+     * @param  string  $season
+     * @param  Region  $region
      * @return void
      */
     public function __construct(string $season, Region $region)
@@ -37,11 +36,11 @@ class CheckRegionSettings extends Notification
      */
     public function via($notifiable)
     {
-      if ( get_class($notifiable) == 'App\Models\User') {
-        return ['database'];
-      } else {
-        return ['mail'];
-      }
+        if (get_class($notifiable) == 'App\Models\User') {
+            return ['database'];
+        } else {
+            return ['mail'];
+        }
     }
 
     /**
@@ -53,13 +52,13 @@ class CheckRegionSettings extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject( __('notifications.checkregionsetting.subject'))
-                    ->greeting( __('notifications.user.greeting', ['username' => $notifiable->name]) )
-                    ->line( __('notifications.checkregionsetting.line1',['season'=>$this->season]) )
-                    ->line( __('notifications.checkregionsetting.line2', ['region'=>$this->region->code]) )
-                    ->action( __('notifications.checkregionsetting.action') , route('region.edit', ['language'=> app()->getLocale(), 'region'=> $this->region] ) )
-                    ->line( __('notifications.checkregionsetting.line3') )
-                    ->salutation( __('notifications.app.salutation') );
+                    ->subject(__('notifications.checkregionsetting.subject'))
+                    ->greeting(__('notifications.user.greeting', ['username' => $notifiable->name]))
+                    ->line(__('notifications.checkregionsetting.line1', ['season' => $this->season]))
+                    ->line(__('notifications.checkregionsetting.line2', ['region' => $this->region->code]))
+                    ->action(__('notifications.checkregionsetting.action'), route('region.edit', ['language' => app()->getLocale(), 'region' => $this->region]))
+                    ->line(__('notifications.checkregionsetting.line3'))
+                    ->salutation(__('notifications.app.salutation'));
     }
 
     /**
@@ -70,17 +69,16 @@ class CheckRegionSettings extends Notification
      */
     public function toArray($notifiable)
     {
-      $lines =  '<p>'.__('notifications.checkregionsetting.line1',['season'=>$this->season]).'</p>';
-      $lines .= '<p>'.__('notifications.checkregionsetting.line2', ['region'=>$this->region->code]).' </p>';
-      $lines .= '<div><a class="btn btn-primary" href="'.route('region.edit', ['language'=> app()->getLocale(), 'region'=> $this->region] ).'">'.__('notifications.checkregionsetting.action').'</a></div>';
-      $lines .= '<p>'.__('notifications.checkregionsetting.line3').' </p>';
+        $lines = '<p>'.__('notifications.checkregionsetting.line1', ['season' => $this->season]).'</p>';
+        $lines .= '<p>'.__('notifications.checkregionsetting.line2', ['region' => $this->region->code]).' </p>';
+        $lines .= '<div><a class="btn btn-primary" href="'.route('region.edit', ['language' => app()->getLocale(), 'region' => $this->region]).'">'.__('notifications.checkregionsetting.action').'</a></div>';
+        $lines .= '<p>'.__('notifications.checkregionsetting.line3').' </p>';
 
-
-      return [
-          'subject' => __('notifications.checkregionsetting.subject'),
-          'greeting' => __('notifications.user.greeting', ['username' => $notifiable->name]),
-          'lines' => $lines,
-          'salutation' => __('notifications.app.salutation')
-      ];
+        return [
+            'subject' => __('notifications.checkregionsetting.subject'),
+            'greeting' => __('notifications.user.greeting', ['username' => $notifiable->name]),
+            'lines' => $lines,
+            'salutation' => __('notifications.app.salutation'),
+        ];
     }
 }

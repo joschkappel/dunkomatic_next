@@ -7,12 +7,11 @@ use Tests\Browser\Pages\Page;
 
 class EditLeague extends Page
 {
-
     protected $league_id;
 
     public function __construct($league_id)
     {
-       $this->league_id = $league_id;
+        $this->league_id = $league_id;
     }
 
     /**
@@ -47,10 +46,12 @@ class EditLeague extends Page
             '@element' => '#selector',
         ];
     }
-    public function modify_league( Browser $browser, $code, $name ){
-      $browser->type('shortname',$code)
-              ->type('name',$name)
-              ->screenshot('Neue_runde2')
-              ->press('Senden');
+
+    public function modify_league(Browser $browser, $code, $name)
+    {
+        $browser->type('shortname', $code)
+                ->type('name', $name)
+                ->screenshot('Neue_runde2')
+                ->press('Senden');
     }
 }

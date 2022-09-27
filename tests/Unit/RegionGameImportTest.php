@@ -2,21 +2,22 @@
 
 namespace Tests\Unit;
 
-use App\Models\League;
 use App\Models\Club;
-
-use Tests\TestCase;
-use Tests\Support\Authentication;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\UploadedFile;
+use App\Models\League;
 use Illuminate\Http\File;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class RegionGameImportTest extends TestCase
 {
     use Authentication;
 
     private $testleague;
+
     private $testclub_assigned;
+
     private $testclub_free;
 
     public function setUp(): void
@@ -52,7 +53,7 @@ class RegionGameImportTest extends TestCase
         $file = new UploadedFile($path, $name, 'text/csv', null, true);
 
         $response = $this->authenticated()
-            ->postJson(route('region.import.refgame', ['language' => 'de', 'region' => $region]), ['gfile'=>$file]);
+            ->postJson(route('region.import.refgame', ['language' => 'de', 'region' => $region]), ['gfile' => $file]);
 
         $response
             ->assertStatus(302)
@@ -60,7 +61,6 @@ class RegionGameImportTest extends TestCase
 
         $errs = $response->getSession()->get('errors')->getBag('default');
         $this->assertCount(14, $errs);
-
     }
 
     /**
@@ -85,7 +85,7 @@ class RegionGameImportTest extends TestCase
         $file = new UploadedFile($path, $name, 'Excel/xlsx', null, true);
 
         $response = $this->authenticated()
-            ->postJson(route('region.import.refgame', ['language' => 'de', 'region' => $region]), ['gfile'=>$file]);
+            ->postJson(route('region.import.refgame', ['language' => 'de', 'region' => $region]), ['gfile' => $file]);
 
         $response
             ->assertStatus(302)
@@ -93,8 +93,5 @@ class RegionGameImportTest extends TestCase
 
         $errs = $response->getSession()->get('errors')->getBag('default');
         $this->assertCount(14, $errs);
-
     }
-
-
 }

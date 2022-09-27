@@ -3,9 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Gym;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
-
 
 class GymFactory extends Factory
 {
@@ -24,7 +22,7 @@ class GymFactory extends Factory
     public function definition()
     {
         return [
-            'name'  => $this->faker->words(3,true),
+            'name' => $this->faker->words(3, true),
             'gym_no' => $this->faker->numberBetween(1, 7),
             'zip' => $this->faker->postcode(),
             'city' => $this->faker->city(),

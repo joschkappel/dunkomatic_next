@@ -28,7 +28,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('messages', function (Blueprint $table) {
-            $table->dropColumn(['delete_at','notify_users']);
+            $table->dropColumn(['delete_at', 'notify_users']);
             $table->text('to_users')->nullable();
         });
     }

@@ -26,5 +26,5 @@ return [
     'unknown.type' => 'unknown object type',
     'unknown.instance' => 'object has been deleted meanwhile 😞',
     'last' => 'Last  update on :audit_created_at by :user_name.',
-    'unavailable' => 'No audits available'
+    'unavailable' => 'No audits available',
 ];

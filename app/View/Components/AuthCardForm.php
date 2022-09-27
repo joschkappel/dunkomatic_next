@@ -18,7 +18,7 @@ class AuthCardForm extends Component
      *
      * @return void
      */
-    public function __construct(string $colWidth='6')
+    public function __construct(string $colWidth = '6')
     {
         $this->colWidth = $colWidth;
     }

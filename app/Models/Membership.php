@@ -2,18 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use App\Models\Member;
-use App\Models\Club;
-use App\Models\League;
-use App\Models\Team;
-use App\Models\Region;
 use App\Enums\Role;
-
-use OwenIt\Auditing\Contracts\Auditable;
-
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * App\Models\Membership
@@ -28,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Member $member
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|Membership isNotRole($role_id)
  * @method static \Illuminate\Database\Eloquent\Builder|Membership isRole($role_id)
  * @method static \Illuminate\Database\Eloquent\Builder|Membership newModelQuery()
@@ -49,8 +43,9 @@ class Membership extends Model implements Auditable
     use \OwenIt\Auditing\Auditable;
 
     protected $fillable = [
-        'id', 'member_id', 'role_id', 'function', 'email', 'membership_id', 'membership_type'
+        'id', 'member_id', 'role_id', 'function', 'email', 'membership_id', 'membership_type',
     ];
+
     protected $appends = ['role_email'];
 
     public function member(): BelongsTo
@@ -70,40 +65,39 @@ class Membership extends Model implements Auditable
 
     public function getMasterEmailAttribute(): string
     {
-        if ($this->email != ''){
+        if ($this->email != '') {
             return $this->email;
-        } elseif ($this->load('member')->member->email1 != ''){
+        } elseif ($this->load('member')->member->email1 != '') {
             return $this->member->email1;
-        } elseif ($this->member->email2 != ''){
+        } elseif ($this->member->email2 != '') {
             return $this->member->email2;
         } else {
             return 'fehlt';
         }
     }
+
     public function getRoleEmailAttribute(): string
     {
-
-        if ($this->email != '')  {
+        if ($this->email != '') {
             return '('.Role::coerce($this->role_id)->description.': '.$this->email.')';
         } else {
             return '';
         }
     }
+
     public function getDescriptionAttribute(): string
     {
-
         $desc = Role::coerce($this->role_id)->description.' '.__('von').' ';
-        if ($this->membership_type == Club::class){
+        if ($this->membership_type == Club::class) {
             $desc .= Club::find($this->membership_id)->shortname;
-        } elseif ($this->membership_type == League::class){
+        } elseif ($this->membership_type == League::class) {
             $desc .= League::find($this->membership_id)->shortname;
-        } elseif ($this->membership_type == Region::class){
+        } elseif ($this->membership_type == Region::class) {
             $desc .= Region::find($this->membership_id)->code;
-        } elseif ($this->membership_type == Team::class){
+        } elseif ($this->membership_type == Team::class) {
             $desc .= Team::find($this->membership_id)->name_desc;
         }
+
         return $desc;
-
     }
-
 }

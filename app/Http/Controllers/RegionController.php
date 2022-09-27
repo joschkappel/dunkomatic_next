@@ -2,30 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Response;
-
-use BenSampo\Enum\Rules\EnumValue;
 use App\Enums\JobFrequencyType;
-use App\Enums\LeagueState;
 use App\Enums\LeagueAgeType;
 use App\Enums\LeagueGenderType;
-use App\Enums\Role;
+use App\Enums\LeagueState;
 use App\Enums\ReportFileType;
-
-use App\Models\Region;
-use App\Models\Member;
-use App\Models\League;
+use App\Enums\Role;
 use App\Models\Game;
-
-use Illuminate\Support\Facades\Auth;
-
-use Illuminate\Support\Facades\DB;
-
-use Illuminate\Support\Carbon;
-use Silber\Bouncer\BouncerFacade as Bouncer;
+use App\Models\League;
+use App\Models\Member;
+use App\Models\Region;
+use BenSampo\Enum\Rules\EnumValue;
 use Datatables;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Response;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class RegionController extends Controller
 {
@@ -33,26 +28,25 @@ class RegionController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\View\View
-     *
      */
     public function index()
     {
         Log::info('showing region list');
+
         return view('region.region_list');
     }
 
     /**
      * Display a dashboard
      *
-     * @param Request $request
-     * @param string $language
-     * @param \App\Models\Region $region
+     * @param  Request  $request
+     * @param  string  $language
+     * @param  \App\Models\Region  $region
      * @return \Illuminate\View\View
-     *
      */
     public function dashboard(Request $request, $language, Region $region)
     {
-        if (!Bouncer::canAny(['create-regions', 'update-regions'])) {
+        if (! Bouncer::canAny(['create-regions', 'update-regions'])) {
             Log::warning('[ACCESS DENIED]', ['url' => $request->path(), 'ip' => $request->ip()]);
             abort(403);
         }
@@ -69,21 +63,20 @@ class RegionController extends Controller
         $data['scope'] = 'region';
 
         Log::info('showing region dashboard', ['region-id' => $region->id]);
+
         return view('region.region_dashboard', $data);
     }
-
 
     /**
      * Display a brief overview
      *
-     * @param string $language
-     * @param \App\Models\Region $region
+     * @param  string  $language
+     * @param  \App\Models\Region  $region
      * @return \Illuminate\View\View
      */
     public function briefing($language, Region $region)
     {
         $data['region'] = $region;
-
 
         $data['memberships'] = $region->memberships()->with('member')->get();
 
@@ -93,6 +86,7 @@ class RegionController extends Controller
         $data['scope'] = 'region';
 
         Log::info('showing region briefing', ['region-id' => $region->id]);
+
         return view('region/region_briefing', $data);
     }
 
@@ -104,6 +98,7 @@ class RegionController extends Controller
     public function create()
     {
         Log::info('create new region');
+
         return view('region.region_new');
     }
 
@@ -112,14 +107,13 @@ class RegionController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
-     *
      */
     public function store(Request $request)
     {
         $data = $request->validate([
             'region_id' => 'sometimes|exists:regions,id',
             'name' => 'required',
-            'code'  => 'required',
+            'code' => 'required',
         ]);
         Log::info('region form data validated OK.');
 
@@ -137,9 +131,8 @@ class RegionController extends Controller
     /**
      * datatables.net listing all regions
      *
-     * @param  string $language
+     * @param  string  $language
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function datatable($language)
     {
@@ -152,18 +145,19 @@ class RegionController extends Controller
             ->addIndexColumn()
             ->rawColumns(['regionadmin', 'code'])
             ->editColumn('code', function ($data) {
-                if ( (Bouncer::can('access', $data)) and (Bouncer::is(Auth::user())->a('regionadmin','superadmin'))) {
-                    return '<a href="' . route('region.dashboard', ['language' => Auth::user()->locale, 'region' => $data->id]) . '">' . $data->code . '</a>';
+                if ((Bouncer::can('access', $data)) and (Bouncer::is(Auth::user())->a('regionadmin', 'superadmin'))) {
+                    return '<a href="'.route('region.dashboard', ['language' => Auth::user()->locale, 'region' => $data->id]).'">'.$data->code.'</a>';
                 } else {
-                    return '<a href="' . route('region.briefing', ['language' => Auth::user()->locale, 'region' => $data->id]) . '">' . $data->code . '</a>';
+                    return '<a href="'.route('region.briefing', ['language' => Auth::user()->locale, 'region' => $data->id]).'">'.$data->code.'</a>';
                 }
             })
             ->editColumn('regionadmin', function ($r) {
                 if ($r->regionadmins()->exists()) {
-                    $admin = $r->regionadmins()->first()->firstname . ' ' . $r->regionadmins()->first()->lastname;
+                    $admin = $r->regionadmins()->first()->firstname.' '.$r->regionadmins()->first()->lastname;
                 } else {
-                    $admin = '<a href="' . route('membership.region.create', ['language' => Auth::user()->locale, 'region' => $r->id]) . '"><i class="fas fa-plus-circle"></i></a>';
+                    $admin = '<a href="'.route('membership.region.create', ['language' => Auth::user()->locale, 'region' => $r->id]).'"><i class="fas fa-plus-circle"></i></a>';
                 }
+
                 return $admin;
             })
             ->make(true);
@@ -173,21 +167,20 @@ class RegionController extends Controller
      * select2 list with all regions
      *
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function admin_sb()
     {
         $regions = Region::all();
 
         Log::info('preparing select2 region (with admins) list', ['count' => count($regions)]);
-        $response = array();
+        $response = [];
 
         foreach ($regions as $region) {
             if ($region->regionadmins()->exists()) {
-                $response[] = array(
-                    "id" => $region->id,
-                    "text" => $region->name
-                );
+                $response[] = [
+                    'id' => $region->id,
+                    'text' => $region->name,
+                ];
             }
         }
 
@@ -198,20 +191,19 @@ class RegionController extends Controller
      * select2 list with all top level regions
      *
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function hq_sb()
     {
         $regions = Region::whereNull('hq')->get();
 
         Log::info('preparing select2 top region list', ['count' => count($regions)]);
-        $response = array();
+        $response = [];
 
         foreach ($regions as $region) {
-            $response[] = array(
-                "id" => $region->id,
-                "text" => $region->name
-            );
+            $response[] = [
+                'id' => $region->id,
+                'text' => $region->name,
+            ];
         }
 
         return Response::json($response);
@@ -220,10 +212,9 @@ class RegionController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param string $language
-     * @param \App\Models\Region $region
+     * @param  string  $language
+     * @param  \App\Models\Region  $region
      * @return \Illuminate\View\View
-     *
      */
     public function edit($language, Region $region)
     {
@@ -242,83 +233,82 @@ class RegionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Region  $region
      * @return \Illuminate\Http\RedirectResponse
-     *
      */
     public function update_details(Request $request, Region $region)
     {
         $daterule = 'sometimes|nullable|date|';
 
         $openselectionrule = $daterule;
-        if ($request->input('open_selection_at')){
-            if ($request->input('close_selection_at')){
+        if ($request->input('open_selection_at')) {
+            if ($request->input('close_selection_at')) {
                 $openselectionrule .= '|before:close_selection_at';
-            } elseif ($request->input('open_scheduling_at')){
+            } elseif ($request->input('open_scheduling_at')) {
                 $openselectionrule .= '|before:open_scheduling_at';
-            } elseif ($request->input('close_scheduling_at')){
+            } elseif ($request->input('close_scheduling_at')) {
                 $openselectionrule .= '|before:close_scheduling_at';
-            } elseif ($request->input('close_referees_at')){
+            } elseif ($request->input('close_referees_at')) {
                 $openselectionrule .= '|before:close_referees_at';
             }
         }
 
         $closeselectionrule = $daterule;
-        if ($request->input('close_selection_at')){
-            if ($request->input('open_selection_at')){
+        if ($request->input('close_selection_at')) {
+            if ($request->input('open_selection_at')) {
                 $closeselectionrule .= '|after:open_selection_at';
             }
 
-            if ($request->input('open_scheduling_at')){
+            if ($request->input('open_scheduling_at')) {
                 $closeselectionrule .= '|before:open_scheduling_at';
-            } elseif ($request->input('close_scheduling_at')){
+            } elseif ($request->input('close_scheduling_at')) {
                 $closeselectionrule .= '|before:close_scheduling_at';
-            } elseif ($request->input('close_referees_at')){
+            } elseif ($request->input('close_referees_at')) {
                 $closeselectionrule .= '|before:close_referees_at';
             }
         }
 
         $openschedulingrule = $daterule;
-        if ($request->input('open_scheduling_at')){
-            if ($request->input('close_selection_at')){
+        if ($request->input('open_scheduling_at')) {
+            if ($request->input('close_selection_at')) {
                 $openschedulingrule .= '|after:close_selection_at';
-            } elseif ($request->input('open_selection_at')){
+            } elseif ($request->input('open_selection_at')) {
                 $openschedulingrule .= '|after:open_selection_at';
             } else {
                 $openschedulingrule .= '|after:today';
             }
 
-            if ($request->input('close_scheduling_at')){
+            if ($request->input('close_scheduling_at')) {
                 $openschedulingrule .= '|before:close_scheduling_at';
-            } elseif ($request->input('close_referees_at')){
+            } elseif ($request->input('close_referees_at')) {
                 $openschedulingrule .= '|before:close_referees_at';
             }
         }
 
         $closeschedulingrule = $daterule;
-        if ($request->input('close_scheduling_at')){
-            if ($request->input('open_scheduling_at')){
+        if ($request->input('close_scheduling_at')) {
+            if ($request->input('open_scheduling_at')) {
                 $closeschedulingrule .= '|after:open_scheduling_at';
-            } elseif ($request->input('close_selection_at')){
+            } elseif ($request->input('close_selection_at')) {
                 $closeschedulingrule .= '|after:close_selection_at';
-            } elseif ($request->input('open_selection_at')){
+            } elseif ($request->input('open_selection_at')) {
                 $closeschedulingrule .= '|after:open_selection_at';
             } else {
                 $closeschedulingrule .= '|after:today';
             }
 
-            if ($request->input('close_referees_at')){
+            if ($request->input('close_referees_at')) {
                 $closeschedulingrule .= '|before:close_referees_at';
             }
         }
 
         $closerefereesrule = $daterule;
-        if ($request->input('close_referees_at')){
-            if ($request->input('close_scheduling_at')){
+        if ($request->input('close_referees_at')) {
+            if ($request->input('close_scheduling_at')) {
                 $closerefereesrule .= '|after:close_scheduling_at';
-            } elseif ($request->input('open_scheduling_at')){
+            } elseif ($request->input('open_scheduling_at')) {
                 $closerefereesrule .= '|after:open_scheduling_at';
-            } elseif ($request->input('close_selection_at')){
+            } elseif ($request->input('close_selection_at')) {
                 $closerefereesrule .= '|after:close_selection_at';
-            } elseif ($request->input('open_selection_at')){
+            } elseif ($request->input('open_selection_at')) {
                 $closerefereesrule .= '|after:open_selection_at';
             } else {
                 $closerefereesrule .= '|after:today';
@@ -340,7 +330,7 @@ class RegionController extends Controller
             'close_selection_at' => $closeselectionrule,
             'open_scheduling_at' => $openschedulingrule,
             'close_scheduling_at' => $closeschedulingrule,
-            'close_referees_at' => $closerefereesrule
+            'close_referees_at' => $closerefereesrule,
         ]);
         Log::info('region details form data validated OK.');
 
@@ -354,9 +344,8 @@ class RegionController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Region $region
+     * @param  Region  $region
      * @return \Illuminate\Http\RedirectResponse
-     *
      */
     public function destroy(Region $region)
     {
@@ -384,18 +373,16 @@ class RegionController extends Controller
     /**
      * leagues by status for a region
      *
-     * @param \App\Models\Region $region
+     * @param  \App\Models\Region  $region
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function league_state_chart(Region $region)
     {
-
         Log::info('collecting league state chart data.', ['region-id' => $region->id]);
 
-        $data = array();
+        $data = [];
         $data['labels'] = [];
-        $datasets = array();
+        $datasets = [];
         // initialize datasets
         foreach (LeagueAgeType::getValues() as $at) {
             $datasets[$at]['stack'] = 'Stack 1';
@@ -429,16 +416,15 @@ class RegionController extends Controller
     /**
      * leagues by age and gender for a region
      *
-     * @param \App\Models\Region $region
+     * @param  \App\Models\Region  $region
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function league_socio_chart(Region $region)
     {
         Log::info('collecting league social chart data.', ['region-id' => $region->id]);
-        $data = array();
+        $data = [];
         $data['labels'] = [];
-        $datasets = array();
+        $datasets = [];
 
         $rs = DB::table('leagues')->where('region_id', $region->id)->select('age_type', DB::raw('count(*) as total'))->groupBy('age_type')->get();
         // initialize dataset 0
@@ -466,17 +452,15 @@ class RegionController extends Controller
     /**
      * teams by club for a region
      *
-     * @param \App\Models\Region $region
+     * @param  \App\Models\Region  $region
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function club_team_chart(Region $region)
     {
-
         Log::info('collecting club teams chart data.', ['region-id' => $region->id]);
-        $data = array();
+        $data = [];
         $data['labels'] = [];
-        $datasets = array();
+        $datasets = [];
         // initialize datasets
         foreach (LeagueAgeType::getValues() as $at) {
             $datasets[$at]['stack'] = 'Stack 1';
@@ -488,19 +472,18 @@ class RegionController extends Controller
         $datasets[$notspecified]['label'] = __('reports.not_specified');
         $datasets[$notspecified]['data'] = [];
 
-
         /*       SELECT c.shortname, count(t.id)
       FROM clubs as c, teams as t
       WHERE c.region_id=2
       AND t.club_id = c.id
       GROUP BY c.shortname */
-        $select = "select c.shortname, l.age_type, count(l.age_type) as total ";
-        $select .= " FROM clubs as c, teams as t, leagues as l ";
-        $select .= " WHERE c.region_id = " . $region->id;
-        $select .= " AND t.club_id = c.id ";
-        $select .= " AND t.league_id = l.id ";
-        $select .= " GROUP BY c.shortname, l.age_type";
-        $select .= " ORDER BY c.shortname ASC, l.age_type ASC";
+        $select = 'select c.shortname, l.age_type, count(l.age_type) as total ';
+        $select .= ' FROM clubs as c, teams as t, leagues as l ';
+        $select .= ' WHERE c.region_id = '.$region->id;
+        $select .= ' AND t.club_id = c.id ';
+        $select .= ' AND t.league_id = l.id ';
+        $select .= ' GROUP BY c.shortname, l.age_type';
+        $select .= ' ORDER BY c.shortname ASC, l.age_type ASC';
 
         $rs = collect(DB::select($select));
 
@@ -527,16 +510,15 @@ class RegionController extends Controller
     /**
      * members and roles by club for a region
      *
-     * @param \App\Models\Region $region
+     * @param  \App\Models\Region  $region
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function club_member_chart(Region $region)
     {
         Log::info('collecting club member chart data.', ['region-id' => $region->id]);
-        $data = array();
+        $data = [];
         $data['labels'] = [];
-        $datasets = array();
+        $datasets = [];
         // initialize datasets
         $roleList = Role::getValues();
         foreach ($roleList as $r) {
@@ -572,17 +554,16 @@ class RegionController extends Controller
     /**
      * members and roles by club for a region
      *
-     * @param \App\Models\Region $region
+     * @param  \App\Models\Region  $region
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function game_noreferee_chart(Region $region)
     {
         Log::info('collecting game without referee chart data.', ['region-id' => $region->id]);
 
-        $data = array();
+        $data = [];
         $data['labels'] = [];
-        $datasets = array();
+        $datasets = [];
         $datasets[0]['stack'] = 'Stack 1';
         $datasets[0]['label'] = __('region.chart.label.referees.assigned');
         $datasets[0]['data'] = [];
@@ -615,18 +596,17 @@ class RegionController extends Controller
     /**
      * # club by region
      *
-     * @param \App\Models\Region $region
+     * @param  \App\Models\Region  $region
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function region_club_chart(Region $region)
     {
         Log::info('collecting clubs by region data.', ['region-id' => $region->id]);
-        $data = array();
+        $data = [];
         $data['labels'] = [];
-        $datasets = array();
+        $datasets = [];
 
-        $rs = $region->childRegions()->withCount('clubs','leagues','gyms','teams')->get();
+        $rs = $region->childRegions()->withCount('clubs', 'leagues', 'gyms', 'teams')->get();
         // initialize datasets
 
         foreach ($rs as $r) {
@@ -637,34 +617,32 @@ class RegionController extends Controller
             $datasets[3]['data'][] = $r->teams_count ?? 0;
         }
         $datasets[0]['label'] = trans_choice('club.club', 2);
-        $datasets[1]['label'] = trans_choice('league.league',2);
-        $datasets[2]['label'] = trans_choice('gym.gym',2);
-        $datasets[3]['label'] = trans_choice('team.team',2);
+        $datasets[1]['label'] = trans_choice('league.league', 2);
+        $datasets[2]['label'] = trans_choice('gym.gym', 2);
+        $datasets[3]['label'] = trans_choice('team.team', 2);
 
         $data['datasets'] = $datasets;
 
-        Log::debug(print_r($data,true));
+        Log::debug(print_r($data, true));
 
         return Response::json($data);
-
     }
 
     /**
      * # leaguestates by region
      *
-     * @param \App\Models\Region $region
+     * @param  \App\Models\Region  $region
      * @return \Illuminate\Http\JsonResponse
-     *
      */
     public function region_league_chart(Region $region)
     {
         Log::info('collecting league state by region chart data.', ['region-id' => $region->id]);
 
-        $data = array();
+        $data = [];
         $data['labels'] = [];
-        $datasets = array();
+        $datasets = [];
 
-       // get data for sets
+        // get data for sets
         $rs = $region->childRegions;
         $leagues = League::whereIn('region_id', $rs->pluck('id'))->get();
 
@@ -676,14 +654,13 @@ class RegionController extends Controller
                 $datasets[$k]['data'][] = $lsset->where('region_id', $r->id)->count();
             }
         }
-        foreach ($rs as $k => $r){
+        foreach ($rs as $k => $r) {
             $datasets[$k]['label'] = $r->code;
         }
         $data['datasets'] = $datasets;
 
-        Log::debug(print_r($data,true));
+        Log::debug(print_r($data, true));
 
         return Response::json($data);
-
     }
 }

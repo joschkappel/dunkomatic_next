@@ -2,14 +2,13 @@
 
 namespace Database\Seeders\prod;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use App\Enums\LeagueAgeType;
 use App\Enums\LeagueGenderType;
 use App\Enums\LeagueState;
-
-use App\Models\Region;
 use App\Models\LeagueSize;
+use App\Models\Region;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class LeaguesTableSeeder extends Seeder
 {
@@ -23,9 +22,8 @@ class LeaguesTableSeeder extends Seeder
         $old_league = DB::connection('dunkv1')->table('league')->where('region', '!=', '')->where('active', '1')->get();
 
         foreach ($old_league as $league) {
-
             if ($league->group_id == 0) {
-                $group_id =  NULL;
+                $group_id = null;
             } else {
                 $group_id = $league->group_id;
             }
@@ -62,29 +60,29 @@ class LeaguesTableSeeder extends Seeder
                 $size_id = $league_size->id;
 
                 DB::connection('dunknxt')->table('leagues')->insert([
-                    'id'            => $league->league_id,
-                    'shortname'     => $league->shortname,
-                    'region_id'        => Region::where('code', $league->region)->first()->id,
-                    'name'          => $league->league_name,
-                    'schedule_id'   => $group_id,
+                    'id' => $league->league_id,
+                    'shortname' => $league->shortname,
+                    'region_id' => Region::where('code', $league->region)->first()->id,
+                    'name' => $league->league_name,
+                    'schedule_id' => $group_id,
                     'league_size_id' => $size_id,
-                    'created_at'    => now(),
-                    'age_type'      => $ageclass,
-                    'gender_type'   => $genderclass,
-                    'state'         => LeagueState::Registration()
+                    'created_at' => now(),
+                    'age_type' => $ageclass,
+                    'gender_type' => $genderclass,
+                    'state' => LeagueState::Registration(),
                 ]);
             } else {
                 DB::connection('dunknxt')->table('leagues')->insert([
-                    'id'            => $league->league_id,
-                    'shortname'     => $league->shortname,
-                    'region_id'        => Region::where('code', $league->region)->first()->id,
-                    'name'          => $league->league_name,
-                    'schedule_id'   => $group_id,
+                    'id' => $league->league_id,
+                    'shortname' => $league->shortname,
+                    'region_id' => Region::where('code', $league->region)->first()->id,
+                    'name' => $league->league_name,
+                    'schedule_id' => $group_id,
                     'league_size_id' => null,
-                    'created_at'    => now(),
-                    'age_type'      => $ageclass,
-                    'gender_type'   => $genderclass,
-                    'state'         => LeagueState::Setup()
+                    'created_at' => now(),
+                    'age_type' => $ageclass,
+                    'gender_type' => $genderclass,
+                    'state' => LeagueState::Setup(),
                 ]);
             }
         }

@@ -2,8 +2,8 @@
 
 namespace App\Enums;
 
-use BenSampo\Enum\Enum;
 use BenSampo\Enum\Contracts\LocalizedEnum;
+use BenSampo\Enum\Enum;
 
 /**
  * @method static static ClubLead()
@@ -17,13 +17,20 @@ use BenSampo\Enum\Contracts\LocalizedEnum;
  */
 final class Role extends Enum implements LocalizedEnum
 {
-    const ClubLead =   0;
+    const ClubLead = 0;
+
     const RefereeLead = 1;
+
     const LeagueLead = 2;
+
     const RegionTeam = 3;
+
     const GirlsLead = 4;
+
     const JuniorsLead = 5;
+
     const RegionLead = 6;
+
     const TeamCoach = 7;
 }
 

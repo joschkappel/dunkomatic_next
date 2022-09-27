@@ -2,14 +2,12 @@
 
 namespace Tests\Unit;
 
-use App\Models\League;
-use App\Models\Club;
-use App\Models\Region;
 use App\Enums\Role;
-
-use Tests\TestCase;
+use App\Models\Club;
+use App\Models\League;
+use App\Models\Region;
 use Tests\Support\Authentication;
-
+use Tests\TestCase;
 
 class RoleControllerTest extends TestCase
 {
@@ -29,12 +27,12 @@ class RoleControllerTest extends TestCase
         $response = $this->authenticated()
             ->post(route('role.index'));
 
-        $roles = array();
+        $roles = [];
         foreach (Role::getInstances() as $role) {
-            $roles[] = array(
-                "id" => $role->value,
-                "text" => $role->description
-            );
+            $roles[] = [
+                'id' => $role->value,
+                'text' => $role->description,
+            ];
         }
 
         $response->assertStatus(200)
@@ -43,17 +41,18 @@ class RoleControllerTest extends TestCase
         $response = $this->authenticated()
             ->post(route('role.index', ['scope' => League::class]));
         $l[] = Role::coerce('LeagueLead');
-        $roles = array();
+        $roles = [];
         foreach ($l as $role) {
-            $roles[] = array(
-                "id" => $role->value,
-                "text" => $role->description
-            );
+            $roles[] = [
+                'id' => $role->value,
+                'text' => $role->description,
+            ];
         }
 
         $response->assertStatus(200)
             ->assertJson($roles);
     }
+
     /**
      * index_league
      *
@@ -68,12 +67,12 @@ class RoleControllerTest extends TestCase
         $response = $this->authenticated()
             ->post(route('role.index', ['scope' => League::class]));
         $l[] = Role::coerce('LeagueLead');
-        $roles = array();
+        $roles = [];
         foreach ($l as $role) {
-            $roles[] = array(
-                "id" => $role->value,
-                "text" => $role->description
-            );
+            $roles[] = [
+                'id' => $role->value,
+                'text' => $role->description,
+            ];
         }
 
         $response->assertStatus(200)
@@ -99,12 +98,12 @@ class RoleControllerTest extends TestCase
         $l[] = Role::coerce('RegionTeam');
         $l[] = Role::coerce('JuniorsLead');
         $l[] = Role::coerce('GirlsLead');
-        $roles = array();
+        $roles = [];
         foreach ($l as $role) {
-            $roles[] = array(
-                "id" => $role->value,
-                "text" => $role->description
-            );
+            $roles[] = [
+                'id' => $role->value,
+                'text' => $role->description,
+            ];
         }
 
         $response->assertStatus(200)
@@ -126,12 +125,12 @@ class RoleControllerTest extends TestCase
             ->post(route('role.index', ['scope' => Region::class]));
         $l[] = Role::coerce('RegionLead');
         $l[] = Role::coerce('RegionTeam');
-        $roles = array();
+        $roles = [];
         foreach ($l as $role) {
-            $roles[] = array(
-                "id" => $role->value,
-                "text" => $role->description
-            );
+            $roles[] = [
+                'id' => $role->value,
+                'text' => $role->description,
+            ];
         }
 
         $response->assertStatus(200)

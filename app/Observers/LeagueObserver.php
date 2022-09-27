@@ -2,8 +2,8 @@
 
 namespace App\Observers;
 
-use App\Models\League;
 use App\Enums\LeagueState;
+use App\Models\League;
 use App\Traits\LeagueFSM;
 use Illuminate\Support\Facades\Log;
 
@@ -20,7 +20,7 @@ class LeagueObserver
     public function created(League $league)
     {
         if ($league->state == null) {
-            if ($league->schedule()->exists()  and  $league->league_size()->exists()) {
+            if ($league->schedule()->exists() and $league->league_size()->exists()) {
                 Log::info('[OBSERVER] league created - set status ASSIGNMENT', ['league-id' => $league->id]);
                 $this->start_league($league);
             } else {
@@ -38,15 +38,15 @@ class LeagueObserver
      */
     public function updated(League $league)
     {
-        if (!$league->schedule()->exists()  or  !$league->league_size()->exists()) {
-            if (!$league->state->is(LeagueState::Setup())) {
+        if (! $league->schedule()->exists() or ! $league->league_size()->exists()) {
+            if (! $league->state->is(LeagueState::Setup())) {
                 Log::info('[OBSERVER] league updated - set status SETUP', ['league-id' => $league->id]);
                 $this->close_league($league);
             }
         }
 
-        if ($league->schedule()->exists()  and  $league->league_size()->exists() and ($league->state->is(LeagueState::Setup))) {
-            if (!$league->state->is(LeagueState::Registration())) {
+        if ($league->schedule()->exists() and $league->league_size()->exists() and ($league->state->is(LeagueState::Setup))) {
+            if (! $league->state->is(LeagueState::Registration())) {
                 Log::info('[OBSERVER] league updated - set status REGISTRATION', ['league-id' => $league->id]);
                 $this->start_league($league);
             }

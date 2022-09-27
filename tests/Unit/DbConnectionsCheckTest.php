@@ -3,9 +3,8 @@
 namespace Tests\Unit;
 
 use App\Checks\DbConnectionsCheck;
-
-use Tests\TestCase;
 use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class DbConnectionsCheckTest extends TestCase
 {
@@ -21,14 +20,11 @@ class DbConnectionsCheckTest extends TestCase
      */
     public function health_check()
     {
-
         $check = DbConnectionsCheck::new();
 
         $result = $check->run();
 
         $this->assertEquals('ok', $result->status->value);
         $this->assertCount(1, $result->meta);
-
     }
-
 }

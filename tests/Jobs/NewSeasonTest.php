@@ -2,26 +2,19 @@
 
 namespace Tests\Jobs;
 
-use Tests\SysTestCase;
-
-use Illuminate\Support\Facades\Queue;
-use Illuminate\Support\Facades\Notification;
-
-use App\Jobs\ProcessNewSeason;
+use App\Enums\LeagueState;
 use App\Enums\Role;
-use App\Notifications\CheckRegionSettings;
-use App\Notifications\NewSeason;
-use App\Models\User;
+use App\Jobs\ProcessNewSeason;
 use App\Models\Member;
 use App\Models\Membership;
-use App\Enums\LeagueState;
-
-
+use App\Models\User;
+use App\Notifications\CheckRegionSettings;
+use App\Notifications\NewSeason;
+use Illuminate\Support\Facades\Notification;
+use Tests\SysTestCase;
 
 class NewSeasonTest extends SysTestCase
 {
-
-
     /**
      * run job
      *

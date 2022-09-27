@@ -2,20 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\Club;
-use App\Models\Member;
-use App\Models\Schedule;
-use App\Models\League;
-use App\Models\Game;
-use App\Models\Gym;
-use App\Models\Team;
-use App\Models\LeagueSize;
-
-use App\Enums\Role;
 use App\Enums\LeagueState;
-
+use App\Models\Club;
+use App\Models\League;
+use App\Models\Team;
 use Tests\Support\Authentication;
-use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class LeagueSelectionInjectTeamTest extends TestCase
@@ -23,16 +14,19 @@ class LeagueSelectionInjectTeamTest extends TestCase
     use Authentication;
 
     private $testleague;
+
     private $testclub_assigned;
+
     private $testclub_free;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->testleague = League::factory()->selected(3,3)->create();
+        $this->testleague = League::factory()->selected(3, 3)->create();
         $this->testclub_assigned = $this->testleague->clubs()->first();
         $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
     }
+
     /**
      * Assign club
      *
@@ -105,7 +99,7 @@ class LeagueSelectionInjectTeamTest extends TestCase
             ->assertDatabaseMissing('games', ['league_id' => $this->testleague->id])
             ->assertDatabaseCount('clubs', 4)
             ->assertDatabaseCount('teams', 4)
-            ->assertDatabaseCount('club_league',3)
+            ->assertDatabaseCount('club_league', 3)
             ->assertDatabaseCount('games', 0);
 
         $this->testleague->refresh();
@@ -134,7 +128,7 @@ class LeagueSelectionInjectTeamTest extends TestCase
                 route('league.team.pickchar', ['league' => $this->testleague->id]),
                 [
                     'league_id' => $this->testleague->id,
-                    'league_no' => 1, 'team_id' => $c_toadd->teams->first()->id
+                    'league_no' => 1, 'team_id' => $c_toadd->teams->first()->id,
                 ]
             );
 
@@ -187,5 +181,4 @@ class LeagueSelectionInjectTeamTest extends TestCase
         $this->assertEquals(2, $this->testleague->state_count['charspicked']);
         $this->assertEquals(0, $this->testleague->state_count['generated']);
     }
-
 }

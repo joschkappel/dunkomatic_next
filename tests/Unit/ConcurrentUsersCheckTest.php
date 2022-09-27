@@ -3,9 +3,8 @@
 namespace Tests\Unit;
 
 use App\Checks\ConcurrentUsersCheck;
-
-use Tests\TestCase;
 use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class ConcurrentUsersCheckTest extends TestCase
 {
@@ -21,7 +20,6 @@ class ConcurrentUsersCheckTest extends TestCase
      */
     public function health_check()
     {
-
         $check = ConcurrentUsersCheck::new()
                     ->failWhenFailedLoginsIsHigherInTheLastMinute(80)
                     ->failWhenFailedLoginsIsHigherInTheLast5Minutes(50)
@@ -31,7 +29,5 @@ class ConcurrentUsersCheckTest extends TestCase
 
         $this->assertEquals('ok', $result->status->value);
         $this->assertCount(6, $result->meta);
-
     }
-
 }

@@ -2,8 +2,8 @@
 
 namespace App\Helpers;
 
-use Illuminate\View\View;
 use App\Menu;
+use Illuminate\View\View;
 
 class ViewComposer
 {

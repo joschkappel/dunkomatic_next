@@ -6,8 +6,6 @@ use Tests\TestCase;
 
 class HealthCheckResultsControllerTest extends TestCase
 {
-
-
     /**
      * showVIew
      *
@@ -25,12 +23,10 @@ class HealthCheckResultsControllerTest extends TestCase
             ->assertViewIs('health::list');
 
         // do with a refresh
-        $response = $this->get('health', ['fresh'=>true]);
+        $response = $this->get('health', ['fresh' => true]);
 
         $response->assertStatus(200)
             ->assertSessionHasNoErrors()
             ->assertViewIs('health::list');
-
     }
-
 }

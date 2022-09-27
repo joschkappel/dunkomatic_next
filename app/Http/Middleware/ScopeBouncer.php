@@ -2,9 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use Silber\Bouncer\Bouncer;
-
 use Closure;
+use Silber\Bouncer\Bouncer;
 
 class ScopeBouncer
 {
@@ -18,7 +17,7 @@ class ScopeBouncer
     /**
      * Constructor.
      *
-     * @param \Silber\Bouncer\Bouncer  $bouncer
+     * @param  \Silber\Bouncer\Bouncer  $bouncer
      */
     public function __construct(Bouncer $bouncer)
     {

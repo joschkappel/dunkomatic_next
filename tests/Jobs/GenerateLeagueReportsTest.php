@@ -2,19 +2,17 @@
 
 namespace Tests\Jobs;
 
-use App\Jobs\GenerateLeagueGamesReport;
-use App\Models\League;
-use App\Models\Game;
-
-use Tests\TestCase;
 use App\Enums\ReportFileType;
-
-
+use App\Jobs\GenerateLeagueGamesReport;
+use App\Models\Game;
+use App\Models\League;
 use Illuminate\Support\Facades\Storage;
+use Tests\TestCase;
 
 class GenerateLeagueReportsTest extends TestCase
 {
     private $testleague;
+
     private $testclub_assigned;
 
     public function setUp(): void
@@ -37,20 +35,19 @@ class GenerateLeagueReportsTest extends TestCase
         $region = $this->testleague->region;
 
         $folder = $region->league_folder;
-        if (Storage::exists($folder)){
+        if (Storage::exists($folder)) {
             Storage::assertExists($folder);
             $files = Storage::allFiles($folder);
             Storage::delete($files);
         }
 
-        $report = $folder . '/' . $this->testleague->shortname;
+        $report = $folder.'/'.$this->testleague->shortname;
         $report .= '_Rundenplan.pdf';
 
         $job_instance = resolve(GenerateLeagueGamesReport::class, ['region' => $region, 'league' => $this->testleague, 'rtype' => ReportFileType::PDF()]);
         app()->call([$job_instance, 'handle']);
 
         Storage::assertExists($report);
-
     }
 
     /**
@@ -70,15 +67,13 @@ class GenerateLeagueReportsTest extends TestCase
         $files = Storage::allFiles($folder);
         Storage::delete($files);
 
-
-        $report = $folder . '/' . $this->testleague->shortname;
+        $report = $folder.'/'.$this->testleague->shortname;
         $report .= '_Rundenplan.xlsx';
 
         $job_instance = resolve(GenerateLeagueGamesReport::class, ['region' => $region, 'league' => $this->testleague, 'rtype' => ReportFileType::XLSX()]);
         app()->call([$job_instance, 'handle']);
 
         Storage::assertExists($report);
-
     }
 
     /**
@@ -94,13 +89,13 @@ class GenerateLeagueReportsTest extends TestCase
         $region = $this->testleague->region;
         $folder = $region->league_folder;
         // update gaems referee with $club, so we get some referee report entries
-        Game::whereNull('referee_1')->update(['referee_1'=>'****']);
+        Game::whereNull('referee_1')->update(['referee_1' => '****']);
 
         Storage::assertExists($folder);
         $files = Storage::allFiles($folder);
         Storage::delete($files);
 
-        $report = $folder . '/' . $this->testleague->shortname;
+        $report = $folder.'/'.$this->testleague->shortname;
         $report .= '_Rundenplan.ics';
 
         $job_instance = resolve(GenerateLeagueGamesReport::class, ['region' => $region, 'league' => $this->testleague, 'rtype' => ReportFileType::ICS()]);

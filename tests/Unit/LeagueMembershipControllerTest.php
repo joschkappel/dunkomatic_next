@@ -2,21 +2,22 @@
 
 namespace Tests\Unit;
 
+use App\Enums\Role;
+use App\Models\Club;
+use App\Models\League;
 use App\Models\Member;
 use App\Models\Membership;
-use App\Models\League;
-use App\Models\Club;
-use App\Enums\Role;
-
-use Tests\TestCase;
 use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class LeagueMembershipControllerTest extends TestCase
 {
     use Authentication;
 
     private $testleague;
+
     private $testclub_assigned;
+
     private $testclub_free;
 
     public function setUp(): void
@@ -48,6 +49,7 @@ class LeagueMembershipControllerTest extends TestCase
             ->assertViewHas('entity', $this->testleague)
             ->assertViewHas('entity_type', League::class);
     }
+
     /**
      * store NOT OK
      *
@@ -81,6 +83,7 @@ class LeagueMembershipControllerTest extends TestCase
 
         $this->assertDatabaseMissing('members', ['lastname' => 'testmember']);
     }
+
     /**
      * store OK
      *
@@ -152,6 +155,7 @@ class LeagueMembershipControllerTest extends TestCase
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
             ->assertDatabaseCount('memberships', 6);
     }
+
     /**
      * update OK
      *
@@ -202,7 +206,7 @@ class LeagueMembershipControllerTest extends TestCase
         $response = $this->authenticated()
             ->post(route('membership.league.add', ['league' => $this->testleague, 'member' => $member]), [
                 'function' => 'function',
-                'email' => 'email'
+                'email' => 'email',
             ]);
         $response
             ->assertStatus(302)
@@ -230,7 +234,7 @@ class LeagueMembershipControllerTest extends TestCase
             ->post(route('membership.league.add', ['league' => $this->testleague, 'member' => $member]), [
                 'selRole' => Role::LeagueLead,
                 'function' => 'function',
-                'email' => 'email@gmail.com'
+                'email' => 'email@gmail.com',
             ]);
         $response
             ->assertStatus(302)
@@ -243,6 +247,7 @@ class LeagueMembershipControllerTest extends TestCase
         // rollback
         $member->memberships()->delete();
     }
+
     /**
      * update mship NOT OK
      *
@@ -269,6 +274,7 @@ class LeagueMembershipControllerTest extends TestCase
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
             ->assertDatabaseCount('memberships', 6);
     }
+
     /**
      * update mship OK
      *
@@ -295,6 +301,7 @@ class LeagueMembershipControllerTest extends TestCase
             ->assertDatabaseHas('memberships', ['member_id' => $member->id])
             ->assertDatabaseCount('memberships', 6);
     }
+
     /**
      * destroy
      *

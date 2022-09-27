@@ -2,13 +2,10 @@
 
 namespace App\Notifications;
 
+use App\Models\League;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Log;
-
-use App\Models\League;
 
 class LeagueReportsAvailable extends Notification
 {
@@ -23,7 +20,7 @@ class LeagueReportsAvailable extends Notification
      */
     public function __construct(League $league)
     {
-      $this->league = $league;
+        $this->league = $league;
     }
 
     /**
@@ -34,7 +31,7 @@ class LeagueReportsAvailable extends Notification
      */
     public function via($notifiable)
     {
-      return ['mail'];
+        return ['mail'];
     }
 
     /**
@@ -47,10 +44,9 @@ class LeagueReportsAvailable extends Notification
     {
         return (new MailMessage)
                     ->level('info')
-                    ->subject( __('notifications.leaguerptavail.subject' ,['league' => $this->league->shortname]) )
-                    ->greeting( __('notifications.user.greeting', ['username' => $notifiable->name]))
-                    ->line( __('notifications.leaguerptavail.line', ['league' => $this->league->name]) )
-                    ->action( __('notifications.leaguerptavail.action') , route('league_archive.get', $this->league ) );
+                    ->subject(__('notifications.leaguerptavail.subject', ['league' => $this->league->shortname]))
+                    ->greeting(__('notifications.user.greeting', ['username' => $notifiable->name]))
+                    ->line(__('notifications.leaguerptavail.line', ['league' => $this->league->name]))
+                    ->action(__('notifications.leaguerptavail.action'), route('league_archive.get', $this->league));
     }
-
 }

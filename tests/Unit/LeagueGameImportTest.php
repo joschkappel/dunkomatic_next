@@ -2,21 +2,22 @@
 
 namespace Tests\Unit;
 
-use App\Models\League;
 use App\Models\Club;
-
-use Tests\TestCase;
-use Tests\Support\Authentication;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\UploadedFile;
+use App\Models\League;
 use Illuminate\Http\File;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Tests\Support\Authentication;
+use Tests\TestCase;
 
 class LeagueGameImportTest extends TestCase
 {
     use Authentication;
 
     private $testleague;
+
     private $testclub_assigned;
+
     private $testclub_free;
 
     public function setUp(): void
@@ -48,7 +49,7 @@ class LeagueGameImportTest extends TestCase
         $file = new UploadedFile($path, $name, 'text/csv', null, true);
 
         $response = $this->authenticated()
-            ->postJson(route('league.import.game', ['language' => 'de', 'league' => $this->testleague]), ['gfile'=>$file]);
+            ->postJson(route('league.import.game', ['language' => 'de', 'league' => $this->testleague]), ['gfile' => $file]);
 
         $response
             ->assertStatus(302)
@@ -56,7 +57,6 @@ class LeagueGameImportTest extends TestCase
 
         $errs = $response->getSession()->get('errors')->getBag('default');
         $this->assertCount(84, $errs);
-
     }
 
     /**
@@ -71,7 +71,6 @@ class LeagueGameImportTest extends TestCase
      */
     public function import_xlsx_notok()
     {
-
         $name = 'LEAGUE_Heimspiele.xlsx';
         $stub = __DIR__.'/stubs/'.$name;
         Storage::disk('local')->makeDirectory('importtest');
@@ -81,7 +80,7 @@ class LeagueGameImportTest extends TestCase
         $file = new UploadedFile($path, $name, 'Excel/xlsx', null, true);
 
         $response = $this->authenticated()
-            ->postJson(route('league.import.game', ['language' => 'de', 'league' => $this->testleague]), ['gfile'=>$file]);
+            ->postJson(route('league.import.game', ['language' => 'de', 'league' => $this->testleague]), ['gfile' => $file]);
 
         $response
             ->assertStatus(302)
@@ -89,6 +88,5 @@ class LeagueGameImportTest extends TestCase
 
         $errs = $response->getSession()->get('errors')->getBag('default');
         $this->assertCount(84, $errs);
-
     }
 }

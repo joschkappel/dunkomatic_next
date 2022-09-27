@@ -2,26 +2,17 @@
 
 namespace App\Models;
 
-use App\Models\User;
-use App\Models\Club;
-use App\Models\League;
-use App\Models\Region;
-use App\Models\Team;
 use App\Enums\Role;
-use App\Models\Membership;
-use App\Models\Invitation;
-
-use OwenIt\Auditing\Contracts\Auditable;
-
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Log;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * App\Models\Member
@@ -56,6 +47,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property-read \Illuminate\Database\Eloquent\Collection|Region[] $region
  * @property-read int|null $region_count
  * @property-read User|null $user
+ *
  * @method static \Database\Factories\MemberFactory factory(...$parameters)
  * @method static Builder|Member newModelQuery()
  * @method static Builder|Member newQuery()
@@ -75,30 +67,31 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @method static Builder|Member whereZipcode($value)
  * @mixin \Eloquent
  */
-
 class Member extends Model implements Auditable
 {
-
     use \OwenIt\Auditing\Auditable, Notifiable, HasFactory, Prunable;
 
     protected $fillable = [
         'id', 'club_id', 'firstname', 'lastname', 'city', 'street', 'zipcode', 'phone',
         'fax', 'mobile', 'email1', 'email2',
-        'member_of_clubs','member_of_leagues','member_of_regions','member_of_teams',
-        'role_in_clubs','role_in_leagues','role_in_regions','role_in_teams'
+        'member_of_clubs', 'member_of_leagues', 'member_of_regions', 'member_of_teams',
+        'role_in_clubs', 'role_in_leagues', 'role_in_regions', 'role_in_teams',
     ];
+
     protected $appends = ['name', 'email', 'emails', 'address', 'is_user'];
+
     protected $with = ['memberships'];
 
     public function getNameAttribute(): string
     {
-        return $this->firstname . ' ' . $this->lastname;
+        return $this->firstname.' '.$this->lastname;
     }
 
     public function memberships(): HasMany
     {
         return $this->hasMany(Membership::class);
     }
+
     public function invitation(): HasOne
     {
         return $this->hasOne(Invitation::class);
@@ -111,6 +104,7 @@ class Member extends Model implements Auditable
     {
         return $this->hasOne(User::class);
     }
+
     public function clubs(): MorphToMany
     {
         return $this->morphedByMany(Club::class, 'membership')->withPivot('role_id', 'function')->without('region');
@@ -121,6 +115,7 @@ class Member extends Model implements Auditable
     {
         return $this->morphedByMany(League::class, 'membership')->withPivot('role_id', 'function')->without('region');
     }
+
     public function teams(): MorphToMany
     {
         return $this->morphedByMany(Team::class, 'membership')->withPivot('role_id', 'function');
@@ -130,28 +125,34 @@ class Member extends Model implements Auditable
     {
         return $this->morphedByMany(Region::class, 'membership')->withPivot('role_id', 'function');
     }
+
     public function getEmailAttribute(): string
     {
-        return (($this->email1 == '' ? $this->email2 : $this->email1) ?? '');
+        return ($this->email1 == '' ? $this->email2 : $this->email1) ?? '';
     }
+
     public function getEmailsAttribute(): string
     {
-
         $master = (($this->email1 == '' ? $this->email2 : $this->email1) ?? '');
+
         return $master .= '  '.$this->memberships->pluck('role_email')->unique()->implode(', <br>');
     }
+
     public function getAddressAttribute(): string
     {
         return "{$this->street}, {$this->zipcode} {$this->city}";
     }
+
     public function getIsRegionAdminAttribute(): bool
     {
         return $this->region()->wherePivot('role_id', Role::RegionLead)->exists();
     }
+
     public function getIsUserAttribute(): bool
     {
         return $this->user()->exists();
     }
+
     /**
      * Route notifications for the mail channel.
      *
@@ -161,8 +162,9 @@ class Member extends Model implements Auditable
     public function routeNotificationForMail($notification)
     {
         // Return name and email address...
-        return [$this->email1 => $this->firstname . ' ' . $this->lastname];
+        return [$this->email1 => $this->firstname.' '.$this->lastname];
     }
+
     /**
      * Prepare the model for pruning.
      *
@@ -171,14 +173,14 @@ class Member extends Model implements Auditable
     protected function pruning()
     {
         $this->load('user');
-        if ($this->user()->exists()){
-
+        if ($this->user()->exists()) {
             $u = $this->user;
-            Log::debug('[JOB][DB CLEANUP] pruning member.',[$u]);
+            Log::debug('[JOB][DB CLEANUP] pruning member.', [$u]);
             $u->member()->dissociate();
             $u->save();
         }
     }
+
     /**
      * Get the prunable model query.
      *

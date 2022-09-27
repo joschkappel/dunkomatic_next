@@ -2,21 +2,19 @@
 
 namespace App\Notifications;
 
-use App\Models\User;
 use App\Enums\Role;
 use App\Models\Invitation;
-use App\Models\Region;
-
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Crypt;
 
 class InviteUser extends Notification
 {
     use Queueable;
 
     private User $sender;
+
     private Invitation $invitation;
 
     /**
@@ -49,19 +47,19 @@ class InviteUser extends Notification
      */
     public function toMail($notifiable)
     {
-        if ($this->sender->member()->exists()){
-            $sender = $this->sender->member->name . ' (' . Role::fromValue($this->sender->member->memberships->first()->role_id)->description . ' von ' . $this->sender->member->region->first()->name . ') ';
+        if ($this->sender->member()->exists()) {
+            $sender = $this->sender->member->name.' ('.Role::fromValue($this->sender->member->memberships->first()->role_id)->description.' von '.$this->sender->member->region->first()->name.') ';
         } else {
-            $sender = $this->sender->name ;
+            $sender = $this->sender->name;
         }
 
         return (new MailMessage)
             ->level('info')
-            ->subject( __('notifications.inviteuser.subject'))
-            ->greeting( __('notifications.user.greeting', ['username'=>$notifiable->name]))
-            ->line( __('notifications.inviteuser.line1', ['sendername'=>$sender]))
-            ->line( __('notifications.inviteuser.line2'))
-            ->action( __('notifications.inviteuser.action'), route('register.invited', ['language'=>app()->getLocale(), 'invitation' => $this->invitation]));
+            ->subject(__('notifications.inviteuser.subject'))
+            ->greeting(__('notifications.user.greeting', ['username' => $notifiable->name]))
+            ->line(__('notifications.inviteuser.line1', ['sendername' => $sender]))
+            ->line(__('notifications.inviteuser.line2'))
+            ->action(__('notifications.inviteuser.action'), route('register.invited', ['language' => app()->getLocale(), 'invitation' => $this->invitation]));
     }
 
     /**

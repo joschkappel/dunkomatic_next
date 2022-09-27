@@ -2,10 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Enums\LeagueState;
 use App\Models\Club;
 use App\Models\League;
-
-use App\Enums\LeagueState;
 use App\Traits\LeagueFSM;
 use Tests\Support\Authentication;
 use Tests\TestCase;
@@ -15,13 +14,15 @@ class LeagueSchedulingInjectTeamTest extends TestCase
     use Authentication, LeagueFSM;
 
     private $testleague;
+
     private $testclub_assigned;
+
     private $testclub_free;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->testleague = League::factory()->frozen(3,3)->create();
+        $this->testleague = League::factory()->frozen(3, 3)->create();
         $this->testclub_assigned = $this->testleague->clubs()->first();
         $this->testclub_free = Club::whereNotIn('id', $this->testleague->clubs->pluck('id'))->first();
     }
@@ -36,7 +37,7 @@ class LeagueSchedulingInjectTeamTest extends TestCase
      */
     public function inject_team()
     {
-        $c_toadd =$this->testclub_free;
+        $c_toadd = $this->testclub_free;
         $this->reopen_game_scheduling($this->testleague);
 
         $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Scheduling()])
@@ -44,16 +45,15 @@ class LeagueSchedulingInjectTeamTest extends TestCase
             ->assertDatabaseCount('clubs', 4)
             ->assertDatabaseCount('teams', 4)
             ->assertDatabaseCount('club_league', 3)
-            ->assertDatabaseCount('games', 12);
+            ->assertDatabaseCount('games', 6);
 
         $this->testleague->refresh();
         $this->assertCount(0, $this->testleague->games_notime);
-        $this->assertCount(3, $this->testleague->games_noshow);
         $this->assertEquals(4, $this->testleague->state_count['size']);
         $this->assertEquals(3, $this->testleague->state_count['assigned']);
         $this->assertEquals(3, $this->testleague->state_count['registered']);
         $this->assertEquals(3, $this->testleague->state_count['charspicked']);
-        $this->assertEquals(12, $this->testleague->state_count['generated']);
+        $this->assertEquals(6, $this->testleague->state_count['generated']);
         // now add the new club/team
         $response = $this->authenticated()
             ->followingRedirects()
@@ -72,7 +72,6 @@ class LeagueSchedulingInjectTeamTest extends TestCase
 
         $this->testleague->refresh();
         $this->assertCount(0, $this->testleague->games_notime);
-        $this->assertCount(0, $this->testleague->games_noshow);
         $this->assertEquals(4, $this->testleague->state_count['size']);
         $this->assertEquals(4, $this->testleague->state_count['assigned']);
         $this->assertEquals(4, $this->testleague->state_count['registered']);
@@ -106,16 +105,15 @@ class LeagueSchedulingInjectTeamTest extends TestCase
             ->assertDatabaseCount('clubs', 4)
             ->assertDatabaseCount('teams', 4)
             ->assertDatabaseCount('club_league', 2)
-            ->assertDatabaseCount('games', 12);
+            ->assertDatabaseCount('games', 2);
 
         $this->testleague->refresh();
         $this->assertCount(0, $this->testleague->games_notime);
-        $this->assertCount(6, $this->testleague->games_noshow);
         $this->assertEquals(4, $this->testleague->state_count['size']);
         $this->assertEquals(2, $this->testleague->state_count['assigned']);
         $this->assertEquals(2, $this->testleague->state_count['registered']);
         $this->assertEquals(2, $this->testleague->state_count['charspicked']);
-        $this->assertEquals(12, $this->testleague->state_count['generated']);
+        $this->assertEquals(2, $this->testleague->state_count['generated']);
     }
 
     /**
@@ -144,16 +142,14 @@ class LeagueSchedulingInjectTeamTest extends TestCase
             ->assertDatabaseCount('clubs', 4)
             ->assertDatabaseCount('teams', 4)
             ->assertDatabaseCount('club_league', 4)
-            ->assertDatabaseCount('games', 12);
+            ->assertDatabaseCount('games', 6);
 
         $this->testleague->refresh();
         $this->assertCount(0, $this->testleague->games_notime);
-        $this->assertCount(3, $this->testleague->games_noshow);
         $this->assertEquals(4, $this->testleague->state_count['size']);
         $this->assertEquals(4, $this->testleague->state_count['assigned']);
         $this->assertEquals(4, $this->testleague->state_count['registered']);
         $this->assertEquals(4, $this->testleague->state_count['charspicked']);
-        $this->assertEquals(12, $this->testleague->state_count['generated']);
+        $this->assertEquals(6, $this->testleague->state_count['generated']);
     }
-
 }

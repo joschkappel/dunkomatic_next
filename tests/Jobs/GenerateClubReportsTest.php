@@ -2,19 +2,17 @@
 
 namespace Tests\Jobs;
 
-use App\Jobs\GenerateClubGamesReport;
-use App\Models\League;
-use App\Models\Game;
-
-use Tests\TestCase;
 use App\Enums\ReportFileType;
-use App\Enums\ReportScope;
-
+use App\Jobs\GenerateClubGamesReport;
+use App\Models\Game;
+use App\Models\League;
 use Illuminate\Support\Facades\Storage;
+use Tests\TestCase;
 
 class GenerateClubReportsTest extends TestCase
 {
     private $testleague;
+
     private $testclub_assigned;
 
     public function setUp(): void
@@ -39,19 +37,18 @@ class GenerateClubReportsTest extends TestCase
         $league = $this->testleague;
 
         $folder = $region->club_folder;
-        if (Storage::exists($folder)){
+        if (Storage::exists($folder)) {
             Storage::assertExists($folder);
             $files = Storage::allFiles($folder);
             Storage::delete($files);
         }
 
-
-        $report = $folder . '/' . $club->shortname;
+        $report = $folder.'/'.$club->shortname;
         $report .= '_Vereinsplan.pdf';
         $files = Storage::allFiles($folder);
         Storage::delete($files);
 
-        $job_instance = resolve(GenerateClubGamesReport::class, ['region' => $region, 'club' => $club, 'rtype' => ReportFileType::PDF(),  'league'=>$league]);
+        $job_instance = resolve(GenerateClubGamesReport::class, ['region' => $region, 'club' => $club, 'rtype' => ReportFileType::PDF(),  'league' => $league]);
         app()->call([$job_instance, 'handle']);
 
         // Excel::assertStored($report);
@@ -72,19 +69,17 @@ class GenerateClubReportsTest extends TestCase
         $club = $this->testclub_assigned;
         $league = $this->testleague;
 
-
         $folder = $region->club_folder;
         // Excel::fake();
         Storage::assertExists($folder);
 
-        $report = $folder . '/' . $club->shortname;
+        $report = $folder.'/'.$club->shortname;
         $report .= '_Gesamtplan.xlsx';
-
 
         $files = Storage::allFiles($folder);
         Storage::delete($files);
 
-        $job_instance = resolve(GenerateClubGamesReport::class, ['region' => $region, 'club' => $club, 'rtype' => ReportFileType::XLSX(), 'league'=>$league]);
+        $job_instance = resolve(GenerateClubGamesReport::class, ['region' => $region, 'club' => $club, 'rtype' => ReportFileType::XLSX(), 'league' => $league]);
         app()->call([$job_instance, 'handle']);
 
         // Excel::assertStored($report);
@@ -106,17 +101,17 @@ class GenerateClubReportsTest extends TestCase
         $league = $this->testleague;
 
         // update gaems referee with $club, so we get some referee report entries
-        Game::whereNull('referee_1')->update(['referee_1'=>'****']);
+        Game::whereNull('referee_1')->update(['referee_1' => '****']);
 
         $folder = $region->club_folder;
         Storage::assertExists($folder);
 
-        $report = $folder . '/' . $club->shortname;
+        $report = $folder.'/'.$club->shortname;
 
         $files = Storage::allFiles($folder);
         Storage::delete($files);
 
-        $job_instance = resolve(GenerateClubGamesReport::class, ['region' => $region, 'club' => $club, 'rtype' => ReportFileType::ICS(),  'league'=>$league]);
+        $job_instance = resolve(GenerateClubGamesReport::class, ['region' => $region, 'club' => $club, 'rtype' => ReportFileType::ICS(),  'league' => $league]);
         app()->call([$job_instance, 'handle']);
 
         Storage::assertExists($report.'_Vereinsplan.ics');

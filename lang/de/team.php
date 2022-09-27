@@ -55,10 +55,10 @@ return [
     'tooltip.deassign' => 'Melde Mannschaft :Name von einer Spielrunde ab',
     'training' => 'Training Tag/Uhrzeit',
     'unassigned' => 'nicht zugeordnet',
-    'register.ok' =>  'Das Team ist gemeldet',
+    'register.ok' => 'Das Team ist gemeldet',
     'register.notok' => 'Die Meldung ist fehlgeschlagen. Das Team ist NICHT gemeldet',
     'unregister.ok' => 'Das Team ist abgemeldet',
     'unregister.notok' => 'Die Abmeldung ist fehlgeschlagen. Das Team ist NICHT abgemeldet',
     'plan.saved.ok' => 'Deine Wunschziffern wurden gespeichert',
-    'plan.saved.notok' => 'Es ist ein Fehler aufgetreten ! Deine Wunschziffern wurden nicht gespeichert'
+    'plan.saved.notok' => 'Es ist ein Fehler aufgetreten ! Deine Wunschziffern wurden nicht gespeichert',
 ];

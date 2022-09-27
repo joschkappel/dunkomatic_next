@@ -2,23 +2,19 @@
 
 namespace Tests\Jobs;
 
-use Tests\SysTestCase;
-
-use App\Jobs\SendCustomMessage;
-
-use App\Models\Region;
 use App\Enums\Role;
-use App\Models\User;
+use App\Jobs\SendCustomMessage;
 use App\Mail\CustomMailMessage;
+use App\Models\Region;
+use App\Models\User;
 use App\Notifications\AppActionMessage;
 use App\Notifications\CustomDbMessage;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
+use Tests\SysTestCase;
 
 class CustomMessageTest extends SysTestCase
 {
-
-
     /**
      * run job send message to users
      *
@@ -32,18 +28,17 @@ class CustomMessageTest extends SysTestCase
         Notification::fake();
         Notification::assertNothingSent();
 
-        $msg = Region::where('code','HBVDA')->first()->messages->first();
+        $msg = Region::where('code', 'HBVDA')->first()->messages->first();
         $msg->notify_users = true;
-        $job_instance = resolve(SendCustomMessage::class, ['message'=>$msg]);
+        $job_instance = resolve(SendCustomMessage::class, ['message' => $msg]);
         app()->call([$job_instance, 'handle']);
 
         // check that message has beeen sent to users
-        Notification::assertSentTo( User::whereIs('clubadmin')->get(), CustomDbMessage::class);
+        Notification::assertSentTo(User::whereIs('clubadmin')->get(), CustomDbMessage::class);
         // check that autor is informed
-        Notification::assertSentTo( $msg->user, AppActionMessage::class);
+        Notification::assertSentTo($msg->user, AppActionMessage::class);
         // check that message is marked as SENT
-        $this->assertDatabaseMissing('messages', ['id'=>$msg->id, 'sent_at'=>null]);
-
+        $this->assertDatabaseMissing('messages', ['id' => $msg->id, 'sent_at' => null]);
     }
 
     /**
@@ -63,20 +58,21 @@ class CustomMessageTest extends SysTestCase
         Mail::assertNothingSent();
         Mail::assertNothingQueued();
 
-        $msg = Region::where('code','HBVDA')->first()->messages->first();
+        $msg = Region::where('code', 'HBVDA')->first()->messages->first();
         $msg->to_members = [Role::ClubLead()->value];
-        $job_instance = resolve(SendCustomMessage::class, ['message'=>$msg]);
+        $job_instance = resolve(SendCustomMessage::class, ['message' => $msg]);
         app()->call([$job_instance, 'handle']);
 
         // check that email has beeen sent to users
         Mail::assertSent(CustomMailMessage::class);
-        Mail::assertNotQueued( CustomMailMessage::class);
+        Mail::assertNotQueued(CustomMailMessage::class);
         // check that autor is informed
-        Notification::assertSentTo( $msg->user, AppActionMessage::class);
+        Notification::assertSentTo($msg->user, AppActionMessage::class);
         // check that message is marked as SENT
-        $this->assertDatabaseMissing('messages', ['id'=>$msg->id, 'sent_at'=>null]);
+        $this->assertDatabaseMissing('messages', ['id' => $msg->id, 'sent_at' => null]);
     }
-   /**
+
+    /**
      * run job send message to league lead
      *
      * @test
@@ -93,17 +89,17 @@ class CustomMessageTest extends SysTestCase
         Mail::assertNothingSent();
         Mail::assertNothingQueued();
 
-        $msg = Region::where('code','HBVDA')->first()->messages->first();
+        $msg = Region::where('code', 'HBVDA')->first()->messages->first();
         $msg->to_members = [Role::LeagueLead()->value];
-        $job_instance = resolve(SendCustomMessage::class, ['message'=>$msg]);
+        $job_instance = resolve(SendCustomMessage::class, ['message' => $msg]);
         app()->call([$job_instance, 'handle']);
 
         // check that email has beeen sent to users
         Mail::assertSent(CustomMailMessage::class);
-        Mail::assertNotQueued( CustomMailMessage::class);
+        Mail::assertNotQueued(CustomMailMessage::class);
         // check that autor is informed
-        Notification::assertSentTo( $msg->user, AppActionMessage::class);
+        Notification::assertSentTo($msg->user, AppActionMessage::class);
         // check that message is marked as SENT
-        $this->assertDatabaseMissing('messages', ['id'=>$msg->id, 'sent_at'=>null]);
+        $this->assertDatabaseMissing('messages', ['id' => $msg->id, 'sent_at' => null]);
     }
 }

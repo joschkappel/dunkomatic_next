@@ -4,7 +4,6 @@ namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
-
 class Kernel extends HttpKernel
 {
     /**
@@ -70,5 +69,4 @@ class Kernel extends HttpKernel
         'set.region' => \App\Http\Middleware\SetRegion::class,
         'set.logcontext' => \App\Http\Middleware\SetLogContext::class,
     ];
-
 }

@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Schedule;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -18,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Schedule $schedule
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|ScheduleEvent newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ScheduleEvent newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ScheduleEvent query()
@@ -32,18 +31,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class ScheduleEvent extends Model
 {
-  protected $fillable = [
-        'id','schedule_id','game_day','game_date','full_weekend'
+    protected $fillable = [
+        'id', 'schedule_id', 'game_day', 'game_date', 'full_weekend',
     ];
 
-  protected $dates = ['game_date'];
+    protected $dates = ['game_date'];
 
-  protected $casts = [
+    protected $casts = [
         'full_weekend' => 'boolean',
-  ];
+    ];
 
-  public function schedule(): BelongsTo
-  {
-      return $this->belongsTo(Schedule::class);
-  }
+    public function schedule(): BelongsTo
+    {
+        return $this->belongsTo(Schedule::class);
+    }
 }
