@@ -236,82 +236,76 @@ class RegionController extends Controller
      */
     public function update_details(Request $request, Region $region)
     {
-        $daterule = 'sometimes|nullable|date|';
+        $daterule = 'sometimes|nullable|date';
 
         $openselectionrule = $daterule;
-        if ($request->input('open_selection_at')) {
-            if ($request->input('close_selection_at')) {
+        if ($request->has('open_selection_at')) {
+            if ($request->has('close_selection_at')) {
                 $openselectionrule .= '|before:close_selection_at';
-            } elseif ($request->input('open_scheduling_at')) {
+            } elseif ($request->has('open_scheduling_at')) {
                 $openselectionrule .= '|before:open_scheduling_at';
-            } elseif ($request->input('close_scheduling_at')) {
+            } elseif ($request->has('close_scheduling_at')) {
                 $openselectionrule .= '|before:close_scheduling_at';
-            } elseif ($request->input('close_referees_at')) {
+            } elseif ($request->has('close_referees_at')) {
                 $openselectionrule .= '|before:close_referees_at';
             }
         }
 
         $closeselectionrule = $daterule;
-        if ($request->input('close_selection_at')) {
-            if ($request->input('open_selection_at')) {
+        if ($request->has('close_selection_at')) {
+            if ($request->has('open_selection_at')) {
                 $closeselectionrule .= '|after:open_selection_at';
             }
 
-            if ($request->input('open_scheduling_at')) {
+            if ($request->has('open_scheduling_at')) {
                 $closeselectionrule .= '|before:open_scheduling_at';
-            } elseif ($request->input('close_scheduling_at')) {
+            } elseif ($request->has('close_scheduling_at')) {
                 $closeselectionrule .= '|before:close_scheduling_at';
-            } elseif ($request->input('close_referees_at')) {
+            } elseif ($request->has('close_referees_at')) {
                 $closeselectionrule .= '|before:close_referees_at';
             }
         }
 
         $openschedulingrule = $daterule;
-        if ($request->input('open_scheduling_at')) {
-            if ($request->input('close_selection_at')) {
+        if ($request->has('open_scheduling_at')) {
+            if ($request->has('close_selection_at')) {
                 $openschedulingrule .= '|after:close_selection_at';
-            } elseif ($request->input('open_selection_at')) {
+            } elseif ($request->has('open_selection_at')) {
                 $openschedulingrule .= '|after:open_selection_at';
-            } else {
-                $openschedulingrule .= '|after:today';
             }
 
-            if ($request->input('close_scheduling_at')) {
+            if ($request->has('close_scheduling_at')) {
                 $openschedulingrule .= '|before:close_scheduling_at';
-            } elseif ($request->input('close_referees_at')) {
+            } elseif ($request->has('close_referees_at')) {
                 $openschedulingrule .= '|before:close_referees_at';
             }
         }
 
         $closeschedulingrule = $daterule;
-        if ($request->input('close_scheduling_at')) {
-            if ($request->input('open_scheduling_at')) {
+        if ($request->has('close_scheduling_at')) {
+            if ($request->has('open_scheduling_at')) {
                 $closeschedulingrule .= '|after:open_scheduling_at';
-            } elseif ($request->input('close_selection_at')) {
+            } elseif ($request->has('close_selection_at')) {
                 $closeschedulingrule .= '|after:close_selection_at';
-            } elseif ($request->input('open_selection_at')) {
+            } elseif ($request->has('open_selection_at')) {
                 $closeschedulingrule .= '|after:open_selection_at';
-            } else {
-                $closeschedulingrule .= '|after:today';
             }
 
-            if ($request->input('close_referees_at')) {
+            if ($request->has('close_referees_at')) {
                 $closeschedulingrule .= '|before:close_referees_at';
             }
         }
 
         $closerefereesrule = $daterule;
-        if ($request->input('close_referees_at')) {
-            if ($request->input('close_scheduling_at')) {
+        if ($request->has('close_referees_at')) {
+            if ($request->has('close_scheduling_at')) {
                 $closerefereesrule .= '|after:close_scheduling_at';
-            } elseif ($request->input('open_scheduling_at')) {
+            } elseif ($request->has('open_scheduling_at')) {
                 $closerefereesrule .= '|after:open_scheduling_at';
-            } elseif ($request->input('close_selection_at')) {
+            } elseif ($request->has('close_selection_at')) {
                 $closerefereesrule .= '|after:close_selection_at';
-            } elseif ($request->input('open_selection_at')) {
+            } elseif ($request->has('open_selection_at')) {
                 $closerefereesrule .= '|after:open_selection_at';
-            } else {
-                $closerefereesrule .= '|after:today';
             }
         }
 

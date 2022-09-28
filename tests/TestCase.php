@@ -18,7 +18,7 @@ abstract class TestCase extends BaseTestCase
      *
      * @return array
      */
-    protected function setUpTraits()
+    public function setUpTraits()
     {
         $uses = parent::setUpTraits();
         if (isset($uses[Authentication::class])) {
@@ -30,12 +30,12 @@ abstract class TestCase extends BaseTestCase
         return [];
     }
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         $leagues = League::all();
 
