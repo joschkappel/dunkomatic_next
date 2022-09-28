@@ -77,7 +77,7 @@ class Club extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable, HasFactory, ReportFinder;
 
-    protected $with = ['region'];
+    protected $with = ['region', 'memberships'];
 
     public function generateTags(): array
     {

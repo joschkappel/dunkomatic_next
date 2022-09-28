@@ -66,7 +66,8 @@ class Team extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable, hasFactory;
 
-    // protected $with = ['club' /*, 'league'*/];
+    protected $with = ['club'];
+
     protected $appends = ['name'];
 
     public function generateTags(): array

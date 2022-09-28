@@ -6,9 +6,7 @@ use App\Models\Region;
 use App\Models\User;
 use App\Notifications\NewUser;
 use App\Notifications\VerifyEmail;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
-use TestDatabaseSeeder;
 use Tests\TestCase;
 
 class RegistrationTest extends TestCase
@@ -29,6 +27,7 @@ class RegistrationTest extends TestCase
 
         Notification::fake();
         Notification::assertNothingSent();
+        $this->assertDatabaseMissing('users', ['email' => 'test@gmail.com']);
 
         $response = $this->get('/de/register');
 
@@ -47,7 +46,7 @@ class RegistrationTest extends TestCase
                          ])
                          ->assertStatus(200);
         $this->assertDatabaseHas('users', ['email' => 'test@gmail.com']);
-        $user = User::where('email', '=', 'test@gmail.com')->first();
+        $user = User::where('email', 'test@gmail.com')->first();
 
         Notification::assertSentTo(
             [$user], VerifyEmail::class

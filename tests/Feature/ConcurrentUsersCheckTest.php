@@ -23,7 +23,7 @@ class ConcurrentUsersCheckTest extends TestCase
         $check = ConcurrentUsersCheck::new()
                     ->failWhenFailedLoginsIsHigherInTheLastMinute(80)
                     ->failWhenFailedLoginsIsHigherInTheLast5Minutes(50)
-                    ->failWhenFailedLoginsIsHigherInTheLast15Minutes(30);
+                    ->failWhenFailedLoginsIsHigherInTheLast15Minutes(40);
 
         $result = $check->run();
 
