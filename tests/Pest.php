@@ -1,5 +1,9 @@
 <?php
 
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Tests\CreatesApplication;
+use Tests\TestCase;
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -11,7 +15,8 @@
 |
 */
 
-uses(Tests\TestCase::class)->in('Feature', 'Unit');
+uses(TestCase::class)->in('Feature/Controllers', 'Feature/Jobs', 'Feature/Auth', 'Unit');
+uses(BaseTestCase::class, CreatesApplication::class)->in('Feature/Console');
 
 /*
 |--------------------------------------------------------------------------
