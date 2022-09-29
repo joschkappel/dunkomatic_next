@@ -170,7 +170,7 @@ class Member extends Model implements Auditable
      *
      * @return void
      */
-    protected function pruning()
+/*     protected function pruning()
     {
         $this->load('user');
         if ($this->user()->exists()) {
@@ -179,7 +179,7 @@ class Member extends Model implements Auditable
             $u->member()->dissociate();
             $u->save();
         }
-    }
+    } */
 
     /**
      * Get the prunable model query.
@@ -188,8 +188,8 @@ class Member extends Model implements Auditable
      */
     public function prunable()
     {
-        Log::notice('[JOB][DB CLEANUP] pruning members without any membership.');
+        Log::notice('[JOB][DB CLEANUP] pruning members without any membership and user account.');
 
-        return static::doesntHave('memberships');
+        return static::doesntHave('memberships')->doesntHave('user');
     }
 }
