@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Member;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -44,14 +45,14 @@ class MemberCleanup extends Command
                 $query->selectRaw('lastname')->from('members')->groupBy('lastname')->havingRaw('count(lastname) = ?', [2]);
             })->orderBy('lastname')->get()->chunk(2);
         } elseif ($key_for_duplicates == 'firstname lastname') {
-            $duplicates = Member::whereIn('id', function ($query) {
+            $duplicates = Member::whereIn(DB::raw('concat(firstname, lastname)'), function ($query) {
                 $query->selectRaw('concat(firstname, lastname) as name')->from('members')->groupBy('name')->havingRaw('count(name) = ?', [2]);
             })->orderBy('lastname')->get()->chunk(2);
         } else {
             $this->error('Can search for key '.$key_for_duplicates);
         }
         if ($duplicates->count() > 0) {
-            $this->info('Found '.$duplicates->count().' members with duplicate ');
+            $this->info('Found '.$duplicates->count().' members with duplicate '.$key_for_duplicates);
             $this->info('We will loop through these one by one for you to decide on the approach for merging.');
             $this->newLine(2);
 
