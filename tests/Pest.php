@@ -15,8 +15,8 @@ use Tests\TestCase;
 |
 */
 
-uses(TestCase::class)->in('Feature/Controllers', 'Feature/Jobs', 'Feature/Auth', 'Unit');
-uses(BaseTestCase::class, CreatesApplication::class)->in('Feature/Console');
+uses(TestCase::class)->in('Feature', 'Unit');
+// uses(BaseTestCase::class, CreatesApplication::class)->in('Feature/Console');
 
 /*
 |--------------------------------------------------------------------------
