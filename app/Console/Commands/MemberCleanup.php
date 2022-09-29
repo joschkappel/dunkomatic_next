@@ -46,7 +46,7 @@ class MemberCleanup extends Command
             })->orderBy('lastname')->get()->chunk(2);
         } elseif ($key_for_duplicates == 'firstname lastname') {
             $duplicates = Member::whereIn(DB::raw('concat(firstname, lastname)'), function ($query) {
-                $query->selectRaw('concat(firstname, lastname) as name')->from('members')->groupBy('name')->havingRaw('count(name) = ?', [2]);
+                $query->selectRaw('concat(firstname, lastname) as name from members group By 1 having count(1) = 2');
             })->orderBy('lastname')->get()->chunk(2);
         } else {
             $this->error('Can search for key '.$key_for_duplicates);
