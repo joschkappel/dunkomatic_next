@@ -15,7 +15,7 @@ class MemberCleanup extends Command
      *
      * @var string
      */
-    protected $signature = 'dmatic:membercleanup';
+    protected $signature = 'dmatic:membercleanup {--count=2 : Number of duplicate items }';
 
     /**
      * The console command description.
@@ -31,28 +31,30 @@ class MemberCleanup extends Command
      */
     public function handle()
     {
+        $dup_cnt = $this->option('count');
+
         $key_for_duplicates = $this->choice(
             'Which key shall I use to detect duplicates?',
             ['email1', 'lastname', 'firstname lastname'],
             0
         );
         if ($key_for_duplicates == 'email1') {
-            $duplicates = Member::whereIn('email1', function ($query) {
-                $query->selectRaw('email1')->from('members')->groupBy('email1')->havingRaw('count(email1) = ?', [2]);
+            $duplicates = Member::whereIn('email1', function ($query) use ($dup_cnt) {
+                $query->selectRaw('email1')->from('members')->groupBy('email1')->havingRaw('count(email1) = ?', [$dup_cnt]);
             })->orderBy('email1')->get()->chunk(2);
         } elseif ($key_for_duplicates == 'lastname') {
-            $duplicates = Member::whereIn('lastname', function ($query) {
-                $query->selectRaw('lastname')->from('members')->groupBy('lastname')->havingRaw('count(lastname) = ?', [2]);
+            $duplicates = Member::whereIn('lastname', function ($query) use ($dup_cnt) {
+                $query->selectRaw('lastname')->from('members')->groupBy('lastname')->havingRaw('count(lastname) = ?', [$dup_cnt]);
             })->orderBy('lastname')->get()->chunk(2);
         } elseif ($key_for_duplicates == 'firstname lastname') {
-            $duplicates = Member::whereIn(DB::raw('concat(firstname, lastname)'), function ($query) {
-                $query->selectRaw('concat(firstname, lastname) as name from members group By 1 having count(1) = 2');
+            $duplicates = Member::whereIn(DB::raw('concat(firstname, lastname)'), function ($query) use ($dup_cnt) {
+                $query->selectRaw('concat(firstname, lastname) as name from members group by name having count(name) = '.$dup_cnt);
             })->orderBy('lastname')->get()->chunk(2);
         } else {
-            $this->error('Can search for key '.$key_for_duplicates);
+            $this->error('Cannot search for key '.$key_for_duplicates);
         }
         if ($duplicates->count() > 0) {
-            $this->info('Found '.$duplicates->count().' members with duplicate '.$key_for_duplicates);
+            $this->info('Found '.$duplicates->count().' members with '.$dup_cnt.' '.$key_for_duplicates);
             $this->info('We will loop through these one by one for you to decide on the approach for merging.');
             $this->newLine(2);
 

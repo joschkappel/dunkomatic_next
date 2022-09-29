@@ -2,6 +2,15 @@
 
 use App\Models\Member;
 
+it('does not find duplicate members by lastname', function () {
+    // Arrange
+
+    // Act and Assert
+    $this->artisan('dmatic:membercleanup --count=2')
+        ->expectsQuestion('Which key shall I use to detect duplicates?', 'lastname')
+        ->expectsOutput('No duplicates found for lastname')
+        ->assertSuccessful();
+});
 it('finds duplicate members by lastname and merges', function () {
     // Arrange
     $mem_a = Member::factory()->create(['lastname' => 'A']);
@@ -9,9 +18,9 @@ it('finds duplicate members by lastname and merges', function () {
     $m_cnt = Member::count();
 
     // Act and Assert
-    $this->artisan('dmatic:membercleanup')
+    $this->artisan('dmatic:membercleanup --count=2')
         ->expectsQuestion('Which key shall I use to detect duplicates?', 'lastname')
-        ->expectsOutput('Found 1 members with duplicate lastname')
+        ->expectsOutput('Found 1 members with 2 lastname')
         ->expectsQuestion('Which member do you want to keep?', $mem_a->id.': '.$mem_a->name)
         ->expectsQuestion('Copy firstname '.$mem_b->firstname.' -> '.$mem_a->firstname.'?', 'yes')
         ->expectsQuestion('Copy city '.$mem_b->city.' -> '.$mem_a->city.'?', 'yes')
@@ -29,17 +38,16 @@ it('finds duplicate members by lastname and merges', function () {
 });
 it('finds duplicate members by email and merges', function () {
     // Arrange
-    $mem_a = Member::factory()->create(['email1' => 'A@gmail.com']);
-    $mem_b = Member::factory()->create(['email1' => 'A@gmail.com']);
+    $mem_a = Member::factory()->create(['lastname' => 'A', 'email1' => 'A@gmail.com']);
+    $mem_b = Member::factory()->create(['lastname' => 'A', 'email1' => 'A@gmail.com']);
     $m_cnt = Member::count();
 
     // Act and Assert
-    $this->artisan('dmatic:membercleanup')
+    $this->artisan('dmatic:membercleanup --count=2')
         ->expectsQuestion('Which key shall I use to detect duplicates?', 'email1')
-        ->expectsOutput('Found 1 members with duplicate email1')
+        ->expectsOutput('Found 1 members with 2 email1')
         ->expectsQuestion('Which member do you want to keep?', $mem_a->id.': '.$mem_a->name)
         ->expectsQuestion('Copy firstname '.$mem_b->firstname.' -> '.$mem_a->firstname.'?', 'yes')
-        ->expectsQuestion('Copy lastname '.$mem_b->lastname.' -> '.$mem_a->lastname.'?', 'yes')
         ->expectsQuestion('Copy city '.$mem_b->city.' -> '.$mem_a->city.'?', 'yes')
         ->expectsQuestion('Copy zipcode '.$mem_b->zipcode.' -> '.$mem_a->zipcode.'?', 'yes')
         ->expectsQuestion('Copy street '.$mem_b->street.' -> '.$mem_a->street.'?', 'yes')
@@ -59,9 +67,9 @@ it('finds duplicate members by firstname,lastname and merges', function () {
     $m_cnt = Member::count();
 
     // Act and Assert
-    $this->artisan('dmatic:membercleanup')
+    $this->artisan('dmatic:membercleanup --count=2')
         ->expectsQuestion('Which key shall I use to detect duplicates?', 'firstname lastname')
-        ->expectsOutput('Found 1 members with duplicate firstname lastname')
+        ->expectsOutput('Found 1 members with 2 firstname lastname')
         ->expectsQuestion('Which member do you want to keep?', $mem_a->id.': '.$mem_a->name)
         ->expectsQuestion('Copy city '.$mem_b->city.' -> '.$mem_a->city.'?', 'yes')
         ->expectsQuestion('Copy zipcode '.$mem_b->zipcode.' -> '.$mem_a->zipcode.'?', 'yes')
