@@ -59,7 +59,7 @@ return new class extends Migration
             foreach ($mname as $mn) {
                 if ((collect(['.', '..', '...', 'xxx', ',', 'NN', 'N.N.'])->contains($mn['l'])) and
                      ($mn['f'] == '')) {
-                    Log::error('migrate coaches. stop working on ', ['team' => $t->name, 'coaches' => $mn]);
+                    Log::error('migrate coaches. dont migrate empty coach ', ['team' => $t->name, 'coaches' => $mn]);
 
                     continue;
                 }
@@ -99,7 +99,7 @@ return new class extends Migration
         }
         // remove duplicate memebrship eamils (where meber.email1 = memerbship.email)
         Membership::whereHas('member', function (Builder $query) {
-        $query->whereRaw('members.email1 = email');
+            $query->whereRaw('members.email1 = email');
         })->update(['email' => null]);
 
         Schema::table('teams', function (Blueprint $table) {
