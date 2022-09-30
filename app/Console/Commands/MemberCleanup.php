@@ -40,22 +40,35 @@ class MemberCleanup extends Command
         );
         if ($key_for_duplicates == 'email1') {
             $duplicates = Member::whereIn('email1', function ($query) use ($dup_cnt) {
-                $query->selectRaw('email1')->from('members')->groupBy('email1')->havingRaw('count(email1) = ?', [$dup_cnt]);
+                $query->selectRaw('email1 from members 
+                                    WHERE email1 is not null 
+                                    AND email1!="" 
+                                    GROUP BY email1 
+                                    HAVING count(email1) = '.$dup_cnt);
             })->orderBy('email1')->get()->chunk($dup_cnt);
         } elseif ($key_for_duplicates == 'email1 lastname') {
             $duplicates = Member::whereIn(DB::raw('concat(email1, lastname)'), function ($query) use ($dup_cnt) {
-                $query->selectRaw('concat(email1, lastname) as name from members group by name having count(concat(email1, lastname)) = '.$dup_cnt);
+                $query->selectRaw('concat(email1, lastname) as name 
+                                   FROM members 
+                                   WHERE email1 is not null 
+                                   AND email1!="" 
+                                   GROUP BY name 
+                                   HAVING count(concat(email1, lastname)) = '.$dup_cnt);
             })->orderBy('lastname')->get()->chunk($dup_cnt);
         } elseif ($key_for_duplicates == 'firstname lastname') {
             $duplicates = Member::whereIn(DB::raw('concat(firstname, lastname)'), function ($query) use ($dup_cnt) {
-                $query->selectRaw('concat(firstname, lastname) as name from members group by name having count(concat(firstname, lastname)) = '.$dup_cnt);
+                $query->selectRaw('concat(firstname, lastname) as name 
+                                    FROM members 
+                                    WHERE email1 is not null 
+                                    AND email1!="" 
+                                    GROUP BY name 
+                                    HAVING count(concat(firstname, lastname)) = '.$dup_cnt);
             })->orderBy('lastname')->get()->chunk($dup_cnt);
-        } else {
-            $this->error('Cannot search for key '.$key_for_duplicates);
         }
+
         if ($duplicates->count() > 0) {
-            $this->info('Found '.$duplicates->count().' members with '.$dup_cnt.' '.$key_for_duplicates);
-            $this->info('We will loop through these one by one for you to decide on the approach for merging.');
+            $this->warn('Found '.$duplicates->count().' members with '.$dup_cnt.' '.$key_for_duplicates);
+            $this->line('Now looping through these one by one for you to decide on the approach for merging.');
 
             foreach ($duplicates as $dup) {
                 $mlist = $dup->map(function ($i) {
@@ -63,6 +76,7 @@ class MemberCleanup extends Command
                 })->values()->toArray();
                 $mlist[] = 'all';
                 $mtable = $dup->map->only('name', 'address', 'email1', 'phone', 'is_user', 'member_of_clubs', 'member_of_teams', 'member_of_leagues')->toArray();
+                $this->newline();
                 $this->table(
                     ['Name', 'Address', 'Email', 'Phone', 'has account', 'club mships', 'team mships', 'league mships'],
                     $mtable
@@ -76,18 +90,40 @@ class MemberCleanup extends Command
                 // $this->newline();
                 if ($member_to_keep == 'all') {
                     continue;
-                }
+                } else {
+                    $m_id = Str::of($member_to_keep)->explode(': ')->first();
+                    $m_to_keep = $dup->pull($dup->where('id', $m_id)->keys()->first());
 
-                $m_id = Str::of($member_to_keep)->explode(': ')->first();
-                $m_to_keep = $dup->pull($dup->where('id', $m_id)->keys()->first());
-                $m_to_merge = $dup->last();
-                Log::info('keeping member', ['member' => $m_to_keep]);
-                Log::info('merging member', ['member' => $m_to_merge]);
-                $m_to_keep = $this->merge_properties($m_to_keep, $m_to_merge);
-                $m_final = $this->merge_members($m_to_keep, $m_to_merge);
+                    if ($dup->count() > 1) {
+                        $mlist = $dup->map(function ($i) {
+                            return $i->id.': '.$i->name;
+                        })->values()->toArray();
+                        $mtable = $dup->map->only('name', 'address', 'email1', 'phone', 'is_user', 'member_of_clubs', 'member_of_teams', 'member_of_leagues')->toArray();
+                        $this->table(
+                            ['Name', 'Address', 'Email', 'Phone', 'has account', 'club mships', 'team mships', 'league mships'],
+                            $mtable
+                        );
+                        $member_to_merge = $this->choice(
+                            'Which member do you want to merge?',
+                            $mlist,
+                            0
+                        );
+                        $m_id = Str::of($member_to_merge)->explode(': ')->first();
+                        $m_to_merge = $dup->pull($dup->where('id', $m_id)->keys()->first());
+                    } else {
+                        // pick the last remaining item
+                        $m_to_merge = $dup->last();
+                    }
+
+                    Log::info('keeping member', ['member' => $m_to_keep]);
+                    Log::info('merging member', ['member' => $m_to_merge]);
+                    $m_to_keep = $this->merge_properties($m_to_keep, $m_to_merge);
+                    $m_final = $this->merge_members($m_to_keep, $m_to_merge);
+                }
             }
         } else {
-            $this->info('No duplicates found for '.$key_for_duplicates);
+            $this->warn('No duplicates found for '.$key_for_duplicates);
+            $this->info('You may try with antoher key');
 
             return 0;
         }
