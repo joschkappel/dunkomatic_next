@@ -67,7 +67,7 @@ class MemberCleanup extends Command
         }
 
         if ($duplicates->count() > 0) {
-            $this->warn('Found '.$duplicates->count().' members with '.$dup_cnt.' '.$key_for_duplicates);
+            $this->components->info('Found '.$duplicates->count().' members with '.$dup_cnt.' '.$key_for_duplicates);
             $this->line('Now looping through these one by one for you to decide on the approach for merging.');
 
             foreach ($duplicates as $dup) {
@@ -119,11 +119,23 @@ class MemberCleanup extends Command
                     Log::info('merging member', ['member' => $m_to_merge]);
                     $m_to_keep = $this->merge_properties($m_to_keep, $m_to_merge);
                     $m_final = $this->merge_members($m_to_keep, $m_to_merge);
+
+                    $this->newLine();
+
+                    $this->components->twoColumnDetail('<fg=green;options=bold>Final member to keep</>');
+                    $this->components->twoColumnDetail('Name', $m_final->name);
+                    $this->components->twoColumnDetail('Address', $m_final->address);
+                    $this->components->twoColumnDetail('Email', $m_final->email1);
+                    $this->components->twoColumnDetail('Mobile', $m_final->mobile);
+                    $this->components->twoColumnDetail('Phone', $m_final->phone);
+                    $this->components->twoColumnDetail('Memberships Clubs', $m_final->member_of_clubs);
+                    $this->components->twoColumnDetail('Memberships Teams', $m_final->member_of_teams);
+                    $this->components->twoColumnDetail('Memberships Leagues', $m_final->member_of_leagues);
+                    $this->components->twoColumnDetail('Memberships Regions', $m_final->member_of_region);
                 }
             }
         } else {
-            $this->warn('No duplicates found for '.$key_for_duplicates);
-            $this->info('You may try with antoher key');
+            $this->components->info('No duplicates found for '.$key_for_duplicates.'. You may try with another key');
 
             return 0;
         }

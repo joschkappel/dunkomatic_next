@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class DatabaseRestore extends Command
 {
@@ -12,7 +13,7 @@ class DatabaseRestore extends Command
      *
      * @var string
      */
-    protected $signature = 'db:restore {backupfile : Filename of the dump file created by db:backup }';
+    protected $signature = 'db:restore {backupfile=select : Filename of the dump file created by db:backup }';
 
     /**
      * The console command description.
@@ -42,8 +43,19 @@ class DatabaseRestore extends Command
         $db_usr = config('database.connections.dunknxt.username');
         $db_pwd = config('database.connections.dunknxt.password');
         $db_host = config('database.connections.dunknxt.host');
-        $filename = $this->argument('backupfile');
         $backup_folder = config('dunkomatic.folders.backup').'/';
+
+        $filename = $this->argument('backupfile');
+        if ($filename == 'select') {
+            $this->components->info('Searching backup folder...');
+            $files = Storage::disk('local')->files($backup_folder);
+            $archivefile = $this->components->choice(
+                'Which backup do you want to restore?',
+                $files,
+                count($files) - 1
+            );
+            $filename = Str::of($archivefile)->explode('/')->last();
+        }
 
         if (Storage::disk('local')->exists($backup_folder.$filename)) {
             $filepath = storage_path('app/'.$backup_folder.$filename);
@@ -53,14 +65,14 @@ class DatabaseRestore extends Command
 
             exec($command, $output, $returnVar);
             if ($returnVar == COMMAND::SUCCESS) {
-                $this->info('DB restore was successful!');
+                $this->components->info('DB restore was successful!');
             } else {
-                $this->error('Oops someting went wrong, DB not restored from file '.$filepath);
+                $this->components->error('Oops someting went wrong, DB not restored from file '.$filepath);
             }
             Storage::disk('local')->delete('tmp/'.$filename);
         } else {
             $returnVar = COMMAND::FAILURE;
-            $this->error('The backup file '.$filename.' does NOT exist in folder ');
+            $this->components->error('The backup file '.$filename.' does NOT exist in folder ');
         }
 
         return $returnVar;
