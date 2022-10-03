@@ -10,7 +10,7 @@ it('does not find duplicate members by email1', function () {
     // Act and Assert
     $this->artisan('dmatic:membercleanup --count=2')
         ->expectsQuestion('Which key shall I use to detect duplicates?', 'email1')
-        ->expectsOutput('No duplicates found for email1')
+        ->expectsOutput('No duplicates found for email1. You may try with another key')
         ->assertSuccessful();
 });
 it('finds duplicate members by email1,lastname and merges', function () {
@@ -143,7 +143,7 @@ it('does not find triple members by email1', function () {
     // Act and Assert
     $this->artisan('dmatic:membercleanup --count=2')
         ->expectsQuestion('Which key shall I use to detect duplicates?', 'email1')
-        ->expectsOutput('No duplicates found for email1')
+        ->expectsOutput('No duplicates found for email1. You may try with another key')
         ->assertSuccessful();
 
     // Clean
