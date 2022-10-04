@@ -67,7 +67,7 @@ class MemberCleanup extends Command
         }
 
         if ($duplicates->count() > 0) {
-            $this->components->info('Found '.$duplicates->count().' members with '.$dup_cnt.' '.$key_for_duplicates);
+            $this->info('Found '.$duplicates->count().' members with '.$dup_cnt.' '.$key_for_duplicates);
             $this->line('Now looping through these one by one for you to decide on the approach for merging.');
 
             foreach ($duplicates as $dup) {
@@ -122,20 +122,20 @@ class MemberCleanup extends Command
 
                     $this->newLine();
 
-                    $this->components->twoColumnDetail('<fg=green;options=bold>Final member to keep</>');
-                    $this->components->twoColumnDetail('Name', $m_final->name);
-                    $this->components->twoColumnDetail('Address', $m_final->address);
-                    $this->components->twoColumnDetail('Email', $m_final->email1);
-                    $this->components->twoColumnDetail('Mobile', $m_final->mobile);
-                    $this->components->twoColumnDetail('Phone', $m_final->phone);
-                    $this->components->twoColumnDetail('Memberships Clubs', $m_final->member_of_clubs);
-                    $this->components->twoColumnDetail('Memberships Teams', $m_final->member_of_teams);
-                    $this->components->twoColumnDetail('Memberships Leagues', $m_final->member_of_leagues);
-                    $this->components->twoColumnDetail('Memberships Regions', $m_final->member_of_region);
+                    $this->info('Final member to keep:');
+                    $this->line('Name               : '.$m_final->name);
+                    $this->line('Address            : '.$m_final->address);
+                    $this->line('Email              : '.$m_final->email1);
+                    $this->line('Mobile             : '.$m_final->mobile);
+                    $this->line('Phone              : '.$m_final->phone);
+                    $this->line('Memberships Clubs  : '.$m_final->member_of_clubs);
+                    $this->line('Memberships Teams  : '.$m_final->member_of_teams);
+                    $this->line('Memberships Leagues: '.$m_final->member_of_leagues);
+                    $this->line('Memberships Regions: '.$m_final->member_of_region);
                 }
             }
         } else {
-            $this->components->info('No duplicates found for '.$key_for_duplicates.'. You may try with another key');
+            $this->info('No duplicates found for '.$key_for_duplicates.'. You may try with another key.');
 
             return 0;
         }
