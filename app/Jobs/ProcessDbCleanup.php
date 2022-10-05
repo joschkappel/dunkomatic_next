@@ -5,10 +5,10 @@ namespace App\Jobs;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use OwenIt\Auditing\Models\Audit;
 
@@ -57,6 +57,10 @@ class ProcessDbCleanup implements ShouldQueue
         // drop audits older than 2 months
         $old_audits = Audit::whereDate('created_at', '<', now()->subMonths(2))->delete();
         Log::notice('[JOB][DB CLEANUP] deleting old audits.', ['count' => $old_audits]);
+
+        // drop authentication logs older than 2 months
+        $old_healthcchecks = DB::table('health_check_result_history_items')->whereDate('created_at', '<', now()->subMonths(2))->delete();
+        Log::notice('[JOB][DB CLEANUP] deleting old health check items.', ['count' => $old_healthcchecks]);
 
         // drop all read notifications
         // $old_notifs = DatabaseNotification::whereDate('read_at', '<',now()->subWeek())->delete();
