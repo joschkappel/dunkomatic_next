@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'action.downloads' => 'Go to Download Zone',
     'games.home' => 'Home Games Report',
     'contacts' => 'Contacts',
     'games.all' => 'All Games Report',
