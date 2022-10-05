@@ -18,7 +18,7 @@
                     <div class="icon">
                         <i class="fas fa-globe-europe"></i>
                     </div>
-                    <a href="#" data-toggle="modal"  class="small-box-footer" data-target="#modalDownloadZone">Zur Download Zone
+                    <a href="#" data-toggle="modal"  class="small-box-footer" data-target="#modalDownloadZone">{{__('reports.action.downloads')}}
                         <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>

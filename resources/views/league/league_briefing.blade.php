@@ -18,7 +18,11 @@
                     <div class="icon">
                         <i class="fas fa-trophy"></i>
                     </div>
-                    <a href="#" data-toggle="modal"  class="small-box-footer" data-target="#modalDownloadZone">Zur Download Zone
+                    @can('update-leagues')
+                    <a href="{{ route('league.dashboard', ['language'=>app()->getLocale(), 'league'=>$league]) }}"  class="small-box-footer">{{__('league.menu.manage')}}
+                        <i class="fas fa-tasks"></i></a>
+                    @endcan
+                    <a href="#" data-toggle="modal"  class="small-box-footer" data-target="#modalDownloadZone">{{__('reports.action.downloads')}}
                         <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>

@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'action.downloads' => 'Zur Download Zone',
     'games.home' => 'Heimspielplan',
     'contacts' => 'Adressenliste',
     'games.all' => 'Gesamtspielplan',

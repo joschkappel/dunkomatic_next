@@ -11,6 +11,7 @@ return [
     'action.register' => 'Melde ein Team für diese Runde',
     'action.withdraw' => 'Ziehe Mannschaft aus Runde :LEAGUE zurück',
     'action.game.list' => 'Spielplan',
+    'action.contacts' => 'Kontaktdaten',
     'confirm.delete' => 'Willst Du die Spielrunde wirklich löschen ?',
     'info.delete' => ':LEAGUE mit :noteam Mannschaften und :nomember Mitarbeitenden',
     'title.list' => 'Rundenliste für :Region',
