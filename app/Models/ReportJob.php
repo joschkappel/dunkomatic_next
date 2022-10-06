@@ -11,6 +11,7 @@ class ReportJob extends Model
     protected $fillable = [
         'id', 'region_id', 'report_id',
         'lastrun_at', 'lastrun_ok', 'running',
+        'version',
     ];
 
     /**

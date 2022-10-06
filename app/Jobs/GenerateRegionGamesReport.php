@@ -2,10 +2,13 @@
 
 namespace App\Jobs;
 
+use App\Enums\Report;
 use App\Enums\ReportFileType;
 use App\Exports\RegionGamesReport;
 use App\Helpers\CalendarComposer;
 use App\Models\Region;
+use App\Traits\ReportFinder;
+use App\Traits\ReportJobStatus;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -19,7 +22,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class GenerateRegionGamesReport implements ShouldQueue
 {
-    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ReportFinder, ReportJobStatus;
 
     public string $export_folder;
 
@@ -47,7 +50,7 @@ class GenerateRegionGamesReport implements ShouldQueue
         }
         $this->export_folder = $this->region->region_folder;
         $this->rpt_name = $this->export_folder.'/'.$this->region->code;
-        $this->rpt_name .= '_Gesamtplan.';
+        $this->rpt_name .= '_Gesamtplan';
     }
 
     /**
@@ -62,9 +65,12 @@ class GenerateRegionGamesReport implements ShouldQueue
                 return;
             }
         }
+        $version = $this->job_version($this->region, Report::RegionGames());
+        // move previous versions
+        $this->move_old_report($this->region, $this->export_folder, '_Gesamtplan');
 
         foreach ($this->rtype->getFlags() as $rtype) {
-            $rpt_name = $this->rpt_name.$rtype->description;
+            $rpt_name = $this->rpt_name.'_v'.$version.'.'.$rtype->description;
             $rpt_name = Str::replace(' ', '-', $rpt_name);
 
             Log::info('[JOB][REGION GAMES REPORTS] started.', [

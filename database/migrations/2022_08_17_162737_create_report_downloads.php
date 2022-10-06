@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->unsignedInteger('model_id');
             $table->text('model_class', 40);
+            $table->text('version', 15)->nullable();
             $table->timestamps();
         });
     }

@@ -115,6 +115,11 @@
                 $report = new App\Models\ReportJob(['lastrun'=>null,'running'=>false,'lastrun_ok'=>true]);
             }
             @endphp
+            @if (  ( $region->is_base_level and $rpt->is( App\Enums\Report::AddressBook) ) or
+                   ( $region->is_top_level and $rpt->is( App\Enums\Report::ClubGames) ) )
+            <div class="form-row m-2">
+            </div>
+            @else
             <div class="form-row m-2">
                 <label class="col-sm col-form-label">{{ $rpt->getReportTitle() }}</label>
                 <div class="col-sm-2">
@@ -128,6 +133,7 @@
                     <button id="btnRemoveReports" type="button" data-job-id="{{$rpt->value}}" class="btn btn-danger" @if ($report->running) disabled  @endif>{{$rpt->getReportTitle().' '.__('Delete')}}</button>
                 </div>
             </div>
+            @endif
             @endforeach
             <div class="form-row m-2">
                 <label for="selLeagueReportFmt" class="col-sm col-form-label">@lang('region.job.league_reports.fmt')</label>

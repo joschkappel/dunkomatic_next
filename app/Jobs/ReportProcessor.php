@@ -13,8 +13,8 @@ use App\Models\Member;
 use App\Models\Membership;
 use App\Models\Region;
 use App\Models\ReportClass;
-use App\Models\ReportJob;
 use App\Models\Team;
+use App\Traits\ReportJobStatus;
 use Illuminate\Bus\Batch;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -28,7 +28,7 @@ use OwenIt\Auditing\Models\Audit;
 
 class ReportProcessor implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ReportJobStatus;
 
     protected Collection $run_rpts;
 
@@ -130,6 +130,12 @@ class ReportProcessor implements ShouldQueue
                     foreach ($impacted_leagues as $l) {
                         $rpt_jobs[$l->region->id][] = new GenerateTeamwareReport($l);
                         Log::info('add job for ', ['rpt' => $irpt->description, 'league-id' => $l->id]);
+                    }
+                    foreach ($impacted_regions as $r) {
+                        foreach ($r->leagues as $l) {
+                            $rpt_jobs[$r->id][] = new GenerateTeamwareReport($l);
+                            Log::info('add job for ', ['rpt' => $irpt->description, 'league-id' => $l->id]);
+                        }
                     }
                     break;
                 default:
@@ -251,30 +257,24 @@ class ReportProcessor implements ShouldQueue
     {
         foreach ($joblist as $rid => $j) {
             if ($j->count() > 0) {
-                Log::notice('[JOB] diaptching batch', ['name' => 'Report Generator Jobs '.Region::find($rid)->code.' '.$report->key, 'jobs' => $j->count()]);
+                $region = Region::find($rid);
+                Log::notice('[JOB] dispatching batch', ['name' => 'Report Generator Jobs '.$region->code.' '.$report->key, 'jobs' => $j->count()]);
+                $rj = $this->job_starting($region, $report);
                 $batch = Bus::batch($j->toArray())
-                    ->then(function (Batch $batch) use ($report, $rid) {
+                    ->then(function (Batch $batch) use ($report, $region) {
                         Log::info('[JOB] finished', ['jobs' => $batch->processedJobs()]);
                         // update region job status
-                        $rj = ReportJob::updateOrCreate(
-                            ['report_id' => $report, 'region_id' => $rid],
-                            ['lastrun_at' => now(), 'running' => false]
-                        );
+                        static::job_finished($region, $report);
                     })
-                    ->finally(function (Batch $batch) use ($report, $rid) {
+                    ->finally(function (Batch $batch) use ($report, $region) {
                         if ($batch->failedJobs > 0) {
-                            $lastrun = false;
-                        } else {
-                            $lastrun = true;
+                            Log::error('[JOB] errored', ['jobs' => $batch->failedJobs]);
+                            static::job_failed($region, $report);
                         }
-                        $rj = ReportJob::updateOrCreate(
-                            ['report_id' => $report, 'region_id' => $rid],
-                            ['lastrun' => $lastrun]
-                        );
                     })
-                    ->name('Report Generator Jobs '.Region::find($rid)->code.' '.$report->key)
+                    ->name('Report Generator Jobs '.$region->code.' '.$report->key)
                     ->onConnection('redis')
-                    ->onQueue('region_'.$rid)
+                    ->onQueue('region_'.$region->id)
                     ->dispatch();
             }
         }

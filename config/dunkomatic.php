@@ -60,6 +60,7 @@ return [
         'leagues' => 'runden',
         'clubs' => 'vereine',
         'teamware' => 'teamware',
+        'archive' => 'archive',
     ],
 
     'db_backup_age' => 30, // keep db backups for 30 days

@@ -214,6 +214,11 @@ class Region extends Model
         return   config('dunkomatic.folders.export').'/'.Str::of(config('global.season'))->replace('/', '_').'/'.$this->code.'/'.config('dunkomatic.export_folders.leagues');
     }
 
+    public function getArchiveFolderAttribute(): string
+    {
+        return   config('dunkomatic.folders.export').'/'.Str::of(config('global.season'))->replace('/', '_').'/'.$this->code.'/'.config('dunkomatic.export_folders.archive');
+    }
+
     public function getTeamwareFolderAttribute(): string
     {
         return   config('dunkomatic.folders.export').'/'.Str::of(config('global.season'))->replace('/', '_').'/'.$this->code.'/'.config('dunkomatic.export_folders.teamware');

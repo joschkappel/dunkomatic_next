@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedInteger('region_id');
             $table->foreign('region_id')->references('id')->on('regions');
             $table->unsignedInteger('report_id');
+            $table->text('version', 15)->nullable();
             $table->dateTime('lastrun_at')->nullable();
             $table->boolean('running')->default(false);
             $table->boolean('lastrun_ok')->default(true);

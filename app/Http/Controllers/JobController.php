@@ -5,13 +5,15 @@ namespace App\Http\Controllers;
 use App\Enums\Report;
 use App\Jobs\ReportProcessor;
 use App\Models\Region;
-use App\Models\ReportJob;
+use App\Traits\ReportJobStatus;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class JobController extends Controller
 {
+    use ReportJobStatus;
+
     /**
      * run a job
      *
@@ -37,17 +39,17 @@ class JobController extends Controller
 
         switch ($jobclass) {
             case Report::AddressBook:
-                $rpt_name = $region->region_folder.'/'.$region->code.'_Addressbuch.';
+                $rpt_name = $region->region_folder.'/'.$region->code.'_Addressbuch';
                 // delete files
                 $this->delete_report_files($region, $report, $rpt_name);
                 break;
             case Report::RegionGames:
-                $rpt_name = $region->region_folder.'/'.$region->code.'_Gesamtplan.';
+                $rpt_name = $region->region_folder.'/'.$region->code.'_Gesamtplan';
                 // delete file
                 $this->delete_report_files($region, $report, $rpt_name);
                 break;
             case Report::LeagueBook:
-                $rpt_name = $region->region_folder.'/'.$region->code.'_Rundenbuch.';
+                $rpt_name = $region->region_folder.'/'.$region->code.'_Rundenbuch';
                 // delete file
                 $this->delete_report_files($region, $report, $rpt_name);
                 break;
@@ -82,10 +84,7 @@ class JobController extends Controller
                 Log::notice('File deleted', ['name' => $rpt, 'result' => $res]);
             }
         }
-        $rj = ReportJob::updateOrCreate(
-            ['report_id' => $report->value, 'region_id' => $region->id],
-            ['lastrun' => null]
-        );
+        $this->reset_job_version($region, $report);
     }
 
     private function clean_report_folder(Region $region, Report $report, string $dir_name)
@@ -95,9 +94,6 @@ class JobController extends Controller
             Log::notice('File deleted', ['name' => $rpt, 'result' => $res]);
         }
 
-        $rj = ReportJob::updateOrCreate(
-            ['report_id' => $report->value, 'region_id' => $region->id],
-            ['lastrun' => null]
-        );
+        $this->reset_job_version($region, $report);
     }
 }
