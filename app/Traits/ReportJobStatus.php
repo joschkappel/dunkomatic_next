@@ -57,7 +57,7 @@ trait ReportJobStatus
     {
         $rj = ReportJob::where('report_id', $report)->where('region_id', $region->id)->first();
 
-        return $rj->version;
+        return $rj->version ?? '';
     }
 
     public function reset_job_version(Region $region, Report $report): ReportJob
