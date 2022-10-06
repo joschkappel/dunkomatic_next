@@ -255,7 +255,7 @@ class FileDownloadControllerTest extends TestCase
     public function get_region_league_archive()
     {
         // now create files
-        $folder = $this->testleague->region->region_folder;
+        $folder = $this->testleague->region->league_folder;
         $filename = $this->testleague->shortname.'.test';
         $archive = $this->testleague->region->code.'-runden-reports.zip';
 
