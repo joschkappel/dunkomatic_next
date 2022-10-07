@@ -14,7 +14,6 @@ use Illuminate\Bus\PendingBatch;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Tests\SysTestCase;
 
 class ReportProcessorTest extends SysTestCase
@@ -203,7 +202,7 @@ class ReportProcessorTest extends SysTestCase
         $this->checkBatch($team->league->region, Report::RegionGames(), 1);
         $this->checkBatch($team->league->region, Report::ClubGames(), $team->league->teams->pluck('club_id')->count());
         $this->checkBatch($team->league->region, Report::LeagueGames(), 1);
-        $this->checkBatch($team->league->region, Report::Teamware(), 1);
+        $this->checkBatch($team->league->region, Report::Teamware(), 41);
     }
 
     /**
@@ -248,7 +247,7 @@ class ReportProcessorTest extends SysTestCase
         $this->checkBatch($game->league()->first()->region, Report::RegionGames(), 1);
         $this->checkBatch($game->league()->first()->region, Report::ClubGames(), 1);
         $this->checkBatch($game->league()->first()->region, Report::LeagueGames(), 1);
-        $this->checkBatch($game->league()->first()->region, Report::Teamware(), 1);
+        $this->checkBatch($game->league()->first()->region, Report::Teamware(), 41);
     }
 
     /**
