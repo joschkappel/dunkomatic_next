@@ -2,10 +2,13 @@
 
 namespace Tests\Jobs;
 
+use App\Enums\Report;
 use App\Enums\ReportFileType;
 use App\Jobs\GenerateClubGamesReport;
 use App\Models\Game;
 use App\Models\League;
+use App\Traits\ReportJobStatus;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -15,11 +18,16 @@ class GenerateClubReportsTest extends TestCase
 
     private $testclub_assigned;
 
+    private $report_job;
+
+    use ReportJobStatus;
+
     public function setUp(): void
     {
         parent::setUp();
         $this->testleague = League::factory()->frozen(4, 4)->create();
         $this->testclub_assigned = $this->testleague->clubs()->first();
+        $this->report_job = $this->job_starting($this->testclub_assigned->region, Report::ClubGames());
     }
 
     /**
@@ -44,13 +52,13 @@ class GenerateClubReportsTest extends TestCase
         }
 
         $report = $folder.'/'.$club->shortname;
-        $report .= '_Vereinsplan.pdf';
-        $files = Storage::allFiles($folder);
-        Storage::delete($files);
+        $report .= '_Vereinsplan_v'.$this->report_job->version.'.pdf';
 
         $job_instance = resolve(GenerateClubGamesReport::class, ['region' => $region, 'club' => $club, 'rtype' => ReportFileType::PDF(),  'league' => $league]);
         app()->call([$job_instance, 'handle']);
 
+        $files = Storage::allFiles($folder);
+        Log::info($files);
         // Excel::assertStored($report);
         Storage::assertExists($report);
     }
@@ -74,7 +82,7 @@ class GenerateClubReportsTest extends TestCase
         Storage::assertExists($folder);
 
         $report = $folder.'/'.$club->shortname;
-        $report .= '_Gesamtplan.xlsx';
+        $report .= '_Gesamtplan_v'.$this->report_job->version.'.xlsx';
 
         $files = Storage::allFiles($folder);
         Storage::delete($files);
@@ -114,8 +122,8 @@ class GenerateClubReportsTest extends TestCase
         $job_instance = resolve(GenerateClubGamesReport::class, ['region' => $region, 'club' => $club, 'rtype' => ReportFileType::ICS(),  'league' => $league]);
         app()->call([$job_instance, 'handle']);
 
-        Storage::assertExists($report.'_Vereinsplan.ics');
-        Storage::assertExists($report.'_Heimspielplan.ics');
-        Storage::assertExists($report.'_Schiriplan.ics');
+        Storage::assertExists($report.'_Vereinsplan_v'.$this->report_job->version.'.ics');
+        Storage::assertExists($report.'_Heimspielplan_v'.$this->report_job->version.'.ics');
+        Storage::assertExists($report.'_Schiriplan_v'.$this->report_job->version.'.ics');
     }
 }
