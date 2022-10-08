@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Enums\ReportFileType;
 use App\Enums\Role;
-use App\Traits\ReportFinder;
+use App\Traits\ReportManager;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -96,7 +96,7 @@ use Illuminate\Support\Str;
  */
 class Region extends Model
 {
-    use HasFactory, ReportFinder;
+    use HasFactory, ReportManager;
 
     protected $with = ['childRegions'];
 

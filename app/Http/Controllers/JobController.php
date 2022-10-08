@@ -5,14 +5,14 @@ namespace App\Http\Controllers;
 use App\Enums\Report;
 use App\Jobs\ReportProcessor;
 use App\Models\Region;
-use App\Traits\ReportJobStatus;
+use App\Traits\ReportVersioning;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class JobController extends Controller
 {
-    use ReportJobStatus;
+    use ReportVersioning;
 
     /**
      * run a job
@@ -84,7 +84,7 @@ class JobController extends Controller
                 Log::notice('File deleted', ['name' => $rpt, 'result' => $res]);
             }
         }
-        $this->reset_job_version($region, $report);
+        $this->reset_report_version($region, $report);
     }
 
     private function clean_report_folder(Region $region, Report $report, string $dir_name)
@@ -94,6 +94,6 @@ class JobController extends Controller
             Log::notice('File deleted', ['name' => $rpt, 'result' => $res]);
         }
 
-        $this->reset_job_version($region, $report);
+        $this->reset_report_version($region, $report);
     }
 }

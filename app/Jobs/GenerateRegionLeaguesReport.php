@@ -7,8 +7,9 @@ use App\Enums\ReportFileType;
 use App\Enums\ReportScope;
 use App\Exports\RegionLeagueGamesReport;
 use App\Models\Region;
-use App\Traits\ReportFinder;
+use App\Traits\ReportManager;
 use App\Traits\ReportJobStatus;
+use App\Traits\ReportVersioning;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -22,7 +23,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class GenerateRegionLeaguesReport implements ShouldQueue
 {
-    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ReportFinder, ReportJobStatus;
+    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ReportManager, ReportJobStatus, ReportVersioning;
 
     public string $export_folder;
 
@@ -68,7 +69,7 @@ class GenerateRegionLeaguesReport implements ShouldQueue
                 return;
             }
         }
-        $version = $this->job_version($this->region, Report::LeagueBook());
+        $version = $this->get_report_version($this->region, Report::LeagueBook());
         // move previous versions
         $this->move_old_report($this->region, $this->export_folder, '_Rundenbuch');
 

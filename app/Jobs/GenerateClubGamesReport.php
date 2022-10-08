@@ -10,8 +10,9 @@ use App\Helpers\CalendarComposer;
 use App\Models\Club;
 use App\Models\League;
 use App\Models\Region;
-use App\Traits\ReportFinder;
+use App\Traits\ReportManager;
 use App\Traits\ReportJobStatus;
+use App\Traits\ReportVersioning;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -25,7 +26,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class GenerateClubGamesReport implements ShouldQueue
 {
-    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ReportFinder, ReportJobStatus;
+    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ReportManager, ReportJobStatus, ReportVersioning;
 
     protected string $export_folder;
 
@@ -78,7 +79,7 @@ class GenerateClubGamesReport implements ShouldQueue
                 return;
             }
         }
-        $version = $this->job_version($this->region, Report::ClubGames());
+        $version = $this->get_report_version($this->region, Report::ClubGames());
         // move previous versions
         $this->move_old_report($this->region, $this->export_folder, $this->club->shortname.'_');
 

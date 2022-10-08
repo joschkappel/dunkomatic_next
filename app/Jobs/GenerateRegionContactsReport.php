@@ -7,8 +7,9 @@ use App\Enums\ReportFileType;
 use App\Enums\ReportScope;
 use App\Exports\RegionContactsReport;
 use App\Models\Region;
-use App\Traits\ReportFinder;
+use App\Traits\ReportManager;
 use App\Traits\ReportJobStatus;
+use App\Traits\ReportVersioning;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -22,7 +23,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class GenerateRegionContactsReport implements ShouldQueue
 {
-    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ReportJobStatus, ReportFinder;
+    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ReportJobStatus, ReportManager, ReportVersioning;
 
     protected string $export_folder;
 
@@ -71,7 +72,7 @@ class GenerateRegionContactsReport implements ShouldQueue
             }
         }
 
-        $version = $this->job_version($this->region, Report::AddressBook());
+        $version = $this->get_report_version($this->region, Report::AddressBook());
         // move previous versions
         $this->move_old_report($this->region, $this->export_folder, 'Addressbuch');
 

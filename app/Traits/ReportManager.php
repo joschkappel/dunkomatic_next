@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-trait ReportFinder
+trait ReportManager
 {
     public function get_reports(string $folder, string $namepart = null, ReportFileType $format): Collection
     {

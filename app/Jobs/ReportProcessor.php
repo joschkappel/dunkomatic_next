@@ -139,7 +139,7 @@ class ReportProcessor implements ShouldQueue
                     }
                     break;
                 default:
-                    Log::error('no job added for ', ['rpt' => $irpt->description, 'region' => $ireg->code]);
+                    Log::error('no job added for ', ['rpt' => $irpt->description]);
                     break;
             }
             $this->dispatchReportBatch($irpt, $rpt_jobs);

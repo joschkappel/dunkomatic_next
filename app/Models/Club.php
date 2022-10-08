@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Enums\ReportFileType;
 use App\Enums\Role;
-use App\Traits\ReportFinder;
+use App\Traits\ReportManager;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -75,7 +75,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  */
 class Club extends Model implements Auditable
 {
-    use \OwenIt\Auditing\Auditable, HasFactory, ReportFinder;
+    use \OwenIt\Auditing\Auditable, HasFactory, ReportManager;
 
     protected $with = ['region', 'memberships'];
 

@@ -9,6 +9,8 @@ use App\Models\League;
 use App\Models\Region;
 use App\Models\ReportDownload;
 use App\Models\User;
+use App\Traits\ReportJobStatus;
+use App\Traits\ReportVersioning;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -19,6 +21,8 @@ use ZipArchive;
 
 class FileDownloadController extends Controller
 {
+    use ReportJobStatus, ReportVersioning;
+
     /**
      * download a single file
      *
@@ -137,10 +141,11 @@ class FileDownloadController extends Controller
 
             $zip->close();
 
+            $version = $this->get_report_version($club->region, Report::ClubGames());
             ReportDownload::updateOrCreate(
                 ['user_id' => Auth::user()->id, 'report_id' => Report::ClubGames(),
                     'model_class' => Club::class, 'model_id' => $club->id, ],
-                ['updated_at' => now()]
+                ['updated_at' => now(), 'version' => $version]
             );
 
             Log::notice('downloading ZIP archive for club', ['club-id' => $club->id, 'filecount' => count($files)]);
@@ -192,10 +197,11 @@ class FileDownloadController extends Controller
 
             $zip->close();
 
+            $version = $this->get_report_version($league->region, Report::LeagueGames());
             ReportDownload::updateOrCreate(
                 ['user_id' => Auth::user()->id, 'report_id' => Report::LeagueGames(),
                     'model_class' => League::class, 'model_id' => $league->id, ],
-                ['updated_at' => now()]
+                ['updated_at' => now(), 'version' => $version]
             );
 
             Log::notice('downloading ZIP archive for league', ['league-id' => $league->id, 'filecount' => count($files)]);
@@ -247,15 +253,17 @@ class FileDownloadController extends Controller
 
                 $zip->close();
 
+                $version = $this->get_report_version($region, Report::RegionGames());
                 ReportDownload::updateOrCreate(
                     ['user_id' => Auth::user()->id, 'report_id' => Report::RegionGames(),
                         'model_class' => Region::class, 'model_id' => $region->id, ],
-                    ['updated_at' => now()]
+                    ['updated_at' => now(), 'version' => $version]
                 );
+                $version = $this->get_report_version($region, Report::AddressBook());
                 ReportDownload::updateOrCreate(
                     ['user_id' => Auth::user()->id, 'report_id' => Report::AddressBook(),
                         'model_class' => Region::class, 'model_id' => $region->id, ],
-                    ['updated_at' => now()]
+                    ['updated_at' => now(), 'version' => $version]
                 );
 
                 Log::notice('downloading ZIP archive for region', ['region-id' => $region->id, 'filecount' => count($files)]);
@@ -312,10 +320,11 @@ class FileDownloadController extends Controller
 
                 $zip->close();
 
+                $version = $this->get_report_version($region, Report::LeagueBook());
                 ReportDownload::updateOrCreate(
                     ['user_id' => Auth::user()->id, 'report_id' => Report::LeagueBook(),
                         'model_class' => Region::class, 'model_id' => $region->id, ],
-                    ['updated_at' => now()]
+                    ['updated_at' => now(), 'version' => $version]
                 );
 
                 Log::notice('downloading ZIP archive for region leagues', ['region-id' => $region->id, 'filecount' => count($files)]);
@@ -371,10 +380,11 @@ class FileDownloadController extends Controller
 
                 $zip->close();
 
+                $version = $this->get_report_version($region, Report::AddressBook());
                 ReportDownload::updateOrCreate(
                     ['user_id' => Auth::user()->id, 'report_id' => Report::AddressBook(),
                         'model_class' => Region::class, 'model_id' => $region->id, ],
-                    ['updated_at' => now()]
+                    ['updated_at' => now(), 'version' => $version]
                 );
 
                 Log::notice('downloading ZIP archive for region members', ['region-id' => $region->id, 'filecount' => count($files)]);
@@ -418,10 +428,11 @@ class FileDownloadController extends Controller
                 }
 
                 $zip->close();
+                $version = $this->get_report_version($region, Report::Teamware());
                 ReportDownload::updateOrCreate(
                     ['user_id' => Auth::user()->id, 'report_id' => Report::Teamware(),
                         'model_class' => Region::class, 'model_id' => $region->id, ],
-                    ['updated_at' => now()]
+                    ['updated_at' => now(), 'version' => $version]
                 );
 
                 Log::notice('downloading ZIP archive for region teamware', ['region-id' => $region->id, 'filecount' => count($files)]);

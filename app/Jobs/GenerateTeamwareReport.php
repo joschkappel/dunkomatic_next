@@ -6,8 +6,9 @@ use App\Enums\Report;
 use App\Exports\TeamwareGamesExport;
 use App\Exports\TeamwareTeamsExport;
 use App\Models\League;
-use App\Traits\ReportFinder;
+use App\Traits\ReportManager;
 use App\Traits\ReportJobStatus;
+use App\Traits\ReportVersioning;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -21,7 +22,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class GenerateTeamwareReport implements ShouldQueue
 {
-    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ReportJobStatus, ReportFinder;
+    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ReportJobStatus, ReportManager, ReportVersioning;
 
     protected string $export_folder;
 
@@ -67,7 +68,7 @@ class GenerateTeamwareReport implements ShouldQueue
                 return;
             }
         }
-        $version = $this->job_version($this->league->region, Report::Teamware());
+        $version = $this->get_report_version($this->league->region, Report::Teamware());
 
         $tw_games = $this->tw_games.'_v'.$version.'.csv';
         $tw_teams = $this->tw_teams.'_v'.$version.'.csv';

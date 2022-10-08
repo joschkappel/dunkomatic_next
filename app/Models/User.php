@@ -237,6 +237,11 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
         return $this->messages()->where('region_id', $region_id);
     }
 
+    public function report_downloads(): HasMany
+    {
+        return $this->hasMany(ReportDownload::class);
+    }
+
     public function LeagueFilecount(Region $region): int
     {
         $directory = $region->league_folder;

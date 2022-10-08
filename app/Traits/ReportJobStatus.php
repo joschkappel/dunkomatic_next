@@ -8,6 +8,8 @@ use App\Models\ReportJob;
 
 trait ReportJobStatus
 {
+    use ReportVersioning;
+
     public function job_starting(Region $region, Report $report): ReportJob
     {
         $version = 0;
@@ -17,7 +19,7 @@ trait ReportJobStatus
 
         $rj = ReportJob::updateOrCreate(
             ['report_id' => $report, 'region_id' => $region->id],
-            ['lastrun_at' => $start_ts, 'running' => true, 'version' => $start_ts->format('ymd_His')]
+            ['lastrun_at' => $start_ts, 'running' => true, 'version' => $this->new_report_version($start_ts)]
         );
 
         return $rj;
@@ -48,23 +50,6 @@ trait ReportJobStatus
         $rj = ReportJob::updateOrCreate(
             ['report_id' => $report, 'region_id' => $region->id],
             ['running' => false, 'lastrun_ok' => false]
-        );
-
-        return $rj;
-    }
-
-    public function job_version(Region $region, Report $report): string
-    {
-        $rj = ReportJob::where('report_id', $report)->where('region_id', $region->id)->first();
-
-        return $rj->version ?? '';
-    }
-
-    public function reset_job_version(Region $region, Report $report): ReportJob
-    {
-        $rj = ReportJob::updateOrCreate(
-            ['report_id' => $report, 'region_id' => $region->id],
-            ['version' => null, 'lastrun_at' => null]
         );
 
         return $rj;
