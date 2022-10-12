@@ -294,7 +294,7 @@ class FileDownloadController extends Controller
         } else {
             $format = ReportFileType::coerce($format);
         }
-        if (($region->league_filecount($format) + ($region->filecount($format, App\Enums\Report::LeagueBook()->getReportFilename()))) > 0) {
+        if (($region->league_filecount($format) + ($region->filecount($format, Report::LeagueBook()->getReportFilename()))) > 0) {
             $files = $region->league_filenames($format);
             $files = $files->concat($region->filenames($format, Report::LeagueBook()->getReportFilename()));
         } else {
