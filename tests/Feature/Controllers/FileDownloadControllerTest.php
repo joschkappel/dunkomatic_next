@@ -7,6 +7,7 @@ use App\Enums\ReportFileType;
 use App\Models\Club;
 use App\Models\League;
 use App\Models\Region;
+use App\Models\ReportDownload;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -293,5 +294,11 @@ class FileDownloadControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertDownload($archive);
+    }
+
+    public function tearDown(): void
+    {
+        ReportDownload::whereNotNull('id')->delete();
+        parent::tearDown();
     }
 }
