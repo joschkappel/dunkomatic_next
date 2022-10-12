@@ -25,7 +25,7 @@ trait ReportJobStatus
         return $rj;
     }
 
-    private static function job_finished(Region $region, Report $report): ReportJob
+    public static function job_finished(Region $region, Report $report): ReportJob
     {
         $rj = ReportJob::updateOrCreate(
             ['report_id' => $report, 'region_id' => $region->id],
@@ -35,7 +35,7 @@ trait ReportJobStatus
         return $rj;
     }
 
-    private static function job_failed(Region $region, Report $report): ReportJob
+    public static function job_failed(Region $region, Report $report): ReportJob
     {
         $rj = ReportJob::updateOrCreate(
             ['report_id' => $report, 'region_id' => $region->id],
