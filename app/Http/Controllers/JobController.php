@@ -39,17 +39,17 @@ class JobController extends Controller
 
         switch ($jobclass) {
             case Report::AddressBook:
-                $rpt_name = $region->region_folder.'/'.$region->code.'_Addressbuch';
+                $rpt_name = $region->region_folder.'/'.$region->code.'_'.Report::coerce($jobclass)->getReportFilename();
                 // delete files
                 $this->delete_report_files($region, $report, $rpt_name);
                 break;
             case Report::RegionGames:
-                $rpt_name = $region->region_folder.'/'.$region->code.'_Gesamtplan';
+                $rpt_name = $region->region_folder.'/'.$region->code.'_'.Report::coerce($jobclass)->getReportFilename();
                 // delete file
                 $this->delete_report_files($region, $report, $rpt_name);
                 break;
             case Report::LeagueBook:
-                $rpt_name = $region->region_folder.'/'.$region->code.'_Rundenbuch';
+                $rpt_name = $region->region_folder.'/'.$region->code.'_'.Report::coerce($jobclass)->getReportFilename();
                 // delete file
                 $this->delete_report_files($region, $report, $rpt_name);
                 break;

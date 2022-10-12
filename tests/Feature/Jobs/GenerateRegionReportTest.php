@@ -49,7 +49,7 @@ class GenerateRegionReportTest extends TestCase
         }
 
         $report = $folder.'/'.$this->region->code;
-        $report .= '_Gesamtplan_v'.$this->report_job->version.'.pdf';
+        $report .= '_'.Report::RegionGames()->getReportFilename().'_v'.$this->report_job->version.'.pdf';
 
         $job_instance = resolve(GenerateRegionGamesReport::class, ['region' => $region, 'rtype' => ReportFileType::PDF()]);
         app()->call([$job_instance, 'handle']);
@@ -75,7 +75,7 @@ class GenerateRegionReportTest extends TestCase
         Storage::delete($files);
 
         $report = $folder.'/'.$this->region->code;
-        $report .= '_Gesamtplan_v'.$this->report_job->version.'.xlsx';
+        $report .= '_'.Report::RegionGames()->getReportFilename().'_v'.$this->report_job->version.'.xlsx';
 
         $job_instance = resolve(GenerateRegionGamesReport::class, ['region' => $region, 'rtype' => ReportFileType::XLSX()]);
         app()->call([$job_instance, 'handle']);
@@ -103,7 +103,7 @@ class GenerateRegionReportTest extends TestCase
         Storage::delete($files);
 
         $report = $folder.'/'.$this->region->code;
-        $report .= '_Gesamtplan_v'.$this->report_job->version.'.ics';
+        $report .= '_'.Report::RegionGames()->getReportFilename().'_v'.$this->report_job->version.'.ics';
 
         $job_instance = resolve(GenerateRegionGamesReport::class, ['region' => $region, 'rtype' => ReportFileType::ICS()]);
         app()->call([$job_instance, 'handle']);

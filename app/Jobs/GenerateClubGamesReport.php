@@ -10,8 +10,8 @@ use App\Helpers\CalendarComposer;
 use App\Models\Club;
 use App\Models\League;
 use App\Models\Region;
-use App\Traits\ReportManager;
 use App\Traits\ReportJobStatus;
+use App\Traits\ReportManager;
 use App\Traits\ReportVersioning;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
@@ -86,7 +86,7 @@ class GenerateClubGamesReport implements ShouldQueue
         foreach ($this->rtype->getFlags() as $rtype) {
             if (($rtype->hasFlag(ReportFileType::PDF)) or
                   ($rtype->hasFlag(ReportFileType::CSV))) {
-                $rpt_name = $this->rpt_name.'_Vereinsplan_v'.$version.'.'.$rtype->description;
+                $rpt_name = $this->rpt_name.'_'.Report::ClubGames()->getReportFilename().'_v'.$version.'.'.$rtype->description;
                 $rpt_name = Str::replace(' ', '-', $rpt_name);
                 Excel::store(new ClubGamesReport($this->club->id, ReportScope::ss_club_all(), (isset($this->league->id)) ? $this->league->id : null),
                     $rpt_name, null, \Maatwebsite\Excel\Excel::MPDF);
@@ -101,7 +101,7 @@ class GenerateClubGamesReport implements ShouldQueue
                 // do calendar files
                 $calendar = CalendarComposer::createClubCalendar($this->club);
                 if ($calendar != null) {
-                    $rpt_name = $this->rpt_name.'_Vereinsplan_v'.$version.'.'.$rtype->description;
+                    $rpt_name = $this->rpt_name.'_'.Report::ClubGames()->getReportFilename().'_v'.$version.'.'.$rtype->description;
                     $rpt_name = Str::replace(' ', '-', $rpt_name);
                     Storage::put($rpt_name, $calendar->get());
                     Log::info('[JOB][CLUB GAMES REPORTS] started.', [
@@ -155,7 +155,7 @@ class GenerateClubGamesReport implements ShouldQueue
                     ]);
                 }
             } else {
-                $rpt_name = $this->rpt_name.'_Gesamtplan_v'.$version.'.'.$rtype->description;
+                $rpt_name = $this->rpt_name.'_'.Report::RegionGames()->getReportFilename().'_v'.$version.'.'.$rtype->description;
                 $rpt_name = Str::replace(' ', '-', $rpt_name);
                 Excel::store(new ClubGamesReport($this->club->id, ReportScope::ms_all(), (isset($this->league->id)) ? $this->league->id : null), $rpt_name);
                 Log::info('[JOB][CLUB GAMES REPORTS] started.', [

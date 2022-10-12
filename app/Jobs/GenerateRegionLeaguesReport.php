@@ -7,8 +7,8 @@ use App\Enums\ReportFileType;
 use App\Enums\ReportScope;
 use App\Exports\RegionLeagueGamesReport;
 use App\Models\Region;
-use App\Traits\ReportManager;
 use App\Traits\ReportJobStatus;
+use App\Traits\ReportManager;
 use App\Traits\ReportVersioning;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
@@ -53,7 +53,7 @@ class GenerateRegionLeaguesReport implements ShouldQueue
         }
         $this->export_folder = $this->region->region_folder;
         $this->rpt_name = $this->export_folder.'/'.$this->region->code;
-        $this->rpt_name .= '_Rundenbuch';
+        $this->rpt_name .= '_'.Report::LeagueBook()->getReportFilename();
     }
 
     /**
@@ -71,7 +71,7 @@ class GenerateRegionLeaguesReport implements ShouldQueue
         }
         $version = $this->get_report_version($this->region, Report::LeagueBook());
         // move previous versions
-        $this->move_old_report($this->region, $this->export_folder, '_Rundenbuch');
+        $this->move_old_report($this->region, $this->export_folder, '_'.Report::LeagueBook()->getReportFilename());
 
         foreach ($this->rtype->getFlags() as $rtype) {
             $rpt_name = $this->rpt_name.'_v'.$version.'.'.$rtype->description;

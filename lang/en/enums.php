@@ -4,6 +4,7 @@ use App\Enums\JobFrequencyType;
 use App\Enums\LeagueAgeType;
 use App\Enums\LeagueGenderType;
 use App\Enums\LeagueState;
+use App\Enums\Report;
 use App\Enums\Role;
 
 return [
@@ -46,5 +47,14 @@ return [
         LeagueState::Live => 'Live',
         LeagueState::Freeze => 'Waiting',
         LeagueState::Referees => 'Pick Referees',
+    ],
+
+    Report::class => [
+        Report::AddressBook => 'Address Book',
+        Report::Teamware => 'Teamware Imports',
+        Report::LeagueBook => 'Leagues Book',
+        Report::RegionGames => 'Regionplan',
+        Report::ClubGames => 'Clubplan',
+        Report::LeagueGames => 'Leagueplan',
     ],
 ];

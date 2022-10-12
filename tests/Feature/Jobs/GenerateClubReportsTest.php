@@ -52,7 +52,7 @@ class GenerateClubReportsTest extends TestCase
         }
 
         $report = $folder.'/'.$club->shortname;
-        $report .= '_Vereinsplan_v'.$this->report_job->version.'.pdf';
+        $report .= '_'.Report::ClubGames()->getReportFilename().'_v'.$this->report_job->version.'.pdf';
 
         $job_instance = resolve(GenerateClubGamesReport::class, ['region' => $region, 'club' => $club, 'rtype' => ReportFileType::PDF(),  'league' => $league]);
         app()->call([$job_instance, 'handle']);
@@ -82,7 +82,7 @@ class GenerateClubReportsTest extends TestCase
         Storage::assertExists($folder);
 
         $report = $folder.'/'.$club->shortname;
-        $report .= '_Gesamtplan_v'.$this->report_job->version.'.xlsx';
+        $report .= '_'.Report::RegionGames()->getReportFilename().'_v'.$this->report_job->version.'.xlsx';
 
         $files = Storage::allFiles($folder);
         Storage::delete($files);
@@ -122,7 +122,7 @@ class GenerateClubReportsTest extends TestCase
         $job_instance = resolve(GenerateClubGamesReport::class, ['region' => $region, 'club' => $club, 'rtype' => ReportFileType::ICS(),  'league' => $league]);
         app()->call([$job_instance, 'handle']);
 
-        Storage::assertExists($report.'_Vereinsplan_v'.$this->report_job->version.'.ics');
+        Storage::assertExists($report.'_'.Report::ClubGames()->getReportFilename().'_v'.$this->report_job->version.'.ics');
         Storage::assertExists($report.'_Heimspielplan_v'.$this->report_job->version.'.ics');
         Storage::assertExists($report.'_Schiriplan_v'.$this->report_job->version.'.ics');
     }

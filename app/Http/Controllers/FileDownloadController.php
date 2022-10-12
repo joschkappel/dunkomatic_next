@@ -228,8 +228,8 @@ class FileDownloadController extends Controller
         } else {
             $format = ReportFileType::coerce($format);
         }
-        if ($region->filecount($format, 'Gesamtplan') > 0) {
-            $files = $region->filenames($format, 'Gesamtplan');
+        if ($region->filecount($format, Report::RegionGames()->getReportFilename()) > 0) {
+            $files = $region->filenames($format, Report::RegionGames()->getReportFilename());
         } else {
             Log::error('no Gesamtplan files found for region.', ['region-id' => $region->id]);
 
@@ -294,9 +294,9 @@ class FileDownloadController extends Controller
         } else {
             $format = ReportFileType::coerce($format);
         }
-        if (($region->league_filecount($format) + ($region->filecount($format, 'Rundenbuch'))) > 0) {
+        if (($region->league_filecount($format) + ($region->filecount($format, App\Enums\Report::LeagueBook()->getReportFilename()))) > 0) {
             $files = $region->league_filenames($format);
-            $files = $files->concat($region->filenames($format, 'Rundenbuch'));
+            $files = $files->concat($region->filenames($format, Report::LeagueBook()->getReportFilename()));
         } else {
             Log::error('no league files found for region.', ['region-id' => $region->id]);
 
@@ -355,8 +355,8 @@ class FileDownloadController extends Controller
         } else {
             $format = ReportFileType::coerce($format);
         }
-        if ($region->filecount($format, 'Addressbuch') > 0) {
-            $files = $region->filenames($format, 'Addressbuch');
+        if ($region->filecount($format, Report::AddressBook()->getReportFilename()) > 0) {
+            $files = $region->filenames($format, Report::AddressBook()->getReportFilename());
         } else {
             Log::error('no member files found for region.', ['region-id' => $region->id]);
 

@@ -9,8 +9,8 @@ use App\Exports\LeagueGamesReport;
 use App\Helpers\CalendarComposer;
 use App\Models\League;
 use App\Models\Region;
-use App\Traits\ReportManager;
 use App\Traits\ReportJobStatus;
+use App\Traits\ReportManager;
 use App\Traits\ReportVersioning;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
@@ -59,7 +59,7 @@ class GenerateLeagueGamesReport implements ShouldQueue
 
         $this->export_folder = $region->league_folder;
         $this->rpt_name = $this->export_folder.'/'.$this->league->shortname;
-        $this->rpt_name .= '_Rundenplan';
+        $this->rpt_name .= '_'.Report::LeagueGames()->getReportFilename();
     }
 
     /**
@@ -77,7 +77,7 @@ class GenerateLeagueGamesReport implements ShouldQueue
         }
         $version = $this->get_report_version($this->region, Report::LeagueGames());
         // move previous versions
-        $this->move_old_report($this->region, $this->export_folder, '_Rundenplan');
+        $this->move_old_report($this->region, $this->export_folder, '_'.Report::LeagueGames()->getReportFilename());
 
         foreach ($this->rtype->getFlags() as $rtype) {
             $rpt_name = $this->rpt_name.'_v'.$version.'.'.$rtype->description;

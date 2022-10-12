@@ -7,8 +7,8 @@ use App\Enums\ReportFileType;
 use App\Enums\ReportScope;
 use App\Exports\RegionContactsReport;
 use App\Models\Region;
-use App\Traits\ReportManager;
 use App\Traits\ReportJobStatus;
+use App\Traits\ReportManager;
 use App\Traits\ReportVersioning;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
@@ -55,7 +55,7 @@ class GenerateRegionContactsReport implements ShouldQueue
 
         $this->export_folder = $this->region->region_folder;
         $this->rpt_name = $this->export_folder.'/'.$this->region->code;
-        $this->rpt_name .= '_Addressbuch';
+        $this->rpt_name .= '_'.Report::AddressBook()->getReportFilename();
     }
 
     /**
@@ -74,7 +74,7 @@ class GenerateRegionContactsReport implements ShouldQueue
 
         $version = $this->get_report_version($this->region, Report::AddressBook());
         // move previous versions
-        $this->move_old_report($this->region, $this->export_folder, 'Addressbuch');
+        $this->move_old_report($this->region, $this->export_folder, Report::AddressBook()->getReportFilename());
 
         foreach ($this->rtype->getFlags() as $rtype) {
             $rpt_name = $this->rpt_name.'_v'.$version.'.'.$rtype->description;

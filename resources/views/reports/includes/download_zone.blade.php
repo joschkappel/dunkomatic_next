@@ -85,18 +85,18 @@
                 <p class="card-text">Kontaktdaten der Bezirke (Vereine, Runden)</p>
                 <p class="card-text"> {{__('for')}} {{$region->code}}</p>
                 <div >
-                    @if ($region->filecount(App\Enums\ReportFileType::XLSX(), 'Addressbuch') > 0)
+                    @if ($region->filecount(App\Enums\ReportFileType::XLSX(), App\Enums\Report::AddressBook()->getReportFilename()) > 0)
                     <a type="button" class="btn btn-outline-primary" href="{{ route('region_members_archive.get', ['region' => $region, 'format'=>App\Enums\ReportFileType::XLSX]) }}">
                     {{ App\Enums\ReportFileType::XLSX()->description }}<i class="fas fa-file-download fa-lg mx-2"></i>
                     </a>
                     @endif
-                    @if ($region->filecount(App\Enums\ReportFileType::HTML(), 'Addressbuch') > 0)
+                    @if ($region->filecount(App\Enums\ReportFileType::HTML(),  App\Enums\Report::AddressBook()->getReportFilename()) > 0)
                     <a type="button" class="btn btn-outline-secondary" href="{{ route('region_members_archive.get', ['region' => $region, 'format'=>App\Enums\ReportFileType::HTML]) }}">
                     {{ App\Enums\ReportFileType::HTML()->description }}<i class="fas fa-file-download fa-lg mx-2"></i>
                     </a>
                     @endif
                     @foreach ( $region->fmt_league_reports->getFlags() as $format )
-                    @if ($region->filecount($format, 'Addressbuch') > 0)
+                    @if ($region->filecount($format,  App\Enums\Report::AddressBook()->getReportFilename()) > 0)
                     <a type="button" class="btn btn-outline-info" href="{{ route('region_members_archive.get', ['region' => $region, 'format'=>$format->value]) }}">
                         {{ $format->description }}<i class="fas fa-file-download fa-lg mx-2"></i>
                     </a>
@@ -113,18 +113,18 @@
                 <p class="card-text">{{ __('reports.games.all') }}</p>
                 <p class="card-text"> {{__('for')}} {{$region->code}}</p>
                 <div >
-                    @if ($region->filecount(App\Enums\ReportFileType::XLSX(), 'Gesamtplan') > 0)
+                    @if ($region->filecount(App\Enums\ReportFileType::XLSX(), App\Enums\Report::RegionGames()->getReportFilename()) > 0)
                     <a type="button" class="btn btn-outline-primary" href="{{ route('region_archive.get', ['region' => $region, 'format'=>App\Enums\ReportFileType::XLSX]) }}">
                     {{ App\Enums\ReportFileType::XLSX()->description }}<i class="fas fa-file-download fa-lg mx-2"></i>
                     </a>
                     @endif
-                    @if ($region->filecount(App\Enums\ReportFileType::HTML(), 'Gesamtplan') > 0)
+                    @if ($region->filecount(App\Enums\ReportFileType::HTML(), App\Enums\Report::RegionGames()->getReportFilename()) > 0)
                     <a type="button" class="btn btn-outline-secondary" href="{{ route('region_archive.get', ['region' => $region, 'format'=>App\Enums\ReportFileType::HTML]) }}">
                     {{ App\Enums\ReportFileType::HTML()->description }}<i class="fas fa-file-download fa-lg mx-2"></i>
                     </a>
                     @endif
                     @foreach ( $region->fmt_league_reports->getFlags() as $format )
-                    @if ($region->filecount($format, 'Gesamtplan') > 0)
+                    @if ($region->filecount($format, App\Enums\Report::RegionGames()->getReportFilename()) > 0)
                     <a type="button" class="btn btn-outline-info" href="{{ route('region_archive.get', ['region' => $region, 'format'=>$format->value]) }}">
                         {{ $format->description }}<i class="fas fa-file-download fa-lg mx-2"></i>
                     </a>
@@ -141,18 +141,18 @@
                 <p class="card-text">Alle Rundenpläne mit MVen</p>
                 <p class="card-text"> {{__('for')}} {{$region->code}}</p>
                 <div>
-                    @if ( ($region->filecount(App\Enums\ReportFileType::XLSX(), 'Rundenbuch') + ($region->league_filecount(App\Enums\ReportFileType::XLSX()))) > 0)
+                    @if ( ($region->filecount(App\Enums\ReportFileType::XLSX(), App\Enums\Report::LeagueBook()->getReportFilename()) + ($region->league_filecount(App\Enums\ReportFileType::XLSX()))) > 0)
                     <a type="button" class="btn btn-outline-primary" href="{{ route('region_league_archive.get', ['region' => $region, 'format'=>App\Enums\ReportFileType::XLSX]) }}">
                     {{ App\Enums\ReportFileType::XLSX()->description }}<i class="fas fa-file-download fa-lg mx-2"></i>
                     </a>
                     @endif
-                    @if ( ($region->filecount(App\Enums\ReportFileType::HTML(), 'Rundenbuch') + ($region->league_filecount(App\Enums\ReportFileType::HTML()))) > 0)
+                    @if ( ($region->filecount(App\Enums\ReportFileType::HTML(),  App\Enums\Report::LeagueBook()->getReportFilename()) + ($region->league_filecount(App\Enums\ReportFileType::HTML()))) > 0)
                     <a type="button" class="btn btn-outline-secondary" href="{{ route('region_league_archive.get', ['region' => $region, 'format'=>App\Enums\ReportFileType::HTML]) }}">
                     {{ App\Enums\ReportFileType::HTML()->description }}<i class="fas fa-file-download fa-lg mx-2"></i>
                     </a>
                     @endif
                     @foreach ( $region->fmt_league_reports->getFlags() as $format )
-                    @if ( ($region->filecount($format, 'Rundenbuch') + ($region->league_filecount($format))) > 0)
+                    @if ( ($region->filecount($format,  App\Enums\Report::LeagueBook()->getReportFilename()) + ($region->league_filecount($format))) > 0)
                     <a type="button" class="btn btn-outline-info" href="{{ route('region_league_archive.get', ['region' => $region, 'format'=>$format->value]) }}">
                         {{ $format->description }}<i class="fas fa-file-download fa-lg mx-2"></i>
                     </a>

@@ -224,7 +224,7 @@ class FileDownloadControllerTest extends TestCase
 
         // now create files
         $folder = $this->testleague->region->region_folder;
-        $filename = $this->testleague->region->code.'_Gesamtplan.html';
+        $filename = $this->testleague->region->code.'_'.Report::RegionGames()->getReportFilename().'.html';
         $archive = $this->testleague->region->code.'-reports.zip';
 
         UploadedFile::fake()->create($filename)
