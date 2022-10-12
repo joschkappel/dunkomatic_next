@@ -53,6 +53,11 @@ trait ReportVersioning
                     $region = League::find($rd->model_id)->region;
                 } else {
                     $region = Region::find($rd->model_id);
+                    // exception for address book: use parent region
+                    if (($rd->report_id->is(Report::AddressBook)) and
+                         ($region->is_base_level)) {
+                        $region = $region->parentRegion;
+                    }
                 }
                 // now get version
                 $rj = ReportJob::where('report_id', $rd->report_id)
