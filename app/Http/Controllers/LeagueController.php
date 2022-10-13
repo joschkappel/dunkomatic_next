@@ -133,27 +133,20 @@ class LeagueController extends Controller
     {
         //Log::debug(print_r($club,true));
 
-        $clubs = League::find($league->id)->region->clubs()->active()->orderBy('shortname', 'ASC')->get();
+        $clubs = League::find($league->id)->region->clubs()->active()->orderBy('shortname', 'ASC')->select('id', 'shortname as text')->get();
         $leagueclubs = $league->clubs()->pluck('id');
 
         Log::info('preparing select2 club list for a league', ['league' => $league->id, 'count' => count($clubs)]);
-        $response = [];
 
-        foreach ($clubs as $c) {
-            if ($leagueclubs->contains($c->id)) {
-                $selected = true;
-            } else {
-                $selected = false;
-            }
-
-            $response[] = [
+        $clubs->transform(function ($c) use ($leagueclubs) {
+            return [
                 'id' => $c->id,
-                'text' => $c->shortname,
-                'selected' => $selected,
+                'text' => $c->text,
+                'selected' => $leagueclubs->contains($c->id),
             ];
-        }
+        });
 
-        return Response::json($response);
+        return Response::json($clubs->toArray());
     }
 
     /**
@@ -164,19 +157,12 @@ class LeagueController extends Controller
      */
     public function sb_region(Region $region)
     {
-        $leagues = $region->leagues()->orderBy('shortname', 'ASC')->get();
+        $leagues = $region->leagues()->orderBy('shortname', 'ASC')
+                            ->select('id', 'shortname as text')->get();
 
         Log::info('preparing select2 league list', ['count' => count($leagues)]);
-        $response = [];
 
-        foreach ($leagues as $league) {
-            $response[] = [
-                'id' => $league->id,
-                'text' => $league->shortname,
-            ];
-        }
-
-        return Response::json($response);
+        return Response::json($leagues->toArray());
     }
 
     /**
@@ -190,24 +176,20 @@ class LeagueController extends Controller
         $size = $league->size;
         $chars = config('dunkomatic.league_team_chars');
         $all_chars = array_slice(array_values($chars), 0, $size, true);
-        // Log::debug(print_r($all_chars,true));
 
         $team_chars = $league->teams()->pluck('league_char')->toArray();
-        // Log::debug(print_r($team_chars,true));
 
         $freechars = array_diff($all_chars, $team_chars);
-        // Log::debug(print_r($freechars,true));
-        $response = [];
 
         Log::info('preparing select2 free league places list', ['count' => count($freechars)]);
-        foreach ($freechars as $key => $value) {
-            $response[] = [
+        $freechars->transform(function ($value, $key) {
+            return [
                 'id' => $key + 1,
                 'text' => ($key + 1).' - '.$value,
             ];
-        }
+        });
 
-        return Response::json($response);
+        return Response::json($freechars->toArray());
     }
 
     /**

@@ -148,20 +148,16 @@ class MemberController extends Controller
             ->with('member')
             ->get()
             ->sortBy('member.lastname')
-            ->pluck('member.name', 'member.id');
-        //Log::debug('got members '.count($members));
-
+            ->pluck('member.name', 'member.id')
+            ->transform(function ($v, $k) {
+                return [
+                    'id' => $k,
+                    'text' => $v,
+                ];
+            });
         Log::info('preparing select2 member list.', ['count' => count($members)]);
-        $response = [];
 
-        foreach ($members as $k => $v) {
-            $response[] = [
-                'id' => $k,
-                'text' => $v,
-            ];
-        }
-
-        return Response::json($response);
+        return Response::json($members->toArray());
     }
 
     /**
@@ -177,19 +173,16 @@ class MemberController extends Controller
         $members = $club->members->pluck('name', 'id')
             ->sortBy('name');
 
-        //Log::debug('got members '.count($members));
-
         Log::info('preparing select2 member list.', ['count' => count($members)]);
-        $response = [];
 
-        foreach ($members as $k => $v) {
-            $response[] = [
+        $members->transform(function ($v, $k) {
+            return [
                 'id' => $k,
                 'text' => $v,
             ];
-        }
+        });
 
-        return Response::json($response);
+        return Response::json($members->toArray());
     }
 
     /**

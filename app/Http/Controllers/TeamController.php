@@ -23,19 +23,15 @@ class TeamController extends Controller
      */
     public function sb_league(League $league)
     {
-        $teams = $league->teams()->with('club')->get();
+        $teams = $league->teams()->with('club')->get()->map(function ($team) {
+            return [
+                'id' => $team->id,
+                'text' => $team->name,
+            ];
+        });
         Log::info('preparing select2 teams list for league.', ['league-id' => $league->id, 'count' => count($teams)]);
 
-        $response = [];
-
-        foreach ($teams as $t) {
-            $response[] = [
-                'id' => $t->id,
-                'text' => $t->name,
-            ];
-        }
-
-        return Response::json($response);
+        return Response::json($teams->toArray());
     }
 
     /**
@@ -69,21 +65,21 @@ class TeamController extends Controller
         $response = [];
         Log::info('preparing select2 unregistered team list', ['league' => $league->id, 'count' => count($free_teams)]);
 
-        foreach ($free_teams as $t) {
+        $free_teams->transform(function ($t) use ($region) {
             if ($region->is_top_level) {
-                $response[] = [
+                return [
                     'id' => $t->id,
                     'text' => $t->club->region->code.' : '.$t->namedesc,
                 ];
             } else {
-                $response[] = [
+                return [
                     'id' => $t->id,
                     'text' => $t->namedesc,
                 ];
             }
-        }
+        });
 
-        return Response::json($response);
+        return Response::json($free_teams->toArray());
     }
 
     /**
@@ -95,19 +91,19 @@ class TeamController extends Controller
     public function sb_freeteam_club(Club $club)
     {
         Log::notice('getting unregistered teams for club', ['club-id' => $club->id]);
-        $free_teams = $club->teams()->whereNull('league_id')->get();
+        $free_teams = $club->teams()
+                            ->whereNull('league_id')
+                            ->get()
+                            ->map(function ($team) {
+                                return [
+                                    'id' => $team->id,
+                                    'text' => $team->namedesc,
+                                ];
+                            });
 
-        $response = [];
         Log::info('preparing select2 unregistered team list', ['club' => $club->id, 'count' => count($free_teams)]);
 
-        foreach ($free_teams as $t) {
-            $response[] = [
-                'id' => $t->id,
-                'text' => $t->namedesc,
-            ];
-        }
-
-        return Response::json($response);
+        return Response::json($free_teams->toArray());
     }
 
     /**

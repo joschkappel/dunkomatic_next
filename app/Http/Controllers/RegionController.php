@@ -170,21 +170,11 @@ class RegionController extends Controller
      */
     public function admin_sb()
     {
-        $regions = Region::all();
+        $regions = Region::has('regionadmins')->select('id', 'name as text')->get();
 
         Log::info('preparing select2 region (with admins) list', ['count' => count($regions)]);
-        $response = [];
 
-        foreach ($regions as $region) {
-            if ($region->regionadmins()->exists()) {
-                $response[] = [
-                    'id' => $region->id,
-                    'text' => $region->name,
-                ];
-            }
-        }
-
-        return Response::json($response);
+        return Response::json($regions->toArray());
     }
 
     /**
@@ -194,19 +184,11 @@ class RegionController extends Controller
      */
     public function hq_sb()
     {
-        $regions = Region::whereNull('hq')->get();
+        $regions = Region::whereNull('hq')->select('id', 'name as text')->get();
 
         Log::info('preparing select2 top region list', ['count' => count($regions)]);
-        $response = [];
 
-        foreach ($regions as $region) {
-            $response[] = [
-                'id' => $region->id,
-                'text' => $region->name,
-            ];
-        }
-
-        return Response::json($response);
+        return Response::json($regions->toArray());
     }
 
     /**

@@ -349,23 +349,22 @@ class ClubController extends Controller
         }
 
         Log::info('preparing select2 club list.', ['count' => count($clubs)]);
-        $response = [];
 
-        foreach ($clubs as $club) {
-            if ($club->region->is($region)) {
-                $response[] = [
-                    'id' => $club->id,
-                    'text' => $club->shortname,
+        $clubs->transform(function ($c) use ($region) {
+            if ($c->region->is($region)) {
+                return [
+                    'id' => $c->id,
+                    'text' => $c->shortname,
                 ];
             } else {
-                $response[] = [
-                    'id' => $club->id,
-                    'text' => '('.$club->region->code.') '.$club->shortname,
+                return [
+                    'id' => $c->id,
+                    'text' => '('.$c->region->code.') '.$c->shortname,
                 ];
             }
-        }
+        });
 
-        return Response::json($response);
+        return Response::json($clubs->toArray());
     }
 
     /**
@@ -378,21 +377,15 @@ class ClubController extends Controller
     {
         //Log::debug(print_r($club,true));
 
-        $leagues = $club->leagues()->orderBy('shortname', 'ASC')->get();
+        $leagues = $club->leagues()->orderBy('shortname', 'ASC')
+                                    ->select('id', 'shortname as text', 'state')
+                                    ->get()
+                                    ->where('state', LeagueState::Registration())
+                                    ->map->only(['id', 'text']);
 
         Log::info('preparing select2 league list for a club', ['club-id' => $club->id, 'count' => count($leagues)]);
-        $response = [];
 
-        foreach ($leagues as $league) {
-            if ($league->state->is(LeagueState::Registration())) {
-                $response[] = [
-                    'id' => $league->id,
-                    'text' => $league->shortname,
-                ];
-            }
-        }
-
-        return Response::json($response);
+        return Response::json($leagues->toArray());
     }
 
     /**
