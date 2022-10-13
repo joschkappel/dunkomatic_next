@@ -9,9 +9,9 @@ use App\Exports\LeagueGamesReport;
 use App\Helpers\CalendarComposer;
 use App\Models\League;
 use App\Models\Region;
-use App\Models\ReportDownload;
-use App\Models\User;
-use App\Notifications\LeagueReportsAvailable;
+use App\Traits\ReportJobStatus;
+use App\Traits\ReportManager;
+use App\Traits\ReportVersioning;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -19,14 +19,13 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 
 class GenerateLeagueGamesReport implements ShouldQueue
 {
-    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ReportManager, ReportJobStatus, ReportVersioning;
 
     protected string $export_folder;
 
@@ -60,7 +59,7 @@ class GenerateLeagueGamesReport implements ShouldQueue
 
         $this->export_folder = $region->league_folder;
         $this->rpt_name = $this->export_folder.'/'.$this->league->shortname;
-        $this->rpt_name .= '_Rundenplan.';
+        $this->rpt_name .= '_'.Report::LeagueGames()->getReportFilename();
     }
 
     /**
@@ -76,9 +75,12 @@ class GenerateLeagueGamesReport implements ShouldQueue
                 return;
             }
         }
+        $version = $this->get_report_version($this->region, Report::LeagueGames());
+        // move previous versions
+        $this->move_old_report($this->region, $this->export_folder, '_'.Report::LeagueGames()->getReportFilename());
 
         foreach ($this->rtype->getFlags() as $rtype) {
-            $rpt_name = $this->rpt_name.$rtype->description;
+            $rpt_name = $this->rpt_name.'_v'.$version.'.'.$rtype->description;
             $rpt_name = Str::replace(' ', '-', $rpt_name);
 
             Log::info('[JOB][LEAGUE GAMES REPORTS] started.', [
@@ -99,15 +101,6 @@ class GenerateLeagueGamesReport implements ShouldQueue
             } else {
                 Excel::store(new LeagueGamesReport($this->league->id), $rpt_name);
             }
-        }
-
-        // get interested users
-        $to_notify = ReportDownload::where('report_id', Report::LeagueGames())->where('model_class', League::class)->where('model_id', $this->league->id)->pluck('user_id');
-        $users = User::whereIn('id', $to_notify)->get();
-
-        if ($users->count() > 0) {
-            // send notification
-            Notification::send($users, new LeagueReportsAvailable($this->league));
         }
     }
 }

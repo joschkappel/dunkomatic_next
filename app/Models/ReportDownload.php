@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ReportDownload extends Model
 {
     protected $fillable = [
-        'id', 'user_id', 'report_id', 'model_id', 'model_class',
+        'id', 'user_id', 'report_id', 'model_id', 'model_class', 'updated_at', 'version',
     ];
 
     /**

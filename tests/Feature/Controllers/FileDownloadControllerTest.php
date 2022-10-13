@@ -7,6 +7,7 @@ use App\Enums\ReportFileType;
 use App\Models\Club;
 use App\Models\League;
 use App\Models\Region;
+use App\Models\ReportDownload;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -223,8 +224,8 @@ class FileDownloadControllerTest extends TestCase
         $response->assertSessionHasErrors();
 
         // now create files
-        $folder = $this->testleague->region->league_folder;
-        $filename = $this->testleague->region->code.'_Gesamtplan.html';
+        $folder = $this->testleague->region->region_folder;
+        $filename = $this->testleague->region->code.'_'.Report::RegionGames()->getReportFilename().'.html';
         $archive = $this->testleague->region->code.'-reports.zip';
 
         UploadedFile::fake()->create($filename)
@@ -293,5 +294,11 @@ class FileDownloadControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertDownload($archive);
+    }
+
+    public function tearDown(): void
+    {
+        ReportDownload::whereNotNull('id')->delete();
+        parent::tearDown();
     }
 }

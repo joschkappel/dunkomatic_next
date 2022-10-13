@@ -115,19 +115,25 @@
                 $report = new App\Models\ReportJob(['lastrun'=>null,'running'=>false,'lastrun_ok'=>true]);
             }
             @endphp
+            @if (  ( $region->is_base_level and $rpt->is( App\Enums\Report::AddressBook) ) or
+                   ( $region->is_top_level and $rpt->is( App\Enums\Report::ClubGames) ) )
             <div class="form-row m-2">
-                <label class="col-sm col-form-label">{{ $rpt->getReportTitle() }}</label>
+            </div>
+            @else
+            <div class="form-row m-2">
+                <label class="col-sm col-form-label">{{ $rpt->description }}</label>
                 <div class="col-sm-2">
                     <input type="text" readonly class="form-control @if( $report->lastrun_ok) text-success @else text-danger @endif" id="lastrun_at"
                     value="@isset(  $report->lastrun_at) {{Carbon\Carbon::parse($report->lastrun_at)->locale(app()->getLocale())->isoFormat('L LT')}} @endisset">
                 </div>
                 <div class="col-sm-4">
-                    <button id="btnRunJob" type="button" data-job-id="{{$rpt->value}}" class="btn btn-secondary" @if ($report->running) disabled  @endif>{{$rpt->getReportTitle().' '.__('Create')}}</button>
+                    <button id="btnRunJob" type="button" data-job-id="{{$rpt->value}}" class="btn btn-secondary" @if ($report->running) disabled  @endif>{{$rpt->description.' '.__('Create')}}</button>
                 </div>
                 <div class="col-sm-4">
-                    <button id="btnRemoveReports" type="button" data-job-id="{{$rpt->value}}" class="btn btn-danger" @if ($report->running) disabled  @endif>{{$rpt->getReportTitle().' '.__('Delete')}}</button>
+                    <button id="btnRemoveReports" type="button" data-job-id="{{$rpt->value}}" class="btn btn-danger" @if ($report->running) disabled  @endif>{{$rpt->description.' '.__('Delete')}}</button>
                 </div>
             </div>
+            @endif
             @endforeach
             <div class="form-row m-2">
                 <label for="selLeagueReportFmt" class="col-sm col-form-label">@lang('region.job.league_reports.fmt')</label>

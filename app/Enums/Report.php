@@ -2,7 +2,9 @@
 
 namespace App\Enums;
 
+use BenSampo\Enum\Contracts\LocalizedEnum;
 use BenSampo\Enum\Enum;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @method static static Teamware()
@@ -12,7 +14,7 @@ use BenSampo\Enum\Enum;
  * @method static static ClubGames()
  * @method static static LeagueGames()
  */
-final class Report extends Enum
+final class Report extends Enum implements LocalizedEnum
 {
     const Teamware = 0;
 
@@ -26,11 +28,11 @@ final class Report extends Enum
 
     const LeagueGames = 5;
 
-    public function getReportTitle()
+    public function getReportFilename()
     {
         switch ($this->value) {
             case 0:
-                return 'Teamware Dateien';
+                return 'Teamware';
                 break;
             case 1:
                 return 'Rundenbuch';
@@ -44,7 +46,7 @@ final class Report extends Enum
             case 4:
                 return 'Vereinsplan';
                 break;
-            case 5:
+            case 4:
                 return 'Rundenplan';
                 break;
             default:
@@ -53,28 +55,30 @@ final class Report extends Enum
         }
     }
 
-    public function getReportFilename()
+    public function getReportDownloadLink($model_id, ReportFileType $format = ReportFileType::None)
     {
         switch ($this->value) {
             case 0:
-                return '';
+                return route('region_teamware_archive.get', ['region' => $model_id]);
                 break;
             case 1:
-                return 'Rundenbuch';
+                return route('region_league_archive.get', ['region' => $model_id, 'format' => $format]);
                 break;
             case 2:
-                return 'Addressbuch';
+                return route('region_members_archive.get', ['region' => $model_id, 'format' => $format]);
                 break;
             case 3:
-                return 'Gesamtplan';
+                return route('region_archive.get', ['region' => $model_id, 'format' => $format]);
                 break;
             case 4:
-                return 'Vereinsplan';
+                return route('club_archive.get', ['club' => $model_id, 'format' => $format]);
                 break;
             case 4:
-                return 'Rundenplan';
+                return route('league_archive.get', ['league' => $model_id, 'format' => $format]);
                 break;
             default:
+                Log::warning('unknown ReportFileType', ['type' => $this->value]);
+
                 return 'unknown';
                 break;
         }

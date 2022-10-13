@@ -42,6 +42,7 @@ return [
     'reminder.deadline.close.scheduling' => 'In :REGION endet die Termineingabe für Heimpspiele :deadline',
     'reminder.deadline.referees' => 'In :REGION endet die Schiedsrichtereinteilung :deadline',
     'reminder.deadline.action' => 'Bitte überprüfe Deine Eingaben hier',
+    'reminder.download' => ':Report: Es liegt eine neue Version vor - ',
     'reminder.download.region.teamware' => 'Lade deine <spawn class="badge badge-light"> :count </spawn> Teamware Dateien für Bezirk :REGION herunter',
     'reminder.download.region.leagues' => 'Lade deine <spawn class="badge badge-light"> :count </spawn> Runden Dateien für Bezirk :REGION herunter',
     'reminder.download.clubs' => 'Lade deine <spawn class="badge badge-light"> :count </spawn> Dateien für Verein :CLUB herunter',

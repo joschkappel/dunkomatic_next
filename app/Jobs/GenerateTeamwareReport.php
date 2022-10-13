@@ -2,9 +2,13 @@
 
 namespace App\Jobs;
 
+use App\Enums\Report;
 use App\Exports\TeamwareGamesExport;
 use App\Exports\TeamwareTeamsExport;
 use App\Models\League;
+use App\Traits\ReportManager;
+use App\Traits\ReportJobStatus;
+use App\Traits\ReportVersioning;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,7 +22,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class GenerateTeamwareReport implements ShouldQueue
 {
-    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ReportJobStatus, ReportManager, ReportVersioning;
 
     protected string $export_folder;
 
@@ -47,8 +51,8 @@ class GenerateTeamwareReport implements ShouldQueue
         $this->export_folder = $this->league->region->teamware_folder;
 
         // teamware filenames
-        $this->tw_teams = $this->export_folder.'/'.Str::replace(' ', '-', $this->league->shortname).'_Teams.csv';
-        $this->tw_games = $this->export_folder.'/'.Str::replace(' ', '-', $this->league->shortname).'_Games.csv';
+        $this->tw_teams = $this->export_folder.'/'.Str::slug($this->league->shortname, '_').'_teams';
+        $this->tw_games = $this->export_folder.'/'.Str::slug($this->league->shortname, '_').'_games';
     }
 
     /**
@@ -64,12 +68,20 @@ class GenerateTeamwareReport implements ShouldQueue
                 return;
             }
         }
+        $version = $this->get_report_version($this->league->region, Report::Teamware());
+
+        $tw_games = $this->tw_games.'_v'.$version.'.csv';
+        $tw_teams = $this->tw_teams.'_v'.$version.'.csv';
+
+        // move previous versions
+        $this->move_old_report($this->league->region, $this->export_folder, Str::slug($this->league->shortname, '_'));
 
         Log::info('[JOB][TEAMWARE REPORTS] started.', [
             'league-id' => $this->league->id,
-            'path' => $this->tw_games, ]);
+            'teams path' => $tw_teams,
+            'games path' => $tw_games, ]);
 
-        Excel::store(new TeamwareTeamsExport($this->league), $this->tw_teams, null, \Maatwebsite\Excel\Excel::CSV);
-        Excel::store(new TeamwareGamesExport($this->league), $this->tw_games, null, \Maatwebsite\Excel\Excel::CSV);
+        Excel::store(new TeamwareTeamsExport($this->league), $tw_teams, null, \Maatwebsite\Excel\Excel::CSV);
+        Excel::store(new TeamwareGamesExport($this->league), $tw_games, null, \Maatwebsite\Excel\Excel::CSV);
     }
 }

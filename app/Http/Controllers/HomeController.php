@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Report;
 use App\Enums\ReportFileType;
 use App\Mail\Feedback;
+use App\Traits\ReportVersioning;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +15,8 @@ use Illuminate\Support\Facades\RateLimiter;
 
 class HomeController extends Controller
 {
+    use ReportVersioning;
+
     /**
      * display view with list of users to approve
      *
@@ -65,6 +69,15 @@ class HomeController extends Controller
         $user_is_region_super = $user->isAn('regionadmin', 'superadmin');
         $user_is_club_region_super = $user->isAn('clubadmin', 'regionadmin', 'superadmin');
         $user_can_view_regions = $user->can('view-regions');
+
+        foreach ($this->get_outdated_downloads($user) as $rpt) {
+            $msg = [];
+            $msg['msg'] = __('message.reminder.download', ['report' => Report::coerce($rpt->report_id)->description]);
+            $msg['action_msg'] = __('message.reminder.download.action');
+            $msg['action_color'] = 'info';
+            $msg['action'] = Report::coerce($rpt->report_id)->getReportDownloadLink($rpt->model_id, ReportFileType::None());
+            $reminders[] = $msg;
+        }
 
         foreach ($user->regions() as $region) {
             if (($user_is_region_super) and $user->can('access', $region)) {
@@ -185,49 +198,13 @@ class HomeController extends Controller
                     }
                 }
             }
-
-            if ($user_can_view_regions) {
-                if ($region->league_filecount() > 0) {
-                    $msg = [];
-                    $msg['msg'] = __('message.reminder.download.region.leagues', ['region' => $region->code, 'count' => $region->league_filecount()]);
-                    $msg['action_msg'] = __('message.reminder.download.action');
-                    $msg['action_color'] = 'info';
-                    $msg['action'] = route('region_league_archive.get', ['region' => $region]);
-                    $reminders[] = $msg;
-                }
-                if ($region->teamware_filecount() > 0) {
-                    $msg = [];
-                    $msg['msg'] = __('message.reminder.download.region.teamware', ['region' => $region->code, 'count' => $region->teamware_filecount()]);
-                    $msg['action_msg'] = __('message.reminder.download.action');
-                    $msg['action'] = route('region_teamware_archive.get', ['region' => $region]);
-                    $msg['action_color'] = 'info';
-                    $reminders[] = $msg;
-                }
-            }
         }
         if (! $user_is_region_super) {
             foreach ($user->clubs() as $club) {
                 $links[] = ['text' => $club->shortname, 'url' => route('club.dashboard', ['club' => $club,  'language' => app()->getLocale()])];
-
-                if ($club->filecount() > 0) {
-                    $msg = [];
-                    $msg['msg'] = __('message.reminder.download.clubs', ['club' => $club->shortname, 'count' => ($club->filecount())]);
-                    $msg['action_msg'] = __('message.reminder.download.action');
-                    $msg['action'] = route('club_archive.get', ['club' => $club, 'format' => ReportFileType::None]);
-                    $msg['action_color'] = 'info';
-                    $reminders[] = $msg;
-                }
             }
             foreach ($user->leagues() as $league) {
                 $links[] = ['text' => $league->shortname, 'url' => route('league.dashboard', ['league' => $league,  'language' => app()->getLocale()])];
-                if ($league->filecount() > 0) {
-                    $msg = [];
-                    $msg['msg'] = __('message.reminder.download.leagues', ['league' => $league->shortname, 'count' => $league->filecount()]);
-                    $msg['action_msg'] = __('message.reminder.download.action');
-                    $msg['action'] = route('league_archive.get', ['league' => $league]);
-                    $msg['action_color'] = 'info';
-                    $reminders[] = $msg;
-                }
             }
         }
 

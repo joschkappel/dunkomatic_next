@@ -2,10 +2,12 @@
 
 namespace Tests\Jobs;
 
+use App\Enums\Report;
 use App\Enums\ReportFileType;
 use App\Jobs\GenerateRegionGamesReport;
 use App\Models\Game;
 use App\Models\League;
+use App\Traits\ReportJobStatus;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -15,11 +17,16 @@ class GenerateRegionReportTest extends TestCase
 
     private $testclub_assigned;
 
+    private $report_job;
+
+    use ReportJobStatus;
+
     public function setUp(): void
     {
         parent::setUp();
         $this->testleague = League::factory()->frozen(4, 4)->create();
         $this->testclub_assigned = $this->testleague->clubs()->first();
+        $this->report_job = $this->job_starting($this->testleague->region, Report::RegionGames());
     }
 
     /**
@@ -42,7 +49,7 @@ class GenerateRegionReportTest extends TestCase
         }
 
         $report = $folder.'/'.$this->region->code;
-        $report .= '_Gesamtplan.pdf';
+        $report .= '_'.Report::RegionGames()->getReportFilename().'_v'.$this->report_job->version.'.pdf';
 
         $job_instance = resolve(GenerateRegionGamesReport::class, ['region' => $region, 'rtype' => ReportFileType::PDF()]);
         app()->call([$job_instance, 'handle']);
@@ -68,7 +75,7 @@ class GenerateRegionReportTest extends TestCase
         Storage::delete($files);
 
         $report = $folder.'/'.$this->region->code;
-        $report .= '_Gesamtplan.xlsx';
+        $report .= '_'.Report::RegionGames()->getReportFilename().'_v'.$this->report_job->version.'.xlsx';
 
         $job_instance = resolve(GenerateRegionGamesReport::class, ['region' => $region, 'rtype' => ReportFileType::XLSX()]);
         app()->call([$job_instance, 'handle']);
@@ -96,7 +103,7 @@ class GenerateRegionReportTest extends TestCase
         Storage::delete($files);
 
         $report = $folder.'/'.$this->region->code;
-        $report .= '_Gesamtplan.ics';
+        $report .= '_'.Report::RegionGames()->getReportFilename().'_v'.$this->report_job->version.'.ics';
 
         $job_instance = resolve(GenerateRegionGamesReport::class, ['region' => $region, 'rtype' => ReportFileType::ICS()]);
         app()->call([$job_instance, 'handle']);
