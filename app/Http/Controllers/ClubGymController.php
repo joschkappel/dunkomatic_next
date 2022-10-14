@@ -6,7 +6,6 @@ use App\Models\Club;
 use App\Models\Gym;
 use App\Models\Team;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Validation\Rule;
@@ -22,10 +21,19 @@ class ClubGymController extends Controller
     public function sb_club(Club $club)
     {
         //Log::debug(print_r($club,true));
-        $gyms = $club->gyms()->select('id', DB::raw('CONCAT( gym_no, " - ", name) as text'))->get();
+        $gyms = $club->gyms()->get();
         Log::info('preparing select2 gyms list for club.', ['club-id' => $club->id, 'count' => count($gyms)]);
 
-        return Response::json($gyms->toArray());
+        $response = [];
+
+        foreach ($gyms as $lgym) {
+            $response[] = [
+                'id' => $lgym->id,
+                'text' => $lgym->gym_no.' - '.$lgym->name,
+            ];
+        }
+
+        return Response::json($response);
     }
 
     /**

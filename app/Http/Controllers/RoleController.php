@@ -20,34 +20,33 @@ class RoleController extends Controller
      */
     public function index(Request $request)
     {
-        $roles = collect();
-
         if (isset($request->scope) and ($request->scope == Club::class)) {
-            $roles->push(Role::ClubLead());
-            $roles->push(Role::RefereeLead());
-            $roles->push(Role::RegionTeam());
-            $roles->push(Role::JuniorsLead());
-            $roles->push(Role::GirlsLead());
+            $roles[] = Role::coerce('ClubLead');
+            $roles[] = Role::coerce('RefereeLead');
+            $roles[] = Role::coerce('RegionTeam');
+            $roles[] = Role::coerce('JuniorsLead');
+            $roles[] = Role::coerce('GirlsLead');
         } elseif (isset($request->scope) and ($request->scope == League::class)) {
-            $roles->push(Role::LeagueLead());
+            $roles[] = Role::coerce('LeagueLead');
         } elseif (isset($request->scope) and ($request->scope == Region::class)) {
-            $roles->push(Role::RegionLead());
-            $roles->push(Role::RegionTeam());
+            $roles[] = Role::coerce('RegionLead');
+            $roles[] = Role::coerce('RegionTeam');
         } elseif (isset($request->scope) and ($request->scope == Team::class)) {
-            $roles->push(Role::TeamCoach());
+            $roles[] = Role::coerce('TeamCoach');
         } else {
-            $roles = collect(Role::getInstances())->flatten();
+            $roles = Role::getInstances();
         }
 
         Log::info('preparing select2 role list.', ['count' => count($roles)]);
+        $response = [];
 
-        $roles->transform(function ($role) {
-            return [
+        foreach ($roles as $role) {
+            $response[] = [
                 'id' => $role->value,
                 'text' => $role->description,
             ];
-        });
+        }
 
-        return Response::json($roles->toArray());
+        return Response::json($response);
     }
 }

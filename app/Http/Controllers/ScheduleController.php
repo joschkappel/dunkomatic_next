@@ -133,22 +133,23 @@ class ScheduleController extends Controller
         }
 
         Log::info('preparing select2 schedule list.', ['count' => count($schedules)]);
+        $response = [];
 
-        $schedules->transform(function ($scd) use ($region) {
-            if ($scd->region->is($region)) {
-                return [
-                    'id' => $scd->id,
-                    'text' => $scd->name,
+        foreach ($schedules as $schedule) {
+            if ($schedule->region->is($region)) {
+                $response[] = [
+                    'id' => $schedule->id,
+                    'text' => $schedule->name,
                 ];
             } else {
-                return [
-                    'id' => $scd->id,
-                    'text' => '('.$scd->region->code.') '.$scd->name,
+                $response[] = [
+                    'id' => $schedule->id,
+                    'text' => '('.$schedule->region->code.') '.$schedule->name,
                 ];
             }
-        });
+        }
 
-        return Response::json($schedules->toArray());
+        return Response::json($response);
     }
 
     /**
@@ -170,20 +171,24 @@ class ScheduleController extends Controller
         $schedules = Schedule::where('league_size_id', $size->id)
         ->whereIn('region_id', [$region->id, $region->parentRegion->id ?? null])
         ->orderBy('name', 'ASC')
-        ->select('id', 'name as text')
-        ->get()
-        ->map->only(['id', 'text']);
+        ->get();
         $cust_schedules = Schedule::where('league_size_id', LeagueSize::UNDEFINED)
         ->where('region_id', $region->id)
         ->orderBy('name', 'ASC')
-        ->select('id', 'name as text')
-        ->get()
-        ->map->only(['id', 'text']);
+        ->get();
         $schedules = $schedules->concat($cust_schedules);
 
         Log::info('preparing select2 schedule for leaguesize list.', ['leaguesize-id' => $size->id, 'count' => count($schedules)]);
+        $response = [];
 
-        return Response::json($schedules->toArray());
+        foreach ($schedules as $schedule) {
+            $response[] = [
+                'id' => $schedule->id,
+                'text' => $schedule->name,
+            ];
+        }
+
+        return Response::json($response);
     }
 
     /**
@@ -198,13 +203,19 @@ class ScheduleController extends Controller
             ->where('league_size_id', $schedule->league_size_id)
             ->where('iterations', $schedule->iterations)
             ->orderBy('name', 'ASC')
-            ->select('id', 'name as text')
-            ->get()
-            ->map->only(['id', 'text']);
+            ->get();
 
         Log::info('preparing select2 matching schedules list.', ['schedule-id' => $schedule->id, 'count' => count($schedules)]);
+        $response = [];
 
-        return Response::json($schedules->toArray());
+        foreach ($schedules as $schedule) {
+            $response[] = [
+                'id' => $schedule->id,
+                'text' => $schedule->name,
+            ];
+        }
+
+        return Response::json($response);
     }
 
     /**
