@@ -179,7 +179,7 @@ class LeagueController extends Controller
 
         $team_chars = $league->teams()->pluck('league_char')->toArray();
 
-        $freechars = array_diff($all_chars, $team_chars);
+        $freechars = collect(array_diff($all_chars, $team_chars));
 
         Log::info('preparing select2 free league places list', ['count' => count($freechars)]);
         $freechars->transform(function ($value, $key) {
