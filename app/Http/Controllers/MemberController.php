@@ -148,16 +148,20 @@ class MemberController extends Controller
             ->with('member')
             ->get()
             ->sortBy('member.lastname')
-            ->pluck('member.name', 'member.id')
-            ->transform(function ($v, $k) {
-                return [
-                    'id' => $k,
-                    'text' => $v,
-                ];
-            });
-        Log::info('preparing select2 member list.', ['count' => count($members)]);
+            ->pluck('member.name', 'member.id');
+        //Log::debug('got members '.count($members));
 
-        return Response::json($members->toArray());
+        Log::info('preparing select2 member list.', ['count' => count($members)]);
+        $response = [];
+
+        foreach ($members as $k => $v) {
+            $response[] = [
+                'id' => $k,
+                'text' => $v,
+            ];
+        }
+
+        return Response::json($response);
     }
 
     /**
@@ -173,16 +177,19 @@ class MemberController extends Controller
         $members = $club->members->pluck('name', 'id')
             ->sortBy('name');
 
-        Log::info('preparing select2 member list.', ['count' => count($members)]);
+        //Log::debug('got members '.count($members));
 
-        $members->transform(function ($v, $k) {
-            return [
+        Log::info('preparing select2 member list.', ['count' => count($members)]);
+        $response = [];
+
+        foreach ($members as $k => $v) {
+            $response[] = [
                 'id' => $k,
                 'text' => $v,
             ];
-        });
+        }
 
-        return Response::json($members->toArray());
+        return Response::json($response);
     }
 
     /**
