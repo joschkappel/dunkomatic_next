@@ -33,9 +33,9 @@ return new class extends Migration
     public function down()
     {
         Schema::table('regions', function (Blueprint $table) {
-            $table->unsignedInteger('job_club_reports')->default(JobFrequencyType::never);
-            $table->unsignedInteger('job_league_reports')->default(JobFrequencyType::never);
-            $table->unsignedInteger('job_exports')->default(JobFrequencyType::never);
+            $table->unsignedInteger('job_club_reports')->default(JobFrequencyType::weekly);
+            $table->unsignedInteger('job_league_reports')->default(JobFrequencyType::weekly);
+            $table->unsignedInteger('job_exports')->default(JobFrequencyType::weekly);
             $table->dateTime('job_club_reports_lastrun_at')->nullable();
             $table->dateTime('job_league_reports_lastrun_at')->nullable();
             $table->boolean('job_club_reports_running')->default(false);
