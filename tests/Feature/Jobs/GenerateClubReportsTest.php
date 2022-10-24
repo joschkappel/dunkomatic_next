@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Jobs;
+namespace Tests\Feature\Jobs;
 
 use App\Enums\Report;
 use App\Enums\ReportFileType;
