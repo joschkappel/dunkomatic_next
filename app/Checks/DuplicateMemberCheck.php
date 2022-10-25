@@ -43,7 +43,7 @@ class DuplicateMemberCheck extends Check
         if ($this->failWhenDuplicatesIsHigher) {
             $max_dups = max([$duplicate_stats->max('e'), $duplicate_stats->max('el'), $duplicate_stats->max('fl')]);
             if ($max_dups > $this->failWhenDuplicatesIsHigher) {
-                return $result->failed("The duplicate members count is {$max_dups} which is higher than the allowed {$this->failWhenDuplicatesIsHigher}");
+                return $result->warning("The duplicate members count is {$max_dups} which is higher than the allowed {$this->failWhenDuplicatesIsHigher}");
             }
         }
 

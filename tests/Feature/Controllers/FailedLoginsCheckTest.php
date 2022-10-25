@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Controllers;
 
-use App\Checks\ConcurrentUsersCheck;
+use App\Checks\FailedLoginsCheck;
 use Tests\Support\Authentication;
 use Tests\TestCase;
 
-class ConcurrentUsersCheckTest extends TestCase
+class FailedLoginsCheckTest extends TestCase
 {
     use Authentication;
 
@@ -20,10 +20,10 @@ class ConcurrentUsersCheckTest extends TestCase
      */
     public function health_check()
     {
-        $check = ConcurrentUsersCheck::new()
-                    ->failWhenFailedLoginsIsHigherInTheLastMinute(80)
-                    ->failWhenFailedLoginsIsHigherInTheLast5Minutes(50)
-                    ->failWhenFailedLoginsIsHigherInTheLast15Minutes(40);
+        $check = FailedLoginsCheck::new()
+                    ->failWhenFailedLoginsIsHigherInTheLastMinute(1)
+                    ->failWhenFailedLoginsIsHigherInTheLast5Minutes(2)
+                    ->failWhenFailedLoginsIsHigherInTheLast15Minutes(4);
 
         $result = $check->run();
 
