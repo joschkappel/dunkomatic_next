@@ -28,6 +28,6 @@ class FailedLoginsCheckTest extends TestCase
         $result = $check->run();
 
         $this->assertEquals('ok', $result->status->value);
-        $this->assertCount(6, $result->meta);
+        $this->assertCount(3, $result->meta);
     }
 }
