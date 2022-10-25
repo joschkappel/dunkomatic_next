@@ -40,22 +40,28 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('db:backup -c')->daily()->emailOutputOnFailure('dmatic.master@gmail.com');
         $schedule->command('telescope:prune')->dailyAt('00:10')->environments(['staging', 'local', 'dev']);
+
+        // reports and  checks
+        $schedule->job(new GameOverlaps(), 'janitor')->dailyAt('00:01');
+        $schedule->job(new GameNotScheduled(), 'janitor')->dailyAt('00:02');
+        $schedule->job(new ReportProcessor(collect(), collect()), 'janitor')->dailyAt('00:10');
+
+        // env clean ups
         $schedule->job(new ProcessDbCleanup(), 'janitor')->weeklyOn(1, '00:15');
         $schedule->job(new ProcessFilesCleanup(), 'janitor')->weeklyOn(1, '00:20');
         $schedule->job(new ProcessCustomMessages(), 'janitor')->dailyAt('03:00');
         $schedule->job(new ProcessNewSeason(), 'janitor')->yearly();
         // $schedule->job(new ExportStatistics(), 'janitor')->everyMinute();
+
+        // league state handling
         $schedule->job(new OpenLeagueState(), 'janitor')->dailyAt('07:45');
         $schedule->job(new CloseLeagueState(), 'janitor')->dailyAt('20:00');
-        $schedule->job(new ReportProcessor(collect(), collect()), 'janitor')->dailyAt('00:10');
 
         // schedule region specific jobs
         $regions = Region::with('regionadmins')->get();
 
         foreach ($regions as $region) {
             if ($region->regionadmins()->exists()) {
-                $this->scheduleRegionTask($region, $schedule, new GameOverlaps($region), $region->job_game_overlaps, '00:01');
-                $this->scheduleRegionTask($region, $schedule, new GameNotScheduled($region), $region->job_game_notime, '00:02');
                 $this->scheduleRegionTask($region, $schedule, new MissingLeadCheck($region), $region->job_noleads, '00:03');
                 $this->scheduleRegionTask($region, $schedule, new EmailValidation($region), $region->job_email_valid, '00:04');
             }
@@ -101,19 +107,19 @@ class Kernel extends ConsoleKernel
         // $schedule->job($job,'janitor')->everyFiveMinutes();
         // return true;
         switch ($frequency) {
-            case JobFrequencyType::daily:
-                $schedule->job($job, 'region_'.$region->id, 'redis')->dailyAt($startAt);
-                //$schedule->job($job,'janitor')->hourly();
-                //$schedule->job($job,'janitor')->everyFiveMinutes();
-                break;
             case JobFrequencyType::weekly:
                 $schedule->job($job, 'region_'.$region->id, 'redis')->weeklyOn(1, $startAt);
+                //$schedule->job($job,'janitor')->hourly();
+                //$schedule->job($job,'janitor')->everyFiveMinutes();
                 break;
             case JobFrequencyType::biweekly:
                 $schedule->job($job, 'region_'.$region->id, 'redis')->twiceMonthlyOn(1, 16, $startAt);
                 break;
             case JobFrequencyType::monthly:
                 $schedule->job($job, 'region_'.$region->id, 'redis')->monthlyOn(1, $startAt);
+                break;
+            case JobFrequencyType::quarterly:
+                $schedule->job($job, 'region_'.$region->id, 'redis')->quarterlyOn(1, $startAt);
                 break;
         }
 

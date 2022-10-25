@@ -6,22 +6,18 @@ use BenSampo\Enum\Contracts\LocalizedEnum;
 use BenSampo\Enum\Enum;
 
 /**
- * @method static static never()
- * @method static static daily()
  * @method static static weekly()
  * @method static static biweekly()
  * @method static static monthly()
+ * @method static static quarterly()
  */
 final class JobFrequencyType extends Enum implements LocalizedEnum
 {
-    const never = 0;
+    const weekly = 0;
 
-    const daily = 1;
+    const biweekly = 1;
 
-    const weekly = 2;
+    const monthly = 2;
 
-    const biweekly = 3;
-
-    const monthly = 4;
-    // test
+    const quarterly = 3;
 }

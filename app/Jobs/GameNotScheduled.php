@@ -2,8 +2,10 @@
 
 namespace App\Jobs;
 
+use App\Enums\LeagueState;
 use App\Enums\Role;
-use App\Models\Region;
+use App\Models\Club;
+use App\Models\League;
 use App\Notifications\ClubUnscheduledGames;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -17,17 +19,14 @@ class GameNotScheduled implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected Region $region;
-
     /**
      * Create a new job instance.
      *
-     * @param  Region  $region
      * @return void
      */
-    public function __construct(Region $region)
+    public function __construct()
     {
-        $this->region = $region;
+        //
     }
 
     /**
@@ -37,29 +36,37 @@ class GameNotScheduled implements ShouldQueue
      */
     public function handle()
     {
-        Log::info('[JOB][UNSCHEDULED GAMES] started.', ['region-id' => $this->region->id]);
-        $clubs = $this->region->clubs()->with('members')->get();
+        Log::info('[JOB][UNSCHEDULED GAMES] started.');
+        // find all leagues in state scheduling
+        $leagues = League::where('state', LeagueState::Scheduling())->with('teams')->get();
 
-        foreach ($clubs as $c) {
-            $select = 'SELECT distinct ga.id
-               FROM games ga
-               WHERE ga.club_id_home='.$c->id.' and ga.game_date is not null and ga.game_time is null ORDER BY ga.game_date DESC, ga.club_id_home ASC';
+        if ($leagues->count() > 0) {
+            $clubs = Club::whereIn('id', $leagues->pluck('teams.*.club_id')->flatten())->with('members')->get()->unique();
+            Log::info('[JOB][OVERLAPPING GAMES] start work on', ['leagues' => $leagues->count(), 'clubs' => $clubs->count()]);
 
-            $ogames = collect(DB::select($select))->pluck('id');
+            foreach ($clubs as $c) {
+                $select = 'SELECT distinct ga.id
+                FROM games ga
+                WHERE ga.club_id_home='.$c->id.' and ga.game_date is not null and ga.game_time is null ORDER BY ga.game_date DESC, ga.club_id_home ASC';
 
-            if (count($ogames) > 0) {
-                Log::warning('[JOB][UNSCHEDULED GAMES] found games with no date and time.', ['club-id' => $c->id, 'count' => count($ogames)]);
-                $members = $c->members->load('user')->where('pivot.role_id', Role::ClubLead);
-                foreach ($members as $m) {
-                    $m->notify(new ClubUnscheduledGames($c, count($ogames)));
-                    if ($m->user()->exists()) {
-                        $m->user->notify(new ClubUnscheduledGames($c, count($ogames)));
+                $ogames = collect(DB::select($select))->pluck('id');
+
+                if (count($ogames) > 0) {
+                    Log::warning('[JOB][UNSCHEDULED GAMES] found games with no date and time.', ['club-id' => $c->id, 'count' => count($ogames)]);
+                    $members = $c->members->load('user')->where('pivot.role_id', Role::ClubLead);
+                    foreach ($members as $m) {
+                        $m->notify(new ClubUnscheduledGames($c, count($ogames)));
+                        if ($m->user()->exists()) {
+                            $m->user->notify(new ClubUnscheduledGames($c, count($ogames)));
+                        }
                     }
+                    Log::info('[NOTIFICATION][MEMBER] unscheduled games.', ['member-id' => $members->pluck('id')]);
+                } else {
+                    Log::info('[JOB][UNSCHEDULED GAMES] all games OK.', ['club-id' => $c->id]);
                 }
-                Log::info('[NOTIFICATION][MEMBER] unscheduled games.', ['member-id' => $members->pluck('id')]);
-            } else {
-                Log::info('[JOB][UNSCHEDULED GAMES] all games OK.', ['club-id' => $c->id]);
             }
+        } else {
+            Log::notice('[JOB][UNSCHEDULED GAMES] stopping, no leagues found');
         }
     }
 }

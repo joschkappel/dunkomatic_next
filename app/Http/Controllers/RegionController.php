@@ -313,8 +313,6 @@ class RegionController extends Controller
             'name' => 'required|max:40',
             'game_slot' => 'required|integer|in:60,75,90,105,120,135,150',
             'job_noleads' => ['required', new EnumValue(JobFrequencyType::class, false)],
-            'job_game_notime' => ['required', new EnumValue(JobFrequencyType::class, false)],
-            'job_game_overlaps' => ['required', new EnumValue(JobFrequencyType::class, false)],
             'job_email_valid' => ['required', new EnumValue(JobFrequencyType::class, false)],
             'fmt_club_reports' => 'nullable|array',
             'fmt_club_reports.*' => ['nullable', new EnumValue(ReportFileType::class, false)],

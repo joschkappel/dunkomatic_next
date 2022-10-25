@@ -69,36 +69,6 @@
                 </div>
             </div>
             <div class="form-row m-2">
-                <label for="selNotime"
-                    class="col-sm-6 col-form-label">@lang('region.job.notime')</label>
-                <div class="col-sm-4">
-                <div class="input-group ">
-                    <select class='js-sel-notime js-states form-control select2' id='selNotime'
-                        name="job_game_notime">
-                        @foreach ($frequencytype as $ft)
-                            <option @if ($ft->value == $region->job_game_notime) selected @endif value="{{ $ft->value }}">
-                                {{ $ft->description }}</option>
-                        @endforeach
-                    </select>
-                    </div>
-                </div>
-            </div>
-            <div class="form-row m-2">
-                <label for="selOverlaps"
-                    class="col-sm-6 col-form-label">@lang('region.job.overlaps')</label>
-                <div class="col-sm-4">
-                <div class="input-group ">
-                    <select class='js-sel-overlaps js-states form-control select2' id='selOverlaps'
-                        name="job_game_overlaps">
-                        @foreach ($frequencytype as $ft)
-                            <option @if ($ft->value == $region->job_game_overlaps) selected @endif value="{{ $ft->value }}">
-                                {{ $ft->description }}</option>
-                        @endforeach
-                    </select>
-                    </div>
-                </div>
-            </div>
-            <div class="form-row m-2">
                 <label for="game_slot"
                     class="col-sm-6 col-form-label">@lang('region.game_slot')</label>
                 <div class="col-sm-4">
@@ -400,19 +370,7 @@
                 minimumResultsForSearch: Infinity,
                 width: '100%',
             });
-            $("#selNotime").select2({
-                multiple: false,
-                allowClear: false,
-                minimumResultsForSearch: Infinity,
-                width: '100%',
-            });
             $("#selEmailCheck").select2({
-                multiple: false,
-                allowClear: false,
-                minimumResultsForSearch: Infinity,
-                width: '100%',
-            });
-            $("#selOverlaps").select2({
                 multiple: false,
                 allowClear: false,
                 minimumResultsForSearch: Infinity,

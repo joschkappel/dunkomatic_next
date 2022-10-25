@@ -32,11 +32,10 @@ return [
         Role::TeamCoach => 'Team Coach',
     ],
     JobFrequencyType::class => [
-        JobFrequencyType::never => 'never',
-        JobFrequencyType::daily => 'daily',
         JobFrequencyType::weekly => 'weekly',
         JobFrequencyType::biweekly => 'bi-weekly',
         JobFrequencyType::monthly => 'monthly',
+        JobFrequencyType::quarterly => 'quarterly',
     ],
 
     LeagueState::class => [

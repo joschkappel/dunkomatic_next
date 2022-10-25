@@ -33,11 +33,10 @@ return [
     ],
 
     JobFrequencyType::class => [
-        JobFrequencyType::never => 'nie',
-        JobFrequencyType::daily => 'täglich',
         JobFrequencyType::weekly => 'wöchentlich',
         JobFrequencyType::biweekly => 'zweiwöchentlich',
         JobFrequencyType::monthly => 'monatlich',
+        JobFrequencyType::quarterly => 'jedes Quartal',
     ],
 
     LeagueState::class => [

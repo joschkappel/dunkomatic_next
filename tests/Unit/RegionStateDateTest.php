@@ -12,10 +12,10 @@ it('update open_selection', function ($phasedate) {
         ->put(route('region.update_details', ['region' => $region->id]), [
             'name' => 'datetestregion',
             'game_slot' => 120,
-            'job_noleads' => JobFrequencyType::never(),
-            'job_game_notime' => JobFrequencyType::never(),
-            'job_game_overlaps' => JobFrequencyType::never(),
-            'job_email_valid' => JobFrequencyType::never(),
+            'job_noleads' => JobFrequencyType::weekly(),
+            'job_game_notime' => JobFrequencyType::weekly(),
+            'job_game_overlaps' => JobFrequencyType::weekly(),
+            'job_email_valid' => JobFrequencyType::weekly(),
             'open_selection_at' => $phasedate, ]);
 
     // Assert
@@ -32,10 +32,10 @@ it('update close_selection', function ($phasedate) {
         ->put(route('region.update_details', ['region' => $region->id]), [
             'name' => 'datetestregion',
             'game_slot' => 120,
-            'job_noleads' => JobFrequencyType::never(),
-            'job_game_notime' => JobFrequencyType::never(),
-            'job_game_overlaps' => JobFrequencyType::never(),
-            'job_email_valid' => JobFrequencyType::never(),
+            'job_noleads' => JobFrequencyType::weekly(),
+            'job_game_notime' => JobFrequencyType::weekly(),
+            'job_game_overlaps' => JobFrequencyType::weekly(),
+            'job_email_valid' => JobFrequencyType::weekly(),
             'close_selection_at' => $phasedate, ]);
 
     // Assert
@@ -52,10 +52,10 @@ it('update open_scheduling', function ($phasedate) {
         ->put(route('region.update_details', ['region' => $region->id]), [
             'name' => 'datetestregion',
             'game_slot' => 120,
-            'job_noleads' => JobFrequencyType::never(),
-            'job_game_notime' => JobFrequencyType::never(),
-            'job_game_overlaps' => JobFrequencyType::never(),
-            'job_email_valid' => JobFrequencyType::never(),
+            'job_noleads' => JobFrequencyType::weekly(),
+            'job_game_notime' => JobFrequencyType::weekly(),
+            'job_game_overlaps' => JobFrequencyType::weekly(),
+            'job_email_valid' => JobFrequencyType::weekly(),
             'open_scheduling_at' => $phasedate, ]);
 
     // Assert
@@ -72,10 +72,10 @@ it('update close_scheduling', function ($phasedate) {
         ->put(route('region.update_details', ['region' => $region->id]), [
             'name' => 'datetestregion',
             'game_slot' => 120,
-            'job_noleads' => JobFrequencyType::never(),
-            'job_game_notime' => JobFrequencyType::never(),
-            'job_game_overlaps' => JobFrequencyType::never(),
-            'job_email_valid' => JobFrequencyType::never(),
+            'job_noleads' => JobFrequencyType::weekly(),
+            'job_game_notime' => JobFrequencyType::weekly(),
+            'job_game_overlaps' => JobFrequencyType::weekly(),
+            'job_email_valid' => JobFrequencyType::weekly(),
             'close_scheduling_at' => $phasedate, ]);
 
     // Assert
@@ -92,10 +92,10 @@ it('update close_referees', function ($phasedate) {
         ->put(route('region.update_details', ['region' => $region->id]), [
             'name' => 'datetestregion',
             'game_slot' => 120,
-            'job_noleads' => JobFrequencyType::never(),
-            'job_game_notime' => JobFrequencyType::never(),
-            'job_game_overlaps' => JobFrequencyType::never(),
-            'job_email_valid' => JobFrequencyType::never(),
+            'job_noleads' => JobFrequencyType::weekly(),
+            'job_game_notime' => JobFrequencyType::weekly(),
+            'job_game_overlaps' => JobFrequencyType::weekly(),
+            'job_email_valid' => JobFrequencyType::weekly(),
             'close_referees_at' => $phasedate, ]);
 
     // Assert
