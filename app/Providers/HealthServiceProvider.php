@@ -54,7 +54,7 @@ class HealthServiceProvider extends ServiceProvider
                 ->failWhenQueueLengthIsHigher(10),
                 MinioHealthCheck::new(),
                 DuplicateMemberCheck::new()
-                ->failWhenDuplicatesIsHigher(10),
+                ->failWhenDuplicatesIsHigher(50),
             ]);
         } elseif (app()->environment('staging')) {
             Health::checks([
@@ -103,7 +103,7 @@ class HealthServiceProvider extends ServiceProvider
                 ->failWhenQueueLengthIsHigher(10),
                 MinioHealthCheck::new(),
                 DuplicateMemberCheck::new()
-                ->failWhenDuplicatesIsHigher(10),
+                ->failWhenDuplicatesIsHigher(50),
             ]);
         } else {
             // do nothing;
