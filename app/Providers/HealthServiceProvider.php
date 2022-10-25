@@ -2,8 +2,9 @@
 
 namespace App\Providers;
 
-use App\Checks\ConcurrentUsersCheck;
 use App\Checks\DbConnectionsCheck;
+use App\Checks\DuplicateMemberCheck;
+use App\Checks\FailedLoginsCheck;
 use App\Checks\LaravelEchoServerCheck;
 use App\Checks\MinioHealthCheck;
 use App\Checks\QueueLoadCheck;
@@ -15,7 +16,6 @@ use Spatie\Health\Checks\Checks\DebugModeCheck;
 use Spatie\Health\Checks\Checks\EnvironmentCheck;
 use Spatie\Health\Checks\Checks\PingCheck;
 use Spatie\Health\Checks\Checks\RedisCheck;
-use Spatie\Health\Checks\Checks\ScheduleCheck;
 use Spatie\Health\Checks\Checks\UsedDiskSpaceCheck;
 use Spatie\Health\Facades\Health;
 
@@ -45,14 +45,16 @@ class HealthServiceProvider extends ServiceProvider
                 CacheCheck::new(),
                 DebugModeCheck::new(),
                 LaravelEchoServerCheck::new(),
-                ConcurrentUsersCheck::new()
-                ->failWhenFailedLoginsIsHigherInTheLastMinute(80)
-                ->failWhenFailedLoginsIsHigherInTheLast5Minutes(50)
+                FailedLoginsCheck::new()
+                ->failWhenFailedLoginsIsHigherInTheLastMinute(5)
+                ->failWhenFailedLoginsIsHigherInTheLast5Minutes(10)
                 ->failWhenFailedLoginsIsHigherInTheLast15Minutes(30),
                 QueueLoadCheck::new()
                 ->failWhenFailedJobsIsHigher(5)
                 ->failWhenQueueLengthIsHigher(10),
                 MinioHealthCheck::new(),
+                DuplicateMemberCheck::new()
+                ->failWhenDuplicatesIsHigher(10),
             ]);
         } elseif (app()->environment('staging')) {
             Health::checks([
@@ -68,14 +70,16 @@ class HealthServiceProvider extends ServiceProvider
                 EnvironmentCheck::new()->expectEnvironment('staging'),
                 CacheCheck::new(),
                 LaravelEchoServerCheck::new(),
-                ConcurrentUsersCheck::new()
-                ->failWhenFailedLoginsIsHigherInTheLastMinute(80)
-                ->failWhenFailedLoginsIsHigherInTheLast5Minutes(50)
-                ->failWhenFailedLoginsIsHigherInTheLast15Minutes(30),
+                FailedLoginsCheck::new()
+                ->failWhenFailedLoginsIsHigherInTheLastMinute(5)
+                ->failWhenFailedLoginsIsHigherInTheLast5Minutes(10)
+                ->failWhenFailedLoginsIsHigherInTheLast15Minutes(20),
                 QueueLoadCheck::new()
                 ->failWhenFailedJobsIsHigher(5)
                 ->failWhenQueueLengthIsHigher(10),
                 MinioHealthCheck::new(),
+                DuplicateMemberCheck::new()
+                ->failWhenDuplicatesIsHigher(10),
             ]);
         } elseif (app()->environment('local')) {
             Health::checks([
@@ -90,14 +94,16 @@ class HealthServiceProvider extends ServiceProvider
                 EnvironmentCheck::new()->expectEnvironment('local'),
                 CacheCheck::new(),
                 LaravelEchoServerCheck::new(),
-                ConcurrentUsersCheck::new()
-                ->failWhenFailedLoginsIsHigherInTheLastMinute(80)
-                ->failWhenFailedLoginsIsHigherInTheLast5Minutes(50)
-                ->failWhenFailedLoginsIsHigherInTheLast15Minutes(30),
+                FailedLoginsCheck::new()
+                ->failWhenFailedLoginsIsHigherInTheLastMinute(1)
+                ->failWhenFailedLoginsIsHigherInTheLast5Minutes(2)
+                ->failWhenFailedLoginsIsHigherInTheLast15Minutes(5),
                 QueueLoadCheck::new()
                 ->failWhenFailedJobsIsHigher(5)
                 ->failWhenQueueLengthIsHigher(10),
                 MinioHealthCheck::new(),
+                DuplicateMemberCheck::new()
+                ->failWhenDuplicatesIsHigher(10),
             ]);
         } else {
             // do nothing;
