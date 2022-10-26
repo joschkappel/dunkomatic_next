@@ -1,7 +1,7 @@
 <footer class="main-footer">
     @yield('footer')
     <div class="float-right d-none d-sm-block">
-        <b>Version</b> {{ config('app.version')}}
+        <b>Version </b><a href="{{ route('release_info', ['language'=>app()->getLocale()])}}"> {{ config('app.version')}}</a>
     </div>
     <div class="float-left d-none d-sm-block">
         <div class="d-inline-flex ">
