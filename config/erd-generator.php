@@ -36,7 +36,6 @@ return [
         // App\Models\Member::class,
         // App\Models\Membership::class,
         // App\Models\Message::class,
-        // App\Models\MessageDestination::class,
         // App\Models\Region::class,
         // CLUB model
         // App\Models\Club::class,
@@ -61,7 +60,17 @@ return [
         // App\Models\Schedule::class,
         // App\Models\ScheduleEvent::class,
         // REGION
-        //App\Models\Region::class
+        // App\Models\Region::class,
+        // App\Models\ReportClass::class,
+        // App\Models\ReportJob::class,
+        // App\Models\ReportDownload::class,
+        // MEMBER
+        // App\Models\Member::class,
+        // App\Models\Membership::class,
+        // App\Models\Club::class,
+        // App\Models\League::class,
+        // App\Models\Team::class,
+        // App\Models\Region::class,
 
     ],
 
@@ -77,14 +86,14 @@ return [
      * and add them to the generated output. If you do not wish to use this
      * feature, you can disable it here.
      */
-    'use_db_schema' => true,
+    'use_db_schema' => false,
 
     /*
      * This setting toggles weather the column types (VARCHAR, INT, TEXT, etc.)
      * should be visible on the generated diagram. This option requires
      * 'use_db_schema' to be set to true.
      */
-    'use_column_types' => true,
+    'use_column_types' => false,
 
     /*
      * These colors will be used in the table representation for each entity in
