@@ -22,7 +22,7 @@
                         <ul>
                             <li>Es gibt auf Bezirks-, Runden- und Vereinsebene eine "Download Zone"</li>
                             <li>Dort können die relevante Listen in den jeweiligen Formaten heruntergeladen werden</li>
-                            <li>Alle Listen werden immer al HTNML und XLSX Datei angeboten</li>
+                            <li>Alle Listen werden immer al HTML und XLSX Datei angeboten</li>
                             <li>Weitere Formate (PDF, CSV, ...) können auf Bezirksebene angefordert werden</li>
                             <li>Nach erstmaligem Download einer Liste, wird der Benutzer im Homescreen darauf hingewiesen, dass eiene neue Version zur Verfügung steht.</li>
                         </ul>
@@ -47,8 +47,6 @@
                             <li>Eine Suche nach "Rundenkürzel MV", also zB. "OLD MV" zeigt aller Mannschaftsverantwortlichen der Runde OLD an</li>
                         </ul>
                     </li>
-                    <li class="list-group-item">Dapibus ac facilisis in</li>
-                    <li class="list-group-item">Vestibulum at eros</li>
                   </ul>
             </div>
         </div>
