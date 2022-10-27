@@ -46,22 +46,27 @@ class MemberController extends Controller
      * @param  Region  $region
      * @return \Illuminate\Http\JsonResponse
      */
-    public function datatable(Region $region)
+    public function datatable(Request $request, Region $region)
     {
-        // get all leagues for all teams in thsi region
-        $all_leagues = League::whereIn('id', $region->clubs()->with('teams')->without('region')->get()->pluck('teams.*.league_id')->flatten()->whereNotNull()->values())->with('teams')->get();
-        $all_region_ids = $all_leagues->pluck('region_id')->unique();
-        $all_league_ids = $all_leagues->pluck('id')->unique();
-        $all_team_ids = $all_leagues->pluck('teams.*.id')->flatten()->values();
-        $all_teams = Team::whereIn('id', $all_team_ids)->with('club', 'league')->get();
-        $all_club_ids = $all_teams->pluck('club_id')->unique();
+        // check if for all or only current region
+        if ($request->has('all')) {
+            $members = Member::whereNotNull('id')->with('user', 'clubs', 'leagues', 'memberships')->get();
+        } else {
+            // get all leagues for all teams in thsi region
+            $all_leagues = League::whereIn('id', $region->clubs()->with('teams')->without('region')->get()->pluck('teams.*.league_id')->flatten()->whereNotNull()->values())->with('teams')->get();
+            $all_region_ids = $all_leagues->pluck('region_id')->unique();
+            $all_league_ids = $all_leagues->pluck('id')->unique();
+            $all_team_ids = $all_leagues->pluck('teams.*.id')->flatten()->values();
+            $all_teams = Team::whereIn('id', $all_team_ids)->with('club', 'league')->get();
+            $all_club_ids = $all_teams->pluck('club_id')->unique();
 
-        // get members for all concerned regions, leagues and clubs
-        $members = Membership::where('membership_type', Region::class)->whereIn('membership_id', $all_region_ids)->pluck('member_id');
-        $members = $members->concat(Membership::where('membership_type', League::class)->whereIn('membership_id', $all_league_ids)->pluck('member_id'));
-        $members = $members->concat(Membership::where('membership_type', Team::class)->whereIn('membership_id', $all_team_ids)->pluck('member_id'));
-        $members = $members->concat(Membership::where('membership_type', Club::class)->whereIn('membership_id', $all_club_ids)->pluck('member_id'))->unique();
-        $members = Member::whereIn('id', $members)->with('user', 'clubs', 'leagues', 'memberships')->get();
+            // get members for all concerned regions, leagues and clubs
+            $members = Membership::where('membership_type', Region::class)->whereIn('membership_id', $all_region_ids)->pluck('member_id');
+            $members = $members->concat(Membership::where('membership_type', League::class)->whereIn('membership_id', $all_league_ids)->pluck('member_id'));
+            $members = $members->concat(Membership::where('membership_type', Team::class)->whereIn('membership_id', $all_team_ids)->pluck('member_id'));
+            $members = $members->concat(Membership::where('membership_type', Club::class)->whereIn('membership_id', $all_club_ids)->pluck('member_id'))->unique();
+            $members = Member::whereIn('id', $members)->with('user', 'clubs', 'leagues', 'memberships')->get();
+        }
 
         Log::info('preparing member list', ['cnt' => $members->count()]);
         $mlist = datatables()::of($members);
