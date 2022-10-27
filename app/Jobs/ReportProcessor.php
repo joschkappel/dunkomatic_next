@@ -66,6 +66,9 @@ class ReportProcessor implements ShouldQueue
         [$impacted_regions, $impacted_leagues, $impacted_clubs, $impacted_contact_regions] = $this->getImpactedModels($this->run_regions, $modified_instances);
         Log::debug('[JOB] REPORT PROCESSOR impacted models', ['region' => $impacted_regions->pluck('code'), 'leagues' => $impacted_leagues->pluck('shortname'), 'clubs' => $impacted_clubs->pluck('shortname')]);
 
+        // default report types
+        $def_type = ReportFileType::flags([ReportFileType::HTML(), ReportFileType::XLSX()]);
+
         // loop through all impacted reports types
         foreach ($impacted_reports as $irpt) {
             // collect jobs to run per region
@@ -83,7 +86,7 @@ class ReportProcessor implements ShouldQueue
                         if ($ireg->is_base_level) {
                             $ireg = $ireg->parentRegion;
                         }
-                        $rtype = ReportFileType::flags(ReportFileType::HTML(), ReportFileType::XLSX());
+                        $rtype = $def_type;
                         $rtype->addFlags($ireg->fmt_league_reports->getFlags());
                         $rpt_jobs[$ireg->id][] = new GenerateRegionContactsReport($ireg, $rtype);
                         Log::notice('add job for ', ['rpt' => $irpt->description, 'region' => $ireg->code]);
@@ -92,7 +95,8 @@ class ReportProcessor implements ShouldQueue
                 case Report::RegionGames():
                     Log::info('checking report ', ['rpt' => $irpt->description]);
                     foreach ($impacted_regions as $ireg) {
-                        $rtype = ReportFileType::flags(ReportFileType::HTML(), ReportFileType::XLSX(), ReportFileType::ICS());
+                        $rtype = $def_type;
+                        $rtype->addFlag(ReportFileType::ICS());
                         $rtype->addFlags($ireg->fmt_league_reports->getFlags());
                         $rpt_jobs[$ireg->id][] = new GenerateRegionGamesReport($ireg, $rtype);
                         Log::notice('add job for ', ['rpt' => $irpt->description, 'region' => $ireg->code]);
@@ -101,7 +105,7 @@ class ReportProcessor implements ShouldQueue
                 case Report::LeagueBook():
                     Log::info('checking report ', ['rpt' => $irpt->description]);
                     foreach ($impacted_regions as $ireg) {
-                        $rtype = ReportFileType::flags(ReportFileType::HTML(), ReportFileType::XLSX());
+                        $rtype = $def_type;
                         $rtype->addFlags($ireg->fmt_league_reports->getFlags());
                         $rpt_jobs[$ireg->id][] = new GenerateRegionLeaguesReport($ireg, $rtype);
                         Log::notice('add job for ', ['rpt' => $irpt->description, 'region' => $ireg->code]);
@@ -110,7 +114,8 @@ class ReportProcessor implements ShouldQueue
                 case Report::LeagueGames():
                     Log::info('checking report ', ['rpt' => $irpt->description]);
                     foreach ($impacted_leagues as $l) {
-                        $rtype = ReportFileType::flags(ReportFileType::HTML(), ReportFileType::XLSX(), ReportFileType::ICS());
+                        $rtype = $def_type;
+                        $rtype->addFlag(ReportFileType::ICS());
                         $rtype->addFlags($l->region->fmt_league_reports->getFlags());
                         $rpt_jobs[$l->region->id][] = new GenerateLeagueGamesReport($l->region, $l, $rtype);
                         Log::info('add jobs for ', ['rpt' => $irpt->description, 'league-id' => $l->id]);
@@ -119,7 +124,8 @@ class ReportProcessor implements ShouldQueue
                 case Report::ClubGames():
                     Log::info('checking report ', ['rpt' => $irpt->description]);
                     foreach ($impacted_clubs as $c) {
-                        $rtype = ReportFileType::flags(ReportFileType::HTML(), ReportFileType::XLSX(), ReportFileType::ICS());
+                        $rtype = $def_type;
+                        $rtype->addFlag(ReportFileType::ICS());
                         $rtype->addFlags($c->region->fmt_club_reports->getFlags());
                         $rpt_jobs[$c->region->id][] = new GenerateClubGamesReport($c->region, $c, $rtype);
                         Log::info('add jobs for ', ['rpt' => $irpt->description, 'club-id' => $c->id]);
