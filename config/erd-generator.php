@@ -37,6 +37,7 @@ return [
         // App\Models\Membership::class,
         // App\Models\Message::class,
         // App\Models\Region::class,
+        // App\Models\ReportDownload::class,
         // CLUB model
         // App\Models\Club::class,
         // App\Models\Gym::class,
@@ -71,6 +72,7 @@ return [
         // App\Models\League::class,
         // App\Models\Team::class,
         // App\Models\Region::class,
+        // App\Models\User::class,
 
     ],
 

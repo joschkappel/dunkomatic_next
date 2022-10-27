@@ -111,8 +111,7 @@ class ReportProcessorTest extends SysTestCase
         $this->travel(1)->days();
         $job_instance = resolve(ReportProcessor::class, ['run_rpts' => collect(), 'run_regions' => collect()]);
         app()->call([$job_instance, 'handle']);
-        Bus::assertBatchCount(1);
-        $this->checkBatch($club->region->parentRegion, Report::AddressBook(), 1);
+        Bus::assertNothingDispatched();
     }
 
     /**
@@ -151,8 +150,8 @@ class ReportProcessorTest extends SysTestCase
         $job_instance = resolve(ReportProcessor::class, ['run_rpts' => collect(), 'run_regions' => collect()]);
         app()->call([$job_instance, 'handle']);
 
-        Bus::assertBatchCount(5);
-        $this->checkBatch($league->region->parentRegion, Report::AddressBook(), 1);
+        Bus::assertBatchCount(4);
+        // $this->checkBatch($league->region->parentRegion, Report::AddressBook(), 1);
         $this->checkBatch($league->region, Report::LeagueBook(), 1);
         $this->checkBatch($league->region, Report::RegionGames(), 1);
         $this->checkBatch($league->region, Report::ClubGames(), $league->teams->pluck('club_id')->count());
@@ -196,8 +195,8 @@ class ReportProcessorTest extends SysTestCase
         $job_instance = resolve(ReportProcessor::class, ['run_rpts' => collect(), 'run_regions' => collect()]);
         app()->call([$job_instance, 'handle']);
 
-        Bus::assertBatchCount(6);
-        $this->checkBatch($team->league->region->parentRegion, Report::AddressBook(), 1);
+        Bus::assertBatchCount(5);
+        // $this->checkBatch($team->league->region->parentRegion, Report::AddressBook(), 1);
         $this->checkBatch($team->league->region, Report::LeagueBook(), 1);
         $this->checkBatch($team->league->region, Report::RegionGames(), 1);
         $this->checkBatch($team->league->region, Report::ClubGames(), $team->league->teams->pluck('club_id')->count());
