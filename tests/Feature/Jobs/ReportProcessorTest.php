@@ -111,8 +111,7 @@ class ReportProcessorTest extends SysTestCase
         $this->travel(1)->days();
         $job_instance = resolve(ReportProcessor::class, ['run_rpts' => collect(), 'run_regions' => collect()]);
         app()->call([$job_instance, 'handle']);
-        Bus::assertBatchCount(0);
-        $this->checkBatch($club->region->parentRegion, Report::AddressBook(), 1);
+        Bus::assertNothingDispatched();
     }
 
     /**
