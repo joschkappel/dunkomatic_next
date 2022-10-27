@@ -177,8 +177,8 @@ class ReportProcessor implements ShouldQueue
             $gyms = $audits->where('auditable_type', Gym::class)->pluck('auditable_id')->unique();
             if ($gyms->count() > 0) {
                 $games = $games->concat(Game::whereIn('gym_id', $gyms)->pluck('id'));
-                $contact_regions->concat(Game::whereIn('gym_id', $gyms)->pluck('region_id_home'));
-                Log::debug('[JOB] REPORT PROCESSOR impacted games', ['by gyms' => $games->count()]);
+                $contact_regions = $contact_regions->concat(Game::whereIn('gym_id', $gyms)->pluck('region_id_home'));
+                Log::debug('[JOB] REPORT PROCESSOR impacted games', ['by gyms' => $games->count(), 'contacts' => $contact_regions->count()]);
             }
 
             // games for teams:
