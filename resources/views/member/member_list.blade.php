@@ -12,10 +12,6 @@
     <th>{{ trans_choice('role.role',2) }}</th>
     <th class="noexport">{{ __('auth.user.account') }}</th>
 
-    <x-slot:addButtons>
-        <button type="button" class="btn btn-info mr-2" id="showAll" >{{ __('Show all regions')}}</button>
-    </x-slot:addButtons>
-
 </x-card-list>
 @endsection
 
@@ -103,8 +99,27 @@
                         style: 'bar'
                     },
                     { extend: 'pageLength'
+                    },
+                    { extend: 'spacer',
+                        style: 'bar'
+                    },
+                    {
+                        text: "{{__('Show all regions')}}",
+                        className: "btn-info text-white",
+                        action: function ( e, dt, node, config ) {
+                            if (showall) {
+                                var memurl = "{{ route('member.datatable', ['region' => $region, 'all'=>'1']) }}";
+                                this.text("{{__('Show current region')}}");
+                                showall = false;
+                                memtable.ajax.url(memurl).load();
+                            } else {
+                                var memurl = "{{ route('member.datatable', ['region' => $region]) }}";
+                                this.text("{{__('Show all regions')}}");
+                                showall = true;
+                                memtable.ajax.url(memurl).load();
+                            }
+                        }
                     }
-
 
                 ],
                  columns: [
@@ -127,19 +142,6 @@
                     console.log(value); // <-- the value
               }); */
 
-              $(document).on('click', '#showAll', function () {
-                if (showall) {
-                    var memurl = "{{ route('member.datatable', ['region' => $region, 'all'=>'1']) }}";
-                    $('#showAll').html("{{__('Show current region')}}");
-                    showall = false;
-                    memtable.ajax.url(memurl).load();
-                } else {
-                    var memurl = "{{ route('member.datatable', ['region' => $region]) }}";
-                    $('#showAll').html("{{__('Show all regions')}}");
-                    showall = true;
-                    memtable.ajax.url(memurl).load();
-                }
-              });
 
               $(document).on('click', '#copyAddress', function () {
                var url = "{{ route('member.show', [ 'language'=>app()->getLocale(), 'member'=>':memberid:'])}}"
