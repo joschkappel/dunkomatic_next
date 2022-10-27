@@ -63,7 +63,7 @@ class ReportProcessor implements ShouldQueue
         Log::info('[JOB] REPORT PROCESSOR kicking off process reports job', ['modified_classes' => $modified_classes, 'impcated_reports' => $impacted_reports, 'base_audits' => $modified_instances]);
 
         // now get all impacted instances
-        [$impacted_regions, $impacted_leagues, $impacted_clubs] = $this->getImpactedModels($this->run_regions, $modified_instances);
+        [$impacted_regions, $impacted_leagues, $impacted_clubs, $impacted_contact_regions] = $this->getImpactedModels($this->run_regions, $modified_instances);
         Log::debug('[JOB] REPORT PROCESSOR impacted models', ['region' => $impacted_regions->pluck('code'), 'leagues' => $impacted_leagues->pluck('shortname'), 'clubs' => $impacted_clubs->pluck('shortname')]);
 
         // loop through all impacted reports types
@@ -78,8 +78,8 @@ class ReportProcessor implements ShouldQueue
                 case Report::AddressBook():
                     Log::info('checking report ', ['rpt' => $irpt->description]);
                     // run only for top level region
-                    if ($impacted_regions->count() > 0) {
-                        $ireg = $impacted_regions->first();
+                    if ($impacted_contact_regions->count() > 0) {
+                        $ireg = $impacted_contact_regions->first();
                         if ($ireg->is_base_level) {
                             $ireg = $ireg->parentRegion;
                         }
@@ -161,8 +161,11 @@ class ReportProcessor implements ShouldQueue
         if ($regions->count() > 0) {
             $leagues = League::whereIn('region_id', $regions->pluck('id'))->whereIn('state', [LeagueState::Scheduling(), LeagueState::Referees()])->get();
             $clubs = Club::whereIn('region_id', $regions->pluck('id'))->active()->get();
+            $contact_regions = $regions;
         } else {
             $games = collect();
+            $contact_regions = collect();
+
             // games for clubs:
             $clubs = $audits->where('auditable_type', Club::class)->pluck('auditable_id')->unique();
             if ($clubs->count() > 0) {
@@ -174,6 +177,7 @@ class ReportProcessor implements ShouldQueue
             $gyms = $audits->where('auditable_type', Gym::class)->pluck('auditable_id')->unique();
             if ($gyms->count() > 0) {
                 $games = $games->concat(Game::whereIn('gym_id', $gyms)->pluck('id'));
+                $contact_regions->concat(Game::whereIn('gym_id', $gyms)->pluck('region_id_home'));
                 Log::debug('[JOB] REPORT PROCESSOR impacted games', ['by gyms' => $games->count()]);
             }
 
@@ -200,24 +204,25 @@ class ReportProcessor implements ShouldQueue
             }
 
             if ($mships->count() > 0) {
-                $clubs = Membership::whereIn('id', $mships)->where('membership_type', Club::class)->select('membership_id')->get();
+                $clubs = Membership::whereIn('id', $mships)->where('membership_type', Club::class)->pluck('membership_id')->unique();
                 if ($clubs->count() > 0) {
                     $games = $games->concat(Game::whereIn('club_id_home', $clubs)->orWhereIn('club_id_guest', $clubs)->pluck('id'));
-                    Log::debug('[JOB] REPORT PROCESSOR impacted games', ['by club members' => $games->count()]);
+                    $contact_regions = $contact_regions->concat(Club::whereIn('id', $clubs)->pluck('region_id'))->unique();
+                    Log::debug('[JOB] REPORT PROCESSOR impacted games', ['by club members' => $games->count(), 'contacts' => $contact_regions->count()]);
                 }
 
-                $leagues = Membership::whereIn('id', $mships)->where('membership_type', League::class)->select('membership_id')->get();
-                $leagues = League::whereIn('id', $leagues)->pluck('id');
+                $leagues = Membership::whereIn('id', $mships)->where('membership_type', League::class)->pluck('membership_id')->unique();
                 if ($leagues->count() > 0) {
                     $games = $games->concat(Game::whereIn('league_id', $leagues)->pluck('id'));
-                    Log::debug('[JOB] REPORT PROCESSOR impacted games', ['by league members' => $games->count()]);
+                    $contact_regions = $contact_regions->concat(League::whereIn('id', $leagues)->pluck('region_id'))->unique();
+                    Log::debug('[JOB] REPORT PROCESSOR impacted games', ['by league members' => $games->count(), 'contacts' => $contact_regions->count()]);
                 }
 
-                $regions = Membership::whereIn('id', $mships)->where('membership_type', Region::class)->select('membership_id')->get();
-                $regions = Region::whereIn('id', $regions)->pluck('code');
+                $regions = Membership::whereIn('id', $mships)->where('membership_type', Region::class)->pluck('membership_id')->unique();
                 if ($regions->count() > 0) {
-                    $games = $games->concat(Game::whereIn('region', $regions)->pluck('id'));
-                    Log::debug('[JOB] REPORT PROCESSOR impacted games', ['by region members' => $games->count()]);
+                    $games = $games->concat(Game::whereIn('region_id_league', $regions)->pluck('id'));
+                    $contact_regions = $contact_regions->concat($regions)->unique();
+                    Log::debug('[JOB] REPORT PROCESSOR impacted games', ['by region members' => $games->count(), 'contacts' => $contact_regions->count()]);
                 }
             }
 
@@ -234,7 +239,7 @@ class ReportProcessor implements ShouldQueue
 
             // get impacted leagues
             $leagues = $all_games->pluck('league_id')->unique();
-            // ilter only leagues in state scheduling or referee
+            // filter only leagues in state scheduling or referee
             $leagues = League::whereIn('id', $leagues)->whereIn('state', [LeagueState::Scheduling, LeagueState::Referees])->pluck('id');
             // filter games
             $filtered_games = $all_games->whereIn('league_id', $leagues);
@@ -246,11 +251,13 @@ class ReportProcessor implements ShouldQueue
             $leagues = League::whereIn('id', $filtered_games->pluck('league_id'))->get();
             // get unique leagues from games
             $clubs = Club::whereIn('id', $filtered_games->pluck('club_id_home'))->get();
+            // get contact regions
+            $contact_regions = Region::whereIn('id', $contact_regions)->get();
         }
 
-        Log::debug('found impacts on ', ['regions' => $regions->count(), 'leagues' => $leagues->count(), 'clubs' => $clubs->count()]);
+        Log::debug('found impacts on ', ['regions' => $regions->count(), 'leagues' => $leagues->count(), 'clubs' => $clubs->count(), 'contact_regions' => $contact_regions->count()]);
 
-        return [$regions, $leagues, $clubs];
+        return [$regions, $leagues, $clubs, $contact_regions];
     }
 
     private function dispatchReportBatch(Report $report, Collection $joblist): void
