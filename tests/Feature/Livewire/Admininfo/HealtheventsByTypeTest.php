@@ -4,9 +4,9 @@ namespace Tests\Feature\Livewire\Admininfo;
 
 use App\Http\Livewire\Admininfo\HealtheventsByType;
 use Livewire\Livewire;
-use Tests\SysTestCase;
+use Tests\DefTestCase;
 
-class HealtheventsByTypeTest extends SysTestCase
+class HealtheventsByTypeTest extends DefTestCase
 {
     /** @test */
     public function the_component_can_render()

@@ -4,9 +4,9 @@ namespace Tests\Feature\Livewire\Admininfo;
 
 use App\Http\Livewire\Admininfo\AuditsByModel;
 use Livewire\Livewire;
-use Tests\SysTestCase;
+use Tests\DefTestCase;
 
-class AuditsByModelTest extends SysTestCase
+class AuditsByModelTest extends DefTestCase
 {
     /** @test */
     public function the_component_can_render()
