@@ -27,11 +27,13 @@ class AuditsByModel extends Component
 
     public function render()
     {
-        $multilineChartModel = LivewireCharts::multiLineChartModel()
+        $multicolumnChartModel = LivewireCharts::multiColumnChartModel()
         ->setTitle('Auditevents by Model')
         ->setAnimated($this->firstRun)
-        ->multiLine()
-        ->withLegend();
+        ->stacked()
+        ->withGrid()
+        ->withLegend()
+        ->withDataLabels();
 
         $audits = DB::table('audits')
             ->selectRaw('date(created_at) as audit_date, auditable_type, count(auditable_type) as cnt')
@@ -39,12 +41,12 @@ class AuditsByModel extends Component
             ->orderBy('audit_date')
             ->get();
         foreach ($audits->groupBy('audit_date', 'auditable_type') as $a) {
-            $multilineChartModel->addSeriesPoint($this->labels[$a->first()->auditable_type], $a->first()->audit_date, $a->first()->cnt);
+            $multicolumnChartModel->addSeriesColumn($this->labels[$a->first()->auditable_type], $a->first()->audit_date, $a->first()->cnt);
         }
 
         return view('livewire.admininfo.audits-by-model')
             ->with([
-                'multiLineChartModel' => $multilineChartModel,
+                'multiColumnChartModel' => $multicolumnChartModel,
             ]);
     }
 }

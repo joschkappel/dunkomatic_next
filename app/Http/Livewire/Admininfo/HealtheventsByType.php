@@ -27,11 +27,13 @@ class HealtheventsByType extends Component
 
     public function render()
     {
-        $multilineChartModel = LivewireCharts::multiLineChartModel()
+        $multicolumnChartModel = LivewireCharts::multiColumnChartModel()
             ->setTitle('Healthevents by Type')
             ->setAnimated($this->firstRun)
-            ->multiLine()
-            ->withLegend();
+            ->stacked()
+            ->withGrid()
+            ->withLegend()
+            ->withDataLabels();
 
         $healthevents = DB::table('health_check_result_history_items')
             ->where('status', 'failed')
@@ -40,12 +42,12 @@ class HealtheventsByType extends Component
             ->orderBy('health_date')
             ->get();
         foreach ($healthevents->groupBy('health_date', 'check_name') as $he) {
-            $multilineChartModel->addSeriesPoint($he->first()->check_name, $he->first()->health_date, $he->first()->cnt);
+            $multicolumnChartModel->addSeriesColumn($he->first()->check_name, $he->first()->health_date, $he->first()->cnt);
         }
 
         return view('livewire.admininfo.healthevents-by-type')
             ->with([
-                'multiLineChartModel' => $multilineChartModel,
+                'multiColumnChartModel' => $multicolumnChartModel,
             ]);
     }
 }
