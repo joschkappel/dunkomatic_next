@@ -35,7 +35,7 @@ use App\Http\Controllers\ScheduleEventController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TeamMembershipController;
 use App\Http\Controllers\UserController;
-use App\Http\Livewire\AdminInfo\AdminInfo;
+use App\Http\Livewire\Admininfo\AdminInfo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
