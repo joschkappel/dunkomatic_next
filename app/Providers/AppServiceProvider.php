@@ -217,19 +217,26 @@ class AppServiceProvider extends ServiceProvider
                 'classes' => 'text-danger text-uppercase',
                 'submenu' => [
                     [
-                        'text' => trans_choice('region.region', 2),
-                        'icon' => 'fas fa-globe-europe',
-                        'icon_color' => 'blue',
-                        'route' => ['region.index', ['language' => app()->getLocale()]],
-                        'can' => 'view-regions',
-                        'shift' => 'ml-3',
-                    ],
-                    [
                         'text' => __('auth.title.approve'),
                         'icon' => 'fas fa-thumbs-up',
                         'icon_color' => 'blue',
                         'route' => ['admin.user.index.new', ['language' => app()->getLocale(), 'region' => session('cur_region')]],
                         'can' => 'udpate-users',
+                        'shift' => 'ml-3',
+                    ],
+                    [
+                        'text' => __('message.menu.list'),
+                        'icon' => 'fas fa-envelope',
+                        'icon_color' => 'blue',
+                        'route' => ['message.index', ['language' => app()->getLocale(), 'region' => session('cur_region'), 'user' => Auth::user()]],
+                        'shift' => 'ml-3',
+                    ],
+                    [
+                        'text' => trans_choice('region.region', 2),
+                        'icon' => 'fas fa-globe-europe',
+                        'icon_color' => 'blue',
+                        'route' => ['region.index', ['language' => app()->getLocale()]],
+                        'can' => 'view-regions',
                         'shift' => 'ml-3',
                     ],
                     [
@@ -249,10 +256,11 @@ class AppServiceProvider extends ServiceProvider
                         'shift' => 'ml-3',
                     ],
                     [
-                        'text' => __('message.menu.list'),
+                        'text' => __('admin info'),
+                        'can' => 'create-region',
                         'icon' => 'fas fa-envelope',
                         'icon_color' => 'blue',
-                        'route' => ['message.index', ['language' => app()->getLocale(), 'region' => session('cur_region'), 'user' => Auth::user()]],
+                        'route' => ['admininfo', ['language' => app()->getLocale()]],
                         'shift' => 'ml-3',
                     ],
 

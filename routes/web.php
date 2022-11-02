@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\AdminInfoController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\SocialAuthController;
@@ -34,6 +35,7 @@ use App\Http\Controllers\ScheduleEventController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TeamMembershipController;
 use App\Http\Controllers\UserController;
+use App\Http\Livewire\AdminInfo\AdminInfo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -99,6 +101,7 @@ Route::group([
 
     Route::middleware(['auth'])->group(function () {
         Route::get('home', [HomeController::class, 'home'])->name('home')->middleware('auth')->middleware('verified')->middleware('approved');
+        Route::get('admininfo', AdminInfo::class)->name('admininfo');
         Route::get('approval', [HomeController::class, 'approval'])->name('approval');
 
         Route::post('user/{user_id}/approve', [UserController::class, 'approve'])->name('admin.user.approve')->middleware('can:update-users');
@@ -252,6 +255,11 @@ Route::middleware(['auth',
         Route::get('club/{club}/member/sb', [MemberController::class, 'sb_club'])->name('member.sb.club');
         Route::resource('club.gym', ClubGymController::class)->shallow()->only('store', 'update', 'destroy');
 
+        Route::get('admin/users/providers', [AdminInfoController::class, 'users_byproviders_chart'])->name('admin.users.providers.chart')->middleware('can:create-regions');
+        Route::get('admin/users/logins', [AdminInfoController::class, 'users_bylogins_chart'])->name('admin.users.logins.chart')->middleware('can:create-regions');
+        Route::get('admin/users/logins/ok', [AdminInfoController::class, 'users_byoklogins_chart'])->name('admin.users.oklogins.chart')->middleware('can:create-regions');
+        Route::get('admin/users/logins/failed', [AdminInfoController::class, 'users_byfailedlogins_chart'])->name('admin.users.failedlogins.chart')->middleware('can:create-regions');
+
         Route::group(['prefix' => 'region/{region}'], function () {
             Route::get('club/list', [ClubController::class, 'list'])->name('club.list')->middleware('can:view-clubs');
             Route::post('club', [ClubController::class, 'store'])->name('club.store')->middleware('can:create-clubs');
@@ -282,6 +290,9 @@ Route::middleware(['auth',
 
             Route::post('job/{job}', [JobController::class, 'run_job'])->name('region.run.job')->middleware('can:update-regions');
             Route::delete('reports/{job}', [JobController::class, 'remove_reports'])->name('region.remove.reports')->middleware('can:update-regions');
+
+            Route::get('admin/health/types', [AdminInfoController::class, 'health_bytype_chart'])->name('admin.health.types.chart')->middleware('can:create-regions');
+            Route::get('admin/audits/types', [AdminInfoController::class, 'audits_bytype_chart'])->name('admin.audits.types.chart')->middleware('can:create-regions');
         });
 
         Route::post('league/{league}/club', [LeagueTeamController::class, 'assign_clubs'])->name('league.assign-clubs')->middleware('can:update-leagues');
