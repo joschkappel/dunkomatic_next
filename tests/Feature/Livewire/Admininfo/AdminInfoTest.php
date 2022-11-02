@@ -4,9 +4,9 @@ namespace Tests\Feature\Livewire;
 
 use App\Http\Livewire\Admininfo\AdminInfo;
 use Livewire\Livewire;
-use Tests\TestCase;
+use Tests\SysTestCase;
 
-class AdminInfoTest extends TestCase
+class AdminInfoTest extends SysTestCase
 {
     /** @test */
     public function the_component_can_render()

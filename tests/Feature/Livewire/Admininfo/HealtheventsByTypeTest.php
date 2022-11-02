@@ -3,12 +3,10 @@
 namespace Tests\Feature\Livewire\Admininfo;
 
 use App\Http\Livewire\Admininfo\HealtheventsByType;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
-use Tests\TestCase;
+use Tests\SysTestCase;
 
-class HealtheventsByTypeTest extends TestCase
+class HealtheventsByTypeTest extends SysTestCase
 {
     /** @test */
     public function the_component_can_render()

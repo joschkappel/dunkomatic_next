@@ -3,12 +3,10 @@
 namespace Tests\Feature\Livewire\Admininfo;
 
 use App\Http\Livewire\Admininfo\AuditsByModel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
-use Tests\TestCase;
+use Tests\SysTestCase;
 
-class AuditsByModelTest extends TestCase
+class AuditsByModelTest extends SysTestCase
 {
     /** @test */
     public function the_component_can_render()
