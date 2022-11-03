@@ -26,11 +26,25 @@ class UsersByProviders extends Component
 
     public $provider = null;
 
+    public $byDate = null;
+
     protected $listeners = [
-        'onSliceClick' => 'handleOnSliceClick',
+        'onSliceClickProvider' => 'handleByProvider',
+        'onColumnClickDate' => 'handleByDate',
+        'onSliceClickClear' => 'clearFilter',
     ];
 
-    public function handleOnSliceClick($slice)
+    public function handleByDate($bar)
+    {
+        $this->byDate = $bar['title'];
+    }
+
+    public function clearFilter($slice)
+    {
+        $this->byDate = null;
+    }
+
+    public function handleByProvider($slice)
     {
         if ($slice['title'] == 'None') {
             $this->provider = '';
@@ -47,9 +61,9 @@ class UsersByProviders extends Component
             // ->setType('donut')
             ->legendPositionBottom()
             ->withDataLabels()
-            ->withOnSliceClickEvent('onSliceClick')
-            ->setTitle('Users by Provider');
-        //->setColors(['#ffd700', '#ff0000', '#ffa500']);
+            ->withOnSliceClickEvent('onSliceClickProvider')
+            ->setTitle('#Users by Provider');
+        //->setColors(['#006600', '#993399', '#CC0000','#0033CC']);
 
         foreach ($users->countBy('provider') as $p => $cnt) {
             if (($p) == '') {
@@ -85,6 +99,46 @@ class UsersByProviders extends Component
             }, LivewireCharts::multiColumnChartModel()
                 ->setTitle('Logins by Result '.($this->provider != '' ? '(provider: '.$this->provider.')' : '(no provider)'))
                 ->setAnimated($this->firstRun)
+                ->withOnColumnClickEventName('onColumnClickDate')
+                ->stacked()
+                ->withGrid()
+                ->withLegend()
+                ->withDataLabels()
+            );
+
+        if ($this->byDate == null) {
+            $logins_by_hod = DB::table('authentication_log')
+                ->whereNotNull('login_at')
+                ->whereIn('authenticatable_id', $users)
+                ->selectRaw('hour(login_at) as login_hour, login_successful, count(*) as cnt')
+                ->groupByRaw('hour(login_at), login_successful')
+                ->orderBy('login_hour')
+                ->get();
+            $ltypes = $logins_by_hod->pluck('login_successful')->unique();
+        } else {
+            $logins_by_hod = DB::table('authentication_log')
+                ->whereNotNull('login_at')
+                ->whereIn('authenticatable_id', $users)
+                ->whereRaw('date(login_at) = ?', [$this->byDate])
+                ->selectRaw('hour(login_at) as login_hour, login_successful, count(*) as cnt')
+                ->groupByRaw('hour(login_at), login_successful')
+                ->orderBy('login_hour')
+                ->get();
+            $ltypes = $logins_by_hod->pluck('login_successful')->unique();
+        }
+
+        $multiColumnChartModel2 = collect([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24])
+            ->reduce(function ($multiColumnChartModel2, $data) use ($logins_by_hod, $ltypes) {
+                foreach ($ltypes as $lt) {
+                    $multiColumnChartModel2
+                        ->addSeriesColumn($lt, $data, $logins_by_hod->where('login_successful', $lt)->where('login_hour', $data)->first()->cnt ?? 0);
+                }
+
+                return $multiColumnChartModel2;
+            }, LivewireCharts::multiColumnChartModel()
+                ->setTitle('Logins by Hour of Day')
+                ->setAnimated($this->firstRun)
+                ->withOnColumnClickEventName('onSliceClickClear')
                 ->stacked()
                 ->withGrid()
                 ->withLegend()
@@ -95,6 +149,7 @@ class UsersByProviders extends Component
             ->with([
                 'pieChartModel' => $pieChartModel,
                 'multiColumnChartModel' => $multiColumnChartModel,
+                'multiColumnChartModel2' => $multiColumnChartModel2,
             ]);
     }
 }

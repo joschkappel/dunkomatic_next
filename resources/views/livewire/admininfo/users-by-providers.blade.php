@@ -9,6 +9,12 @@
             </div>
             <div class="shadow rounded p-4 border bg-white" style="height: 20rem;width: 75%">
                 <livewire:livewire-column-chart
+                key="{{ $multiColumnChartModel2->reactiveKey() }}"
+                :column-chart-model="$multiColumnChartModel2"
+                />
+            </div>
+            <div class="shadow rounded p-4 border bg-white" style="height: 20rem;width: 100%">
+                <livewire:livewire-column-chart
                 key="{{ $multiColumnChartModel->reactiveKey() }}"
                 :column-chart-model="$multiColumnChartModel"
                 />
