@@ -14,6 +14,25 @@ class HealtheventsByType extends Component
     {
         $healthevents = DB::table('health_check_result_history_items')
             ->where('status', 'failed')
+            ->get();
+
+        $pieChartModel = $healthevents->groupBy('check_name')
+            ->reduce(function ($pieChartModel, $data) {
+                $type = $data->first()->check_name;
+                $value = $data->count();
+
+                return $pieChartModel->addSlice($type, $value, '#f66665');
+            }, LivewireCharts::pieChartModel()
+                ->setTitle('Healthevents by Type')
+                ->setAnimated($this->firstRun)
+                ->legendPositionBottom()
+                ->legendHorizontallyAlignedCenter()
+                ->setDataLabelsEnabled(true)
+                ->setColors(['#b01a1b', '#d41b2c', '#ec3c3b', '#f66665'])
+            );
+
+        $healthevents = DB::table('health_check_result_history_items')
+            ->where('status', 'failed')
             ->selectRaw('date(created_at) as health_date, check_name, count(*) as cnt')
             ->groupByRaw('date(created_at), check_name')
             ->orderBy('health_date')
@@ -65,6 +84,7 @@ class HealtheventsByType extends Component
 
         return view('livewire.admininfo.healthevents-by-type')
             ->with([
+                'pieChartModel' => $pieChartModel,
                 'multiColumnChartModel' => $multiColumnChartModel,
                 'multiColumnChartModel2' => $multiColumnChartModel2,
             ]);

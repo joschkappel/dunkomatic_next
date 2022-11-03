@@ -13,6 +13,25 @@ class AuditsByModel extends Component
     public function render()
     {
         $audits = DB::table('audits')
+            ->whereNotNull('id')
+            ->get();
+
+        $pieChartModel = $audits->groupBy('auditable_type')
+            ->reduce(function ($pieChartModel, $data) {
+                $type = $data->first()->auditable_type;
+                $value = $data->count();
+
+                return $pieChartModel->addSlice($type, $value, '#f66665');
+            }, LivewireCharts::pieChartModel()
+                ->setTitle('Audits by Model')
+                ->setAnimated($this->firstRun)
+                ->legendPositionBottom()
+                ->legendHorizontallyAlignedCenter()
+                ->setDataLabelsEnabled(true)
+                ->setColors(['#b01a1b', '#d41b2c', '#ec3c3b', '#f66665'])
+            );
+
+        $audits = DB::table('audits')
             ->selectRaw('date(created_at) as audit_date, auditable_type, count(*) as cnt')
             ->groupByRaw('date(created_at), auditable_type')
             ->orderBy('audit_date')
@@ -39,6 +58,7 @@ class AuditsByModel extends Component
 
         return view('livewire.admininfo.audits-by-model')
             ->with([
+                'pieChartModel' => $pieChartModel,
                 'multiColumnChartModel' => $multiColumnChartModel,
             ]);
     }
