@@ -47,7 +47,6 @@ class UsersByProviders extends Component
             // ->setType('donut')
             ->legendPositionBottom()
             ->withDataLabels()
-            ->legendHorizontallyAlignedCenter()
             ->withOnSliceClickEvent('onSliceClick')
             ->setTitle('Users by Provider');
         //->setColors(['#ffd700', '#ff0000', '#ffa500']);
@@ -65,29 +64,37 @@ class UsersByProviders extends Component
             $users = User::where('provider', $this->provider)->pluck('id');
         }
 
-        $multilineChartModel = LivewireCharts::multiLineChartModel()
-                        ->setTitle('Logins by Result '.($this->provider != '' ? '(provider: '.$this->provider.')' : '(no provider)'))
-                        ->setAnimated($this->firstRun)
-                        ->multiLine()
-                        ->setSmoothCurve()
-                        ->withDataLabels()
-                        ->withLegend();
         $logins = DB::table('authentication_log')
                 ->whereNotNull('login_at')
                 ->whereIn('authenticatable_id', $users)
-                ->selectRaw('date(login_at) as login_date, login_successful, count(login_successful) as cnt')
-                ->groupBy('login_date', 'login_successful')
+                ->selectRaw('date(login_at) as login_date, login_successful, count(*) as cnt')
+                ->groupByRaw('date(login_at), login_successful')
                 ->orderBy('login_date')
                 ->get();
+        $ltypes = $logins->pluck('login_successful')->unique();
+        $ldates = $logins->pluck('login_date')->unique();
 
-        foreach ($logins->groupBy('login_date', 'login_successful') as $l) {
-            $multilineChartModel->addSeriesPoint($this->labels[$l->first()->login_successful], $l->first()->login_date, $l->first()->cnt);
-        }
+        $multiColumnChartModel = $ldates
+            ->reduce(function ($multiColumnChartModel, $data) use ($logins, $ltypes) {
+                foreach ($ltypes as $lt) {
+                    $multiColumnChartModel
+                        ->addSeriesColumn($this->labels[$lt], $data, $logins->where('login_successful', $lt)->where('login_date', $data)->first()->cnt ?? 0);
+                }
+
+                return $multiColumnChartModel;
+            }, LivewireCharts::multiColumnChartModel()
+                ->setTitle('Logins by Result '.($this->provider != '' ? '(provider: '.$this->provider.')' : '(no provider)'))
+                ->setAnimated($this->firstRun)
+                ->stacked()
+                ->withGrid()
+                ->withLegend()
+                ->withDataLabels()
+            );
 
         return view('livewire.admininfo.users-by-providers')
             ->with([
                 'pieChartModel' => $pieChartModel,
-                'multiLineChartModel' => $multilineChartModel,
+                'multiColumnChartModel' => $multiColumnChartModel,
             ]);
     }
 }

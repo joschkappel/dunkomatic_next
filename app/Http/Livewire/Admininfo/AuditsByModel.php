@@ -2,12 +2,6 @@
 
 namespace App\Http\Livewire\Admininfo;
 
-use App\Models\Club;
-use App\Models\Game;
-use App\Models\League;
-use App\Models\Member;
-use App\Models\Region;
-use App\Models\Team;
 use Asantibanez\LivewireCharts\Facades\LivewireCharts;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -16,37 +10,36 @@ class AuditsByModel extends Component
 {
     public $firstRun = true;
 
-    public $labels = [
-        Club::class => 'Club',
-        League::class => 'League',
-        Team::class => 'Team',
-        Member::class => 'Member',
-        Region::class => 'Region',
-        Game::class => 'Game',
-    ];
-
     public function render()
     {
-        $multicolumnChartModel = LivewireCharts::multiColumnChartModel()
-        ->setTitle('Auditevents by Model')
-        ->setAnimated($this->firstRun)
-        ->stacked()
-        ->withGrid()
-        ->withLegend()
-        ->withDataLabels();
-
         $audits = DB::table('audits')
-            ->selectRaw('date(created_at) as audit_date, auditable_type, count(auditable_type) as cnt')
-            ->groupBy('audit_date', 'auditable_type')
+            ->selectRaw('date(created_at) as audit_date, auditable_type, count(*) as cnt')
+            ->groupByRaw('date(created_at), auditable_type')
             ->orderBy('audit_date')
             ->get();
-        foreach ($audits->groupBy('audit_date', 'auditable_type') as $a) {
-            $multicolumnChartModel->addSeriesColumn($this->labels[$a->first()->auditable_type], $a->first()->audit_date, $a->first()->cnt);
-        }
+        $atypes = $audits->pluck('auditable_type')->unique();
+        $adates = $audits->pluck('audit_date')->unique();
+
+        $multiColumnChartModel = $adates
+            ->reduce(function ($multiColumnChartModel, $data) use ($audits, $atypes) {
+                foreach ($atypes as $at) {
+                    $multiColumnChartModel
+                        ->addSeriesColumn($at, $data, $audits->where('auditable_type', $at)->where('audit_date', $data)->first()->cnt ?? 0);
+                }
+
+                return $multiColumnChartModel;
+            }, LivewireCharts::multiColumnChartModel()
+                ->setTitle('Auditevents by Model and Date')
+                ->setAnimated($this->firstRun)
+                ->stacked()
+                ->withGrid()
+                ->withLegend()
+                ->withDataLabels()
+            );
 
         return view('livewire.admininfo.audits-by-model')
             ->with([
-                'multiColumnChartModel' => $multicolumnChartModel,
+                'multiColumnChartModel' => $multiColumnChartModel,
             ]);
     }
 }
