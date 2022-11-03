@@ -28,7 +28,7 @@ class AuditsByModel extends Component
                 ->legendPositionBottom()
                 ->legendHorizontallyAlignedCenter()
                 ->setDataLabelsEnabled(true)
-                ->setColors(['#b01a1b', '#d41b2c', '#ec3c3b', '#f66665'])
+                ->setColors(['#006600', '#993399', '#CC0000', '#0033CC', '#b01a1b', '#d41b2c', '#ec3c3b', '#f66665'])
             );
 
         $audits = DB::table('audits')

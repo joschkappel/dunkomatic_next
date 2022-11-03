@@ -10,13 +10,30 @@ class HealtheventsByType extends Component
 {
     public $firstRun = true;
 
+    public $byDate = null;
+
+    protected $listeners = [
+        'onColumnClickDate' => 'handleByDate',
+        'onSliceClickClear' => 'clearFilter',
+    ];
+
+    public function handleByDate($bar)
+    {
+        $this->byDate = $bar['title'];
+    }
+
+    public function clearFilter($slice)
+    {
+        $this->byDate = null;
+    }
+
     public function render()
     {
-        $healthevents = DB::table('health_check_result_history_items')
+        $health_by_date = DB::table('health_check_result_history_items')
             ->where('status', 'failed')
             ->get();
 
-        $pieChartModel = $healthevents->groupBy('check_name')
+        $pieChartModel = $health_by_date->groupBy('check_name')
             ->reduce(function ($pieChartModel, $data) {
                 $type = $data->first()->check_name;
                 $value = $data->count();
@@ -28,28 +45,29 @@ class HealtheventsByType extends Component
                 ->legendPositionBottom()
                 ->legendHorizontallyAlignedCenter()
                 ->setDataLabelsEnabled(true)
-                ->setColors(['#b01a1b', '#d41b2c', '#ec3c3b', '#f66665'])
+                ->setColors(['#006600', '#993399', '#CC0000', '#0033CC'])
             );
 
-        $healthevents = DB::table('health_check_result_history_items')
+        $health_by_date = DB::table('health_check_result_history_items')
             ->where('status', 'failed')
             ->selectRaw('date(created_at) as health_date, check_name, count(*) as cnt')
             ->groupByRaw('date(created_at), check_name')
             ->orderBy('health_date')
             ->get();
-        $htypes = $healthevents->pluck('check_name')->unique();
-        $hdates = $healthevents->pluck('health_date')->unique();
+        $htypes = $health_by_date->pluck('check_name')->unique();
+        $hdates = $health_by_date->pluck('health_date')->unique();
 
         $multiColumnChartModel = $hdates
-            ->reduce(function ($multiColumnChartModel, $data) use ($healthevents, $htypes) {
+            ->reduce(function ($multiColumnChartModel, $data) use ($health_by_date, $htypes) {
                 foreach ($htypes as $ht) {
                     $multiColumnChartModel
-                        ->addSeriesColumn($ht, $data, $healthevents->where('check_name', $ht)->where('health_date', $data)->first()->cnt ?? 0);
+                        ->addSeriesColumn($ht, $data, $health_by_date->where('check_name', $ht)->where('health_date', $data)->first()->cnt ?? 0);
                 }
 
                 return $multiColumnChartModel;
             }, LivewireCharts::multiColumnChartModel()
                 ->setTitle('Healthevents by Type and Date')
+                ->withOnColumnClickEventName('onColumnClickDate')
                 ->setAnimated($this->firstRun)
                 ->stacked()
                 ->withGrid()
@@ -57,25 +75,37 @@ class HealtheventsByType extends Component
                 ->withDataLabels()
             );
 
-        $healthevents2 = DB::table('health_check_result_history_items')
-            ->where('status', 'failed')
-            ->selectRaw('hour(created_at) as health_hour, check_name, count(*) as cnt')
-            ->groupByRaw('hour(created_at), check_name')
-            ->orderBy('health_hour')
-            ->get();
-        $htypes = $healthevents2->pluck('check_name')->unique();
+        if ($this->byDate == null) {
+            $health_by_hod = DB::table('health_check_result_history_items')
+                ->where('status', 'failed')
+                ->selectRaw('hour(created_at) as health_hour, check_name, count(*) as cnt')
+                ->groupByRaw('hour(created_at), check_name')
+                ->orderBy('health_hour')
+                ->get();
+            $htypes = $health_by_hod->pluck('check_name')->unique();
+        } else {
+            $health_by_hod = DB::table('health_check_result_history_items')
+                ->where('status', 'failed')
+                ->whereRaw('date(created_at) = ?', [$this->byDate])
+                ->selectRaw('hour(created_at) as health_hour, check_name, count(*) as cnt')
+                ->groupByRaw('hour(created_at), check_name')
+                ->orderBy('health_hour')
+                ->get();
+            $htypes = $health_by_hod->pluck('check_name')->unique();
+        }
 
         $multiColumnChartModel2 = collect([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24])
-            ->reduce(function ($multiColumnChartModel2, $data) use ($healthevents2, $htypes) {
+            ->reduce(function ($multiColumnChartModel2, $data) use ($health_by_hod, $htypes) {
                 foreach ($htypes as $ht) {
                     $multiColumnChartModel2
-                        ->addSeriesColumn($ht, $data, $healthevents2->where('check_name', $ht)->where('health_hour', $data)->first()->cnt ?? 0);
+                        ->addSeriesColumn($ht, $data, $health_by_hod->where('check_name', $ht)->where('health_hour', $data)->first()->cnt ?? 0);
                 }
 
                 return $multiColumnChartModel2;
             }, LivewireCharts::multiColumnChartModel()
                 ->setTitle('Healthevents by Type and Hour of Day')
                 ->setAnimated($this->firstRun)
+                ->withOnColumnClickEventName('onSliceClickClear')
                 ->stacked()
                 ->withGrid()
                 ->withLegend()
