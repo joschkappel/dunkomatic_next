@@ -39,7 +39,7 @@ class UsersByProviders extends Component
         $this->byDate = $bar['title'];
     }
 
-    public function clearFilter($slice)
+    public function clearFilter()
     {
         $this->byDate = null;
     }
