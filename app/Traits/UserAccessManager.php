@@ -24,6 +24,8 @@ trait UserAccessManager
         Bouncer::assign('candidate')->to($user);
         if ($region != null) {
             Bouncer::allow($user)->to(['access'], $region);
+        } else {
+            Log::warning('potential zombie registration !', ['user' => $user->id, 'roles' => $user->getRoles()]);
         }
         Bouncer::refreshFor($user);
         Log::notice('user candidate role set', ['user' => $user->id, 'roles' => $user->getRoles()]);
