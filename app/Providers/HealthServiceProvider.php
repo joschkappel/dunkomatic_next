@@ -57,9 +57,8 @@ class HealthServiceProvider extends ServiceProvider
                 DuplicateMemberCheck::new()
                 ->failWhenDuplicatesIsHigher(50),
                 RegistrationZombiesCheck::new()
-                ->failWhenZombieCountIsHigherInTheLastMinute(1)
-                ->failWhenZombieCountIsHigherInTheLast5Minutes(2)
-                ->failWhenZombieCountIsHigherInTheLast15Minutes(5),
+                ->failWhenZombieCountIsHigherInTheLastHour(1)
+                ->failWhenZombieCountIsHigherInTheLastDay(5),
             ]);
         } elseif (app()->environment('staging')) {
             Health::checks([
@@ -86,9 +85,8 @@ class HealthServiceProvider extends ServiceProvider
                 DuplicateMemberCheck::new()
                 ->failWhenDuplicatesIsHigher(10),
                 RegistrationZombiesCheck::new()
-                ->failWhenZombieCountIsHigherInTheLastMinute(1)
-                ->failWhenZombieCountIsHigherInTheLast5Minutes(2)
-                ->failWhenZombieCountIsHigherInTheLast15Minutes(5),
+                ->failWhenZombieCountIsHigherInTheLastHour(1)
+                ->failWhenZombieCountIsHigherInTheLastDay(5),
             ]);
         } elseif (app()->environment('local')) {
             Health::checks([
@@ -114,9 +112,8 @@ class HealthServiceProvider extends ServiceProvider
                 DuplicateMemberCheck::new()
                 ->failWhenDuplicatesIsHigher(50),
                 RegistrationZombiesCheck::new()
-                ->failWhenZombieCountIsHigherInTheLastMinute(1)
-                ->failWhenZombieCountIsHigherInTheLast5Minutes(2)
-                ->failWhenZombieCountIsHigherInTheLast15Minutes(5),
+                ->failWhenZombieCountIsHigherInTheLastHour(1)
+                ->failWhenZombieCountIsHigherInTheLastDay(5),
             ]);
         } else {
             // do nothing;
