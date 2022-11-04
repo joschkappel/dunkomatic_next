@@ -8,6 +8,7 @@ use App\Checks\FailedLoginsCheck;
 use App\Checks\LaravelEchoServerCheck;
 use App\Checks\MinioHealthCheck;
 use App\Checks\QueueLoadCheck;
+use App\Checks\RegistrationZombiesCheck;
 use Illuminate\Support\ServiceProvider;
 use Spatie\CpuLoadHealthCheck\CpuLoadCheck;
 use Spatie\Health\Checks\Checks\CacheCheck;
@@ -55,6 +56,9 @@ class HealthServiceProvider extends ServiceProvider
                 MinioHealthCheck::new(),
                 DuplicateMemberCheck::new()
                 ->failWhenDuplicatesIsHigher(50),
+                RegistrationZombiesCheck::new()
+                ->failWhenZombieCountIsHigherInTheLastHour(1)
+                ->failWhenZombieCountIsHigherInTheLastDay(5),
             ]);
         } elseif (app()->environment('staging')) {
             Health::checks([
@@ -80,6 +84,9 @@ class HealthServiceProvider extends ServiceProvider
                 MinioHealthCheck::new(),
                 DuplicateMemberCheck::new()
                 ->failWhenDuplicatesIsHigher(10),
+                RegistrationZombiesCheck::new()
+                ->failWhenZombieCountIsHigherInTheLastHour(1)
+                ->failWhenZombieCountIsHigherInTheLastDay(5),
             ]);
         } elseif (app()->environment('local')) {
             Health::checks([
@@ -104,6 +111,9 @@ class HealthServiceProvider extends ServiceProvider
                 MinioHealthCheck::new(),
                 DuplicateMemberCheck::new()
                 ->failWhenDuplicatesIsHigher(50),
+                RegistrationZombiesCheck::new()
+                ->failWhenZombieCountIsHigherInTheLastHour(1)
+                ->failWhenZombieCountIsHigherInTheLastDay(5),
             ]);
         } else {
             // do nothing;

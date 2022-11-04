@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -65,5 +66,16 @@ class ProcessDbCleanup implements ShouldQueue
         // drop all read notifications
         // $old_notifs = DatabaseNotification::whereDate('read_at', '<',now()->subWeek())->delete();
         // Log::notice('[JOB][DB CLEANUP] deleting read notifications.', ['count' => $old_notifs]);
+
+        // drop zombie registrations
+        // typically using a social oath provider and not completing the registration process
+        $zombie_users = User::whereNull('approved_at')->whereNull('reason_join')->whereNull('rejected_at')->get();
+        foreach ($zombie_users as $zu) {
+            if ($zu->regions()->count() == 0) {
+                // user hasnt got a region assigned !
+                $zu->delete();
+                Log::notice('[JOB][DB CLEANUP] zombie user deleted', ['user-id' => $zu->id]);
+            }
+        }
     }
 }
