@@ -167,7 +167,7 @@ class ClubGameController extends Controller
                     $btndata = ' data-id="'.$g->id.
                         '" data-game-date="'.$g->game_date.'" data-game-time="'.$g->game_time.'" data-club-id-home"'.$g->club_id_home.
                         '" data-gym-no="'.$g->gym_no.'" data-gym-id="'.$g->gym_id.'" data-league="'.$g->league.'"';
-                    if ($this->can_club_edit_game($club, $g->club_id_home)) {
+                    if ($this->can_club_edit_game($club, Game::find($g->id))) {
                         $btnstate = '';
                     } else {
                         $btnstate = ' disabled ';
@@ -259,7 +259,7 @@ class ClubGameController extends Controller
             })
             ->editColumn('game_no', function ($game) use ($club) {
                 if ($game->club_id_home == $club->id) {
-                    if ($this->can_club_edit_game($club, $game->club_id_home)) {
+                    if ($this->can_club_edit_game($club, $game)) {
                         // this is a home game, can be edited
                         $link = '<a href="#" id="gameEditLink" data-id="'.$game->id.
                             '" data-game-date="'.$game->game_date.'" data-game-time="'.$game->game_time.'" data-club-id-home"'.$game->club_id_home.

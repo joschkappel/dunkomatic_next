@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Enums\LeagueState;
 use App\Enums\Role;
 use App\Models\Club;
+use App\Models\Game;
 use App\Models\League;
 use App\Notifications\LeagueGamesGenerated;
 use App\Notifications\SelectTeamLeagueNo;
@@ -206,11 +207,11 @@ trait LeagueFSM
         $league->save();
     }
 
-    public function can_club_edit_game(Club $club, $game_club_id_home): bool
+    public function can_club_edit_game(Club $club, Game $game): bool
     {
         if ($game->league()->first()->state->is(LeagueState::Scheduling())) {
             // can edit if in scheduling
-            if ($club->id == $game_club_id_home) {
+            if ($club->id == $game->club_id_home) {
                 // can edit home game for club
                 return true;
             } else {
