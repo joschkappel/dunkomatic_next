@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Imports\HomeGamesImport;
 use App\Models\Club;
 use App\Models\Game;
+use App\Traits\LeagueFSM;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Datatables;
@@ -18,6 +19,8 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ClubGameController extends Controller
 {
+    use LeagueFSM;
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -164,13 +167,18 @@ class ClubGameController extends Controller
                     $btndata = ' data-id="'.$g->id.
                         '" data-game-date="'.$g->game_date.'" data-game-time="'.$g->game_time.'" data-club-id-home"'.$g->club_id_home.
                         '" data-gym-no="'.$g->gym_no.'" data-gym-id="'.$g->gym_id.'" data-league="'.$g->league.'"';
+                    if ($this->can_club_edit_game($club, Game::find($g->id))) {
+                        $btnstate = '';
+                    } else {
+                        $btnstate = ' disabled ';
+                    }
                     if ($g->game_time == '') {
-                        $new_row['gym_'.$g->gym_no] .= '<button id="gameEditLink" class="btn btn-warning btn-sm text-sm" '.$btndata.'>('.$g->league->shortname.')<br>'.$g->team_home.' - '.$g->team_guest.'</button>';
+                        $new_row['gym_'.$g->gym_no] .= '<button id="gameEditLink" class="btn btn-warning btn-sm text-sm" '.$btndata.$btnstate.'>('.$g->league->shortname.')<br>'.$g->team_home.' - '.$g->team_guest.'</button>';
                     } else {
                         if ($ogames->contains($g->id)) {
-                            $new_row['gym_'.$g->gym_no] .= '<button id="gameEditLink" class="btn btn-danger btn-sm text-sm" '.$btndata.'>('.$g->league.')<br>'.$g->team_home.' - '.$g->team_guest.'</button>';
+                            $new_row['gym_'.$g->gym_no] .= '<button id="gameEditLink" class="btn btn-danger btn-sm text-sm" '.$btndata.$btnstate.'>('.$g->league.')<br>'.$g->team_home.' - '.$g->team_guest.'</button>';
                         } else {
-                            $new_row['gym_'.$g->gym_no] .= '<button id="gameEditLink" class="btn btn-success btn-sm text-sm" '.$btndata.'>('.$g->league.')<br>'.$g->team_home.' - '.$g->team_guest.'</button>';
+                            $new_row['gym_'.$g->gym_no] .= '<button id="gameEditLink" class="btn btn-success btn-sm text-sm" '.$btndata.$btnstate.'>('.$g->league.')<br>'.$g->team_home.' - '.$g->team_guest.'</button>';
                         }
                     }
                 } else {
@@ -251,13 +259,17 @@ class ClubGameController extends Controller
             })
             ->editColumn('game_no', function ($game) use ($club) {
                 if ($game->club_id_home == $club->id) {
-                    // this is a home game, can be edited
-                    $link = '<a href="#" id="gameEditLink" data-id="'.$game->id.
-                        '" data-game-date="'.$game->game_date.'" data-game-time="'.$game->game_time.'" data-club-id-home"'.$game->club_id_home.
-                        '" data-gym-no="'.$game->gym_no.'" data-gym-id="'.$game->gym_id.'" data-league="'.$game->league.
-                        '">'.$game->game_no.' <i class="fas fa-arrow-circle-right"></i></a>';
+                    if ($this->can_club_edit_game($club, $game)) {
+                        // this is a home game, can be edited
+                        $link = '<a href="#" id="gameEditLink" data-id="'.$game->id.
+                            '" data-game-date="'.$game->game_date.'" data-game-time="'.$game->game_time.'" data-club-id-home"'.$game->club_id_home.
+                            '" data-gym-no="'.$game->gym_no.'" data-gym-id="'.$game->gym_id.'" data-league="'.$game->league.
+                            '">'.$game->game_no.' <i class="fas fa-arrow-circle-right"></i></a>';
 
-                    return ['display' => $link, 'sort' => $game->game_no, 'filter' => 'Heim'];
+                        return ['display' => $link, 'sort' => $game->game_no, 'filter' => 'Heim'];
+                    } else {
+                        return ['display' => $game->game_no, 'sort' => $game->game_no, 'filter' => 'Heim'];
+                    }
                 } else {
                     return ['display' => $game->game_no, 'sort' => $game->game_no, 'filter' => 'Gast'];
                 }
