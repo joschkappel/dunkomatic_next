@@ -32,20 +32,22 @@ class RegistrationZombiesCheck extends Check
         $lastHour = Carbon::now()->subHour();
         $lastDay = Carbon::now()->subDay();
 
-        $user_query = User::whereNull('approved_at')->whereNull('reason_join');
+        $user_query = User::whereNull('approved_at')->whereNull('reason_join')->get();
         // total registration zombies last hour
         $lastHour_tot_cnt = $user_query->where('created_at', '>=', $lastHour)->count();
         // total registration zombies last day
         $lastDay_tot_cnt = $user_query->where('created_at', '>=', $lastDay)->count();
+        $total_cnt = $user_query->count();
 
         $result = Result::make()
             ->ok()
             ->shortSummary(
-                "{$lastHour_tot_cnt} / {$lastDay_tot_cnt}"
+                "{$lastHour_tot_cnt} / {$lastDay_tot_cnt} / {$total_cnt}"
             )
             ->meta([
                 'last_hour' => $lastHour_tot_cnt,
                 'last_day' => $lastDay_tot_cnt,
+                'all_time' => $total_cnt,
             ]);
 
         if ($this->failWhenZombieCountIsHigherInTheLastHour) {
