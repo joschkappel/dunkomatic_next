@@ -781,7 +781,7 @@ class LeagueController extends Controller
             })
             ->editColumn('team_league_no', function ($ct) use ($league, &$t_keys, $available_no) {
                 if ((Auth::user()->can('update-leagues')) and
-                    ($this->can_modidfy_teams($league)) and
+                    ($this->can_modify_teams($league)) and
                     (Auth::user()->can('access', $league->region))
                 ) {
                     if ($ct['team_league_no'] != null) {
