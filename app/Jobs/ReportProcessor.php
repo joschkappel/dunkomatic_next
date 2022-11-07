@@ -224,6 +224,13 @@ class ReportProcessor implements ShouldQueue
                     Log::debug('[JOB] REPORT PROCESSOR impacted games', ['by league members' => $games->count(), 'contacts' => $contact_regions->count()]);
                 }
 
+                $teams = Membership::whereIn('id', $mships)->where('membership_type', Team::class)->pluck('membership_id')->unique();
+                if ($teams->count() > 0) {
+                    $games = $games->concat(Game::whereIn('team_id_home', $teams)->orWhereIn('team_id_guest', $teams)->pluck('id'));
+                    $contact_regions = $contact_regions->concat(Team::whereIn('id', $teams)->get()->pluck('club.region_id'))->unique();
+                    Log::debug('[JOB] REPORT PROCESSOR impacted games', ['by team members' => $games->count(), 'contacts' => $contact_regions->count()]);
+                }
+
                 $regions = Membership::whereIn('id', $mships)->where('membership_type', Region::class)->pluck('membership_id')->unique();
                 if ($regions->count() > 0) {
                     $games = $games->concat(Game::whereIn('region_id_league', $regions)->pluck('id'));
