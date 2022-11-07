@@ -2,10 +2,10 @@
 
 namespace App\Jobs;
 
-use App\Enums\LeagueState;
 use App\Enums\Role;
 use App\Models\Region;
 use App\Notifications\MissingLead;
+use App\Traits\LeagueFSM;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Notification;
 
 class MissingLeadCheck implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, LeagueFSM;
 
     protected Region $region;
 
@@ -57,8 +57,7 @@ class MissingLeadCheck implements ShouldQueue
 
         $leagues = $this->region->leagues()->get();
         foreach ($leagues as $l) {
-            if (($l->state->in([LeagueState::Live(), LeagueState::Referees()])) and
-                (! $l->memberIsA(Role::LeagueLead()))) {
+            if ($this->must_have_admin($l) and (! $l->memberIsA(Role::LeagueLead()))) {
                 $leagues_nolead[] = $l->shortname;
                 // Log::debug('lead missing for '.$l->shortname);
             }

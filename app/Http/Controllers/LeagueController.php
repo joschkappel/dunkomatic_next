@@ -9,6 +9,7 @@ use App\Enums\LeagueStateChange;
 use App\Models\Club;
 use App\Models\League;
 use App\Models\Region;
+use App\Traits\LeagueFSM;
 use App\Traits\LeagueTeamManager;
 use App\View\Components\LeagueContent;
 use App\View\Components\LeagueStatus;
@@ -25,7 +26,7 @@ use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class LeagueController extends Controller
 {
-    use LeagueTeamManager;
+    use LeagueTeamManager, LeagueFSM;
 
     /**
      * Display a listing of the resource.
@@ -716,7 +717,8 @@ class LeagueController extends Controller
                 'club_shortname.display', 'team_name', 'team_league_no.display',
             ])
             ->editColumn('club_shortname', function ($ct) use ($league, &$c_keys, $regions) {
-                if ((Auth::user()->can('update-leagues')) and ($league->state->in([LeagueState::Selection, LeagueState::Registration, LeagueState::Scheduling, LeagueState::Freeze]))
+                if ((Auth::user()->can('update-leagues')) and
+                    ($this->can_modify_teams($league))
                     and (Auth::user()->can('access', $league->region))) {
                     if ($ct['club_shortname'] != null) {
                         $btn = '<button id="deassignClub" data-id="'.$ct['club_id'].'" type="button" class="btn btn-success btn-sm">';
@@ -747,7 +749,7 @@ class LeagueController extends Controller
             })
             ->editColumn('team_name', function ($ct) use ($league) {
                 if ((Auth::user()->can('update-leagues')) and
-                    ($league->state->in([LeagueState::Selection, LeagueState::Registration, LeagueState::Scheduling, LeagueState::Freeze])) and
+                    $this->can_modify_teams($league) and
                     (Auth::user()->can('access', $league->region))
                 ) {
                     if ($ct['team_name'] != null) {
@@ -779,7 +781,7 @@ class LeagueController extends Controller
             })
             ->editColumn('team_league_no', function ($ct) use ($league, &$t_keys, $available_no) {
                 if ((Auth::user()->can('update-leagues')) and
-                    ($league->state->in([LeagueState::Registration, LeagueState::Selection, LeagueState::Scheduling, LeagueState::Freeze])) and
+                    ($this->can_modify_teams($league)) and
                     (Auth::user()->can('access', $league->region))
                 ) {
                     if ($ct['team_league_no'] != null) {

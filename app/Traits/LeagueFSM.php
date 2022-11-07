@@ -223,4 +223,31 @@ trait LeagueFSM
             return false;
         }
     }
+
+    public function must_have_admin(League $league): bool
+    {
+        if ($league->state->in([LeagueState::Live(), LeagueState::Referees()])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function can_register_teams(League $league): bool
+    {
+        if ($league->state->in([LeagueState::Registration(), LeagueState::Selection()])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function can_modify_teams(League $league): bool
+    {
+        if ($league->state->in([LeagueState::Registration(), LeagueState::Selection(), LeagueState::Scheduling(), LeagueState::Freeze()])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
