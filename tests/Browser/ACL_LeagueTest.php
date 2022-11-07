@@ -2,7 +2,6 @@
 
 namespace Tests\Browser;
 
-use App\Enums\LeagueState;
 use App\Models\Club;
 use App\Models\League;
 use App\Models\Member;
@@ -16,7 +15,7 @@ use Tests\DuskTestCase;
 
 class ACL_LeagueTest extends DuskTestCase
 {
-    use DatabaseMigrations;
+    use DatabaseMigrations, LeagueFSM;
 
     protected static $league;
 
@@ -246,8 +245,8 @@ class ACL_LeagueTest extends DuskTestCase
 
                 $browser->with('#clubsCard', function ($clubsCard) use ($user, $league, $c, $t) {
                     $clubsCard->waitFor('#table');
-                    (($user->can('update-leagues')) and ($league->state->in([LeagueState::Selection, LeagueState::Registration]))) ? $clubsCard->assertButtonEnabled('#deassignClub') : $clubsCard->assertSee($c);
-                    (($user->can('update-leagues')) and ($league->state->in([LeagueState::Selection, LeagueState::Registration]))) ? $clubsCard->assertButtonEnabled('#unregisterTeam') : $clubsCard->assertSee($t);
+                    (($user->can('update-leagues')) and ($this->can_register_teams($league))) ? $clubsCard->assertButtonEnabled('#deassignClub') : $clubsCard->assertSee($c);
+                    (($user->can('update-leagues')) and ($this->can_register_teams($league))) ? $clubsCard->assertButtonEnabled('#unregisterTeam') : $clubsCard->assertSee($t);
                 });
                 $browser->with('#membersCard', function ($memberCard) use ($user, $member) {
                     $memberCard->click('.btn-tool')->waitFor('.btn-tool');
@@ -255,7 +254,7 @@ class ACL_LeagueTest extends DuskTestCase
                     ($user->can('update-members')) ? $memberCard->assertSeeLink($member->name) : $memberCard->assertDontSeeLink($member->name);
                     ($user->can('update-members')) ? $memberCard->assertSeeLink(__('role.send.invite')) : $memberCard->assertDontSeeLink(__('role.send.invite'));
                 });
-                $browser->with('#gamesCard', function ($gameCard) use ($user, $league) {
+                $browser->with('#gamesCard', function ($gameCard) use ($user) {
                     $gameCard->click('.btn-tool')->waitFor('.btn-tool');
                     ($user->can('view-games')) ? $gameCard->assertSeeLink(__('league.action.game.list')) : $gameCard->assertDontSeeLink(__('league.action.game.list'));
                     ($user->can('view-games')) ? $gameCard->assertSeeLink(__('reports.ical.league')) : $gameCard->assertDontSeeLink(__('reports.ical.league'));

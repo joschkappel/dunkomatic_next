@@ -7,6 +7,7 @@ use App\Models\Club;
 use App\Models\Member;
 use App\Models\Region;
 use App\Rules\Uppercase;
+use App\Traits\LeagueFSM;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,6 +21,8 @@ use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class ClubController extends Controller
 {
+    use LeagueFSM;
+
     /**
      * Display a listing of the all resources.
      *
@@ -282,7 +285,7 @@ class ClubController extends Controller
             })
             ->addColumn('league', function ($ct) use ($clubleagues) {
                 if ($ct->league_id != null) {
-                    if ($ct->league->state->in([LeagueState::Registration, LeagueState::Selection])) {
+                    if ($this->can_register_teams($ct->league)) {
                         $btn = '<span data-toggle="tooltip" title="'.__('team.tooltip.deassign', ['name' => $ct->name]).'">';
                         $btn .= '<button id="unregisterTeam" data-league-id="'.$ct->league->id.'" data-team-id="'.$ct->id.'" ';
                         $btn .= 'type="button" class="btn btn-secondary btn-sm">'.$ct->league['shortname'].'</button>';
@@ -298,7 +301,7 @@ class ClubController extends Controller
                         $btn = '<div class="btn-group"><button type="button" class="btn btn-secondary dropdpwn-toggle" data-toggle="dropdown">'.__('league.action.select').' ('.__('previous').': '.$ct->league_prev.')</button>';
                         $btn .= '<div class="dropdown-menu">';
                         foreach ($clubleagues as $cl) {
-                            if ($cl->state->in([LeagueState::Registration, LeagueState::Selection])) {
+                            if ($this->can_register_teams($cl)) {
                                 $btn .= '<a class="dropdown-item" href="javascript:registerTeam('.$cl->id.','.$ct->id.') ">'.$cl->shortname.'</a>';
                             }
                         }

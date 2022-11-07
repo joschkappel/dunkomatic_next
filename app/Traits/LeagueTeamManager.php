@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-use App\Enums\LeagueState;
 use App\Models\League;
 use App\Models\Team;
 use App\Models\User;
@@ -11,6 +10,8 @@ use Illuminate\Support\Str;
 
 trait LeagueTeamManager
 {
+    use LeagueFSM;
+
     protected function get_registrations(League $league): array
     {
         // get all assigned clubs, registerd teams and free league numbers
@@ -121,7 +122,7 @@ trait LeagueTeamManager
         if ((Bouncer::can('access', $league->region) and Bouncer::is($user)->a('regionadmin')) or
             (Bouncer::is($user)->an('superadmin')) or
             (Bouncer::can('access', $league) and Bouncer::can('access', $league->region) and Bouncer::is($user)->a('leagueadmin'))) {
-            if ($league->state->in([LeagueState::Registration, LeagueState::Selection()])) {
+            if ($this->can_register_teams($league)) {
                 $status = '';
                 if ($club_id == null) {
                     $function = 'assignClub';
