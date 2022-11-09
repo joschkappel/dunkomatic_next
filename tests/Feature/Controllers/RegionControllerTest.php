@@ -88,118 +88,6 @@ class RegionControllerTest extends TestCase
     }
 
     /**
-     * create
-     *
-     * @test
-     * @group region
-     * @group controller
-     *
-     * @return void
-     */
-    public function create()
-    {
-        $response = $this->authenticated()
-            ->get(route('region.create', ['language' => 'de']));
-
-        $response->assertStatus(200)
-            ->assertViewIs('region.region_new');
-    }
-
-    /**
-     * store NOT OK
-     *
-     * @test
-     * @group region
-     * @group controller
-     *
-     * @return void
-     */
-    public function store_notok()
-    {
-        $response = $this->authenticated()
-            ->post(route('region.store'), [
-                'name' => 'testregion',
-            ]);
-        $response
-            ->assertStatus(302)
-            ->assertSessionHasErrors(['code']);
-
-        $this->assertDatabaseMissing('regions', ['name' => 'testregion']);
-    }
-
-    /**
-     * store OK
-     *
-     * @test
-     * @group region
-     * @group controller
-     *
-     * @return void
-     */
-    public function store_ok()
-    {
-        $response = $this->authenticated()
-            ->post(route('region.store'), [
-                'name' => 'testregion',
-                'code' => 'TEST',
-            ]);
-        $response
-            ->assertStatus(302)
-            ->assertSessionHasNoErrors()
-            ->assertHeader('Location', route('region.index', ['language' => 'de']));
-
-        $this->assertDatabaseHas('regions', ['name' => 'testregion']);
-    }
-
-    /**
-     * store HQ NOT OK
-     *
-     * @test
-     * @group region
-     * @group controller
-     *
-     * @return void
-     */
-    public function store_hq_notok()
-    {
-        $response = $this->authenticated()
-            ->post(route('region.store'), [
-                'region_id' => 99,
-                'name' => 'testregion2',
-            ]);
-        $response
-            ->assertStatus(302)
-            ->assertSessionHasErrors(['code', 'region_id']);
-
-        $this->assertDatabaseMissing('regions', ['name' => 'testregion2']);
-    }
-
-    /**
-     * store HQ OK
-     *
-     * @test
-     * @group region
-     * @group controller
-     *
-     * @return void
-     */
-    public function store_hq_ok()
-    {
-        $response = $this->authenticated()
-            ->post(route('region.store'), [
-                'name' => 'testregion2',
-                'code' => 'TEST2',
-                'region_id' => $this->region->parentRegion->id,
-            ]);
-        $response
-            ->assertStatus(302)
-            ->assertSessionHasNoErrors()
-            ->assertHeader('Location', route('region.index', ['language' => 'de']));
-
-        $this->assertDatabaseHas('regions', ['name' => 'testregion2']);
-    }
-
-    /**
      * datatable
      *
      * @test
@@ -558,16 +446,7 @@ class RegionControllerTest extends TestCase
      */
     public function destroy()
     {
-        $region = Region::where('name', 'testregion')->first();
-        $response = $this->authenticated()
-            ->delete(route('region.destroy', ['region' => $region]));
-
-        $response->assertStatus(302)
-            ->assertSessionHasNoErrors();
-
-        $this->assertDatabaseMissing('regions', ['id' => $region->id]);
-
-        $region = Region::where('name', 'testregion2')->first();
+        $region = Region::where('code', 'HBVF')->first();
         $response = $this->authenticated()
             ->delete(route('region.destroy', ['region' => $region]));
 

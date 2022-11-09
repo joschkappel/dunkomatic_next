@@ -107,10 +107,17 @@ Route::group([
         Route::get('user/{user}/edit', [UserController::class, 'edit'])->name('admin.user.edit')->middleware('auth')->middleware('can:update-users');
         Route::get('user/{user}/show', [UserController::class, 'show'])->name('admin.user.show');
 
+        Route::group([
+            'prefix' => 'region',
+            'as' => 'region.',
+        ], function () {
+            Route::get('/create', App\Http\Livewire\Region\Create::class)->name('create')->middleware('can:create-regions');
+        });
         Route::get('region', [RegionController::class, 'index'])->name('region.index')->middleware('can:view-regions');
-        Route::get('region/create', [RegionController::class, 'create'])->name('region.create')->middleware('can:create-regions');
+        // Route::get('region/create', [RegionController::class, 'create'])->name('region.create')->middleware('can:create-regions');
         Route::get('region/{region}', [RegionController::class, 'show'])->name('region.show')->middleware('can:view-regions');
         Route::get('region/{region}/edit', [RegionController::class, 'edit'])->name('region.edit')->middleware('can:update-regions');
+
         Route::get('regions/dt', [RegionController::class, 'datatable'])->name('region.list.dt')->middleware('can:view-regions');
         Route::get('region/{region}/dashboard', [RegionController::class, 'dashboard'])->name('region.dashboard')->middleware('can:access,region');
         Route::get('region/{region}/briefing', [RegionController::class, 'briefing'])->name('region.briefing')->middleware('can:view-regions');
@@ -225,7 +232,7 @@ Route::middleware(['auth',
         Route::redirect('home', '/de/home');
         Route::post('contac-us', [HomeController::class, 'send_feedback'])->name('contact.feedback');
 
-        Route::post('region', [RegionController::class, 'store'])->name('region.store')->middleware('can:create-regions');
+        // Route::post('region', [RegionController::class, 'store'])->name('region.store')->middleware('can:create-regions');
         Route::put('region/{region}', [RegionController::class, 'update'])->name('region.update')->middleware('can:update-regions');
         Route::delete('region/{region}', [RegionController::class, 'destroy'])->name('region.destroy')->middleware('can:create-regions');
         Route::get('region/hq/sb', [RegionController::class, 'hq_sb'])->name('region.hq.sb');

@@ -39,13 +39,15 @@
                     {{Str::upper( App\Enums\ReportFileType::HTML()->description ) }}<i class="fas fa-file-download fa-lg mx-2"></i>
                     </a>
                     @endif
-                    @foreach ( $region->fmt_club_reports->getFlags() as $format )
-                    @if ($entity->filecount($format) > 0)
-                    <a type="button" class="btn mb-1  btn-sm btn-block  btn-info" href="{{ route('club_archive.get', ['club' => $entity, 'format'=>$format->value]) }}">
-                        {{ Str::upper( $format->description ) }}<i class="fas fa-file-download fa-lg mx-2"></i>
-                    </a>
-                    @endif
-                    @endforeach
+                    @isset($region->fmt_club_reports)
+                        @foreach ( $region->fmt_club_reports->getFlags() as $format )
+                        @if ($entity->filecount($format) > 0)
+                        <a type="button" class="btn mb-1  btn-sm btn-block  btn-info" href="{{ route('club_archive.get', ['club' => $entity, 'format'=>$format->value]) }}">
+                            {{ Str::upper( $format->description ) }}<i class="fas fa-file-download fa-lg mx-2"></i>
+                        </a>
+                        @endif
+                        @endforeach
+                    @endisset
                 </div>
                 <div class="card-footer text-muted">@isset ($downloads[ App\Enums\Report::ClubGames]) Letzter Download am {{ $downloads[ App\Enums\Report::ClubGames]->isoFormat('L LT') }} @else Noch nicht runtergeladen @endisset</div>
             </div>
@@ -68,13 +70,15 @@
                     {{Str::upper( App\Enums\ReportFileType::HTML()->description ) }}<i class="fas fa-file-download fa-lg mx-2"></i>
                     </a>
                     @endif
-                    @foreach ( $region->fmt_league_reports->getFlags() as $format )
-                    @if ($entity->filecount($format) > 0)
-                    <a type="button" class="btn mb-1  btn-sm btn-block  btn-info" href="{{ route('league_archive.get', ['league' => $entity, 'format'=>$format->value]) }}">
-                        {{ Str::upper( $format->description ) }}<i class="fas fa-file-download fa-lg mx-2"></i>
-                    </a>
-                    @endif
-                    @endforeach
+                    @isset($region->fmt_league_reports)
+                        @foreach ( $region->fmt_league_reports->getFlags() as $format )
+                        @if ($entity->filecount($format) > 0)
+                        <a type="button" class="btn mb-1  btn-sm btn-block  btn-info" href="{{ route('league_archive.get', ['league' => $entity, 'format'=>$format->value]) }}">
+                            {{ Str::upper( $format->description ) }}<i class="fas fa-file-download fa-lg mx-2"></i>
+                        </a>
+                        @endif
+                        @endforeach
+                    @endisset
                 </div>
                 <div class="card-footer text-muted">@isset ($downloads[ App\Enums\Report::LeagueGames]) Letzter Download am {{ $downloads[ App\Enums\Report::LeagueGames]->isoFormat('L LT') }} @else Noch nicht runtergeladen @endisset</div>
             </div>
@@ -96,13 +100,15 @@
                 {{Str::upper( App\Enums\ReportFileType::HTML()->description ) }}<i class="fas fa-file-download fa-lg mx-2"></i>
                 </a>
                 @endif
-                @foreach ( $region->fmt_league_reports->getFlags() as $format )
-                @if ($region->filecount($format,  App\Enums\Report::AddressBook()->getReportFilename()) > 0)
-                <a type="button" class="btn mb-1  btn-sm btn-block  btn-info" href="{{ route('region_members_archive.get', ['region' => $region, 'format'=>$format->value]) }}">
-                    {{ Str::upper( $format->description ) }}<i class="fas fa-file-download fa-lg mx-2"></i>
-                </a>
-                @endif
-                @endforeach
+                @isset($region->fmt_league_reports)
+                    @foreach ( $region->fmt_league_reports->getFlags()  as $format )
+                    @if ($region->filecount($format,  App\Enums\Report::AddressBook()->getReportFilename()) > 0)
+                    <a type="button" class="btn mb-1  btn-sm btn-block  btn-info" href="{{ route('region_members_archive.get', ['region' => $region, 'format'=>$format->value]) }}">
+                        {{ Str::upper( $format->description ) }}<i class="fas fa-file-download fa-lg mx-2"></i>
+                    </a>
+                    @endif
+                    @endforeach
+                @endisset
             </div>
             <div class="card-footer text-muted">@isset ($downloads[ App\Enums\Report::AddressBook]) Letzter Download am {{ $downloads[ App\Enums\Report::AddressBook]->isoFormat('L LT') }} @else Noch nicht runtergeladen @endisset</div>
         </div>
@@ -124,13 +130,15 @@
                     {{Str::upper( App\Enums\ReportFileType::HTML()->description ) }}<i class="fas fa-file-download fa-lg mx-2"></i>
                     </a>
                     @endif
-                    @foreach ( $region->fmt_league_reports->getFlags() as $format )
-                    @if ($region->filecount($format, App\Enums\Report::RegionGames()->getReportFilename()) > 0)
-                    <a type="button" class="btn mb-1  btn-sm btn-block  btn-info" href="{{ route('region_archive.get', ['region' => $region, 'format'=>$format->value]) }}">
-                        {{ Str::upper( $format->description ) }}<i class="fas fa-file-download fa-lg mx-2"></i>
-                    </a>
-                    @endif
-                    @endforeach
+                    @isset($region->fmt_league_reports)
+                        @foreach ( $region->fmt_league_reports->getFlags() as $format )
+                        @if ($region->filecount($format, App\Enums\Report::RegionGames()->getReportFilename()) > 0)
+                        <a type="button" class="btn mb-1  btn-sm btn-block  btn-info" href="{{ route('region_archive.get', ['region' => $region, 'format'=>$format->value]) }}">
+                            {{ Str::upper( $format->description ) }}<i class="fas fa-file-download fa-lg mx-2"></i>
+                        </a>
+                        @endif
+                        @endforeach
+                    @endisset
             </div>
             <div class="card-footer text-muted">@isset ($downloads[ App\Enums\Report::RegionGames]) Letzter Download am {{ $downloads[ App\Enums\Report::RegionGames]->isoFormat('L LT') }} @else Noch nicht runtergeladen @endisset</div>
         </div>
@@ -152,13 +160,15 @@
                 {{Str::upper( App\Enums\ReportFileType::HTML()->description ) }}<i class="fas fa-file-download fa-lg mx-2"></i>
                 </a>
                 @endif
-                @foreach ( $region->fmt_league_reports->getFlags() as $format )
-                @if ( ($region->filecount($format,  App\Enums\Report::LeagueBook()->getReportFilename()) + ($region->league_filecount($format))) > 0)
-                <a type="button" class="btn mb-1  btn-sm btn-block  btn-info" href="{{ route('region_league_archive.get', ['region' => $region, 'format'=>$format->value]) }}">
-                    {{ Str::upper( $format->description ) }}<i class="fas fa-file-download fa-lg mx-2"></i>
-                </a>
-                @endif
-                @endforeach
+                @isset($region->fmt_league_reports)
+                    @foreach ( $region->fmt_league_reports->getFlags() as $format )
+                    @if ( ($region->filecount($format,  App\Enums\Report::LeagueBook()->getReportFilename()) + ($region->league_filecount($format))) > 0)
+                    <a type="button" class="btn mb-1  btn-sm btn-block  btn-info" href="{{ route('region_league_archive.get', ['region' => $region, 'format'=>$format->value]) }}">
+                        {{ Str::upper( $format->description ) }}<i class="fas fa-file-download fa-lg mx-2"></i>
+                    </a>
+                    @endif
+                    @endforeach
+                @endisset
             </div>
             <div class="card-footer text-muted">@isset ($downloads[ App\Enums\Report::LeagueBook]) Letzter Download am {{ $downloads[ App\Enums\Report::LeagueBook]->isoFormat('L LT') }} @else Noch nicht runtergeladen @endisset</div>
         </div>

@@ -175,12 +175,12 @@ class Region extends Model
 
     public function getIsTopLevelAttribute(): bool
     {
-        return $this->childRegions->count() > 0;
+        return $this->hq == null;
     }
 
     public function getIsBaseLevelAttribute(): bool
     {
-        return $this->childRegions->count() == 0;
+        return $this->hq != null;
     }
 
     public function messages(): HasMany
