@@ -41,11 +41,16 @@ class ClubTest extends DuskTestCase
         $club_name = 'VVV';
         $club_name_new = 'VVVXXX';
 
-        $this->browse(function ($browser) use ($u, $club_no, $club_name, $r) {
+        $this->browse(function ($browser) use ($u, $r, $club_name, $club_no) {
             $browser->loginAs($u)
                     ->visit(new NewClub($r->id))
-                    ->new_club($club_name, $club_no, $this->faker->url)
-                    ->screenshot('new_club_1');
+                    ->typeSlowly('input[id=shortname]', 'VVVV')
+                    ->typeSlowly('input[id=name]', $club_name)
+                    ->typeSlowly('input[id=club_no]', $club_no)
+                    ->waitUntilEnabled('.btn-primary')
+                    ->screenshot('new_club_1')
+                    ->press('Senden')
+                    ->screenshot('new_club_1_1');
         });
 
         $this->assertDatabaseHas('clubs', ['club_no' => $club_no]);
