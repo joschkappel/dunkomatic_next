@@ -88,7 +88,7 @@ it('can store a club', function () {
     $this->livewire(Create::class, ['language' => 'de', 'region' => $region])
         ->set('shortname', 's234')
         ->set('name', 'n2345')
-        ->set('club_no', '012345')
+        ->set('club_no', '0611020')
         ->set('url', 'http://google.de')
         ->set('inactive', true)
         ->call('store')

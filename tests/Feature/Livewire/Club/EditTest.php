@@ -96,7 +96,7 @@ it('can update a club', function () {
     $this->livewire(Edit::class, ['language' => 'de', 'club' => $club])
         ->set('shortname', 'PEST')
         ->set('name', 'n2345')
-        ->set('club_no', '012345')
+        ->set('club_no', '0612010')
         ->set('url', 'http://google.de')
         ->set('inactive', true)
         ->call('update')
