@@ -7,8 +7,6 @@ use App\Models\Region;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\WithFaker;
 use Silber\Bouncer\BouncerFacade as Bouncer;
-use Tests\Browser\Pages\Club\EditClub;
-use Tests\Browser\Pages\Club\NewClub;
 use Tests\DuskTestCase;
 
 class ClubTest extends DuskTestCase
@@ -43,8 +41,15 @@ class ClubTest extends DuskTestCase
 
         $this->browse(function ($browser) use ($u, $club_no, $club_name, $r) {
             $browser->loginAs($u)
-                    ->visit(new NewClub($r->id))
-                    ->new_club($club_name, $club_no, $this->faker->url)
+                    ->visit(route('club.create', ['language' => 'de', 'region' => $r]))
+                    ->typeSlowly('input[id=shortname]', 'VVVV')
+                    ->typeSlowly('input[id=name]', $club_name)
+                    ->typeSlowly('input[id=club_no]', $club_no)
+                    ->typeSlowly('input[id=url]', fake()->url)
+                    ->screenshot('new_club_1_1')
+                    ->waitUntilEnabled('.btn-primary')
+                    ->screenshot('new_club_1_2')
+                    ->press('Senden')
                     ->screenshot('new_club_1');
         });
 
@@ -52,9 +57,14 @@ class ClubTest extends DuskTestCase
 
         $club = Club::where('club_no', $club_no)->first();
 
-        $this->browse(function ($browser) use ($club_name_new, $club_no_new, $club) {
-            $browser->visit(new EditClub($club->id))
-                    ->modify_clubno($club_name_new, $club_no_new)
+        $this->browse(function ($browser) use ($club, $club_name_new, $club_no_new) {
+            $browser->visit(route('club.edit', ['language' => 'de', 'club' => $club]))
+                    ->typeSlowly('input[id=name]', $club_name_new)
+                    ->typeSlowly('input[id=club_no]', $club_no_new)
+                    ->screenshot('new_club_2_1')
+                    ->waitUntilEnabled('.btn-primary')
+                    ->screenshot('new_club_2_2')
+                    ->press('Senden')
                     ->screenshot('new_club_2');
         });
 
