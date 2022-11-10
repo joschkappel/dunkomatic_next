@@ -41,14 +41,18 @@ class Create extends Component
         Log::notice('new region created.', ['region-id' => $region->id]);
 
         session()->flash('success', 'Region created');
-
-        return redirect()->route('region.index', ['language' => $this->locale]);
+        $this->reset(['name', 'code', 'hq']);
     }
 
     public function mount($language)
     {
         $this->locale = $language;
-        $this->regions = Region::whereNull('hq')->get();
+        $this->top_regions = Region::whereNull('hq')->get();
+    }
+
+    public function hydrate()
+    {
+        $this->top_regions = Region::whereNull('hq')->get();
     }
 
     public function render()

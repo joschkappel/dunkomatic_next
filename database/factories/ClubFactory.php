@@ -28,10 +28,10 @@ class ClubFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->words(2, true),
-            'shortname' => $this->faker->regexify('[A-Z]{4}'),
-            'url' => $this->faker->url(),
-            'club_no' => $this->faker->randomNumber(7, true),
+            'name' => fake()->words(2, true),
+            'shortname' => fake()->regexify('[A-Z]{4}'),
+            'url' => fake()->url(),
+            'club_no' => fake()->randomNumber(7, true),
             'region_id' => Region::where('code', 'HBVDA')->first()->id,
         ];
     }

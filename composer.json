@@ -18,7 +18,7 @@
         "php": "^8.0.2",
         "asantibanez/livewire-charts": "^2.4",
         "bensampo/laravel-enum": "^5.1",
-        "fakerphp/faker": "^1.9.1",
+        "fakerphp/faker": "^1.20",
         "graylog2/gelf-php": "^1.5",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^9.2",

@@ -35,6 +35,7 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TeamMembershipController;
 use App\Http\Controllers\UserController;
 use App\Http\Livewire\Admininfo\AdminInfo;
+use App\Http\Livewire\Club\Create;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -128,9 +129,8 @@ Route::group([
         Route::get('club/{club}/briefing', [ClubController::class, 'briefing'])->name('club.briefing')->middleware('can:view-clubs');
         Route::get('club/{club}/game/home', [ClubController::class, 'list_homegame'])->name('club.list.homegame')->middleware('can:view-games');
         Route::get('club/{club}/game', [ClubGameController::class, 'show_games'])->name('club.show.games')->middleware('can:view-games');
-        // Route::get('club/{club}/game/{date}', [ClubGameController::class, 'list_games_for_date'])->name('club.games.date.dt')->middleware('can:view-games');
         Route::get('club/{club}', [ClubController::class, 'show'])->name('club.show')->middleware('can:view-clubs');
-        Route::get('club/{club}/edit', [ClubController::class, 'edit'])->name('club.edit')->middleware('can:update-clubs');
+        Route::get('club/{club}/edit', App\Http\Livewire\Club\Edit::class)->name('club.edit')->middleware('can:update-clubs');
         Route::get('club/{club}/team/dt', [ClubController::class, 'team_dt'])->name('club.team.dt');
 
         Route::get('club/{club}/game/upload', [ClubGameController::class, 'upload'])->name('club.upload.homegame');
@@ -147,8 +147,9 @@ Route::group([
             Route::get('audit', [AuditController::class, 'index'])->name('audit.index');
             Route::get('audits/dt', [AuditController::class, 'datatable'])->name('audits.dt');
 
+            Route::get('club/create', App\Http\Livewire\Club\Create::class)->name('club.create')->middleware('can:create-clubs');
             Route::get('club', [ClubController::class, 'index'])->name('club.index')->middleware('can:view-clubs');
-            Route::get('club/create', [ClubController::class, 'create'])->name('club.create')->middleware('can:create-clubs');
+
             Route::get('league/list', [LeagueController::class, 'list'])->name('league.list')->middleware('can:view-leagues');
             Route::get('league', [LeagueController::class, 'index'])->name('league.index')->middleware('can:view-leagues');
             Route::get('league/create', [LeagueController::class, 'create'])->name('league.create')->middleware('can:create-leagues');
@@ -249,7 +250,6 @@ Route::middleware(['auth',
 
         Route::put('region/{region}/details', [RegionController::class, 'update_details'])->name('region.update_details')->middleware('can:update-regions');
 
-        Route::put('club/{club}', [ClubController::class, 'update'])->name('club.update')->middleware('can:update-clubs');
         Route::delete('club/{club}', [ClubController::class, 'destroy'])->name('club.destroy')->middleware('can:create-clubs');
         Route::get('club/{club}/league/sb', [ClubController::class, 'sb_league'])->name('club.sb.league');
 
@@ -263,7 +263,6 @@ Route::middleware(['auth',
 
         Route::group(['prefix' => 'region/{region}'], function () {
             Route::get('club/list', [ClubController::class, 'list'])->name('club.list')->middleware('can:view-clubs');
-            Route::post('club', [ClubController::class, 'store'])->name('club.store')->middleware('can:create-clubs');
             Route::get('club/sb', [ClubController::class, 'sb_region'])->name('club.sb.region');
 
             Route::post('league', [LeagueController::class, 'store'])->name('league.store')->middleware('can:create-leagues');

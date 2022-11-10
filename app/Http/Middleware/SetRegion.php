@@ -23,7 +23,11 @@ class SetRegion
             $request->session()->put('cur_region', Region::find($request->new_region));
         } else {
             if (($request->region != session('cur_region')) and ($request->region !== null)) {
-                $region = Region::find($request->region->id);
+                if (is_object($request->region)) {
+                    $region = Region::find($request->region->id);
+                } else {
+                    $region = Region::find($request->region);
+                }
                 $request->session()->put('cur_region', $region);
                 session()->put('cur_region', $region);
             }

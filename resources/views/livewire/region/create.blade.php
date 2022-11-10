@@ -19,7 +19,7 @@
         {{-- SB Hq --}}
         <div wire:ignore class="flex flex-col m-4">
             <select class='form-control select2 @error('hq') border-red-400 border-2 @enderror' id='selRegion' name='hq'>
-                @foreach ($regions as $r )
+                @foreach ($top_regions as $r )
                 <option value="{{$r->code}}">{{$r->name}}</option>
                 @endforeach
             </select>
@@ -32,22 +32,18 @@
 @push('js')
 
   <script>
-        $(document).ready(function(){
-            $('#frmClose').click(function(e){
-                history.back();
-            });
-
-            $("#selRegion").select2({
-                multiple: false,
-                width: '100%',
-                allowClear: true,
-                placeholder: "{{__('region.hq').' '.__('club.region')}}",
-            });
-            $('#selRegion').on('change', function (e) {
-                var data = $('#selRegion').select2("val");
-                @this.set('hq', data);
-            });
+    $(document).ready(function(){
+        $("#selRegion").select2({
+            multiple: false,
+            width: '100%',
+            allowClear: true,
+            placeholder: "{{__('region.hq').' '.__('club.region')}}",
         });
+        $('#selRegion').on('change', function (e) {
+            var data = $('#selRegion').select2("val");
+            @this.set('hq', data);
+        });
+    });
  </script>
 
 @endpush

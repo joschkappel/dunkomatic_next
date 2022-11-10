@@ -6,7 +6,6 @@ use App\Enums\LeagueState;
 use App\Models\Club;
 use App\Models\Member;
 use App\Models\Region;
-use App\Rules\Uppercase;
 use App\Traits\LeagueFSM;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -16,7 +15,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class ClubController extends Controller
@@ -399,62 +397,6 @@ class ClubController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @param  string  $language
-     * @param  \App\Models\Region  $region
-     * @return \Illuminate\View\View
-     */
-    public function create($language, Region $region)
-    {
-        Log::info('create new club');
-
-        return view('club/club_new', ['region' => $region]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Region  $region
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function store(Request $request, Region $region)
-    {
-        $data = $request->validate([
-            'shortname' => ['required', 'string', 'unique:clubs', 'max:4', 'min:4', new Uppercase],
-            'name' => 'required|max:255',
-            'url' => 'nullable|url|max:255',
-            'club_no' => 'required|unique:clubs|max:7',
-            'inactive' => 'sometimes|required|boolean',
-        ]);
-        Log::info('club form data validated OK.');
-        if (! $request->has('inactive')) {
-            $data['inactive'] = false;
-        }
-
-        $club = new Club($data);
-        $region->clubs()->save($club);
-        Log::notice('new club created.', ['club-id' => $club->id]);
-
-        return redirect()->route('club.index', ['language' => app()->getLocale(), 'region' => $region]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  string  $language
-     * @param  \App\Models\Club  $club
-     * @return \Illuminate\View\View
-     */
-    public function edit($language, Club $club)
-    {
-        Log::info('editing club.', ['club-id' => $club->id]);
-
-        return view('club/club_edit', ['club' => $club]);
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  string  $language
@@ -466,34 +408,6 @@ class ClubController extends Controller
         Log::info('listing homegames for club ', ['club-id' => $club->id]);
 
         return view('game/gamehome_list', ['club' => $club]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Club  $club
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function update(Request $request, Club $club)
-    {
-        $data = $request->validate([
-            'shortname' => ['required', 'string', Rule::unique('clubs')->ignore($club->id), 'max:4', 'min:4', new Uppercase],
-            'name' => 'required|max:255',
-            'url' => 'nullable|url|max:255',
-            'club_no' => ['required', Rule::unique('clubs')->ignore($club->id), 'max:7'],
-            'inactive' => 'sometimes|required|boolean',
-        ]);
-        Log::info('club form data validated OK.');
-        if (! $request->has('inactive')) {
-            $data['inactive'] = false;
-        }
-
-        $check = $club->update($data);
-        $club->refresh();
-        Log::notice('club updated.', ['club-id' => $club->id]);
-
-        return redirect()->route('club.dashboard', ['language' => app()->getLocale(), 'club' => $club]);
     }
 
     /**

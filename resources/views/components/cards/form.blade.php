@@ -17,6 +17,11 @@
                             @lang('Please fix the following errors')
                         </div>
                         @endif
+                        @if(session('success'))
+                        <div class="alert alert-success" role="alert">
+                            @lang( session('success'))
+                        </div>
+                        @endif
                         @if ($cardChangeNote != '')
                             <div class="form-group row ">
                                 <div class="col-sm-4 text-xs text-info text-nowrap">{{ $cardChangeNote }}</div>
