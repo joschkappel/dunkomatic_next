@@ -23,13 +23,16 @@ class Create extends Component
 
     public $inactive = false;
 
-    protected $rules = [
-        'shortname' => 'required|unique:clubs,shortname|min:4|max:4',
-        'name' => 'required|max:255',
-        'url' => 'nullable|url|max:255',
-        'club_no' => 'required|unique:clubs,club_no|max:7',
-        'inactive' => 'sometimes|required|boolean',
-    ];
+    public function rules()
+    {
+        return [
+            'shortname' => ['required', 'unique:clubs,shortname', 'min:4', 'max:4'],
+            'name' => 'required|max:255',
+            'url' => 'nullable|url|max:255',
+            'club_no' => ['required', 'required', 'numeric', 'starts_with:061', 'between:'.config('dunkomatic.club_no_min').','.config('dunkomatic.club_no_max'), 'unique:clubs,club_no'],
+            'inactive' => 'sometimes|required|boolean',
+        ];
+    }
 
     public function updated($field)
     {

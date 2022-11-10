@@ -6,7 +6,7 @@
     <x-cards.form  colWidth=6 :disabled="$disabled" cardTitle="{{ __('club.title.new', ['region' =>$region->name ]) }}" formAction="store">
         {{-- Club No --}}
         <div class="flex flex-col m-4">
-            <input wire:model.debounce.500ms="club_no" type="text" class="form-control @error('club_no') is-invalid @enderror"
+            <input wire:model.debounce.500ms="club_no" type="text" class="form-control @error('club_no') is-invalid @else @if ($club_no != null ) is-valid @endif @enderror"
                 id="club_no" placeholder="@lang('club.club_no')">
             @error('club_no')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -15,7 +15,7 @@
 
         {{-- Shortname --}}
         <div class="flex flex-col m-4">
-            <input wire:model.debounce.500ms="shortname" type="text" class="form-control @error('shortname') is-invalid @enderror"
+            <input wire:model.debounce.500ms="shortname" type="text" class="form-control @error('shortname') is-invalid @else   @if ($shortname != null ) is-valid @endif @enderror"
                 id="shortname" placeholder="@lang('club.shortname')">
             @error('shortname')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -24,7 +24,7 @@
 
         {{-- Name --}}
         <div class="flex flex-col m-4">
-            <input wire:model.debounce.500ms="name" type="text" class="form-control @error('name') is-invalid @enderror" id="name"
+            <input wire:model.debounce.500ms="name" type="text" class="form-control @error('name') is-invalid @else  @if ($name != null ) is-valid @endif @enderror" id="name"
                 placeholder="@lang('club.name')">
             @error('name')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -33,7 +33,7 @@
 
         {{-- Url --}}
         <div class="flex flex-col m-4">
-            <input wire:model.debounce.500ms="url" type="text" class="form-control @error('url') is-invalid @enderror" id="url"
+            <input wire:model.debounce.500ms="url" type="text" class="form-control @error('url') is-invalid @else  @if ($url != null ) is-valid @endif @enderror" id="url"
                 placeholder="URL">
             @error('url')
                 <div class="invalid-feedback">{{ $message }}</div>

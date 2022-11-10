@@ -27,10 +27,10 @@ class Edit extends Component
     public function rules()
     {
         return [
-            'shortname' => ['required', Rule::unique('clubs')->ignore($this->shortname, 'shortname'), 'min:4', 'max:4'],
+            'shortname' => ['required', Rule::unique('clubs')->ignore($this->club->shortname, 'shortname'), 'min:4', 'max:4'],
             'name' => 'required|max:255',
             'url' => 'nullable|url|max:255',
-            'club_no' => ['required', Rule::unique('clubs')->ignore($this->club_no, 'club_no'), 'max:7'],
+            'club_no' => ['required', 'required', 'numeric', 'starts_with:061', 'between:'.config('dunkomatic.club_no_min').','.config('dunkomatic.club_no_max'),  Rule::unique('clubs')->ignore($this->club->club_no, 'club_no')],
             'inactive' => 'sometimes|required|boolean',
         ];
     }

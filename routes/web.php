@@ -129,7 +129,6 @@ Route::group([
         Route::get('club/{club}/briefing', [ClubController::class, 'briefing'])->name('club.briefing')->middleware('can:view-clubs');
         Route::get('club/{club}/game/home', [ClubController::class, 'list_homegame'])->name('club.list.homegame')->middleware('can:view-games');
         Route::get('club/{club}/game', [ClubGameController::class, 'show_games'])->name('club.show.games')->middleware('can:view-games');
-        Route::get('club/{club}', [ClubController::class, 'show'])->name('club.show')->middleware('can:view-clubs');
         Route::get('club/{club}/edit', App\Http\Livewire\Club\Edit::class)->name('club.edit')->middleware('can:update-clubs');
         Route::get('club/{club}/team/dt', [ClubController::class, 'team_dt'])->name('club.team.dt');
 

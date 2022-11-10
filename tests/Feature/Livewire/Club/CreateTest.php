@@ -51,8 +51,11 @@ it('can find validation errors in club_no', function ($shortname, $name, $club_n
         ->call('store')
         ->assertHasErrors('club_no');
 })->with([
-    ['s234', 'n2345', 'cn345678', null, null],
     ['s234', 'n2345', null, null, null],
+    ['s234', 'n2345', 'cn', null, null],
+    ['s234', 'n2345', '11', null, null],
+    ['s234', 'n2345', '0610099', null, null],
+    ['s234', 'n2345', '0615001', null, null],
 ]);
 it('can find validation errors in url', function ($shortname, $name, $club_no, $url, $inactive) {
     $region = Region::find(2);
