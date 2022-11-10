@@ -46,7 +46,7 @@ class EditClub extends Page
             '@club_no' => 'input[id=club_no]',
             '@shortname' => 'input[id=shortname]',
             '@name' => 'input[id=name]',
-            '@url' => 'input[di=url]',
+            '@url' => 'input[id=url]',
         ];
     }
 
@@ -54,6 +54,9 @@ class EditClub extends Page
     {
         $browser->value('@name', $club_name)
                 ->value('@club_no', $club_no)
+                ->screenshot('new_club_2_1')
+                ->waitForEnabled('.btn-primary')
+                ->screenshot('new_club_2_2')
                 ->press('Senden');
     }
 }
