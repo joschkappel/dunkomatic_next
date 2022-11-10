@@ -43,11 +43,10 @@ class EditClub extends Page
     public function elements()
     {
         return [
-            '@region' => 'input[name=region]',
-            '@club_no' => 'input[name=club_no]',
-            '@shortname' => 'input[name=shortname]',
-            '@name' => 'input[name=name]',
-            '@url' => 'input[name=url]',
+            '@club_no' => 'input[id=club_no]',
+            '@shortname' => 'input[id=shortname]',
+            '@name' => 'input[id=name]',
+            '@url' => 'input[di=url]',
         ];
     }
 
