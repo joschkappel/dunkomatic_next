@@ -44,7 +44,8 @@ class ClubTest extends DuskTestCase
         $this->browse(function ($browser) use ($u, $club_no, $club_name, $r) {
             $browser->loginAs($u)
                     ->visit(new NewClub($r->id))
-                    ->new_club($club_name, $club_no, $this->faker->url);
+                    ->new_club($club_name, $club_no, $this->faker->url)
+                    ->screenshot('new_club_1');
         });
 
         $this->assertDatabaseHas('clubs', ['club_no' => $club_no]);
@@ -53,7 +54,8 @@ class ClubTest extends DuskTestCase
 
         $this->browse(function ($browser) use ($club_name_new, $club_no_new, $club) {
             $browser->visit(new EditClub($club->id))
-                    ->modify_clubno($club_name_new, $club_no_new);
+                    ->modify_clubno($club_name_new, $club_no_new)
+                    ->screenshot('new_club_2');
         });
 
         $this->assertDatabaseHas('clubs', ['club_no' => $club_no_new]);
