@@ -55,7 +55,7 @@ class EditClub extends Page
         $browser->value('@name', $club_name)
                 ->value('@club_no', $club_no)
                 ->screenshot('new_club_2_1')
-                ->waitForEnabled('.btn-primary')
+                ->waitUntilEnabled('.btn-primary')
                 ->screenshot('new_club_2_2')
                 ->press('Senden');
     }

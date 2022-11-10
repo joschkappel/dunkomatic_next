@@ -57,7 +57,7 @@ class NewClub extends Page
                 ->value('@club_no', $club_no)
                 ->value('@url', $url)
                 ->screenshot('new_club_1_1')
-                ->waitForEnabled('.btn-primary')
+                ->waitUntilEnabled('.btn-primary')
                 ->screenshot('new_club_1_2')
                 ->press('Senden');
     }
