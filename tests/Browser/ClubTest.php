@@ -34,8 +34,8 @@ class ClubTest extends DuskTestCase
         Bouncer::assign('superadmin')->to($u);
         Bouncer::refreshFor($u);
 
-        $club_no = '1234567';
-        $club_no_new = '1122334';
+        $club_no = '0612001';
+        $club_no_new = '0612003';
         $club_name = 'VVV';
         $club_name_new = 'VVVXXX';
 
