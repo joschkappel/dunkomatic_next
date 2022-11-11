@@ -23,9 +23,9 @@ it('can find validation errors in shortname', function ($shortname, $name, $club
         ->call('store')
         ->assertHasErrors('shortname');
 })->with([
-    ['s', 'n2345', 'cn3', null, null],
-    [null, 'n2345', 'cn3', null, null],
-    ['s2345', 'n2345', 'cn3', null, null],
+    ['s', 'n2345', '0611001', null, null],
+    [null, 'n2345', '0611001', null, null],
+    ['s2345', 'n2345', '0611001', null, null],
 ]);
 it('can find validation errors in name', function ($shortname, $name, $club_no, $url, $inactive) {
     $region = Region::find(2);
@@ -38,7 +38,7 @@ it('can find validation errors in name', function ($shortname, $name, $club_no, 
         ->call('store')
         ->assertHasErrors('name');
 })->with([
-    ['s234', null, 'cn3', null, null],
+    ['s234', null, '0611001', null, null],
 ]);
 it('can find validation errors in club_no', function ($shortname, $name, $club_no, $url, $inactive) {
     $region = Region::find(2);
@@ -68,7 +68,7 @@ it('can find validation errors in url', function ($shortname, $name, $club_no, $
         ->call('store')
         ->assertHasErrors('url');
 })->with([
-    ['s234', 'n2345', 'cn34567', 'u23', null],
+    ['s234', 'n2345', '0611001', 'u23', null],
 ]);
 it('can find validation errors in inactive', function ($shortname, $name, $club_no, $url, $inactive) {
     $region = Region::find(2);
@@ -81,12 +81,12 @@ it('can find validation errors in inactive', function ($shortname, $name, $club_
         ->call('store')
         ->assertHasErrors('inactive');
 })->with([
-    ['s234', 'n2345', 'cn34567', null, 'i1'],
+    ['s234', 'n2345', '0611001', null, 'i1'],
 ]);
 it('can store a club', function () {
     $region = Region::find(2);
     $this->livewire(Create::class, ['language' => 'de', 'region' => $region])
-        ->set('shortname', 's234')
+        ->set('shortname', 'TEST')
         ->set('name', 'n2345')
         ->set('club_no', '0611020')
         ->set('url', 'http://google.de')
@@ -94,7 +94,7 @@ it('can store a club', function () {
         ->call('store')
         ->assertHasNoErrors();
     $this->assertDatabaseHas('clubs', [
-        'shortname' => 's234',
+        'shortname' => 'TEST',
         'name' => 'n2345',
     ]);
 });
