@@ -261,37 +261,6 @@ class ClubTeamController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Club  $club
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function store(Request $request, Club $club)
-    {
-        $data = $request->validate([
-            'team_no' => 'required|integer|min:1|max:9',
-            'training_day' => 'required|integer|min:1|max:5',
-            'training_time' => ['required', 'date_format:H:i', new GameMinute, new GameHour],
-            'preferred_game_day' => 'present|integer|min:1|max:7',
-            'preferred_game_time' => ['required', 'date_format:H:i', new GameMinute, new GameHour],
-            'gym_id' => 'sometimes|required|exists:gyms,id',
-            'league_prev' => 'nullable|string|max:20',
-            'shirt_color' => 'required|string|max:20',
-        ]);
-        Log::info('team form data validated OK.');
-
-        $team = new Team($data);
-        $club->teams()->save($team);
-        Log::notice('new team created for club', ['club-id' => $club->id, 'team-id' => $team->id]);
-
-        return redirect()->action(
-            [ClubController::class, 'dashboard'],
-            ['language' => app()->getLocale(), 'club' => $club->id]
-        );
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  string  $language
