@@ -42,6 +42,6 @@ class GameHour implements Rule
      */
     public function message()
     {
-        return trans('validation.gameminute');
+        return trans('validation.gamehour');
     }
 }

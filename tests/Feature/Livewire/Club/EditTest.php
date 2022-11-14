@@ -77,6 +77,7 @@ it('can find validation errors in url', function ($shortname, $name, $club_no, $
         ->assertHasErrors('url');
 })->with([
     ['s234', 'n2345', 'cn34567', 'u23', null],
+    ['s234', 'n2345', '0611001', 'www.google.de', null],
 ]);
 it('can find validation errors in inactive', function ($shortname, $name, $club_no, $url, $inactive) {
     $club = Club::where('shortname', 'TEST')->first();

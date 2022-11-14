@@ -129,7 +129,15 @@ Route::group([
         Route::get('club/{club}/briefing', [ClubController::class, 'briefing'])->name('club.briefing')->middleware('can:view-clubs');
         Route::get('club/{club}/game/home', [ClubController::class, 'list_homegame'])->name('club.list.homegame')->middleware('can:view-games');
         Route::get('club/{club}/game', [ClubGameController::class, 'show_games'])->name('club.show.games')->middleware('can:view-games');
-        Route::get('club/{club}/edit', App\Http\Livewire\Club\Edit::class)->name('club.edit')->middleware('can:update-clubs');
+
+        Route::group([
+            'prefix' => 'club/{club}',
+            'as' => 'club.',
+        ], function () {
+            Route::get('edit', App\Http\Livewire\Club\Edit::class)->name('edit')->middleware('can:update-clubs');
+            Route::get('team/create', App\Http\Livewire\Club\Team\Create::class)->name('team.create');
+        });
+
         Route::get('club/{club}/team/dt', [ClubController::class, 'team_dt'])->name('club.team.dt');
 
         Route::get('club/{club}/game/upload', [ClubGameController::class, 'upload'])->name('club.upload.homegame');
@@ -203,7 +211,7 @@ Route::group([
         Route::post('team/league/plan/chart', [TeamController::class, 'list_chart'])->name('team.list-chart');
         Route::post('team/league/plan/propose', [TeamController::class, 'propose_combination'])->name('team.propose');
 
-        Route::resource('club.team', ClubTeamController::class)->shallow()->only('index', 'create', 'edit');
+        Route::resource('club.team', ClubTeamController::class)->shallow()->only('index', 'edit');
 
         Route::get('schedule_event/calendar', function () {
             return view('schedule/scheduleevent_cal');

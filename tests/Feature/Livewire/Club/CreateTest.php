@@ -69,6 +69,7 @@ it('can find validation errors in url', function ($shortname, $name, $club_no, $
         ->assertHasErrors('url');
 })->with([
     ['s234', 'n2345', '0611001', 'u23', null],
+    ['s234', 'n2345', '0611001', 'www.google.de', null],
 ]);
 it('can find validation errors in inactive', function ($shortname, $name, $club_no, $url, $inactive) {
     $region = Region::find(2);

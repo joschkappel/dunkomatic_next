@@ -61,4 +61,7 @@ return [
     'unregister.notok' => 'Die Abmeldung ist fehlgeschlagen. Das Team ist NICHT abgemeldet',
     'plan.saved.ok' => 'Deine Wunschziffern wurden gespeichert',
     'plan.saved.notok' => 'Es ist ein Fehler aufgetreten ! Deine Wunschziffern wurden nicht gespeichert',
+    'select.gameday' => 'Wähle den bevorzugten Spieltag',
+    'select.trainingday' => 'Wähle den Trainingstag',
+    'select.teamno' => 'Wähle eine Mannschaftsnummer',
 ];

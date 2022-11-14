@@ -61,5 +61,7 @@ return [
     'unregister.notok' => 'Registration failed, the team is NOT de-registered',
     'plan.saved.ok' => 'Preferred league numbers saved',
     'plan.saved.notok' => 'There is a problem! Your preferred league numbers could not be saved',
-
+    'select.gameday' => 'Select preferred game day',
+    'select.trainingday' => 'Select training day',
+    'select.teamno' => 'Select team number',
 ];

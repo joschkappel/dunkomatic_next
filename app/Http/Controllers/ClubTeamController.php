@@ -261,20 +261,6 @@ class ClubTeamController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @param  string  $language
-     * @param  \App\Models\Club  $club
-     * @return \Illuminate\View\View
-     */
-    public function create($language, Club $club)
-    {
-        Log::info('create new team for club', ['club-id' => $club->id]);
-
-        return view('team/team_new', ['club' => $club]);
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
