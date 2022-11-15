@@ -180,6 +180,7 @@ return [
         'body' => 'Nachricht',
         'salutation' => 'Grußformel',
         'send_at' => 'Senden am Datum',
+        'shirt_color' => 'Trikotfarbe',
 
     ],
 

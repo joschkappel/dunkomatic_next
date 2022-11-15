@@ -180,6 +180,7 @@ return [
         'body' => 'Message Body',
         'salutation' => 'Salutation',
         'send_at' => 'Send at Date',
+        'shirt_color' => 'Shirt Color',
     ],
 
 ];

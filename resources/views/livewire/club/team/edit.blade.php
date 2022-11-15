@@ -3,8 +3,7 @@
     $disabled = $errors->any() || empty($team_no)  || empty($training_time) || empty($training_day) || empty($preferred_game_time) || empty($shirt_color) ? true : false;
     @endphp
 
-    <x-cards.form colWidth=6 :disabled="$disabled" cardTitle="{{ __('team.title.new', ['club' => $club->shortname])  }}" formAction="store">
-
+    <x-cards.form  colWidth=6 :disabled="$disabled" cardChangeNote="{{$team_lastmod}}" cardTitle="{{ __('team.title.modify', ['team'=> $team->club['shortname'].' '.$team->team_no ]) }}" formAction="update">
         <div class="flex flex-col m-4">
         </div>
 
@@ -14,25 +13,39 @@
             <div wire:ignore>
                 <select class="form-control select2" id="team_no">
                 @for ($i=1; $i<=9; $i++)
-                    <option @if ($i == $team_no) selected @endif value="{{ $i }}">{{ $i }}</option>
+                    <option @if ($i == $team->team_no) selected @endif value="{{ $i }}">{{ $i }}</option>
                 @endfor
                 </select>
             </div>
         </div>
 
-        {{-- Previous League --}}
         <div class="flex flex-col m-4">
-            <label for="league_prev" class="form-label">@lang('team.league.previous')</label>
-            <input wire:model.debounce.500ms="league_prev" type="text" class="form-control @error('league_prev') is-invalid @else @if ($league_prev != null ) is-valid @endif @enderror" id="league_prev" placeholder="@lang('team.league.previous')">
-            @error('league_prev')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
+            <div class="row align-items-start">
+                <div class="col-6">
+                    {{-- League --}}
+                    <label for='league' class="form-label">{{trans_choice('league.league',1)}}</label>
+                    @if ($team->league_id)
+                    <input type="text" class="form-control" readonly value="{{ $team->league['shortname'] }}"></input>
+                    @else
+                    <input type="text" class="form-control" readonly value=""></input>
+                    @endif
+                </div>
+
+                {{-- Previous League --}}
+                <div class="col-6">
+                    <label for="league_prev" class="form-label">@lang('team.league.previous')</label>
+                    <input  wire:model.debounce.500ms="league_prev" type="text" class="form-control @error('league_prev') is-invalid @else @if ($league_prev != $team->league_prev ) is-valid @endif @enderror" placeholder="@lang('team.league.previous')">
+                    @error('league_prev')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
         </div>
 
         {{-- Tshirt Color --}}
         <div class="flex flex-col m-4">
             <label for="shirt_color" class="form-label">@lang('team.shirtcolor')</label>
-            <input wire:model.debounce.500ms="shirt_color" type="text" class="form-control @error('shirt_color') is-invalid @else @if ($shirt_color != null ) is-valid @endif @enderror" id="shirt_color" placeholder="@lang('team.shirtcolor')">
+            <input wire:model.debounce.500ms="shirt_color" type="text" class="form-control @error('shirt_color') is-invalid @else @if ($shirt_color != $team->shirt_color ) is-valid @endif @enderror" id="shirt_color" placeholder="@lang('team.shirtcolor')"">
             @error('shirt_color')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -103,7 +116,7 @@
             <div wire:ignore> {{-- [tl! highlight] --}}
                 <div class="input-group">
                     <select  class="form-control select2" id="gym_id">
-                        @foreach ($club->gyms as $g )
+                        @foreach ($team->club->gyms as $g )
                         <option value="{{ $g->id }}">{{ $g->name }}</option>
                         @endforeach
                     </select>
@@ -146,10 +159,6 @@
             width: '100%',
             multiple: false,
             allowClear: false,
-        });
-        $('#training_day').on('change', function (e) {
-            var data = $('#training_day').select2("val");
-            @this.set('training_day', data);
         });
         $("#preferred_game_day").select2({
             placeholder: "{{ __('team.select.gameday') }}...",

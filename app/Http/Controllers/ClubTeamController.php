@@ -5,9 +5,6 @@ namespace App\Http\Controllers;
 use App\Enums\LeagueState;
 use App\Models\Club;
 use App\Models\Team;
-use App\Rules\GameHour;
-use App\Rules\GameMinute;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\DataTables;
 
@@ -258,59 +255,6 @@ class ClubTeamController extends Controller
                 return $col;
             })
             ->make(true);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  string  $language
-     * @param  \App\Models\Team  $team
-     * @return \Illuminate\View\View
-     */
-    public function edit($language, Team $team)
-    {
-        Log::info('editing team.', ['team-id' => $team->id]);
-        $team->load('club', 'league', 'gym');
-        $members = $team->members()->with('memberships')->get();
-
-        return view('team/team_edit', ['team' => $team, 'members' => $members]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Team  $team
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function update(Request $request, Team $team)
-    {
-        if ($request['training_time'] == 'Invalid date') {
-            $request['training_time'] = null;
-        }
-        if ($request['preferred_game_time'] == 'Invalid date') {
-            $request['preferred_game_time'] = null;
-        }
-        $data = $request->validate([
-            'team_no' => 'required|integer|min:1|max:9',
-            'training_day' => 'required|integer|min:1|max:5',
-            'training_time' => ['required', 'date_format:H:i', new GameMinute, new GameHour],
-            'preferred_game_day' => 'present|integer|min:1|max:7',
-            'preferred_game_time' => ['required', 'date_format:H:i', new GameMinute, new GameHour],
-            'gym_id' => 'sometimes|required|exists:gyms,id',
-            'league_prev' => 'nullable|string|max:20',
-            'shirt_color' => 'required|string|max:20',
-        ]);
-        Log::info('team form data validated OK.');
-
-        $check = $team->update($data);
-        $team->refresh();
-        Log::notice('team updated', ['team-id' => $team->id]);
-
-        return redirect()->action(
-            [ClubController::class, 'dashboard'],
-            ['language' => app()->getLocale(), 'club' => $team->club_id]
-        );
     }
 
     /**

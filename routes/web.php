@@ -211,7 +211,8 @@ Route::group([
         Route::post('team/league/plan/chart', [TeamController::class, 'list_chart'])->name('team.list-chart');
         Route::post('team/league/plan/propose', [TeamController::class, 'propose_combination'])->name('team.propose');
 
-        Route::resource('club.team', ClubTeamController::class)->shallow()->only('index', 'edit');
+        Route::get('team/{team}/edit', App\Http\Livewire\Club\Team\Edit::class)->name('team.edit')->middleware('can:update-teams');
+        Route::resource('club.team', ClubTeamController::class)->shallow()->only('index');
 
         Route::get('schedule_event/calendar', function () {
             return view('schedule/scheduleevent_cal');
@@ -337,7 +338,7 @@ Route::middleware(['auth',
         Route::get('team/club/{club}/free/sb', [TeamController::class, 'sb_freeteam_club'])->name('club.team.free.sb');
         Route::post('team/league/plan', [TeamController::class, 'store_plan'])->name('team.store-plan')->middleware('can:update-teams');
 
-        Route::resource('club.team', ClubTeamController::class)->shallow()->except('index', 'create', 'edit');
+        Route::resource('club.team', ClubTeamController::class)->shallow()->except('index', 'create', 'edit', 'store', 'update');
 
         Route::post('role/index', [RoleController::class, 'index'])->name('role.index');
 

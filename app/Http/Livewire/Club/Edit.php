@@ -24,6 +24,8 @@ class Edit extends Component
 
     public Club $club;
 
+    public $locale;
+
     public function rules()
     {
         return [
