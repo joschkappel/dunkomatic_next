@@ -154,7 +154,7 @@ it('can find validation errors in gym_id', function ($team_no, $training_day, $t
 it('can update a team', function () {
     $team = Club::where('shortname', 'TEST')->first()->teams()->first();
     $this->livewire(Edit::class, ['language' => 'de', 'team' => $team])
-        ->set('team_no', 5)
+        ->set('team_no', $team->team_no + 1)
         ->set('training_day', 4)
         ->set('training_time', '17:15')
         ->set('preferred_game_day', 6)
@@ -164,7 +164,7 @@ it('can update a team', function () {
         ->call('update')
         ->assertHasNoErrors();
     $this->assertDatabaseHas('teams', [
-        'team_no' => '5',
+        'team_no' => $team->team_no + 1,
     ]);
     $this->assertDatabaseMissing('teams', [
         'team_no' => $team->team_no,
