@@ -3,62 +3,78 @@
     $disabled = $errors->any() || empty($gym_no)  || empty($name) || empty($zip) || empty($city) || empty($street) ? true : false;
     @endphp
 
-    <x-cards.form colWidth=6 :disabled="$disabled"  cardTitle="{{ __('gym.title.new', ['club' =>  $club->shortname]) }}" formAction="store">
-        <div class="flex flex-col m-4">
-        </div>
-
-        {{-- Gym No --}}
-        <div class="flex flex-col m-4" wire:key="select-field-gymno-version-{{ $iteration }}">
-            <label class="form-label" for='gym_no'>@lang('gym.no')</label>
-            <div wire:ignore>
-                <select class="form-control select2" id='gym_no'>
-                @foreach ( $gym_nos as $gymno )
-                    <option value="{{$gymno}}">{{$gymno}}</option>
-                @endforeach
-                </select>
+    <div class="modal-dialog modal-md">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header">
+                <h3 class="col-12 modal-title text-center">{{ __('gym.title.new', ['club' =>  $club->shortname]) }}</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="white-text">&times;</span>
+                </button>
             </div>
-        </div>
+            <form class="form-horizontal" id="modalDeleteGym_Form">
+                <div class="modal-body">
+                    <div class="flex flex-col m-4">
+                    </div>
 
-        {{-- Gym name --}}
-        <div class="flex flex-col m-4">
-            <label for="title" class="form-label">@lang('gym.name')</label>
-            <input wire:model.debounce.500ms="name" type="text" class="form-control @error('name') is-invalid @else @if ($name != null ) is-valid @endif @enderror" id="name" placeholder="@lang('gym.name')">
-            @error('name')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
+                    {{-- Gym No --}}
+                    <div class="flex flex-col m-4">
+                        <label class="form-label" for='gym_no'>@lang('gym.no')</label>
+                        <div wire:ignore>
+                            <select class="form-control select2" id='gym_no'>
+                            @foreach ( $gym_nos as $gymno )
+                                <option value="{{$gymno}}">{{$gymno}}</option>
+                            @endforeach
+                            </select>
+                        </div>
+                    </div>
 
-        {{-- Gym zipcode --}}
-        <div class="flex flex-col m-4">
-            <label for="title" class="form-label">@lang('role.zipcode')</label>
-            <input wire:model.debounce.500ms="zip" type="text" class="form-control @error('zip') is-invalid @else @if ($zip != null ) is-valid @endif @enderror" id="zip" placeholder="@lang('role.zipcode')">
-            @error('zip')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
+                    {{-- Gym name --}}
+                    <div class="flex flex-col m-4">
+                        <label for="title" class="form-label">@lang('gym.name')</label>
+                        <input wire:model.defer="name" type="text" class="form-control @error('name') is-invalid @else @if ($name != null ) is-valid @endif @enderror" id="name" placeholder="@lang('gym.name')">
+                        @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-        {{-- Gym city --}}
-        <div class="flex flex-col m-4">
-            <label for="title" class="form-label">@lang('role.city')</label>
-            <input wire:model.debounce.500ms="city" type="text" class="form-control @error('city') is-invalid @else @if ($city != null ) is-valid @endif @enderror" id="city" placeholder="@lang('role.city')">
-            @error('city')
-                <div wire:model.debounce.500ms="city" class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
+                    {{-- Gym zipcode --}}
+                    <div class="flex flex-col m-4">
+                        <label for="title" class="form-label">@lang('role.zipcode')</label>
+                        <input wire:model.defer="zip" type="text" class="form-control @error('zip') is-invalid @else @if ($zip != null ) is-valid @endif @enderror" id="zip" placeholder="@lang('role.zipcode')">
+                        @error('zip')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-        {{-- Gym street --}}
-        <div class="flex flex-col m-4">
-            <label for="title" class="form-label">@lang('role.street')</label>
-            <input wire:model.debounce.500ms="street" type="text" class="form-control @error('street') is-invalid @else @if ($street != null ) is-valid @endif @enderror" id="street" placeholder="@lang('role.street')">
-            @error('street')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
+                    {{-- Gym city --}}
+                    <div class="flex flex-col m-4">
+                        <label for="title" class="form-label">@lang('role.city')</label>
+                        <input wire:model.defer="city" type="text" class="form-control @error('city') is-invalid @else @if ($city != null ) is-valid @endif @enderror" id="city" placeholder="@lang('role.city')">
+                        @error('city')
+                            <div wire:model.debounce.500ms="city" class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-        <x-slot name="addButtons">
-            <button type="button" id="adrval" class="btn btn-secondary mr-2">{{ __('gym.action.validate_adr')}}</button>
-        </x-slot>
-    </x-cards.form>
+                    {{-- Gym street --}}
+                    <div class="flex flex-col m-4">
+                        <label for="title" class="form-label">@lang('role.street')</label>
+                        <input wire:model.defer="street" type="text" class="form-control @error('street') is-invalid @else @if ($street != null ) is-valid @endif @enderror" id="street" placeholder="@lang('role.street')">
+                        @error('street')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                        <x-buttons.modal-back></x-buttons.modal-back>
+                        <button type="button" id="adrval" class="btn btn-secondary mr-2">{{ __('gym.action.validate_adr')}}</button>
+                        <x-buttons.primary wire:click="store" :disabled="false">{{ __('Submit') }}</x-buttons.primary>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </div>
 
 
@@ -84,9 +100,6 @@
             });
         };
         initGymSelector();
-        Livewire.on('refreshGyms', (clubid) => {
-            initGymSelector();
-        });
 
         $('#gym_no').on('change', function (e) {
             var data = $('#gym_no').select2('val');

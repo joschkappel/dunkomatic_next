@@ -1,12 +1,12 @@
 <div>
     <!-- card GYMS -->
     <div class="card card-outline card-dark collapsed-card" id="gymsCard">
-        <x-cards.cardheader title="{{trans_choice('gym.gym', 2)}}" icon="fas fa-building"  :count="count($gyms)">
+        <x-cards.cardheader wire:model="gyms" title="{{trans_choice('gym.gym', 2)}}" icon="fas fa-building"  :count="count($gyms)">
                 @can('create-gyms')
-                <a href="{{ route('club.gym.create', ['language' => app()->getLocale(), 'club' => $club]) }}"
+                <button type="button" onclick="$('#create-gym-modal').modal('show');"
                     class="btn btn-success btn-sm text-md">
                     <i class="fas fa-plus-circle"></i> @lang('gym.action.create')
-                </a>
+                </button>
                 @endcan
         </x-cards.cardheader>
         <!-- /.card-header -->
@@ -45,9 +45,8 @@
     <!-- /.card -->
     <!-- all modals here -->
     <div>
-        <div class="modal fade" id="delete-gym-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            <livewire:club.gym.delete>
-        </div>
+        <div class="modal fade" id="create-gym-modal" tabindex="-1" role="dialog" aria-hidden="true"><livewire:club.gym.create :club="$club"></div>
+        <div class="modal fade" id="delete-gym-modal" tabindex="-1" role="dialog" aria-hidden="true"><livewire:club.gym.delete></div>
     </div>
     <!-- all modals above -->
 
@@ -59,6 +58,16 @@
     <script>
         window.addEventListener('openDeleteModal', event => {
             $('#delete-gym-modal').modal('show');
+        })
+        window.addEventListener('closeCreateModal', event => {
+            $('#create-gym-modal').modal('toggle');
+        })
+        window.addEventListener('closeDeleteModal', event => {
+            $('#delete-gym-modal').modal('toggle');
+        })
+
+        window.addEventListener('openEditModal', event => {
+            $('#edit-gym-modal').modal('show');
         })
     </script>
 @endpush

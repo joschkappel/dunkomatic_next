@@ -9,7 +9,6 @@ use Livewire\Component;
 
 class Create extends Component
 {
-    public $locale;
 
     public $allowed_gymno;
 
@@ -25,9 +24,8 @@ class Create extends Component
 
     public $street;
 
-    public $gym_nos;
+    public $gym_nos = array();
 
-    public $iteration;
 
     public function rules()
     {
@@ -49,11 +47,6 @@ class Create extends Component
         ];
     }
 
-    public function updated($field)
-    {
-        $this->validateOnly($field);
-    }
-
     public function store()
     {
         $valid_data = $this->validate();
@@ -62,23 +55,22 @@ class Create extends Component
         $this->club->refresh();
 
         Log::notice('new gym created.', ['club-id' => $this->club->id, 'gym-id' => $gym->id]);
-        $this->gym_nos = array_diff($this->allowed_gymno, $this->club->gyms->pluck('gym_no')->toarray());
-        $this->iteration++;
-        $e = $this->emit('refreshGyms');
-        $this->reset(['gym_no', 'name', 'zip', 'city', 'street']);
+        $gymcnt = $gym->club->gyms->count();
+        $this->emitTo('components.counter','updateCount', $gymcnt );
+        $this->emitTo('club.gym.index','refresh' );
 
-        session()->flash('success', 'Gym created');
+        $this->dispatchBrowserEvent('closeCreateModal');
     }
 
-    public function mount($language)
+    public function mount(Club $club)
     {
-        $this->locale = $language;
+        $this->club = $club;
         $this->allowed_gymno = config('dunkomatic.allowed_gym_nos');
         $this->gym_nos = array_diff($this->allowed_gymno, $this->club->gyms->pluck('gym_no')->toarray());
     }
 
     public function render()
     {
-        return view('livewire.club.gym.create')->extends('layouts.page')->section('content');
+        return view('livewire.club.gym.create');
     }
 }

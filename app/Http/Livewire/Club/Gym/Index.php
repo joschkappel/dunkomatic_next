@@ -12,14 +12,17 @@ class Index extends Component
 
     public Collection $gyms;
 
+    protected $listeners = ['refresh'=>'$refresh'];
+
     public function showDeleteModal($gymid)
     {
-
-        $e = $this->emitTo('club.gym.delete','setGym',$gymid);
+        $this->emitTo('club.gym.delete','setGym',$gymid);
     }
+
 
     public function mount()
     {
+        $this->club->refresh();
         $this->gyms = $this->club->gyms;
     }
 
