@@ -29,15 +29,6 @@ class Create extends Component
 
     public $shirt_color;
 
-    public $listeners = [
-        'teamnoChanged',
-    ];
-
-    public function teamnoChanged($value)
-    {
-        $this->team_no = $value;
-    }
-
     public function rules()
     {
         return [

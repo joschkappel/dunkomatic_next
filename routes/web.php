@@ -136,6 +136,8 @@ Route::group([
         ], function () {
             Route::get('edit', App\Http\Livewire\Club\Edit::class)->name('edit')->middleware('can:update-clubs');
             Route::get('team/create', App\Http\Livewire\Club\Team\Create::class)->name('team.create');
+            Route::get('gym', App\Http\Livewire\Club\Gym\Index::class)->name('gym.index');
+            Route::get('gym/create', App\Http\Livewire\Club\Gym\Create::class)->name('gym.create');
         });
 
         Route::get('club/{club}/team/dt', [ClubController::class, 'team_dt'])->name('club.team.dt');
@@ -183,7 +185,7 @@ Route::group([
             Route::get('address/role/{role}/dt', [AddressController::class, 'index_byrole_dt'])->name('address.index_byrole.dt')->middleware('can:view-members');
         });
 
-        Route::resource('club.gym', ClubGymController::class)->shallow()->except('store', 'update', 'destroy', 'show');
+        Route::resource('club.gym', ClubGymController::class)->shallow()->except('store', 'update', 'destroy', 'show', 'create', 'index');
 
         Route::get('league/{league}/game/upload', [LeagueGameController::class, 'upload'])->name('league.upload.game');
         Route::post('league/{league}/game/import', [LeagueGameController::class, 'import'])->name('league.import.game');
@@ -267,7 +269,7 @@ Route::middleware(['auth',
         Route::get('club/{club}/list/gym', [ClubGymController::class, 'sb_club'])->name('gym.sb.club');
         Route::get('team/{team}/list/gym', [ClubGymController::class, 'sb_team'])->name('gym.sb.team');
         Route::get('club/{club}/member/sb', [MemberController::class, 'sb_club'])->name('member.sb.club');
-        Route::resource('club.gym', ClubGymController::class)->shallow()->only('store', 'update', 'destroy');
+        Route::resource('club.gym', ClubGymController::class)->shallow()->only('update');
 
         Route::group(['prefix' => 'region/{region}'], function () {
             Route::get('club/list', [ClubController::class, 'list'])->name('club.list')->middleware('can:view-clubs');

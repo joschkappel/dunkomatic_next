@@ -53,54 +53,6 @@ class ClubGymController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @param  string  $language
-     * @param  \App\Models\Club  $club
-     * @return \Illuminate\View\View
-     */
-    public function create(string $language, Club $club)
-    {
-        $allowed_gymno = config('dunkomatic.allowed_gym_nos');
-        Log::info('create new gym for club', ['club-id' => $club->id]);
-
-        return view('club/gym/gym_new', ['club' => $club, 'allowed_gymno' => $allowed_gymno]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Club  $club
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function store(Request $request, Club $club)
-    {
-        $gym_no = $request['gym_no'];
-
-        $data = $request->validate([
-            'gym_no' => [
-                'required',
-                Rule::unique('gyms')->where(function ($query) use ($club, $gym_no) {
-                    return $query->where('club_id', $club->id)
-                        ->where('gym_no', $gym_no);
-                }),
-            ],
-            'name' => 'required|max:64',
-            'zip' => 'required|max:10',
-            'street' => 'required|max:40',
-            'city' => 'required|max:40',
-        ]);
-        Log::info('gym form data validated OK.');
-
-        $gym = new Gym($data);
-        $club->gyms()->save($gym);
-        Log::notice('new gym created for club', ['club-id' => $club->id, 'gym-id' => $gym->id]);
-
-        return redirect()->route('club.dashboard', ['language' => app()->getLocale(), 'club' => $club->id]);
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  \App\Models\Gym  $gym
@@ -170,17 +122,4 @@ class ClubGymController extends Controller
         return redirect()->route('club.dashboard', ['language' => app()->getLocale(), 'club' => $gym->club_id]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Gym  $gym
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function destroy(Gym $gym)
-    {
-        $check = $gym->delete();
-        Log::notice('gym deleted.', ['gym-id' => $gym->id]);
-
-        return redirect()->route('club.dashboard', ['language' => app()->getLocale(), 'club' => $gym->club_id]);
-    }
 }

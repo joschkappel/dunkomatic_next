@@ -142,55 +142,7 @@
                 <!-- /.card -->
             </div>
             <div class="col-sm-6">
-                <!-- card GYMS -->
-                <div class="card card-outline card-dark collapsed-card" id="gymsCard">
-                    <x-card-header title="{{trans_choice('gym.gym', 2)}}" icon="fas fa-building"  :count="count($gyms)">
-                            @can('create-gyms')
-                            <a href="{{ route('club.gym.create', ['language' => app()->getLocale(), 'club' => $club]) }}"
-                                class="btn btn-success btn-sm text-md">
-                                <i class="fas fa-plus-circle"></i> @lang('gym.action.create')
-                            </a>
-                            @endcan
-                    </x-card-header>
-                    <!-- /.card-header -->
-                    <div class="card-body">
-                        <ul class="list-group list-group-flush">
-                        @foreach ($gyms as $gym)
-                           <li class="list-group-item ">
-                                <span data-toggle="tooltip" title="{{__('gym.action.delete')}}">
-                                    <button type="button" id="deleteGym" class="btn btn-outline-danger btn-sm"
-                                        @cannot('create-gyms') disabled @else @if (($gym->games()->exists()) or ($club->teams->load('gym')->where('gym_id',$gym->id)->count() >0 )) disabled @endif @endcannot
-                                        data-gym-id="{{ $gym->id }}"
-                                        data-gym-name="{{ $gym->gym_no }} - {{ $gym->name }}"
-                                        data-club-sname="{{ $club->shortname }}" data-toggle="modal"
-                                        data-target="#modalDeleteGym"><i class="fa fa-trash"></i></button>
-                                </span>
-                                @can('update-gyms')
-                                    <span data-toggle="tooltip" title="{{__('gym.action.edit')}}">
-                                        <a href="{{ route('gym.edit', ['language' => app()->getLocale(), 'gym' => $gym]) }}"
-                                            class=" px-2">
-                                            {{ $gym->gym_no }} - {{ $gym->name }} <i
-                                                class="fas fa-arrow-circle-right"></i></a>
-                                    </span>
-                                @else
-                                    {{ $gym->gym_no }} - {{ $gym->name }}
-                                @endcan
-                                <span data-toggle="tooltip" title="{{__('gym.tooltip.map')}}">
-                                    <a href="{{ config('dunkomatic.maps_uri') }}{{ urlencode($gym->address) }}"
-                                        class=" px-4" target="_blank">
-                                        <i class="fas fa-map-marked-alt"></i>
-                                    </a>
-                                </span>
-                            </li>
-                        @endforeach
-                        </ul>
-                    </div>
-                    <!-- /.card-body -->
-                    <!-- /.card-footer -->
-                </div>
-                <!-- /.card -->
-
-
+                <livewire:club.gym.index :club="$club">
             </div>
         </div>
         <div class="row">
@@ -297,7 +249,6 @@
     @include('club/includes/assign_league')
     <x-confirm-deletion modalId="modalDeleteClub" modalTitle="{{ __('club.title.delete') }}" modalConfirm="{{ __('club.confirm.delete') }}" deleteType="{{ trans_choice('club.club',1) }}" />
     <x-confirm-deletion modalId="modalDeleteMember" modalTitle="{{ __('role.title.delete') }}" modalConfirm="{{ __('role.confirm.delete') }}" deleteType="{{ trans_choice('role.member', 1) }}" />
-    <x-confirm-deletion modalId="modalDeleteGym" modalTitle="{{ __('gym.title.delete') }}" modalConfirm="{{ __('gym.confirm.delete') }}" deleteType="{{ trans_choice('gym.gym',1) }}" />
     <x-confirm-deletion modalId="modalDeleteTeam" modalTitle="{{ __('team.title.delete') }}" modalConfirm="{{ __('team.confirm.delete') }}" deleteType="{{ trans_choice('team.team',1) }}" />
     @include('reports/includes/download_zone')
     <!-- all modals above -->
@@ -403,23 +354,14 @@
                 $('#modalDeleteMember_Form').attr('action', url);
                 $('#modalDeleteMember').modal('show');
             });
-            $("button#deleteGym").click(function() {
-                $('#modalDeleteGym_Instance').html($(this).data('gym-name'));
-                var url = "{{ route('gym.destroy', ['gym' => ':gymid:']) }}";
-                url = url.replace(':gymid:', $(this).data('gym-id'));
-                $('#modalDeleteGym_Form').attr('action', url);
-                $('#modalDeleteGym').modal('show');
-            });
             $("#deleteClub").click(function() {
                 $('#modalDeleteClub_Instance').html('{{ $club->name }}');
-                $('#modalDeleteClub_Info').html('{{ __('club.info.delete',['club'=>$club->shortname,'noteam'=>$teams,'nomember'=>count($members),'nogym'=>count($gyms)]) }}');
+                $('#modalDeleteClub_Info').html('{{ __('club.info.delete',['club'=>$club->shortname,'noteam'=>$teams,'nomember'=>count($members),'nogym'=>$club->gyms->count()]) }}');
                 var url = "{{ route('club.destroy', ['club' => $club]) }}";
                 $('#modalDeleteClub_Form').attr('action', url);
                 $('#modalDeleteClub').modal('show');
             });
-                toastr.options.onHidden = function () {
-                                window.location.reload();
-                            };
+
         });
     </script>
 @stop

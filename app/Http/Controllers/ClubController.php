@@ -160,7 +160,6 @@ class ClubController extends Controller
         }
         $data['club'] = $club;
 
-        $data['gyms'] = $data['club']->gyms()->get();
         $data['teams'] = $data['club']->teams->count();
         $data['leagues'] = $data['club']->leagues->count();
         $data['members'] = $data['club']->members->unique();
