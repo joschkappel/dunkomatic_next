@@ -25,10 +25,12 @@ class Delete extends Component
 
     public function destroy(Gym $gym)
     {
-        $gymcnt = $gym->club->gyms->count();
+
         $gym->delete();
-        // $this->emitTo('components.counter','updateCount', $gymcnt );
-        $this->emit('refresh' );
+        $gymcnt = $gym->club->gyms->count();
+
+        $this->emitTo('components.counter','updateCount', $gymcnt );
+        $this->emitTo('club.gym.index','refresh' );
         $this->dispatchBrowserEvent('closeDeleteModal');
     }
 

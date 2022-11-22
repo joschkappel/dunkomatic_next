@@ -52,21 +52,30 @@ class Create extends Component
         $valid_data = $this->validate();
 
         $gym = $this->club->gyms()->create($valid_data);
-        $this->club->refresh();
-
         Log::notice('new gym created.', ['club-id' => $this->club->id, 'gym-id' => $gym->id]);
+
+        // refresh model and reset props
+        $this->club->refresh();
+        $this->gym_nos = array_diff($this->allowed_gymno, $this->club->gyms->pluck('gym_no')->toarray());
         $gymcnt = $gym->club->gyms->count();
-        $this->emitTo('components.counter','updateCount', $gymcnt );
+
         $this->emitTo('club.gym.index','refresh' );
+
+        $this->reset('gym_no','name','city','zip','street');
 
         $this->dispatchBrowserEvent('closeCreateModal');
     }
 
+    public function loadGyms()
+    {
+        $this->allowed_gymno = config('dunkomatic.allowed_gym_nos');
+        $this->gym_nos = array_diff($this->allowed_gymno, $this->club->gyms->pluck('gym_no')->toarray());
+        $e = $this->emit('loadGymNos', $this->gym_nos);
+    }
     public function mount(Club $club)
     {
         $this->club = $club;
-        $this->allowed_gymno = config('dunkomatic.allowed_gym_nos');
-        $this->gym_nos = array_diff($this->allowed_gymno, $this->club->gyms->pluck('gym_no')->toarray());
+
     }
 
     public function render()

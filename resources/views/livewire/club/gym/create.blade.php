@@ -19,15 +19,15 @@
                     </div>
 
                     {{-- Gym No --}}
-                    <div class="flex flex-col m-4">
+                    <div wire:init="loadGyms" class="flex flex-col m-4">
                         <label class="form-label" for='gym_no'>@lang('gym.no')</label>
-                        <div wire:ignore>
-                            <select class="form-control select2" id='gym_no'>
-                            @foreach ( $gym_nos as $gymno )
-                                <option value="{{$gymno}}">{{$gymno}}</option>
-                            @endforeach
+                        <div>
+                            <select  class="form-control select2" id='gym_no'>
                             </select>
                         </div>
+                        @error('gym_no')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     {{-- Gym name --}}
@@ -81,6 +81,19 @@
 @push('js')
 <script>
     $(document).ready(function() {
+        Livewire.on('loadGymNos', gymList => {
+            $("#gym_no").select2({
+                placeholder: "@lang('gym.no')...",
+                width: '100%',
+                multiple: false,
+                allowClear: false,
+            });
+            $('#gym_no').val(null).trigger('change');
+            for ( g in gymList ){
+                var newOption = new Option( g, g, false, false);
+                $('#gym_no').append(newOption).trigger('change');
+            };
+        });
         $("button#adrval").click( function(){
             let street =  @this.street;
             let zip = @this.zip;
@@ -91,15 +104,13 @@
             window.open(res, "_blank");
         });
 
-        initGymSelector = () => {
-            $("#gym_no").select2({
-                placeholder: "@lang('gym.no')...",
-                width: '100%',
-                multiple: false,
-                allowClear: false,
-            });
-        };
-        initGymSelector();
+        $("#gym_no").select2({
+            placeholder: "@lang('gym.no')...",
+            width: '100%',
+            multiple: false,
+            allowClear: false,
+        });
+
 
         $('#gym_no').on('change', function (e) {
             var data = $('#gym_no').select2('val');

@@ -12,7 +12,15 @@ class Index extends Component
 
     public Collection $gyms;
 
-    protected $listeners = ['refresh'=>'$refresh'];
+    protected $listeners = ['refresh'=>'reloadClub'];
+
+    public function reloadClub()
+    {
+        $this->club->refresh();
+        $this->gyms = $this->club->gyms;
+
+        $this->emitTo('components.counter','updateCount', $this->gyms->count());
+    }
 
     public function showDeleteModal($gymid)
     {
@@ -22,12 +30,14 @@ class Index extends Component
 
     public function mount()
     {
-        $this->club->refresh();
         $this->gyms = $this->club->gyms;
     }
 
     public function render()
     {
+        if (isset($this->club)){
+            $this->club->refresh();
+        }
         return view('livewire.club.gym.index');
     }
 }

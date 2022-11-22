@@ -3,14 +3,16 @@
     <div class="card card-outline card-dark collapsed-card" id="gymsCard">
         <x-cards.cardheader wire:model="gyms" title="{{trans_choice('gym.gym', 2)}}" icon="fas fa-building"  :count="count($gyms)">
                 @can('create-gyms')
+                @if ( count($gyms) <= max(config('dunkomatic.allowed_gym_nos')))
                 <button type="button" onclick="$('#create-gym-modal').modal('show');"
                     class="btn btn-success btn-sm text-md">
                     <i class="fas fa-plus-circle"></i> @lang('gym.action.create')
                 </button>
+                @endif
                 @endcan
         </x-cards.cardheader>
         <!-- /.card-header -->
-        <div class="card-body">
+        <div wire:model="gyms" class="card-body">
             <ul class="list-group list-group-flush">
             @foreach ($gyms as $gym)
                 <li class="list-group-item ">
