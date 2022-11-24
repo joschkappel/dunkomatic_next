@@ -26,6 +26,14 @@ class Index extends Component
     {
         $this->emitTo('club.gym.delete','setGym',$gymid);
     }
+    public function showEditModal($gymid)
+    {
+        $this->emitTo('club.gym.edit','setGym',$gymid);
+    }
+    public function showCreateModal($clubId)
+    {
+        $this->emitTo('club.gym.create','setClub',$clubId);
+    }
 
 
     public function mount()

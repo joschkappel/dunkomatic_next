@@ -27,9 +27,7 @@ class Delete extends Component
     {
 
         $gym->delete();
-        $gymcnt = $gym->club->gyms->count();
 
-        $this->emitTo('components.counter','updateCount', $gymcnt );
         $this->emitTo('club.gym.index','refresh' );
         $this->dispatchBrowserEvent('closeDeleteModal');
     }

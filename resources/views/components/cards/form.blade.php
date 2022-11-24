@@ -41,7 +41,7 @@
                             {{ $addButtons ?? "" }}
                             @if( ! $omitSubmit )
                                 {{-- Submit Button --}}
-                                <x-buttons.primary wire:target='{{$formAction}}' :disabled="$disabled" form="cardForm">
+                                <x-buttons.primary wire:click='{{$formAction}}' :disabled="$disabled" form="cardForm">
                                     {{__('Submit')}}
                                 </x-buttons.primary>
                             @endif

@@ -1,9 +1,9 @@
 <div>
     @php
-    $disabled = $errors->any() ||  empty($name) || empty($zip) || empty($city) || empty($street) ? true : false;
+    $disabled = $errors->any() || empty($name) || empty($zip) || empty($city) || empty($street) ? true : false;
     @endphp
 
-    <x-cards.form colWidth=6 :disabled="$disabled" cardTitle="{{__('gym.title.new', ['club' =>  $club->shortname]) }}" formAction="store">
+    <x-cards.form colWidth=6 :disabled="$disabled" cardTitle="{{__('gym.title.edit', ['gymno'=> $gym_no,'club' =>  $gym->club->shortname]) }}" formAction="update">
         <div class="flex flex-col m-4">
         </div>
 
@@ -18,7 +18,7 @@
 
         {{-- Gym name --}}
         <div class="flex flex-col m-4">
-            <input wire:model.debounce.500ms="name" type="text" class="form-control @error('name') is-invalid @else @if ($name != null ) is-valid @endif @enderror" id="name" placeholder="@lang('gym.name')">
+            <input wire:model.debounce.500ms="name" type="text" class="form-control @error('name') is-invalid @enderror" id="name" placeholder="@lang('gym.name')">
             @error('name')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -26,7 +26,7 @@
 
         {{-- Gym zipcode --}}
         <div class="flex flex-col m-4">
-            <input wire:model.debounce.500ms="zip" type="text" class="form-control @error('zip') is-invalid @else @if ($zip != null ) is-valid @endif @enderror" id="zip" placeholder="@lang('role.zipcode')">
+            <input wire:model.debounce.500ms="zip" type="text" class="form-control @error('zip') is-invalid @enderror" id="zip" placeholder="@lang('role.zipcode')">
             @error('zip')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -34,7 +34,7 @@
 
         {{-- Gym city --}}
         <div class="flex flex-col m-4">
-            <input wire:model.defer="city" type="text" class="form-control @error('city') is-invalid @else @if ($city != null ) is-valid @endif @enderror" id="city" placeholder="@lang('role.city')">
+            <input wire:model.defer="city" type="text" class="form-control @error('city') is-invalid @enderror" id="city" placeholder="@lang('role.city')">
             @error('city')
                 <div wire:model.debounce.500ms="city" class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -42,14 +42,13 @@
 
         {{-- Gym street --}}
         <div class="flex flex-col m-4">
-            <input wire:model.debounce.500ms="street" type="text" class="form-control @error('street') is-invalid @else @if ($street != null ) is-valid @endif @enderror" id="street" placeholder="@lang('role.street')">
+            <input wire:model.debounce.500ms="street" type="text" class="form-control @error('street') is-invalid @enderror" id="street" placeholder="@lang('role.street')">
             @error('street')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
-
         <div class="flex flex-col m-4">
-            <button type="button" id="adrval" class="btn btn-secondary mr-2" @if ($disabled) disabled @endif>{{ __('gym.action.validate_adr')}}</button>
+            <button type="button" id="adrval" class="btn btn-secondary mr-2">{{ __('gym.action.validate_adr')}}</button>
         </div>
 
     </x-cards.form>
@@ -68,6 +67,7 @@
             var res = encodeURI(uri);
             window.open(res, "_blank");
         });
+
 
     });
 

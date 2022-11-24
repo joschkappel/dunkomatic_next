@@ -10,6 +10,8 @@ use Livewire\Component;
 class Create extends Component
 {
 
+    public $locale;
+
     public $allowed_gymno;
 
     public Club $club;
@@ -23,8 +25,6 @@ class Create extends Component
     public $city;
 
     public $street;
-
-    public $gym_nos = array();
 
 
     public function rules()
@@ -46,6 +46,10 @@ class Create extends Component
             'city' => 'required|max:40',
         ];
     }
+    public function updated($field)
+    {
+        $this->validateOnly($field);
+    }
 
     public function store()
     {
@@ -56,30 +60,22 @@ class Create extends Component
 
         // refresh model and reset props
         $this->club->refresh();
-        $this->gym_nos = array_diff($this->allowed_gymno, $this->club->gyms->pluck('gym_no')->toarray());
-        $gymcnt = $gym->club->gyms->count();
-
         $this->emitTo('club.gym.index','refresh' );
 
-        $this->reset('gym_no','name','city','zip','street');
-
-        $this->dispatchBrowserEvent('closeCreateModal');
+        // redirect back to club index
+        return redirect()->route('club.dashboard', ['language'=>$this->locale, 'club'=>$this->club]  );
     }
 
-    public function loadGyms()
+    public function mount($language, Club $club)
     {
+        $this->locale = $language;
         $this->allowed_gymno = config('dunkomatic.allowed_gym_nos');
-        $this->gym_nos = array_diff($this->allowed_gymno, $this->club->gyms->pluck('gym_no')->toarray());
-        $e = $this->emit('loadGymNos', $this->gym_nos);
-    }
-    public function mount(Club $club)
-    {
+        $this->gym_no = min(array_diff($this->allowed_gymno, $this->club->gyms->pluck('gym_no')->toarray()));
         $this->club = $club;
-
     }
 
     public function render()
     {
-        return view('livewire.club.gym.create');
+        return view('livewire.club.gym.create')->extends('layouts.page')->section('content');
     }
 }

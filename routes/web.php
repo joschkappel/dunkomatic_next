@@ -35,7 +35,6 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TeamMembershipController;
 use App\Http\Controllers\UserController;
 use App\Http\Livewire\Admininfo\AdminInfo;
-use App\Http\Livewire\Club\Create;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -53,9 +52,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect(app()->getLocale());
 })->name('start');
-Route::get('healthy', function () {
-    return 'OK';
-});
+
+Route::get('healthy', function () { return 'OK'; });
 Route::get('health', HealthCheckResultsController::class);
 
 Route::get('/auth/{provider}/redirect/{invitation?}', [SocialAuthController::class, 'redirectToOauth'])->name('oauth.redirect');
@@ -185,8 +183,6 @@ Route::group([
             Route::get('address/role/{role}/dt', [AddressController::class, 'index_byrole_dt'])->name('address.index_byrole.dt')->middleware('can:view-members');
         });
 
-        Route::resource('club.gym', ClubGymController::class)->shallow()->except('store', 'update', 'destroy', 'show', 'create', 'index');
-
         Route::get('league/{league}/game/upload', [LeagueGameController::class, 'upload'])->name('league.upload.game');
         Route::post('league/{league}/game/import', [LeagueGameController::class, 'import'])->name('league.import.game');
         Route::get('league/{league}/dashboard', [LeagueController::class, 'dashboard'])->name('league.dashboard')->middleware('can:access,league');
@@ -214,6 +210,7 @@ Route::group([
         Route::post('team/league/plan/propose', [TeamController::class, 'propose_combination'])->name('team.propose');
 
         Route::get('team/{team}/edit', App\Http\Livewire\Club\Team\Edit::class)->name('team.edit')->middleware('can:update-teams');
+        Route::get('gym/{gym}/edit', App\Http\Livewire\Club\Gym\Edit::class)->name('gym.edit')->middleware('can:update-gyms');
         Route::resource('club.team', ClubTeamController::class)->shallow()->only('index');
 
         Route::get('schedule_event/calendar', function () {
@@ -269,7 +266,6 @@ Route::middleware(['auth',
         Route::get('club/{club}/list/gym', [ClubGymController::class, 'sb_club'])->name('gym.sb.club');
         Route::get('team/{team}/list/gym', [ClubGymController::class, 'sb_team'])->name('gym.sb.team');
         Route::get('club/{club}/member/sb', [MemberController::class, 'sb_club'])->name('member.sb.club');
-        Route::resource('club.gym', ClubGymController::class)->shallow()->only('update');
 
         Route::group(['prefix' => 'region/{region}'], function () {
             Route::get('club/list', [ClubController::class, 'list'])->name('club.list')->middleware('can:view-clubs');

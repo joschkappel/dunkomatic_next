@@ -29,7 +29,7 @@
                     <div class="flex flex-col m-4">
                         <label class="form-label" for='name'>@lang('gym.name')</label>
                         <input wire:model="name" type="text" class="form-control" readonly id="name">
-                    </div> 
+                    </div>
 
                     <div class="alert alert-danger" role="alert">
                         {{ __('gym.confirm.delete') }}

@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Str;
 
 class InviteUser extends Notification
 {
@@ -48,7 +49,12 @@ class InviteUser extends Notification
     public function toMail($notifiable)
     {
         if ($this->sender->member()->exists()) {
-            $sender = $this->sender->member->name.' ('.Role::fromValue($this->sender->member->memberships->first()->role_id)->description.' von '.$this->sender->member->region->first()->name.') ';
+            $roles = $this->sender->member->role_in_clubs;
+            $roles .= ' '.$this->sender->member->role_in_leagues;
+            $roles .= ' '.$this->sender->member->role_in_teams;
+            $roles .= ' '.$this->sender->member->role_in_regions;
+
+            $sender = $this->sender->member->name.' ('.Str::limit($roles,25).') ';
         } else {
             $sender = $this->sender->name;
         }
