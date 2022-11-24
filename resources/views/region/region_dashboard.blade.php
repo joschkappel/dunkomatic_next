@@ -193,7 +193,10 @@
         </div>
     </div>
     <!-- all modals here -->
-    <x-confirm-deletion modalId="modalDeleteRegion" modalTitle="{{ __('region.title.delete')}}" modalConfirm="{{ __('region.confirm.delete') }}" deleteType="{{ trans_choice('region.region',1) }}" />
+    {{-- <x-confirm-deletion modalId="modalDeleteRegion" modalTitle="{{ __('region.title.delete')}}" modalConfirm="{{ __('region.confirm.delete') }}" deleteType="{{ trans_choice('region.region',1) }}" /> --}}
+    <x-modals.confirm-delete modalId="modalDeleteRegion" modalTitle="{{ __('region.title.delete')}}">
+        <livewire:region.delete :region="$region" />
+    </x-modals.confirm-delete>
     <x-confirm-deletion modalId="modalDeleteMember" modalTitle="{{ __('role.title.delete')}}" modalConfirm="{{ __('role.confirm.delete') }}" deleteType="{{ trans_choice('role.member', 1) }}" />
     @include('reports/includes/download_zone')
     <!-- all modals above -->
@@ -203,12 +206,7 @@
 @section('js')
 <script>
   $(function() {
-    $("#deleteRegion").click( function(){
-       $('#modalDeleteRegion_Instance').html('{{ $region->name }}');
-       var url = "{{ route('region.destroy', ['region'=>$region])}}";
-       $('#modalDeleteRegion_Form').attr('action', url);
-       $('#modalDeleteRegion').modal('show');
-    });
+
     $("button#deleteMember").click( function(){
        $('#modalDeleteMember_Instance').html($(this).data('member-name'));
        var url = "{{ route('membership.region.destroy', ['region'=>$region, 'member'=>':member:']) }}";

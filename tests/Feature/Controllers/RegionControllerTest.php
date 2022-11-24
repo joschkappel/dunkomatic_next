@@ -434,25 +434,5 @@ class RegionControllerTest extends TestCase
             );
     }
 
-    /**
-     * destroy
-     *
-     * @test
-     * @group region
-     * @group destroy
-     * @group controller
-     *
-     * @return void
-     */
-    public function destroy()
-    {
-        $region = Region::where('code', 'HBVF')->first();
-        $response = $this->authenticated()
-            ->delete(route('region.destroy', ['region' => $region]));
 
-        $response->assertStatus(302)
-            ->assertSessionHasNoErrors();
-
-        $this->assertDatabaseMissing('regions', ['id' => $region->id]);
-    }
 }

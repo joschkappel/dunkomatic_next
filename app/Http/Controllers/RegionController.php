@@ -333,34 +333,7 @@ class RegionController extends Controller
         return redirect()->back();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  Region  $region
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function destroy(Region $region)
-    {
-        foreach ($region->users() as $u) {
-            $u->delete();
-        }
-        Log::info('region users deleted', ['region-id' => $region->id]);
 
-        $region->schedules()->delete();
-        Log::info('region schedules deleted', ['region-id' => $region->id]);
-
-        // $region->messages()->delete();
-        $region->members()->delete();
-        Log::info('region members deleted', ['region-id' => $region->id]);
-
-        $region->memberships()->delete();
-        Log::info('region memberships deleted', ['region-id' => $region->id]);
-
-        $region->delete();
-        Log::notice('region deleted', ['region-id' => $region->id]);
-
-        return redirect()->route('region.index', app()->getLocale());
-    }
 
     /**
      * leagues by status for a region
