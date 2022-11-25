@@ -15,6 +15,9 @@
     <x-card-list cardTitle="Audit Statistics" >
         <livewire:admininfo.audits-by-model/>
     </x-card-list>
+    <x-card-list cardTitle="Download Statistics" >
+        <livewire:admininfo.downloads-by-report/>
+    </x-card-list>
 </div>
 
 

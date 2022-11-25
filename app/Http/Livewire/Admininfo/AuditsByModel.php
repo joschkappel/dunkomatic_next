@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Admininfo;
 use Asantibanez\LivewireCharts\Facades\LivewireCharts;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Carbon\CarbonPeriod;
 
 class AuditsByModel extends Component
 {
@@ -38,8 +39,15 @@ class AuditsByModel extends Component
             ->get();
         $atypes = $audits->pluck('auditable_type')->unique();
         $adates = $audits->pluck('audit_date')->unique();
+        // get all dates for range in adates
+        $period = CarbonPeriod::create($adates->min(), $adates->max());
+        // Iterate over the period
+        $alldates = collect();
+        foreach ($period as $date) {
+            $alldates->push( $date->format('Y-m-d'));
+        };
 
-        $multiColumnChartModel = $adates
+        $multiColumnChartModel = $alldates
             ->reduce(function ($multiColumnChartModel, $data) use ($audits, $atypes) {
                 foreach ($atypes as $at) {
                     $multiColumnChartModel

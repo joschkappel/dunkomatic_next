@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Admininfo;
 use Asantibanez\LivewireCharts\Facades\LivewireCharts;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Carbon\CarbonPeriod;
 
 class HealtheventsByType extends Component
 {
@@ -57,7 +58,15 @@ class HealtheventsByType extends Component
         $htypes = $health_by_date->pluck('check_name')->unique();
         $hdates = $health_by_date->pluck('health_date')->unique();
 
-        $multiColumnChartModel = $hdates
+        // get all dates for range in adates
+        $period = CarbonPeriod::create($hdates->min(), $hdates->max());
+        // Iterate over the period
+        $alldates = collect();
+        foreach ($period as $date) {
+            $alldates->push( $date->format('Y-m-d'));
+        };
+
+        $multiColumnChartModel = $alldates
             ->reduce(function ($multiColumnChartModel, $data) use ($health_by_date, $htypes) {
                 foreach ($htypes as $ht) {
                     $multiColumnChartModel
