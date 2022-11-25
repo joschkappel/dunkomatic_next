@@ -116,8 +116,7 @@ class ClubControllerTest extends TestCase
         //$response->dump();
         $response->assertStatus(200)
             ->assertViewIs('club.club_dashboard')
-            ->assertViewHas('club', $club)
-            ->assertViewHas('gyms', $club->gyms()->get());
+            ->assertViewHas('club', $club);
     }
 
     /**
