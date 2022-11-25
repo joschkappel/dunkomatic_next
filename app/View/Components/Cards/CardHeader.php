@@ -32,7 +32,7 @@ class CardHeader extends Component
      *
      * @var bool
      */
-    public $showtools;
+    public $showtools = true;
 
     public function __construct(string $title, string $count = '0', string $icon = '', bool $showtools = true)
     {
