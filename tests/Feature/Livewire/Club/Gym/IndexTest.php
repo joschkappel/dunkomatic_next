@@ -3,18 +3,21 @@
 namespace Tests\Feature\Livewire\Club\Gym;
 
 use App\Http\Livewire\Club\Gym\Index;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Livewire\Livewire;
-use Tests\TestCase;
+use App\Models\Club;
+use App\Models\Gym;
 
-class IndexTest extends TestCase
-{
-    /** @test */
-    public function the_component_can_render()
-    {
-        $component = Livewire::test(Index::class);
+beforeEach(function () {
+    Club::factory()->has(Gym::factory(['gym_no'=>1])->count(1))->create(['shortname' => 'TEST']);
+});
 
-        $component->assertStatus(200);
-    }
-}
+afterEach(function () {
+    Club::where('shortname', 'TEST')->first()->gyms()->delete();
+    Club::where('shortname', 'TEST')->delete();
+});
+it('can render the component', function () {
+    $club = Club::where('shortname', 'TEST')->first();
+
+    $this->livewire(Index::class, ['club' => $club])
+        ->call('render')
+        ->assertStatus(200);
+});
