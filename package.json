@@ -10,7 +10,6 @@
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
-        "@sweetalert2/theme-bootstrap-4": "^5.0.12",
         "adjust-sourcemap-loader": "^3.0.0",
         "autoprefixer": "^10.4.13",
         "axios": "^0.25.0",
@@ -68,7 +67,6 @@
         "serialize-javascript": "^6.0.0",
         "ssri": "^10.0.0",
         "summernote": "^0.8.20",
-        "sweetalert2": "^11.6.1",
         "tempusdominus": "^5.16.0",
         "tempusdominus-bootstrap": "^5.37.0",
         "three-dots": "^0.2.3",
