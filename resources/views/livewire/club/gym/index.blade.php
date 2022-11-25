@@ -1,7 +1,7 @@
 <div>
     <!-- card GYMS -->
     <div class="card card-outline card-dark collapsed-card" id="gymsCard">
-        <x-cards.cardheader wire:model="gyms" title="{{trans_choice('gym.gym', 2)}}" icon="fas fa-building"  :count="count($gyms)">
+        <x-cards.cardheader wire:model="gyms" title="{{trans_choice('gym.gym', 2)}}" icon="fas fa-building"  :count="count($gyms)" :showtools="true">
                 @can('create-gyms')
                 @if ( count($gyms) <= max(config('dunkomatic.allowed_gym_nos')))
                 <a type="button" href="{{ route('club.gym.create', ['language' => app()->getLocale(), 'club'=> $club]) }}" class="btn btn-success btn-sm text-md">
