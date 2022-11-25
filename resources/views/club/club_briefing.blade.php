@@ -44,7 +44,7 @@
                                         <div class="info-box-content">
                                             <span class="info-box-number">{{ $ms->member->name }}</span>
                                             <span class="info-box-text"><i class="fas fa-mobile"></i><a href="tel:{{ $ms->member->mobile }}" target="_blank"> {{ $ms->member->mobile}}</a> <i class="fas fa-phone"></i> <a href="tel:{{ $ms->member->phone }}" target="_blank"> {{ $ms->member->phone}}</a></span>
-                                            <span class="info-box-text"><i class="fas fa-at"></i><a href="mailto:{{ $ms->member->email1 }}" target="_blank"> {{ $ms->member->email1 }}</a></span>
+                                            <span class="info-box-text"><i class="fas fa-at"></i><a href="mailto:{{ $ms->master_email }}" target="_blank"> {{ $ms->master_email }}</a></span>
                                         </div>
                                     </div>
                                 @endif
@@ -63,7 +63,7 @@
                                         <div class="info-box-content">
                                             <span class="info-box-number">{{ $ms->member->name }}</span>
                                             <span class="info-box-text"><i class="fas fa-mobile"></i><a href="tel:{{ $ms->member->mobile }}" target="_blank"> {{ $ms->member->mobile}}</a> <i class="fas fa-phone"></i> <a href="tel:{{ $ms->member->phone }}" target="_blank"> {{ $ms->member->phone}}</a></span>
-                                            <span class="info-box-text"><i class="fas fa-at"></i><a href="mailto:{{ $ms->member->email1 }}" target="_blank"> {{ $ms->member->email1 }}</a></span>
+                                            <span class="info-box-text"><i class="fas fa-at"></i><a href="mailto:{{ $ms->master_email }}" target="_blank"> {{ $ms->master_email }}</a></span>
                                         </div>
                                     </div>
                                 @endif
@@ -75,7 +75,7 @@
                                     <div class="info-box-content">
                                         <span class="info-box-number">{{ $ms->member->name }}</span>
                                         <span class="info-box-text"><i class="fas fa-mobile"></i><a href="tel:{{ $ms->member->mobile }}" target="_blank"> {{ $ms->member->mobile}}</a> <i class="fas fa-phone"></i> <a href="tel:{{ $ms->member->phone }}" target="_blank"> {{ $ms->member->phone}}</a></span>
-                                        <span class="info-box-text"><i class="fas fa-at"></i><a href="mailto:{{ $ms->member->email1 }}" target="_blank"> {{ $ms->member->email1 }}</a></span>
+                                        <span class="info-box-text"><i class="fas fa-at"></i><a href="mailto:{{ $ms->master_email }}" target="_blank"> {{ $ms->master_email }}</a></span>
                                     </div>
                                 </div>
                             @endif
