@@ -256,13 +256,22 @@ class AppServiceProvider extends ServiceProvider
                         'shift' => 'ml-3',
                     ],
                     [
-                        'text' => __('admin info'),
+                        'text' => __('Usage Statistics'),
                         'can' => 'create-region',
-                        'icon' => 'fas fa-envelope',
+                        'icon' => 'fas fa-chart-line',
                         'icon_color' => 'blue',
                         'route' => ['admininfo', ['language' => app()->getLocale()]],
                         'shift' => 'ml-3',
                     ],
+                    [
+                        'text' => __('Health'),
+                        'can' => 'create-region',
+                        'icon' => 'fa fa-stethoscope',
+                        'icon_color' => 'blue',
+                        'route' => 'health',
+                        'shift' => 'ml-3',
+                    ],
+
 
                 ],
             ]);

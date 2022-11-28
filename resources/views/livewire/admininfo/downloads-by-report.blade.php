@@ -12,6 +12,5 @@
             :column-chart-model="$multiColumnChartModel"
             />
         </div>
-
     </div>
 </div>

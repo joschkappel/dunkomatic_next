@@ -55,7 +55,7 @@ Route::get('/', function () {
 Route::get('healthy', function () {
     return 'OK';
 });
-Route::get('health', HealthCheckResultsController::class);
+Route::get('health', HealthCheckResultsController::class)->name('health');
 
 Route::get('/auth/{provider}/redirect/{invitation?}', [SocialAuthController::class, 'redirectToOauth'])->name('oauth.redirect');
 Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'registerFromOauth'])->name('oauth.callback');
