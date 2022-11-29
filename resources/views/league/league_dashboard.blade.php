@@ -342,7 +342,8 @@
                     console.log('reloading ...');
                 },
                 error: function (xhr){
-                    toastr.error(xhr.responseText, '{{__('team.action.pickchars')}}');
+                    toastr.error( '{{__('team.error.numbertaken')}}', '{{__('team.action.pickchars')}}');
+                    console.log('reloading ...');
                 },
                 cache: false
             });

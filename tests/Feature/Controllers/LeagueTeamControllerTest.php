@@ -162,14 +162,14 @@ class LeagueTeamControllerTest extends TestCase
         $response = $this->authenticated()
             ->post(route('league.team.pickchar', ['league' => $this->testleague]),
                 ['team_id' => $team->id,
-                    'league_no' => 2, ]
+                    'league_no' => 4, ]
             );
 
         $response
             ->assertStatus(200)
             ->assertSessionHasNoErrors();
         //$response->dump();
-        $this->assertDatabaseHas('teams', ['id' => $team->id, 'league_no' => 2]);
+        $this->assertDatabaseHas('teams', ['id' => $team->id, 'league_no' => 4]);
     }
 
     /**
