@@ -243,8 +243,9 @@
                     teamtable.ajax.reload();
                 },
                 error: function(data) {
-                    console.log('Error:', data);
-                    toastr.error(data.responseText, '{{__('team.action.pickchars')}}');
+                    // console.log('Error:', data);
+                    toastr.error('{{__('team.error.numbertaken')}}', '{{__('team.action.pickchars')}}');
+                    teamtable.ajax.reload();
                 },
                 cache: false
             });

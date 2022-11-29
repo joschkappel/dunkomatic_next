@@ -61,4 +61,5 @@ return [
     'unregister.notok' => 'Die Abmeldung ist fehlgeschlagen. Das Team ist NICHT abgemeldet',
     'plan.saved.ok' => 'Deine Wunschziffern wurden gespeichert',
     'plan.saved.notok' => 'Es ist ein Fehler aufgetreten ! Deine Wunschziffern wurden nicht gespeichert',
+    'error.numbertaken' => 'Diese Ziffer wurde gerade von einem anderen Team belegt 😟',
 ];

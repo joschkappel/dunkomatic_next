@@ -14,6 +14,7 @@ use App\Traits\GameManager;
 use App\Traits\LeagueTeamManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 
@@ -341,10 +342,13 @@ class LeagueTeamController extends Controller
      */
     public function pick_char(Request $request, League $league)
     {
+        // get max team no
+        $size = $league->size ?? 1;
+
         // get data
         $data = $request->validate([
             'team_id' => 'required|exists:teams,id',
-            'league_no' => 'required|integer|between:1,16',
+            'league_no' => 'required|integer|between:1,'.$size,
         ]);
         Log::info('team league no form data validated OK.');
 
@@ -353,25 +357,42 @@ class LeagueTeamController extends Controller
         $udata['league_no'] = $data['league_no'];
         $upperArr = config('dunkomatic.league_team_chars');
         $udata['league_char'] = $upperArr[$data['league_no']];
-
         $team = Team::findOrFail($data['team_id']);
-        $team->update($udata);
-        if ($league->games()->exists()) {
-            // games are generated, insert team into gamelist
-            $this->inject_team_games($league, $team, $data['league_no']);
+
+        // check if leaue no is not already used
+        DB::beginTransaction();
+
+        $allteams = DB::table('teams')
+                    ->where('league_id', $league->id)
+                    ->lockForUpdate()
+                    ->get();
+
+        if ($allteams->where('league_no', $data['league_no'])->count() == 0 ) {
+            $team->update($udata);
+            if ($league->games()->exists()) {
+                // games are generated, insert team into gamelist
+                $this->inject_team_games($league, $team, $data['league_no']);
+            }
+            DB::commit();
+
+            Log::notice('team league no set.', ['team-id' => $team->id, 'league-id' => $league->id, 'league-team-no' => $data['league_no']]);
+
+            $action = __('notifications.event.char.picked', [
+                'league' => $league->shortname,
+                'club' => $team->club->shortname,
+                'league_no' => $udata['league_no'].'/'.$udata['league_char'],
+            ]);
+
+            // broadcast event to all other users on this view
+            broadcast(new LeagueTeamCharUpdated($league, $action, 'danger'))->toOthers();
+
+            return Response::json(['success' => 'all good'], 200);
+        } else {
+            DB::rollBack();
+            Log::warning('team league no already taken.', ['team-id' => $team->id, 'league-id' => $league->id, 'league-team-no' => $data['league_no']]);
+            return Response::json(['message' => 'number_taken'], 410);
         }
-        Log::notice('team league no set.', ['team-id' => $team->id, 'league-id' => $league->id, 'league-team-no' => $data['league_no']]);
 
-        $action = __('notifications.event.char.picked', [
-            'league' => $league->shortname,
-            'club' => $team->club->shortname,
-            'league_no' => $udata['league_no'].'/'.$udata['league_char'],
-        ]);
-
-        // broadcast event to all other users on this view
-        broadcast(new LeagueTeamCharUpdated($league, $action, 'danger'))->toOthers();
-
-        return Response::json(['success' => 'all good'], 200);
     }
 
     /**
