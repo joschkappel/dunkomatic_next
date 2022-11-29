@@ -121,7 +121,8 @@ class LeagueSelectionInjectTeamTest extends TestCase
     public function select_leagueteamno()
     {
         $c_toadd = $this->testclub_free;
-        // now register the team
+
+        // now register the team with existing no
         $response = $this->authenticated()
             ->followingRedirects()
             ->post(
@@ -131,8 +132,20 @@ class LeagueSelectionInjectTeamTest extends TestCase
                     'league_no' => 1, 'team_id' => $c_toadd->teams->first()->id,
                 ]
             );
+        $response->assertStatus(410);
 
+        // now do with correct no
+        $response = $this->authenticated()
+            ->followingRedirects()
+            ->post(
+                route('league.team.pickchar', ['league' => $this->testleague->id]),
+                [
+                    'league_id' => $this->testleague->id,
+                    'league_no' => 4, 'team_id' => $c_toadd->teams->first()->id,
+                ]
+            );
         $response->assertStatus(200);
+
         $this->assertDatabaseHas('leagues', ['id' => $this->testleague->id, 'state' => LeagueState::Selection()])
             ->assertDatabaseMissing('games', ['league_id' => $this->testleague->id])
             ->assertDatabaseCount('clubs', 4)
