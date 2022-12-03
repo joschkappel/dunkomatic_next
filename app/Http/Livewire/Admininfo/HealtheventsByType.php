@@ -6,6 +6,7 @@ use Asantibanez\LivewireCharts\Facades\LivewireCharts;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Carbon\CarbonPeriod;
+use Carbon\Carbon;
 
 class HealtheventsByType extends Component
 {
@@ -67,9 +68,12 @@ class HealtheventsByType extends Component
             ->get();
         $htypes = $health_by_date->pluck('check_name')->unique();
         $hdates = $health_by_date->pluck('health_date')->unique();
+        $mindate = $hdates->min() ?? Carbon::now()->startOfMonth()->format('Y-m-d');
+        $maxdate = $hdates->max() ?? Carbon::now()->format('Y-m-d');
+
 
         // get all dates for range in adates
-        $period = CarbonPeriod::create($hdates->min(), $hdates->max());
+        $period = CarbonPeriod::create($mindate, $maxdate);
         // Iterate over the period
         $alldates = collect();
         foreach ($period as $date) {

@@ -6,6 +6,7 @@ use Asantibanez\LivewireCharts\Facades\LivewireCharts;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Carbon\CarbonPeriod;
+use Carbon\Carbon;
 
 class AuditsByModel extends Component
 {
@@ -66,8 +67,11 @@ class AuditsByModel extends Component
             ->get();
         $atypes = $audits->pluck('auditable_type')->unique();
         $adates = $audits->pluck('audit_date')->unique();
+        $mindate = $adates->min() ?? Carbon::now()->startOfMonth()->format('Y-m-d');
+        $maxdate = $adates->max() ?? Carbon::now()->format('Y-m-d');
+
         // get all dates for range in adates
-        $period = CarbonPeriod::create($adates->min(), $adates->max());
+        $period = CarbonPeriod::create($mindate, $maxdate);
         // Iterate over the period
         $alldates = collect();
         foreach ($period as $date) {
