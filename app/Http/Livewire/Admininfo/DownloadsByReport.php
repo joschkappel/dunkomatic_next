@@ -6,6 +6,7 @@ use Asantibanez\LivewireCharts\Facades\LivewireCharts;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use App\Enums\Report;
+use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 
 class DownloadsByReport extends Component
@@ -67,8 +68,11 @@ class DownloadsByReport extends Component
         $rtypes = $data_by_month->pluck('report_id')->unique();
         $adates = $data_by_month->pluck('download_date')->unique();
 
+        $mindate = $adates->min() ?? Carbon::now()->startOfMonth()->format('Y-m-d');
+        $maxdate = $adates->max() ?? Carbon::now()->format('Y-m-d');
+
         // get all dates for range in adates
-        $period = CarbonPeriod::create($adates->min(), $adates->max());
+        $period = CarbonPeriod::create($mindate, $maxdate);
         // Iterate over the period
         $alldates = collect();
         foreach ($period as $date) {

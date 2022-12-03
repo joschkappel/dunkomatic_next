@@ -8,6 +8,7 @@ use Asantibanez\LivewireCharts\Models\PieChartModel;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Carbon\CarbonPeriod;
+use Carbon\Carbon;
 
 class UsersByProviders extends Component
 {
@@ -90,9 +91,11 @@ class UsersByProviders extends Component
                 ->get();
         $ltypes = $logins->pluck('login_successful')->unique();
         $adates = $logins->pluck('login_date')->unique();
+        $mindate = $adates->min() ?? Carbon::now()->startOfMonth()->format('Y-m-d');
+        $maxdate = $adates->max() ?? Carbon::now()->format('Y-m-d');
 
         // get all dates for range in adates
-        $period = CarbonPeriod::create($adates->min(), $adates->max());
+        $period = CarbonPeriod::create($mindate, $maxdate);
         // Iterate over the period
         $alldates = collect();
         foreach ($period as $date) {
