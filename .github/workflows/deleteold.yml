@@ -1,0 +1,12 @@
+name: Delete Old Workflows
+on:
+  schedule:
+    - cron: "0 2 * * 0"
+steps:
+  - name: Delete workflow runs
+    uses: MajorScruffy/delete-old-workflow-runs@v0.2.0
+    with:
+      repository: joschkappel/dunkomatic_next
+      created-before: 2022-01-01T00:00:00Z              
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
