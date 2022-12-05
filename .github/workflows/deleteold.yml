@@ -1,7 +1,7 @@
 name: Delete Old Workflows
 on:
-  schedule:
-    - cron: "0 2 * * 0"
+  # schedule:
+  #   - cron: "0 2 * * 0"
   workflow_dispatch:
 jobs:
   # This workflow contains a single job called "delete_old"
