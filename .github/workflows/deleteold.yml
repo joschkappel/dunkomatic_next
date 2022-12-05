@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Delete workflow runs
-        uses: MajorScruffy/delete-old-workflow-runs@v0.2.0
+        uses: MajorScruffy/delete-old-workflow-runs@v0.3.0
         with:
           repository: joschkappel/dunkomatic_next
           created-before: "2022-01-01T00:00:00Z"              
