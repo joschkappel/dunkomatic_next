@@ -259,7 +259,9 @@ return [
 
         // USER
         'locale' => 'Sprache',
+        'captcha' => 'Lösung der Rechenaufgabe',
         'reason_reject' => 'Ablehnungsgrund',
+        'reason_join' => 'Grund für den Zugang',
         'region_ids' => 'Bezirke',
         'region_ids.*' => 'Bezirk',
         'club_ids' => 'Vereine',

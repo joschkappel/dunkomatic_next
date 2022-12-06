@@ -3,6 +3,7 @@ on:
   # schedule:
   #   - cron: "0 2 * * 0"
   workflow_dispatch:
+    inputs:
       created_before:
         description: Created before (YYYY-MM-DD)
         default: "2022-01-01"

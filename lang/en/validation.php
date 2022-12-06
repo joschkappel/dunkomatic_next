@@ -260,6 +260,8 @@ return [
         // USER
         'locale' => 'Sprache',
         'reason_reject' => 'Reason for rejection',
+        'reason_join' => 'Reason for the acccount',
+        'captcha' => 'Result',
         'region_ids' => 'Regions',
         'region_ids.*' => 'Region',
         'club_ids' => 'Clubs',
