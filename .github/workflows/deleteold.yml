@@ -3,6 +3,10 @@ on:
   # schedule:
   #   - cron: "0 2 * * 0"
   workflow_dispatch:
+      created_before:
+        description: Created before (YYYY-MM-DD)
+        default: "2022-01-01"
+        required: true
 jobs:
   # This workflow contains a single job called "delete_old"
   delete_old:
@@ -13,6 +17,6 @@ jobs:
         uses: MajorScruffy/delete-old-workflow-runs@v0.3.0
         with:
           repository: joschkappel/dunkomatic_next
-          created-before: "2022-01-01T00:00:00Z"              
+          created-before: "${{ github.event.inputs.created_before }}T00:00:00Z"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

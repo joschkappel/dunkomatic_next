@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Enums\LeagueState;
 use App\Models\Club;
-use App\Models\Member;
 use App\Models\Region;
 use App\Rules\Uppercase;
 use App\Traits\LeagueFSM;

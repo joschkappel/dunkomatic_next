@@ -151,35 +151,135 @@ return [
     */
 
     'attributes' => [
+        // CLUB
         'shortname' => 'Code',
         'name' => 'Name',
         'club_no' => 'Vereinsnummer',
-        'region' => 'Bezirk',
-        'firstname' => 'Vorname',
-        'lastname' => 'Nachname',
-        'phone' => 'Telefon-Nr.',
-        'fax' => 'Fax-Nr.',
-        'mobile' => 'Mobil-Nr.',
+        'url' => 'URL',
+        'inactive' => 'Inaktiv',
+
+        // GYM
         'city' => 'Stadt',
         'street' => 'Straße und Hausnr.',
         'zipcode' => 'Postleitzahl',
         'zip' => 'Postleitzahl',
         'gym_no' => 'Hallennummer',
+        'name' => 'Bezeichnung oder Name',
+
+        // MEMBERSHIP
+        'selRole' => 'Rolle des Mitarbeitenden',
+        'function' => 'Details zur Rolle',
+        'email' => 'eMail',
+
+        // TEAM
+        'team_no' => 'Team Nummer',
+        'training_day' => 'Trainingstag',
+        'training_time' => 'Trainingsbeginn',
+        'preferred_game_day' => 'Bevorzugter Spieltag',
+        'preferred_game_time' => 'Bevorzugter Spielbeginn',
+        'gym_id' => 'Hallen Nr.',
+        'league_prev' => 'Runde des letzten Jahres',
+        'shirt_color' => 'Trikotfarbe',
+
+        // FILE DOWNLOAD
+        'type' => 'Verein oder Spielrunde',
+        'club' => 'Vereine',
+        'league' => 'Runde',
+        'file' => 'Dateiname',
+
+        // FEEDBACK
+        'title' => 'Betreff',
+        'body' => 'Text',
+
+        // LEAGUE
+        'shortname' => 'Kurzbezeichnung',
+        'league_size_id' => 'Anzahl Mannschaften',
+        'schedule_id' => 'Rahmenplan',
+        'age_type' => 'Altersgruppe',
+        'gender_type' => 'Geschlecht',
+        'from_state' => 'Aktuelle Phase',
+        'action' => 'Aktion',
+        'assignedClubs' => 'Zugeordnete Vereine',
+        'assignedClubs.*' => 'Zugeordneter Verein',
+        'club_id' => 'Verein',
+        'team_id' => 'Mannschaft',
+        'league_id' => 'Spielrunde',
+        'league_no' => 'Rundenziffer des Teams',
+
+        // MEMBER
+        'member_id' => 'Mitarbeitende:r',
+        'firstname' => 'Vorname',
+        'lastname' => 'Nachname',
+        'phone' => 'Telefon-Nr.',
+        'fax' => 'Fax-Nr.',
+        'mobile' => 'Mobil-Nr.',
+        'email1' => 'eMail (Haupt)',
+        'email2' => 'eMail (Alternative)',
+        'role_id' => 'Funktion/Rolle',
+
+        // MESSAGE
+        'greeting' => 'Anrede',
+        'salutation' => 'Grußformel',
+        'send_at' => 'Senden am Datum',
+        'delete_at' => 'Löschen am',
+        'to_members' => 'An Mitarbeitende',
+        'to_members.*' => 'An Mitarbeitenden',
+        'cc_members.*' => 'Kopie an ',
+        'notify_users' => 'Benutzer benachrichtigen',
+
+        // Region
+        'region' => 'Bezirk',
+        'region_id' => 'Bezirk',
+        'game_slot' => 'Spielabstand (in Minuten)',
+        'job_noleads' => 'Prüfung auf fehlende Abteilungs/Staffel-Leitung',
+        'job_email_valid' => 'Prüfung der eMail Adresse',
+        'fmt_club_reports' => 'Dateiformat Vereinspläne',
+        'fmt_club_reports.*' => 'Dateiformat Vereinspläne',
+        'fmt_league_reports' => 'Dateiformat Rudenpläne',
+        'fmt_league_reports.*' => 'Dateiformat Rudenpläne',
         'open_selection_at' => 'Starte Ziffernwahl',
         'close_selection_at' => 'Ende Ziffernwahl',
         'open_scheduling_at' => 'Starte Heimspieltermine',
         'close_scheduling_at' => 'Ende Heimspieltermine',
         'close_referees_at' => 'Starte Spielrunde',
-        'league_size_id' => 'Anzahl Mannschaften',
-        'schedule_id' => 'Rahmenterminplan',
+
+        // SCHEDULE
+        'iterations' => 'Anzahl Wiederholungen',
         'custom_events' => 'Manuelle Terminvergabe',
+        'startdate' => 'Von Datum',
+        'clone_from_schedule' => 'Von Rahmneterminplan',
+        'direction' => 'Richtung (zurück/vor)',
+        'unit' => 'Zeiteinheit',
+        'unitRange' => 'Anzahl',
+        'gamedayRange' => 'Spieltage von/bis',
+        'gamedayRemoveRange' => 'Spieltage von/bis',
+        'gamedayAddRange' => 'Spieltage von/bis',
+        'full_weekend' => 'Ganzes Wochenende',
+        'game_date' => 'Spieldatum',
+
+        // USER
+        'locale' => 'Sprache',
+        'reason_reject' => 'Ablehnungsgrund',
+        'region_ids' => 'Bezirke',
+        'region_ids.*' => 'Bezirk',
+        'club_ids' => 'Vereine',
+        'club_ids.*' => 'Verein',
+        'league_ids' => 'Runden',
+        'league_ids.*' => 'Runde',
+        'member_id' => 'Mitarbeitende',
+        'regionadmin' => 'Bezirksrechte',
+        'clubadmin' => 'Vereinsrechte',
+        'leagueadmin' => 'Rundenrechte',
+        'approved' => 'Zugelassen',
+        'password' => 'Passwort',
+
+        // GAMES
         'game_no' => 'Spielnummer',
         'team_id_home' => 'Heimteam',
         'team_id_guest' => 'Gastteam',
-        'greeting' => 'Anrede',
-        'body' => 'Nachricht',
-        'salutation' => 'Grußformel',
-        'send_at' => 'Senden am Datum',
+
+        // CLUBGAME
+        'gfile' => 'Datei mit Spielen',
 
     ],
 

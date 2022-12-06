@@ -151,35 +151,136 @@ return [
     */
 
     'attributes' => [
+        // CLUB
         'shortname' => 'Code',
         'name' => 'Name',
         'club_no' => 'Club Number',
-        'region' => 'Region',
-        'firstname' => 'Firstname',
-        'lastname' => 'Lastname',
-        'phone' => 'Phone no.',
-        'fax' => 'Fax no.',
-        'mobile' => 'Mobile Phone no.',
+        'url' => 'URL',
+        'inactive' => 'inactive',
+
+        // GYM
+        'name' => 'Name',
         'city' => 'City',
         'street' => 'Street',
         'zipcode' => 'ZIPcode',
         'zip' => 'ZIPcode',
         'gym_no' => 'Gym Number',
+
+        // MEMBERSHIP
+        'selRole' => 'Role of this member',
+        'function' => 'Role details',
+        'email' => 'eMail',
+
+        // TEAM
+        'team_no' => 'Team Number',
+        'training_day' => 'Training day',
+        'training_time' => 'Training begins at',
+        'preferred_game_day' => 'Preferred game day',
+        'preferred_game_time' => 'Preferred game start time',
+        'gym_id' => 'Gym No',
+        'league_prev' => 'Last years league',
+        'shirt_color' => 'Shirt Color',
+
+        // FILE DOWNLOAD
+        'type' => 'Club or League',
+        'club' => 'Club',
+        'league' => 'League',
+        'file' => 'Filename',
+
+        // FEEDBACK
+        'title' => 'Title',
+        'body' => 'Bodytext',
+
+        // LEAGUE
+        'shortname' => 'Shortcode',
+        'league_size_id' => 'Number of Teams',
+        'schedule_id' => 'Schedule',
+        'age_type' => 'Age group',
+        'gender_type' => 'Gender',
+        'from_state' => 'Current phase',
+        'action' => 'Action',
+        'assignedClubs' => 'Assigned Clubs',
+        'assignedClubs.*' => 'Assigned Club',
+        'club_id' => 'Club',
+        'team_id' => 'Team',
+        'league_id' => 'League',
+        'league_no' => 'League Team Number',
+
+        // MEMBER
+        'member_id' => 'Member',
+        'firstname' => 'Firstname',
+        'lastname' => 'Lastname',
+        'phone' => 'Phone no.',
+        'fax' => 'Fax no.',
+        'mobile' => 'Mobile Phone no.',
+        'email1' => 'eMail (Main)',
+        'email2' => 'eMail (2nd)',
+        'role_id' => 'Function/Role',
+
+        // MESSAGE
+        'greeting' => 'Greeting',
+        'salutation' => 'Salutation',
+        'send_at' => 'Send at Date',
+        'delete_at' => 'Delete at',
+        'to_members' => 'To members',
+        'to_members.*' => 'To member',
+        'cc_members.*' => 'Copy to ',
+        'notify_users' => 'Notify users',
+
+        // Region
+        'region' => 'Region',
+        'region_id' => 'Region',
+        'game_slot' => 'Gameslots (in Minutes)',
+        'job_noleads' => 'Check on missing clubleads',
+        'job_email_valid' => 'Check eMail-Address',
+        'fmt_club_reports' => 'Fileformat Club reports',
+        'fmt_club_reports.*' => 'Fileformat Club reports',
+        'fmt_league_reports' => 'Fileformat League reports',
+        'fmt_league_reports.*' => 'Fileformat League reports',
         'open_selection_at' => 'Start Team League No Selection',
         'close_selection_at' => 'End Team League No Selection',
         'open_scheduling_at' => 'Start Home Game Scheduling',
         'close_scheduling_at' => 'End Home Game Scheduling',
         'close_referees_at' => 'End Referee Assignment',
-        'league_size_id' => 'Number of Teams',
-        'schedule_id' => 'Schedule',
-        'custom_events' => 'Custsom Schedule',
+
+        // SCHEDULE
+        'iterations' => 'Repeat n-times',
+        'custom_events' => 'Custom Schedule',
+        'startdate' => 'Start with date',
+        'clone_from_schedule' => 'From schedule',
+        'direction' => 'Direction (back/future)',
+        'unit' => 'Unit of time',
+        'unitRange' => 'Number',
+        'gamedayRange' => 'Range of Gamedays',
+        'gamedayRemoveRange' => 'Range of Gamedays',
+        'gamedayAddRange' => 'Range of Gamedays',
+        'full_weekend' => 'Full Weekend',
+        'game_date' => 'Game Date',
+
+        // USER
+        'locale' => 'Sprache',
+        'reason_reject' => 'Reason for rejection',
+        'region_ids' => 'Regions',
+        'region_ids.*' => 'Region',
+        'club_ids' => 'Clubs',
+        'club_ids.*' => 'Club',
+        'league_ids' => 'Leagues',
+        'league_ids.*' => 'League',
+        'member_id' => 'Members',
+        'regionadmin' => 'Region access',
+        'clubadmin' => 'Club access',
+        'leagueadmin' => 'League access',
+        'approved' => 'Approved',
+        'password' => 'Password',
+
+        // GAMES
         'game_no' => 'Game #',
         'team_id_home' => 'Home Team',
         'team_id_guest' => 'Guest Team',
-        'greeting' => 'Greeting',
-        'body' => 'Message Body',
-        'salutation' => 'Salutation',
-        'send_at' => 'Send at Date',
+
+        // CLUBGAME
+        'gfile' => 'File with Games',
+
     ],
 
 ];
