@@ -19,7 +19,7 @@
                         <i class="fas fa-trophy"></i>
                     </div>
                     @can('update-leagues')
-                    <a href="{{ route('league.dashboard', ['language'=>app()->getLocale(), 'league'=>$league]) }}"  class="small-box-footer">{{__('league.menu.manage')}}
+                    <a href="{{ route('league.dashboard', ['language'=>app()->getLocale(), 'league'=>$league]) }}"  class="small-box-footer">{{__('Manage')}}
                         <i class="fas fa-tasks"></i></a>
                     @endcan
                     <a href="#" data-toggle="modal"  class="small-box-footer" data-target="#modalDownloadZone">{{__('reports.action.downloads')}}

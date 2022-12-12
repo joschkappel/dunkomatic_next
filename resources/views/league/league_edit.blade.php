@@ -14,10 +14,10 @@
         </div>
     </div>
     <div class="form-group row">
-        <label for="name" class="col-md-4 col-form-label">@lang('league.name')</label>
+        <label for="name" class="col-md-4 col-form-label">@lang('Name')</label>
         <div class="col-md-6">
             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
-                name="name" placeholder="@lang('league.name')"
+                name="name" placeholder="@lang('Name')"
                 value="{{ old('name') != '' ? old('name') : $league->name }}">
             @error('name')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -41,7 +41,7 @@
     </div>
     <div class="form-group row">
         <label for="selSchedule"
-            class="col-md-4 col-form-label">{{ trans_choice('league.schedule', 1) }}</label>
+            class="col-md-4 col-form-label">{{ trans_choice('schedule.schedule', 1) }}</label>
         <div class="col-md-6">
             <div class="input-group mb-3">
                 <select class='js-sel-schedule js-states form-control select2 @error('schedule_id')

@@ -19,7 +19,7 @@
   "Games No Time": "Spiele ohne Zeitangabe",
   "Go Home": "Hier geht's nach Hause",
   "Help": "Hilfe",
-  "Manage": "Bearbeiten",
+  "Manage": "Verwalten",
   "Message": "Nachricht",
   "Next Action": "Nächste Aktion",
   "OK": "OK",
@@ -87,5 +87,8 @@
   "for": "für",
   "Print Date": "Stand vom",
   "Show current region": "Für aktuellen Bezirk",
-  "Show all regions": "Für alle Bezirke"
+  "Show all regions": "Für alle Bezirke",
+  "Name": "Name",
+  "Statistics": "Statistiken",
+  "Overview": "Übersicht"
 }

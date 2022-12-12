@@ -27,9 +27,9 @@
         </div>
     </div>
     <div class="form-group row ">
-        <label for="name" class="col-sm-4 col-form-label">@lang('club.name')</label>
+        <label for="name" class="col-sm-4 col-form-label">@lang('Name')</label>
         <div class="col-sm-6">
-            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="@lang('club.name')" value="{{  (old('name')!='') ? old('name') : $club->name }}">
+            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="@lang('Name')" value="{{  (old('name')!='') ? old('name') : $club->name }}">
             @error('name')
             <div class="invalid-feedback">{{ $message }}</div>
             @enderror

@@ -17,7 +17,7 @@
         </div>
         <div class="row">
             <div class="col-md-3">
-                <strong>@lang('audit.user')</strong>
+                <strong>@lang('auth.user')</strong>
             </div>
             <div class="col-md-9">{{ $audit->getMetadata()['user_name'] ?? config('app.name') }}</div>
         </div>
@@ -29,7 +29,7 @@
         </div>
         <div class="row">
             <div class="col-md-3">
-                <strong>@lang('audit.user_agent')</strong>
+                <strong>@lang('auth.user_agent')</strong>
             </div>
             <div class="col-md-9">{{ $audit->getMetadata()['audit_user_agent'] }}</div>
         </div>

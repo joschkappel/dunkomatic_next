@@ -4,7 +4,7 @@
 <x-card-list cardTitle="{{ __('region.title.list') }}" cardNewAction="{{ route('region.create', app()->getLocale()) }}" cardNewTitle="{{ __('region.action.create') }}" cardNewAbility="create-regions">
                   <th>Id</th>
                   <th>{{ __('region.code') }}</th>
-                  <th>{{ __('region.name') }}</th>
+                  <th>{{ __('Name') }}</th>
                   <th>{{ __('region.hq') }}</th>
                   <th>{{ App\Enums\Role::RegionLead()->description  }}</th>
                   <th>{{ trans_choice('club.club',2)}}</th>

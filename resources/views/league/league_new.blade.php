@@ -16,10 +16,10 @@
         </div>
     </div>
     <div class="form-group row">
-        <label for="name" class="col-md-4 col-form-label">@lang('league.name')</label>
+        <label for="name" class="col-md-4 col-form-label">@lang('Name')</label>
         <div class="col-md-6">
             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
-                name="name" placeholder="@lang('league.name')" value="{{ old('name') }}">
+                name="name" placeholder="@lang('Name')" value="{{ old('name') }}">
             @error('name')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror

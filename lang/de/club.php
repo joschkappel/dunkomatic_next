@@ -11,7 +11,7 @@ return [
     'action.edit-homegame' => 'Heimspieltermine erfassen',
     'action.chart-homegame' => 'Heimspiele Übersicht',
     'action.import-homegame' => 'Heimspieltermine importieren',
-    'action.download' => 'Spielplan Download',
+    'action.download' => 'Vereinsspielplan Herunterladen',
     'action.chosefile' => 'Wähle eine Datei aus',
     'confirm.delete' => 'Willst Du diesen Verein wirklich löschen ?',
     'info.delete' => ':CLUB mit :noteam Mannschaften, :nomember Mitarbeitenden und :nogym Hallen',

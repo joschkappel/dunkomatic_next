@@ -33,7 +33,7 @@
                                 <label for="name" class="col-sm-4 col-form-label">Name</label>
                                 <div class="col-sm-6">
                                     <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
-                                        name="name" placeholder="@lang('club.name')" value="{{ old('name') }}">
+                                        name="name" placeholder="@lang('Name')" value="{{ old('name') }}">
                                     @error('name')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
