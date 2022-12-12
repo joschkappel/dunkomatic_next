@@ -2,7 +2,6 @@
 
 return [
     'league' => 'League|Leagues',
-    'schedule' => 'Schedule|Schedules',
     'action.create' => 'Create League',
     'action.delete' => 'Delete League',
     'action.edit' => 'Modify League',
@@ -24,13 +23,9 @@ return [
     'title.delete' => 'Delete a League',
     'title.management' => 'Manage Leagues',
     'title.game.import' => 'Import Games',
-    'menu.list' => 'Overview',
-    'menu.manage' => 'Manage',
-    'menu.stats' => 'Statistics',
     'entitled' => 'Entitled Leagues',
     'registered' => 'Registered Leagues',
     'shortname' => 'Code',
-    'name' => 'Name',
     'size' => '# Teams',
     'state' => 'Status',
     'above-region' => 'above region',
@@ -38,7 +33,7 @@ return [
     'agetype' => 'Age class',
     'gendertype' => 'Gender class',
     'pickchar_enabled' => 'League character picking enbaled',
-    'member.action.create' => 'New Member',
+    'member.action.create' => 'New League Member',
     'sb_freechar' => 'Select a free League No',
     'action.statechanged' => 'State of all selected leagues is changed',
     'action.assignClub' => 'Assign Club',
@@ -72,7 +67,6 @@ return [
     'league_no' => 'Number',
     'next.state' => 'start next phase',
     'prev.state' => 'back to previous',
-    'member.action.create' => 'New Member',
     'preferred' => 'Preferred Leagues',
     'pickchar.closed' => 'League closed for char selection',
 ];

@@ -9,7 +9,6 @@ return [
     'url' => 'URL',
     'id' => 'ID',
     'event' => 'Action',
-    'user' => 'Username',
     'attribute' => 'Attribute',
     'user_agent' => 'User Agent',
     'ip.address' => 'IP Address',

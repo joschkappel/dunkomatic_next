@@ -7,7 +7,7 @@
      <th>{{ trans_choice('region.region',1) }}</th>
     @endif
     <th>@lang('club.shortname')</th>
-    <th>@lang('club.name')</th>
+    <th>@lang('Name')</th>
     <th>@lang('club.club_no')</th>
     <th>@lang('auth.user.account')</th>
     <th>@lang('Inactive')</th>

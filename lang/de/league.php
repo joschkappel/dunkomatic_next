@@ -2,7 +2,6 @@
 
 return [
     'league' => 'Runde|Runden',
-    'schedule' => 'Rahmenterminplan|Rahmenterminpläne',
     'action.create' => 'Neue Runde',
     'action.edit' => 'Rundendaten Ändern',
     'action.delete' => 'Runde Löschen',
@@ -36,7 +35,6 @@ return [
     'agetype' => 'Altersklasse',
     'gendertype' => 'Geschlecht',
     'pickchar_enabled' => 'Ziffernwahl freigegeben',
-    'member.action.create' => 'Neue Mitarbeiter:innen',
     'sb_freechar' => 'Wähle eine Ziffer',
     'action.statechanged' => 'Status für alle betroffenenen Runden geändert',
     'action.assignClub' => 'Verein zuordnen',

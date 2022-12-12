@@ -30,7 +30,7 @@
                 </div>
             </div>
             <div class="form-row m-2">
-                <label for="name" class="col-sm-6 col-form-label">@lang('region.name')</label>
+                <label for="name" class="col-sm-6 col-form-label">@lang('Name')</label>
                 <div class="col-sm-4">
                     <input type="text" class="form-control" id="name" name="name"
                         value="{{ old('name') != '' ? old('name') : $region->name }}">

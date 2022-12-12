@@ -131,7 +131,7 @@ class AppServiceProvider extends ServiceProvider
                 $leaguemenu['icon_color'] = 'yellow';
                 $leaguemenu['icon'] = 'fas fa-trophy';
 
-                $smenu['text'] = __('league.menu.list');
+                $smenu['text'] = __('Overview');
                 $smenu['url'] = route('league.index', ['language' => app()->getLocale(), 'region' => session('cur_region')]);
                 $smenu['icon_color'] = 'yellow';
                 $smenu['icon'] = 'fas fa-trophy';
@@ -139,7 +139,7 @@ class AppServiceProvider extends ServiceProvider
                 $smenu['shift'] = 'ml-3';
                 $leaguemenu['submenu'][] = $smenu;
 
-                $smenu['text'] = __('league.menu.manage');
+                $smenu['text'] = __('Manage');
                 $smenu['url'] = route('league.index_mgmt', ['language' => app()->getLocale(), 'region' => session('cur_region')]);
                 $smenu['icon_color'] = 'yellow';
                 $smenu['icon'] = 'fas fa-chart-bar';
@@ -148,7 +148,7 @@ class AppServiceProvider extends ServiceProvider
                 $leaguemenu['submenu'][] = $smenu;
 
                 // SUBMENU - SCHEDULES
-                $smenu['text'] = trans_choice('league.schedule', 2);
+                $smenu['text'] = trans_choice('schedule.schedule', 2);
                 $smenu['icon'] = 'fa fa-calendar';
                 $smenu['icon_color'] = 'green';
                 $smenu['shift'] = 'ml-3';
@@ -191,7 +191,7 @@ class AppServiceProvider extends ServiceProvider
                 $event->menu->add($leaguemenu);
 
                 $schedulemenu = [];
-                $schedulemenu['text'] = trans_choice('league.schedule', 2);
+                $schedulemenu['text'] = trans_choice('schedule.schedule', 2);
                 $schedulemenu['icon'] = 'fa fa-calendar-week';
                 $schedulemenu['icon_color'] = 'green';
                 $schedulemenu['url'] = route('schedule.compare', ['language' => app()->getLocale(), 'region' => session('cur_region')]);
