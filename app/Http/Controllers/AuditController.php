@@ -60,7 +60,19 @@ class AuditController extends Controller
                 return '<a href="'.route('audit.show', ['language' => $language, 'audit' => $a->id]).'" >'.$a->id.'</a>';
             })
             ->editColumn('created_at', function ($a) use ($language) {
-                return Carbon::parse($a->created_at)->locale($language)->isoFormat('l LTS');
+                if ($a->created_at) {
+                    return [
+                        'display' => Carbon::parse($a->created_at)->locale($language)->isoFormat('lll'),
+                        'ts' => Carbon::parse($a->created_at)->timestamp,
+                        'filter' => Carbon::parse($a->created_at)->locale($language)->isoFormat('lll'),
+                    ];
+                } else {
+                    return [
+                        'display' => null,
+                        'ts' => 0,
+                        'filter' => null,
+                    ];
+                }
             })
             ->editColumn('event', function ($a) {
                 // TBD sorting
