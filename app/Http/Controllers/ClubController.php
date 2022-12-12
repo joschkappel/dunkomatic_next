@@ -41,8 +41,7 @@ class ClubController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function list(Region $region)
-    {
+    function list(Region $region) {
         if ($region->is_top_level) {
             Log::notice('getting clubs for top level region.');
             $clubs = Club::whereIn('region_id', $region->childRegions()->pluck('id'))->withCount([
@@ -64,15 +63,16 @@ class ClubController extends Controller
 
         Log::info('preparing club list');
         $clublist = datatables()::of($clubs);
+        $language = app()->getLocale();
 
         return $clublist
             ->addIndexColumn()
             ->rawColumns(['shortname.display', 'name.display', 'assigned_rel.display', 'registered_rel.display', 'selected_rel.display', 'has_account.display', 'inactive.display'])
             ->editColumn('shortname', function ($data) {
                 if ((Bouncer::can('access', $data)) or (Bouncer::is(Auth::user())->a('regionadmin'))) {
-                    $link = '<a href="'.route('club.dashboard', ['language' => Auth::user()->locale, 'club' => $data->id]).'">'.$data->shortname.'</a>';
+                    $link = '<a href="' . route('club.dashboard', ['language' => Auth::user()->locale, 'club' => $data->id]) . '">' . $data->shortname . '</a>';
                 } else {
-                    $link = '<a href="'.route('club.briefing', ['language' => Auth::user()->locale, 'club' => $data->id]).'" class="text-info" >'.$data->shortname.'</a>';
+                    $link = '<a href="' . route('club.briefing', ['language' => Auth::user()->locale, 'club' => $data->id]) . '" class="text-info" >' . $data->shortname . '</a>';
                 }
 
                 return ['display' => $link, 'sort' => $data->shortname];
@@ -96,7 +96,7 @@ class ClubController extends Controller
             })
             ->editColumn('name', function ($data) {
                 if ($data->url != '') {
-                    $link = '<a href="http://'.$data->url.'" target="_blank">'.$data->name.'</a>';
+                    $link = '<a href="http://' . $data->url . '" target="_blank">' . $data->name . '</a>';
                 } else {
                     $link = $data->name;
                 }
@@ -110,7 +110,7 @@ class ClubController extends Controller
                     $assigned_rel = 0;
                 }
                 $content = '<div class="progress" style="height: 20px;">
-            <div class="progress-bar bg-info" role="progressbar" style="width: '.$assigned_rel.'%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">'.$assigned_rel.'%</div>
+            <div class="progress-bar bg-info" role="progressbar" style="width: ' . $assigned_rel . '%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">' . $assigned_rel . '%</div>
             </div>';
 
                 return ['display' => $content, 'sort' => $assigned_rel];
@@ -122,7 +122,7 @@ class ClubController extends Controller
                     $registered_rel = 0;
                 }
                 $content = '<div class="progress" style="height: 20px;">
-          <div class="progress-bar" role="progressbar" style="width: '.$registered_rel.'%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">'.$registered_rel.'%</div>
+          <div class="progress-bar" role="progressbar" style="width: ' . $registered_rel . '%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">' . $registered_rel . '%</div>
           </div>';
 
                 return ['display' => $content, 'sort' => $registered_rel];
@@ -134,13 +134,25 @@ class ClubController extends Controller
                     $selected_rel = 0;
                 }
                 $content = '<div class="progress" style="height: 20px;">
-          <div class="progress-bar bg-success" role="progressbar" style="width: '.$selected_rel.'%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">'.$selected_rel.'%</div>
+          <div class="progress-bar bg-success" role="progressbar" style="width: ' . $selected_rel . '%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">' . $selected_rel . '%</div>
           </div>';
 
                 return ['display' => $content, 'sort' => $selected_rel];
             })
-            ->editColumn('updated_at', function ($c) {
-                return ($c->updated_at == null) ? null : $c->updated_at->format('d.m.Y H:i');
+            ->editColumn('updated_at', function ($c) use ($language) {
+                if ($c->updated_at) {
+                    return [
+                        'display' => Carbon::parse($c->updated_at)->locale($language)->isoFormat('lll'),
+                        'ts' => Carbon::parse($c->updated_at)->timestamp,
+                        'filter' => Carbon::parse($c->updated_at)->locale($language)->isoFormat('lll'),
+                    ];
+                } else {
+                    return [
+                        'display' => null,
+                        'ts' => 0,
+                        'filter' => null,
+                    ];
+                }
             })
             ->make(true);
     }
@@ -220,18 +232,18 @@ class ClubController extends Controller
                 'action', 'team', 'registered', 'selected', 'league.display', 'coach',
             ])
             ->addColumn('training', function ($ct) {
-                return  Carbon::now()->startOfWeek($ct->training_day)->locale(app()->getLocale())->shortDayName.', '.Carbon::create($ct->training_time)->isoFormat('HH:mm');
+                return Carbon::now()->startOfWeek($ct->training_day)->locale(app()->getLocale())->shortDayName . ', ' . Carbon::create($ct->training_time)->isoFormat('HH:mm');
             })
             ->addColumn('gameday', function ($ct) {
                 if ($ct->preferred_game_day != null) {
-                    return Carbon::now()->startOfWeek($ct->preferred_game_day)->locale(app()->getLocale())->shortDayName.', '.Carbon::create($ct->preferred_game_time)->isoFormat('HH:mm');
+                    return Carbon::now()->startOfWeek($ct->preferred_game_day)->locale(app()->getLocale())->shortDayName . ', ' . Carbon::create($ct->preferred_game_time)->isoFormat('HH:mm');
                 } else {
                     return '';
                 }
             })
             ->addColumn('gym', function ($ct) {
                 if ($ct->gym()->exists()) {
-                    return '('.$ct->gym->gym_no.') '.$ct->gym->name;
+                    return '(' . $ct->gym->gym_no . ') ' . $ct->gym->name;
                 } else {
                     return '';
                 }
@@ -239,17 +251,17 @@ class ClubController extends Controller
             ->addColumn('coach', function ($ct) {
                 $coach = '';
                 foreach ($ct->members as $m) {
-                    $coach .= '<a href="mailto:'.$m->email.'" >'.$m->name.'</a><i class="fas fa-phone m-2"></i>'.$m->mobile;
+                    $coach .= '<a href="mailto:' . $m->email . '" >' . $m->name . '</a><i class="fas fa-phone m-2"></i>' . $m->mobile;
                 }
 
                 return $coach;
             })
             ->addColumn('action', function ($ct) use ($club) {
-                if (! (($ct->league_id != null) and ($ct->league->state->in([LeagueState::Selection, LeagueState::Scheduling, LeagueState::Freeze, LeagueState::Live, LeagueState::Referees])))) {
-                    $btn = '<span data-toggle="tooltip" title="'.__('team.action.delete', ['name' => $ct->name]).'">';
-                    $btn .= '<button id="deleteTeam" data-team-id="'.$ct->id.'" data-league-sname="';
+                if (!(($ct->league_id != null) and ($ct->league->state->in([LeagueState::Selection, LeagueState::Scheduling, LeagueState::Freeze, LeagueState::Live, LeagueState::Referees])))) {
+                    $btn = '<span data-toggle="tooltip" title="' . __('team.action.delete', ['name' => $ct->name]) . '">';
+                    $btn .= '<button id="deleteTeam" data-team-id="' . $ct->id . '" data-league-sname="';
                     $btn .= isset($ct->league->shortname) ? $ct->league->shortname : __('team.unassigned');
-                    $btn .= ' data-team-no="'.$ct->team_no.'" data-club-sname="'.$club->shortname.'" type="button"';
+                    $btn .= ' data-team-no="' . $ct->team_no . '" data-club-sname="' . $club->shortname . '" type="button"';
                     $btn .= ' class="btn btn-outline-danger btn-sm " ';
                     $btn .= Auth::user()->cannot('create-teams') ? ' disabled ' : '';
                     $btn .= '> <i class="fas fa-trash"></i></button></span>';
@@ -273,8 +285,8 @@ class ClubController extends Controller
             })
             ->addColumn('team', function ($ct) {
                 if (Auth::user()->can('update-teams')) {
-                    $item = '<span data-toggle="tooltip" title="'.__('team.action.edit', ['name' => $ct->name]).'">';
-                    $item .= '<a href="'.route('team.edit', ['language' => app()->getLocale(), 'team' => $ct->id]).'">'.$ct->namedesc;
+                    $item = '<span data-toggle="tooltip" title="' . __('team.action.edit', ['name' => $ct->name]) . '">';
+                    $item .= '<a href="' . route('team.edit', ['language' => app()->getLocale(), 'team' => $ct->id]) . '">' . $ct->namedesc;
                     $item .= '<i class="fas fa-arrow-circle-right"></i></a></span>';
                 } else {
                     $item = $ct->name;
@@ -285,23 +297,23 @@ class ClubController extends Controller
             ->addColumn('league', function ($ct) use ($clubleagues) {
                 if ($ct->league_id != null) {
                     if ($this->can_register_teams($ct->league)) {
-                        $btn = '<span data-toggle="tooltip" title="'.__('team.tooltip.deassign', ['name' => $ct->name]).'">';
-                        $btn .= '<button id="unregisterTeam" data-league-id="'.$ct->league->id.'" data-team-id="'.$ct->id.'" ';
-                        $btn .= 'type="button" class="btn btn-secondary btn-sm">'.$ct->league['shortname'].'</button>';
-                        $btn .= ($ct->league_no != null) ? '<button type="button" class="btn btn-danger btn-sm pl-2">'.$ct->league_no.'</button>' : '';
+                        $btn = '<span data-toggle="tooltip" title="' . __('team.tooltip.deassign', ['name' => $ct->name]) . '">';
+                        $btn .= '<button id="unregisterTeam" data-league-id="' . $ct->league->id . '" data-team-id="' . $ct->id . '" ';
+                        $btn .= 'type="button" class="btn btn-secondary btn-sm">' . $ct->league['shortname'] . '</button>';
+                        $btn .= ($ct->league_no != null) ? '<button type="button" class="btn btn-danger btn-sm pl-2">' . $ct->league_no . '</button>' : '';
                         $btn .= '</span>';
                     } else {
-                        $btn = '<span><button type="button" class="btn btn-secondary btn-sm" disabled> '.$ct->league->shortname.'</button>';
-                        $btn .= ($ct->league_no != null) ? ' <button type="button" class="btn btn-danger btn-sm pl-2" disabled >'.$ct->league_no.'</button>' : '';
+                        $btn = '<span><button type="button" class="btn btn-secondary btn-sm" disabled> ' . $ct->league->shortname . '</button>';
+                        $btn .= ($ct->league_no != null) ? ' <button type="button" class="btn btn-danger btn-sm pl-2" disabled >' . $ct->league_no . '</button>' : '';
                         $btn .= '</span>';
                     }
                 } else {
                     if (Auth::user()->can('update-teams')) {
-                        $btn = '<div class="btn-group"><button type="button" class="btn btn-secondary dropdpwn-toggle" data-toggle="dropdown">'.__('league.action.select').' ('.__('previous').': '.$ct->league_prev.')</button>';
+                        $btn = '<div class="btn-group"><button type="button" class="btn btn-secondary dropdpwn-toggle" data-toggle="dropdown">' . __('league.action.select') . ' (' . __('previous') . ': ' . $ct->league_prev . ')</button>';
                         $btn .= '<div class="dropdown-menu">';
                         foreach ($clubleagues as $cl) {
                             if ($this->can_register_teams($cl)) {
-                                $btn .= '<a class="dropdown-item" href="javascript:registerTeam('.$cl->id.','.$ct->id.') ">'.$cl->shortname.'</a>';
+                                $btn .= '<a class="dropdown-item" href="javascript:registerTeam(' . $cl->id . ',' . $ct->id . ') ">' . $cl->shortname . '</a>';
                             }
                         }
                         $btn .= '</div></div>';
@@ -362,7 +374,7 @@ class ClubController extends Controller
             } else {
                 $response[] = [
                     'id' => $club->id,
-                    'text' => '('.$club->region->code.') '.$club->shortname,
+                    'text' => '(' . $club->region->code . ') ' . $club->shortname,
                 ];
             }
         }
@@ -428,7 +440,7 @@ class ClubController extends Controller
             'inactive' => 'sometimes|required|boolean',
         ]);
         Log::info('club form data validated OK.');
-        if (! $request->has('inactive')) {
+        if (!$request->has('inactive')) {
             $data['inactive'] = false;
         }
 
@@ -484,7 +496,7 @@ class ClubController extends Controller
             'inactive' => 'sometimes|required|boolean',
         ]);
         Log::info('club form data validated OK.');
-        if (! $request->has('inactive')) {
+        if (!$request->has('inactive')) {
             $data['inactive'] = false;
         }
 

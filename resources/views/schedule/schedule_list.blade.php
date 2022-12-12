@@ -55,15 +55,22 @@
                         data: 'events',
                         name: 'events'
                     },
-                    {
-                        data: 'first_event',
-                        name: 'first_event'
+                    { data: {
+                        _: 'first_event.filter',
+                        display: 'first_event.display',
+                        sort: 'first_event.ts'
+                        },
+                        name: 'first_event.ts',
+                        visible: true
                     },
-                    {
-                        data: 'last_event',
-                        name: 'last_event'
+                    { data: {
+                        _: 'last_event.filter',
+                        display: 'last_event.display',
+                        sort: 'last_event.ts'
+                        },
+                        name: 'last_event.ts',
+                        visible: true
                     },
-
                     {
                         data: 'used_by_leagues',
                         name: 'used_by_leagues'

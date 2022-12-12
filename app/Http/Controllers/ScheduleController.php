@@ -234,6 +234,7 @@ class ScheduleController extends Controller
 
         Log::info('preparing schedule list');
         $stlist = datatables()::of($schedule);
+        $language = app()->getLocale();
 
         return $stlist
             ->addIndexColumn()
@@ -265,24 +266,38 @@ class ScheduleController extends Controller
                     }
                 }
             })
-            ->addColumn('first_event', function ($data) {
+            ->addColumn('first_event', function ($data) use ($language) {
                 if ($data->events()->exists()) {
-                    return $data->events()->get()->min('game_date')->isoFormat('l');
+                    $fdate = $data->events()->get()->min('game_date');
+                    return [
+                        'display' => Carbon::parse($fdate)->locale($language)->isoFormat('l'),
+                        'ts' => Carbon::parse($fdate)->timestamp,
+                        'filter' => Carbon::parse($fdate)->locale($language)->isoFormat('l'),
+                    ];
                 } else {
-                    return '';
-                }
+                    return [
+                        'display' => null,
+                        'ts' => 0,
+                        'filter' => null,
+                    ];                }
             })
-            ->addColumn('last_event', function ($data) {
+            ->addColumn('last_event', function ($data) use ($language) {
                 if ($data->events()->exists()) {
-                    return $data->events()->get()->max('game_date')->isoFormat('l');
+                    $ldate =  $data->events()->get()->max('game_date');
+                    return [
+                        'display' => Carbon::parse($ldate)->locale($language)->isoFormat('l'),
+                        'ts' => Carbon::parse($ldate)->timestamp,
+                        'filter' => Carbon::parse($ldate)->locale($language)->isoFormat('l'),
+                    ];
                 } else {
-                    return '';
+                    return [
+                        'display' => null,
+                        'ts' => 0,
+                        'filter' => null,
+                    ];
                 }
             })
             ->rawColumns(['name', 'events', 'action'])
-            ->editColumn('created_at', function ($user) {
-                return $user->created_at->format('d.m.Y H:i');
-            })
             ->editColumn('name', function ($data) use ($region) {
                 if (Bouncer::canAny(['create-schedules', 'update-schedules']) and ($data->region->id == $region->id)) {
                     return '<a href="'.route('schedule.edit', ['language' => Auth::user()->locale, 'schedule' => $data->id]).'">'.$data->name.' <i class="fas fa-arrow-circle-right"></i></a>';

@@ -130,9 +130,13 @@
                         data: 'games_home_notime_count',
                         name: 'games_home_notime_count'
                     },
-                    {
-                        data: 'updated_at',
-                        name: 'updated_at'
+                    { data: {
+                        _: 'updated_at.filter',
+                        display: 'updated_at.display',
+                        sort: 'updated_at.ts'
+                        },
+                        name: 'updated_at.ts',
+                        visible: true
                     },
                 ]
             });
