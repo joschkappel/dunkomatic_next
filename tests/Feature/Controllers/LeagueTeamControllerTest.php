@@ -244,7 +244,7 @@ class LeagueTeamControllerTest extends TestCase
             );
 
         $response
-            ->assertStatus(302)
+            ->assertStatus(200)
             ->assertSessionHasNoErrors();
         //$response->dump();
         $this->assertDatabaseMissing('teams', ['league_no' => $team->league_no, 'league_id' => $this->testleague->id]);
