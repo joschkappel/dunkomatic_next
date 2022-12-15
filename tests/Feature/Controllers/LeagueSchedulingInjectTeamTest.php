@@ -95,8 +95,7 @@ class LeagueSchedulingInjectTeamTest extends TestCase
         $response = $this->authenticated()
             ->followingRedirects()
             ->delete(
-                route('league.team.withdraw', ['league' => $this->testleague->id]),
-                ['team_id' => $this->testleague->teams->first()->id]
+                route('league.withdraw.team', ['league' => $this->testleague->id, 'team' => $this->testleague->teams->first()->id])
             );
 
         $response->assertStatus(200);
