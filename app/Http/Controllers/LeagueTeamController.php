@@ -151,6 +151,7 @@ class LeagueTeamController extends Controller
             ]);
             $team = Team::findOrFail($data['team_id']);
             $team->league()->associate($league);
+            $team['registered_at'] = now();
 
             if ($league->is_custom) {
                 // assign also league_no
@@ -167,6 +168,7 @@ class LeagueTeamController extends Controller
         } else {
             if ($team->exists) {
                 $team->league()->associate($league);
+                $team['registered_at'] = now();
                 if ($league->is_custom) {
                     // assign also league_no
                     [$league_no, $league_char] = $this->get_custom_league_league_no($league, $team);
@@ -195,7 +197,13 @@ class LeagueTeamController extends Controller
      */
     public function league_unregister_team(League $league, Team $team)
     {
-        $team->update(['league_id' => null, 'league_no' => null, 'league_char' => null]);
+        $team->update([
+            'league_id' => null,
+            'league_no' => null,
+            'league_char' => null,
+            'withdrawn_at' => now(),
+            'withdrawn_from' => $league->shortname
+        ]);
         Log::notice('team un-registered and league no cleared.', ['team-id' => $team->id, 'league-id' => $league->id, 'league-team-no' => $team->league_no]);
 
         // $league->clubs()->wherePivot('club_id', '=', $team->club->id)->detach();
@@ -227,6 +235,7 @@ class LeagueTeamController extends Controller
 
         $league = League::findOrFail($data['league_id']);
         $team->league()->associate($league);
+        $team['registered_at'] = now();
 
         if ($league->is_custom) {
             // assign also league_no
@@ -263,7 +272,13 @@ class LeagueTeamController extends Controller
         $league_char = $upperArr[$league_no];
         // update team
         $team = Team::findOrFail($data['team_id']);
-        $team->update(['league_id' => $league->id, 'league_no' => $league_no, 'league_char' => $league_char]);
+        $team->update([
+            'league_id' => $league->id,
+            'league_no' => $league_no,
+            'league_char' => $league_char,
+            'registered_at' => now(),
+            'charpicked_at' => now()
+        ]);
         Log::notice('team added to league.', ['league-id' => $league->id, 'team-id' => $team->id]);
 
         $used_char = $league->clubs->pluck('pivot.league_char')->toArray();
@@ -290,22 +305,24 @@ class LeagueTeamController extends Controller
     /**
      * withdraw a team from a league
      *
-     * @param  Request  $request
      * @param  \App\Models\League  $league
-     * @return \Illuminate\Http\RedirectResponse
+     * @param  \App\Models\Team  $team
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function withdraw(Request $request, League $league)
+    public function league_withdraw_team(League $league, Team $team)
     {
-        $data = $request->validate([
-            'team_id' => 'required|exists:teams,id',
-        ]);
-        Log::info('team withdrawal form data validated OK.');
-
-        $team = Team::findOrFail($data['team_id']);
-
         // Team: league_prev, league_id, league_char, league_no,
-        $team->update(['league_prev' => $league->shortname, 'league_id' => null, 'league_char' => null, 'league_no' => null]);
-        Log::info('team deregistered from league', ['team-id' => $team->id, 'league-id' => $league->id]);
+        $team->update([
+            'league_prev' => $league->shortname,
+            'league_id' => null,
+            'league_char' => null,
+            'league_no' => null,
+            'withdrawn_at' => now(),
+            'withdrawn_from' => $league->shortname,
+            'charreleased_at' => now(),
+            'charreleased' => $team->league_no
+        ]);
+        Log::info('team withdrawn from league', ['team-id' => $team->id, 'league-id' => $league->id]);
 
         // Game: blank all games with gameteam home+guest
         $this->blank_team_games($league, $team);
@@ -330,7 +347,7 @@ class LeagueTeamController extends Controller
             Log::info('club deassigned from league', ['league-id' => $league->id, 'club-id' => $team->club->id]);
         }
 
-        return redirect()->back();
+        return Response::json(['success' => 'all good'], 200);
     }
 
     /**
@@ -355,6 +372,7 @@ class LeagueTeamController extends Controller
         $udata = [];
         $udata['league_id'] = $league->id;
         $udata['league_no'] = $data['league_no'];
+        $udata['charpicked_at'] = now();
         $upperArr = config('dunkomatic.league_team_chars');
         $udata['league_char'] = $upperArr[$data['league_no']];
         $team = Team::findOrFail($data['team_id']);
@@ -410,12 +428,14 @@ class LeagueTeamController extends Controller
             'league_no' => 'required|integer|between:1,16',
         ]);
         Log::info('team league no form data validated OK.');
+        $team = Team::where('id', $data['team_id'])->where('league_id', $league->id)->where('league_no', $data['league_no'])->first();
 
         $udata = [];
         $udata['league_no'] = null;
         $udata['league_char'] = null;
+        $udata['charreleased_at'] = now();
+        $udata['charreleased'] = $team->league_no ?? '';
 
-        $team = Team::where('id', $data['team_id'])->where('league_id', $league->id)->where('league_no', $data['league_no'])->first();
         if ($team != null) {
             if ($league->games()->exists()) {
                 // games are generagted, remove/blank games of this team

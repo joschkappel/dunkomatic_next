@@ -290,9 +290,10 @@ Route::middleware(['auth',
         Route::delete('league/{league}/club/{club}', [LeagueTeamController::class, 'deassign_club'])->name('league.deassign-club')->middleware('can:update-leagues');
         Route::put('league/{league}/team/{team?}', [LeagueTeamController::class, 'league_register_team'])->name('league.register.team')->middleware('can:update-teams');
         Route::delete('league/{league}/team/{team}', [LeagueTeamController::class, 'league_unregister_team'])->name('league.unregister.team')->middleware('can:update-teams');
+        Route::delete('league/{league}/team/{team}/withdraw', [LeagueTeamController::class, 'league_withdraw_team'])->name('league.withdraw.team')->middleware('can:update-teams');
+
         Route::put('team/{team}/league', [LeagueTeamController::class, 'team_register_league'])->name('team.register.league')->middleware('can:update-teams');
         Route::post('league/{league}/team', [LeagueTeamController::class, 'inject'])->name('league.team.inject')->middleware('can:update-teams');
-        Route::delete('league/{league}/team', [LeagueTeamController::class, 'withdraw'])->name('league.team.withdraw')->middleware('can:update-teams');
         Route::post('league/{league}/pickchar', [LeagueTeamController::class, 'pick_char'])->name('league.team.pickchar')->middleware('can:update-teams');
         Route::post('league/{league}/releasechar', [LeagueTeamController::class, 'release_char'])->name('league.team.releasechar')->middleware('can:update-teams');
 

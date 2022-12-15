@@ -41,6 +41,7 @@ return [
     'action.deassignClub' => 'Verein entfernen',
     'confirm.deassignClub' => 'Willst Du den Verein :CLUB wirklich aus der Runden entfernen ?',
     'confirm.unregisterTeam' => 'Willst Du die Mannschaft :TEAM wirklich von der Runde abmelden ?',
+    'confirm.withdrawTeam' => 'Willst Du die Mannschaft :TEAM wirklich zurückziehen ?',
     'action.registerTeam' => 'Mannschaft melden',
     'action.unregisterTeam' => 'Mannschaft abmelden',
     'action.pickChar' => 'Ziffer wählen',

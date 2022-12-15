@@ -62,5 +62,8 @@ return [
     'plan.saved.ok' => 'Preferred league numbers saved',
     'plan.saved.notok' => 'There is a problem! Your preferred league numbers could not be saved',
     'error.numbertaken' => 'Another team just took this number 😟',
-
+    'state.registered' => 'Registered with ',
+    'state.charpicked' => 'Number picked ',
+    'state.charreleased' => 'Number released ',
+    'state.withdrawn' => 'Withdrawn from ',
 ];

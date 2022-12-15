@@ -68,7 +68,7 @@ class Team extends Model implements Auditable
 
     protected $with = ['club'];
 
-    protected $appends = ['name'];
+    protected $appends = ['name','name_desc'];
 
     public function generateTags(): array
     {
@@ -84,6 +84,19 @@ class Team extends Model implements Auditable
         'id', 'league_char', 'league_no', 'team_no', 'league_id', 'club_id', 'gym_id', 'league_prev',
         'training_day', 'training_time', 'preferred_game_day', 'preferred_game_time',
         'shirt_color', 'preferred_league_char', 'preferred_league_no',
+        'registered_at','charpicked_at','charreleased_at','withdrawn_at','withdrawn_from', 'charreleased'
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'registered_at' => 'datetime',
+        'charpicked_at' => 'datetime',
+        'withdrawn_at' => 'datetime',
+        'charreleased_at' => 'datetime',
     ];
 
     public function club(): BelongsTo
@@ -130,11 +143,29 @@ class Team extends Model implements Auditable
 
     public function getNameDescAttribute(): string
     {
+        $this->loadMissing('club','league');
         $name = $this->club->shortname.$this->team_no.' (';
         $league = $this->league()->exists() ? $this->league->shortname : $this->league_prev;
         $name .= ($league == null) ? $this->members->pluck('name')->implode(', ') : $league;
         $name .= ') ';
 
         return $name;
+    }
+
+    public function getStateAttribute(): array
+    {
+        $this->loadMissing('league');
+        $league = $this->league()->exists() ? $this->league->shortname : '';
+        $reg = $this->registered_at == null ? '' : $this->registered_at->locale( app()->getLocale() )->isoFormat('L LT');
+        $reg = $reg == '' ? $league : $league.' ('.$reg.') ';
+
+        $char = $this->charpicked_at == null ? '' : $this->charpicked_at->locale( app()->getLocale() )->isoFormat('L LT');
+        $char = $char == '' ? $league.'-'.$this->league_no : $league.'-'.$this->league_no.' ('.$char.') ';
+
+        $charrel = $this->charreleased_at == null ? '' : $this->charreleased.' ('.$this->charreleased_at->locale( app()->getLocale() )->isoFormat('L LT').') ';
+
+        $withd = $this->withdrawn_at == null ? '' : $this->withdrawn_from.' ('.$this->withdrawn_at->locale( app()->getLocale() )->isoFormat('L LT').') ';
+
+        return [ 'registered'=>$reg, 'charpicked' => $char, 'charreleased'=>$charrel,'withdrawn' => $withd ];
     }
 }

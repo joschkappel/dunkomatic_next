@@ -147,6 +147,12 @@ trait LeagueTeamManager
                         }
                     }
                 }
+            } elseif ($this->can_withdraw_teams($league)) {
+                if ($team_id != null) {
+                        $status = '';
+                        $function = 'withdrawTeam';
+                        $scolor = 'btn-primary';
+                }
             }
         }
 

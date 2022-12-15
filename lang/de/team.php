@@ -62,4 +62,8 @@ return [
     'plan.saved.ok' => 'Deine Wunschziffern wurden gespeichert',
     'plan.saved.notok' => 'Es ist ein Fehler aufgetreten ! Deine Wunschziffern wurden nicht gespeichert',
     'error.numbertaken' => 'Diese Ziffer wurde gerade von einem anderen Team belegt 😟',
+    'state.registered' => 'Gemeldet für ',
+    'state.charpicked' => 'Gewählte Ziffer ',
+    'state.charreleased' => 'Freigegebene Ziffer ',
+    'state.withdrawn' => 'Zurückgezogen ',
 ];
