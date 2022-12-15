@@ -330,11 +330,11 @@ th, td { white-space: nowrap; }
                         },
                         url: url,
                         success: function(data) {
-                            toastr.success('{{__('team.withdrawel.ok')}}');
+                            toastr.success('{{__('team.withdrawal.ok')}}');
                         },
                         error: function(data) {
                             console.log('Error:', data);
-                            toastr.error('{{__('team.withdrawel.notok')}}');
+                            toastr.error('{{__('team.withdrawal.notok')}}');
                         }
                     });
                 }

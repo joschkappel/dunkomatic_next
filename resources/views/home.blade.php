@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-md-6">
                 @include('message.includes.reminders_timeline')
-                @include('message.includes.notes_timeline')
+                @include('message.includes.withdrawals')
         </div>
         <div class="col-md-6">
             @include('message.includes.message_timeline')
