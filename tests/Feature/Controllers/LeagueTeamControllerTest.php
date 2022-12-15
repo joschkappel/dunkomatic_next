@@ -239,9 +239,9 @@ class LeagueTeamControllerTest extends TestCase
         $team = $this->testleague->teams->first();
 
         $response = $this->authenticated()
-            ->delete(route('league.team.withdraw', ['league' => $this->testleague]), [
-                'team_id' => $team->id,
-            ]);
+            ->delete(route('league.withdraw.team', ['league' => $this->testleague,
+                'team' => $team->id])
+            );
 
         $response
             ->assertStatus(302)
