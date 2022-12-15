@@ -59,6 +59,8 @@ return [
     'register.notok' => 'Die Meldung ist fehlgeschlagen. Das Team ist NICHT gemeldet',
     'unregister.ok' => 'Das Team ist abgemeldet',
     'unregister.notok' => 'Die Abmeldung ist fehlgeschlagen. Das Team ist NICHT abgemeldet',
+    'withdrawal.ok' => 'Das Team ist zurückgezogen',
+    'withdrawal.notok' => 'Die Aktion ist fehlgeschlagen. Das Team ist NICHT zurückgezogen',
     'plan.saved.ok' => 'Deine Wunschziffern wurden gespeichert',
     'plan.saved.notok' => 'Es ist ein Fehler aufgetreten ! Deine Wunschziffern wurden nicht gespeichert',
     'error.numbertaken' => 'Diese Ziffer wurde gerade von einem anderen Team belegt 😟',

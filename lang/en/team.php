@@ -59,6 +59,8 @@ return [
     'register.notok' => 'Registration failed, the team is NOT registered',
     'unregister.ok' => 'The team is de-registered',
     'unregister.notok' => 'Registration failed, the team is NOT de-registered',
+    'withdrawal.ok' => 'The team is withdrawn',
+    'withdrawal.notok' => 'The action has failed, the team is NOT withdrawn',
     'plan.saved.ok' => 'Preferred league numbers saved',
     'plan.saved.notok' => 'There is a problem! Your preferred league numbers could not be saved',
     'error.numbertaken' => 'Another team just took this number 😟',
