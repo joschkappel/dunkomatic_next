@@ -4,6 +4,7 @@ return [
     'message' => 'Message|Messages',
     'reminder' => 'This weeks tasks',
     'note' => 'To do next',
+    'withdrawal' => 'Withdrawn Teams',
     'message.empty' => 'Inbox is empty',
     'reminder.empty' => 'No tasks his week',
     'note.empty' => 'No notes found',

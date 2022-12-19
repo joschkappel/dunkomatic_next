@@ -309,6 +309,37 @@ th, td { white-space: nowrap; }
                 }
             });
 
+            $(document).on("click", 'button#withdrawTeam', function(e) {
+                var team_id = $(this).data("team-id");
+                var league_id = $(this).data("league-id");
+                var url = "{{ route('league.withdraw.team', ['league' => ':league:', 'team' => ':team:']) }}"
+                url = url.replace(':team:', team_id);
+                url = url.replace(':league:', league_id);
+
+                var txt = '{{__('league.confirm.withdrawTeam', ['team'=>':team:']) }}';
+                txt = txt.replace(':TEAM:',$(this).data("team-name"));
+                var res = confirm(txt);
+
+                if ( res == true){
+                    $.ajax({
+                        type: "DELETE",
+                        dataType: 'json',
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            _method: 'DELETE'
+                        },
+                        url: url,
+                        success: function(data) {
+                            toastr.success('{{__('team.withdrawal.ok')}}');
+                        },
+                        error: function(data) {
+                            console.log('Error:', data);
+                            toastr.error('{{__('team.withdrawal.notok')}}');
+                        }
+                    });
+                }
+            });
+
             $(document).on("click", "button#pickChar", function(e) {
                 var team_id = $(this).data("team-id");
                 var league_no = $(this).data("league-no");

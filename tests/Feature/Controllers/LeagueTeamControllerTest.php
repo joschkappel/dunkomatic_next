@@ -239,12 +239,12 @@ class LeagueTeamControllerTest extends TestCase
         $team = $this->testleague->teams->first();
 
         $response = $this->authenticated()
-            ->delete(route('league.team.withdraw', ['league' => $this->testleague]), [
-                'team_id' => $team->id,
-            ]);
+            ->delete(route('league.withdraw.team', ['league' => $this->testleague,
+                'team' => $team->id])
+            );
 
         $response
-            ->assertStatus(302)
+            ->assertStatus(200)
             ->assertSessionHasNoErrors();
         //$response->dump();
         $this->assertDatabaseMissing('teams', ['league_no' => $team->league_no, 'league_id' => $this->testleague->id]);

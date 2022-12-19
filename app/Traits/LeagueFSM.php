@@ -195,6 +195,12 @@ trait LeagueFSM
             'league_no' => null,
             'league_prev' => $league->shortname,
             'league_id' => null,
+            'registered_at' => null,
+            'charpicked_at' => null,
+            'charreleased_at' => null,
+            'charreleased' =>  null,
+            'withdrawn_at' => null,
+            'withdrawn_from' =>  null
         ]);
     }
 
@@ -241,7 +247,14 @@ trait LeagueFSM
             return false;
         }
     }
-
+    public function can_withdraw_teams(League $league): bool
+    {
+        if ($league->state->in([LeagueState::Live()])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     public function can_modify_teams(League $league): bool
     {
         if ($league->state->in([LeagueState::Registration(), LeagueState::Selection(), LeagueState::Scheduling(), LeagueState::Freeze()])) {

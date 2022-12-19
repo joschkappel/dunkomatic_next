@@ -50,7 +50,7 @@ class Kernel extends ConsoleKernel
         $schedule->job(new ProcessDbCleanup(), 'janitor')->weeklyOn(1, '00:15');
         $schedule->job(new ProcessFilesCleanup(), 'janitor')->weeklyOn(1, '00:20');
         $schedule->job(new ProcessCustomMessages(), 'janitor')->dailyAt('03:00');
-        $schedule->job(new ProcessNewSeason(), 'janitor')->yearly();
+        $schedule->job(new ProcessNewSeason(), 'janitor')->yearlyOn($month=3, $dayOfMonth=30);
         // $schedule->job(new ExportStatistics(), 'janitor')->everyMinute();
 
         // league state handling

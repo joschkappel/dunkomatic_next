@@ -93,7 +93,7 @@ class HomeControllerTest extends TestCase
             ->assertViewIs('home')
             ->assertViewHas('msglist')
             ->assertViewHas('reminders')
-            ->assertViewHas('infos');
+            ->assertViewHas('withdrawals');
 
         // now try with clubadmin
         Bouncer::assign('clubadmin')->to($this->region_user);
@@ -107,7 +107,7 @@ class HomeControllerTest extends TestCase
             ->assertViewIs('home')
             ->assertViewHas('msglist')
             ->assertViewHas('reminders')
-            ->assertViewHas('infos');
+            ->assertViewHas('withdrawals');
 
         // set region dates next week
         $this->region->update([
@@ -124,7 +124,7 @@ class HomeControllerTest extends TestCase
             ->assertViewIs('home')
             ->assertViewHas('msglist')
             ->assertViewHas('reminders')
-            ->assertViewHas('infos');
+            ->assertViewHas('withdrawals');
         Bouncer::retract('clubadmin')->from($this->region_user);
         Bouncer::refreshFor($this->region_user);
     }

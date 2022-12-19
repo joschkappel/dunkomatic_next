@@ -7,7 +7,7 @@ use App\Enums\ReportFileType;
 use App\Mail\Feedback;
 use App\Traits\ReportVersioning;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
+use App\Models\Team;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -62,7 +62,7 @@ class HomeController extends Controller
         Log::info('preparing unread message list.', ['count' => count($msglist)]);
 
         $reminders = [];
-        $infos = [];
+        $withdrawals = [];
         $links = collect();
 
         //bouncer db access is massive !
@@ -104,10 +104,6 @@ class HomeController extends Controller
                         $msg['action'] = route('game.index', ['language' => app()->getLocale(), 'region' => $region]);
                         $msg['action_color'] = 'danger';
                         $reminders[] = $msg;
-                    } else {
-                        $msg['msg'] = __('message.reminder.deadline.referees', ['deadline' => $region->close_referees_at->diffForHumans(['parts' => 1]), 'region' => $region->code]);
-                        $msg['msg_color'] = 'warning';
-                        $infos[] = $msg;
                     }
                 }
 
@@ -131,10 +127,6 @@ class HomeController extends Controller
                         $msg['msg'] = __('message.reminder.deadline.registration', ['deadline' => $region->close_registration_at->setHour(20)->diffForHumans(['parts' => 3, 'join' => true]), 'region' => $region->code]);
                         $msg['action_color'] = 'info';
                         $reminders[] = $msg;
-                    } else {
-                        $msg['msg'] = __('message.reminder.deadline.registration', ['deadline' => $region->close_registration_at->diffForHumans(['parts' => 1]), 'region' => $region->code]);
-                        $msg['msg_color'] = 'warning';
-                        $infos[] = $msg;
                     }
                 }
                 // check open selection deadline
@@ -146,10 +138,6 @@ class HomeController extends Controller
                         $msg['msg'] = __('message.reminder.deadline.start.selection', ['deadline' => $region->open_selection_at->setHour(8)->diffForHumans(['parts' => 3, 'join' => true]), 'region' => $region->code]);
                         $msg['action_color'] = 'info';
                         $reminders[] = $msg;
-                    } else {
-                        $msg['msg'] = __('message.reminder.deadline.start.selection', ['deadline' => $region->open_selection_at->diffForHumans(['parts' => 1]), 'region' => $region->code]);
-                        $msg['msg_color'] = 'warning';
-                        $infos[] = $msg;
                     }
                 }
                 // check close selection deadline
@@ -161,10 +149,6 @@ class HomeController extends Controller
                         $msg['msg'] = __('message.reminder.deadline.close.selection', ['deadline' => $region->close_selection_at->setHour(20)->diffForHumans(['parts' => 3, 'join' => true]), 'region' => $region->code]);
                         $msg['action_color'] = 'info';
                         $reminders[] = $msg;
-                    } else {
-                        $msg['msg'] = __('message.reminder.deadline.close.selection', ['deadline' => $region->close_selection_at->diffForHumans(['parts' => 1]), 'region' => $region->code]);
-                        $msg['msg_color'] = 'warning';
-                        $infos[] = $msg;
                     }
                 }
                 // check open scheduling deadline
@@ -176,10 +160,6 @@ class HomeController extends Controller
                         $msg['msg'] = __('message.reminder.deadline.start.scheduling', ['deadline' => $region->open_scheduling_at->setHour(8)->diffForHumans(['parts' => 3, 'join' => true]), 'region' => $region->code]);
                         $msg['action_color'] = 'info';
                         $reminders[] = $msg;
-                    } else {
-                        $msg['msg'] = __('message.reminder.deadline.start.scheduling', ['deadline' => $region->open_scheduling_at->diffForHumans(['parts' => 1]), 'region' => $region->code]);
-                        $msg['msg_color'] = 'warning';
-                        $infos[] = $msg;
                     }
                 }
                 // check close scheduling deadline
@@ -191,14 +171,12 @@ class HomeController extends Controller
                         $msg['msg'] = __('message.reminder.deadline.close.scheduling', ['deadline' => $region->close_scheduling_at->setHour(20)->diffForHumans(['parts' => 3, 'join' => true]), 'region' => $region->code]);
                         $msg['action_color'] = 'info';
                         $reminders[] = $msg;
-                    } else {
-                        $msg['msg'] = __('message.reminder.deadline.close.scheduling', ['deadline' => $region->close_scheduling_at->diffForHumans(['parts' => 1]), 'region' => $region->code]);
-                        $msg['msg_color'] = 'warning';
-                        $infos[] = $msg;
                     }
                 }
             }
+
         }
+
         if (! $user_is_region_super) {
             foreach ($user->clubs() as $club) {
                 $links[] = ['text' => $club->shortname, 'url' => route('club.dashboard', ['club' => $club,  'language' => app()->getLocale()])];
@@ -207,8 +185,14 @@ class HomeController extends Controller
                 $links[] = ['text' => $league->shortname, 'url' => route('league.dashboard', ['league' => $league,  'language' => app()->getLocale()])];
             }
         }
-
-        return view('home', ['msglist' => $msglist, 'reminders' => $reminders, 'infos' => $infos, 'links' => $links->slice(0, 20)]);
+        // get withdrawals
+        $teams = Team::whereNotNull('withdrawn_at')->orderBy('withdrawn_at','desc')->get();
+        foreach ($teams as $t){
+            $msg['msg'] = $t->state['withdrawn'].': Team '.$t->name.' zurückgezogen.';
+            $msg['msg_color'] = 'info';
+            $withdrawals[] = $msg;
+        }
+        return view('home', ['msglist' => $msglist, 'reminders' => $reminders, 'withdrawals' => $withdrawals, 'links' => $links->slice(0, 20)]);
     }
 
     /**

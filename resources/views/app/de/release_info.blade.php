@@ -5,6 +5,22 @@
 <div>
     <div class="col-12">
         <div class="card card-outline card-info collapsed-card mb-3">
+            <x-card-header title="v1.1.1" />
+            <div class="card-body">
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item list-group-item-primary">Eine Mannschaft von der laufenden Runde zurückziehen
+                        <ul>
+                            <li>Die Bezirksleiung kann über die Rundenverwaltung jetzt Mannschaften zurückziehen.</li>
+                            <li>Dazu einfach (Runden->Verwalten) die entsprechende Mannschaft anklicken und die Aktion bestätigen.</li>
+                            <li>Das Datum des Rückzugs wird bei der Mannschaft vermerkt und angezeigt.</li>
+                            <li>Ab der nächsten Spielsaison wird dort auch das Datum der Meldung, der Ziffernwahl, etc angezeigt werden.</li>
+                            <li>Auf der Startseite wird ständig die Liste aller zurückgezogenen Teams für alle Benutzer angezeigt.</li>
+                        </ul>
+                    </li>
+                  </ul>
+            </div>
+        </div>
+        <div class="card card-outline card-info collapsed-card mb-3">
             <x-card-header title="v1.1.0" />
             <div class="card-body">
                   <ul class="list-group list-group-flush">

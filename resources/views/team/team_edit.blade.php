@@ -11,6 +11,51 @@
     <div class="row">
         <div class="col-sm-6 pd-2">
             <x-card-form colWidth=12 cardChangeNote="{{$team_lastmod}}"  cardTitle="{{ __('team.title.modify', ['team'=> $team->club['shortname'].' '.$team->team_no ]) }}" formAction="{{ route('team.update',['team' => $team]) }}" formMethod="PUT" >
+
+                @if($team->state['registered'] != '')
+                    <div class="form-group row ">
+                        <div class="col-sm-4 text-dark">
+                            {{__('team.state.registered')}}
+                        </div>
+                        <div class="col-sm-6 text-success">
+                            {{ $team->state['registered'] }}
+                        </div>
+                    </div>
+                @endif
+
+                @if($team->state['charpicked'] != '')
+                    <div class="form-group row ">
+                        <div class="col-sm-4 text-dark">
+                            {{ __('team.state.charpicked') }}
+                        </div>
+                        <div class="col-sm-6 text-info">
+                            {{ $team->state['charpicked'] }}
+                        </div>
+                    </div>
+                @endif
+
+                @if($team->state['charreleased'] != '')
+                    <div class="form-group row ">
+                        <div class="col-sm-4 text-dark">
+                            {{ __('team.state.charreleased') }}
+                        </div>
+                        <div class="col-sm-6 text-info">
+                            {{ $team->state['charreleased'] }}
+                        </div>
+                    </div>
+                @endif
+
+                @if($team->state['withdrawn'] != '')
+                    <div class="form-group row ">
+                        <div class="col-sm-4 text-dark">
+                            {{__('team.state.withdrawn')}}
+                        </div>
+                        <div class="col-sm-6 text-danger">
+                            {{ $team->state['withdrawn'] }}
+                        </div>
+                    </div>
+                @endif
+
                 <div class="form-group row ">
                     <label for='selTeamNo' class="col-sm-4 col-form-label">@lang('team.no')</label>
                     <div class="col-sm-6">
@@ -24,16 +69,6 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                         </div>
-                    </div>
-                </div>
-                <div class="form-group row ">
-                    <label for='selLeague' class="col-sm-4 col-form-label">{{trans_choice('league.league',1)}}</label>
-                    <div class="col-sm-6">
-                            @if ($team->league_id)
-                            <input type="text" class="form-control" readonly value="{{ $team->league['shortname'] }}"></input>
-                        @else
-                            <input type="text" class="form-control" readonly value=""></input>
-                            @endif
                     </div>
                 </div>
                 <div class="form-group row ">

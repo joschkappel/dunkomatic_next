@@ -4,6 +4,7 @@ return [
     'message' => 'Nachricht|Nachrichten',
     'reminder' => 'Aufgaben für diese Woche',
     'note' => 'Was demnächst ansteht',
+    'withdrawal' => 'Zurückgezogene Mannschaften',
     'message.empty' => 'Die Inbox ist leer',
     'reminder.empty' => 'Nichts zu tun für diese Woche',
     'note.empty' => 'Ich habe keine Infos gefunden',
