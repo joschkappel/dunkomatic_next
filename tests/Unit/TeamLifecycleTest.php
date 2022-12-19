@@ -5,7 +5,7 @@ use App\Traits\LeagueFSM;
 
 uses(LeagueFSM::class);
 
-it('can be registered and de-registered', function () {
+it('can be registered', function () {
     // Arrange
     $league = League::factory()->registered(4, 0)->create();
     $team = $league->clubs->first()->teams->first();
@@ -23,6 +23,13 @@ it('can be registered and de-registered', function () {
     $this->assertDatabaseMissing('teams', ['id'=> $team->id, 'registered_at' => null]);
     $this->assertTrue( $team->registered_at->isToday());
     $this->assertTrue( $league->teams->count() == 1);
+});
+
+it('can be de-registered', function () {
+    // Arrange
+    $league = League::factory()->registered(4, 1)->create();
+    $team = $league->teams->first();
+    $this->assertDatabaseHas('teams', ['id'=> $team->id, 'league_id' => $league->id]);
 
     // Act
     $response = $this->authenticated()
@@ -40,7 +47,7 @@ it('can be registered and de-registered', function () {
 
 });
 
-it('can pick and release a league no', function () {
+it('can pick a league no', function () {
     // Arrange
     $league = League::factory()->registered(4, 1)->create();
     $team = $league->teams->first();
@@ -61,11 +68,20 @@ it('can pick and release a league no', function () {
     $this->assertDatabaseMissing('teams', ['id'=> $team->id, 'league_no'=>2, 'charpicked_at' => null]);
     $this->assertTrue( $team->charpicked_at->isToday());
 
+});
+
+it('can release a league no', function () {
+    // Arrange
+    $league = League::factory()->selected(4, 1)->create();
+    $team = $league->teams->first();
+    $league_no = $team->league_no;
+    $this->assertDatabaseHas('teams', ['id'=> $team->id, 'league_no'=>$league_no]);
+
     // Act
     $response = $this->authenticated()
         ->post(route('league.team.releasechar', ['league' => $league]), [
             'team_id' => $team->id,
-            'league_no' => 2,
+            'league_no' => $league_no,
     ]);
     $response->assertStatus(200)
              ->assertSessionHasNoErrors();
@@ -74,7 +90,7 @@ it('can pick and release a league no', function () {
 
     // Assert
     $this->assertDatabaseMissing('teams', ['id'=> $team->id, 'league_no'=>2, 'charreleased_at' => null]);
-    $this->assertDatabaseHas('teams', ['id'=> $team->id, 'league_no'=>null, 'charreleased' => 2]);
+    $this->assertDatabaseHas('teams', ['id'=> $team->id, 'league_no'=>null, 'charreleased' => $league_no]);
     $this->assertTrue( $team->charreleased_at->isToday());
 
 });
