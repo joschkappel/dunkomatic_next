@@ -14,7 +14,7 @@
                             <li>Dazu einfach (Runden->Verwalten) die entsprechende Mannschaft anklicken und die Aktion bestätigen.</li>
                             <li>Das Datum des Rückzugs wird bei der Mannschaft vermerkt und angezeigt.</li>
                             <li>Ab der nächsten Spielsaison wird dort auch das Datum der Meldung, der Ziffernwahl, etc angezeigt werden.</li>
-                            <li>Auf der Startseite wird ständig die Liste aller zurückgezogenen Teams angezeigt.</li>
+                            <li>Auf der Startseite wird ständig die Liste aller zurückgezogenen Teams für alle Benutzer angezeigt.</li>
                         </ul>
                     </li>
                   </ul>
