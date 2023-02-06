@@ -282,6 +282,7 @@ return [
 
         // CLUBGAME
         'gfile' => 'File with Games',
+        'attachfile' => 'Fileattachment',
 
     ],
 

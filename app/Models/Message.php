@@ -53,7 +53,7 @@ class Message extends Model
 
     protected $fillable = [
         'id', 'title', 'body', 'greeting', 'salutation', 'send_at', 'sent_at', 'delete_at', 'user_id', 'region_id',
-        'to_members', 'cc_members', 'notify_users',
+        'to_members', 'cc_members', 'notify_users', 'attachment_location', 'attachment_filename'
     ];
 
     protected $dates = ['send_at', 'sent_at', 'delete_at'];

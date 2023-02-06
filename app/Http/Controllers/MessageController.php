@@ -14,6 +14,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\File;
 use Silber\Bouncer\Database\Role as UserRole;
 
 class MessageController extends Controller
@@ -52,21 +53,21 @@ class MessageController extends Controller
             ->rawColumns(['send_at', 'sent_at', 'action_send', 'action', 'title', 'body'])
             ->addIndexColumn()
             ->addColumn('action', function ($data) {
-                $btn = '<button type="button" id="deleteMessage" name="deleteMessage" class="btn btn-outline-danger btn-sm" data-msg-id="'.$data->id.'"
-                  data-msg-title="'.$data->title.'" data-toggle="modal" data-target="#modalDeleteMessage"><i class="fa fa-trash"></i></button>';
-                $btn .= '<button type="button" id="copyMessage" name="copyMessage" class="btn btn-outline-primary btn-sm m-2" data-msg-id="'.$data->id.'"
+                $btn = '<button type="button" id="deleteMessage" name="deleteMessage" class="btn btn-outline-danger btn-sm" data-msg-id="' . $data->id . '"
+                  data-msg-title="' . $data->title . '" data-toggle="modal" data-target="#modalDeleteMessage"><i class="fa fa-trash"></i></button>';
+                $btn .= '<button type="button" id="copyMessage" name="copyMessage" class="btn btn-outline-primary btn-sm m-2" data-msg-id="' . $data->id . '"
                   ><i class="fas fa-copy"></i></button>';
                 if ($data->sent_at != null) {
-                    $btn .= '<button type="button" id="showMessage" name="showMessage" class="btn btn-outline-primary btn-sm m-2" data-msg-id="'.$data->id.'"
-                    data-msg-greeting="'.$data->greeting.'" data-msg-subject="'.$data->title.'"  data-msg-body="'.htmlentities($data->body).'"><i class="far fa-eye"></i></button>';
+                    $btn .= '<button type="button" id="showMessage" name="showMessage" class="btn btn-outline-primary btn-sm m-2" data-msg-id="' . $data->id . '"
+                    data-msg-greeting="' . $data->greeting . '" data-msg-subject="' . $data->title . '"  data-msg-body="' . htmlentities($data->body) . '"><i class="far fa-eye"></i></button>';
                 }
 
                 return $btn;
             })
             ->addColumn('action_send', function ($data) {
                 if ((($data->send_at == null) or ($data->send_at > now())) and ($data->sent_at == null)) {
-                    $btn = '<button type="button" id="sendMessage" name="sendMessage" class="btn btn-outline-success btn-sm" data-msg-id="'.$data->id.'"
-               data-msg-title="'.$data->title.'"><i class="far fa-paper-plane"></i></button>';
+                    $btn = '<button type="button" id="sendMessage" name="sendMessage" class="btn btn-outline-success btn-sm" data-msg-id="' . $data->id . '"
+               data-msg-title="' . $data->title . '"><i class="far fa-paper-plane"></i></button>';
 
                     return $btn;
                 }
@@ -75,7 +76,7 @@ class MessageController extends Controller
                 if ((isset($msg->sent_at) and ($msg->sent_at) < now())) {
                     return $msg['title'];
                 } else {
-                    return '<a href="'.route('message.edit', ['language' => $language, 'message' => $msg->id]).'">'.$msg->title.' <i class="fas fa-arrow-circle-right"></i></a>';
+                    return '<a href="' . route('message.edit', ['language' => $language, 'message' => $msg->id]) . '">' . $msg->title . ' <i class="fas fa-arrow-circle-right"></i></a>';
                 }
             })
             ->editColumn('delete_at', function ($msg) use ($language) {
@@ -143,9 +144,22 @@ class MessageController extends Controller
             'to_members.*' => [new EnumValue(EnumRole::class, false)],
             'cc_members.*' => [new EnumValue(EnumRole::class, false)],
             'notify_users' => 'sometimes|required|boolean',
+            'attachfile' => 'sometimes|max:1024|mimes:pdf',
         ]);
+
+        // Log::debug(print_r($request->all(), true));
+        // $fname = $request->attachfile->getClientOriginalName();
+        // Log::debug($fname);
+
         Log::info('message form data validated OK.');
-        if (! $request->has('notify_users')) {
+
+        //( save attachment)
+        if ($request->has('attachfile')) {
+            $data['attachment_filename'] = $request->attachfile->getClientOriginalName();
+            $data['attachment_location'] = $request->attachfile->store('message_attachments');
+            unset($data['attachfile']);
+        }
+        if (!$request->has('notify_users')) {
             $data['notify_users'] = false;
         }
 
@@ -193,15 +207,25 @@ class MessageController extends Controller
             'to_members.*' => [new EnumValue(EnumRole::class, false)],
             'cc_members.*' => [new EnumValue(EnumRole::class, false)],
             'notify_users' => 'sometimes|required|boolean',
+            'attachfile' => 'sometimes|max:1024|mimes:pdf',
         ]);
         Log::info('message form data validated OK.');
-        if (! $request->has('notify_users')) {
+        //( save attachment)
+        if ($request->has('attachfile')) {
+            $data['attachment_filename'] = $request->attachfile->getClientOriginalName();
+            $data['attachment_location'] = $request->attachfile->store('message_attachments');
+            unset($data['attachfile']);
+        } else {
+            $data['attachment_filename'] = null;
+            $data['attachment_location'] = null;
+        }
+        if (!$request->has('notify_users')) {
             $data['notify_users'] = false;
         }
-        if (! $request->has('to_members')) {
+        if (!$request->has('to_members')) {
             $data['to_members'] = null;
         }
-        if (! $request->has('cc_members')) {
+        if (!$request->has('cc_members')) {
             $data['cc_members'] = null;
         }
 
