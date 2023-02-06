@@ -3,6 +3,7 @@
     return [
         'message' => 'Nachricht|Nachrichten',
         'attachment' => 'Anhang',
+        'attachment.get' => 'Anhang Download',
         'attachment.new' => 'Neuer Anhang',
         'select_file' => 'Wähle eine .pdf Datei als Anhang aus...',
         'reminder' => 'Aufgaben für diese Woche',

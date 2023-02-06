@@ -3,6 +3,7 @@
     return [
         'message' => 'Message|Messages',
         'attachment' => 'Attachment',
+        'attachment.get' => 'Get Attachment',
         'attachment.new' => 'New Attachment',
         'select_file' => 'Please select a .pdf file to attach...',
         'reminder' => 'This weeks tasks',

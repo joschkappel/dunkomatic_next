@@ -13,6 +13,7 @@ use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\File;
 use Silber\Bouncer\Database\Role as UserRole;
@@ -59,7 +60,7 @@ class MessageController extends Controller
                   ><i class="fas fa-copy"></i></button>';
                 if ($data->sent_at != null) {
                     $btn .= '<button type="button" id="showMessage" name="showMessage" class="btn btn-outline-primary btn-sm m-2" data-msg-id="' . $data->id . '"
-                    data-msg-greeting="' . $data->greeting . '" data-msg-subject="' . $data->title . '"  data-msg-body="' . htmlentities($data->body) . '"><i class="far fa-eye"></i></button>';
+                    data-msg-greeting="' . $data->greeting . '" data-msg-attachment="' . $data->attachment_filename . '" data-msg-subject="' . $data->title . '"  data-msg-body="' . htmlentities($data->body) . '"><i class="far fa-eye"></i></button>';
                 }
 
                 return $btn;
@@ -283,6 +284,16 @@ class MessageController extends Controller
         return true;
     }
 
+    public function get_attachment(Message $message)
+    {
+        Log::info('download request for message attachment', ['filename' => $message->attachment_filename]);
+        Storage::disk('public')->writeStream(
+            $message->attachment_filename,
+            Storage::readStream($message->attachment_location)
+        );
+        return response()->file(Storage::disk('public')->path($message->attachment_filename));
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -291,6 +302,9 @@ class MessageController extends Controller
      */
     public function destroy(Message $message)
     {
+        if ($message->attachment_filename != null) {
+            Storage::delete($message->attachment_location);
+        }
         $message->delete();
         Log::notice('message deleted', ['message-id' => $message->id]);
 
