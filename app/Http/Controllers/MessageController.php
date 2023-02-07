@@ -145,7 +145,7 @@ class MessageController extends Controller
             'to_members.*' => [new EnumValue(EnumRole::class, false)],
             'cc_members.*' => [new EnumValue(EnumRole::class, false)],
             'notify_users' => 'sometimes|required|boolean',
-            'attachfile' => 'sometimes|max:1024|mimes:pdf',
+            'attachfile' => 'sometimes|max:' . config('dunkomatic.mail_attachment_size') . '|mimes:pdf',
         ]);
 
         // Log::debug(print_r($request->all(), true));
@@ -208,7 +208,7 @@ class MessageController extends Controller
             'to_members.*' => [new EnumValue(EnumRole::class, false)],
             'cc_members.*' => [new EnumValue(EnumRole::class, false)],
             'notify_users' => 'sometimes|required|boolean',
-            'attachfile' => 'sometimes|max:1024|mimes:pdf',
+            'attachfile' => 'sometimes|max:' . config('dunkomatic.mail_attachment_size') . '|mimes:pdf',
         ]);
         Log::info('message form data validated OK.');
         //( save attachment)
