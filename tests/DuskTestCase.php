@@ -46,8 +46,10 @@ abstract class DuskTestCase extends BaseTestCase
             ]);
 
             return RemoteWebDriver::create(
-                'http://selenium:4444/wd/hub', DesiredCapabilities::chrome()->setCapability(
-                    ChromeOptions::CAPABILITY, $options
+                'http://selenium:4444/wd/hub',
+                DesiredCapabilities::chrome()->setCapability(
+                    ChromeOptions::CAPABILITY,
+                    $options
                 )
             );
         } else {
@@ -57,8 +59,10 @@ abstract class DuskTestCase extends BaseTestCase
             ]);
 
             return RemoteWebDriver::create(
-                'http://localhost:9515', DesiredCapabilities::chrome()->setCapability(
-                    ChromeOptions::CAPABILITY, $options
+                'http://localhost:9515',
+                DesiredCapabilities::chrome()->setCapability(
+                    ChromeOptions::CAPABILITY,
+                    $options
                 )
             );
         }
