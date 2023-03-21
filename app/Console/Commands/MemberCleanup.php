@@ -40,39 +40,39 @@ class MemberCleanup extends Command
         );
         if ($key_for_duplicates == 'email1') {
             $duplicates = Member::whereIn('email1', function ($query) use ($dup_cnt) {
-                $query->selectRaw('email1 from members 
-                                    WHERE email1 is not null 
-                                    AND email1!="" 
-                                    GROUP BY email1 
-                                    HAVING count(email1) = '.$dup_cnt);
+                $query->selectRaw('email1 from members
+                                    WHERE email1 is not null
+                                    AND email1!=""
+                                    GROUP BY email1
+                                    HAVING count(email1) = ' . $dup_cnt);
             })->orderBy('email1')->get()->chunk($dup_cnt);
         } elseif ($key_for_duplicates == 'email1 lastname') {
             $duplicates = Member::whereIn(DB::raw('concat(email1, lastname)'), function ($query) use ($dup_cnt) {
-                $query->selectRaw('concat(email1, lastname) as name 
-                                   FROM members 
-                                   WHERE email1 is not null 
-                                   AND email1!="" 
-                                   GROUP BY name 
-                                   HAVING count(concat(email1, lastname)) = '.$dup_cnt);
+                $query->selectRaw('concat(email1, lastname) as name
+                                   FROM members
+                                   WHERE email1 is not null
+                                   AND email1!=""
+                                   GROUP BY name
+                                   HAVING count(concat(email1, lastname)) = ' . $dup_cnt);
             })->orderBy('lastname')->get()->chunk($dup_cnt);
         } elseif ($key_for_duplicates == 'firstname lastname') {
             $duplicates = Member::whereIn(DB::raw('concat(firstname, lastname)'), function ($query) use ($dup_cnt) {
-                $query->selectRaw('concat(firstname, lastname) as name 
-                                    FROM members 
-                                    WHERE email1 is not null 
-                                    AND email1!="" 
-                                    GROUP BY name 
-                                    HAVING count(concat(firstname, lastname)) = '.$dup_cnt);
+                $query->selectRaw('concat(firstname, lastname) as name
+                                    FROM members
+                                    WHERE email1 is not null
+                                    AND email1!=""
+                                    GROUP BY name
+                                    HAVING count(concat(firstname, lastname)) = ' . $dup_cnt);
             })->orderBy('lastname')->get()->chunk($dup_cnt);
         }
 
         if ($duplicates->count() > 0) {
-            $this->info('Found '.$duplicates->count().' members with '.$dup_cnt.' '.$key_for_duplicates);
+            $this->info('Found ' . $duplicates->count() . ' members with ' . $dup_cnt . ' ' . $key_for_duplicates);
             $this->line('Now looping through these one by one for you to decide on the approach for merging.');
 
             foreach ($duplicates as $dup) {
                 $mlist = $dup->map(function ($i) {
-                    return $i->id.': '.$i->name;
+                    return $i->id . ': ' . $i->name;
                 })->values()->toArray();
                 $mlist[] = 'all';
                 $mtable = $dup->map->only('name', 'address', 'email1', 'phone', 'is_user', 'member_of_clubs', 'member_of_teams', 'member_of_leagues')->toArray();
@@ -96,7 +96,7 @@ class MemberCleanup extends Command
 
                     if ($dup->count() > 1) {
                         $mlist = $dup->map(function ($i) {
-                            return $i->id.': '.$i->name;
+                            return $i->id . ': ' . $i->name;
                         })->values()->toArray();
                         $mtable = $dup->map->only('name', 'address', 'email1', 'phone', 'is_user', 'member_of_clubs', 'member_of_teams', 'member_of_leagues')->toArray();
                         $this->table(
@@ -123,19 +123,19 @@ class MemberCleanup extends Command
                     $this->newLine();
 
                     $this->info('Final member to keep:');
-                    $this->line('Name               : '.$m_final->name);
-                    $this->line('Address            : '.$m_final->address);
-                    $this->line('Email              : '.$m_final->email1);
-                    $this->line('Mobile             : '.$m_final->mobile);
-                    $this->line('Phone              : '.$m_final->phone);
-                    $this->line('Memberships Clubs  : '.$m_final->member_of_clubs);
-                    $this->line('Memberships Teams  : '.$m_final->member_of_teams);
-                    $this->line('Memberships Leagues: '.$m_final->member_of_leagues);
-                    $this->line('Memberships Regions: '.$m_final->member_of_region);
+                    $this->line('Name               : ' . $m_final->name);
+                    $this->line('Address            : ' . $m_final->address);
+                    $this->line('Email              : ' . $m_final->email1);
+                    $this->line('Mobile             : ' . $m_final->mobile);
+                    $this->line('Phone              : ' . $m_final->phone);
+                    $this->line('Memberships Clubs  : ' . $m_final->member_of_clubs);
+                    $this->line('Memberships Teams  : ' . $m_final->member_of_teams);
+                    $this->line('Memberships Leagues: ' . $m_final->member_of_leagues);
+                    $this->line('Memberships Regions: ' . $m_final->member_of_region);
                 }
             }
         } else {
-            $this->info('No duplicates found for '.$key_for_duplicates.'. You may try with another key.');
+            $this->info('No duplicates found for ' . $key_for_duplicates . '. You may try with another key.');
 
             return 0;
         }
@@ -148,13 +148,15 @@ class MemberCleanup extends Command
         $keep_prev = collect($keep)->flatten();
 
         foreach ($merge->getAttributes() as $key => $value) {
-            if (! collect(['id', 'created_at', 'updated_at', 'member_of_clubs', 'member_of_leagues', 'member_of_teams', 'member_of_regions',
-                'role_in_clubs', 'role_in_leagues', 'role_in_teams', 'role_in_regions', ])->contains($key)) {
+            if (!collect([
+                'id', 'created_at', 'updated_at', 'member_of_clubs', 'member_of_leagues', 'member_of_teams', 'member_of_regions',
+                'role_in_clubs', 'role_in_leagues', 'role_in_teams', 'role_in_regions',
+            ])->contains($key)) {
                 if (($value != null) and ($value != $keep[$key])) {
                     if ($keep[$key] == null) {
                         $keep[$key] = $value;
                     } else {
-                        if ($this->confirm('Copy '.$key.' '.$value.' -> '.($keep[$key] ?? '?').'?', false)) {
+                        if ($this->confirm('Copy ' . $key . ' ' . $value . ' -> ' . ($keep[$key] ?? '?') . '?', false)) {
                             $keep[$key] = $value;
                         }
                     }
@@ -164,7 +166,7 @@ class MemberCleanup extends Command
 
         // check lastname
         if ((Str::of($keep->lastname)->explode(' ')->count() > 0) and ($keep->firstname == null)) {
-            if ($this->confirm('Split lastname '.$keep->lastname.'?', false)) {
+            if ($this->confirm('Split lastname ' . $keep->lastname . '?', false)) {
                 $name = Str::of($keep->lastname)->explode(' ');
                 $keep->firstname = $name->first();
                 $keep->lastname = $name->last();
@@ -193,7 +195,7 @@ class MemberCleanup extends Command
         }
 
         // mnove user account
-        if (($merge->is_user) and (! $keep->is_user)) {
+        if (($merge->is_user) and (!$keep->is_user)) {
             Log::info('need to move user account');
             $user = $merge->user;
             $user->member()->associate($keep);
@@ -209,7 +211,8 @@ class MemberCleanup extends Command
         }
 
         // remove member
-        if ((! $merge->is_user) and (! $merge->memberships()->exists())) {
+        if ((!$merge->is_user) and (!$merge->memberships()->exists())) {
+            $merge->invitation()->delete();
             $merge->delete();
             Log::notice('Duplicate member removed', ['member' => $merge]);
         }
