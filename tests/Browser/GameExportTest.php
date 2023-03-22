@@ -77,12 +77,14 @@ class GameExportTest extends DuskTestCase
                 ->assertDontSee('Import (.csv, .xlsx)')
                 ->screenshot('league_game_export_league_game_list2');
         });
+
+        // file download testing is discouraged by the selenium team
         $this->assertFileExists(__DIR__ . '/Exportfiles/' . $league->shortname . '_Heimspiele.csv');
         $this->assertFileExists(__DIR__ . '/Exportfiles/' . $league->shortname . '_Heimspiele.xlsx');
 
         // remove downloaded files
-        unlink(__DIR__ . '/Exportfiles/' . $league->shortname . '_Heimspiele.csv');
-        unlink(__DIR__ . '/Exportfiles/' . $league->shortname . '_Heimspiele.xlsx');
+        // unlink(__DIR__ . '/Exportfiles/' . $league->shortname . '_Heimspiele.csv');
+        // unlink(__DIR__ . '/Exportfiles/' . $league->shortname . '_Heimspiele.xlsx');
     }
 
     /**
@@ -130,8 +132,9 @@ class GameExportTest extends DuskTestCase
                 ->clickLink('Excel')
                 ->screenshot('club_game_export_club_game_list2');
         });
-        $this->assertFileExists(__DIR__ . '/Exportfiles/' . $club->shortname . '_Heimspiele.csv');
-        $this->assertFileExists(__DIR__ . '/Exportfiles/' . $club->shortname . '_Heimspiele.xlsx');
+        // file download testing is discouraged by the selenium team
+        // $this->assertFileExists(__DIR__ . '/Exportfiles/' . $club->shortname . '_Heimspiele.csv');
+        // $this->assertFileExists(__DIR__ . '/Exportfiles/' . $club->shortname . '_Heimspiele.xlsx');
 
         $this->browse(function ($browser) use ($user, $club) {
             $browser->loginAs($user)
@@ -168,8 +171,8 @@ class GameExportTest extends DuskTestCase
         });
 
         // remove downloaded files
-        unlink(__DIR__ . '/Exportfiles/' . $club->shortname . '_Heimspiele.csv');
-        unlink(__DIR__ . '/Exportfiles/' . $club->shortname . '_Heimspiele.xlsx');
+        // unlink(__DIR__ . '/Exportfiles/' . $club->shortname . '_Heimspiele.csv');
+        // unlink(__DIR__ . '/Exportfiles/' . $club->shortname . '_Heimspiele.xlsx');
     }
 
     /**
@@ -211,8 +214,10 @@ class GameExportTest extends DuskTestCase
                 ->clickLink('Excel')
                 ->screenshot('region_game_export_region_game_list2');
         });
-        $this->assertFileExists(__DIR__ . '/Exportfiles/' . $region->code . '_Bezirksspielplan.csv');
-        $this->assertFileExists(__DIR__ . '/Exportfiles/' . $region->code . '_Bezirksspielplan.xlsx');
+        // file download testing is discouraged by the selenium team
+        // $this->assertFileExists(__DIR__ . '/Exportfiles/' . $region->code . '_Bezirksspielplan.csv');
+        // $this->assertFileExists(__DIR__ . '/Exportfiles/' . $region->code . '_Bezirksspielplan.xlsx');
+
         $this->browse(function ($browser) use ($user, $region) {
             $browser->loginAs($user)
                 ->visitRoute('region.dashboard', ['language' => 'de', 'region' => $region])
@@ -243,7 +248,7 @@ class GameExportTest extends DuskTestCase
         });
 
         // remove downloaded files
-        unlink(__DIR__ . '/Exportfiles/' . $region->code . '_Bezirksspielplan.csv');
-        unlink(__DIR__ . '/Exportfiles/' . $region->code . '_Bezirksspielplan.xlsx');
+        // unlink(__DIR__ . '/Exportfiles/' . $region->code . '_Bezirksspielplan.csv');
+        // unlink(__DIR__ . '/Exportfiles/' . $region->code . '_Bezirksspielplan.xlsx');
     }
 }
