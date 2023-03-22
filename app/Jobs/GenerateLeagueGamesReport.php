@@ -52,14 +52,14 @@ class GenerateLeagueGamesReport implements ShouldQueue
         $this->rtype = $rtype;
 
         // make sure folders are there
-        if (! Storage::exists($this->region->league_folder)) {
+        if (!Storage::exists($this->region->league_folder)) {
             // clean folder
             Storage::makeDirectory($this->region->league_folder);
         }
 
         $this->export_folder = $region->league_folder;
-        $this->rpt_name = $this->export_folder.'/'.$this->league->shortname;
-        $this->rpt_name .= '_'.Report::LeagueGames()->getReportFilename();
+        $this->rpt_name = $this->export_folder . '/' . Str::slug($this->league->shortname);
+        $this->rpt_name .= '_' . Report::LeagueGames()->getReportFilename();
     }
 
     /**
@@ -77,10 +77,10 @@ class GenerateLeagueGamesReport implements ShouldQueue
         }
         $version = $this->get_report_version($this->region, Report::LeagueGames());
         // move previous versions
-        $this->move_old_report($this->region, $this->export_folder, '_'.Report::LeagueGames()->getReportFilename());
+        $this->move_old_report($this->region, $this->export_folder, '_' . Report::LeagueGames()->getReportFilename());
 
         foreach ($this->rtype->getFlags() as $rtype) {
-            $rpt_name = $this->rpt_name.'_v'.$version.'.'.$rtype->description;
+            $rpt_name = $this->rpt_name . '_v' . $version . '.' . $rtype->description;
             $rpt_name = Str::replace(' ', '-', $rpt_name);
 
             Log::info('[JOB][LEAGUE GAMES REPORTS] started.', [
