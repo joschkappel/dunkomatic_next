@@ -9,6 +9,7 @@ use App\Models\Game;
 use App\Models\League;
 use App\Traits\ReportJobStatus;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class GenerateLeagueReportsTest extends TestCase
@@ -48,8 +49,8 @@ class GenerateLeagueReportsTest extends TestCase
             Storage::delete($files);
         }
 
-        $report = $folder.'/'.$this->testleague->shortname;
-        $report .= '_'.Report::LeagueGames()->getReportFilename().'_v'.$this->report_job->version.'.pdf';
+        $report = $folder . '/' . Str::slug($this->testleague->shortname);
+        $report .= '_' . Report::LeagueGames()->getReportFilename() . '_v' . $this->report_job->version . '.pdf';
 
         $job_instance = resolve(GenerateLeagueGamesReport::class, ['region' => $region, 'league' => $this->testleague, 'rtype' => ReportFileType::PDF()]);
         app()->call([$job_instance, 'handle']);
@@ -74,8 +75,8 @@ class GenerateLeagueReportsTest extends TestCase
         $files = Storage::allFiles($folder);
         Storage::delete($files);
 
-        $report = $folder.'/'.$this->testleague->shortname;
-        $report .= '_'.Report::LeagueGames()->getReportFilename().'_v'.$this->report_job->version.'.xlsx';
+        $report = $folder . '/' . Str::slug($this->testleague->shortname);
+        $report .= '_' . Report::LeagueGames()->getReportFilename() . '_v' . $this->report_job->version . '.xlsx';
 
         $job_instance = resolve(GenerateLeagueGamesReport::class, ['region' => $region, 'league' => $this->testleague, 'rtype' => ReportFileType::XLSX()]);
         app()->call([$job_instance, 'handle']);
@@ -102,8 +103,8 @@ class GenerateLeagueReportsTest extends TestCase
         $files = Storage::allFiles($folder);
         Storage::delete($files);
 
-        $report = $folder.'/'.$this->testleague->shortname;
-        $report .= '_'.Report::LeagueGames()->getReportFilename().'_v'.$this->report_job->version.'.ics';
+        $report = $folder . '/' . Str::slug($this->testleague->shortname);
+        $report .= '_' . Report::LeagueGames()->getReportFilename() . '_v' . $this->report_job->version . '.ics';
 
         $job_instance = resolve(GenerateLeagueGamesReport::class, ['region' => $region, 'league' => $this->testleague, 'rtype' => ReportFileType::ICS()]);
         app()->call([$job_instance, 'handle']);

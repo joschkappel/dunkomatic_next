@@ -9,6 +9,7 @@ use App\Models\Game;
 use App\Models\League;
 use App\Traits\ReportJobStatus;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -51,8 +52,8 @@ class GenerateClubReportsTest extends TestCase
             Storage::delete($files);
         }
 
-        $report = $folder.'/'.$club->shortname;
-        $report .= '_'.Report::ClubGames()->getReportFilename().'_v'.$this->report_job->version.'.pdf';
+        $report = $folder . '/' . Str::slug($club->shortname);
+        $report .= '_' . Report::ClubGames()->getReportFilename() . '_v' . $this->report_job->version . '.pdf';
 
         $job_instance = resolve(GenerateClubGamesReport::class, ['region' => $region, 'club' => $club, 'rtype' => ReportFileType::PDF(),  'league' => $league]);
         app()->call([$job_instance, 'handle']);
@@ -81,8 +82,8 @@ class GenerateClubReportsTest extends TestCase
         // Excel::fake();
         Storage::assertExists($folder);
 
-        $report = $folder.'/'.$club->shortname;
-        $report .= '_'.Report::RegionGames()->getReportFilename().'_v'.$this->report_job->version.'.xlsx';
+        $report = $folder . '/' . Str::slug($club->shortname);
+        $report .= '_' . Report::RegionGames()->getReportFilename() . '_v' . $this->report_job->version . '.xlsx';
 
         $files = Storage::allFiles($folder);
         Storage::delete($files);
@@ -114,7 +115,7 @@ class GenerateClubReportsTest extends TestCase
         $folder = $region->club_folder;
         Storage::assertExists($folder);
 
-        $report = $folder.'/'.$club->shortname;
+        $report = $folder . '/' . Str::slug($club->shortname);
 
         $files = Storage::allFiles($folder);
         Storage::delete($files);
@@ -122,8 +123,8 @@ class GenerateClubReportsTest extends TestCase
         $job_instance = resolve(GenerateClubGamesReport::class, ['region' => $region, 'club' => $club, 'rtype' => ReportFileType::ICS(),  'league' => $league]);
         app()->call([$job_instance, 'handle']);
 
-        Storage::assertExists($report.'_'.Report::ClubGames()->getReportFilename().'_v'.$this->report_job->version.'.ics');
-        Storage::assertExists($report.'_Heimspielplan_v'.$this->report_job->version.'.ics');
-        Storage::assertExists($report.'_Schiriplan_v'.$this->report_job->version.'.ics');
+        Storage::assertExists($report . '_' . Report::ClubGames()->getReportFilename() . '_v' . $this->report_job->version . '.ics');
+        Storage::assertExists($report . '_Heimspielplan_v' . $this->report_job->version . '.ics');
+        Storage::assertExists($report . '_Schiriplan_v' . $this->report_job->version . '.ics');
     }
 }
