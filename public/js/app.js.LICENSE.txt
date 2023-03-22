@@ -83,14 +83,14 @@
  */
 
 /*!
- * Sizzle CSS Selector Engine v2.3.6
+ * Sizzle CSS Selector Engine v2.3.10
  * https://sizzlejs.com/
  *
  * Copyright JS Foundation and other contributors
  * Released under the MIT license
  * https://js.foundation/
  *
- * Date: 2021-02-16
+ * Date: 2023-02-14
  */
 
 /*!
@@ -115,11 +115,11 @@
  */
 
 /*!
- * bootstrap-fileinput v5.2.7
+ * bootstrap-fileinput v5.5.2
  * http://plugins.krajee.com/file-input
  *
  * Author: Kartik Visweswaran
- * Copyright: 2014 - 2021, Kartik Visweswaran, Krajee.com
+ * Copyright: 2014 - 2022, Kartik Visweswaran, Krajee.com
  *
  * Licensed under the BSD-3-Clause
  * https://github.com/kartik-v/bootstrap-fileinput/blob/master/LICENSE.md
@@ -133,7 +133,7 @@
  */
 
 /*!
- * jQuery JavaScript Library v3.6.1
+ * jQuery JavaScript Library v3.6.4
  * https://jquery.com/
  *
  * Includes Sizzle.js
@@ -143,7 +143,7 @@
  * Released under the MIT license
  * https://jquery.org/license
  *
- * Date: 2022-08-26T17:52Z
+ * Date: 2023-03-08T15:28Z
  */
 
 /*! Bootstrap 4 integration for DataTables' FixedColumns
@@ -151,7 +151,7 @@
  */
 
 /*! Bootstrap 4 integration for DataTables' Responsive
- * ©2016 SpryMedia Ltd - datatables.net/license
+ * © SpryMedia Ltd - datatables.net/license
  */
 
 /*! Bootstrap 4 styling wrapper for ColReorder
@@ -162,64 +162,32 @@
  * ©2018 SpryMedia Ltd - datatables.net/license
  */
 
-/*! Bootstrap 4 styling wrapper for RowReorder
- * ©2018 SpryMedia Ltd - datatables.net/license
- */
-
-/*! Bootstrap 4 styling wrapper for Scroller
- * ©2018 SpryMedia Ltd - datatables.net/license
- */
-
-/*! Bootstrap 4 styling wrapper for Select
- * ©2018 SpryMedia Ltd - datatables.net/license
- */
-
 /*! Bootstrap integration for DataTables' Buttons
  * ©2016 SpryMedia Ltd - datatables.net/license
  */
 
-/*! ColReorder 1.6.0
- * ©2010-2022 SpryMedia Ltd - datatables.net/license
+/*! ColReorder 1.6.2
+ * © SpryMedia Ltd - datatables.net/license
  */
 
-/*! DataTables 1.12.1
- * ©2008-2022 SpryMedia Ltd - datatables.net/license
+/*! DataTables 1.13.4
+ * ©2008-2023 SpryMedia Ltd - datatables.net/license
  */
 
 /*! DataTables Bootstrap 4 integration
  * ©2011-2017 SpryMedia Ltd - datatables.net/license
  */
 
-/*! FixedColumns 4.2.0
-     * 2019-2022 SpryMedia Ltd - datatables.net/license
+/*! FixedColumns 4.2.2
+     * © SpryMedia Ltd - datatables.net/license
      */
 
-/*! FixedColumns 4.2.0
- * 2019-2022 SpryMedia Ltd - datatables.net/license
+/*! FixedColumns 4.2.2
+ * © SpryMedia Ltd - datatables.net/license
  */
 
-/*! KeyTable 2.6.4
- * ©2009-2021 SpryMedia Ltd - datatables.net/license
- */
-
-/*! Responsive 2.2.9
- * 2014-2021 SpryMedia Ltd - datatables.net/license
- */
-
-/*! RowGroup 1.2.0
- * ©2017-2022 SpryMedia Ltd - datatables.net/license
- */
-
-/*! RowReorder 1.2.8
- * 2015-2020 SpryMedia Ltd - datatables.net/license
- */
-
-/*! Scroller 2.0.7
- * ©2011-2022 SpryMedia Ltd - datatables.net/license
- */
-
-/*! Select for DataTables 1.4.0-dev
- * 2015-2021 SpryMedia Ltd - datatables.net/license/mit
+/*! Select for DataTables 1.6.2
+ * © SpryMedia Ltd - datatables.net/license/mit
  */
 
 /*! Select2 4.0.13 | https://github.com/select2/select2/blob/master/LICENSE.md */
@@ -230,7 +198,7 @@
 
 /*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
 
-/*! pdfmake v0.2.6, @license MIT, @link http://pdfmake.org */
+/*! pdfmake v0.2.7, @license MIT, @link http://pdfmake.org */
 
 /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */
 
@@ -305,4 +273,4 @@
 
 //! moment.js locale configuration
 
-//! version : 0.5.38
+//! version : 0.5.41
