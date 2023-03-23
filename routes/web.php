@@ -116,8 +116,6 @@ Route::group([
         Route::get('regions/dt', [RegionController::class, 'datatable'])->name('region.list.dt')->middleware('can:view-regions');
         Route::get('region/{region}/dashboard', [RegionController::class, 'dashboard'])->name('region.dashboard')->middleware('can:access,region');
         Route::get('region/{region}/briefing', [RegionController::class, 'briefing'])->name('region.briefing')->middleware('can:view-regions');
-        Route::get('region/{region}/game/upload', [RegionGameController::class, 'upload'])->name('region.upload.game');
-        Route::post('region/{region}/game/ref/import', [RegionGameController::class, 'import_referees'])->name('region.import.refgame');
 
         Route::get('club/{club}/dashboard', [ClubController::class, 'dashboard'])->name('club.dashboard')->middleware('can:access,club');
         Route::get('club/{club}/briefing', [ClubController::class, 'briefing'])->name('club.briefing')->middleware('can:view-clubs');
@@ -163,8 +161,12 @@ Route::group([
             Route::get('user/{user}/message/dt', [MessageController::class, 'datatable_user'])->name('message.user.dt');
 
             Route::get('member', [MemberController::class, 'index'])->name('member.index')->middleware('can:view-members');
-            Route::get('game', [GameController::class, 'index'])->name('game.index')->middleware('can:view-games');
             Route::get('game/datatable', [GameController::class, 'datatable'])->name('game.datatable')->middleware('can:view-games');
+            Route::get('game/upload', [GameController::class, 'upload'])->name('game.upload')->middleware('can:create-games');
+            Route::get('game', [GameController::class, 'index'])->name('game.index')->middleware('can:view-games');
+            Route::get('game/upload', [RegionGameController::class, 'upload'])->name('region.upload.game');
+            Route::post('game/ref/import', [RegionGameController::class, 'import_referees'])->name('region.import.refgame');
+            Route::post('game/import', [RegionGameController::class, 'import'])->name('game.import')->middleware('can:create-games');
 
             Route::get('address/role/{role}', [AddressController::class, 'index_byrole'])->name('address.index_byrole')->middleware('can:view-members');
             Route::get('address/role/{role}/dt', [AddressController::class, 'index_byrole_dt'])->name('address.index_byrole.dt')->middleware('can:view-members');

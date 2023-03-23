@@ -76,4 +76,18 @@ class GameController extends Controller
         //Log::debug(print_r($glist,true));
         return $glist;
     }
+
+    /**
+     * view to upload game files
+     *
+     * @param  string  $language
+     * @param  \App\Models\Region  $region
+     * @return \Illuminate\View\View
+     */
+    public function upload($language, Region $region)
+    {
+        Log::info('showing game upload view.');
+
+        return view('game.game_file_upload', ['cardTitle' =>  __('region.title.game.import'), 'uploadRoute' => 'region.import.customgame', 'context' => 'customgames']);
+    }
 }

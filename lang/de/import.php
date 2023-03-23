@@ -21,5 +21,7 @@ return [
     'league.uploadhint.1' => 'Die Datei muss in einem dieser Formate vorliegen: .xlsx oder .csv (Komma als Trenner)',
     'league.uploadhint.2' => 'Die erste Zeile muß folgende Spaltenüberschriften enthalten: "Nr","Datum Spieltag","Beginn","Heim","Gast","Halle","Schiri 1","Schiri 2".',
     'league.uploadhint.3' => 'Es können alle Daten (nicht die Schiedsrichter) geändert oder neu angefügt werden.',
-
+    'customgames.uploadhint.1' => 'Die Datei muss in einem dieser Formate vorliegen: .xlsx oder .csv (Komma als Trenner)',
+    'customgames.uploadhint.2' => 'Die erste Zeile MUSS folgende Spaltenüberschriften enthalten: "Runde, Nr, Datum Spieltag, Beginn, Heim, Gast, Halle, Schiedsrichter".',
+    'customgames.uploadhint.3' => 'Es werden nur Spiele für Runden ohne Rahmenterminplan übernommen !',
 ];
