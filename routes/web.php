@@ -164,7 +164,7 @@ Route::group([
             Route::get('game/datatable', [GameController::class, 'datatable'])->name('game.datatable')->middleware('can:view-games');
             Route::get('game/upload', [GameController::class, 'upload'])->name('game.upload')->middleware('can:create-games');
             Route::get('game', [GameController::class, 'index'])->name('game.index')->middleware('can:view-games');
-            Route::get('game/upload', [RegionGameController::class, 'upload'])->name('region.upload.game');
+            Route::get('game/refs/upload', [RegionGameController::class, 'upload'])->name('region.upload.game');
             Route::post('game/ref/import', [RegionGameController::class, 'import_referees'])->name('region.import.refgame');
             Route::post('game/import', [RegionGameController::class, 'import'])->name('game.import')->middleware('can:create-games');
 
