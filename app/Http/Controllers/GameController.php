@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Game;
 use App\Models\Region;
-use Datatables;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class GameController extends Controller
 {
+
     /**
      * view with all games for a regions
      *

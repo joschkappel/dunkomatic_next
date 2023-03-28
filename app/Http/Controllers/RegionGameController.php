@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Imports\RefereesImport;
 use App\Imports\CustomLeagueGameImport;
 use App\Models\Region;
+use App\Traits\ImportErrorHandler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Arr;
@@ -12,6 +13,8 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class RegionGameController extends Controller
 {
+    use ImportErrorHandler;
+
     /**
      * Show the form for uploading game files
      *
@@ -78,17 +81,9 @@ class RegionGameController extends Controller
             $gImport = new CustomLeagueGameImport($region);
             Excel::import($gImport, $request->gfile->store('temp'));
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-            $failures = Arr::sortRecursive($e->failures());
-            $ebag = [];
-            $frow = 0;
-            foreach ($failures as $failure) {
-                if ($frow != $failure->row()) {
-                    $ebag[] = '---';
-                }
-                $ebag[] = __('import.row') . ' "' . $failure->row() . '", ' . __('import.column') . ' "' . $failure->attribute() . '": ' . $gImport->buildValidationMessage($failure->errors()[0], $failure->values(), $failure->attribute());
-                $frow = $failure->row();
-            }
-            Log::warning('errors found in import data.', ['count' => count($failures)]);
+            $ebag = $this->detailedHtmlErrors(Arr::sortRecursive($e->failures()));
+
+            $this->excelValidationErrors($request->gfile, Arr::sortRecursive($e->failures()));
 
             return redirect()->back()->withErrors($ebag);
         }
