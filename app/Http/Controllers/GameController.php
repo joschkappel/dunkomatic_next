@@ -87,7 +87,8 @@ class GameController extends Controller
     public function upload($language, Region $region)
     {
         Log::info('showing game upload view.');
+        $uploadroute = route('region.import.customgame', ['language' => $language, 'region' => $region]);
 
-        return view('game.game_file_upload', ['cardTitle' =>  __('region.title.game.import'), 'uploadRoute' => 'region.import.customgame', 'context' => 'customgames']);
+        return view('game.game_file_upload', ['cardTitle' =>  __('region.title.game.import'), 'uploadRoute' => $uploadroute, 'context' => 'customgames']);
     }
 }

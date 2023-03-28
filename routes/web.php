@@ -166,7 +166,7 @@ Route::group([
             Route::get('game', [GameController::class, 'index'])->name('game.index')->middleware('can:view-games');
             Route::get('game/refs/upload', [RegionGameController::class, 'upload'])->name('region.upload.game');
             Route::post('game/ref/import', [RegionGameController::class, 'import_referees'])->name('region.import.refgame');
-            Route::post('game/import', [RegionGameController::class, 'import'])->name('game.import')->middleware('can:create-games');
+            Route::post('game/custom/import', [RegionGameController::class, 'import'])->name('region.import.customgame')->middleware('can:create-games');
 
             Route::get('address/role/{role}', [AddressController::class, 'index_byrole'])->name('address.index_byrole')->middleware('can:view-members');
             Route::get('address/role/{role}/dt', [AddressController::class, 'index_byrole_dt'])->name('address.index_byrole.dt')->middleware('can:view-members');
