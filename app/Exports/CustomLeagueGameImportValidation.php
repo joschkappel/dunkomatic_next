@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Traits\ImportErrorHandler;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Illuminate\Support\Facades\Log;
@@ -11,33 +12,34 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 class CustomLeagueGameImportValidation implements FromCollection, WithStyles
 {
-    private array $rows;
-    private array $errors;
+    use ImportErrorHandler;
 
-    public function __construct(array $rows, array $errors)
+    private array $rows;
+    private array $failures;
+
+    public function __construct(array $rows, array $failures)
     {
         $this->rows = $rows;
-        $this->errors = $errors;
+        $this->failures = $failures;
     }
 
     public function collection()
     {
-        // add error to rows
-        foreach ($this->errors as $err) {
-            array_push($this->rows[$err->row() - 1], $err->errors()[0]);
-        }
         return collect($this->rows);
     }
     public function styles(Worksheet $sheet)
     {
         // set error style
-        foreach ($this->errors as $err) {
+        foreach ($this->failures as $err) {
             // $sheet->getStyle('B2')->getFont()->setBold(true);
-            $sheet->getComment('A' . $err->row())->getText()->createTextRun('Error: ' . $err->errors()[0]);
-            $sheet->getStyle('B2')->getFill()
+            [$erow, $ecol, $etxt] = $this->buildValidationMessage($err);
+            $ecol = chr($ecol + 65);
+
+            $sheet->getComment($ecol . $erow)->getText()->createTextRun($etxt . ' - ');
+            $sheet->getStyle($ecol . $erow)->getFill()
                 ->setFillType(Fill::FILL_SOLID)
                 ->getStartColor()
-                ->setARGB('DD4B39');
+                ->setARGB('FFB266');
         }
     }
 }

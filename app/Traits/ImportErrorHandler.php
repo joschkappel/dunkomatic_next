@@ -19,7 +19,9 @@ trait ImportErrorHandler
             if ($frow != $failure->row()) {
                 $ebag[] = '---';
             }
-            $ebag[] = __('import.row') . ' "' . $failure->row() . '", ' . __('import.column') . ' "' . $failure->attribute() . '": ' . $this->buildValidationMessage($failure->errors()[0], $failure->values(), $failure->attribute());
+            [$erow, $ecol, $etxt] = $this->buildValidationMessage($failure);
+
+            $ebag[] = __('import.row') . ' "' . $failure->row() . '", ' . __('import.column') . ' "' . $failure->attribute() . '": ' . $etxt;
             $frow = $failure->row();
         }
         Log::warning('errors found in import data.', ['count' => count($failures)]);
@@ -31,6 +33,8 @@ trait ImportErrorHandler
     {
         $gImport = new ImportValidationResults($importFile, $failures);
         Excel::import($gImport, $importFile->store('temp'));
+
+        return (array('pls download the file. its marked up with cells taht need ocrrection'));
     }
 
 
@@ -41,11 +45,16 @@ trait ImportErrorHandler
      * @param  string  $attribute
      * @return string
      */
-    public function buildValidationMessage(string $error_code, array $values, string $attribute): string
+    public function buildValidationMessage($failure): array
     {
         // Log::debug($error_code);
+        $error_code = $failure->errors()[0];
+        $values = $failure->values();
+        $attribute = $failure->attribute();
         $ec = explode('-', $error_code)[0];
         $value = $values[strval(explode('-', $error_code)[1])];
+        $ecol = explode('-', $error_code)[1];
+        $erow = $failure->row();
 
         switch ($ec) {
             case 'V.R':
@@ -108,6 +117,6 @@ trait ImportErrorHandler
         }
 
         // Log::debug($err_txt);
-        return $err_txt;
+        return array($erow, $ecol, $err_txt);
     }
 }

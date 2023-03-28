@@ -81,9 +81,15 @@ class RegionGameController extends Controller
             $gImport = new CustomLeagueGameImport($region);
             Excel::import($gImport, $request->gfile->store('temp'));
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-            $ebag = $this->detailedHtmlErrors(Arr::sortRecursive($e->failures()));
 
-            $this->excelValidationErrors($request->gfile, Arr::sortRecursive($e->failures()));
+            $fileType = $request->gfile->getClientOriginalExtension();
+            if ($fileType  == 'csv') {
+                // if CSV do HTML return
+                $ebag = $this->detailedHtmlErrors(Arr::sortRecursive($e->failures()));
+            } elseif ($fileType == 'xlsx') {
+                // if excel return markedup excel file
+                $ebag = $this->excelValidationErrors($request->gfile, Arr::sortRecursive($e->failures()));
+            }
 
             return redirect()->back()->withErrors($ebag);
         }
