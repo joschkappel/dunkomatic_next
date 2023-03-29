@@ -7,6 +7,8 @@ use App\Imports\ImportValidationResults;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\MessageBag;
+use Illuminate\Support\Facades\Storage;
 
 trait ImportErrorHandler
 {
@@ -33,8 +35,13 @@ trait ImportErrorHandler
     {
         $gImport = new ImportValidationResults($importFile, $failures);
         Excel::import($gImport, $importFile->store('temp'));
+        $errors = new MessageBag();
+        $errors->add('file', 'pls download the file. its marked up with cells that need correction');
+        $errors->add('file', 'pls correct the marked cells (see comments for details) and re-import');
+        $resultFile =   'Validated_' . $importFile->getClientOriginalName();
+        $errors->add('downloadurl', route('download.validated', ['file' => $resultFile]));
 
-        return (array('pls download the file. its marked up with cells taht need ocrrection'));
+        return ($errors);
     }
 
 

@@ -230,6 +230,7 @@ Route::middleware([
     Route::redirect('/', '/de/signin');
     Route::redirect('home', '/de/home');
     Route::post('contac-us', [HomeController::class, 'send_feedback'])->name('contact.feedback');
+    Route::get('import/validated/{file}', [FileDownloadController::class, 'get_import_validation_errors'])->name('download.validated');
 
     Route::post('region', [RegionController::class, 'store'])->name('region.store')->middleware('can:create-regions');
     Route::put('region/{region}', [RegionController::class, 'update'])->name('region.update')->middleware('can:update-regions');

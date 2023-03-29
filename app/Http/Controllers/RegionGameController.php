@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Arr;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
 
 class RegionGameController extends Controller
 {
@@ -86,12 +87,15 @@ class RegionGameController extends Controller
             if ($fileType  == 'csv') {
                 // if CSV do HTML return
                 $ebag = $this->detailedHtmlErrors(Arr::sortRecursive($e->failures()));
+                return back()->withErrors($ebag, 'default');
             } elseif ($fileType == 'xlsx') {
                 // if excel return markedup excel file
                 $ebag = $this->excelValidationErrors($request->gfile, Arr::sortRecursive($e->failures()));
+                return back()->withErrors($ebag, 'file');
+            } else {
+                return back()->withErrors(['something went  horribly wrong :-('], 'default');
             }
 
-            return redirect()->back()->withErrors($ebag);
         }
 
         return redirect()->back()->with(['status' => 'All data imported']);

@@ -15,19 +15,36 @@
         </div>
     </div>
 
-    @if ($errors->any())
+    @if ($errors->hasBag('default'))
         <div class="alert alert-danger" role="alert">
             @lang('game.import.failure')
         </div>
 
         <div class="form-group row">
             <div class="col-sm-10">
-            @foreach ($errors->all() as $message)
-                <div class="text-danger">{!! $message !!}</div>
-            @endforeach
+                @foreach ($errors->display->all() as $message)
+                    <div class="text-danger">{!! $message !!}</div>
+                @endforeach
             </div>
         </div>
     @endif
+    @if ($errors->hasBag('file'))
+        <div class="alert alert-danger" role="alert">
+            @lang('game.import.failure')
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-6">
+                @foreach ($errors->file->get('file') as $message)
+                <div class="text-danger">{!! $message !!}</div>
+                @endforeach
+            </div>
+            <div class="col-sm-4">
+                <a type="button" class="btn btn-danger m-2" href="{{ $errors->file->first('downloadurl') }}"">Download Validation Errors</a>
+            </div>
+        </div>
+    @endif
+
 
     <x-slot name="addButtons">
         <button type="button" class="btn btn-secondary mr-2" id="frmReset">{{ __('Reset')}}</button>

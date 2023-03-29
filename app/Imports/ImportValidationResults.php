@@ -30,5 +30,6 @@ class ImportValidationResults implements ToCollection
             null,
             \Maatwebsite\Excel\Excel::XLSX
         );
+
     }
 }
