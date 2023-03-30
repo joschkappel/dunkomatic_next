@@ -26,7 +26,6 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MembershipController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\RegionController;
-use App\Http\Controllers\RegionGameController;
 use App\Http\Controllers\RegionMembershipController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ScheduleController;
@@ -34,6 +33,9 @@ use App\Http\Controllers\ScheduleEventController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TeamMembershipController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UploadCustomLeaguesGamesController;
+use App\Http\Controllers\UploadGameRefereesController;
+use App\Http\Controllers\UploadClubGamesController;
 use App\Http\Livewire\Admininfo\AdminInfo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -126,8 +128,8 @@ Route::group([
         Route::get('club/{club}/edit', [ClubController::class, 'edit'])->name('club.edit')->middleware('can:update-clubs');
         Route::get('club/{club}/team/dt', [ClubController::class, 'team_dt'])->name('club.team.dt');
 
-        Route::get('club/{club}/game/upload', [ClubGameController::class, 'upload'])->name('club.upload.homegame');
-        Route::post('club/{club}/game/import', [ClubGameController::class, 'import'])->name('club.import.homegame');
+        Route::get('club/{club}/game/upload', [UploadClubGamesController::class, 'upload'])->name('club.upload.homegame');
+        Route::post('club/{club}/game/import', [UploadClubGamesController::class, 'import'])->name('club.import.homegame');
         Route::get('club/{club}/game/list_home', [ClubGameController::class, 'list_home'])->name('club.game.list_home')->middleware('can:view-games');
         Route::get('club/{club}/game/date/{game_date}', [ClubGameController::class, 'games_by_date_dt'])->name('club.game.bydate.dt')->middleware('can:view-games');
         Route::get('club/{club}/game/chart', [ClubGameController::class, 'chart'])->name('club.game.chart')->middleware('can:view-games');
@@ -164,9 +166,9 @@ Route::group([
             Route::get('game/datatable', [GameController::class, 'datatable'])->name('game.datatable')->middleware('can:view-games');
             Route::get('game/upload', [GameController::class, 'upload'])->name('game.upload')->middleware('can:create-games');
             Route::get('game', [GameController::class, 'index'])->name('game.index')->middleware('can:view-games');
-            Route::get('game/refs/upload', [RegionGameController::class, 'upload'])->name('region.upload.game');
-            Route::post('game/ref/import', [RegionGameController::class, 'import_referees'])->name('region.import.refgame');
-            Route::post('game/custom/import', [RegionGameController::class, 'import'])->name('region.import.customgame')->middleware('can:create-games');
+            Route::get('game/refs/upload', [UploadGameRefereesController::class, 'upload'])->name('region.upload.game');
+            Route::post('game/ref/import', [UploadGameRefereesController::class, 'import'])->name('region.import.refgame');
+            Route::post('game/custom/import', [UploadCustomLeaguesGamesController::class, 'importAllLeagues'])->name('region.import.customgame')->middleware('can:create-games');
 
             Route::get('address/role/{role}', [AddressController::class, 'index_byrole'])->name('address.index_byrole')->middleware('can:view-members');
             Route::get('address/role/{role}/dt', [AddressController::class, 'index_byrole_dt'])->name('address.index_byrole.dt')->middleware('can:view-members');
@@ -174,8 +176,8 @@ Route::group([
 
         Route::resource('club.gym', ClubGymController::class)->shallow()->except('store', 'update', 'destroy', 'show');
 
-        Route::get('league/{league}/game/upload', [LeagueGameController::class, 'upload'])->name('league.upload.game');
-        Route::post('league/{league}/game/import', [LeagueGameController::class, 'import'])->name('league.import.game');
+        Route::get('league/{league}/game/upload', [UploadLeagueGamesController::class, 'upload'])->name('league.upload.game');
+        Route::post('league/{league}/game/import', [UploadLeagueGamesController::class, 'import'])->name('league.import.game');
         Route::get('league/{league}/dashboard', [LeagueController::class, 'dashboard'])->name('league.dashboard')->middleware('can:access,league');
         Route::get('league/{league}/briefing', [LeagueController::class, 'briefing'])->name('league.briefing')->middleware('can:view-leagues');
         Route::get('league/{league}', [LeagueController::class, 'show'])->name('league.show')->middleware('can:view-leagues');

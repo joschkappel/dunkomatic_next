@@ -3,7 +3,6 @@
 namespace App\Imports;
 
 use App\Models\Game;
-use App\Models\League;
 use App\Models\Club;
 use App\Models\Gym;
 use App\Models\Team;
@@ -37,19 +36,42 @@ class CustomLeagueGameImport implements ToCollection, WithStartRow, WithValidati
     public function collection(Collection $rows)
     {
         foreach ($rows as $row) {
-            $league_shortname = $row[0];
-            $game_no = $row[1];
-            $game_date = $row[2];
-            $game_time = $row[3];
-            $team_home = $row[4];
-            $team_guest = $row[5];
-            $gym = $row[6];
-            $ref1 = $row[7];
-
             if (isset($row['game_id'])) {
                 Log::debug('[IMPORT][REFEREES] importing row, updating game', ['row' => $row]);
+                Game::find($row['game_id'])->update([
+                    'game_date' => $row[2],
+                    'game_time' => $row[3],
+                    'club_id_home' => $row['club_home_id'],
+                    'region_id_home' => $row['region_home_id'],
+                    'team_id_home' => $row['team_home_id'],
+                    'team_char_home' => $row['team_home_char'],
+                    'club_id_guest' => $row['club_guest_id'],
+                    'region_id_guest' => $row['region_guest_id'],
+                    'team_id_guest' => $row['team_guest_id'],
+                    'team_char_guest' => $row['team_guest_char'],
+                    'gym_id' => $row['gym_id'],
+                    'referee_1' => $row[7],
+                ]);
             } else {
                 Log::debug('[IMPORT][REFEREES] importing row, creating game', ['row' => $row]);
+                Game::create([
+                    'game_no' => $row[1],
+                    'league_id' => $row['league_id'],
+                    'region_id_league' => $this->region->id,
+                    'game_date' => $row[2],
+                    'game_plandate' => $row[2],
+                    'game_time' => $row[3],
+                    'club_id_home' => $row['club_home_id'],
+                    'region_id_home' => $row['region_home_id'],
+                    'team_id_home' => $row['team_home_id'],
+                    'team_char_home' => $row['team_home_char'],
+                    'club_id_guest' => $row['club_guest_id'],
+                    'region_id_guest' => $row['region_guest_id'],
+                    'team_id_guest' => $row['team_guest_id'],
+                    'team_char_guest' => $row['team_guest_char'],
+                    'gym_id' => $row['gym_id'],
+                    'referee_1' => $row[7],
+                ]);
             }
         }
     }
@@ -135,14 +157,20 @@ class CustomLeagueGameImport implements ToCollection, WithStartRow, WithValidati
         $data['league_id'] = $league->id ?? null;
         $data['league_is_custom'] = $league->is_custom ?? false;
 
-        $data['club_home_id'] = Club::where('shortname', Str::substr($data[4], 0, 4))->first()->id ?? null;
+        $club_home = Club::where('shortname', Str::substr($data[4], 0, 4))->first();
+        $data['club_home_id'] = $club_home->id  ?? null;
+        $data['region_home_id'] = $club_home->region->id ?? null;
         $team_home = Team::where('club_id', $data['club_home_id'])->where('team_no', Str::substr($data[4], 4, 1))->where('league_id', $league->id ?? null)->first();
         $data['team_home_id'] = $team_home->id ?? null;
+        $data['team_home_char'] = $league->teams()->where('id', $data['team_home_id'])->first()->league_no ?? 1;
         $data['team_home_registered'] =  isset($team_home);
 
-        $data['club_guest_id'] = Club::where('shortname', Str::substr($data[5], 0, 4))->first()->id ?? null;
+        $club_guest = Club::where('shortname', Str::substr($data[5], 0, 4))->first();
+        $data['club_guest_id'] = $club_guest->id ?? null;
+        $data['region_guest_id'] = $club_guest->region->id ?? null;
         $team_guest = Team::where('club_id', $data['club_guest_id'])->where('team_no', Str::substr($data[5], 4, 1))->where('league_id', $league->id ?? null)->first();
         $data['team_guest_id'] = $team_guest->id ?? null;
+        $data['team_guest_char'] = $league->teams()->where('id', $data['team_guest_id'])->first()->league_no ?? 2;
         $data['team_guest_registered'] =  isset($team_guest);
 
         $data['game_id'] = Game::where('game_no', $data[1])
@@ -150,7 +178,7 @@ class CustomLeagueGameImport implements ToCollection, WithStartRow, WithValidati
             ->where('club_id_home', $data['club_home_id'])->first()->id ?? null;
         $data['gym_id'] = Gym::where('gym_no', $data[6])->where('club_id', $data['club_home_id'])->first()->id ?? null;
 
-        Log::debug($data);
+        // Log::debug($data);
         return $data;
     }
 

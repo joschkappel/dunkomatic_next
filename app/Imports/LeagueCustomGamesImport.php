@@ -54,7 +54,6 @@ class LeagueCustomGamesImport implements ToCollection, WithStartRow, WithValidat
                     'club_id_home' => $row['club_id_home'],
                     'region_id_home' => $row['region_id_home'],
                     'team_id_home' => $row['team_id_home'],
-                    'region_league_id' => $this->league->region->id,
                     'team_char_home' => $this->league->teams()->where('id', $row['team_id_home'])->first()->league_no ?? 1,
                     'club_id_guest' => $row['club_id_guest'],
                     'region_id_guest' => $row['region_id_guest'],
@@ -136,7 +135,7 @@ class LeagueCustomGamesImport implements ToCollection, WithStartRow, WithValidat
                 break;
 
             case 'GAME.B01':
-                $err_txt = __('validation.between.numeric', ['attribute' => $value, 'min' => '1', 'max' => $this->game_cnt]);
+                $err_txt = __('validation.between.numeric', ['attribute' => $value, 'min' => '1', 'max' => '240']);
                 break;
             case 'GAME.R01':
                 $err_txt = __('import.game_id.required', ['game' => $value, 'league' => $this->league->shortname, 'home' => Str::substr($values['3'], 0, 4)]);
