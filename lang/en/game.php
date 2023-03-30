@@ -35,6 +35,7 @@ return [
     'excel.export' => 'Export to Excel',
     'excel.import' => 'Import Excelfile',
     'gametime_format' => 'g:i A',
+    'gamedate_format' => 'm/d/y',
     'referee' => 'Referee',
     'team.gym' => 'Teams and Gyms',
     'import.success' => 'All data successfully imported',

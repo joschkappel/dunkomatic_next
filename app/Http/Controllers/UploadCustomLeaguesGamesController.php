@@ -3,19 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Region;
-
 use App\Imports\CustomLeagueGameImport;
-
-use App\Traits\ImportErrorHandler;
-
-use Maatwebsite\Excel\Facades\Excel;
+use App\Traits\ImportManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Arr;
 
 class UploadCustomLeaguesGamesController extends Controller
 {
-    use ImportErrorHandler;
+    use ImportManager;
 
     /**
      * create or update games for custom leagues
@@ -27,28 +22,20 @@ class UploadCustomLeaguesGamesController extends Controller
      */
     public function importAllLeagues(Request $request, $language, Region $region)
     {
+        $data = $request->validate([
+            'gfile' => 'required',
+        ]);
+
         Log::info('processing file upload.', ['region-id' => $region->id, 'file' => $request->gfile->getClientOriginalName()]);
 
-        try {
-            Log::info('validating import data.', ['region-id' => $region->id]);
-            $gImport = new CustomLeagueGameImport($region);
-            Excel::import($gImport, $request->gfile->store('temp'));
-        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+        $gImport = new CustomLeagueGameImport($region);
+        [$importOk, $errors, $bagName] = $this->importGames($data['gfile'], $gImport);
 
-            $fileType = $request->gfile->getClientOriginalExtension();
-            if ($fileType  == 'csv') {
-                // if CSV do HTML return
-                $ebag = $this->detailedHtmlErrors(Arr::sortRecursive($e->failures()));
-                return back()->withErrors($ebag, 'default');
-            } elseif ($fileType == 'xlsx') {
-                // if excel return markedup excel file
-                $ebag = $this->excelValidationErrors($request->gfile, Arr::sortRecursive($e->failures()));
-                return back()->withErrors($ebag, 'file');
-            } else {
-                return back()->withErrors(['something went  horribly wrong :-('], 'default');
-            }
+        if ($importOk) {
+            return back()->with($errors);
+        } else {
+            return back()->withErrors($errors, $bagName);
         }
 
-        return redirect()->back()->with(['status' => 'All data imported']);
     }
 }

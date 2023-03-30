@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Club;
 use App\Imports\HomeGamesImport;
+use App\Traits\ImportManager;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
@@ -11,6 +12,8 @@ use Illuminate\Support\Arr;
 
 class UploadClubGamesController extends Controller
 {
+    use ImportManager;
+
     /**
      * Show the form for uploading game files
      *
@@ -42,34 +45,17 @@ class UploadClubGamesController extends Controller
         $data = $request->validate([
             'gfile' => 'required',
         ]);
-        Log::info('upload form data validated OK.');
         Log::info('processing file upload.', ['club-id' => $club->id, 'file' => $data['gfile']->getClientOriginalName()]);
-        // Log::debug(print_r($request->all(),true));
-        //$fname = $request->gfile->getClientOriginalName();
-        //$fname = $club->shortname.'_homegames.'.$request->gfile->extension();
 
-        try {
-            // $hgImport->import($path, 'local', \Maatwebsite\Excel\Excel::XLSX);
-            Log::info('validating import data.', ['club-id' => $club->id]);
-            $hgImport = new HomeGamesImport();
-            Excel::import($hgImport, $request->gfile->store('temp'));
-        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-            $failures = Arr::sortRecursive($e->failures());
-            $ebag = [];
-            $frow = 0;
-            foreach ($failures as $failure) {
-                if ($frow != $failure->row()) {
-                    $ebag[] = '---';
-                }
-                $ebag[] = __('import.row') . ' "' . $failure->row() . '", ' . __('import.column') . ' "' . $failure->attribute() . '": ' . $hgImport->buildValidationMessage($failure->errors()[0], $failure->values(), $failure->attribute());
-                $frow = $failure->row();
-            }
-            Log::warning('errors found in import data.', ['count' => count($failures)]);
+        $hgImport = new HomeGamesImport();
 
-            return redirect()->back()->withErrors($ebag);
+        [$importOk, $errors, $bagName] = $this->importGames($data['gfile'], $hgImport);
+
+        if ($importOk) {
+            return back()->with($errors);
+        } else {
+            return back()->withErrors($errors, $bagName);
         }
 
-        return redirect()->back()->with(['status' => 'All data imported']);
-        //return redirect()->route('club.list.homegame', ['language'=>$language, 'club' => $club]);
     }
 }

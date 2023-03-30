@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Traits\ImportErrorHandler;
+use App\Traits\ImportManager;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithStyles;
@@ -11,7 +11,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 class CustomLeagueGameImportValidation implements FromCollection, WithStyles
 {
-    use ImportErrorHandler;
+    use ImportManager;
 
     private array $rows;
     private array $failures;

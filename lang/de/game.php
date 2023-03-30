@@ -34,6 +34,7 @@ return [
     'allregion' => 'Bezirksspielplan',
     'excel.import' => 'Import (.csv, .xlsx)',
     'gametime_format' => 'H:i',
+    'gamedate_format' => 'd.m.y',
     'referee' => 'Schiri',
     'team.gym' => 'Gegner und Hallen',
     'import.success' => 'Alle Daten wurden erfolgreich importiert',

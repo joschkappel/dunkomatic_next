@@ -15,7 +15,7 @@
         </div>
     </div>
 
-    @if ($errors->hasBag('default'))
+    @if ($errors->hasBag('display'))
         <div class="alert alert-danger" role="alert">
             @lang('game.import.failure')
         </div>

@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Imports\RefereesImport;
 use App\Models\Region;
-use App\Traits\ImportErrorHandler;
+use App\Traits\ImportManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 class UploadGameRefereesController extends Controller
 {
-    use ImportErrorHandler;
+    use ImportManager;
 
     /**
      * Show the form for uploading game files
@@ -39,26 +39,20 @@ class UploadGameRefereesController extends Controller
      */
     public function import(Request $request, $language, Region $region)
     {
-        // Log::debug(print_r($request->all(),true));
-        //$fname = $request->gfile->getClientOriginalName();
-        //$fname = $club->shortname.'_homegames.'.$request->gfile->extension();
+
+        $data = $request->validate([
+            'gfile' => 'required',
+        ]);
         Log::info('processing file upload.', ['region-id' => $region->id, 'file' => $request->gfile->getClientOriginalName()]);
 
-        try {
-            Log::info('validating import data.', ['region-id' => $region->id]);
-            $hgImport = new RefereesImport();
-            Excel::import($hgImport, $request->gfile->store('temp'));
-        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-            $failures = $e->failures();
-            $ebag = [];
-            foreach ($failures as $failure) {
-                $ebag[] = __('import.row') . ' "' . $failure->row() . '", ' . __('import.column') . ' "' . $failure->attribute() . ': ' . $failure->errors()[0];
-            }
-            Log::warning('errors found in import data.', ['count' => count($failures)]);
+        $hgImport = new RefereesImport();
 
-            return redirect()->back()->withErrors($ebag);
+        [$importOk, $errors, $bagName] = $this->importGames($data['gfile'], $hgImport);
+
+        if ($importOk) {
+            return back()->with($errors);
+        } else {
+            return back()->withErrors($errors, $bagName);
         }
-
-        return redirect()->back()->with(['status' => 'All data imported']);
     }
 }

@@ -36,6 +36,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UploadCustomLeaguesGamesController;
 use App\Http\Controllers\UploadGameRefereesController;
 use App\Http\Controllers\UploadClubGamesController;
+use App\Http\Controllers\UploadLeagueGamesController;
 use App\Http\Livewire\Admininfo\AdminInfo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
