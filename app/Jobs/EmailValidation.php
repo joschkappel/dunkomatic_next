@@ -45,8 +45,8 @@ class EmailValidation implements ShouldQueue
     public function handle()
     {
         $rules = [
-            'email1' => 'required|max:60|email:rfc,dns',
-            'email2' => 'nullable|max:60|email:rfc,dns',
+            'email1' => 'required|max:60|email:rfc',
+            'email2' => 'nullable|max:60|email:rfc',
         ];
 
         // SWITCHED OFF: USER EMAILS are validated at entry
