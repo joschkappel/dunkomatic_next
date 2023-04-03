@@ -449,4 +449,16 @@ class FileDownloadController extends Controller
             return abort(404);
         }
     }
+    /**
+     * download import file validation errors
+     *
+     * @param  string $file
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\RedirectResponse
+     */
+    public function get_import_validation_errors(string $file)
+    {
+        Log::notice('downloading import validatiopn error report', ['file' => $file]);
+
+        return Storage::download($file);
+    }
 }

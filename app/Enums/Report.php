@@ -73,11 +73,11 @@ final class Report extends Enum implements LocalizedEnum
             case 4:
                 return route('club_archive.get', ['club' => $model_id, 'format' => $format]);
                 break;
-            case 4:
+            case 5:
                 return route('league_archive.get', ['league' => $model_id, 'format' => $format]);
                 break;
             default:
-                Log::warning('unknown ReportFileType', ['type' => $this->value]);
+                Log::error('unknown ReportFileType', ['type' => $this->value]);
 
                 return 'unknown';
                 break;

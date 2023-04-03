@@ -26,7 +26,6 @@ class RefereesImport implements ToCollection, WithStartRow, WithValidation
             $ref1 = $row[8];
             $ref2 = $row[9];
             $game_id = $row[0];
-            $game_no = $row[5];
 
             $t = Game::find($game_id);
             if (isset($t)) {
@@ -54,7 +53,6 @@ class RefereesImport implements ToCollection, WithStartRow, WithValidation
             '0' => ['required', 'integer', 'exists:games,id'],
             '8' => ['nullable', 'string', 'max:4'],
             '9' => ['nullable', 'string', 'max:4'],
-            '5' => ['integer', 'between:1,240'],  // support 16-team leagues
         ];
     }
 
@@ -65,9 +63,22 @@ class RefereesImport implements ToCollection, WithStartRow, WithValidation
     {
         return [
             '0' => 'ID',
-            '5' => __('game.game_no'),
             '8' => __('game.referee').' 1',
             '9' => __('game.referee').' 2',
+        ];
+    }
+    public function customValidationMessages(): array
+    {
+        return [
+            '0.required' => 'V.R-0',
+            '0.integer' => 'V.I-0',
+            '0.exists' => 'GAME.R01-0',
+
+            '8.string' => 'V.S-8',
+            '8.max' => 'V.MAX-8',
+            '9.string' => 'V.S-9',
+            '9.max' => 'V.MAX-9',
+
         ];
     }
 }

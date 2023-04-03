@@ -54,7 +54,6 @@ class LeagueCustomGamesImport implements ToCollection, WithStartRow, WithValidat
                     'club_id_home' => $row['club_id_home'],
                     'region_id_home' => $row['region_id_home'],
                     'team_id_home' => $row['team_id_home'],
-                    'region_league_id' => $this->league->region->id,
                     'team_char_home' => $this->league->teams()->where('id', $row['team_id_home'])->first()->league_no ?? 1,
                     'club_id_guest' => $row['club_id_guest'],
                     'region_id_guest' => $row['region_id_guest'],
@@ -77,14 +76,16 @@ class LeagueCustomGamesImport implements ToCollection, WithStartRow, WithValidat
         return [
             '0' => ['required', 'integer'],
             'game_id' => ['nullable'],
-            '1' => ['required', 'date'],
+            '1' => ['required', 'date_format:' . __('game.gamedate_format')],
             '2' => ['required', 'date_format:'.__('game.gametime_format')],
-            '3' => ['required', 'string'],
+            '3' => ['required', 'string', 'size:5'],
             'club_id_home' => ['required'],
             'team_id_home' => ['required'],
-            '4' => ['required', 'string'],
+            'team_home_registered' => ['sometimes', 'accepted'],
+            '4' => ['required', 'string', 'size:5'],
             'club_id_guest' => ['required'],
             'team_id_guest' => ['required'],
+            'team_guest_registered' => ['sometimes', 'accepted'],
             '5' => ['required', 'integer', 'between:1,10'],
             'gym_id' => ['required'],
         ];
@@ -93,12 +94,23 @@ class LeagueCustomGamesImport implements ToCollection, WithStartRow, WithValidat
     public function prepareForValidation(array $data): array
     {
         $data['league_id'] = $this->league->id;
-        $data['club_id_home'] = Club::where('shortname', Str::substr($data[3], 0, 4))->first()->id ?? null;
-        $data['region_id_home'] = Club::where('shortname', Str::substr($data[3], 0, 4))->first()->region->id ?? null;
-        $data['team_id_home'] = Team::where('club_id', $data['club_id_home'])->where('team_no', Str::substr($data[3], -1, 1))->where('league_id', $data['league_id'])->first()->id ?? null;
-        $data['club_id_guest'] = Club::where('shortname', Str::substr($data[4], 0, 4))->first()->id ?? null;
-        $data['region_id_guest'] = Club::where('shortname', Str::substr($data[4], 0, 4))->first()->region->id ?? null;
-        $data['team_id_guest'] = Team::where('club_id', $data['club_id_guest'])->where('team_no', Str::substr($data[4], -1, 1))->where('league_id', $data['league_id'])->first()->id ?? null;
+
+        $club_home = Club::where('shortname', Str::substr($data[3], 0, 4))->first();
+        $data['club_id_home'] = $club_home->id ?? null;
+        $data['region_home_id'] = $club_home->region->id ?? null;
+        $team_home = Team::where('club_id', $data['club_id_home'])->where('team_no', Str::substr($data[3], -1, 1))->where('league_id', $data['league_id'])->first();
+        $data['team_id_home'] = $team_home->id ?? null;
+        $data['team_home_char'] = $team_home->league_no ?? 1;
+        $data['team_home_registered'] =  isset($team_home->league_id);
+
+        $club_guest = Club::where('shortname', Str::substr($data[4], 0, 4))->first();
+        $data['club_id_guest'] = $club_guest->id ?? null;
+        $data['region_id_guest'] = $club_guest->region->id ?? null;
+        $team_guest = Team::where('club_id', $data['club_id_guest'])->where('team_no', Str::substr($data[4], -1, 1))->where('league_id', $data['league_id'])->first();
+        $data['team_id_guest'] = $team_guest->id ?? null;
+        $data['team_guest_char'] = $team_guest->league_no ?? 1;
+        $data['team_guest_registered'] =  isset($team_guest->league_id);
+
         $data['game_id'] = Game::where('game_no', $data[0])
                                ->where('league_id', $data['league_id'])
                                ->where('club_id_home', $data['club_id_home'])->first()->id ?? null;
@@ -107,91 +119,32 @@ class LeagueCustomGamesImport implements ToCollection, WithStartRow, WithValidat
         return $data;
     }
 
-    /**
-     * @param  string  $error_code
-     * @param  array  $values
-     * @param  string  $attribute
-     * @return string
-     */
-    public function buildValidationMessage(string $error_code, array $values, string $attribute): string
-    {
-        $ec = explode('-', $error_code)[0];
-        $value = $values[strval(explode('-', $error_code)[1])];
-
-        switch ($ec) {
-            case 'V.R':
-                $err_txt = __('validation.required', ['attribute' => $attribute]);
-                break;
-            case 'V.I':
-                $err_txt = __('validation.integer', ['attribute' => $value]);
-                break;
-            case 'V.S':
-                $err_txt = __('validation.string', ['attribute' => $value]);
-                break;
-            case 'V.D':
-                $err_txt = __('validation.date', ['attribute' => $value]);
-                break;
-            case 'V.DF':
-                $err_txt = __('validation.date_format', ['attribute' => $value, 'format' => __('game.gametime_format')]);
-                break;
-
-            case 'GAME.B01':
-                $err_txt = __('validation.between.numeric', ['attribute' => $value, 'min' => '1', 'max' => $this->game_cnt]);
-                break;
-            case 'GAME.R01':
-                $err_txt = __('import.game_id.required', ['game' => $value, 'league' => $this->league->shortname, 'home' => Str::substr($values['3'], 0, 4)]);
-                break;
-
-            case 'CLUBH.R01':
-                $err_txt = __('import.club_id.required', ['who' => __('game.team_home'), 'club' => Str::substr($value, 0, 4)]);
-                break;
-            case 'CLUBG.R01':
-                $err_txt = __('import.club_id.required', ['who' => __('game.team_guest'), 'club' => Str::substr($value, 0, 4)]);
-                break;
-            case 'TEAMH.R01':
-                $err_txt = __('import.team_id.required', ['who' => __('game.team_home'), 'team' => $value]);
-                break;
-            case 'TEAMG.R01':
-                $err_txt = __('import.team_id.required', ['who' => __('game.team_guest'), 'team' => $value]);
-                break;
-
-            case 'GYM.R01':
-                $err_txt = __('import.gym_id.required', ['gym' => $value, 'home' => Str::substr($values['4'], 0, 4)]);
-                break;
-            case 'GYM.B01':
-                $err_txt = __('validation.between.numeric', ['attribute' => $value, 'min' => '1', 'max' => '10']);
-                break;
-
-            default:
-                $err_txt = 'unknown error: ('.$error_code.')';
-                break;
-        }
-
-        return $err_txt;
-    }
-
     public function customValidationMessages(): array
     {
         return [
             '0.required' => 'V.R-0',
             '0.integer' => 'V.I-0',
             '0.between' => 'GAME.B01-0',
-            'game_id.required' => 'GAME.R01-0',
+            'game_id.required' => 'GAME.R01-0-3',
 
             '1.required' => 'V.R-1',
-            '1.date' => 'V.D-1',
+            '1.date_format' => 'V.DF-1',
             '2.required' => 'V.R-2',
-            '2.date_format' => 'V.DF-2',
+            '2.date_format' => 'V.TF-2',
 
             '3.required' => 'V.R-3',
             '3.string' => 'V.S-3',
+            '3.size' => 'V.SIZE-3',
             'club_id_home.required' => 'CLUBH.R01-3',
             'team_id_home.required' => 'TEAMH.R01-3',
+            'team_home_registered.accepted' => 'TEAMH.R02-3',
 
             '4.required' => 'V.R-4',
-            '4.string' => 'V.S-1',
+            '4.string' => 'V.S-4',
+            '4.size' => 'V.SIZE-4',
             'club_id_guest.required' => 'CLUBG.R01-4',
             'team_id_guest.required' => 'TEAMG.R01-4',
+            'team_guest_registered.accepted' => 'TEAMG.R02-4',
 
             '5.required' => 'V.R-5',
             '5.integer' => 'V.I-5',
@@ -212,8 +165,10 @@ class LeagueCustomGamesImport implements ToCollection, WithStartRow, WithValidat
             'gym_id' => __('game.gym_no'),
             'club_id_home' => __('game.team_home'),
             'club_id_guest' => __('game.team_guest'),
+            'team_home_registered' => __('game.team_home'),
             'team_id_home' => __('game.team_home'),
             'team_id_guest' => __('game.team_guest'),
+            'team_guest_registered' => __('game.team_guest'),
         ];
     }
 

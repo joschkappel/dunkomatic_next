@@ -49,26 +49,6 @@ class LeagueGameControllerTest extends TestCase
     }
 
     /**
-     * upload
-     *
-     * @test
-     * @group league
-     * @group game
-     * @group controller
-     *
-     * @return void
-     */
-    public function upload()
-    {
-        $response = $this->authenticated()
-            ->get(route('league.upload.game', ['language' => 'de', 'league' => $this->testleague]));
-
-        $response->assertStatus(200)
-            ->assertViewIs('game.game_file_upload')
-            ->assertViewHas('context', 'league');
-    }
-
-    /**
      * show_by_number
      *
      * @test

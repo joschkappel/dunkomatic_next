@@ -11,6 +11,7 @@ return [
     'title.list' => 'Regions',
     'title.create' => 'Create a new Region',
     'title.delete' => 'Delete a Region',
+    'title.game.import' => 'Import Games for Leagues with a Custom Schedule',
     'confirm.delete' => 'Do you really want to delete this region ?',
     'game_slot' => 'Minimum timeslot for a game (in minutes)',
     'job.noleads' => 'Check for missing clubs and league-admins',

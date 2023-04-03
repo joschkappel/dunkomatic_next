@@ -20,10 +20,12 @@ th, td { white-space: nowrap; }
                                     <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::ReOpenScheduling }}" data-from-state="{{ App\Enums\LeagueState::Referees }}">
                                         @lang('league.action.open.scheduling') <i class="fas fa-arrow-left px-2"></i>{!! App\Enums\LeagueState::Referees()->getIcon() !!}</button>
                                 @endif
-{{--                                 @if ( $states->contains(App\Enums\LeagueState::Scheduling()))
-                                    <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::ReFreezeLeague }}" data-from-state="{{ App\Enums\LeagueState::Scheduling }}">
-                                        @lang('league.action.open.freeze') <i class="fas fa-arrow-left px-2"></i>{!! App\Enums\LeagueState::Scheduling()->getIcon() !!}</button>
-                                @endif --}}
+                                    {{--
+                                        @if ( $states->contains(App\Enums\LeagueState::Scheduling()))
+                                            <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::ReFreezeLeague }}" data-from-state="{{ App\Enums\LeagueState::Scheduling }}">
+                                            @lang('league.action.open.freeze') <i class="fas fa-arrow-left px-2"></i>{!! App\Enums\LeagueState::Scheduling()->getIcon() !!}</button>
+                                        @endif
+                                    --}}
                                 @if ( $states->contains(App\Enums\LeagueState::Freeze()))
                                     <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::ReOpenSelection }}" data-from-state="{{ App\Enums\LeagueState::Freeze }}">
                                         @lang('league.action.open.selection') <i class="fas fa-arrow-left px-2"></i>{!! App\Enums\LeagueState::Freeze()->getIcon() !!}</button>
@@ -48,6 +50,8 @@ th, td { white-space: nowrap; }
                                 @if ( $states->contains(App\Enums\LeagueState::Freeze()))
                                     <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::OpenScheduling }}" data-from-state="{{ App\Enums\LeagueState::Freeze }}">
                                         {!! App\Enums\LeagueState::Freeze()->getIcon() !!}<i class="fas fa-arrow-right px-2"></i> @lang('league.action.open.scheduling')</button>
+                                    <a id="btnImportGames" class="dropdown-item btn btn-info" href="{{route('game.upload',['language'=>app()->getLocale(), 'region'=>$region ])}}">
+                                        {!! App\Enums\LeagueState::Freeze()->getIcon() !!}<i class="fas fa-arrow-right px-2"></i> @lang('league.title.game.import')</a>
                                 @endif
                                 @if ( $states->contains(App\Enums\LeagueState::Scheduling()))
                                     <button id="btnStateChange" class="dropdown-item btn btn-info" data-action="{{ App\Enums\LeagueStateChange::OpenReferees }}" data-from-state="{{ App\Enums\LeagueState::Scheduling }}">

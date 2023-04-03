@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Game;
 use App\Models\Region;
-use Datatables;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class GameController extends Controller
 {
+
     /**
      * view with all games for a regions
      *
@@ -75,5 +75,20 @@ class GameController extends Controller
             ->make(true);
         //Log::debug(print_r($glist,true));
         return $glist;
+    }
+
+    /**
+     * view to upload game files
+     *
+     * @param  string  $language
+     * @param  \App\Models\Region  $region
+     * @return \Illuminate\View\View
+     */
+    public function upload($language, Region $region)
+    {
+        Log::info('showing game upload view.');
+        $uploadroute = route('region.import.customgame', ['language' => $language, 'region' => $region]);
+
+        return view('game.game_file_upload', ['cardTitle' =>  __('region.title.game.import'), 'uploadRoute' => $uploadroute, 'context' => 'customgames']);
     }
 }

@@ -69,7 +69,7 @@
                     },
                     @if ( ( $league->state->in([ App\Enums\LeagueState::Scheduling, App\Enums\LeagueState::Freeze])) and
                           ( $league->isCustom  ) )
-                        ,{ extend: 'spacer',
+                        { extend: 'spacer',
                                     style: 'bar'
                         },
                         'import'

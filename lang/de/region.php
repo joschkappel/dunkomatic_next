@@ -12,6 +12,7 @@ return [
     'title.list' => 'Bezirke',
     'title.create' => 'Lege einen neuen Bezirk an',
     'title.delete' => 'Einen Bezirk löschen',
+    'title.game.import' => 'Spiele für Runden ohne Rahmenterminplan Importieren',
     'game_slot' => 'Minimum Dauer eines Spiels (in Minuten)',
     'job.noleads' => 'Prüfung auf Vereine und Runden ohne Leiter',
     'job.emails' => 'Prüfung auf valide Email-Adressen',
