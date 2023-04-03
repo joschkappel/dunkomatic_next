@@ -15,6 +15,7 @@ use App\Models\Schedule;
 use App\Models\Team;
 use App\Traits\GameManager;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class LeagueFactory extends Factory
 {
@@ -74,7 +75,7 @@ class LeagueFactory extends Factory
         return $this->state(['state' => LeagueState::Registration()])
                     ->afterCreating(function (League $league) use ($club_cnt) {
                         for ($i = 1; $i <= $club_cnt; $i++) {
-                            ClubFactory::new()
+                ClubFactory::new(['shortname' => Str::substr($league->shortname, 0, 3) . $i])
                                 ->has(Gym::factory(['gym_no' => $i])->count(1))
                                 ->hasTeams(1)
                                 ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
@@ -83,7 +84,7 @@ class LeagueFactory extends Factory
                                 ->create();
                         }
                         for ($i = $club_cnt + 1; $i <= 4; $i++) {
-                            ClubFactory::new()
+                ClubFactory::new(['shortname' =>  Str::substr($league->shortname, 0, 3) . $i])
                             ->hasTeams(1)
                             ->has(Gym::factory(['gym_no' => $i])->count(1))
                             ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
@@ -112,7 +113,7 @@ class LeagueFactory extends Factory
                     ->afterCreating(function (League $league) use ($club_cnt, $team_cnt) {
                         for ($i = 1; $i <= $club_cnt; $i++) {
                             if ($i <= $team_cnt) {
-                                ClubFactory::new()
+                    ClubFactory::new(['shortname' =>  Str::substr($league->shortname, 0, 3) . $i])
                                     ->has(Team::factory()->registered($league)->count(1))
                                     ->has(Gym::factory(['gym_no' => $i])->count(1))
                                     ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
@@ -120,7 +121,7 @@ class LeagueFactory extends Factory
                                     ->configure()
                                     ->create();
                             } else {
-                                ClubFactory::new()
+                    ClubFactory::new(['shortname' =>  Str::substr($league->shortname, 0, 3) . $i])
                                     ->has(Team::factory()->count(1))
                                     ->has(Gym::factory(['gym_no' => $i])->count(1))
                                     ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
@@ -130,7 +131,7 @@ class LeagueFactory extends Factory
                             }
                         }
                         for ($i = $club_cnt + 1; $i <= 4; $i++) {
-                            ClubFactory::new()
+                ClubFactory::new(['shortname' =>  Str::substr($league->shortname, 0, 3) . $i])
                             ->hasTeams(1)
                             ->hasGyms(1)
                             ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
@@ -159,7 +160,7 @@ class LeagueFactory extends Factory
                     ->afterCreating(function (League $league) use ($club_cnt, $team_cnt) {
                         for ($i = 1; $i <= $club_cnt; $i++) {
                             if ($i <= $team_cnt) {
-                                ClubFactory::new()
+                    ClubFactory::new(['shortname' =>  Str::substr($league->shortname, 0, 3) . $i])
                                     ->has(Team::factory()->selected($league, $i)->count(1))
                                     ->has(Gym::factory(['gym_no' => $i])->count(1))
                                     ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
@@ -167,7 +168,7 @@ class LeagueFactory extends Factory
                                     ->configure()
                                     ->create();
                             } else {
-                                ClubFactory::new()
+                    ClubFactory::new(['shortname' =>  Str::substr($league->shortname, 0, 3) . $i])
                                     ->has(Team::factory()->count(1))
                                     ->has(Gym::factory(['gym_no' => $i])->count(1))
                                     ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
@@ -177,7 +178,7 @@ class LeagueFactory extends Factory
                             }
                         }
                         for ($i = $club_cnt + 1; $i <= 4; $i++) {
-                            ClubFactory::new()
+                ClubFactory::new(['shortname' =>  Str::substr($league->shortname, 0, 3) . $i])
                             ->hasTeams(1)
                             ->has(Gym::factory(['gym_no' => $i])->count(1))
                             ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
@@ -206,16 +207,16 @@ class LeagueFactory extends Factory
                     ->afterCreating(function (League $league) use ($club_cnt, $team_cnt) {
                         for ($i = 1; $i <= $club_cnt; $i++) {
                             if ($i <= $team_cnt) {
-                                ClubFactory::new()
-                                    ->has(Team::factory()->selected($league, $i)->count(1))
+                    ClubFactory::new(['shortname' =>  Str::substr($league->shortname, 0, 3) . $i])
+                        ->has(Team::factory(['team_no' => $i])->selected($league, $i)->count(1))
                                     ->has(Gym::factory(['gym_no' => $i])->count(1))
                                     ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
                                     ->assigned($league, range('A', 'Z')[$i - 1], $i)
                                     ->configure()
                                     ->create();
                             } else {
-                                ClubFactory::new()
-                                    ->has(Team::factory()->count(1))
+                    ClubFactory::new(['shortname' =>  Str::substr($league->shortname, 0, 3) . $i])
+                        ->has(Team::factory(['team_no' => $i])->count(1))
                                     ->has(Gym::factory(['gym_no' => $i])->count(1))
                                     ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
                                     ->assigned($league, range('A', 'Z')[$i - 1], $i)
@@ -224,8 +225,8 @@ class LeagueFactory extends Factory
                             }
                         }
                         for ($i = $club_cnt + 1; $i <= 4; $i++) {
-                            ClubFactory::new()
-                            ->hasTeams(1)
+                ClubFactory::new(['shortname' =>  Str::substr($league->shortname, 0, 3) . $i])
+                    ->has(Team::factory(['team_no' => $i])->count(1))
                             ->has(Gym::factory(['gym_no' => $i])->count(1))
                             ->hasAttached(Member::factory()->count(1), ['role_id' => Role::ClubLead()])
                             ->configure()
