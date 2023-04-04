@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Models\League;
-use App\Models\Member;
 use App\Models\Region;
 use App\Models\ScheduleEvent;
 use App\Models\Setting;
@@ -36,6 +35,12 @@ class ProcessNewSeason implements ShouldQueue
     {
         //
     }
+    /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public $tries = 1;
 
     /**
      * Execute the job.
@@ -115,14 +120,14 @@ class ProcessNewSeason implements ShouldQueue
                     'close_scheduling_at' => $close_scheduling_at,
                     'close_referees_at' => $close_referees_at, ]
             );
-            if ($r->regionadmins()->exists()) {
+/*             if ($r->regionadmins()->exists()) {
                 $radmins = $r->regionadmins()->get();
                 foreach ($radmins as $ra) {
                     Notification::send($ra, new  CheckRegionSettings($next_season, $r));
                     Notification::send($ra->user, new  CheckRegionSettings($next_season, $r));
                 }
                 Log::info('[NOTIFICATION] check region settings.', ['members' => $radmins->pluck('id')]);
-            }
+            } */
         }
         Log::notice('[JOB][NEW SEASON] region league state dates fwdd by 1 year.');
 
@@ -132,7 +137,7 @@ class ProcessNewSeason implements ShouldQueue
         // notify region admin on these changes and ask to check/correct
 
         // send notification
-        $users = User::whereNotNull('approved_at')->whereNotNull('email_verified_at')->get()->chunk(100);
+/*         $users = User::whereNotNull('approved_at')->whereNotNull('email_verified_at')->get()->chunk(100);
         foreach ($users as $chunk) {
             Notification::send($chunk, new NewSeason($next_season));
             Log::info('[NOTIFICATION] new season started.', ['users' => $chunk->pluck('id')]);
@@ -142,6 +147,6 @@ class ProcessNewSeason implements ShouldQueue
         foreach ($members as $chunk) {
             Notification::send($chunk, new NewSeason($next_season));
             Log::info('[NOTIFICATION] new season started.', ['members' => $chunk->pluck('id')]);
-        }
+        } */
     }
 }
