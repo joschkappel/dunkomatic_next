@@ -4,6 +4,7 @@ namespace Tests\Feature\Jobs;
 
 use App\Jobs\EmailValidation;
 use App\Models\Region;
+use App\Models\Member;
 use App\Notifications\InvalidEmail;
 use Illuminate\Support\Facades\Notification;
 use Tests\SysTestCase;
@@ -25,6 +26,9 @@ class EmailValidationTest extends SysTestCase
 
         $region = Region::where('code', 'HBVDA')->first();
         $region_admin = $region->regionadmins()->first();
+
+        // set a wrong email
+        $region->clubs->first()->members->first()->update(['email1' => 'test-fake.email']);
 
         $job_instance = resolve(EmailValidation::class, ['region' => $region]);
         app()->call([$job_instance, 'handle']);
