@@ -697,11 +697,49 @@ class LeagueController extends Controller
      * @param  \App\Models\Region  $region
      * @return \Illuminate\Http\JsonResponse
      */
-    public function list_print(Request $request, $language, Region $region)
+    public function list_print(Request $request, $language, Region $region, $type = '')
     {
         $table = collect();
 
         if ($request->ajax()) {
+            if ($type == 'senior') {
+                $leagueIds = $region->leagues->where('age_type', LeagueAgeType::Senior())->pluck('id');
+            } elseif ($type == 'junior') {
+                $leagueIds = $region->leagues->where('age_type', '!=', LeagueAgeType::Senior())->pluck('id');
+            } else {
+                $leagueIds = $region->leagues->pluck('id');
+            }
+            $teamsByNo = Team::whereIn('league_id', $leagueIds)->with('league')->get()->groupBy('league_no')->sort();
+
+            foreach ($teamsByNo as $lno => $teams) {
+                $row = collect();
+                $row->put('league_no', $lno);
+                foreach ($teams as $t) {
+                    $row->put($t->league->shortname, $t->name);
+                }
+                $table->push($row);
+            }
+
+
+            return datatables()::of($table)->make(true);
+        }
+
+        return view('league.league_list_print', ['region' => $region]);
+    }
+    /**
+     * pivot view (datatables.net) with leagues and teams of a region (for printing)
+     *
+     * @param  Request  $request
+     * @param  string  $language
+     * @param  \App\Models\Region  $region
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function list_print_dt(Request $request, $language, Region $region, string $type)
+    {
+        $table = collect();
+
+        if ($request->ajax()) {
+
             $leagueIds = $region->leagues->pluck('id');
             $teamsByNo = Team::whereIn('league_id', $leagueIds)->with('league')->get()->groupBy('league_no')->sort();
 

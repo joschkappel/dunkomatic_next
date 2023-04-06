@@ -150,7 +150,7 @@ Route::group([
             Route::get('league/create', [LeagueController::class, 'create'])->name('league.create')->middleware('can:create-leagues');
             Route::get('league/list_mgmt', [LeagueController::class, 'list_mgmt'])->name('league.list_mgmt');
             Route::get('league/manage', [LeagueController::class, 'index_mgmt'])->name('league.index_mgmt');
-            Route::get('league/list_print', [LeagueController::class, 'list_print'])->name('league.list_print');
+            Route::get('league/list_print/{type?}', [LeagueController::class, 'list_print'])->name('league.list_print');
             Route::get('schedule', [ScheduleController::class, 'index'])->name('schedule.index')->middleware('can:view-schedules');
             Route::get('schedule/create', [ScheduleController::class, 'create'])->name('schedule.create')->middleware('can:create-schedules');
             Route::get('schedule/compare/dt', [ScheduleController::class, 'compare_datatable'])->name('schedule.compare.dt');
