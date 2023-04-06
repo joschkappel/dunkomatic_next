@@ -12,6 +12,7 @@ return [
     'games.referee' => 'Referees Report',
     'games.league' => 'League Games Report',
     'games.teamsl' => 'TeamSL',
+    'league.list' => 'LeagueTeams',
     'ical.league' => 'Calendar Download',
     'ical.club.all' => 'All',
     'ical.club.home' => 'Home',

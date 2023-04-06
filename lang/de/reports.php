@@ -12,6 +12,7 @@ return [
     'games.referee' => 'Schiedsrichterplan',
     'games.league' => 'Rundenspielplan',
     'games.teamsl' => 'TeamSL',
+    'league.list' => 'Rundeneinteilung',
     'ical.league' => 'Kalender Download',
     'ical.club.all' => 'Alle',
     'ical.club.home' => 'Heim',

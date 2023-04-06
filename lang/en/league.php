@@ -17,6 +17,7 @@ return [
     'confirm.delete' => 'Do you really want to delete this league ?',
     'info.delete' => ':LEAGUE and its :noteam teams and :nomember members',
     'title.list' => 'Leaguelist for :region',
+    'title.print' => 'Print/Export Leaguelist for :Region',
     'title.stats' => 'Leaguestatistics for :Region',
     'title.new' => 'Create a New League for Region :REGION',
     'title.edit' => 'Modify Details of League :LEAGUE',

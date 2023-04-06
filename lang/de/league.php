@@ -14,6 +14,7 @@ return [
     'confirm.delete' => 'Willst Du die Spielrunde wirklich löschen ?',
     'info.delete' => ':LEAGUE mit :noteam Mannschaften und :nomember Mitarbeitenden',
     'title.list' => 'Rundenliste für :Region',
+    'title.print' => 'Rundeneinteilung für :Region Drucken/Exportieren',
     'title.stats' => 'Rundenstatistik für :Region',
     'title.new' => 'Lege einen Neue Spielrunde für den Bezirk :REGION an',
     'title.edit' => 'Ändere die Daten der Spielrunde :LEAGUE',
