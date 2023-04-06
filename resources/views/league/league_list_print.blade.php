@@ -22,7 +22,7 @@
                         <thead class="thead-light">
                             <tr>
                                 <th>No</th>
-                                @foreach($region->leagues->where('age_type', App\Enums\LeagueAgeType::Senior())->sortBy('shortname') as $l)
+                                @foreach($region->leagues->where('age_type', App\Enums\LeagueAgeType::Senior())->sortBy(['gender_type','name']) as $l)
                                 <th>{{$l->shortname}}</th>
                                 @endforeach
                             </tr>
@@ -34,7 +34,7 @@
                         <thead class="thead-light">
                             <tr>
                                 <th>No</th>
-                                @foreach($region->leagues->where('age_type', '!=',  App\Enums\LeagueAgeType::Senior())->sortBy('shortname') as $l)
+                                @foreach($region->leagues->where('age_type', '!=',  App\Enums\LeagueAgeType::Senior())->sortBy(['name']) as $l)
                                 <th>{{$l->shortname}}</th>
                                 @endforeach
                             </tr>
