@@ -189,7 +189,16 @@ th, td { white-space: nowrap; }
                         }
                     }
                 } ],
+                dom: 'Bflrtip',
+                buttons: [
+                    {
+                        text: '{{__('Drucken/Export')}}',
+                        action: function ( e, dt, node, config ) {
+                                window.open('{{route('league.list_print',['language'=>app()->getLocale(), 'region'=>$region])}}', '_blank').focus();
 
+                        }
+                    },
+                ],
             });
 
             toastr.options.onHidden = function () {
