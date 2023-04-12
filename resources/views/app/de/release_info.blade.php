@@ -4,6 +4,29 @@
 <x-card-list cardTitle="Release Information" >
 <div>
     <div class="col-12">
+        <div class="card card-outline card-info mb-3">
+            <x-card-header title="v1.2.0" />
+            <div class="card-body">
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item list-group-item-primary">Nachrichten mit Anhang
+                        <ul>
+                            <li>Mit jeder Nachricht kann eine Datei als Anhang mit verschickt werden.</li>
+                            <li>Es sind nur PDF Dateien mit einer maximalen Größe von 1 MB erlaubt.</li>
+                            <li>Der ANhang wird bei erstellen der Nachricht hochgeladen.</li>
+                        </ul>
+                    </li>
+                  </ul>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Rundeneinteilung
+                        <ul>
+                            <li>Die Übersicht aller Runden eines Bezirks mit den jeweils gemeldeten Mannschaften kann jetzt exportiert oder ausgedruckt werden.</li>
+                            <li>Die Übersicht ist nach Senioren und Jugend Mannschaften getrennt.</li>
+                            <li>Aufruf über die Rundenverwaltung und dann "Drucken/Export".</li>
+                        </ul>
+                    </li>
+                  </ul>
+            </div>
+        </div>
         <div class="card card-outline card-info collapsed-card mb-3">
             <x-card-header title="v1.1.1" />
             <div class="card-body">
