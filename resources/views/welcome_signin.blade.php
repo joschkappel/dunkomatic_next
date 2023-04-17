@@ -11,13 +11,13 @@
                             <div class="d-flex justify-content-center mb-3">
                                 <a class="btn btn-outline-dark border-dark rounded-pill" role="button" href="{{ route('oauth.redirect', ['provider'=>'google'])}}"><i class="fab fa-google"></i><span class="px-2">@lang('auth.sign_in_with', ['provider'=>'Google'])</span></a>
                             </div>
-                            <div class="d-flex justify-content-center mb-3">
+{{--                             <div class="d-flex justify-content-center mb-3">
                                 <a class="btn btn-outline-primary border-primary rounded-pill"  role="button" href="{{ route('oauth.redirect', ['provider'=>'twitter'])}}"><i class="fab fa-twitter"></i><span class="mx-2">@lang('auth.sign_in_with', ['provider'=>'Twitter'])</span></a>
                             </div>
                             <div class="d-flex justify-content-center mb-3">
                                 <a class="btn btn-primary border-primary rounded-pill"  role="button" href="{{ route('oauth.redirect', ['provider'=>'facebook'])}}"><i class="fab fa-facebook"></i><span class="mx-2">@lang('auth.sign_in_with', ['provider'=>'Facebook'])</span></a>
                             </div>
-                        </div>
+ --}}                        </div>
                     </div>
                     <div class="row justify-content-center">
                         <div class="col-md-2"><hr class="border border-gray"></div>
