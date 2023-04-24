@@ -60,8 +60,7 @@ class LeagueTeamController extends Controller
                 );
             }
         } elseif (isset($data['club_id'])) {
-            $league_no = $league->clubs->max('pivot.league_no') + 1;
-            $league_char = $upperArr[$league_no];
+            [$league_no, $league_char] = $this->getNextFreeSlot($league);
             $league->clubs()->attach(
                 Club::find($data['club_id']),
                 [
