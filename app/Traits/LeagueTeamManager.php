@@ -11,6 +11,18 @@ use Illuminate\Support\Str;
 trait LeagueTeamManager
 {
     use LeagueFSM;
+    protected function getNextFreeSlot(League $league): array
+    {
+        // get all assigned clubs
+        $used_nos = $league->clubs->pluck('pivot.league_no');
+
+        // get max possible league_nos
+        $max_nos = collect([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])->slice(0, $league->size);
+
+        // get the remaining ones
+        $left_no = $max_nos->diff($used_nos)->first();
+        return [$left_no, config('dunkomatic.league_team_chars')[$left_no]];
+    }
 
     protected function get_registrations(League $league): array
     {
