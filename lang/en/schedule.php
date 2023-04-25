@@ -55,6 +55,8 @@ return [
     'event.add' => 'Add missing game day(s) #gamedayAddRange# ?',
     'edit.size' => 'To modify the number of teams please delete all events first !',
     'edit.iterations' => 'To modify the number of iterations please delete all events first !',
+        'note_homegames' => 'Note for home game scheduling',
+        'note_2' => 'Note 2',
     'leagues' => 'In use by league',
     'iterations' => 'Iterations',
     'single' => 'Single',

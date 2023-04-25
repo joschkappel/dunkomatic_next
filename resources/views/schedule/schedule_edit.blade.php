@@ -17,13 +17,24 @@
         <div class="col-sm-4">
         </div>
         <div class="col-sm-6">
-            <div class="form-group  clearfix">
-                <div class="icheck-primary d-inline">
+            <div class="form-group  clearfix d-flex align-items-center">
+                <div class="icheck-info d-inline">
                     <input type="checkbox" id="custom_events" name="custom_events" @if ($schedule->custom_events) checked @endif value="1">
                     <label for="custom_events">@lang('schedule.custom_events')</label>
                 </div>
             </div>
         </div>
+        <div class="col-sm-4">
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group  clearfix d-flex align-items-center">
+                <div class="icheck-info d-inline">
+                    <input type="checkbox" id="active" name="active"  @if ($schedule->active) checked @endif value="1">
+                    <label for="active">{{__('Active')}}</label>
+                </div>
+            </div>
+        </div>
+
     </div>
     <div class="form-group row ">
         <label for='selSize' class="col-sm-4 col-form-label">@lang('schedule.size')</label>
@@ -56,6 +67,29 @@
             @endif
         </div>
     </div>
+
+    <div class="form-group row ">
+        <label for="note_homegames" class="col-sm-4 col-form-label">@lang('schedule.note_homegames')</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control @error('note_homegames') is-invalid @enderror" id="note_homegames" name="note_homegames" value="{{ $schedule->note_homegames }}">
+            @error('note_homegames')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+    </div>
+    <div class="form-group row ">
+        <label for="note_2" class="col-sm-4 col-form-label">@lang('schedule.note_2')</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control @error('note_2') is-invalid @enderror" id="note_2" name="note_2" value="{{ $schedule->note_2 }}">
+            @error('note_2')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+    </div>
+
+    <x-slot name="addButtons">
+        <button type="button" id="adrval" class="btn btn-secondary mr-2">{{ __('gym.action.validate_adr')}}</button>
+    </x-slot>
 </x-card-slot>
 @endsection
 

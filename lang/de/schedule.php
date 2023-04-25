@@ -55,6 +55,8 @@ return [
     'event.add' => 'Fehlende Spieltag(e) #gamedayAddRange# einfügen ?',
     'edit.size' => 'Zum Ändern der Anzahl Mannschaften bitte erst alle Termine löschen !',
     'edit.iterations' => 'Zum Ändern der WIderholungen bitte erst alle Termine löschen !',
+        'note_homegames' => 'Bemerkung Heimspielansetzungen',
+        'note_2' => 'Bemerkung 2',
     'leagues' => 'Wird benutzt von Runde',
     'iterations' => 'Wiederholungen',
     'single' => 'Einfach',

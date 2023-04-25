@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * App\Models\Schedule
@@ -54,6 +55,7 @@ class Schedule extends Model
 
     protected $fillable = [
         'id', 'name', 'region_id', 'league_size_id', 'custom_events', 'iterations',
+        'active', 'note_homegames', 'note_2'
     ];
 
     /**
@@ -63,6 +65,7 @@ class Schedule extends Model
      */
     protected $casts = [
         'custom_evens' => 'boolean',
+        'active' => 'boolean'
     ];
 
     public function region(): BelongsTo
@@ -115,5 +118,13 @@ class Schedule extends Model
 
             return ($size - 1) * 2 * $repeat;
         }
+    }
+
+    /**
+     * Scope a query to only include active schedules.
+     */
+    public function scopeActive(Builder $query): void
+    {
+        $query->where('active', 1);
     }
 }
