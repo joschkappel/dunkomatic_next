@@ -90,7 +90,7 @@
     <x-slot name="addButtons">
         <button type="button" id="adrval" class="btn btn-secondary mr-2">{{ __('gym.action.validate_adr')}}</button>
     </x-slot>
-</x-card-slot>
+</x-card-form>
 @endsection
 
 @section('js')

@@ -343,8 +343,8 @@ class ScheduleController extends Controller
     {
         $data = $request->validate([
             'name' => 'required', 'region_id' => 'required|exists:regions,id', 'league_size_id' => 'required_without:custom_events|exists:league_sizes,id', 'iterations' => 'required|integer|min:1|max:3', 'custom_events' => 'sometimes|required|boolean', 'active' => 'sometimes|required|boolean',
-            'note_homegames' => 'sometimes|string',
-            'note_2' => 'sometimes|string',
+            'note_homegames' => 'nullable|sometimes|string',
+            'note_2' => 'nullable|sometimes|string',
 
         ]);
         Log::info('schedule form data validated OK.');
@@ -390,15 +390,15 @@ class ScheduleController extends Controller
                 'league_size_id' => 'required_without:custom_events|exists:league_sizes,id',
                 'iterations' => 'required_without:custom_events|integer|min:1|max:3',
                 'custom_events' => 'sometimes|required|boolean', 'active' => 'sometimes|required|boolean',
-                'note_homegames' => 'nullable|string',
-                'note_2' => 'nullable|string',
+                'note_homegames' => 'nullable|sometimes|string',
+                'note_2' => 'nullable|sometimes|string',
             ]);
         } else {
             $data = $request->validate([
                 'name' => 'required',
-                'note_homegames' => 'nullable|string',
+                'note_homegames' => 'nullable|sometimes|string',
                 'custom_events' => 'sometimes|required|boolean', 'active' => 'sometimes|required|boolean',
-                'note_2' => 'nullable|string',
+                'note_2' => 'nullable|sometimes|string',
             ]);
         }
 
