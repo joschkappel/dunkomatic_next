@@ -2,9 +2,16 @@
 
 @section('content')
 <x-card-list cardTitle="{{ __('role.address.title.list', ['region'=> $region->code, 'role'=> App\Enums\Role::coerce(intval($role))->description ]) }}">
+    <th>Name</th>
+    <th>Abk.</th>
+    <th>No</th>
     <th>{{ trans_choice('role.member',1) }}</th>
     <th>@lang('role.email1')</th>
     <th>@lang('role.phone')</th>
+    <th>@lang('role.zipcode')</th>
+    <th>@lang('role.city')</th>
+    <th>@lang('role.street')</th>
+
 </x-card-list>
 @endsection
 
@@ -47,9 +54,15 @@
                 ],
                  ajax: '{{ route('address.index_byrole.dt', ['region' => $region, 'language'=> app()->getLocale(), 'role'=> $role ]) }}',
                  columns:  [
+                    { data: 'entityname', name: 'emtityname'},
+                    { data: 'entityshortname', name: 'emtityshortname'},
+                    { data: 'entityno', name: 'emtityno'},
                     { data: 'name', name: 'name'},
                     { data: 'email', name: 'email'},
                     { data: 'phone', name: 'phone'},
+                    { data: 'zipcode', name: 'zipcode'},
+                    { data: 'city', name: 'city'},
+                    { data: 'street', name: 'street'},
                 ]
 
               });
