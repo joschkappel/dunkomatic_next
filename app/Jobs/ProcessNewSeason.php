@@ -133,6 +133,7 @@ class ProcessNewSeason implements ShouldQueue
 
         // hard reset for all teams:
         Team::whereNotNull('league_no')->update(['league_id' => null, 'league_no' => null]);
+        Team::whereNotNull('withdrawn_at')->update(['withdrawn_at' => null, 'withdrawn_from' => null]);
 
         // notify region admin on these changes and ask to check/correct
 

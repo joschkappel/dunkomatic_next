@@ -199,9 +199,7 @@ class LeagueTeamController extends Controller
         $team->update([
             'league_id' => null,
             'league_no' => null,
-            'league_char' => null,
-            'withdrawn_at' => now(),
-            'withdrawn_from' => $league->shortname
+            'league_char' => null
         ]);
         Log::notice('team un-registered and league no cleared.', ['team-id' => $team->id, 'league-id' => $league->id, 'league-team-no' => $team->league_no]);
 
