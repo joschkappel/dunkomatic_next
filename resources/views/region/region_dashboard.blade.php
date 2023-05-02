@@ -44,6 +44,8 @@
                     @endcan
                     <a href="#" data-toggle="modal"  class="small-box-footer" data-target="#modalDownloadZone">{{__('reports.action.downloads')}}
                         <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('region.briefing',['language'=> app()->getLocale(),'region' => $region ])}}" class="small-box-footer" >{{__('league.action.contacts')}}
+                        <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
                 </div>
                 <div class="col-sm ">

@@ -79,10 +79,35 @@ class AddressController extends Controller
                 return $m->name;
             })
             ->addColumn('email', function ($m) {
-                return $m->email1 ?? $m->email2;
+            return $m->email;
             })
             ->addColumn('phone', function ($m) {
                 return $m->mobile ?? $m->phone;
+            })
+            ->addColumn('entityname', function ($m) use ($role) {
+                if ($role->in([Role::ClubLead, Role::GirlsLead, Role::JuniorsLead, Role::RefereeLead])) {
+                    return $m->clubs->first()->name ?? '';
+                } elseif ($role->in([Role::LeagueLead])) {
+                    return $m->leagues->first()->name ?? '';
+                } else {
+                    return '';
+                }
+            })
+            ->addColumn('entityshortname', function ($m) use ($role) {
+                if ($role->in([Role::ClubLead, Role::GirlsLead, Role::JuniorsLead, Role::RefereeLead])) {
+                    return $m->clubs->first()->shortname ?? '';
+                } elseif ($role->in([Role::LeagueLead])) {
+                    return $m->leagues->first()->shortname ?? '';
+                } else {
+                    return '';
+                }
+            })
+            ->addColumn('entityno', function ($m) use ($role) {
+                if ($role->in([Role::ClubLead, Role::GirlsLead, Role::JuniorsLead, Role::RefereeLead])) {
+                    return $m->clubs->first()->club_no ?? '';
+                } else {
+                    return '';
+                }
             })
             ->make(true);
     }
