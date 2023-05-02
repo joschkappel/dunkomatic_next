@@ -8,9 +8,11 @@
     <th>{{ trans_choice('role.member',1) }}</th>
     <th>@lang('role.email1')</th>
     <th>@lang('role.phone')</th>
+    @if (Auth::user()->isAn('superadmin','regionadmin'))
     <th>@lang('role.zipcode')</th>
     <th>@lang('role.city')</th>
     <th>@lang('role.street')</th>
+    @endif
 
 </x-card-list>
 @endsection
@@ -60,9 +62,11 @@
                     { data: 'name', name: 'name'},
                     { data: 'email', name: 'email'},
                     { data: 'phone', name: 'phone'},
+                    @if (Auth::user()->isAn('superadmin','regionadmin'))
                     { data: 'zipcode', name: 'zipcode'},
                     { data: 'city', name: 'city'},
                     { data: 'street', name: 'street'},
+                    @endif
                 ]
 
               });
