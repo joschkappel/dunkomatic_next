@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -53,7 +54,7 @@ class Message extends Model
 
     protected $fillable = [
         'id', 'title', 'body', 'greeting', 'salutation', 'send_at', 'sent_at', 'delete_at', 'user_id', 'region_id',
-        'to_members', 'cc_members', 'notify_users', 'attachment_location', 'attachment_filename'
+        'to_members', 'cc_members', 'notify_users'
     ];
 
     protected $dates = ['send_at', 'sent_at', 'delete_at'];
@@ -72,6 +73,11 @@ class Message extends Model
     public function region(): BelongsTo
     {
         return $this->belongsTo(Region::class);
+    }
+
+    public function message_attachments(): HasMany
+    {
+        return $this->hasMany(MessageAttachment::class);
     }
 
     /**

@@ -44,13 +44,13 @@
             </div>
         </div>
         <div class="form-group row">
-            <label for="attachfile" class="col-sm-4 col-form-label">@lang('message.attachment')</label>
+            <label for="attachfiles" class="col-sm-4 col-form-label">@lang('message.attachment')</label>
             <div class="col-sm-8">
                 <div class="file-loading">
-                    <input id="attachfile" name="attachfile" type="file" class="file" accept=".pdf,application/pdf"
-                        value="{{ old('attachfile') }}">
+                    <input id="attachfiles" name="attachfiles[]" type="file" class="file" accept=".pdf,application/pdf,.xlsx,application/xlsx" multiple
+                        value="{{ old('attachfiles') }}">
                 </div>
-                @error('attachfile')
+                @error('attachfiles')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
 
@@ -139,17 +139,19 @@
 
 @push('js')
     <script>
-        $('#attachfile').fileinput({
+        $('#attachfiles').fileinput({
             initialCaption: '{{ __('message.select_file') }}',
             msgPlaceholder: '{{ __('message.select_file') }}',
             theme: 'fa5',
+            browseClass: "btn btn-success",
             language: '{{ app()->getLocale() }}',
             showUpload: false,
             showCaption: true,
             hideThumbnailContent: false,
-            dropZoneEnabled: false,
-            showPreview: false,
-            maxFilesNum: 1
+            dropZoneEnabled: true,
+            showPreview: true,
+            maxFileCount: 3,
+            allowedFileExtensions: ["pdf", "xlsx"],
         });
         $(function() {
             $('#frmClose').click(function(e) {
@@ -212,7 +214,7 @@
                 format: 'L',
                 locale: '{{ app()->getLocale() }}',
                 useCurrent: true,
-                minDate: moment().add(1, 'd'),
+                minDate: moment().add(2, 'd'),
             });
 
         });

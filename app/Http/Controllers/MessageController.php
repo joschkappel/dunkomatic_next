@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\Role as EnumRole;
 use App\Jobs\SendCustomMessage;
 use App\Models\Message;
+use App\Models\MessageAttachment;
 use App\Models\Region;
 use App\Models\User;
 use BenSampo\Enum\Rules\EnumValue;
@@ -134,6 +135,7 @@ class MessageController extends Controller
      */
     public function store(Request $request, Region $region, User $user)
     {
+        Log::debug('raw request', ['request' => $request->input()]);
         $data = $request->validate([
             'title' => 'required|string|max:60',
             'body' => 'required|string',
@@ -145,7 +147,8 @@ class MessageController extends Controller
             'to_members.*' => [new EnumValue(EnumRole::class, false)],
             'cc_members.*' => [new EnumValue(EnumRole::class, false)],
             'notify_users' => 'sometimes|required|boolean',
-            'attachfile' => 'sometimes|max:' . config('dunkomatic.mail_attachment_size') . '|mimes:pdf',
+            'attachfiles' => 'array|max:3',
+            'attachfiles.*' => 'max:' . config('dunkomatic.mail_attachment_size') . '|mimes:pdf,xlsx',
         ]);
 
         // Log::debug(print_r($request->all(), true));
@@ -154,12 +157,6 @@ class MessageController extends Controller
 
         Log::info('message form data validated OK.');
 
-        //( save attachment)
-        if ($request->has('attachfile')) {
-            $data['attachment_filename'] = $request->attachfile->getClientOriginalName();
-            $data['attachment_location'] = $request->attachfile->store('message_attachments');
-            unset($data['attachfile']);
-        }
         if (!$request->has('notify_users')) {
             $data['notify_users'] = false;
         }
@@ -169,6 +166,14 @@ class MessageController extends Controller
         $msg->region()->associate($region);
         $msg->save();
         Log::notice('new message created.', ['message-id' => $msg->id]);
+
+        //( save attachment)
+        foreach ($data['attachfiles'] as $afile) {
+            $filename = $afile->getClientOriginalName();
+            $location = $afile->store('message_attachments');
+            $attachment = new MessageAttachment(['filename' => $filename, 'location' => $location]);
+            $msg->message_attachments()->save($attachment);
+        }
 
         return redirect()->route('message.index', ['language' => app()->getLocale(), 'user' => $user, 'region' => $region]);
     }
