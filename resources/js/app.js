@@ -13,8 +13,13 @@ try {
     require('tempusdominus-bootstrap');
 
     require('bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js');
-    require('bootstrap-fileinput');
+
+    require('bootstrap-fileinput/js/plugins/buffer.min.js');
+    require('bootstrap-fileinput/js/plugins/filetype.min.js');
+    require('bootstrap-fileinput/js/fileinput.min.js');
+    require('bootstrap-fileinput/themes/explorer-fa5/theme.min.js');
     require('bootstrap-fileinput/js/locales/de.js');
+
     require('bootstrap4-duallistbox');
 
     //selectbox

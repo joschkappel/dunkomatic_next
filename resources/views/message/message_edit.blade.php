@@ -45,16 +45,15 @@
             </div>
         </div>
         <div class="form-group row">
-            <label for="attachfile" class="col-sm-4 col-form-label">@lang('message.attachment')</label>
+            <label for="attachfiles" class="col-sm-4 col-form-label">@lang('message.attachment')</label>
             <div class="col-sm-8">
                 <div class="file-loading">
-                    <input id="attachfile" name="attachfile" type="file" class="file" accept=".pdf,application/pdf"
-                        value="{{ old('attachfile') }}">
+                    <input id="attachfiles" name="attachfiles[]" type="file"  accept=".pdf,application/pdf,.xlsx,application/xlsx"
+                        multiple></input>
                 </div>
-                @error('attachfile')
+                @error('attachfiles')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
-
             </div>
         </div>
         <div class="form-group row">
@@ -139,22 +138,16 @@
 
 @push('js')
     <script>
-        $('#attachfile').fileinput({
-            @isset($message->attachment_filename)
-                initialPreview: "<div class='file-preview-text'>" +
-                    "<h3><i class='bi-file-earmark-fill'></i></h3>" +
-                    "{{ $message->attachment_filename }}" + "</div>",
-            @endisset
+        $('#attachfiles').fileinput({
             msgPlaceholder: '{{ __('message.select_file') }}',
-            theme: 'explorer-fas',
-            language: '{{ app()->getLocale() }}',
+            theme: 'explorer-fa5',
+            removeFromPreviewOnError: true,
+            overwriteInitial: false,
             showUpload: false,
-            showCaption: true,
-            showRemove: true,
-            hideThumbnailContent: false,
-            dropZoneEnabled: false,
-            showPreview: true,
-            maxFilesNum: 1
+            browseClass: "btn btn-secondary",
+            language: '{{ app()->getLocale() }}',
+            maxFileCount: 3,
+            allowedFileExtensions: ["pdf", "xlsx"],
         });
         $(function() {
             $('#frmClose').click(function(e) {

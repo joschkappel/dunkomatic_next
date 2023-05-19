@@ -142,8 +142,8 @@
         $('#attachfiles').fileinput({
             initialCaption: '{{ __('message.select_file') }}',
             msgPlaceholder: '{{ __('message.select_file') }}',
-            theme: 'fa5',
-            browseClass: "btn btn-success",
+            theme: 'explorer-fa5',
+            browseClass: "btn btn-secondary",
             language: '{{ app()->getLocale() }}',
             showUpload: false,
             showCaption: true,

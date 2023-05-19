@@ -8,8 +8,9 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 @import '~tempusdominus-bootstrap/src/sass/tempusdominus-bootstrap-build';
-@import '~bootstrap-fileinput/scss/fileinput';
-@import '~bootstrap-fileinput/scss/themes/explorer-fa5/theme';
+@import '~fontawesome-free/css/all.css';
+@import '~bootstrap-fileinput/css/fileinput.min.css';
+@import '~bootstrap-fileinput/themes/explorer-fa5/theme.css';
 @import '~bootstrap-colorpicker/src/sass/colorpicker';
 @import '~bootstrap4-duallistbox/dist/bootstrap-duallistbox.css';
 @import '~icheck-bootstrap/icheck-bootstrap.css';

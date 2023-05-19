@@ -46,7 +46,7 @@ class MessageController extends Controller
      */
     public function datatable_user(string $language, Region $region, User $user)
     {
-        $msgs = $user->region_messages($region->id)->orderBy('updated_at', 'ASC')->get();
+        $msgs = $user->region_messages($region->id)->withCount('message_attachments')->orderBy('updated_at', 'ASC')->get();
 
         Log::info('preparing message list');
         $msglist = datatables()::of($msgs);
