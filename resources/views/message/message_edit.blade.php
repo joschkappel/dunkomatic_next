@@ -26,7 +26,7 @@
             </div>
         </div>
         <div class="form-group row">
-            <label for="body" class="col-sm-4 col-form-label">@lang('message.body')</label>
+            <label for="summernote" class="col-sm-4 col-form-label">@lang('message.body')</label>
             <div class="col-sm-8">
                 <textarea class="form-control @error('body') is-invalid @enderror" name="body" id="summernote"></textarea>
                 @error('body')
@@ -59,8 +59,8 @@
         <div class="form-group row">
             <label for="send_at" class="col-sm-4 col-form-label">@lang('message.send_at')</label>
             <div class="col-sm-8">
-                <div class="input-group date" id="send_at" data-target-input="nearest">
-                    <input type="text" name='send_at' id='send_at'
+                <div class="input-group date" data-target-input="nearest">
+                    <input type="text" name="send_at" id="send_at"
                         class="form-control datetimepicker-input @error('send_at') is-invalid @enderror"
                         data-target="#send_at" />
                     <div class="input-group-append" data-target="#send_at" data-toggle="datetimepicker">
@@ -73,9 +73,9 @@
             </div>
         </div>
         <div class="form-group row">
-            <label for="deleteat" class="col-sm-4 col-form-label">@lang('message.delete_at')</label>
+            <label for="delete_at" class="col-sm-4 col-form-label">@lang('message.delete_at')</label>
             <div class="col-sm-8">
-                <div class="input-group date" id="deleteat" data-target-input="nearest">
+                <div class="input-group date" data-target-input="nearest">
                     <input type="text" name='delete_at' id='delete_at'
                         class="form-control datetimepicker-input @error('delete_at') is-invalid @enderror"
                         data-target="#deleteat" />
@@ -148,6 +148,28 @@
             language: '{{ app()->getLocale() }}',
             maxFileCount: 3,
             allowedFileExtensions: ["pdf", "xlsx"],
+            @if ($message->has('message_attachments'))
+            initialPreview: [
+                @foreach ( $message->message_attachments as $ma )
+                    '{{Storage::disk('public')->url($ma->location)}}',
+                @endforeach
+            ],
+            initialPreviewConfig: [
+                @foreach ( $message->message_attachments as $ma )
+                    {caption:"{{$ma->filename}}",
+                     filename:"{{$ma->filename}}",
+                     downloadUrl:"{{ Storage::disk('public')->url($ma->location)}}",
+                     size:{{Storage::disk('public')->size( $ma->filename)}},
+                     type:"{{ pathinfo( Storage::disk('public')->path($ma->filename))['extension']}}",
+                     filetype:"{{ Storage::disk('public')->mimeType($ma->filename)}}",
+                     key:{{$ma->id}}},
+                @endforeach
+            ],
+            overwriteInitial: false,
+            deleteUrl: "{{ route('message_attachment.destroy', ['message'=> $message ])}}",
+            deleteExtraData: { _token: "{{ csrf_token() }}"},
+            initialPreviewAsData: true,
+            @endif
         });
         $(function() {
             $('#frmClose').click(function(e) {

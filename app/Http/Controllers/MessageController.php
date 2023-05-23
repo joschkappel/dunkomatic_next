@@ -14,6 +14,7 @@ use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Request as FacadesRequest;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\File;
@@ -170,7 +171,7 @@ class MessageController extends Controller
         //( save attachment)
         foreach ($data['attachfiles'] as $afile) {
             $filename = $afile->getClientOriginalName();
-            $location = $afile->store('message_attachments');
+            $location = $afile->store('message_attachments', 'public');
             $attachment = new MessageAttachment(['filename' => $filename, 'location' => $location]);
             $msg->message_attachments()->save($attachment);
         }
@@ -219,7 +220,7 @@ class MessageController extends Controller
         //( save attachment)
         if ($request->has('attachfile')) {
             $data['attachment_filename'] = $request->attachfile->getClientOriginalName();
-            $data['attachment_location'] = $request->attachfile->store('message_attachments');
+            $data['attachment_location'] = $request->attachfile->store('message_attachments', 'public');
             unset($data['attachfile']);
         } else {
             $data['attachment_filename'] = null;
@@ -292,10 +293,7 @@ class MessageController extends Controller
     public function get_attachment(Message $message)
     {
         Log::info('download request for message attachment', ['filename' => $message->attachment_filename]);
-        Storage::disk('public')->writeStream(
-            $message->attachment_filename,
-            Storage::readStream($message->attachment_location)
-        );
+
         return response()->file(Storage::disk('public')->path($message->attachment_filename));
     }
 
@@ -308,11 +306,30 @@ class MessageController extends Controller
     public function destroy(Message $message)
     {
         if ($message->attachment_filename != null) {
-            Storage::delete($message->attachment_location);
+            Storage::disk('public')->delete($message->attachment_location);
         }
         $message->delete();
         Log::notice('message deleted', ['message-id' => $message->id]);
 
         return redirect()->route('message.index', ['language' => app()->getLocale(), 'region' => $message->region, 'user' => $message->user]);
+    }
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param Message $message
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy_attachment(Request $request, Message $message)
+    {
+        // get the attachment
+        $ma = $message->message_attachments->where('id', $request->post('key'))->first();
+
+        // delete the file
+        Storage::disk('public')->delete($ma->location);
+        // delete the attachment
+        $ma->delete();
+
+        Log::notice('message attachment deleted', ['message-id' => $message->id, 'message-attachment-id' => $ma->id]);
+        return true;
     }
 }

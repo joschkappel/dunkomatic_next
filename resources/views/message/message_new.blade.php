@@ -47,8 +47,7 @@
             <label for="attachfiles" class="col-sm-4 col-form-label">@lang('message.attachment')</label>
             <div class="col-sm-8">
                 <div class="file-loading">
-                    <input id="attachfiles" name="attachfiles[]" type="file" class="file" accept=".pdf,application/pdf,.xlsx,application/xlsx" multiple
-                        value="{{ old('attachfiles') }}">
+                    <input id="attachfiles" name="attachfiles[]" type="file" accept=".pdf,application/pdf,.xlsx,application/xlsx" multiple">
                 </div>
                 @error('attachfiles')
                     <div class="text-danger">{{ $message }}</div>
