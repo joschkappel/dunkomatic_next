@@ -47,7 +47,7 @@
             <label for="attachfiles" class="col-sm-4 col-form-label">@lang('message.attachment')</label>
             <div class="col-sm-8">
                 <div class="file-loading">
-                    <input id="attachfiles" name="attachfiles[]" type="file" accept=".pdf,application/pdf,.xlsx,application/xlsx" multiple">
+                    <input id="attachfiles" name="attachfiles[]" type="file" accept=".pdf,application/pdf,.xlsx,application/xlsx" multiple></input>
                 </div>
                 @error('attachfiles')
                     <div class="text-danger">{{ $message }}</div>
@@ -75,7 +75,7 @@
         <div class="form-group row">
             <label for="delete_at" class="col-sm-4 col-form-label">@lang('message.delete_at')</label>
             <div class="col-sm-8">
-                <div class="input-group date" id="delete_at" data-target-input="nearest">
+                <div class="input-group date"  data-target-input="nearest">
                     <input type="text" name='delete_at' id='delete_at'
                         class="form-control datetimepicker-input @error('delete_at') is-invalid @enderror"
                         data-target="#delete_at" />
@@ -139,7 +139,8 @@
 @push('js')
     <script>
         $('#attachfiles').fileinput({
-            initialCaption: '{{ __('message.select_file') }}',
+            maxFileCount: 3,
+            allowedFileExtensions: ["pdf", "xlsx"],
             msgPlaceholder: '{{ __('message.select_file') }}',
             theme: 'explorer-fa5',
             browseClass: "btn btn-secondary",
@@ -148,9 +149,7 @@
             showCaption: true,
             hideThumbnailContent: false,
             dropZoneEnabled: true,
-            showPreview: true,
-            maxFileCount: 3,
-            allowedFileExtensions: ["pdf", "xlsx"],
+            showPreview: true
         });
         $(function() {
             $('#frmClose').click(function(e) {

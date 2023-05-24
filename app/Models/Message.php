@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * App\Models\Message
@@ -64,6 +65,19 @@ class Message extends Model
         'cc_members' => 'array',
         'notify_users' => 'boolean',
     ];
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::deleting(function (Message $message) {
+            // delete the atached files
+            foreach ($message->message_attachments as $ma) {
+                Storage::disk('public')->delete($ma->location);
+                $ma->delete();
+            }
+        });
+    }
 
     public function user(): BelongsTo
     {

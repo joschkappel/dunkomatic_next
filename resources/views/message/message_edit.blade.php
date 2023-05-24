@@ -78,8 +78,8 @@
                 <div class="input-group date" data-target-input="nearest">
                     <input type="text" name='delete_at' id='delete_at'
                         class="form-control datetimepicker-input @error('delete_at') is-invalid @enderror"
-                        data-target="#deleteat" />
-                    <div class="input-group-append" data-target="#deleteat" data-toggle="datetimepicker">
+                        data-target="#delete_at" />
+                    <div class="input-group-append" data-target="#delete_at" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
                     @error('delete_at')
@@ -159,7 +159,7 @@
                     {caption:"{{$ma->filename}}",
                      filename:"{{$ma->filename}}",
                      downloadUrl:"{{ Storage::disk('public')->url($ma->location)}}",
-                     size:{{Storage::disk('public')->size( $ma->filename)}},
+                     size:{{Storage::disk('public')->size( $ma->location) ?? 0}},
                      type:"{{ pathinfo( Storage::disk('public')->path($ma->filename))['extension']}}",
                      filetype:"{{ Storage::disk('public')->mimeType($ma->filename)}}",
                      key:{{$ma->id}}},
@@ -221,7 +221,7 @@
                 defaultDate: moment('{{ $message->send_at }}'),
                 // minDate: moment().add(1, 'd')
             });
-            $('#deleteat').datetimepicker({
+            $('#delete_at').datetimepicker({
                 format: 'L',
                 locale: '{{ app()->getLocale() }}',
                 defaultDate: moment('{{ $message->delete_at }}')
