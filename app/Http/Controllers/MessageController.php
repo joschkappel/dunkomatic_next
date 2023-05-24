@@ -14,11 +14,11 @@ use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Request as FacadesRequest;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rules\File;
 use Silber\Bouncer\Database\Role as UserRole;
+use ZipArchive;
 
 class MessageController extends Controller
 {
@@ -302,9 +302,34 @@ class MessageController extends Controller
 
     public function get_attachment(Message $message)
     {
-        Log::info('download request for message attachment', ['filename' => $message->attachment_filename]);
+        Log::info('download request for message attachment', ['filename' => $message->message_attachments->first()->filename]);
 
-        return response()->file(Storage::disk('public')->path($message->attachment_filename));
+        if ($message->message_attachments->count() == 1) {
+            return response()->file(Storage::disk('public')->path($message->message_attachments->first()->location));
+        } else {
+
+            //collect all attachments and pack into archive
+            $zip = new ZipArchive;
+            $archiveName = 'message_attachments_' . Auth::user()->id . '_' . $message->id . '.zip';
+            $pf = Storage::disk('public')->path($archiveName);
+
+            if ($zip->open($pf, ZipArchive::CREATE) === true) {
+                foreach ($message->message_attachments as $ma) {
+                    $check = $zip->addFromString($ma->filename, Storage::disk('public')->get($ma->location));
+                }
+
+                $zip->close();
+                //  Storage::move(public_path($fileName), 'public/'.$fileName);
+                Log::notice('downloading ZIP archive for user', ['user-id' => Auth::user()->id, 'filecount' => $message->message_attachments->count()]);
+
+                return Storage::disk('public')->download($archiveName);
+            } else {
+                Log::error('archive corrupt.', ['user-id' => Auth::user()->id, 'message-id' => $message->id]);
+
+                return abort(500);
+            }
+        }
+
     }
 
     /**
