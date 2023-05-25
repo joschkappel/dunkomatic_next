@@ -57,8 +57,8 @@
                         name: 'body'
                     },
                     {
-                        data: 'attachment_filename',
-                        name: 'attachment_filename'
+                        data: 'message_attachments_count',
+                        name: 'message_attachments_count'
                     },
                     {
                         data: 'send_at',

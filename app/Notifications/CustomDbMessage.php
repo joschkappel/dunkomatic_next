@@ -48,7 +48,7 @@ class CustomDbMessage extends Notification
             'salutation' => $this->message['salutation'],
             'sender' => $this->message->user->name,
             'tag' => $this->message->id,
-            'attachment' => $this->message->attachment_filename != null,
+            'attachment' => $this->message->message_attachments()->exists(),
         ];
     }
 }

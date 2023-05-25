@@ -5,7 +5,7 @@
         'attachment' => 'Attachment',
         'attachment.get' => 'Get Attachment',
         'attachment.new' => 'New Attachment',
-        'select_file' => 'Please select a .pdf file to attach...',
+        'select_file' => 'Please select up to 3 .pdf or .xlsx files to attach...',
         'reminder' => 'This weeks tasks',
         'note' => 'To do next',
         'withdrawal' => 'Withdrawn Teams',

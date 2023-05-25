@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Mail\Mailables\Attachment;
+use Illuminate\Support\Facades\Storage;
 
 class CustomMailMessage extends Mailable
 {
@@ -26,12 +27,15 @@ class CustomMailMessage extends Mailable
      */
     public function attachments()
     {
-        if ($this->message->attachment_filename != null) {
-            return [
-                Attachment::fromStorage($this->message->attachment_location)
-                    ->as($this->message->attachment_filename)
-                    ->withMime('application/pdf'),
-            ];
+        if ($this->message->message_attachments()->exists()) {
+            $alist = [];
+            foreach ($this->message->message_attachments as $ma) {
+                $alist[] =
+                    Attachment::fromStorageDisk('public', $ma->location)
+                    ->as($ma->filename)
+                    ->withMime(Storage::disk('public')->mimeType($ma->location));
+            }
+            return $alist;
         } else {
             return [];
         }

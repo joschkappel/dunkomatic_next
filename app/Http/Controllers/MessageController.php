@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\Role as EnumRole;
 use App\Jobs\SendCustomMessage;
 use App\Models\Message;
+use App\Models\MessageAttachment;
 use App\Models\Region;
 use App\Models\User;
 use BenSampo\Enum\Rules\EnumValue;
@@ -14,9 +15,10 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rules\File;
 use Silber\Bouncer\Database\Role as UserRole;
+use ZipArchive;
 
 class MessageController extends Controller
 {
@@ -45,7 +47,7 @@ class MessageController extends Controller
      */
     public function datatable_user(string $language, Region $region, User $user)
     {
-        $msgs = $user->region_messages($region->id)->orderBy('updated_at', 'ASC')->get();
+        $msgs = $user->region_messages($region->id)->withCount('message_attachments')->orderBy('updated_at', 'ASC')->get();
 
         Log::info('preparing message list');
         $msglist = datatables()::of($msgs);
@@ -134,6 +136,7 @@ class MessageController extends Controller
      */
     public function store(Request $request, Region $region, User $user)
     {
+        Log::debug('raw request', ['request' => $request->input()]);
         $data = $request->validate([
             'title' => 'required|string|max:60',
             'body' => 'required|string',
@@ -145,7 +148,8 @@ class MessageController extends Controller
             'to_members.*' => [new EnumValue(EnumRole::class, false)],
             'cc_members.*' => [new EnumValue(EnumRole::class, false)],
             'notify_users' => 'sometimes|required|boolean',
-            'attachfile' => 'sometimes|max:' . config('dunkomatic.mail_attachment_size') . '|mimes:pdf',
+            'attachfiles' => 'array|max:3',
+            'attachfiles.*' => 'max:' . config('dunkomatic.mail_attachment_size') . '|mimes:pdf,xlsx',
         ]);
 
         // Log::debug(print_r($request->all(), true));
@@ -154,12 +158,6 @@ class MessageController extends Controller
 
         Log::info('message form data validated OK.');
 
-        //( save attachment)
-        if ($request->has('attachfile')) {
-            $data['attachment_filename'] = $request->attachfile->getClientOriginalName();
-            $data['attachment_location'] = $request->attachfile->store('message_attachments');
-            unset($data['attachfile']);
-        }
         if (!$request->has('notify_users')) {
             $data['notify_users'] = false;
         }
@@ -169,6 +167,16 @@ class MessageController extends Controller
         $msg->region()->associate($region);
         $msg->save();
         Log::notice('new message created.', ['message-id' => $msg->id]);
+
+        // save attachment)
+        if ($request->has('attachfiles')) {
+            foreach ($data['attachfiles'] as $afile) {
+                $filename = $afile->getClientOriginalName();
+                $location = $afile->store('message_attachments', 'public');
+                $attachment = new MessageAttachment(['filename' => $filename, 'location' => $location]);
+                $msg->message_attachments()->save($attachment);
+            }
+        }
 
         return redirect()->route('message.index', ['language' => app()->getLocale(), 'user' => $user, 'region' => $region]);
     }
@@ -197,29 +205,37 @@ class MessageController extends Controller
      */
     public function update(Request $request, Message $message)
     {
-        $data = $request->validate([
-            'title' => 'required|string|max:60',
-            'body' => 'required|string',
-            'greeting' => 'required|string|max:40',
-            'salutation' => 'required|string|max:40',
-            'send_at' => 'date|after:today',
-            'delete_at' => 'date|after:send_at',
-            'to_members' => 'required_without:notify_users',
-            'to_members.*' => [new EnumValue(EnumRole::class, false)],
-            'cc_members.*' => [new EnumValue(EnumRole::class, false)],
-            'notify_users' => 'sometimes|required|boolean',
-            'attachfile' => 'sometimes|max:' . config('dunkomatic.mail_attachment_size') . '|mimes:pdf',
-        ]);
+        $data = $request->validate(
+            [
+                'title' => 'required|string|max:60',
+                'body' => 'required|string',
+                'greeting' => 'required|string|max:40',
+                'salutation' => 'required|string|max:40',
+                'send_at' => 'date|after:today',
+                'delete_at' => 'date|after:send_at',
+                'to_members' => 'required_without:notify_users',
+                'to_members.*' => [new EnumValue(EnumRole::class, false)],
+                'cc_members.*' => [new EnumValue(EnumRole::class, false)],
+                'notify_users' => 'sometimes|required|boolean',
+                'attachfiles' => 'array|max:3',
+                'attachfiles.*' => 'max:' . config('dunkomatic.mail_attachment_size') . '|mimes:pdf,xlsx'
+            ]
+        );
         Log::info('message form data validated OK.');
-        //( save attachment)
-        if ($request->has('attachfile')) {
-            $data['attachment_filename'] = $request->attachfile->getClientOriginalName();
-            $data['attachment_location'] = $request->attachfile->store('message_attachments');
-            unset($data['attachfile']);
-        } else {
-            $data['attachment_filename'] = null;
-            $data['attachment_location'] = null;
+
+        // save attachment)
+
+        // then attach and store new attachments
+        if ($request->has('attachfiles')) {
+            foreach ($data['attachfiles'] as $afile) {
+                $filename = $afile->getClientOriginalName();
+                $location = $afile->store('message_attachments', 'public');
+                $attachment = new MessageAttachment(['filename' => $filename, 'location' => $location]);
+                $message->message_attachments()->save($attachment);
+            }
         }
+
+
         if (!$request->has('notify_users')) {
             $data['notify_users'] = false;
         }
@@ -286,12 +302,34 @@ class MessageController extends Controller
 
     public function get_attachment(Message $message)
     {
-        Log::info('download request for message attachment', ['filename' => $message->attachment_filename]);
-        Storage::disk('public')->writeStream(
-            $message->attachment_filename,
-            Storage::readStream($message->attachment_location)
-        );
-        return response()->file(Storage::disk('public')->path($message->attachment_filename));
+        Log::info('download request for message attachment', ['filename' => $message->message_attachments->first()->filename]);
+
+        if ($message->message_attachments->count() == 1) {
+            return response()->file(Storage::disk('public')->path($message->message_attachments->first()->location));
+        } else {
+
+            //collect all attachments and pack into archive
+            $zip = new ZipArchive;
+            $archiveName = 'message_attachments_' . Auth::user()->id . '_' . $message->id . '.zip';
+            $pf = Storage::disk('public')->path($archiveName);
+
+            if ($zip->open($pf, ZipArchive::CREATE) === true) {
+                foreach ($message->message_attachments as $ma) {
+                    $check = $zip->addFromString($ma->filename, Storage::disk('public')->get($ma->location));
+                }
+
+                $zip->close();
+                //  Storage::move(public_path($fileName), 'public/'.$fileName);
+                Log::notice('downloading ZIP archive for user', ['user-id' => Auth::user()->id, 'filecount' => $message->message_attachments->count()]);
+
+                return Storage::disk('public')->download($archiveName);
+            } else {
+                Log::error('archive corrupt.', ['user-id' => Auth::user()->id, 'message-id' => $message->id]);
+
+                return abort(500);
+            }
+        }
+
     }
 
     /**
@@ -302,12 +340,28 @@ class MessageController extends Controller
      */
     public function destroy(Message $message)
     {
-        if ($message->attachment_filename != null) {
-            Storage::delete($message->attachment_location);
-        }
         $message->delete();
         Log::notice('message deleted', ['message-id' => $message->id]);
 
         return redirect()->route('message.index', ['language' => app()->getLocale(), 'region' => $message->region, 'user' => $message->user]);
+    }
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param Message $message
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy_attachment(Request $request, Message $message)
+    {
+        // get the attachment
+        $ma = $message->message_attachments->where('id', $request->post('key'))->first();
+
+        // delete the file
+        Storage::disk('public')->delete($ma->location);
+        // delete the attachment
+        $ma->delete();
+
+        Log::notice('message attachment deleted', ['message-id' => $message->id, 'message-attachment-id' => $ma->id]);
+        return true;
     }
 }

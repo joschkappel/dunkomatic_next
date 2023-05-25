@@ -10,7 +10,7 @@ return [
     'use_full_favicon' => true,
 
     'table_page_length' => 50, // 10,20,50,100
-    'mail_attachment_size' => 1204,
+    'mail_attachment_size' => 5120,  // 5MB
 
     'dashboard_url' => 'home',
     'logout_url' => 'logout',

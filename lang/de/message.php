@@ -5,7 +5,7 @@
         'attachment' => 'Anhang',
         'attachment.get' => 'Anhang Download',
         'attachment.new' => 'Neuer Anhang',
-        'select_file' => 'Wähle eine .pdf Datei als Anhang aus...',
+        'select_file' => 'Wähle bis zu 3 .pdf oder .xlsx Dateien als Anhang aus...',
         'reminder' => 'Aufgaben für diese Woche',
         'note' => 'Was demnächst ansteht',
         'withdrawal' => 'Zurückgezogene Mannschaften',

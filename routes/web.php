@@ -364,6 +364,7 @@ Route::middleware([
     Route::post('message/{message}/markread', [MessageController::class, 'mark_as_read'])->name('message.mark_as_read');
     Route::get('message/{message}/attachment', [MessageController::class, 'get_attachment'])->name('message.attachment');
     Route::delete('message/{message}', [MessageController::class, 'destroy'])->name('message.destroy');
+    Route::post('message_attachment/{message}', [MessageController::class, 'destroy_attachment'])->name('message_attachment.destroy');
     Route::get('message/{notification}', [MessageController::class, 'show'])->name('notification.show');
 
 

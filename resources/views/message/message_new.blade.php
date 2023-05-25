@@ -44,13 +44,12 @@
             </div>
         </div>
         <div class="form-group row">
-            <label for="attachfile" class="col-sm-4 col-form-label">@lang('message.attachment')</label>
+            <label for="attachfiles" class="col-sm-4 col-form-label">@lang('message.attachment')</label>
             <div class="col-sm-8">
                 <div class="file-loading">
-                    <input id="attachfile" name="attachfile" type="file" class="file" accept=".pdf,application/pdf"
-                        value="{{ old('attachfile') }}">
+                    <input id="attachfiles" name="attachfiles[]" type="file" accept=".pdf,application/pdf,.xlsx,application/xlsx" multiple></input>
                 </div>
-                @error('attachfile')
+                @error('attachfiles')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
 
@@ -76,7 +75,7 @@
         <div class="form-group row">
             <label for="delete_at" class="col-sm-4 col-form-label">@lang('message.delete_at')</label>
             <div class="col-sm-8">
-                <div class="input-group date" id="delete_at" data-target-input="nearest">
+                <div class="input-group date"  data-target-input="nearest">
                     <input type="text" name='delete_at' id='delete_at'
                         class="form-control datetimepicker-input @error('delete_at') is-invalid @enderror"
                         data-target="#delete_at" />
@@ -139,17 +138,18 @@
 
 @push('js')
     <script>
-        $('#attachfile').fileinput({
-            initialCaption: '{{ __('message.select_file') }}',
+        $('#attachfiles').fileinput({
+            maxFileCount: 3,
+            allowedFileExtensions: ["pdf", "xlsx"],
             msgPlaceholder: '{{ __('message.select_file') }}',
-            theme: 'fa5',
+            theme: 'explorer-fa5',
+            browseClass: "btn btn-secondary",
             language: '{{ app()->getLocale() }}',
             showUpload: false,
             showCaption: true,
             hideThumbnailContent: false,
-            dropZoneEnabled: false,
-            showPreview: false,
-            maxFilesNum: 1
+            dropZoneEnabled: true,
+            showPreview: true
         });
         $(function() {
             $('#frmClose').click(function(e) {
@@ -212,7 +212,7 @@
                 format: 'L',
                 locale: '{{ app()->getLocale() }}',
                 useCurrent: true,
-                minDate: moment().add(1, 'd'),
+                minDate: moment().add(2, 'd'),
             });
 
         });

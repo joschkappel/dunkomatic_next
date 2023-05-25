@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * App\Models\Message
@@ -53,7 +55,7 @@ class Message extends Model
 
     protected $fillable = [
         'id', 'title', 'body', 'greeting', 'salutation', 'send_at', 'sent_at', 'delete_at', 'user_id', 'region_id',
-        'to_members', 'cc_members', 'notify_users', 'attachment_location', 'attachment_filename'
+        'to_members', 'cc_members', 'notify_users'
     ];
 
     protected $dates = ['send_at', 'sent_at', 'delete_at'];
@@ -63,6 +65,19 @@ class Message extends Model
         'cc_members' => 'array',
         'notify_users' => 'boolean',
     ];
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::deleting(function (Message $message) {
+            // delete the atached files
+            foreach ($message->message_attachments as $ma) {
+                Storage::disk('public')->delete($ma->location);
+                $ma->delete();
+            }
+        });
+    }
 
     public function user(): BelongsTo
     {
@@ -72,6 +87,11 @@ class Message extends Model
     public function region(): BelongsTo
     {
         return $this->belongsTo(Region::class);
+    }
+
+    public function message_attachments(): HasMany
+    {
+        return $this->hasMany(MessageAttachment::class);
     }
 
     /**
