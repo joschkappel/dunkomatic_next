@@ -161,7 +161,7 @@
                      downloadUrl:"{{ Storage::disk('public')->url($ma->location)}}",
                      size:{{Storage::disk('public')->size( $ma->location) ?? 0}},
                      type:"{{ pathinfo( Storage::disk('public')->path($ma->filename))['extension']}}",
-                     filetype:"{{ Storage::disk('public')->mimeType($ma->filename)}}",
+                     filetype:"{{ Storage::disk('public')->mimeType($ma->location)}}",
                      key:{{$ma->id}}},
                 @endforeach
             ],
