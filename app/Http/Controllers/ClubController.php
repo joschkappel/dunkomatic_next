@@ -525,10 +525,11 @@ class ClubController extends Controller
         $club->leagues()->detach();
         Log::info('club leagues detached', ['club-id' => $club->id]);
 
-        $mships = $club->memberships()->get();
-        foreach ($mships as $ms) {
+        $mships = $club->memberships()->delete();
+        /*         foreach ($mships as $ms) {
             $ms->delete();
         }
+ */
         Log::info('club memberships deleted', ['club-id' => $club->id]);
 
         $region = $club->region;

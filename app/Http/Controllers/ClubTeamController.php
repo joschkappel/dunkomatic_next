@@ -367,6 +367,8 @@ class ClubTeamController extends Controller
     public function destroy(Team $team)
     {
         // TBD remove from league ?? or remove games ?
+        // remove team responsible !
+        // -->  put in event observer in model !
 
         $check = $team->delete();
         Log::notice('team deleted.', ['team-id' => $team->id]);

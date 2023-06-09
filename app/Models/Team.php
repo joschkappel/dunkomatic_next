@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Facades\Log;
 use OwenIt\Auditing\Contracts\Auditable;
 
 /**
@@ -98,6 +99,30 @@ class Team extends Model implements Auditable
         'withdrawn_at' => 'datetime',
         'charreleased_at' => 'datetime',
     ];
+
+    /**
+     * Liusten to deleting events to remove some related entities
+     */
+    protected static function booted(): void
+    {
+        static::deleting(function (Team $team) {
+            // delete potential home games
+            $deleted = $team->games_home()->delete();
+            if ($deleted) {
+                Log::info('team home games deleted', ['team-id' => $team->id, 'count' => $deleted]);
+            }
+
+            // delete potential guest games
+            $deleted = $team->games_guest()->delete();
+            if ($deleted) {
+                Log::info('team guest games deleted', ['team-id' => $team->id, 'count' => $deleted]);
+            }
+
+            // delete members with team membership
+            $deleted = $team->memberships()->delete();
+            Log::info('team memberships deleted', ['team-id' => $team->id, 'count' => $deleted]);
+        });
+    }
 
     public function club(): BelongsTo
     {
