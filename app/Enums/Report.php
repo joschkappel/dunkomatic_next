@@ -46,7 +46,7 @@ final class Report extends Enum implements LocalizedEnum
             case 4:
                 return 'Vereinsplan';
                 break;
-            case 4:
+            case 5:
                 return 'Rundenplan';
                 break;
             default:
