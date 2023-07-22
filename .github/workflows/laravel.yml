@@ -66,19 +66,19 @@ jobs:
       run: php artisan dusk --env=dusk.git --stop-on-defect --stop-on-error
     - name: Archive dusk screenshots
       if: ${{ failure() }}
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: screenshots
         path: tests/Browser/screenshots/
     - name: Archive dusk console output
       if: ${{ failure() }}
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: dusk_console
         path: tests/Browser/console/
     - name: Archive laravel logs
       if: ${{ failure() }}
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: laravel_logs
         path: storage/logs/
