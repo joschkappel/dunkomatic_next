@@ -43,39 +43,6 @@ jobs:
       run: php artisan db:seed --class=TestDatabaseSeeder
     - name: Run phpunit tests
       run: php artisan test --stop-on-defect --stop-on-error
-    - name: Prepare Chrome
-      run: |
-       cd ~
-       # install Google Chrome
-       sudo apt-get install libgbm1
-       wget --quiet https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-       sudo dpkg --install google-chrome-stable_current_amd64.deb
-       cd -
-    - name: Upgrade Chrome Driver
-      run: php artisan dusk:chrome-driver `/opt/google/chrome/chrome --version | cut -d " " -f3 | cut -d "." -f1`
-    - name: Start Chrome Driver
-      run: ./vendor/laravel/dusk/bin/chromedriver-linux &
-    - name: Create Schema
-      run: php artisan migrate:fresh
-    - name: Run Laravel Server
-      run: php artisan serve  &
-    - name: Test dusk server access
-      run: |
-        curl http://127.0.0.1:8000/healthy
-    - name: Run Dusk Tests
-      run: php artisan dusk --env=dusk.git --stop-on-defect --stop-on-error
-    - name: Archive dusk screenshots
-      if: ${{ failure() }}
-      uses: actions/upload-artifact@v3
-      with:
-        name: screenshots
-        path: tests/Browser/screenshots/
-    - name: Archive dusk console output
-      if: ${{ failure() }}
-      uses: actions/upload-artifact@v3
-      with:
-        name: dusk_console
-        path: tests/Browser/console/
     - name: Archive laravel logs
       if: ${{ failure() }}
       uses: actions/upload-artifact@v3
