@@ -132,18 +132,20 @@ class GenerateClubGamesReport implements ShouldQueue
                     ]);
                 }
 
-                $calendar = CalendarComposer::createClubLeagueCalendar($this->club, $this->league);
-                if ($calendar != null) {
-                    $rpt_name = $this->rpt_name . '_' . $this->league->shortname . '_v' . $version . '.' . $rtype->description;
-                    $rpt_name = Str::replace(' ', '-', $rpt_name);
-                    Storage::put($rpt_name, $calendar->get());
-                    Log::info('[JOB][CLUB GAMES REPORTS] started.', [
-                        'region-id' => $this->region->id,
-                        'club-id' => $this->club->id,
-                        'league-id' => $this->league->id ?? '',
-                        'format' => $rtype->key,
-                        'path' => $rpt_name,
-                    ]);
+                if (isset($this->league)) {
+                    $calendar = CalendarComposer::createClubLeagueCalendar($this->club, $this->league);
+                    if ($calendar != null) {
+                        $rpt_name = $this->rpt_name . '_' . $this->league->shortname . '_v' . $version . '.' . $rtype->description;
+                        $rpt_name = Str::replace(' ', '-', $rpt_name);
+                        Storage::put($rpt_name, $calendar->get());
+                        Log::info('[JOB][CLUB GAMES REPORTS] started.', [
+                            'region-id' => $this->region->id,
+                            'club-id' => $this->club->id,
+                            'league-id' => $this->league->id ?? '',
+                            'format' => $rtype->key,
+                            'path' => $rpt_name,
+                        ]);
+                    }
                 }
 
                 $calendar = CalendarComposer::createClubRefereeCalendar($this->club);
