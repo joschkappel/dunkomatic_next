@@ -54,7 +54,7 @@ class Kernel extends ConsoleKernel
         // $schedule->job(new ExportStatistics(), 'janitor')->everyMinute();
 
         // league state handling
-        $schedule->job(new OpenLeagueState(), 'janitor')->dailyAt('07:45');
+        $schedule->job(new OpenLeagueState(), 'janitor')->dailyAt('07:59');
         $schedule->job(new CloseLeagueState(), 'janitor')->dailyAt('20:00');
 
         // schedule region specific jobs
