@@ -97,7 +97,7 @@ class LeagueCustomGamesImport implements ToCollection, WithStartRow, WithValidat
 
         $club_home = Club::where('shortname', Str::substr($data[3], 0, 4))->first();
         $data['club_id_home'] = $club_home->id ?? null;
-        $data['region_home_id'] = $club_home->region->id ?? null;
+        $data['region_id_home'] = $club_home->region->id ?? null;
         $team_home = Team::where('club_id', $data['club_id_home'])->where('team_no', Str::substr($data[3], -1, 1))->where('league_id', $data['league_id'])->first();
         $data['team_id_home'] = $team_home->id ?? null;
         $data['team_home_char'] = $team_home->league_no ?? 1;

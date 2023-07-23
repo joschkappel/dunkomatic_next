@@ -188,10 +188,10 @@ return [
             'maxProcesses' => 6,
             // 'maxTime' => 0,
             // ‚'maxJobs' => 0,
-            'memory' => 512,
+            'memory' => 2048,
             'tries' => 1,
-            'timeout' => 14400,
-            'nice' => 1,
+            'timeout' => 28800,
+            'nice' => 0,
         ],
         'supervisor-2' => [
             'connection' => 'redis',
@@ -201,7 +201,7 @@ return [
             'memory' => 256,
             'tries' => 1,
             'timeout' => 14400,
-            'nice' => 1,
+            'nice' => 0,
         ],
     ],
 
