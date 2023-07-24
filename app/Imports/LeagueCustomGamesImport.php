@@ -7,6 +7,7 @@ use App\Models\Game;
 use App\Models\Gym;
 use App\Models\League;
 use App\Models\Team;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -38,7 +39,7 @@ class LeagueCustomGamesImport implements ToCollection, WithStartRow, WithValidat
         foreach ($rows as $row) {
             $g = Game::find($row['game_id']);
             if (isset($g)) {
-                $g->game_date = $row[1];
+                $g->game_date = Carbon::createFromFormat(__('game.gamedate_format'), $row[1]);
                 $g->game_time = $row[2];
                 $g->gym_id = $row['gym_id'];
                 $g->save();
@@ -48,8 +49,8 @@ class LeagueCustomGamesImport implements ToCollection, WithStartRow, WithValidat
                     'game_no' => $row[0],
                     'league_id' => $this->league->id,
                     'region_id_league' => $this->league->region->id,
-                    'game_date' => $row[1],
-                    'game_plandate' => $row[1],
+                    'game_date' => Carbon::createFromFormat(__('game.gamedate_format'), $row[1]),
+                    'game_plandate' => Carbon::createFromFormat(__('game.gamedate_format'), $row[1]),
                     'game_time' => $row[2],
                     'club_id_home' => $row['club_id_home'],
                     'region_id_home' => $row['region_id_home'],

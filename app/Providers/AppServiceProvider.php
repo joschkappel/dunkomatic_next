@@ -66,7 +66,7 @@ class AppServiceProvider extends ServiceProvider
         }
 
         // prepare to detect lazy loadings
-        Model::preventLazyLoading(config('app.env') !== 'local');
+        Model::preventLazyLoading(config('app.env') !== 'prod');
         Model::handleLazyLoadingViolationUsing(function ($model, $relation) {
             $class = get_class($model);
 

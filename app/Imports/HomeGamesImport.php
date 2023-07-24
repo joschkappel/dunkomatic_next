@@ -28,7 +28,7 @@ class HomeGamesImport implements ToCollection, WithStartRow, WithValidation, Wit
         foreach ($rows as $row) {
             $g = Game::find($row['game_id']);
             if (isset($g)) {
-                $g->game_date = $row[1];
+                $g->game_date = Carbon::createFromFormat(__('game.gamedate_format'), $row[1]);
                 $g->game_time = $row[2];
                 $g->gym_id = $row['gym_id'];
                 $g->save();

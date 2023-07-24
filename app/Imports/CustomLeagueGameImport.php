@@ -38,8 +38,7 @@ class CustomLeagueGameImport implements ToCollection, WithStartRow, WithValidati
         foreach ($rows as $row) {
             if (isset($row['game_id'])) {
                 Log::debug('[IMPORT][CUSTOM LEAGUE GAMES] importing row, updating game', ['row' => $row]);
-                Game::find($row['game_id'])->update([
-                    'game_date' => $row[2],
+                Game::find($row['game_id'])->update(['game_date' => $row[2]->format('d.m.y'),
                     'game_time' => $row[3],
                     'club_id_home' => $row['club_home_id'],
                     'region_id_home' => $row['region_home_id'],
@@ -58,8 +57,8 @@ class CustomLeagueGameImport implements ToCollection, WithStartRow, WithValidati
                     'game_no' => $row[1],
                     'league_id' => $row['league_id'],
                     'region_id_league' => $this->region->id,
-                    'game_date' => $row[2],
-                    'game_plandate' => $row[2],
+                    'game_date' => $row[2]->format('d.m.y'),
+                    'game_plandate' => $row[2]->format('d.m.y'),
                     'game_time' => $row[3],
                     'club_id_home' => $row['club_home_id'],
                     'region_id_home' => $row['region_home_id'],
