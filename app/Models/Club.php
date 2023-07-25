@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use OwenIt\Auditing\Contracts\Auditable;
 
 /**
@@ -223,7 +224,7 @@ class Club extends Model implements Auditable
         }
 
         // get club reports
-        $reports = $this->get_reports($this->region->club_folder, $this->shortname, $format);
+        $reports = $this->get_reports($this->region->club_folder, Str::lower($this->shortname), $format);
 
         // add region reports
         /*         $reports = $reports->concat(

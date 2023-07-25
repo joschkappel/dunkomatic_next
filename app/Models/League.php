@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use OwenIt\Auditing\Contracts\Auditable;
 
 /**
@@ -282,7 +283,7 @@ class League extends Model implements Auditable
         }
 
         // get league reports
-        $reports = $this->get_reports($this->region->league_folder, $this->shortname, $format);
+        $reports = $this->get_reports($this->region->league_folder, Str::lower($this->shortname), $format);
 
         return $reports;
     }
