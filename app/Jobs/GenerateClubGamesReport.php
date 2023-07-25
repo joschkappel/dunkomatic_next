@@ -81,7 +81,7 @@ class GenerateClubGamesReport implements ShouldQueue
         }
         $version = $this->get_report_version($this->region, Report::ClubGames());
         // move previous versions
-        $this->move_old_report($this->region, $this->export_folder, $this->club->shortname . '_');
+        $this->move_old_report($this->region, $this->export_folder, Str::lower($this->club->shortname) . '_');
 
         foreach ($this->rtype->getFlags() as $rtype) {
             if (($rtype->hasFlag(ReportFileType::PDF)) or
