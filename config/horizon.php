@@ -184,10 +184,9 @@ return [
             'connection' => 'redis',
             'queue' => ['export', 'region_1', 'region_2', 'region_3', 'region_4', 'region_5'],
             'balance' => 'auto',
-            // 'autoScalingStrategy' => 'time',
+            'autoScalingStrategy' => 'size',
             'maxProcesses' => 6,
-            // 'maxTime' => 0,
-            // ‚'maxJobs' => 0,
+            'minProcesses' => 1,
             'memory' => 2048,
             'tries' => 1,
             'timeout' => 28800,
@@ -206,7 +205,7 @@ return [
     ],
 
     'environments' => [
-        'production' => [
+        'prod' => [
             'supervisor-1' => [
                 'maxProcesses' => 10,
                 'balanceMaxShift' => 1,

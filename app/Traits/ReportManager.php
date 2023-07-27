@@ -33,14 +33,14 @@ trait ReportManager
         return $reports;
     }
 
-    public function move_old_report(Region $region, string $folder, string $namepart): void
+    public function move_old_report(Region $region, string $folder, string $namepart, ReportFileType $rtype): void
     {
         // find all reports for this version
-        Log::info('finding reports', ['folder' => $folder, 'namepart' => $namepart]);
-        $reports = collect(Storage::files($folder))->filter(function ($value, $key) use ($namepart) {
+        Log::info('finding reports', ['folder' => $folder, 'namepart' => $namepart, 'extension' => $rtype->key]);
+        $reports = collect(Storage::files($folder))->filter(function ($value, $key) use ($namepart, $rtype) {
             $fname = Str::of($value)->basename();
 
-            return Str::contains($fname, $namepart);
+            return Str::contains($fname, $namepart) and (Str::contains($fname, Str::lower($rtype->key)));
         });
 
         if ($reports->count() > 0) {

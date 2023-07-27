@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Enums\Report;
+use App\Enums\ReportFileType;
 use App\Exports\TeamwareGamesExport;
 use App\Exports\TeamwareTeamsExport;
 use App\Models\League;
@@ -74,7 +75,7 @@ class GenerateTeamwareReport implements ShouldQueue
         $tw_teams = $this->tw_teams.'_v'.$version.'.csv';
 
         // move previous versions
-        $this->move_old_report($this->league->region, $this->export_folder, Str::slug($this->league->shortname, '_'));
+        $this->move_old_report($this->league->region, $this->export_folder, Str::slug($this->league->shortname, '_'), ReportFileType::CSV());
 
         Log::info('[JOB][TEAMWARE REPORTS] started.', [
             'league-id' => $this->league->id,

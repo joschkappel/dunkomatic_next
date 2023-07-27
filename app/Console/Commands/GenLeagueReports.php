@@ -3,21 +3,19 @@
 namespace App\Console\Commands;
 
 use App\Enums\ReportFileType;
-use App\Jobs\GenerateClubGamesReport;
-use App\Models\Club;
+use App\Jobs\GenerateLeagueGamesReport;
 use App\Models\Region;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Queue;
 
-class GenClubReports extends Command
+class GenLeagueReports extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'dmatic:club-reports';
+    protected $signature = 'dmatic:league-reports';
 
     /**
      * The console command description.
@@ -34,12 +32,12 @@ class GenClubReports extends Command
     public function handle()
     {
         foreach (Region::all() as $region) {
-            foreach ($region->clubs()->active()->get() as $club) {
+            foreach ($region->leagues as $league) {
                 Bus::batch([
-                    new GenerateClubGamesReport($region, $club, ReportFileType::XLSX()),
-                    new GenerateClubGamesReport($region, $club, ReportFileType::HTML())
+                    new GenerateLeagueGamesReport($region, $league, ReportFileType::XLSX()),
+                    new GenerateLeagueGamesReport($region, $league, ReportFileType::HTML())
                 ])->onQueue('region_' . $region->id)
-                    ->name('Club Reports ' . $club->shortname)
+                    ->name('Leage Reports ' . $league->shortname)
                     ->onConnection('redis')
                     ->dispatch();
             };

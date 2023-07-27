@@ -68,7 +68,7 @@ class GenerateRegionGamesReport implements ShouldQueue
         }
         $version = $this->get_report_version($this->region, Report::RegionGames());
         // move previous versions
-        $this->move_old_report($this->region, $this->export_folder, '_'.Report::RegionGames()->getReportFilename());
+        $this->move_old_report($this->region, $this->export_folder, '_' . Report::RegionGames()->getReportFilename(), $this->rtype);
 
         foreach ($this->rtype->getFlags() as $rtype) {
             $rpt_name = $this->rpt_name.'_v'.$version.'.'.$rtype->description;
