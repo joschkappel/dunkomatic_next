@@ -149,7 +149,7 @@ class FileDownloadControllerTest extends TestCase
 
         // now create files
         $folder = $this->testclub_assigned->region->club_folder;
-        $filename = $this->testclub_assigned->shortname.'.test.html';
+        $filename = Str::slug($this->testclub_assigned->shortname) . '_test.html';
         $archive = $this->testclub_assigned->region->code.'-reports-'.Str::replace(' ', '-', $this->testclub_assigned->shortname).'.zip';
 
         UploadedFile::fake()->create($filename)
@@ -187,7 +187,7 @@ class FileDownloadControllerTest extends TestCase
 
         // now create files
         $folder = $this->testleague->region->league_folder;
-        $filename = $this->testleague->shortname.'.test.html';
+        $filename = Str::slug($this->testleague->shortname) . '_test.html';
         $archive = $this->testleague->region->code.'-reports-'.Str::replace(' ', '-', $this->testleague->shortname).'.zip';
 
         UploadedFile::fake()->create($filename)
