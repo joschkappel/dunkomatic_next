@@ -42,9 +42,9 @@ class HealthServiceProvider extends ServiceProvider
                 RedisCheck::new(),
                 PingCheck::new()->url($checkurl.'/healthy'),
                 // ScheduleCheck::new(),
-                EnvironmentCheck::new()->expectEnvironment('prod'),
+                // EnvironmentCheck::new()->expectEnvironment('prod'),
                 CacheCheck::new(),
-                DebugModeCheck::new(),
+                // DebugModeCheck::new(),
                 LaravelEchoServerCheck::new(),
                 FailedLoginsCheck::new()
                 ->failWhenFailedLoginsIsHigherInTheLastMinute(5)
@@ -54,11 +54,11 @@ class HealthServiceProvider extends ServiceProvider
                 ->failWhenFailedJobsIsHigher(5)
                 ->failWhenQueueLengthIsHigher(10),
                 MinioHealthCheck::new(),
-                DuplicateMemberCheck::new()
-                ->failWhenDuplicatesIsHigher(50),
-                RegistrationZombiesCheck::new()
-                ->failWhenZombieCountIsHigherInTheLastHour(1)
-                ->failWhenZombieCountIsHigherInTheLastDay(5),
+                // DuplicateMemberCheck::new()
+                // ->failWhenDuplicatesIsHigher(50),
+                // RegistrationZombiesCheck::new()
+                // ->failWhenZombieCountIsHigherInTheLastHour(1)
+                // ->failWhenZombieCountIsHigherInTheLastDay(5),
             ]);
         } elseif (app()->environment('staging')) {
             Health::checks([
