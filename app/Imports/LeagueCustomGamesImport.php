@@ -38,8 +38,15 @@ class LeagueCustomGamesImport implements ToCollection, WithStartRow, WithValidat
     {
         foreach ($rows as $row) {
             $g = Game::find($row['game_id']);
+
+            // convert date
+            $raw_date = explode('.', $row[1]);
+            Str::length($raw_date[0]) == 1 ? $dformat = 'd.' :  $dformat = 'j.';
+            Str::length($raw_date[1]) == 1 ? $dformat .= 'm.' :  $dformat .= 'n.';
+            Str::length($raw_date[2]) == 2 ? $dformat .= 'y' :  $dformat .= 'Y';
+
             if (isset($g)) {
-                $g->game_date = Carbon::createFromFormat(__('game.gamedate_format'), $row[1]);
+                $g->game_date = Carbon::createFromFormat($dformat, $row[1]);
                 $g->game_time = $row[2];
                 $g->gym_id = $row['gym_id'];
                 $g->save();
@@ -49,7 +56,7 @@ class LeagueCustomGamesImport implements ToCollection, WithStartRow, WithValidat
                     'game_no' => $row[0],
                     'league_id' => $this->league->id,
                     'region_id_league' => $this->league->region->id,
-                    'game_date' => Carbon::createFromFormat(__('game.gamedate_format'), $row[1]),
+                    'game_date' => Carbon::createFromFormat($dformat, $row[1]),
                     'game_plandate' => Carbon::createFromFormat(__('game.gamedate_format'), $row[1]),
                     'game_time' => $row[2],
                     'club_id_home' => $row['club_id_home'],
@@ -77,7 +84,7 @@ class LeagueCustomGamesImport implements ToCollection, WithStartRow, WithValidat
         return [
             '0' => ['required', 'integer'],
             'game_id' => ['nullable'],
-            '1' => ['required', 'date_format:' . __('game.gamedate_format')],
+            '1' => ['required', 'date_format:"j.n.y", "j.n.Y", "d.m.y", "d.m.Y"'],
             '2' => ['required', 'date_format:'.__('game.gametime_format')],
             '3' => ['required', 'string', 'size:5'],
             'club_id_home' => ['required'],

@@ -76,7 +76,7 @@ trait ImportManager
                 $err_txt = __('validation.date', ['attribute' => $value]);
                 break;
             case 'V.DF':
-                $err_txt = __('validation.date_format', ['attribute' => $value, 'format' => __('game.gamedate_format')]);
+                $err_txt = __('validation.game_date_format', ['attribute' => $value]);
                 break;
             case 'V.TF':
                 $err_txt = __('validation.date_format', ['attribute' => $value, 'format' => __('game.gametime_format')]);

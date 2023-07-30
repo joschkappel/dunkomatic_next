@@ -189,7 +189,7 @@ return [
             'minProcesses' => 1,
             'memory' => 2048,
             'tries' => 1,
-            'timeout' => 28800,
+            'timeout' => 18000,
             'nice' => 0,
         ],
         'supervisor-2' => [
@@ -199,7 +199,7 @@ return [
             'maxProcesses' => 1,
             'memory' => 256,
             'tries' => 1,
-            'timeout' => 14400,
+            'timeout' => 9000,
             'nice' => 0,
         ],
     ],

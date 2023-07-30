@@ -122,6 +122,8 @@ return [
     'gamehour' => 'Games must start between 8:00 and 22:00.',
     'sliderrange' => ':attribute must be in range beween :min and :max',
     'captcha' => 'This result is wrong.',
+
+    'game_date_format' => 'Date should be formatted like d(d).m(m).yy(yy). E.g. 1.1.23, 01.01.23, 1.1.2023 or 01.01.2023',
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
