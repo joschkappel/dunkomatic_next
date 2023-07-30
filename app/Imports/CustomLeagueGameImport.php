@@ -15,6 +15,7 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
+use Illuminate\Support\Carbon;
 
 class CustomLeagueGameImport implements ToCollection, WithStartRow, WithValidation, WithCustomCsvSettings
 {
@@ -36,9 +37,17 @@ class CustomLeagueGameImport implements ToCollection, WithStartRow, WithValidati
     public function collection(Collection $rows)
     {
         foreach ($rows as $row) {
+
+            // convert date
+            $raw_date = explode('.', $row[2]);
+            Str::length($raw_date[0]) == 1 ? $dformat = 'd.' :  $dformat = 'j.';
+            Str::length($raw_date[1]) == 1 ? $dformat .= 'm.' :  $dformat .= 'n.';
+            Str::length($raw_date[2]) == 2 ? $dformat .= 'y' :  $dformat .= 'Y';
+
             if (isset($row['game_id'])) {
                 Log::debug('[IMPORT][CUSTOM LEAGUE GAMES] importing row, updating game', ['row' => $row]);
-                Game::find($row['game_id'])->update(['game_date' => $row[2]->format('d.m.y'),
+                Game::find($row['game_id'])->update([
+                    'game_date' => Carbon::createFromFormat($dformat, $row[2]),
                     'game_time' => $row[3],
                     'club_id_home' => $row['club_home_id'],
                     'region_id_home' => $row['region_home_id'],
@@ -57,7 +66,7 @@ class CustomLeagueGameImport implements ToCollection, WithStartRow, WithValidati
                     'game_no' => $row[1],
                     'league_id' => $row['league_id'],
                     'region_id_league' => $this->region->id,
-                    'game_date' => $row[2]->format('d.m.y'),
+                    'game_date' => Carbon::createFromFormat($dformat, $row[2]),
                     'game_plandate' => $row[2]->format('d.m.y'),
                     'game_time' => $row[3],
                     'club_id_home' => $row['club_home_id'],
@@ -87,7 +96,7 @@ class CustomLeagueGameImport implements ToCollection, WithStartRow, WithValidati
             'league_id' => ['required'],
             'league_is_custom' => ['sometimes', 'accepted'],
             '1' => ['integer', 'between:1,240'],  // support 16-team leagues
-            '2' => ['required', 'date_format:' . __('game.gamedate_format')],
+            '2' => ['required', 'date_format:"j.n.y", "j.n.Y", "d.m.y", "d.m.Y"'],
             '3' => ['required', 'date_format:' . __('game.gametime_format')],
             '4' => ['required', 'string', 'size:5'],
             'club_home_id' => ['required'],

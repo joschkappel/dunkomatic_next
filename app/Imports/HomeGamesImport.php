@@ -27,9 +27,15 @@ class HomeGamesImport implements ToCollection, WithStartRow, WithValidation, Wit
     public function collection(Collection $rows)
     {
         foreach ($rows as $row) {
+            // convert date
+            $raw_date = explode('.', $row[1]);
+            Str::length($raw_date[0]) == 1 ? $dformat = 'd.' :  $dformat = 'j.';
+            Str::length($raw_date[1]) == 1 ? $dformat .= 'm.' :  $dformat .= 'n.';
+            Str::length($raw_date[2]) == 2 ? $dformat .= 'y' :  $dformat .= 'Y';
+
             $g = Game::find($row['game_id']);
             if (isset($g)) {
-                $g->game_date = Carbon::createFromFormat(__('game.gamedate_format'), $row[1]);
+                $g->game_date = Carbon::createFromFormat($dformat, $row[1]);
                 $g->game_time = $row[2];
                 $g->gym_id = $row['gym_id'];
                 $g->save();
@@ -52,7 +58,7 @@ class HomeGamesImport implements ToCollection, WithStartRow, WithValidation, Wit
         return [
             '0' => ['required', 'integer'],
             'game_id' => ['required'],
-            '1' => ['sometimes', 'required', 'date_format:' . __('game.gamedate_format')],
+            '1' => ['sometimes', 'required', 'date_format:"j.n.y", "j.n.Y", "d.m.y", "d.m.Y"'],
             '2' => ['sometimes', 'required', 'date_format:'.__('game.gametime_format')],
             '3' => ['required', 'string'],
             'league_id' => ['required'],

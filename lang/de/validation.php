@@ -122,6 +122,8 @@ return [
     'sliderrange' => ':attribute muss zwischen :min und :max liegen',
     'captcha' => 'Das stimmt leider nicht.',
 
+    'game_date_format' => 'Das Datum bitte im Format  d(d).m(m).yy(yy). zB 1.1.23, 01.01.23, 1.1.2023 oder 01.01.2023',
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
