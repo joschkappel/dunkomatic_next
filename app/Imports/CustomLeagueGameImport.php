@@ -67,7 +67,7 @@ class CustomLeagueGameImport implements ToCollection, WithStartRow, WithValidati
                     'league_id' => $row['league_id'],
                     'region_id_league' => $this->region->id,
                     'game_date' => Carbon::createFromFormat($dformat, $row[2]),
-                    'game_plandate' => $row[2]->format('d.m.y'),
+                    'game_plandate' => Carbon::createFromFormat($dformat, $row[2]),
                     'game_time' => $row[3],
                     'club_id_home' => $row['club_home_id'],
                     'region_id_home' => $row['region_home_id'],
