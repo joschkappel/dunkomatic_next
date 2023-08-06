@@ -33,14 +33,9 @@ class GenLeagueReports extends Command
     {
         foreach (Region::all() as $region) {
             foreach ($region->leagues as $league) {
-                Bus::batch([
-                    new GenerateLeagueGamesReport($region, $league, ReportFileType::XLSX()),
-                    new GenerateLeagueGamesReport($region, $league, ReportFileType::HTML())
-                ])->onQueue('region_' . $region->id)
-                    ->name('Leage Reports ' . $league->shortname)
-                    ->onConnection('redis')
-                    ->dispatch();
-            };
+                GenerateLeagueGamesReport::dispatch($region, $league, ReportFileType::XLSX())->onQueue('excel')->onConnection('redis');
+                GenerateLeagueGamesReport::dispatch($region, $league, ReportFileType::HTML())->onQueue('leagues')->onConnection('redis');
+            }
         }
         return Command::SUCCESS;
     }

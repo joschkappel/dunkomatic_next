@@ -42,8 +42,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('telescope:prune')->dailyAt('00:10')->environments(['staging', 'local', 'dev']);
 
         // reports and  checks
-        $schedule->job(new GameOverlaps(), 'janitor')->dailyAt('00:01');
-        $schedule->job(new GameNotScheduled(), 'janitor')->dailyAt('00:02');
+        $schedule->job(new GameOverlaps(), 'checks')->dailyAt('00:01');
+        $schedule->job(new GameNotScheduled(), 'checks')->dailyAt('00:02');
         $schedule->job(new ReportProcessor(collect(), collect()), 'janitor')->dailyAt('00:10');
 
         // env clean ups
@@ -54,8 +54,8 @@ class Kernel extends ConsoleKernel
         // $schedule->job(new ExportStatistics(), 'janitor')->everyMinute();
 
         // league state handling
-        $schedule->job(new OpenLeagueState(), 'janitor')->dailyAt('07:59');
-        $schedule->job(new CloseLeagueState(), 'janitor')->dailyAt('20:00');
+        $schedule->job(new OpenLeagueState(), 'checks')->dailyAt('07:59');
+        $schedule->job(new CloseLeagueState(), 'checks')->dailyAt('20:00');
 
         // schedule region specific jobs
         $regions = Region::with('regionadmins')->get();
@@ -78,7 +78,7 @@ class Kernel extends ConsoleKernel
         } else {
             $schedule->command(RunHealthChecksCommand::class)->everyFifteenMinutes();
         }
-        $schedule->command('horizon:snapshot')->everyFiveMinutes();
+        // ‚$schedule->command('horizon:snapshot')->everyFiveMinutes();
 
         // $schedule->command(ScheduleCheckHeartbeatCommand::class)->everyFifteenMinutes();
     }
@@ -109,18 +109,18 @@ class Kernel extends ConsoleKernel
         // return true;
         switch ($frequency) {
             case JobFrequencyType::weekly:
-                $schedule->job($job, 'region_'.$region->id, 'redis')->weeklyOn(1, $startAt);
+                $schedule->job($job, 'checks', 'redis')->weeklyOn(1, $startAt);
                 //$schedule->job($job,'janitor')->hourly();
                 //$schedule->job($job,'janitor')->everyFiveMinutes();
                 break;
             case JobFrequencyType::biweekly:
-                $schedule->job($job, 'region_'.$region->id, 'redis')->twiceMonthlyOn(1, 16, $startAt);
+                $schedule->job($job, 'checks', 'redis')->twiceMonthlyOn(1, 16, $startAt);
                 break;
             case JobFrequencyType::monthly:
-                $schedule->job($job, 'region_'.$region->id, 'redis')->monthlyOn(1, $startAt);
+                $schedule->job($job, 'checks', 'redis')->monthlyOn(1, $startAt);
                 break;
             case JobFrequencyType::quarterly:
-                $schedule->job($job, 'region_'.$region->id, 'redis')->quarterlyOn(1, $startAt);
+                $schedule->job($job, 'checks', 'redis')->quarterlyOn(1, $startAt);
                 break;
         }
 

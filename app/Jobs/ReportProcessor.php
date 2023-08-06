@@ -67,7 +67,7 @@ class ReportProcessor implements ShouldQueue
         Log::debug('[JOB] REPORT PROCESSOR impacted models', ['region' => $impacted_regions->pluck('code'), 'leagues' => $impacted_leagues->pluck('shortname'), 'clubs' => $impacted_clubs->pluck('shortname')]);
 
         // default report types
-        $def_type = ReportFileType::flags([ReportFileType::HTML(), ReportFileType::XLSX()]);
+        $def_type = ReportFileType::flags([ReportFileType::HTML()]);
 
         // loop through all impacted reports types
         foreach ($impacted_reports as $irpt) {
@@ -75,6 +75,10 @@ class ReportProcessor implements ShouldQueue
             $rpt_jobs = collect();
             foreach (Region::all() as $r) {
                 $rpt_jobs[$r->id] = collect();
+                $rpt_jobs[$r->id]['excel'] = collect();
+                $rpt_jobs[$r->id]['clubs'] = collect();
+                $rpt_jobs[$r->id]['leagues'] = collect();
+                $rpt_jobs[$r->id]['regions'] = collect();
             }
 
             switch ($irpt) {
@@ -88,7 +92,8 @@ class ReportProcessor implements ShouldQueue
                         }
                         $rtype = $def_type;
                         $rtype->addFlags($ireg->fmt_league_reports->getFlags());
-                        $rpt_jobs[$ireg->id][] = new GenerateRegionContactsReport($ireg, $rtype);
+                        $rpt_jobs[$ireg->id]['regions'][] = new GenerateRegionContactsReport($ireg, $rtype);
+                        $rpt_jobs[$ireg->id]['excel'][] = new GenerateRegionContactsReport($ireg, ReportFileType::XLSX());
                         Log::notice('add job for ', ['rpt' => $irpt->description, 'region' => $ireg->code]);
                     }
                     break;
@@ -98,7 +103,8 @@ class ReportProcessor implements ShouldQueue
                         $rtype = $def_type;
                         $rtype->addFlag(ReportFileType::ICS());
                         $rtype->addFlags($ireg->fmt_league_reports->getFlags());
-                        $rpt_jobs[$ireg->id][] = new GenerateRegionGamesReport($ireg, $rtype);
+                        $rpt_jobs[$ireg->id]['regions'][] = new GenerateRegionGamesReport($ireg, $rtype);
+                        $rpt_jobs[$ireg->id]['excel'][] = new GenerateRegionGamesReport($ireg, ReportFileType::XLSX());
                         Log::notice('add job for ', ['rpt' => $irpt->description, 'region' => $ireg->code]);
                     }
                     break;
@@ -107,7 +113,8 @@ class ReportProcessor implements ShouldQueue
                     foreach ($impacted_regions as $ireg) {
                         $rtype = $def_type;
                         $rtype->addFlags($ireg->fmt_league_reports->getFlags());
-                        $rpt_jobs[$ireg->id][] = new GenerateRegionLeaguesReport($ireg, $rtype);
+                        $rpt_jobs[$ireg->id]['regions'][] = new GenerateRegionLeaguesReport($ireg, $rtype);
+                        $rpt_jobs[$ireg->id]['excel'][] = new GenerateRegionLeaguesReport($ireg, ReportFileType::XLSX());
                         Log::notice('add job for ', ['rpt' => $irpt->description, 'region' => $ireg->code]);
                     }
                     break;
@@ -117,7 +124,8 @@ class ReportProcessor implements ShouldQueue
                         $rtype = $def_type;
                         $rtype->addFlag(ReportFileType::ICS());
                         $rtype->addFlags($l->region->fmt_league_reports->getFlags());
-                        $rpt_jobs[$l->region->id][] = new GenerateLeagueGamesReport($l->region, $l, $rtype);
+                        $rpt_jobs[$l->region->id]['leagues'][] = new GenerateLeagueGamesReport($l->region, $l, $rtype);
+                        $rpt_jobs[$l->region->id]['excel'][] = new GenerateLeagueGamesReport($l->region, $l, ReportFileType::XLSX());
                         Log::info('add jobs for ', ['rpt' => $irpt->description, 'league-id' => $l->id]);
                     }
                     break;
@@ -127,19 +135,20 @@ class ReportProcessor implements ShouldQueue
                         $rtype = $def_type;
                         $rtype->addFlag(ReportFileType::ICS());
                         $rtype->addFlags($c->region->fmt_club_reports->getFlags());
-                        $rpt_jobs[$c->region->id][] = new GenerateClubGamesReport($c->region, $c, $rtype);
+                        $rpt_jobs[$c->region->id]['clubs'][] = new GenerateClubGamesReport($c->region, $c, $rtype);
+                        $rpt_jobs[$c->region->id]['excel'][] = new GenerateClubGamesReport($c->region, $c, ReportFileType::XLSX());
                         Log::info('add jobs for ', ['rpt' => $irpt->description, 'club-id' => $c->id]);
                     }
                     break;
                 case Report::Teamware():
                     Log::info('checking report ', ['rpt' => $irpt->description]);
                     foreach ($impacted_leagues as $l) {
-                        $rpt_jobs[$l->region->id][] = new GenerateTeamwareReport($l);
+                        $rpt_jobs[$l->region->id]['leagues'][] = new GenerateTeamwareReport($l);
                         Log::info('add job for ', ['rpt' => $irpt->description, 'league-id' => $l->id]);
                     }
                     foreach ($impacted_regions as $r) {
                         foreach ($r->leagues as $l) {
-                            $rpt_jobs[$r->id][] = new GenerateTeamwareReport($l);
+                            $rpt_jobs[$r->id]['leagues'][] = new GenerateTeamwareReport($l);
                             Log::info('add job for ', ['rpt' => $irpt->description, 'league-id' => $l->id]);
                         }
                     }
@@ -278,24 +287,27 @@ class ReportProcessor implements ShouldQueue
         foreach ($joblist as $rid => $j) {
             if ($j->count() > 0) {
                 $region = Region::find($rid);
-                Log::notice('[JOB] dispatching batch', ['name' => 'Report Generator Jobs '.$region->code.' '.$report->key, 'jobs' => $j->count()]);
-                $rj = $this->job_starting($region, $report);
-                $batch = Bus::batch($j->toArray())
+                foreach ($j as $queue => $joblist) {
+                    Log::notice('[JOB] dispatching batch', ['name' => 'Report Generator Jobs ' . $region->code . ' ' . $report->key, 'jobs' => $joblist->count()]);
+
+                    $rj = $this->job_starting($region, $report);
+                    $batch = Bus::batch($joblist->toArray())
                     ->then(function (Batch $batch) use ($report, $region) {
                         Log::info('[JOB] finished', ['jobs' => $batch->processedJobs()]);
                         // update region job status
                         static::job_finished($region, $report);
                     })
-                    ->finally(function (Batch $batch) use ($report, $region) {
-                        if ($batch->failedJobs > 0) {
-                            Log::error('[JOB] errored', ['jobs' => $batch->failedJobs]);
-                            static::job_failed($region, $report);
-                        }
-                    })
-                    ->name('Report Generator Jobs '.$region->code.' '.$report->key)
-                    ->onConnection('redis')
-                    ->onQueue('region_'.$region->id)
-                    ->dispatch();
+                        ->finally(function (Batch $batch) use ($report, $region) {
+                            if ($batch->failedJobs > 0) {
+                                Log::error('[JOB] errored', ['jobs' => $batch->failedJobs]);
+                                static::job_failed($region, $report);
+                            }
+                        })
+                        ->name('Report Generator Jobs ' . $region->code . ' ' . $report->key)
+                        ->onConnection('redis')
+                        ->onQueue($queue)
+                        ->dispatch();
+                }
             }
         }
     }
