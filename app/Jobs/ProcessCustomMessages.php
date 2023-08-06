@@ -50,7 +50,7 @@ class ProcessCustomMessages implements ShouldQueue
             $batch = Bus::batch($msg_jobs)
                 ->name('Send eMails')
                 ->onConnection('redis')
-                ->onQueue('exports')
+                ->onQueue('mails')
                 ->dispatch();
             Log::notice('[JOB][SEND CUSTOM MESSAGES] eMail batch job started.', ['job_cnt' => count($msg_jobs), 'batch' => $batch]);
         }

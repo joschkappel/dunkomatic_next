@@ -35,13 +35,8 @@ class GenClubReports extends Command
     {
         foreach (Region::all() as $region) {
             foreach ($region->clubs()->active()->get() as $club) {
-                Bus::batch([
-                    new GenerateClubGamesReport($region, $club, ReportFileType::XLSX()),
-                    new GenerateClubGamesReport($region, $club, ReportFileType::HTML())
-                ])->onQueue('region_' . $region->id)
-                    ->name('Club Reports ' . $club->shortname)
-                    ->onConnection('redis')
-                    ->dispatch();
+                GenerateClubGamesReport::dispatch($region, $club, ReportFileType::XLSX())->onQueue('excel')->onConnection('redis');
+                GenerateClubGamesReport::dispatch($region, $club, ReportFileType::HTML())->onQueue('clubs')->onConnection('redis');
             };
         }
         return Command::SUCCESS;

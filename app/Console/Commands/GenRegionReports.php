@@ -33,15 +33,10 @@ class GenRegionReports extends Command
     public function handle()
     {
         foreach (Region::all() as $region) {
-            Bus::batch([
-                new GenerateRegionGamesReport($region, ReportFileType::XLSX()),
-                new GenerateRegionGamesReport($region, ReportFileType::HTML()),
-                new GenerateRegionLeaguesReport($region, ReportFileType::XLSX()),
-                new GenerateRegionLeaguesReport($region, ReportFileType::HTML())
-            ])->onQueue('region_' . $region->id)
-                ->name('Region Reports ' . $region->code)
-                ->onConnection('redis')
-                ->dispatch();
+            GenerateRegionGamesReport::dispatch($region, ReportFileType::XLSX())->onQueue('excel')->onConnection('redis');
+            GenerateRegionGamesReport::dispatch($region, ReportFileType::HTML())->onQueue('regions')->onConnection('redis');
+            GenerateRegionLeaguesReport::dispatch($region, ReportFileType::XLSX())->onQueue('excel')->onConnection('redis');
+            GenerateRegionLeaguesReport::dispatch($region, ReportFileType::HTML())->onQueue('regions')->onConnection('redis');
         }
         return Command::SUCCESS;
     }
