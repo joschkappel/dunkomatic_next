@@ -78,7 +78,7 @@ class Kernel extends ConsoleKernel
         } else {
             $schedule->command(RunHealthChecksCommand::class)->everyFifteenMinutes();
         }
-        // ‚$schedule->command('horizon:snapshot')->everyFiveMinutes();
+        $schedule->command('horizon:snapshot')->everyFiveMinutes();
 
         // $schedule->command(ScheduleCheckHeartbeatCommand::class)->everyFifteenMinutes();
     }

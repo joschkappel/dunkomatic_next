@@ -288,25 +288,27 @@ class ReportProcessor implements ShouldQueue
             if ($j->count() > 0) {
                 $region = Region::find($rid);
                 foreach ($j as $queue => $joblist) {
-                    Log::notice('[JOB] dispatching batch', ['name' => 'Report Generator Jobs ' . $region->code . ' ' . $report->key, 'jobs' => $joblist->count()]);
+                    if ($joblist->count() > 0) {
+                        Log::notice('[JOB] dispatching batch', ['name' => 'Report Generator Jobs ' . $region->code . ' ' . $report->key, 'jobs' => $joblist->count()]);
 
-                    $rj = $this->job_starting($region, $report);
-                    $batch = Bus::batch($joblist->toArray())
-                    ->then(function (Batch $batch) use ($report, $region) {
-                        Log::info('[JOB] finished', ['jobs' => $batch->processedJobs()]);
-                        // update region job status
-                        static::job_finished($region, $report);
-                    })
-                        ->finally(function (Batch $batch) use ($report, $region) {
-                            if ($batch->failedJobs > 0) {
-                                Log::error('[JOB] errored', ['jobs' => $batch->failedJobs]);
-                                static::job_failed($region, $report);
-                            }
+                        $rj = $this->job_starting($region, $report);
+                        $batch = Bus::batch($joblist->toArray())
+                        ->then(function (Batch $batch) use ($report, $region) {
+                            Log::info('[JOB] finished', ['jobs' => $batch->processedJobs()]);
+                            // update region job status
+                            static::job_finished($region, $report);
                         })
-                        ->name('Report Generator Jobs ' . $region->code . ' ' . $report->key)
-                        ->onConnection('redis')
-                        ->onQueue($queue)
-                        ->dispatch();
+                            ->finally(function (Batch $batch) use ($report, $region) {
+                                if ($batch->failedJobs > 0) {
+                                    Log::error('[JOB] errored', ['jobs' => $batch->failedJobs]);
+                                    static::job_failed($region, $report);
+                                }
+                            })
+                            ->name('Report Generator Jobs ' . $region->code . ' ' . $report->key)
+                            ->onConnection('redis')
+                            ->onQueue($queue)
+                            ->dispatch();
+                    }
                 }
             }
         }

@@ -69,7 +69,7 @@
                 },
                 columns: [
                     { data: 'league_no', name: 'league_no' },
-                    @foreach($region->leagues->where('age_type', App\Enums\LeagueAgeType::Senior()) as $l)
+                    @foreach($region->leagues->where('age_type', App\Enums\LeagueAgeType::Senior())->sortBy(['gender_type','name']) as $l)
                         { data: '{{$l->shortname}}', name: '{{$l->shortname}}' },
                     @endforeach
                 ],
@@ -104,7 +104,7 @@
                 },
                 columns: [
                     { data: 'league_no', name: 'league_no' },
-                    @foreach($region->leagues->where('age_type', '!=', App\Enums\LeagueAgeType::Senior()) as $l)
+                    @foreach($region->leagues->where('age_type', '!=',  App\Enums\LeagueAgeType::Senior())->sortBy(['name']) as $l)
                         { data: '{{$l->shortname}}', name: '{{$l->shortname}}' },
                     @endforeach
                 ],
