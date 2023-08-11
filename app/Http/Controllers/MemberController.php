@@ -53,7 +53,11 @@ class MemberController extends Controller
             $members = Member::whereNotNull('id')->with('user', 'clubs', 'leagues', 'memberships')->get();
         } else {
             // get all leagues for all teams in thsi region
-            $all_leagues = League::whereIn('id', $region->clubs()->with('teams')->without('region')->get()->pluck('teams.*.league_id')->flatten()->whereNotNull()->values())->with('teams')->get();
+            if ($region->is_top_level) {
+                $all_leagues = League::where('region_id', $region->id)->with('teams')->get();
+            } else {
+                $all_leagues = League::whereIn('id', $region->clubs()->with('teams')->without('region')->get()->pluck('teams.*.league_id')->flatten()->whereNotNull()->values())->with('teams')->get();
+            }
             $all_region_ids = $all_leagues->pluck('region_id')->unique();
             $all_league_ids = $all_leagues->pluck('id')->unique();
             $all_team_ids = $all_leagues->pluck('teams.*.id')->flatten()->values();
