@@ -95,14 +95,8 @@ class CloseLeagueState implements ShouldQueue
                         $referees_not_opened->push($l);
                     }
                 }
-                if (count($referees_not_opened) == 0) {
-                    $r->update([
-                        'job_game_overlaps' => false,
-                        'job_game_notime' => false,
-                        'job_league_reports' => JobFrequencyType::daily(),
-                        'fmt_league_reports' => ReportFileType::XLSX(),
-                    ]);
-                }
+                Log::debug('closed', [$referees_opened]);
+                Log::debug(' NOT closed', [$referees_not_opened]);
                 Notification::send($radmins, new LeagueStateClosed(__('league.action.close.scheduling'), $referees_opened, $referees_not_opened));
             } elseif ($close_scheduling->subDays(2)->isToday()) {
                 // on 2 days from now scheduling will be closed, send notification
