@@ -87,12 +87,6 @@ class OpenLeagueState implements ShouldQueue
                         Log::warning('[JOB][OPEN LEAGUE STATES] league in wrong state.', ['league-id' => $l->id, 'state' => $l->state]);
                     }
                 }
-                if (count($scheduling_opened) > 0) {
-                    $r->update([
-                        'job_game_overlaps' => true,
-                        'job_game_notime' => true,
-                    ]);
-                }
 
                 Notification::send($radmins, new LeagueStateOpened(__('league.action.open.scheduling'), $scheduling_opened, $scheduling_not_opened));
             }
