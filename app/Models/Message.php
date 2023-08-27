@@ -103,6 +103,6 @@ class Message extends Model
     {
         Log::notice('[JOB][DB CLEANUP] pruning messages that have been deleted more than a week ago.');
 
-        return static::where('delete_at', '<', now()->subWeek());
+        return static::where('delete_at', '<', now()->subWeek())->with('message_attachments');
     }
 }
