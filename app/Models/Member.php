@@ -190,6 +190,6 @@ class Member extends Model implements Auditable
     {
         Log::notice('[JOB][DB CLEANUP] pruning members without any membership and user account.');
 
-        return static::doesntHave('memberships')->doesntHave('user');
+        return static::doesntHave('memberships')->doesntHave('user')->doesntHave('invitation');
     }
 }
