@@ -19,25 +19,6 @@ trait CreatesApplication
 
         $app->make(Kernel::class)->bootstrap();
 
-        /**
-         * Override captcha binding with a double that always passes.
-         */
-        $app->bind('captcha', function ($app) {
-            $mockCaptcha = Mockery::mock(Captcha::class);
-
-            $mockCaptcha
-                ->allows()
-                ->img('math')
-                ->andReturn('');
-
-            $mockCaptcha
-                ->allows()
-                ->check('mockcaptcha=12345')
-                ->andReturn(true);
-
-            return $mockCaptcha;
-        });
-
         return $app;
     }
 }
