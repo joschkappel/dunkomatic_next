@@ -224,7 +224,7 @@ class Club extends Model implements Auditable
         }
 
         // get club reports
-        $reports = $this->get_reports($this->region->club_folder, Str::lower($this->shortname), $format);
+        $reports = $this->get_reports($this->region->club_folder, Str::slug($this->shortname), $format);
 
         // add region reports
         /*         $reports = $reports->concat(

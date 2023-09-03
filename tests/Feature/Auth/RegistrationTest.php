@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Notifications\NewUser;
 use App\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\Notification;
+use Mews\Captcha\Facades\Captcha;
 use Tests\TestCase;
 
 class RegistrationTest extends TestCase
@@ -28,6 +29,11 @@ class RegistrationTest extends TestCase
         Notification::fake();
         Notification::assertNothingSent();
         $this->assertDatabaseMissing('users', ['email' => 'test@gmail.com']);
+
+        Captcha::shouldReceive('img')
+        ->once()
+        ->with('math', [])
+        ->andReturn('12345');
 
         $response = $this->get('/de/register');
 
