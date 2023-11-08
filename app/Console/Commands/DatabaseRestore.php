@@ -57,9 +57,10 @@ class DatabaseRestore extends Command
             $filename = Str::of($archivefile)->explode('/')->last();
         }
 
+        $this->info($filename);
         if (Storage::disk('local')->exists($backup_folder.$filename)) {
             $filepath = storage_path('app/'.$backup_folder.$filename);
-            $command = 'zcat '.$filepath.' | mysql --user='.$db_usr.' --password='.$db_pwd.' --host='.$db_host.' '.$db;
+            $command = 'gunzip -c '.$filepath.' | mysql --user='.$db_usr.' --password='.$db_pwd.' --host='.$db_host.' '.$db;
             $returnVar = null;
             $output = null;
 
