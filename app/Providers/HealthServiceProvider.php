@@ -6,7 +6,6 @@ use App\Checks\DbConnectionsCheck;
 use App\Checks\DuplicateMemberCheck;
 use App\Checks\FailedLoginsCheck;
 use App\Checks\LaravelEchoServerCheck;
-use App\Checks\MinioHealthCheck;
 use App\Checks\QueueLoadCheck;
 use App\Checks\RegistrationZombiesCheck;
 use Illuminate\Support\ServiceProvider;
@@ -52,8 +51,7 @@ class HealthServiceProvider extends ServiceProvider
                 ->failWhenFailedLoginsIsHigherInTheLast15Minutes(30),
                 QueueLoadCheck::new()
                 ->failWhenFailedJobsIsHigher(5)
-                ->failWhenQueueLengthIsHigher(10),
-                MinioHealthCheck::new(),
+                ->failWhenQueueLengthIsHigher(10)
                 // DuplicateMemberCheck::new()
                 // ->failWhenDuplicatesIsHigher(50),
                 // RegistrationZombiesCheck::new()
@@ -81,7 +79,6 @@ class HealthServiceProvider extends ServiceProvider
                 QueueLoadCheck::new()
                 ->failWhenFailedJobsIsHigher(5)
                 ->failWhenQueueLengthIsHigher(10),
-                MinioHealthCheck::new(),
                 DuplicateMemberCheck::new()
                 ->failWhenDuplicatesIsHigher(10),
                 RegistrationZombiesCheck::new()
@@ -108,7 +105,6 @@ class HealthServiceProvider extends ServiceProvider
                 QueueLoadCheck::new()
                 ->failWhenFailedJobsIsHigher(5)
                 ->failWhenQueueLengthIsHigher(10),
-                MinioHealthCheck::new(),
                 DuplicateMemberCheck::new()
                 ->failWhenDuplicatesIsHigher(50),
                 RegistrationZombiesCheck::new()
