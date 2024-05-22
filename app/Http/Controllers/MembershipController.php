@@ -36,7 +36,7 @@ class MembershipController extends Controller
     {
         $data = $request->validate([
             'function' => 'nullable|max:40',
-            'email' => 'nullable|max:60|email:rfc,dns',
+            'email' => 'nullable|email:rfc,dns',
         ]);
         Log::info('membership form data validated OK.');
 

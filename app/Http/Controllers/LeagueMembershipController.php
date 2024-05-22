@@ -38,7 +38,7 @@ class LeagueMembershipController extends Controller
         $data = $request->validate([
             'selRole' => ['required', new EnumValue(Role::class, false)],
             'function' => 'nullable|max:40',
-            'email' => 'nullable|max:60|email:rfc,dns',
+            'email' => 'nullable|email:rfc,dns',
         ]);
         Log::info('league membership form data validated OK.', ['league-id' => $league->id, 'member-id' => $member->id]);
 

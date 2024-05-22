@@ -38,7 +38,7 @@ class TeamMembershipController extends Controller
         $data = $request->validate([
             'selRole' => ['required', new EnumValue(Role::class, false)],
             'function' => 'nullable|max:40',
-            'email' => 'nullable|max:60|email:rfc,dns',
+            'email' => 'nullable|email:rfc,dns',
         ]);
         Log::info('team membership form data validated OK.', ['team-id' => $team->id, 'member-id' => $member->id]);
 
