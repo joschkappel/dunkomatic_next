@@ -39,12 +39,12 @@ class HealthServiceProvider extends ServiceProvider
                 DbConnectionsCheck::new(),
                 DatabaseCheck::new(),
                 RedisCheck::new(),
-                PingCheck::new()->url($checkurl.'/healthy'),
+                // PingCheck::new()->url($checkurl.'/healthy'), ---> resets storage file permissions !!!!!
                 // ScheduleCheck::new(),
                 // EnvironmentCheck::new()->expectEnvironment('prod'),
                 CacheCheck::new(),
                 // DebugModeCheck::new(),
-                LaravelEchoServerCheck::new(),
+                // LaravelEchoServerCheck::new(),
                 FailedLoginsCheck::new()
                 ->failWhenFailedLoginsIsHigherInTheLastMinute(5)
                 ->failWhenFailedLoginsIsHigherInTheLast5Minutes(10)

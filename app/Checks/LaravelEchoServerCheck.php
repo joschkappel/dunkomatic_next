@@ -13,7 +13,7 @@ class LaravelEchoServerCheck extends Check
         $echo_appid = 'dunkomatic';
         $echo_appkey = '44fad1c68075f07b8d72c8beaf59042d';
 
-        $url = 'http://localhost:6001/apps/'.$echo_appid.'/status';
+        $url = 'http://127.0.0.1:6001/apps/'.$echo_appid.'/status';
         $response = Http::get($url, ['auth_key' => $echo_appkey]);
         $uptime = strval(round($response->object()->uptime, 2)).'s';
         $subscription_count = strval($response->object()->subscription_count);

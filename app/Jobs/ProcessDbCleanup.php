@@ -35,7 +35,7 @@ class ProcessDbCleanup implements ShouldQueue
     public function handle()
     {
         // first dump the DB
-        Artisan::call('db:backup -c');
+        Artisan::call('snapshot:create --compress');
         Log::info('[JOB][DB CLEANUP] creating DB backup.');
 
         Artisan::call('queue:prune-failed');

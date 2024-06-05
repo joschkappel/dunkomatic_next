@@ -79,7 +79,7 @@ Route::group([
     Route::get('signin', function () {
         return view('welcome_signin');
     })->name('welcome_signin');
-    // Route::get('checkfire', function () { return view('broadcast.test'); });
+    Route::get('checkfire', function () { return view('broadcast.test'); });
     Route::get('impressum', function ($language) {
         return view('app.' . 'de' . '.impressum');
     })->name('impressum');

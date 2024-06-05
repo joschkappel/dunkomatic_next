@@ -48,6 +48,11 @@ window.Echo = new Echo({
     broadcaster: 'pusher',
     key: 'myKey',
     cluster: 'mt1',
-    forceTLS: false
+    forceTLS: false,
+    encrypted: false,
+    wssPort: 443,
+    wsPort: 80,
+    wssHost: 'dunkomatic.de',
+    wsHost: 'dunkomatic.de',
 });
 

@@ -182,7 +182,6 @@ return [
         App\Providers\HorizonServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
-        Collective\Html\HtmlServiceProvider::class,
         App\Providers\MenuServiceProvider::class,
         App\Providers\HealthServiceProvider::class,
     ],
@@ -201,7 +200,7 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         'Datatables' => Yajra\DataTables\Facades\DataTables::class,
         'Form' => Collective\Html\FormFacade::class,
-        'Html' => Collective\Html\HtmlFacade::class,
+        'Html' => Spatie\Html\Facades\Html::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Health' => Spatie\Health\Facades\Health::class,
         'Captcha' => Mews\Captcha\Facades\Captcha::class,
