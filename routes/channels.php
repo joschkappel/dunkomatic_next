@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-Broadcast::channel('leagues', function ($user) {
+Broadcast::channel('user-channel', function ($user) {
+    return true;
+});
+Broadcast::channel('user-leagues', function () {
     return true;
 });

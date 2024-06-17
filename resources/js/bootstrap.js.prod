@@ -21,7 +21,7 @@ try {
     window.toastr.options.progressBar = true;
 
 
-} catch (e) {}
+} catch (e) { }
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -40,19 +40,16 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  */
 
 import Echo from 'laravel-echo';
-import Pusher from 'pusher-js';
 
-window.Pusher = Pusher;
+window.Pusher = require('pusher-js');
 
 window.Echo = new Echo({
     broadcaster: 'pusher',
-    key: 'focyyrz8xuyzh73jacwu',
+    key: 'myKey',
     cluster: 'mt1',
-    forceTLS: false,
-    encrypted: false,
-    wssPort: 8080,
-    wsPort: 8080,
-    wsHost: 'dunkonxt.test',
+    wssPort: 443,
+    wsPort: 6001,
+    wsHost: window.location.hostname,
+    forceTSL: true,
     enabledTransports: ['ws', 'wss'],
 });
-
