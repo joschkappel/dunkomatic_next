@@ -46,13 +46,13 @@ window.Pusher = Pusher;
 
 window.Echo = new Echo({
     broadcaster: 'pusher',
-    key: 'focyyrz8xuyzh73jacwu',
+    key: 'myKey',
     cluster: 'mt1',
     forceTLS: false,
     encrypted: false,
-    wssPort: 8080,
-    wsPort: 8080,
-    wsHost: 'dunkonxt.test',
-    enabledTransports: ['ws', 'wss'],
+    wssPort: 443,
+    wsPort: 80,
+    wssHost: 'dunkomatic.de',
+    wsHost: 'dunkomatic.de',
 });
 

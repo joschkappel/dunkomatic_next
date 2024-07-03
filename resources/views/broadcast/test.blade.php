@@ -25,10 +25,9 @@
     <script type="text/javascript">
         var i = 0;
         window.Echo.channel('user-channel')
-                   .listen('.test.user-event', (data) => {
+                   .listen('.UserEvent', (data) => {
                         i++;
-                        console.log(data);
-                        $("#notification").append('<div class="alert alert-success">'+i+'.'+data.message+'</div>');
+                        $("#notification").append('<div class="alert alert-success">'+i+'.'+data.title+'</div>');
         });
         window.Echo.channel('user-leagues')
             .listen('.LeagueCharPickEvent', (data) => {
