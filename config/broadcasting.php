@@ -39,7 +39,7 @@ return [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
                 'useTLS' => false,
                 'encrypted' => false,
-                'host' => 'laravel-echo-server',
+                'host' => '127.0.0.1',
                 'port' => 6001,
             ],
             'client_options' => [

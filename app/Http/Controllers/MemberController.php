@@ -233,11 +233,11 @@ class MemberController extends Controller
             'mobile' => 'required_without:phone|max:40',
             'phone' => 'required_without:mobile|max:40',
             'fax' => 'max:40',
-            'email1' => 'required|max:60|email:rfc,dns',
-            'email2' => 'nullable|max:60|email:rfc,dns',
+            'email1' => 'required|email:rfc,dns',
+            'email2' => 'nullable|email:rfc,dns',
             'role_id' => ['required', new EnumValue(Role::class, false)],
             'function' => 'nullable|max:40',
-            'email' => 'nullable|max:60|email:rfc,dns',
+            'email' => 'nullable|email:rfc,dns',
         ]);
         Log::info('member form data validated OK.');
 
@@ -351,8 +351,8 @@ class MemberController extends Controller
             'mobile' => 'required_without:phone|max:40',
             'phone' => 'required_without:mobile|max:40',
             'fax' => 'max:40',
-            'email1' => 'required|max:60|email:rfc,dns',
-            'email2' => 'nullable|max:60|email:rfc,dns',
+            'email1' => 'required|email:rfc,dns',
+            'email2' => 'nullable|email:rfc,dns',
         ]);
         Log::info('member form data validated OK.');
 

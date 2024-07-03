@@ -77,6 +77,8 @@ class ProcessNewSeason implements ShouldQueue
         Storage::deleteDirectory($path);
         Log::notice('[JOB][NEW SEASON] report folders cleaned.', ['folder' => $path]);
 
+        // ReportDownloads::all()->delete();
+
         // create new report folders
         $path = config('dunkomatic.folders.export').'/'.Str::of($next_season)->replace('/', '_');
         Storage::makeDirectory($path);

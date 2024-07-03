@@ -38,7 +38,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('db:backup -c')->daily()->emailOutputOnFailure('dmatic.master@gmail.com');
+        $schedule->command('snapshot:create --compress')->daily()->emailOutputOnFailure('dmatic.master@gmail.com');
         $schedule->command('telescope:prune')->dailyAt('00:10')->environments(['staging', 'local', 'dev']);
 
         // reports and  checks

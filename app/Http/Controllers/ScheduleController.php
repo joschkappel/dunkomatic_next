@@ -82,11 +82,11 @@ class ScheduleController extends Controller
             ->select(DB::raw($select))
             ->whereIn('schedule_id', $schedules->pluck('id'))
             ->groupBy(['game_date', 'full_weekend'])
-            ->get();
+            ->orderBy('game_date')->get();
         Log::info('game days found.', ['count' => $events->count()]);
 
-        Log::info('preparing schedule comparison list');
         $elist = datatables()::of($events);
+        Log::info('preparing schedule comparison list',['list'=>$elist]);
         $curYear = '';
 
         return $elist

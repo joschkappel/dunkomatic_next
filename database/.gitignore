@@ -3,3 +3,4 @@
 ProdDatabaseSeeder.php
 prod/*.php
 dev/*.php
+snapshots/*
