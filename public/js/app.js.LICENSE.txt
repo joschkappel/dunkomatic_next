@@ -28,7 +28,7 @@
 
 /*!
  * Column visibility buttons for Buttons and DataTables.
- * 2016 SpryMedia Ltd - datatables.net/license
+ * © SpryMedia Ltd - datatables.net/license
  */
 
 /*!
@@ -41,19 +41,22 @@
  */
 
 /*!
- * Flash export buttons for Buttons and DataTables.
- * 2015 SpryMedia Ltd - datatables.net/license
- *
- * ZeroClipbaord - MIT license
- * Copyright (c) 2012 Joseph Huckaby
- */
-
-/*!
  * HTML5 export buttons for Buttons and DataTables.
- * 2016 SpryMedia Ltd - datatables.net/license
+ * © SpryMedia Ltd - datatables.net/license
  *
  * FileSaver.js (1.3.3) - MIT license
  * Copyright © 2016 Eli Grey - http://eligrey.com
+ */
+
+/*!
+ * Library to detect file mime type of a Uint8Array.
+ *
+ * Modified from https://github.com/sindresorhus/file-type to be used standalone on browser based apps.
+ *
+ * This library requires Node "buffer" module as a pre-requisite. The "buffer" module is made available in this repo
+ * for standalone use via the `buffer.js` script which needs to be loaded before this file on the page.
+ *
+ * Author: Kartik Visweswaran, Krajee.com
  */
 
 /*!
@@ -71,7 +74,15 @@
 
 /*!
  * Print button for Buttons and DataTables.
- * 2016 SpryMedia Ltd - datatables.net/license
+ * © SpryMedia Ltd - datatables.net/license
+ */
+
+/*!
+ * Pusher JavaScript Library v8.4.0-rc2
+ * https://pusher.com/
+ *
+ * Copyright 2020, Pusher
+ * Released under the MIT licence.
  */
 
 /*!
@@ -80,17 +91,6 @@
  *
  * Released under the MIT license
  * https://github.com/select2/select2/blob/master/LICENSE.md
- */
-
-/*!
- * Sizzle CSS Selector Engine v2.3.10
- * https://sizzlejs.com/
- *
- * Copyright JS Foundation and other contributors
- * Released under the MIT license
- * https://js.foundation/
- *
- * Date: 2023-02-14
  */
 
 /*!
@@ -115,6 +115,21 @@
  */
 
 /*!
+ * bootstrap-fileinput v5.5.0
+ * http://plugins.krajee.com/file-input
+ *
+ * Krajee Explorer Font Awesome 5.x theme configuration for bootstrap-fileinput.
+ * Load this theme file after loading `fileinput.js`. Ensure that
+ * font awesome assets and CSS are loaded on the page as well.
+ *
+ * Author: Kartik Visweswaran
+ * Copyright: 2014 - 2022, Kartik Visweswaran, Krajee.com
+ *
+ * Licensed under the BSD-3-Clause
+ * https://github.com/kartik-v/bootstrap-fileinput/blob/master/LICENSE.md
+ */
+
+/*!
  * bootstrap-fileinput v5.5.2
  * http://plugins.krajee.com/file-input
  *
@@ -133,17 +148,14 @@
  */
 
 /*!
- * jQuery JavaScript Library v3.6.4
+ * jQuery JavaScript Library v3.7.1
  * https://jquery.com/
- *
- * Includes Sizzle.js
- * https://sizzlejs.com/
  *
  * Copyright OpenJS Foundation and other contributors
  * Released under the MIT license
  * https://jquery.org/license
  *
- * Date: 2023-03-08T15:28Z
+ * Date: 2023-08-28T13:37Z
  */
 
 /*! Bootstrap 4 integration for DataTables' FixedColumns
@@ -166,11 +178,15 @@
  * ©2016 SpryMedia Ltd - datatables.net/license
  */
 
-/*! ColReorder 1.6.2
+/*! Buttons for DataTables 2.4.2
  * © SpryMedia Ltd - datatables.net/license
  */
 
-/*! DataTables 1.13.4
+/*! ColReorder 1.7.0
+ * © SpryMedia Ltd - datatables.net/license
+ */
+
+/*! DataTables 1.13.7
  * ©2008-2023 SpryMedia Ltd - datatables.net/license
  */
 
@@ -178,23 +194,45 @@
  * ©2011-2017 SpryMedia Ltd - datatables.net/license
  */
 
-/*! FixedColumns 4.2.2
+/*! FixedColumns 4.3.0
      * © SpryMedia Ltd - datatables.net/license
      */
 
-/*! FixedColumns 4.2.2
+/*! FixedColumns 4.3.0
  * © SpryMedia Ltd - datatables.net/license
  */
 
-/*! Select for DataTables 1.6.2
+/*! FixedHeader 3.4.0
+ * © SpryMedia Ltd - datatables.net/license
+ */
+
+/*! KeyTable 2.10.0
+ * © SpryMedia Ltd - datatables.net/license
+ */
+
+/*! Responsive 2.5.0
+ * © SpryMedia Ltd - datatables.net/license
+ */
+
+/*! RowGroup 1.4.1
+ * © SpryMedia Ltd - datatables.net/license
+ */
+
+/*! RowReorder 1.4.1
+ * © SpryMedia Ltd - datatables.net/license
+ */
+
+/*! Scroller 2.3.0
+ * © SpryMedia Ltd - datatables.net/license
+ */
+
+/*! Select for DataTables 1.7.0
  * © SpryMedia Ltd - datatables.net/license/mit
  */
 
 /*! Select2 4.0.13 | https://github.com/select2/select2/blob/master/LICENSE.md */
 
 /*! http://mths.be/fromcodepoint v0.1.0 by @mathias */
-
-/*! https://mths.be/utf8js v2.1.2 by @mathias */
 
 /*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
 
@@ -273,4 +311,4 @@
 
 //! moment.js locale configuration
 
-//! version : 0.5.41
+//! version : 0.5.43
